@@ -13,7 +13,14 @@ jobs:
         with:
           python-version: "3.12"
       - name: Unpack the project
-        run: unzip -q Kindlewake_Project.zip
+        run: |
+          ls -la
+          if [ -d Kindlewake ]; then echo "Project folder already present"; exit 0; fi
+          Z=$(find . -maxdepth 3 -name '*.zip' | head -n 1)
+          if [ -z "$Z" ]; then echo "No zip file found in the repo. Files are:"; ls -R | head -60; exit 1; fi
+          echo "Using $Z"
+          unzip -q "$Z"
+          test -d Kindlewake || { echo "The zip has no Kindlewake folder. Top level:"; ls; exit 1; }
       - name: Cache build tools
         uses: actions/cache@v4
         with:
