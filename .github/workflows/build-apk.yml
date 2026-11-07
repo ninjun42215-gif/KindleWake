@@ -1,0 +1,40 @@
+name: Build Android APK
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unpack the project
+        run: unzip -q Kindlewake_Project.zip
+      - name: Cache build tools
+        uses: actions/cache@v4
+        with:
+          path: ~/.kindlewake_build
+          key: kindlewake-tools-4.2.2
+      - name: Preflight check
+        working-directory: Kindlewake
+        run: python tools/build_apk.py --check
+      - name: Build the APK
+        working-directory: Kindlewake
+        run: python tools/build_apk.py
+      - name: Keep the build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: Kindlewake/dist/logs/
+          if-no-files-found: ignore
+      - name: Publish the APK as a release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-${{ github.run_number }}
+          name: Kindlewake APK build ${{ github.run_number }}
+          files: Kindlewake/dist/Kindlewake.apk
