@@ -53,7 +53,7 @@ jobs:
 
       - name: Build the APK
         working-directory: Kindlewake
-        run: python tools/build_apk.py
+        run: python tools/build_apk.py --strict
 
       - name: Keep the build logs
         if: always()
