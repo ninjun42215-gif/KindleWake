@@ -1,0 +1,104 @@
+name: Extract Godot Project into Repository
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: extract-project-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out the selected branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Extract source files safely
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          import stat
+
+          archive = Path("Kindlewake_Project.zip")
+          target_root = Path("Kindlewake")
+
+          if not archive.is_file():
+              raise SystemExit(f"Required archive not found: {archive}")
+
+          with ZipFile(archive) as zf:
+              entries = zf.infolist()
+              if not entries:
+                  raise SystemExit("Archive is empty.")
+
+              extracted = 0
+              skipped = 0
+              for info in entries:
+                  raw = info.filename.replace("\\\\", "/")
+                  rel = PurePosixPath(raw)
+
+                  if rel.is_absolute() or not rel.parts or any(p in ("", ".", "..") for p in rel.parts):
+                      raise SystemExit(f"Unsafe archive path rejected: {info.filename}")
+
+                  # This project archive is expected to contain a Kindlewake/ root.
+                  if rel.parts[0] != "Kindlewake":
+                      raise SystemExit(f"Unexpected top-level archive path: {info.filename}")
+
+                  # Never import generated caches or operating-system metadata.
+                  if ".godot" in rel.parts or "__MACOSX" in rel.parts or rel.name == ".DS_Store":
+                      skipped += 1
+                      continue
+
+                  mode = (info.external_attr >> 16) & 0xFFFF
+                  if stat.S_ISLNK(mode):
+                      raise SystemExit(f"Symbolic link rejected: {info.filename}")
+
+                  destination = Path(*rel.parts)
+                  if info.is_dir():
+                      destination.mkdir(parents=True, exist_ok=True)
+                      continue
+
+                  destination.parent.mkdir(parents=True, exist_ok=True)
+                  data = zf.read(info)
+                  if destination.exists():
+                      if not destination.is_file() or destination.read_bytes() != data:
+                          raise SystemExit(
+                              f"Conflict: {destination} already exists with different content. "
+                              "Nothing was overwritten; resolve this conflict before rerunning."
+                          )
+                      skipped += 1
+                      continue
+
+                  destination.write_bytes(data)
+                  extracted += 1
+
+          if not (target_root / "project.godot").is_file():
+              raise SystemExit("Extraction did not produce Kindlewake/project.godot")
+
+          print(f"Extracted files: {extracted}")
+          print(f"Skipped identical/cache/metadata entries: {skipped}")
+          PY
+
+      - name: Commit extracted project files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- Kindlewake/
+          if git diff --cached --quiet; then
+            echo "No new project files to commit."
+            exit 0
+          fi
+          git commit -m "Extract Godot project source from archive"
+          git push origin "HEAD:${{ github.ref_name }}"
