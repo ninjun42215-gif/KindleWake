@@ -21,14 +21,29 @@
 - [x] Make the Android workflow select the exact primary archive, `Kindlewake_Project.zip`, rather than the first ZIP returned by filesystem traversal.
 - [x] Add a check that the extracted Godot project contains `Kindlewake/project.godot`.
 - [x] Replace the minimal root README with repository layout, build instructions, validation commands, milestone scope, and signing guidance.
-- [ ] Run GitHub Actions preflight and full APK build.
-- [ ] Run Godot import and headless test suite.
+- [x] Run GitHub Actions preflight on the development branch (run #14; extraction and preflight completed successfully).
+- [ ] Complete a non-cancelled APK build (run #14 was cancelled during APK export).
+- [ ] Fix the GDScript parse/type errors reported by Godot 4.2.2 (see CI findings below), then rerun strict tests.
 - [ ] Verify save/load and room resume, including compatibility with existing saves.
 - [ ] Review mobile UI, touch targets, and screen scaling on Android hardware.
 - [ ] Audit all shipped assets and record license/attribution evidence.
 - [ ] Confirm test signing material is not used for production distribution.
 - [ ] Update project WIP/checkpoint and continuation prompt with measured results.
 - [ ] Open a pull request for review; merge only after checks pass.
+
+## CI findings — 2026-11-08
+
+Workflow run #14 checked out `kindlewake/v0.9.4-stability` at `ef95392b1d3ba99b1657399c0e77a57638b28af5`. Project extraction and the build preflight completed successfully. The run was cancelled during APK export, so no successful APK is confirmed.
+
+The Godot 4.2.2 output reported these source errors:
+
+- `scripts/world/world_map.gd:290`: `_set` override signature does not match `Object._set(StringName, Variant) -> bool`.
+- `scripts/world/world_map.gd:212`: cannot infer the type of `next`.
+- `scripts/world/world_map.gd:235`: cannot infer the type of `neighbour`.
+- `tests/run_tests.gd:1424`: cannot infer the type of `portrait_path`.
+- Dependent scripts `scripts/world/fast_travel.gd`, `scripts/ui/world_scene.gd`, and `scripts/core/game_state.gd` report compile/load errors as a consequence.
+
+The workflow now invokes the APK build in strict mode so reported test/script errors block release instead of being treated as non-blocking warnings. These source errors remain unresolved; no test or release gate is marked passed on their account.
 
 ## Required validation
 
