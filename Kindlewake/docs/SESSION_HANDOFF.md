@@ -182,3 +182,12 @@
 - Artifact name remains `Kindlewake-Source-Handoff-Parts`; APK artifact remains `Kindlewake-APK`. Each workflow run belongs to the triggering ref; verify the run's commit SHA before using its artifacts.
 - Workflow change commit: `4afdbe988833618c8698ad5b3378c57a1d4ab461`. Documentation commits follow on the current feature branch. A fresh run on the final documentation head is required before claiming this generalized workflow has passed end-to-end.
 - PR #4 remains draft; `main` was not modified. No physical Android device QA is claimed.
+
+
+## 2026-11-10 — Generalized Android build and release workflow
+
+- Updated `.github/workflows/build-apk.yml` (commit `66a0b234d85ed8bc8315c14a42cd20314ea93164`): split Android validation/build and source handoff into independent jobs. Source handoff is no longer blocked by APK/test failures. APK artifact includes the installer, SHA-256 and a source/version provenance manifest. Build cache key includes runner OS and builder-script hash. CI checks that project and Android preset version names match.
+- Added `.github/workflows/publish-android-release.yml` (commit `c10c38f7d7d15198c688311ebf63598aaa1012e5`): production publishing is manual, requires the exact existing `v*` tag and explicit `PUBLISH` confirmation, uses the `android-production` GitHub Environment, reads the private keystore only from environment secrets, runs strict tests/balance checks and publishes APK + checksum + manifest. Configure required reviewers and the three documented environment secrets before using it.
+- Aligned `export_presets.cfg` to project version `0.10.0` and Android version code `1000` (commit `ee9033d00cc8ec6f5c8f5d37d0fc221580c2ea0a`). The code is a deliberate monotonic bump from the previous preset value; increment it for each later published build.
+- Added `docs/ANDROID_RELEASE_WORKFLOW.md` (commit `48be6216af5d6fa7336ff1ac19997d6a6beebeeb`) covering routine CI, production environment setup, secrets, release steps, versioning, security, limitations and troubleshooting.
+- Important: these workflow changes have not yet been validated by a new GitHub Actions run in this handoff. Verify the newest branch-head run and its `Kindlewake-APK`, `Kindlewake-Source-Handoff-Parts`, and `test-logs` artifacts. Do not claim AAB support or physical-device QA; neither is provided by this workflow revision.
