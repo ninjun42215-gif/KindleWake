@@ -188,8 +188,29 @@ func _on_prompt_pressed() -> void:
     for c in spot_buttons.get_children():
         spot_buttons.remove_child(c)
         c.queue_free()
-    if str(near_spot.get("kind", "text")) == "party":
-        spot_buttons.add_child(_btn("Party, Gear and Shop", _open_party))
+    var spot_kind: String = str(near_spot.get("kind", "text"))
+    if spot_kind == "party":
+        spot_buttons.add_child(_btn("Open market and company stores", _open_party))
+    elif spot_kind == "inn":
+        spot_buttons.add_child(_btn("Rest the company — 20 gold", _rest_at_inn))
+    elif spot_kind == "recruit":
+        var cid: String = str(near_spot.get("character_id", ""))
+        if cid != "" and not GameState.party.roster.has(cid) and not bool(GameState.world_flags.get("recruited_" + cid, false)):
+            spot_buttons.add_child(_btn("Invite " + str(near_spot.get("name", "traveller")), _recruit.bind(near_spot)))
+        elif cid != "":
+            spot_text.text += "\n\nThis recruit has already joined your company."
+    elif spot_kind == "treasure":
+        var cache_flag: String = _spot_flag("cache")
+        if not bool(GameState.world_flags.get(cache_flag, false)):
+            spot_buttons.add_child(_btn("Open the cache", _claim_treasure.bind(near_spot)))
+        else:
+            spot_text.text += "\n\nThe cache is empty."
+    elif spot_kind == "boss":
+        var boss_flag: String = str(near_spot.get("world_flag_on_victory", ""))
+        if not bool(GameState.world_flags.get(boss_flag, false)):
+            spot_buttons.add_child(_btn("Challenge the guardian", _challenge_boss.bind(near_spot)))
+        else:
+            spot_text.text += "\n\nThe guardian has been defeated."
     spot_buttons.add_child(_btn("Close", _close_panel))
     spot_panel.visible = true
 
@@ -197,6 +218,60 @@ func _on_prompt_pressed() -> void:
 func _close_panel() -> void:
     panel_open = false
     spot_panel.visible = false
+
+
+func _spot_flag(suffix: String) -> String:
+    return "dungeon_" + lmap.name.to_lower().replace(" ", "_") + "_" + suffix
+
+
+func _rest_at_inn() -> void:
+    if GameState.party.gold < 20:
+        spot_text.text += "\n\nYou need 20 gold to pay for beds and a meal."
+        return
+    GameState.party.gold -= 20
+    for cid in GameState.party.roster:
+        var sheet: CharacterSheet = GameState.party.sheet(cid)
+        if sheet != null:
+            sheet.base_stats["mor"] = 70
+    spot_text.text += "\n\nThe company rests. Morale is restored across the roster."
+    for c in spot_buttons.get_children():
+        if c is Button and (c as Button).text.begins_with("Rest the company"):
+            (c as Button).disabled = true
+
+
+func _recruit(spot: Dictionary) -> void:
+    var cid: String = str(spot.get("character_id", ""))
+    var definition: Dictionary = GameData.characters.get(cid, {})
+    if cid == "" or definition.is_empty() or GameState.party.roster.has(cid):
+        spot_text.text += "\n\nThere is no available recruit."
+        return
+    GameState.party.add_member(cid, definition)
+    GameState.world_flags["recruited_" + cid] = true
+    spot_text.text += "\n\n" + str(spot.get("name", "The traveller")) + " has joined the company."
+    for c in spot_buttons.get_children():
+        if c is Button and (c as Button).text.begins_with("Invite"):
+            (c as Button).disabled = true
+
+
+func _claim_treasure(spot: Dictionary) -> void:
+    var flag: String = _spot_flag("cache")
+    var reward: int = int(spot.get("reward_gold", 120))
+    if bool(GameState.world_flags.get(flag, false)):
+        return
+    GameState.party.gold += reward
+    GameState.world_flags[flag] = true
+    spot_text.text += "\n\nYou recover %d gold." % reward
+
+
+func _challenge_boss(spot: Dictionary) -> void:
+    var battle_id: String = str(spot.get("battle_id", ""))
+    var def: Dictionary = GameData.battle_def(battle_id).duplicate(true)
+    if def.is_empty():
+        spot_text.text += "\n\nThe guardian's battle record is missing."
+        return
+    def["world_flag_on_victory"] = str(spot.get("world_flag_on_victory", ""))
+    GameState.start_battle_from_world(def)
+    get_tree().change_scene_to_file("res://Main.tscn")
 
 
 func _open_party() -> void:
