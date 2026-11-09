@@ -1,6 +1,7 @@
 extends Node2D
 
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
+const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
 ## Overworld (Milestone 7, first step): walk freely over the Sallow Marches, find places, get ambushed.
 ## Touch: tap to walk to a spot, hold and drag to steer. Terrain changes speed; forests are more dangerous.
 ## All rules live in WorldMap; battles reuse the battle scene through GameState.start_battle_from_world().
@@ -45,7 +46,7 @@ var place_text: Label
 var place_buttons: VBoxContainer
 var banner: PanelContainer
 var banner_label: Label
-var party_screen: PartyScreen
+var party_screen: PartyScreenScript
 var minimap_dot: ColorRect
 var creator_screen: Control
 
@@ -639,7 +640,7 @@ func _build_ui() -> void:
     place_panel.grow_vertical = Control.GROW_DIRECTION_BOTH
     place_panel.visible = false
 
-    party_screen = PartyScreen.new()
+    party_screen = PartyScreenScript.new()
     root.add_child(party_screen)
     party_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     party_screen.visible = false
