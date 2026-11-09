@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - "main"
       - "feature/sethmarch-regional-network"
     tags:
       - "v*"
