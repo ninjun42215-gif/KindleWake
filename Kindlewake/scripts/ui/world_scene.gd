@@ -241,7 +241,7 @@ func _in_safe_zone(cell: Vector2i) -> bool:
         var d: Dictionary = p
         var kind: String = str(d.get("kind", ""))
         if kind == "keep" or kind == "village" or kind == "port":
-            if Vector2(wmap.wrapped_delta(cell, wmap.place_cell(str(d.get("id", "")))).length() < radius:
+            if Vector2(wmap.wrapped_delta(cell, wmap.place_cell(str(d.get("id", ""))))).length() < radius:
                 return true
     return false
 
@@ -269,7 +269,7 @@ func _launch_ambush() -> void:
 
 
 func _go_to_battle(def: Dictionary) -> void:
-    GameState.world_pos = player_pos
+    GameState.world_pos = wmap.wrap_position(player_pos)
     GameState.save_campaign("auto_a")
     GameState.start_battle_from_world(def)
     get_tree().change_scene_to_file("res://Main.tscn")
