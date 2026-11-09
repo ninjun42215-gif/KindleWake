@@ -1,4 +1,6 @@
 extends Node2D
+
+const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 ## Overworld (Milestone 7, first step): walk freely over the Sallow Marches, find places, get ambushed.
 ## Touch: tap to walk to a spot, hold and drag to steer. Terrain changes speed; forests are more dangerous.
 ## All rules live in WorldMap; battles reuse the battle scene through GameState.start_battle_from_world().
@@ -725,11 +727,11 @@ func _update_hud() -> void:
         info_label.text = txt
     if not GameState.party.roster.is_empty():
         var leader_id: String = GameState.party.roster[0]
-        var leader: CharacterSheet = GameState.party.sheet(leader_id)
+        var leader: CharacterSheetScript = GameState.party.sheet(leader_id)
         if leader != null:
             var class_def: Dictionary = GameData.class_def(leader.class_id)
             var class_title: String = str(class_def.get("name", leader.class_id))
-            if leader.level >= CharacterSheet.MAX_LEVEL:
+            if leader.level >= CharacterSheetScript.MAX_LEVEL:
                 leader_status_label.text = "%s  •  Lv %d %s  •  MAX" % [leader.display_name, leader.level, class_title]
                 leader_exp_bar.max_value = 1.0
                 leader_exp_bar.value = 1.0
