@@ -2,6 +2,7 @@ extends Node2D
 
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
+const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 ## Overworld (Milestone 7, first step): walk freely over the Sallow Marches, find places, get ambushed.
 ## Touch: tap to walk to a spot, hold and drag to steer. Terrain changes speed; forests are more dangerous.
 ## All rules live in WorldMap; battles reuse the battle scene through GameState.start_battle_from_world().
@@ -68,8 +69,26 @@ func _ready() -> void:
     next_threshold = WorldMap.encounter_threshold(GameData.world, rng.randf())
     _build_ui()
     _build_minimap()
+    _show_prologue_acknowledgement()
     GameState.from_world = true
     GameState.save_campaign("auto_a")
+
+
+func _show_prologue_acknowledgement() -> void:
+    if not bool(GameState.world_flags.get("prologue_complete", false)):
+        return
+    if bool(GameState.world_flags.get("prologue_acknowledged", false)):
+        return
+    var line: String = PrologueSystem.acknowledgement(GameState.world_flags)
+    if line == "":
+        return
+    banner_label.text = line
+    banner.visible = true
+    GameState.world_flags["prologue_acknowledged"] = true
+    get_tree().create_timer(7.0).timeout.connect(func():
+        if is_instance_valid(banner):
+            banner.visible = false
+    )
 
 
 func cell_center(c: Vector2i) -> Vector2:
