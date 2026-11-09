@@ -1,3 +1,11 @@
+# LIVE OVERRIDE — 2026-11-10
+
+Repository baseline at start: `main` SHA `6379826a992e67a2abd92a9a795d97cb1022e4ca`, Godot version `0.11.0`. Active branch: `feature/premium-narrative-ux-art-direction`.
+
+Creative authority: `docs/PREMIUM_PRODUCTION_BIBLE.md`. It defines the story reframe, opening-hour experience, cast dossiers, consequential choices, healthy long-session pacing, premium mobile UX, art/asset standards and vertical-slice gates. Treat planned content as planned until implemented and validated. The next AI should inspect actual scene/script systems and implement the first playable 45–60 minute campaign slice; do not merely write another plan or expand world scope without a working player loop.
+
+---
+
 > **ACTIVE IMPLEMENTATION CHECKPOINT — 2026-11-10:** Main is `b322c86fbb44696dfc85382f49478dcb5bce2cd9` (v0.10.0, Android code 1000, save schema 3). The active candidate is branch `feature/recruitment-system-v1-2026-11-10`; do not describe it as merged until its PR is merged. The candidate bumps the game to v0.11.0, Android code 1100 and save schema 4.
 >
 > **Recruitment v1 scope:** the data now defines all 24 Wave-1 named characters (4 starting members + 20 recruitable profiles). Fourteen recruit profiles were added; the six existing recruit definitions were aligned to their intended class/weapon identities. Six muster halls now expose the recruit roster. Recruitment validates duplicate flags, gold costs, story flags and companion prerequisites before atomically adding the member and recording the one-time world flag.
