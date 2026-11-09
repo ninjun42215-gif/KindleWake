@@ -35,7 +35,7 @@ var reward: Dictionary = {}              # enemies only: {"exp","ap","gold"} pai
 
 
 static func from_def(char_id: String, def: Dictionary) -> CharacterSheet:
-    var s := CharacterSheet.new()
+    var s = load("res://scripts/core/character_sheet.gd").new()
     s.character_id = char_id
     s.display_name = str(def.get("name", char_id))
     s.house = str(def.get("house", ""))
