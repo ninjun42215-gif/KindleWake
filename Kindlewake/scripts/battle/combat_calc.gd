@@ -21,7 +21,7 @@ static func attack_power(u: BattleUnitScript, weapon: Dictionary) -> float:
     return power + str_v + 0.25 * dex_v
 
 
-static func defense(u: BattleUnit, damage_type: String) -> float:
+static func defense(u: BattleUnitScript, damage_type: String) -> float:
     if damage_type == "magic":
         return float(u.armor_res) + 0.3 * float(u.stat("int")) + 0.3 * float(u.stat("vit"))
     return float(u.armor_def) + 0.6 * float(u.stat("vit"))
@@ -35,7 +35,7 @@ static func base_damage(raw: float, def_value: float) -> float:
 
 
 ## "front" / "side" / "rear" depending on where the attacker stands relative to the defender's facing.
-static func facing_class(attacker_cell: Vector2i, defender: BattleUnit) -> String:
+static func facing_class(attacker_cell: Vector2i, defender: BattleUnitScript) -> String:
     var delta := Vector2(attacker_cell - defender.cell)
     if delta == Vector2.ZERO:
         return "front"
@@ -49,18 +49,18 @@ static func facing_class(attacker_cell: Vector2i, defender: BattleUnit) -> Strin
 
 
 ## Flanked = adjacent melee attack while another unit of the attacker's team stands on the opposite side.
-static func is_flanked(attacker: BattleUnit, defender: BattleUnit, units: Array) -> bool:
-    if BattleMap.manhattan(attacker.cell, defender.cell) != 1:
+static func is_flanked(attacker: BattleUnitScript, defender: BattleUnitScript, units: Array) -> bool:
+    if BattleMapScript.manhattan(attacker.cell, defender.cell) != 1:
         return false
     var opposite: Vector2i = defender.cell + (defender.cell - attacker.cell)
     for o in units:
-        var other: BattleUnit = o
+        var other: BattleUnitScript = o
         if other.is_alive() and other.team == attacker.team and other.id != attacker.id and other.cell == opposite:
             return true
     return false
 
 
-static func morale_mult(u: BattleUnit) -> float:
+static func morale_mult(u: BattleUnitScript) -> float:
     if u.morale >= 80:
         return 1.05
     if u.morale < 30:
@@ -68,12 +68,12 @@ static func morale_mult(u: BattleUnit) -> float:
     return 1.0
 
 
-static func hit_chance(attacker: BattleUnit, defender: BattleUnit, weapon: Dictionary, map: BattleMapScript) -> int:
+static func hit_chance(attacker: BattleUnitScript, defender: BattleUnitScript, weapon: Dictionary, map: BattleMapScript) -> int:
     var value: int = attacker.stat("acc") + int(weapon.get("acc", 0)) - defender.stat("eva") - map.cover_at(defender.cell)
     return clampi(value, 10, 98)
 
 
-static func crit_chance(attacker: BattleUnit, weapon: Dictionary, facing_cls: String) -> int:
+static func crit_chance(attacker: BattleUnitScript, weapon: Dictionary, facing_cls: String) -> int:
     var v: float = 5.0 + 0.5 * float(attacker.stat("lck")) + 0.3 * float(attacker.stat("dex")) + float(weapon.get("crit", 0))
     if facing_cls == "rear":
         v += 10.0
@@ -81,7 +81,7 @@ static func crit_chance(attacker: BattleUnit, weapon: Dictionary, facing_cls: St
 
 
 ## Deterministic preview used by the UI (attack badge) and by the AI.
-static func preview(attacker: BattleUnit, defender: BattleUnit, weapon: Dictionary, map: BattleMap, units: Array) -> Dictionary:
+static func preview(attacker: BattleUnitScript, defender: BattleUnitScript, weapon: Dictionary, map: BattleMapScript, units: Array) -> Dictionary:
     var dtype: String = str(weapon.get("damage_type", "physical"))
     var raw: float = attack_power(attacker, weapon)
     var def_value: float = defense(defender, dtype) * (1.0 - float(weapon.get("armor_pierce", 0.0)))
@@ -111,7 +111,7 @@ static func preview(attacker: BattleUnit, defender: BattleUnit, weapon: Dictiona
 
 
 ## Rolls the attack with the supplied RNG and applies damage to the defender.
-static func resolve(attacker: BattleUnit, defender: BattleUnit, weapon: Dictionary, map: BattleMap, units: Array, rng: RandomNumberGenerator) -> Dictionary:
+static func resolve(attacker: BattleUnitScript, defender: BattleUnitScript, weapon: Dictionary, map: BattleMapScript, units: Array, rng: RandomNumberGenerator) -> Dictionary:
     var p: Dictionary = preview(attacker, defender, weapon, map, units)
     var hit: bool = rng.randi_range(1, 100) <= int(p["hit"])
     var result: Dictionary = {"hit": hit, "crit": false, "damage": 0, "killed": false, "preview": p}
@@ -131,16 +131,16 @@ static func resolve(attacker: BattleUnit, defender: BattleUnit, weapon: Dictiona
 
 
 ## EXP the killer earns for defeating `victim`: 15 + 5 per level, doubled for a commander.
-static func kill_exp(victim: BattleUnit) -> int:
+static func kill_exp(victim: BattleUnitScript) -> int:
     return (15 + 5 * victim.level) * (2 if victim.is_commander else 1)
 
 
 ## Power of a skill after support sigils (Resonance): +pct percent.
-static func skill_power_mult(caster: BattleUnit, skill_id: String) -> float:
+static func skill_power_mult(caster: BattleUnitScript, skill_id: String) -> float:
     return 1.0 + float(int(caster.skill_mods.get(skill_id, 0))) / 100.0
 
 
-static func heal_amount(caster: BattleUnit, skill: Dictionary, skill_id: String = "") -> int:
+static func heal_amount(caster: BattleUnitScript, skill: Dictionary, skill_id: String = "") -> int:
     return int(round(float(int(skill.get("power", 0)) + caster.stat("int")) * skill_power_mult(caster, skill_id)))
 
 
@@ -153,7 +153,7 @@ static func is_damage_skill(skill: Dictionary) -> bool:
     return t == "damage" or t == "strike"
 
 
-static func skill_preview(caster: BattleUnit, target: BattleUnit, skill: Dictionary, skill_id: String = "", weapon: Dictionary = {}) -> Dictionary:
+static func skill_preview(caster: BattleUnitScript, target: BattleUnitScript, skill: Dictionary, skill_id: String = "", weapon: Dictionary = {}) -> Dictionary:
     var raw: float = 0.0
     var def_value: float = 0.0
     if str(skill.get("type", "")) == "strike":
@@ -167,7 +167,7 @@ static func skill_preview(caster: BattleUnit, target: BattleUnit, skill: Diction
 
 
 ## Rolls and applies a damage skill. Returns {"damage": int, "killed": bool}.
-static func skill_resolve(caster: BattleUnit, target: BattleUnit, skill: Dictionary, skill_id: String, rng: RandomNumberGenerator, weapon: Dictionary = {}) -> Dictionary:
+static func skill_resolve(caster: BattleUnitScript, target: BattleUnitScript, skill: Dictionary, skill_id: String, rng: RandomNumberGenerator, weapon: Dictionary = {}) -> Dictionary:
     var p: Dictionary = skill_preview(caster, target, skill, skill_id, weapon)
     var damage: int = maxi(1, int(round(float(p["normal"]) * rng.randf_range(VARIANCE_MIN, VARIANCE_MAX))))
     target.hp = maxi(0, target.hp - damage)
@@ -176,7 +176,7 @@ static func skill_resolve(caster: BattleUnit, target: BattleUnit, skill: Diction
 
 ## What an enemy pays when defeated: its own "reward" block, otherwise a level-based default
 ## (EXP 15 + 5 x level, AP 2 + level, gold 5 + 3 x level; commanders pay double).
-static func enemy_reward(victim: BattleUnit) -> Dictionary:
+static func enemy_reward(victim: BattleUnitScript) -> Dictionary:
     if not victim.reward.is_empty():
         return {"exp": int(victim.reward.get("exp", 0)), "ap": int(victim.reward.get("ap", 0)), "gold": int(victim.reward.get("gold", 0))}
     var mult: int = 2 if victim.is_commander else 1
