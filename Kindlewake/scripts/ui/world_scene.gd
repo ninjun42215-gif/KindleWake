@@ -172,7 +172,7 @@ func _accumulate_danger(dist: float, cell: Vector2i) -> void:
 
 
 func _launch_ambush() -> void:
-    var def: Dictionary = GameState.skirmish_def()
+    var def: Dictionary = GameState.travel_encounter_def()
     if def.is_empty():
         banner.visible = false
         return
