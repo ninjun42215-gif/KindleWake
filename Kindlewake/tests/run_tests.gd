@@ -4,6 +4,8 @@ const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
+const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
+const GameStateScript = preload("res://scripts/core/game_state.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -39,6 +41,8 @@ func _initialize() -> void:
     _test_world()
     _test_world_atlas()
     _test_thalassar_region()
+    _test_brinegate_quest()
+    _test_region_save_compatibility()
     _test_locations()
     _test_shop_and_screen()
     _test_save_system()
@@ -869,6 +873,32 @@ func _test_thalassar_region() -> void:
     check(coast_maps_ok, "Brinegate, Saltmere, Lantern Quay and Tideglass have playable location maps")
     if maps.has("dungeon_tideglass"):
         check((maps["dungeon_tideglass"] as LocalMap).kind == "dungeon", "Tideglass is an explorable dungeon, not a static story panel")
+
+
+func _test_brinegate_quest() -> void:
+    print("[Brinegate quest]")
+    var empty: Dictionary = {}
+    check(not BrinegateQuestSystem.can_report_ledger(empty), "the ledger cannot be reported before evidence and guardian are secured")
+    var partial: Dictionary = {"tideglass_ledger_found": true}
+    check(not BrinegateQuestSystem.can_report_ledger(partial), "finding the ledger alone does not complete the grotto operation")
+    var ready_flags: Dictionary = {"tideglass_ledger_found": true, "tideglass_grotto_cleared": true}
+    var public_result: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(ready_flags, "public")
+    var private_result: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(ready_flags, "private")
+    check(bool(public_result.get("ok", false)) and bool((public_result.get("world_flags", {}) as Dictionary).get("brinegate_ledger_shared", false)) and int(public_result.get("gold", -1)) == 0, "public disclosure records the trust outcome without a gold bribe")
+    check(bool(private_result.get("ok", false)) and bool((private_result.get("world_flags", {}) as Dictionary).get("brinegate_ledger_withheld", false)) and int(private_result.get("gold", 0)) == 60, "private handling records a distinct outcome and its 60-gold payment")
+    var duplicate: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(public_result.get("world_flags", {}), "private")
+    check(not bool(duplicate.get("ok", true)), "the harbour decision can only be recorded once")
+    check(not bool(BrinegateQuestSystem.resolve_ledger_choice(ready_flags, "unknown").get("ok", true)), "unknown harbour choices are rejected")
+
+
+func _test_region_save_compatibility() -> void:
+    print("[region save compatibility]")
+    var legacy: Dictionary = GameStateScript.region_state_from_payload({"world_pos": [123.0, 456.0]})
+    check(str(legacy.get("active_region_id", "")) == "sethmarch" and legacy.get("world_pos", Vector2.ZERO) == Vector2(123.0, 456.0), "schema-4 campaign saves restore to Sethmarch without losing their position")
+    check((legacy.get("world_positions", {}) as Dictionary).get("sethmarch", []) == [123.0, 456.0], "legacy saves seed the per-region position table")
+    var coastal: Dictionary = GameStateScript.region_state_from_payload({"world_pos": [8.0, 9.0], "active_region_id": "brinegate_coast", "world_positions": {"sethmarch": [100.0, 200.0]}})
+    check(str(coastal.get("active_region_id", "")) == "brinegate_coast" and coastal.get("world_pos", Vector2.ZERO) == Vector2(8.0, 9.0), "new saves restore the active Thalassar position")
+    check((coastal.get("world_positions", {}) as Dictionary).get("sethmarch", []) == [100.0, 200.0], "switching continents preserves the other region's last position")
 
 
 func _test_locations() -> void:
