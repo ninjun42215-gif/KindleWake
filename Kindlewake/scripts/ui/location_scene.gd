@@ -259,7 +259,7 @@ func _claim_treasure(spot: Dictionary) -> void:
     if bool(GameState.world_flags.get(flag, false)):
         return
     GameState.party.gold += reward
-    var reward_item: String = str(near_spot.get("reward_item", ""))
+    var reward_item: String = str(spot.get("reward_item", ""))
     var loot_text: String = ""
     if reward_item != "" and GameData.items.has(reward_item):
         GameState.party.add_item(reward_item, 1)
