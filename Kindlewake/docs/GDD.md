@@ -780,3 +780,12 @@ Rune combat effects are data-driven: Flame can Burn, Frost can Chill, Storm can 
 Legacy sigil_* script entry points remain internal compatibility wrappers during this transition. New player-facing text, shop stock, data, fusion, and asset naming use Rune terminology.
 
 | 0.9.1-rune-system | Renamed sigils to runes in player-facing systems; added six rune families, six grades, chance-based three-to-one fusion, specialist-only regional rune shops, grade scaling, elemental status effects and original rune atlas. CI validation passed on 2026-11-09: Godot 4.2.2 import succeeded without script or parse errors; 312 strict checks passed with zero failures; balance report passed; signed Android APK exported for arm64-v8a and armeabi-v7a. Device playtesting remains pending. |
+
+
+### 14.3 Responsive mobile HUD pass (2026-11-10)
+- Battle HUD now uses tighter viewport-relative widths for the selected-unit card, combat log, preview panel and action stack on compact landscape screens. Confirm/Cancel retain large touch targets while their labels scale down with the viewport.
+- Overworld COMPANY and SAVE controls now resize independently for compact screens; save remains a dedicated, reachable action.
+- Company management now chooses its stacked layout from the actual viewport orientation, not width alone. Narrow landscape phones keep the three panes side-by-side with scaled minimum widths; portrait layouts stack roster, character sheet and gear/rune/shop panes vertically. The header title, gold chip and Close button also compact together.
+- These changes preserve the existing battle rules, save payloads, party APIs and rune/gear behavior. Validate actual safe-area, notch, scrolling and touch interaction on physical devices; CI cannot replace that check.
+
+| 0.10.1-mobile-ui | Responsive battle HUD, overworld save/company controls and party management layout for compact landscape/portrait viewports; physical-device validation pending. |
