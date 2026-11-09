@@ -409,6 +409,9 @@ func _rebuild() -> void:
         roster_panel.custom_minimum_size = Vector2(clampf(viewport_width * 0.18, 130.0, 250.0), 0.0)
         sheet_panel.custom_minimum_size = Vector2(clampf(viewport_width * 0.29, 210.0, 400.0), 0.0)
         right_panel.custom_minimum_size = Vector2(clampf(viewport_width * 0.43, 300.0, 460.0), 0.0)
+        roster_panel.custom_minimum_size = Vector2(220, 0)
+        sheet_panel.custom_minimum_size = Vector2(350, 0)
+        right_panel.custom_minimum_size = Vector2(380, 0)
         roster_panel.size_flags_horizontal = Control.SIZE_FILL
         sheet_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         right_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
