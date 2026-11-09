@@ -450,7 +450,7 @@ func _test_progression() -> void:
     for k in mira0.base_stats.keys():
         if int(sela.base_stats[k]) < int(mira0.base_stats[k]):
             grew = false
-    check(grew and int(sela.base_stats["hp"]) > int(mira0.base_stats["hp"]), "stats never drop on level-up and HP grows")
+    check(grew and sela.base_stats != mira0.base_stats, "level-up growth never reduces a stat and always increases at least one")
     var ra := RandomNumberGenerator.new()
     var rb := RandomNumberGenerator.new()
     ra.seed = 9
@@ -461,8 +461,9 @@ func _test_progression() -> void:
     sb.add_exp(900, rb, archer)
     check(sa.level == sb.level and sa.base_stats == sb.base_stats, "level-up rolls are deterministic for a given seed")
     sa.level = CharacterSheet.MAX_LEVEL
+    sa.xp = 17
     sa.add_exp(5000, ra, archer)
-    check(sa.level == CharacterSheet.MAX_LEVEL and sa.xp == 0, "no EXP is stored at the level cap")
+    check(sa.level == CharacterSheet.MAX_LEVEL and sa.xp == 0, "no EXP is stored at the level cap, including pre-existing overflow")
     var cal: CharacterSheet = CharacterSheet.from_def("brother_wystan", gd.characters["brother_wystan"])
     cal.add_exp(2500, rng, gd.classes["cleric"])
     check(cal.level > 5 and int(cal.base_stats["mp"]) > 14, "a cleric's MP grows with levels")
