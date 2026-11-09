@@ -2,37 +2,24 @@
 
 Offline-first medieval tactical RPG built with Godot 4 (GDScript), targeting Android and iOS.
 
-## Repository layout
+## Project source and one-time phone import
 
-- `Kindlewake/` — extracted Godot source tree, automatically refreshed from the source archive.
-- `Kindlewake_Project.zip` — authoritative source checkpoint archive.
-- `.github/workflows/extract-project-archive.yml` — automatically validates, replaces and commits the extracted project whenever the root archive changes.
-- `.github/workflows/build-apk.yml` — builds the Android APK from `Kindlewake/`.
+The canonical source is the extracted `Kindlewake/` directory on `main`. Routine development is done by editing and committing ordinary files in that directory; **do not rebuild or upload a master project ZIP**.
 
-## Automatic source synchronization
+The initial project checkpoint is prepared as four upload shards, each below GitHub's 25 MB browser-upload limit:
 
-The root `Kindlewake_Project.zip` is the single source of truth.
+- `KindleWake_Project_part1.zip`
+- `KindleWake_Project_part2.zip`
+- `KindleWake_Project_part3.zip`
+- `KindleWake_Project_part4.zip`
 
-Whenever a new version of that ZIP is committed to the `main` branch, GitHub Actions automatically:
+From an Android phone, open the [repository upload page](https://github.com/ninjun42215-gif/KindleWake/upload/main), select all four parts, and commit them to `main`. GitHub Actions runs **Extract KindleWake Upload Parts**. The workflow validates and merges the shards, reconstructs the large optional sprite source archive, replaces `Kindlewake/` transactionally, runs the static GDScript checker and Android preflight, and removes the temporary shards (and the legacy master ZIP) in its commit. If it does not start automatically, run it from **Actions → Extract KindleWake Upload Parts → Run workflow**.
 
-1. Validates the ZIP structure and rejects unsafe paths and symbolic links.
-2. Extracts into a temporary staging directory.
-3. Verifies `Kindlewake/project.godot` and the static checker exist.
-4. Replaces the existing `Kindlewake/` directory with the new extracted project.
-5. Runs the static GDScript checker and Android offline build preflight.
-6. Commits the refreshed `Kindlewake/` directory back to the same branch.
+See [UPLOAD_PROJECT_FROM_PHONE.md](UPLOAD_PROJECT_FROM_PHONE.md) for step-by-step instructions.
 
-The workflow only triggers when `Kindlewake_Project.zip` changes, so its own source-tree commit does not trigger another extraction run. It can also be started manually from **Actions → Extract Godot Project into Repository → Run workflow**.
+## Automatic Android build
 
-**Important:** To publish a new checkpoint, replace the repository-root `Kindlewake_Project.zip` with the new complete archive and commit that replacement. The automation cannot synchronize a ZIP that exists only in a local ChatGPT workspace; the archive must first be committed to GitHub. The extraction workflow will then replace the source tree automatically.
-
-Do not manually edit the extracted `Kindlewake/` tree as the source of truth. Make changes in the authoritative project checkpoint, package it as the root ZIP, and publish the ZIP update.
-
-## Build Android APK
-
-After a successful source synchronization, open **Actions → Build Android APK → Run workflow**. The build imports the project, runs the full headless test suite in strict mode, runs the AI-vs-AI balance report, and only then exports the APK. A test failure blocks the APK. Download the `Kindlewake-APK` artifact and `test-logs` artifact (including the balance report) from the completed run.
-
-The build workflow checks that `Kindlewake/project.godot` and `Kindlewake/tools/build_apk.py` exist before starting. It runs the builder from inside the Godot project directory.
+After `Kindlewake/` is present, open **Actions → Build Android APK → Run workflow**. The build imports the project, runs the strict headless test suite and balance report, then exports the APK. A test failure blocks the APK. Download the `Kindlewake-APK` artifact and `test-logs` artifact from the completed run.
 
 ## Project constraints
 
@@ -42,6 +29,6 @@ The build workflow checks that `Kindlewake/project.godot` and `Kindlewake/tools/
 - Optional sprite packs remain unimported pending asset/license review.
 - Static checks and APK preflight are not substitutes for running the game in Godot or testing it on a phone.
 
-## Current working checkpoint
+## Current gameplay checkpoint
 
-The latest local working checkpoint is **v0.7.9**. The weapon-preference starting-equipment update has been prepared and locally validated. The ZIP still needs to be committed to the repository root before GitHub's automatic synchronization can extract it into `Kindlewake/`.
+Gameplay remains at **v0.7.9**. The v0.7.10 documentation update changes only the repository delivery workflow; it does not change game code, data, save schema, or project version.
