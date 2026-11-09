@@ -37,6 +37,17 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Refuse to overwrite an existing published release
+        env:
+          GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          REQUESTED_TAG: \${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          if gh release view "$REQUESTED_TAG" >/dev/null 2>&1; then
+            echo "::error::A GitHub Release already exists for $REQUESTED_TAG. Published releases are immutable; create a new version tag."
+            exit 1
+          fi
+
       - name: Verify tag, project version and release configuration
         shell: bash
         env:
