@@ -32,5 +32,126 @@
     "vigor",
     "might",
     "bulwark"
-  ]
+  ],
+  "regional_stocks": {
+    "crossing_shop": {
+      "items": [
+        "arming_sword",
+        "longsword",
+        "hunting_bow",
+        "short_bow",
+        "mace",
+        "hand_axe",
+        "battle_axe",
+        "spear",
+        "crossbow",
+        "staff",
+        "dagger",
+        "buckler",
+        "padded_jerkin",
+        "leather_cuirass",
+        "pilgrim_robe",
+        "iron_cap",
+        "kettle_helm",
+        "fine_arming_sword",
+        "hardwood_bow",
+        "kite_shield",
+        "mail_hauberk",
+        "pilgrim_medal",
+        "hawk_feather"
+      ],
+      "sigils": [
+        "mend",
+        "ember",
+        "vigor",
+        "might",
+        "bulwark"
+      ]
+    },
+    "thornmere_market": {
+      "items": [
+        "rare_hunting_bow",
+        "rare_short_bow",
+        "rare_arming_sword",
+        "rare_armor",
+        "rare_helm"
+      ],
+      "sigils": [
+        "frost",
+        "fleet"
+      ]
+    },
+    "foxglove_market": {
+      "items": [
+        "pilgrim_medal",
+        "hawk_feather",
+        "rare_accessory",
+        "rare_offhand",
+        "rare_armor"
+      ],
+      "sigils": [
+        "mend",
+        "vigor",
+        "coin_eye"
+      ]
+    },
+    "elderbough_market": {
+      "items": [
+        "rare_hunting_bow",
+        "rare_short_bow",
+        "rare_dagger",
+        "rare_helm",
+        "rare_accessory"
+      ],
+      "sigils": [
+        "tutor",
+        "fleet"
+      ]
+    },
+    "cindermead_market": {
+      "items": [
+        "rare_arming_sword",
+        "rare_longsword",
+        "rare_battle_axe",
+        "epic_arming_sword",
+        "epic_longsword",
+        "epic_armor",
+        "epic_offhand"
+      ],
+      "sigils": [
+        "might",
+        "bulwark",
+        "amp"
+      ]
+    },
+    "redwater_market": {
+      "items": [
+        "rare_spear",
+        "rare_crossbow",
+        "epic_spear",
+        "epic_crossbow",
+        "epic_accessory",
+        "epic_helm"
+      ],
+      "sigils": [
+        "frost",
+        "amp",
+        "coin_eye"
+      ]
+    },
+    "milefort_market": {
+      "items": [
+        "epic_battle_axe",
+        "epic_armor",
+        "legendary_arming_sword",
+        "legendary_armor",
+        "mythical_arming_sword"
+      ],
+      "sigils": [
+        "veteran",
+        "bulwark",
+        "amp"
+      ]
+    }
+  }
 }
