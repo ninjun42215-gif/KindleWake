@@ -3,7 +3,7 @@
 **Repository:** `ninjun42215-gif/KindleWake`  
 **Project directory:** `Kindlewake/`  
 **Branch:** `main`  
-**Latest inspected main SHA:** `e108b0f32ea037ac7e338bc1e01c4ba1032de26b`  
+**Latest inspected main SHA:** `843d21be5b201b95736e98a38f0485274e5dcc03`  
 **Godot version:** `0.10.0` · **Android code:** `1000` · **Save schema:** `3`  
 **Timezone:** Asia/Manila (UTC+08:00)
 
@@ -17,15 +17,24 @@
 
 ## Current facts
 
-- PR #16 is merged; main was `e108b0f32ea037ac7e338bc1e01c4ba1032de26b` when inspected.
+- PR #16 is merged; main was `843d21be5b201b95736e98a38f0485274e5dcc03` when inspected.
 - `project.godot` says `0.10.0`; Android export name/code and `SaveSystem.GAME_VERSION` say `0.10.0` / `1000`; `SAVE_VERSION=3`.
 - GDD notes extend to `0.10.4`, but the project version was not bumped. Audit those notes against actual scenes/scripts/tests before calling them shipped or validated.
 - No open PRs were found at inspection time.
 - The available PR-run lookup returned no PR-triggered runs for current main and combined status had no entries. Post-merge main APK status is therefore unverified.
 - Historical successful automation: PR #14 four-check exact-SHA gate; PR #16 was merged by the bot after its checks. Check live Actions for current evidence.
-- No fresh source-handoff artifact for `e108b0f32ea037ac7e338bc1e01c4ba1032de26b` has yet been verified. Older artifacts are stale.
+- No fresh source-handoff artifact for `843d21be5b201b95736e98a38f0485274e5dcc03` has yet been verified. Older artifacts are stale.
 - Physical Android QA is still outstanding.
 - Voxel-building pack redistribution rights remain unresolved; public/commercial release is blocked until verified or assets are replaced.
+
+## Latest verified CI and handoff
+
+- PR #17 merged by `github-actions[bot]` at `843d21be5b201b95736e98a38f0485274e5dcc03` after all four exact-SHA checks passed on `91660c021144b53719e5cca43de6b3d946f2880b`.
+- Build Android APK run `42708085011`: 342 strict checks, 0 failures; balance report passed; signed 41.2 MB APK, arm64-v8a + armeabi-v7a, no permissions. APK artifact `13715145936`; logs artifact `13715305665`.
+- Version Sync `42708084633`, Workflow YAML Lint `42708084644`, Project Health Audit `42708084771`: all passed.
+- Safe Auto Merge run `42708329157` succeeded.
+- Source handoff run `42708064822`, artifact `13714701100`: 177 tracked files, four verified parts, reconstructed archive SHA-256 `aba0eea9f02f0ca1c96be8ac91259cef50ba6c71145cca41c349ec5f4d76d976`. The PR head source tree was merged unchanged into main.
+- The first Godot import produced transient global-class registration errors; the build script's clean second scan succeeded, then all 342 checks passed and APK export succeeded. Investigate this import warning separately.
 
 ## Next work — execute, do not merely propose
 

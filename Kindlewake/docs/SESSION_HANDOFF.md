@@ -3,7 +3,7 @@
 **Canonical repository:** `ninjun42215-gif/KindleWake`  
 **Canonical project directory:** `Kindlewake/`  
 **Default branch:** `main`  
-**Latest verified main commit at handoff creation:** `e108b0f32ea037ac7e338bc1e01c4ba1032de26b`  
+**Latest verified main commit at handoff creation:** `843d21be5b201b95736e98a38f0485274e5dcc03`  
 **Godot project version:** `0.10.0`  
 **Android version name/code:** `0.10.0` / `1000`  
 **Save schema:** `3`  
@@ -33,11 +33,20 @@
 - PR #11/#13/#14 handoff and four-check gate improvements; PR #14 verified end-to-end.
 - PR #16 SaveSystem game-version metadata synchronization fix.
 
+## PR #17 validation and current source handoff
+
+- PR #17 merged automatically as `github-actions[bot]` at `843d21be5b201b95736e98a38f0485274e5dcc03` after all four required checks passed on PR head `91660c021144b53719e5cca43de6b3d946f2880b`.
+- Build Android APK: run `42708085011` passed; 342 strict checks, 0 failures; balance report completed; signed 41.2 MB APK exported for arm64-v8a and armeabi-v7a; no Android permissions requested. First Godot import emitted transient global-class registration errors, then the clean second scan succeeded; preserve this as a warning to investigate, not a test failure.
+- Version Sync: run `42708084633` passed. Workflow YAML Lint: `42708084644` passed. Project Health Audit: `42708084771` passed.
+- Safe Auto Merge: run `42708329157` passed; PR #17 was merged by the bot.
+- Portable source handoff: run `42708064822`, artifact `13714701100`, generated from PR head `91660c021144b53719e5cca43de6b3d946f2880b`. Its tracked source tree is the tree merged by PR #17. 177 tracked files, 4 parts, all at or below 25,000,000 bytes. Reconstructed archive SHA-256: `aba0eea9f02f0ca1c96be8ac91259cef50ba6c71145cca41c349ec5f4d76d976`; artifact ZIP SHA-256: `9d9f5c78b6544ef354a625c7394d2c5f6a5cb018a5613b9b7c0a808ec44f0669`.
+- APK artifact ID `13715145936`; test logs artifact ID `13715305665`. Run page: https://github.com/ninjun42215-gif/KindleWake/actions/runs/42708085011.
+
 ## CI and handoff status
 
-- Latest exact main SHA: `e108b0f32ea037ac7e338bc1e01c4ba1032de26b`.
-- Post-merge main APK artifact for this SHA: **not verified yet**.
-- Fresh source-handoff artifact for this SHA: **not verified yet**. Older artifacts must not be presented as current.
+- Latest exact main SHA: `843d21be5b201b95736e98a38f0485274e5dcc03`.
+- APK build and all required checks passed on PR #17's exact source tree, which was merged unchanged at the main SHA above. No separate push-triggered APK build ran for the merge commit (GitHub token-triggered workflow behavior).
+- A fresh source-handoff artifact was generated for PR #17's exact source tree; the merge commit has the same merged tree. The artifact is available from run 42708064822 (details above).
 - Existing handoff automation must be located and inspected before triggering; do not guess a workflow filename or claim a new archive exists.
 - Any source archive must include an exact source SHA, SHA-256 manifest, reproducible reassembly instructions and parts no larger than 25,000,000 bytes.
 
@@ -59,7 +68,7 @@
 ## Useful links
 
 - Repository: https://github.com/ninjun42215-gif/KindleWake
-- Main commit: https://github.com/ninjun42215-gif/KindleWake/commit/e108b0f32ea037ac7e338bc1e01c4ba1032de26b
+- Main commit: https://github.com/ninjun42215-gif/KindleWake/commit/843d21be5b201b95736e98a38f0485274e5dcc03
 - Actions: https://github.com/ninjun42215-gif/KindleWake/actions
 - PR #16: https://github.com/ninjun42215-gif/KindleWake/pull/16
 - PR #14: https://github.com/ninjun42215-gif/KindleWake/pull/14

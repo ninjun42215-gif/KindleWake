@@ -818,6 +818,14 @@ Legacy sigil_* script entry points remain internal compatibility wrappers during
 ## Revision audit — 2026-11-10 (documentation reconciliation; no app version bump)
 - Confirmed live `project.godot` remains `0.10.0`; Android export metadata is `0.10.0` / code `1000`; `SaveSystem.GAME_VERSION` is `0.10.0` and `SAVE_VERSION` remains `3`.
 - The existing 0.10.1–0.10.4 entries above are retained as implementation/revision notes. They are not treated as a released semantic-version change until their source files, tests and exact-head CI evidence are audited.
-- PR #16 merged the save game-version metadata synchronization fix at main commit `e108b0f32ea037ac7e338bc1e01c4ba1032de26b`.
+- PR #16 merged the save game-version metadata synchronization fix at main commit `843d21be5b201b95736e98a38f0485274e5dcc03`.
 - Current-main post-merge APK and fresh source-handoff artifact were not verified during this audit. Do not reuse older artifact links as if they match this SHA.
 - No gameplay behavior or save schema changed in this documentation reconciliation.
+
+
+## PR #17 handoff verification — 2026-11-10
+- PR #17 documentation reconciliation merged automatically at main commit `843d21be5b201b95736e98a38f0485274e5dcc03`; the merge tree is the tested PR source tree `91660c021144b53719e5cca43de6b3d946f2880b`.
+- Exact-head checks passed: Android build (342 checks, 0 failures, balance report passed, signed APK exported), Version Sync, Workflow YAML Lint and Project Health Audit. Safe Auto Merge run `42708329157` succeeded.
+- The source handoff workflow generated 177 tracked files in four verified parts (each <=25,000,000 bytes). Reconstructed archive SHA-256: `aba0eea9f02f0ca1c96be8ac91259cef50ba6c71145cca41c349ec5f4d76d976`.
+- Build logs showed transient global-class registration compile errors on the first import scan; the clean second scan succeeded and tests/build passed. This remains a technical follow-up, not a suppressed failure.
+- This was documentation-only; project version remains 0.10.0 and save schema remains 3.

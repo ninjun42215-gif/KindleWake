@@ -21,4 +21,4 @@ After `Kindlewake/` is present, open **Actions → Build Android APK → Run wor
 
 ## Current gameplay checkpoint
 
-Gameplay checkpoint: **v0.10.0** (Godot source of truth). The main branch includes the Rune System, campaign title/save flow, regional world content, mobile UI refinements and battle identity-art work recorded in the GDD. The GDD's 0.10.1–0.10.4 notes are implementation/revision records, not a project version bump. Latest inspected main: `e108b0f32ea037ac7e338bc1e01c4ba1032de26b`. Verify Actions for a fresh APK before distribution. Physical-device QA and voxel-building asset licence verification remain outstanding.
+Gameplay checkpoint: **v0.10.0** (Godot source of truth). The main branch includes the Rune System, campaign title/save flow, regional world content, mobile UI refinements and battle identity-art work recorded in the GDD. The GDD's 0.10.1–0.10.4 notes are implementation/revision records, not a project version bump. Latest inspected main: `843d21be5b201b95736e98a38f0485274e5dcc03`. Verify Actions for a fresh APK before distribution. Physical-device QA and voxel-building asset licence verification remain outstanding.
