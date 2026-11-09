@@ -186,7 +186,7 @@ jobs:
             echo ""
             echo "Parts manifest:"
             cat "$HANDOFF_OUTPUT/Kindlewake-Source-Handoff-Parts/PARTS-MANIFEST.json"
-          } >> "$GITHUB_STEP_SUMMARY"
+          } | tee "$REPORT_PATH" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload verified split source handoff
         uses: actions/upload-artifact@v4
@@ -211,6 +211,7 @@ jobs:
           SOURCE_REF: ${{ github.ref }}
           SOURCE_SHA: ${{ github.sha }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPORT_PATH: ${{ runner.temp }}/Kindlewake-Workflow-Report.md
         shell: bash
         run: |
           set -euo pipefail
@@ -249,3 +250,11 @@ jobs:
             echo "- Do not publish a production release from a CI candidate; use the separately protected production workflow."
             echo "- Do not merge PRs or modify main without explicit user authorization."
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload portable workflow result and recommendations
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kindlewake-Workflow-Report
+          path: ${{ runner.temp }}/Kindlewake-Workflow-Report.md
+          if-no-files-found: error
+          retention-days: 90
