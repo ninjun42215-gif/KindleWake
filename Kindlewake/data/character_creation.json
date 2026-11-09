@@ -11,34 +11,194 @@
     "origin": "fallen_heir",
     "discipline": "swordsman",
     "weapon_preference": "sword",
-    "temperament": "steadfast"
+    "temperament": "steadfast",
+    "stat_allocation": {
+      "str": 2,
+      "dex": 2,
+      "int": 1,
+      "vit": 1,
+      "spd": 1,
+      "lck": 1
+    }
   },
-  "limits": {"name_min": 2, "name_max": 24},
-  "presentations": ["masculine", "feminine", "androgynous"],
-  "faces": ["weathered", "soft", "scarred", "sharp"],
-  "hair": ["short_dark", "long_dark", "tied_brown", "cropped_red", "shaved"],
-  "skin": ["fair", "warm", "olive", "deep"],
-  "builds": ["lean", "athletic", "sturdy"],
+  "limits": {
+    "name_min": 2,
+    "name_max": 24
+  },
+  "presentations": [
+    "masculine",
+    "feminine",
+    "androgynous"
+  ],
+  "faces": [
+    "weathered",
+    "soft",
+    "scarred",
+    "sharp"
+  ],
+  "hair": [
+    "short_dark",
+    "long_dark",
+    "tied_brown",
+    "cropped_red",
+    "shaved"
+  ],
+  "skin": [
+    "fair",
+    "warm",
+    "olive",
+    "deep"
+  ],
+  "builds": [
+    "lean",
+    "athletic",
+    "sturdy"
+  ],
   "origins": {
-    "fallen_heir": {"name": "Fallen Heir", "description": "Raised among the remnants of House Dunmarrow.", "house": "dunmarrow", "stat_bonus": {"ldr": 1}, "tags": ["dunmarrow_claim", "sealed_legacy"]},
-    "border_ward": {"name": "Border Ward", "description": "Survived the hard roads and border keeps of Sethmarch.", "house": "dunmarrow", "stat_bonus": {"vit": 1}, "tags": ["marches_raised", "roadwise"]},
-    "court_exile": {"name": "Court Exile", "description": "Learned courtly discipline before the family name became a danger.", "house": "dunmarrow", "stat_bonus": {"int": 1}, "tags": ["court_educated", "political_memory"]}
+    "fallen_heir": {
+      "name": "Fallen Heir",
+      "description": "Raised among the remnants of House Dunmarrow.",
+      "house": "dunmarrow",
+      "stat_bonus": {
+        "ldr": 1
+      },
+      "tags": [
+        "dunmarrow_claim",
+        "sealed_legacy"
+      ]
+    },
+    "border_ward": {
+      "name": "Border Ward",
+      "description": "Survived the hard roads and border keeps of Sethmarch.",
+      "house": "dunmarrow",
+      "stat_bonus": {
+        "vit": 1
+      },
+      "tags": [
+        "marches_raised",
+        "roadwise"
+      ]
+    },
+    "court_exile": {
+      "name": "Court Exile",
+      "description": "Learned courtly discipline before the family name became a danger.",
+      "house": "dunmarrow",
+      "stat_bonus": {
+        "int": 1
+      },
+      "tags": [
+        "court_educated",
+        "political_memory"
+      ]
+    }
   },
   "disciplines": {
-    "swordsman": {"name": "Bladesworn", "class_id": "swordsman", "weapon_preferences": ["sword", "axe"]},
-    "cavalier": {"name": "Outrider", "class_id": "cavalier", "weapon_preferences": ["spear", "sword"]},
-    "archer": {"name": "Reedrunner", "class_id": "archer", "weapon_preferences": ["bow", "crossbow"]},
-    "apprentice_mage": {"name": "Candlemage", "class_id": "apprentice_mage", "weapon_preferences": ["staff", "sword"]},
-    "priest": {"name": "Wickkeeper", "class_id": "priest", "weapon_preferences": ["staff", "mace"]},
-    "thief": {"name": "Cutpurse", "class_id": "thief", "weapon_preferences": ["dagger", "bow"]},
-    "scout": {"name": "Trailscout", "class_id": "scout", "weapon_preferences": ["bow", "spear"]},
-    "engineer": {"name": "Wallwright", "class_id": "engineer", "weapon_preferences": ["crossbow", "mace"]}
+    "swordsman": {
+      "name": "Bladesworn",
+      "class_id": "swordsman",
+      "weapon_preferences": [
+        "sword",
+        "axe"
+      ]
+    },
+    "cavalier": {
+      "name": "Outrider",
+      "class_id": "cavalier",
+      "weapon_preferences": [
+        "spear",
+        "sword"
+      ]
+    },
+    "archer": {
+      "name": "Reedrunner",
+      "class_id": "archer",
+      "weapon_preferences": [
+        "bow",
+        "crossbow"
+      ]
+    },
+    "apprentice_mage": {
+      "name": "Candlemage",
+      "class_id": "apprentice_mage",
+      "weapon_preferences": [
+        "staff",
+        "sword"
+      ]
+    },
+    "priest": {
+      "name": "Wickkeeper",
+      "class_id": "priest",
+      "weapon_preferences": [
+        "staff",
+        "mace"
+      ]
+    },
+    "thief": {
+      "name": "Cutpurse",
+      "class_id": "thief",
+      "weapon_preferences": [
+        "dagger",
+        "bow"
+      ]
+    },
+    "scout": {
+      "name": "Trailscout",
+      "class_id": "scout",
+      "weapon_preferences": [
+        "bow",
+        "spear"
+      ]
+    },
+    "engineer": {
+      "name": "Wallwright",
+      "class_id": "engineer",
+      "weapon_preferences": [
+        "crossbow",
+        "mace"
+      ]
+    }
   },
-  "weapon_preferences": ["sword", "axe", "spear", "bow", "crossbow", "staff", "mace", "dagger"],
+  "weapon_preferences": [
+    "sword",
+    "axe",
+    "spear",
+    "bow",
+    "crossbow",
+    "staff",
+    "mace",
+    "dagger"
+  ],
   "temperaments": {
-    "steadfast": {"name": "Steadfast", "description": "Holds the line when others falter.", "stat_bonus": {"mor": 2}},
-    "keen": {"name": "Keen", "description": "Observant, quick to read a changing field.", "stat_bonus": {"acc": 2}},
-    "resolute": {"name": "Resolute", "description": "Endures hardship without yielding.", "stat_bonus": {"vit": 1, "hp": 2}},
-    "cunning": {"name": "Cunning", "description": "Prefers an advantage earned through patience.", "stat_bonus": {"lck": 1, "eva": 1}}
-  }
+    "steadfast": {
+      "name": "Steadfast",
+      "description": "Holds the line when others falter.",
+      "stat_bonus": {
+        "mor": 2
+      }
+    },
+    "keen": {
+      "name": "Keen",
+      "description": "Observant, quick to read a changing field.",
+      "stat_bonus": {
+        "acc": 2
+      }
+    },
+    "resolute": {
+      "name": "Resolute",
+      "description": "Endures hardship without yielding.",
+      "stat_bonus": {
+        "vit": 1,
+        "hp": 2
+      }
+    },
+    "cunning": {
+      "name": "Cunning",
+      "description": "Prefers an advantage earned through patience.",
+      "stat_bonus": {
+        "lck": 1,
+        "eva": 1
+      }
+    }
+  },
+  "stat_points": 8
 }
