@@ -52,7 +52,13 @@ You are continuing development of **KINDLEWAKE: THE SUNDERED VOW**, an offline-f
 - **Not run in Godot yet.** The sandbox had no Godot and no package installs, so v0.5.0 was verified only by the static linter and by hand. Likely first-run trouble: engine-API details in `party_screen.gd` (Control/ScrollContainer/Button sizing, `call_deferred` scroll restore), typed-array assignments, and layout at phone size. A fresh unzip MUST be imported once (`godot --headless --path . --import`) before the tests, otherwise every `class_name` type fails to resolve.
 - Not implemented yet (besides Milestone 10 store builds): remaining classes as data, skills v1, status effects, fatigue, counter-attacks, forest concealment, weather, enemy tables/maps beyond the Prologue, HQ screen (the party screen is only reachable from the pre-battle panel and results screen), blacksmith upgrades, class/weapon restrictions, sprites and audio.
 
-## This session's task — continue from v0.7.14 Sethmarch Frontier
+## This session's task — continue from v0.9.0 campaign menu and economy
+1. Title screen now launches `TitleScreen.tscn`; menu actions: New Game (CharacterCreator), Continue (newest valid campaign save), Load Game (slots 1–3 and auto A/B), Settings (master volume).
+2. Campaign save payload stores PartyState, creation profile, world position and flags. `WorldScene` autosaves every 25 seconds and before town/battle transitions. Battle-only snapshots remain distinct and are not treated as campaign saves by Continue.
+3. Prices: Common 25–100g, Uncommon 180–420g, Rare 850–2,400g, Epic 3,500–9,000g, Legendary 12,500–30,000g, Mythical 38,000–85,000g. Unique relics remain reward-only. Each town market has a distinct `regional_stocks` entry in `data/shop.json`; `location_scene.gd` applies it by current map id.
+4. Remaining: verify Godot import/tests/APK and in-device menu/save behavior. Check if manual campaign saves need a dedicated in-game save UI; current title Load Game can load slots, but overworld currently autosaves only to `auto_a`.
+
+## Previous session task — v0.7.14 Sethmarch Frontier
 1. The playable Eldrimar overworld now connects Sallow Crossing to Orrowen Weald through the Greenward Gate and to Vessmoor Plains through the Vessmoor Causeway. Roads continue to Thornmere, Foxglove, Elderbough, Cindermead, Redwater and Milefort.
 2. Each new settlement has a town map plus inn, market and recruitment-hall interiors. Inn rest costs 20 gold and restores roster morale to 70; markets open the existing Party/Gear/Shop screen; six named recruits can join the live roster once each.
 3. Three dungeon maps are now traversable: Hollowroot Warren, The Bell Under Leaves and Kingsroad Catacombs. Each has a one-time 120-gold cache and a dedicated named boss battle. Dungeon victory flags are attached to the boss battle result.
