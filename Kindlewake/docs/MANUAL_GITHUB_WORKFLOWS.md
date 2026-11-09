@@ -116,7 +116,7 @@ File: .github/workflows/project-health-audit.yml
 
 Run this on demand from Actions or allow it to run on pushes and pull requests. It creates JSON and Markdown reports containing JSON parse failures, project inventory, version drift, missing asset-credit documentation, rune-count progress toward the 50+ design target, and nested workflow-directory warnings. Invalid JSON fails the workflow; advisory findings remain warnings.
 
-The audit is read-only and deliberately does not claim to validate GDScript semantics, import/render scenes, test saves in Godot, clear asset licenses, or certify Android device compatibility.
+The inactive legacy duplicate at Kindlewake/.github/workflows/build-apk.yml was removed; active workflows belong only under the repository-root .github/workflows/ directory. The audit is read-only and deliberately does not claim to validate GDScript semantics, import/render scenes, test saves in Godot, clear asset licenses, or certify Android device compatibility.
 
 Artifact: Kindlewake-Project-Health-Audit.
 
