@@ -151,149 +151,101 @@ jobs:
           echo "Production publishing is a separate manually approved workflow."
 
   source-handoff:
-    name: Package complete tracked source snapshot
+    name: Package and verify portable AI source handoff
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Check out the exact triggering ref
+      - name: Check out exact triggering commit
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
           persist-credentials: false
 
-      - name: Build and split portable source handoff
+      - name: Test handoff packer and recovery utility
+        run: python3 -m unittest discover -s Kindlewake/tests -p 'test_source_handoff.py' -v
+
+      - name: Package, inventory, hash and partition tracked source
         shell: bash
         env:
-          HANDOFF_REF: ${{ github.ref }}
-          HANDOFF_SHA: ${{ github.sha }}
-          HANDOFF_EVENT: ${{ github.event_name }}
-          HANDOFF_REPOSITORY: ${{ github.repository }}
-          HANDOFF_RUN_ID: ${{ github.run_id }}
-          HANDOFF_RUN_ATTEMPT: ${{ github.run_attempt }}
+          HANDOFF_OUTPUT: ${{ runner.temp }}/kindlewake-source-handoff
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          import hashlib
-          import os
-          import subprocess
-          from pathlib import Path, PurePosixPath
-          from zipfile import ZipFile, ZIP_DEFLATED
+          python3 Kindlewake/tools/source_handoff.py pack \
+            --repository-root . \
+            --output-dir "$HANDOFF_OUTPUT" \
+            --part-size 25000000
+          cat "$HANDOFF_OUTPUT/Kindlewake-Source-Handoff-Parts/PARTS-MANIFEST.json"
+          {
+            echo "## Source handoff package"
+            echo ""
+            echo "- Snapshot ref: \`$GITHUB_REF\`"
+            echo "- Exact commit: \`$GITHUB_SHA\`"
+            echo "- Partition limit: 25,000,000 bytes per part"
+            echo "- Recovery: see REASSEMBLE.txt"
+            echo "- AI entry point: AI_NEXT_SESSION.md"
+            echo ""
+            echo "Parts manifest:"
+            cat "$HANDOFF_OUTPUT/Kindlewake-Source-Handoff-Parts/PARTS-MANIFEST.json"
+          } >> "$GITHUB_STEP_SUMMARY"
 
-          root = Path.cwd()
-          work = Path(os.environ["RUNNER_TEMP"]) / "kindlewake-source-handoff"
-          work.mkdir(parents=True, exist_ok=True)
-          archive_path = work / "Kindlewake-Source-Handoff.zip"
-          parts_dir = work / "Kindlewake-Source-Handoff-Parts"
-          parts_dir.mkdir(parents=True, exist_ok=True)
-
-          tracked = subprocess.check_output(["git", "ls-files", "-z"]).decode().split("\0")
-          excluded_dirs = {
-              ".git", ".godot", "__pycache__", "node_modules",
-              ".venv", "venv", "dist", "build", "target",
-          }
-          excluded_exact = {
-              ".env", ".env.local", ".env.production",
-              "id_rsa", "id_ed25519", "credentials.json",
-          }
-          excluded_suffixes = {
-              ".keystore", ".jks", ".p12", ".pfx",
-              ".pem", ".key", ".mobileprovision",
-          }
-
-          def safe_to_package(raw):
-              path = PurePosixPath(raw)
-              if any(part in excluded_dirs for part in path.parts):
-                  return False
-              if path.name in excluded_exact or path.name.endswith(".secret"):
-                  return False
-              if path.suffix.lower() in excluded_suffixes:
-                  return False
-              return True
-
-          included = []
-          with ZipFile(archive_path, "w", ZIP_DEFLATED, compresslevel=6) as archive:
-              for raw in tracked:
-                  if not raw:
-                      continue
-                  path = root / raw
-                  if path.is_file() and safe_to_package(raw):
-                      archive.write(path, raw)
-                      included.append(raw)
-              metadata = (
-                  "KINDLEWAKE PORTABLE SOURCE HANDOFF\n"
-                  f"Repository: {os.environ['HANDOFF_REPOSITORY']}\n"
-                  f"Git ref: {os.environ['HANDOFF_REF']}\n"
-                  f"Commit: {os.environ['HANDOFF_SHA']}\n"
-                  f"Event: {os.environ['HANDOFF_EVENT']}\n"
-                  f"Workflow run: {os.environ['HANDOFF_RUN_ID']} "
-                  f"(attempt {os.environ['HANDOFF_RUN_ATTEMPT']})\n"
-                  f"Tracked files included: {len(included)}\n"
-                  "Complete tracked repository snapshot for the triggering checkout; "
-                  "generated caches/build outputs and signing/secret material are excluded.\n"
-              )
-              archive.writestr("HANDOFF-METADATA.txt", metadata)
-
-          if not included:
-              raise SystemExit("No tracked source files were included; refusing an empty handoff.")
-
-          part_limit = 25_000_000
-          parts = []
-          with archive_path.open("rb") as source:
-              index = 1
-              while True:
-                  chunk = source.read(part_limit)
-                  if not chunk:
-                      break
-                  part = parts_dir / f"Kindlewake-Source-Handoff.zip.part{index:03d}"
-                  part.write_bytes(chunk)
-                  if part.stat().st_size > part_limit:
-                      raise SystemExit(f"Part exceeds 25,000,000 bytes: {part}")
-                  parts.append(part)
-                  index += 1
-
-          digest = hashlib.sha256(archive_path.read_bytes()).hexdigest()
-          (parts_dir / "SHA256SUMS.txt").write_text(
-              f"{digest}  Kindlewake-Source-Handoff.zip\n", encoding="utf-8"
-          )
-          instructions = """KINDLEWAKE SOURCE HANDOFF — REASSEMBLY
-          Download all files from this artifact and keep every .partNNN file together.
-          The parts are consecutive binary chunks, not individual ZIP files.
-
-          Linux / macOS / Termux:
-            cat Kindlewake-Source-Handoff.zip.part* > Kindlewake-Source-Handoff.zip
-            sha256sum -c SHA256SUMS.txt
-            unzip -t Kindlewake-Source-Handoff.zip
-            unzip Kindlewake-Source-Handoff.zip
-
-          Windows PowerShell:
-            $parts = Get-ChildItem 'Kindlewake-Source-Handoff.zip.part*' | Sort-Object Name
-            $out = [System.IO.File]::Create('Kindlewake-Source-Handoff.zip')
-            try {
-              foreach ($part in $parts) {
-                $input = [System.IO.File]::OpenRead($part.FullName)
-                try { $input.CopyTo($out) } finally { $input.Dispose() }
-              }
-            } finally { $out.Dispose() }
-            (Get-FileHash 'Kindlewake-Source-Handoff.zip' -Algorithm SHA256).Hash
-            7z t Kindlewake-Source-Handoff.zip
-
-          Compare the reconstructed SHA-256 with SHA256SUMS.txt.
-          Every part is <= 25,000,000 bytes (25 MB decimal).
-          The archive contains the complete tracked repository snapshot for this ref,
-          excluding generated caches/build outputs and signing/secret material.
-          """
-          (parts_dir / "REASSEMBLE.txt").write_text(instructions, encoding="utf-8")
-          print(f"Created source archive: {archive_path.stat().st_size} bytes")
-          print(f"Tracked files included: {len(included)}")
-          print(f"SHA-256: {digest}")
-          for part in parts:
-              print(f"{part.name}: {part.stat().st_size} bytes")
-          PY
-
-      - name: Upload split source handoff
+      - name: Upload verified split source handoff
         uses: actions/upload-artifact@v4
         with:
           name: Kindlewake-Source-Handoff-Parts
           path: ${{ runner.temp }}/kindlewake-source-handoff/Kindlewake-Source-Handoff-Parts/*
           if-no-files-found: error
           retention-days: 90
+
+  result-report:
+    name: Recommend next actions from workflow results
+    if: always()
+    needs:
+      - android-build
+      - source-handoff
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish actionable result summary
+        env:
+          APK_RESULT: ${{ needs.android-build.result }}
+          HANDOFF_RESULT: ${{ needs.source-handoff.result }}
+          SOURCE_REF: ${{ github.ref }}
+          SOURCE_SHA: ${{ github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "# Kindlewake workflow result and next-step recommendations"
+            echo ""
+            echo "- Source ref: \`$SOURCE_REF\`"
+            echo "- Exact commit: \`$SOURCE_SHA\`"
+            echo "- Run: [Open GitHub Actions run]($RUN_URL)"
+            echo ""
+            echo "| Pipeline | Result | Artifact |"
+            echo "|---|---|---|"
+            echo "| Android validation/build | $APK_RESULT | Kindlewake-APK (only on success); test-logs |"
+            echo "| Source handoff | $HANDOFF_RESULT | Kindlewake-Source-Handoff-Parts (only on success) |"
+            echo ""
+            echo "## Recommended next action"
+            if [[ "$HANDOFF_RESULT" == "success" ]]; then
+              echo "- Download all source handoff files, reconstruct with REASSEMBLE.txt, verify hashes and ZIP integrity, then extract into a new folder."
+              echo "- Give the next AI AI_NEXT_SESSION.md and require it to inspect the live repository and this exact commit before editing."
+            else
+              echo "- Source handoff failed: inspect the source-handoff job logs and fix packaging/tests before treating this run as transferable."
+            fi
+            if [[ "$APK_RESULT" == "success" ]]; then
+              echo "- Download Kindlewake-APK; verify release-manifest.json and SHA-256 against the exact source commit."
+              echo "- Next quality gate: install on a physical Android device and test launch, save/load, touch, orientation and rendering. CI is not device QA."
+            elif [[ "$APK_RESULT" == "failure" ]]; then
+              echo "- APK build failed: inspect the failing android-build step and test-logs, fix the first root cause, then push a new commit and verify the new branch-head run."
+            elif [[ "$APK_RESULT" == "cancelled" ]]; then
+              echo "- APK build was cancelled: rerun CI on the current intended commit before distributing an APK."
+            else
+              echo "- APK build result is $APK_RESULT: inspect the android-build job before claiming an APK exists."
+            fi
+            echo ""
+            echo "## Safety and release guidance"
+            echo "- Do not use a stale artifact as proof for a newer commit."
+            echo "- Do not publish a production release from a CI candidate; use the separately protected production workflow."
+            echo "- Do not merge PRs or modify main without explicit user authorization."
+          } >> "$GITHUB_STEP_SUMMARY"
