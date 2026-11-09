@@ -14,7 +14,11 @@ static func next_grade(grade: String) -> String:
 static func success_chance(grade: String) -> int:
     return int(SUCCESS_CHANCES.get(grade, 0))
 static func grade_power_bonus(inst: Dictionary, rune_defs: Dictionary) -> int:
-    return int(GRADE_POWER_BONUS.get(grade_of(inst, rune_defs), 0))
+    var def: Dictionary = rune_defs.get(str(inst.get("id", "")), {})
+    var base_grade := str(def.get("grade", "common"))
+    var current_grade := grade_of(inst, rune_defs)
+    var extra_tiers: int = maxi(0, GRADES.find(current_grade) - GRADES.find(base_grade))
+    return extra_tiers * 5
 static func matching_indices(inventory: Array, rune_id: String, grade: String, rune_defs: Dictionary) -> Array[int]:
     var out: Array[int] = []
     if not rune_defs.has(rune_id):
