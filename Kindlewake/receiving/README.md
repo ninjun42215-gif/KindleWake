@@ -77,3 +77,6 @@ try { foreach ($part in $parts) { $input = [System.IO.File]::OpenRead($part.Full
 
 ## Workflow result artifact — 2026-11-10
 The result-report job now uploads a separate 90-day artifact named Kindlewake-Workflow-Report containing the exact source ref/SHA, APK and handoff job outcomes, expected artifacts, and conditional next-step recommendations. The Actions run summary mirrors this report. The source ZIP itself now also embeds REASSEMBLE.txt so the recovery instructions survive extraction. A receiving AI should inspect both the source ZIP metadata and the workflow report artifact; neither should be treated as proof for a different/newer commit.
+
+
+The split artifact now also contains the exact source_handoff.py recovery helper beside the parts. PARTS-MANIFEST.json stores that helper's SHA-256, and reassembly refuses to run if the helper is missing or altered. This avoids the bootstrap problem of needing to extract the ZIP before obtaining the tool required to reassemble it. The test suite also asserts that the helper is present in the artifact.
