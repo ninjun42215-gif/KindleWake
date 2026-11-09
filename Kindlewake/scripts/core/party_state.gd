@@ -216,7 +216,7 @@ func battle_rewards(units: Array, result: String, db: Dictionary = {}) -> Dictio
     if survivors.is_empty():
         return out
     var items: Dictionary = db.get("items", {})
-    var sdefs: Dictionary = db.get("sigils", {})
+    var sdefs: Dictionary = db.get("runes", db.get("sigils", {}))
     var share: int = int(float(tot_exp) / float(survivors.size()))
     if tot_exp > 0:
         share = maxi(1, share)
@@ -264,6 +264,7 @@ func apply_battle_result(units: Array, result: String, rng: RandomNumberGenerato
             if bool(one["spawn"]):
                 add_sigil(str(one["id"]))
                 spawned.append(str(one["name"]))
+        rep["runes"] = srep
         rep["sigils"] = srep
         reports.append(rep)
     gold += int(rw["gold"])
