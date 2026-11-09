@@ -200,6 +200,14 @@ func _on_prompt_pressed() -> void:
         spot_buttons.add_child(_btn("Open market and company stores", _open_party))
     elif spot_kind == "inn":
         spot_buttons.add_child(_btn("Rest the company — 20 gold", _rest_at_inn))
+    elif spot_kind == "choice":
+        if not bool(GameState.world_flags.get("tideglass_grotto_cleared", false)):
+            spot_text.text += "\n\nThe missing lighthouse ledger is still in Tideglass Grotto. Ilyra will not put an incomplete account before the Assembly."
+        elif bool(GameState.world_flags.get("brinegate_ledger_decision", false)):
+            spot_text.text += "\n\nYour decision has been entered into the harbour chronicle."
+        else:
+            spot_buttons.add_child(_btn("Present the ledger publicly", _resolve_brinegate_choice.bind("public")))
+            spot_buttons.add_child(_btn("Keep the Codicil seal private", _resolve_brinegate_choice.bind("private")))
     elif spot_kind == "recruit":
         var cid: String = str(near_spot.get("character_id", ""))
         var definition: Dictionary = GameData.characters.get(cid, {})
@@ -226,6 +234,26 @@ func _on_prompt_pressed() -> void:
             spot_text.text += "\n\nThe guardian has been defeated."
     spot_buttons.add_child(_btn("Close", _close_panel))
     spot_panel.visible = true
+
+
+func _resolve_brinegate_choice(choice: String) -> void:
+    if bool(GameState.world_flags.get("brinegate_ledger_decision", false)):
+        return
+    GameState.world_flags["brinegate_ledger_decision"] = true
+    if choice == "public":
+        GameState.world_flags["brinegate_ledger_shared"] = true
+        spot_text.text += "\n\nIlyra reads the scraped oath aloud before the harbour council. The room falls silent; the Assembly can no longer claim the sea-lanes failed by accident. Your company earns the trust of the beacon crews."
+    elif choice == "private":
+        GameState.world_flags["brinegate_ledger_withheld"] = true
+        GameState.party.gold += 60
+        spot_text.text += "\n\nIlyra agrees to keep the Codicil seal out of the public record for now. A discreet Assembly patron pays 60 gold for the evidence to remain private. The truth is safer—but the beacon crews have not been heard."
+    else:
+        GameState.world_flags.erase("brinegate_ledger_decision")
+        return
+    GameState.save_campaign("auto_a")
+    for child in spot_buttons.get_children():
+        if child is Button and ((child as Button).text.begins_with("Present") or (child as Button).text.begins_with("Keep")):
+            (child as Button).disabled = true
 
 
 func _close_panel() -> void:
