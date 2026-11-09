@@ -594,6 +594,10 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
             col = COL_BAD
         attrs.add_child(_tile(ItemInfo.stat_name(key), "%d" % int(total.get(key, 0)), col, 20))
     box.add_child(attrs)
+    _add_section(box, "Company bond")
+    var bond_colour: Color = COL_BAD if sh.loyalty < 30 else (COL_GOOD if sh.loyalty >= 75 else COL_GOLD)
+    var bond_label: String = "Fractured" if sh.loyalty < 25 else ("Steadfast" if sh.loyalty >= 80 else ("Wary" if sh.loyalty < 50 else "Committed"))
+    box.add_child(_tile("Loyalty", "%d / 100 · %s" % [sh.loyalty, bond_label], bond_colour, 20))
     # skills
     var mods: Dictionary = sh.skill_mods(items, sdefs)
     var known: Array[String] = sh.all_skills(items, sdefs, classes)

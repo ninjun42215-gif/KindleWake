@@ -10,8 +10,8 @@ extends Node
 signal app_paused
 
 const SAVE_DIR := "user://saves/"
-const SAVE_VERSION := 3
-const GAME_VERSION := "0.10.0"
+const SAVE_VERSION := 4
+const GAME_VERSION := "0.11.0"
 const AUTOSAVE_SLOTS := ["auto_a", "auto_b"]
 
 
@@ -95,6 +95,9 @@ func migrate(payload: Dictionary, from_version: int) -> Dictionary:
         elif v == 2:
             data = _migrate_2_to_3(data)
             v = 3
+        elif v == 3:
+            data = _migrate_3_to_4(data)
+            v = 4
         else:
             v += 1
     return data
@@ -117,6 +120,21 @@ static func _migrate_2_to_3(payload: Dictionary) -> Dictionary:
         data["world_pos"] = [0.0, 0.0]
     if not data.has("from_world"):
         data["from_world"] = false
+    return data
+
+
+## v4 adds per-character loyalty; old members begin at a neutral 50 without losing campaign data.
+static func _migrate_3_to_4(payload: Dictionary) -> Dictionary:
+    var data: Dictionary = payload.duplicate(true)
+    var party: Dictionary = data.get("party", {})
+    var sheets: Dictionary = party.get("sheets", {})
+    for id in sheets.keys():
+        var member: Dictionary = sheets[id]
+        if not member.has("loyalty"):
+            member["loyalty"] = 50
+        sheets[id] = member
+    party["sheets"] = sheets
+    data["party"] = party
     return data
 
 

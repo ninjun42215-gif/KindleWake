@@ -30,7 +30,9 @@
         "eva": 14,
         "ldr": 12,
         "mor": 65
-      }
+      },
+      "roster_wave": 1,
+      "loyalty": 72
     },
     "bram": {
       "name": "Sir Bram Vosk",
@@ -62,7 +64,9 @@
         "eva": 10,
         "ldr": 10,
         "mor": 60
-      }
+      },
+      "roster_wave": 1,
+      "loyalty": 84
     },
     "sela": {
       "name": "Sela Wrenfield",
@@ -94,7 +98,9 @@
         "eva": 20,
         "ldr": 5,
         "mor": 55
-      }
+      },
+      "roster_wave": 1,
+      "loyalty": 68
     },
     "brother_wystan": {
       "name": "Brother Wystan",
@@ -132,7 +138,9 @@
         "eva": 10,
         "ldr": 8,
         "mor": 55
-      }
+      },
+      "roster_wave": 1,
+      "loyalty": 66
     },
     "hask_gravelteeth": {
       "name": "Hask Gravelteeth",
@@ -310,11 +318,11 @@
     },
     "lucan_thorne": {
       "name": "Lucan Thorne",
-      "class_id": "archer",
-      "level": 4,
-      "house": "none",
+      "class_id": "longbow_master",
+      "level": 5,
+      "house": "orrowen",
       "weapon_id": "hunting_bow",
-      "armor_def": 4,
+      "armor_def": 5,
       "armor_res": 1,
       "skills": [],
       "reward": {
@@ -335,6 +343,14 @@
         "eva": 12,
         "ldr": 5,
         "mor": 65
+      },
+      "loyalty": 78,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "orrowen_favour",
+        "cost": 0,
+        "requirements": {}
       }
     },
     "old_brisa": {
@@ -344,7 +360,7 @@
       "house": "none",
       "weapon_id": "mace",
       "armor_def": 4,
-      "armor_res": 1,
+      "armor_res": 2,
       "skills": [],
       "reward": {
         "exp": 0,
@@ -364,16 +380,24 @@
         "eva": 12,
         "ldr": 5,
         "mor": 65
+      },
+      "loyalty": 88,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "village_quest",
+        "cost": 0,
+        "requirements": {}
       }
     },
     "kestrel": {
       "name": "Kestrel",
-      "class_id": "archer",
-      "level": 4,
+      "class_id": "assassin",
+      "level": 5,
       "house": "none",
-      "weapon_id": "short_bow",
-      "armor_def": 4,
-      "armor_res": 1,
+      "weapon_id": "dagger",
+      "armor_def": 3,
+      "armor_res": 2,
       "skills": [],
       "reward": {
         "exp": 0,
@@ -393,15 +417,23 @@
         "eva": 12,
         "ldr": 5,
         "mor": 65
+      },
+      "loyalty": 46,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "hidden_location",
+        "cost": 0,
+        "requirements": {}
       }
     },
     "anselm_pike": {
       "name": "Anselm Pike",
-      "class_id": "roadreaver",
-      "level": 4,
+      "class_id": "lancer",
+      "level": 5,
       "house": "none",
-      "weapon_id": "hand_axe",
-      "armor_def": 4,
+      "weapon_id": "spear",
+      "armor_def": 6,
       "armor_res": 1,
       "skills": [],
       "reward": {
@@ -422,16 +454,24 @@
         "eva": 12,
         "ldr": 5,
         "mor": 65
+      },
+      "loyalty": 70,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "barracks_event",
+        "cost": 0,
+        "requirements": {}
       }
     },
     "petra_quill": {
       "name": "Petra Quill",
-      "class_id": "cleric",
-      "level": 4,
+      "class_id": "battle_medic",
+      "level": 5,
       "house": "none",
-      "weapon_id": "mace",
+      "weapon_id": "staff",
       "armor_def": 4,
-      "armor_res": 1,
+      "armor_res": 4,
       "skills": [],
       "reward": {
         "exp": 0,
@@ -451,15 +491,23 @@
         "eva": 12,
         "ldr": 5,
         "mor": 65
+      },
+      "loyalty": 84,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "plague_ward_quest",
+        "cost": 0,
+        "requirements": {}
       }
     },
     "dorian_vask": {
       "name": "Dorian Vask",
-      "class_id": "roadreaver",
-      "level": 4,
+      "class_id": "crossbowman",
+      "level": 5,
       "house": "none",
-      "weapon_id": "battle_axe",
-      "armor_def": 4,
+      "weapon_id": "crossbow",
+      "armor_def": 5,
       "armor_res": 1,
       "skills": [],
       "reward": {
@@ -480,6 +528,580 @@
         "eva": 12,
         "ldr": 5,
         "mor": 65
+      },
+      "loyalty": 62,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "negotiation",
+        "cost": 0,
+        "requirements": {}
+      }
+    },
+    "edda_stonehand": {
+      "name": "Edda Stonehand",
+      "class_id": "engineer",
+      "level": 4,
+      "house": "brennhallow",
+      "weapon_id": "hand_axe",
+      "armor_def": 5,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 36,
+        "mp": 0,
+        "str": 9,
+        "dex": 7,
+        "int": 4,
+        "vit": 10,
+        "spd": 5,
+        "lck": 6,
+        "acc": 80,
+        "eva": 8,
+        "ldr": 10,
+        "mor": 70
+      },
+      "loyalty": 72,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "rebuild_workshop",
+        "cost": 90,
+        "requirements": {
+          "flags_all": [
+            "found_tollhouse"
+          ]
+        }
+      }
+    },
+    "joss_harrow": {
+      "name": "Joss Harrow",
+      "class_id": "thief",
+      "level": 3,
+      "house": "ysmark",
+      "weapon_id": "dagger",
+      "armor_def": 3,
+      "armor_res": 2,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 25,
+        "mp": 0,
+        "str": 6,
+        "dex": 12,
+        "int": 6,
+        "vit": 5,
+        "spd": 11,
+        "lck": 12,
+        "acc": 86,
+        "eva": 24,
+        "ldr": 6,
+        "mor": 45
+      },
+      "loyalty": 38,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "tavern_rumour",
+        "cost": 50,
+        "requirements": {}
+      }
+    },
+    "isaure_vessmoor": {
+      "name": "Lady Isaure Vessmoor",
+      "class_id": "cavalier",
+      "level": 5,
+      "house": "vessmoor",
+      "weapon_id": "spear",
+      "armor_def": 6,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 34,
+        "mp": 0,
+        "str": 10,
+        "dex": 9,
+        "int": 4,
+        "vit": 9,
+        "spd": 9,
+        "lck": 7,
+        "acc": 86,
+        "eva": 16,
+        "ldr": 9,
+        "mor": 65
+      },
+      "loyalty": 62,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "act_ii_duel",
+        "cost": 120,
+        "requirements": {
+          "flags_all": [
+            "vessmoor_gate_passed"
+          ]
+        }
+      }
+    },
+    "bram_cullen": {
+      "name": "Bram Cullen",
+      "class_id": "berserker",
+      "level": 4,
+      "house": "none",
+      "weapon_id": "battle_axe",
+      "armor_def": 4,
+      "armor_res": 0,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 42,
+        "mp": 0,
+        "str": 13,
+        "dex": 6,
+        "int": 3,
+        "vit": 10,
+        "spd": 7,
+        "lck": 5,
+        "acc": 82,
+        "eva": 9,
+        "ldr": 7,
+        "mor": 60
+      },
+      "loyalty": 48,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "debtors_prison_rescue",
+        "cost": 100,
+        "requirements": {
+          "flags_all": [
+            "camp_cleared"
+          ]
+        }
+      }
+    },
+    "verra_nightsong": {
+      "name": "Verra Nightsong",
+      "class_id": "bard",
+      "level": 4,
+      "house": "ysmark",
+      "weapon_id": "staff",
+      "armor_def": 3,
+      "armor_res": 3,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 28,
+        "mp": 12,
+        "str": 4,
+        "dex": 8,
+        "int": 12,
+        "vit": 6,
+        "spd": 9,
+        "lck": 11,
+        "acc": 80,
+        "eva": 16,
+        "ldr": 10,
+        "mor": 60
+      },
+      "loyalty": 44,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "negotiation",
+        "cost": 100,
+        "requirements": {
+          "recruits_all": [
+            "joss_harrow"
+          ]
+        }
+      }
+    },
+    "tomas_wren": {
+      "name": "Tomas Wren",
+      "class_id": "scout",
+      "level": 2,
+      "house": "none",
+      "weapon_id": "short_bow",
+      "armor_def": 3,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 23,
+        "mp": 0,
+        "str": 5,
+        "dex": 11,
+        "int": 5,
+        "vit": 5,
+        "spd": 12,
+        "lck": 10,
+        "acc": 84,
+        "eva": 22,
+        "ldr": 4,
+        "mor": 58
+      },
+      "loyalty": 56,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "side_quest",
+        "cost": 0,
+        "requirements": {}
+      }
+    },
+    "orlan_pike": {
+      "name": "Orlan Pike",
+      "class_id": "fire_mage",
+      "level": 5,
+      "house": "quillon",
+      "weapon_id": "staff",
+      "armor_def": 2,
+      "armor_res": 4,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 28,
+        "mp": 22,
+        "str": 4,
+        "dex": 7,
+        "int": 14,
+        "vit": 6,
+        "spd": 6,
+        "lck": 8,
+        "acc": 80,
+        "eva": 10,
+        "ldr": 7,
+        "mor": 58
+      },
+      "loyalty": 66,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "library",
+        "cost": 130,
+        "requirements": {
+          "flags_all": [
+            "dungeon_bell_cleared"
+          ]
+        }
+      }
+    },
+    "sister_odaly": {
+      "name": "Sister Odalys",
+      "class_id": "cleric",
+      "level": 4,
+      "house": "tarnholt",
+      "weapon_id": "mace",
+      "armor_def": 4,
+      "armor_res": 4,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 31,
+        "mp": 16,
+        "str": 5,
+        "dex": 7,
+        "int": 12,
+        "vit": 8,
+        "spd": 7,
+        "lck": 8,
+        "acc": 82,
+        "eva": 12,
+        "ldr": 10,
+        "mor": 72
+      },
+      "loyalty": 82,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "tarnholt_trial",
+        "cost": 110,
+        "requirements": {
+          "flags_all": [
+            "dungeon_catacombs_cleared"
+          ]
+        }
+      }
+    },
+    "willem_roake": {
+      "name": "Ser Willem Roake",
+      "class_id": "duelist",
+      "level": 5,
+      "house": "vessmoor",
+      "weapon_id": "longsword",
+      "armor_def": 5,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 32,
+        "mp": 0,
+        "str": 9,
+        "dex": 11,
+        "int": 4,
+        "vit": 7,
+        "spd": 10,
+        "lck": 8,
+        "acc": 88,
+        "eva": 20,
+        "ldr": 8,
+        "mor": 72
+      },
+      "loyalty": 74,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "duel",
+        "cost": 120,
+        "requirements": {
+          "recruits_all": [
+            "isaure_vessmoor"
+          ]
+        }
+      }
+    },
+    "ysolde_marrow": {
+      "name": "Ysolde Marrow",
+      "class_id": "ice_mage",
+      "level": 5,
+      "house": "ysmark",
+      "weapon_id": "staff",
+      "armor_def": 2,
+      "armor_res": 5,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 27,
+        "mp": 24,
+        "str": 4,
+        "dex": 8,
+        "int": 14,
+        "vit": 6,
+        "spd": 8,
+        "lck": 10,
+        "acc": 82,
+        "eva": 15,
+        "ldr": 8,
+        "mor": 60
+      },
+      "loyalty": 60,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "ysmark_politics",
+        "cost": 140,
+        "requirements": {
+          "recruits_all": [
+            "verra_nightsong"
+          ]
+        }
+      }
+    },
+    "garrick_holt": {
+      "name": "Garrick Holt",
+      "class_id": "heavy_knight",
+      "level": 5,
+      "house": "brennhallow",
+      "weapon_id": "greatsword",
+      "armor_def": 8,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 45,
+        "mp": 0,
+        "str": 12,
+        "dex": 6,
+        "int": 3,
+        "vit": 13,
+        "spd": 5,
+        "lck": 6,
+        "acc": 84,
+        "eva": 8,
+        "ldr": 12,
+        "mor": 75
+      },
+      "loyalty": 84,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "spare_commander",
+        "cost": 160,
+        "requirements": {
+          "flags_all": [
+            "dungeon_catacombs_cleared"
+          ]
+        }
+      }
+    },
+    "corwin_brennhallow": {
+      "name": "Lord Corwin Brennhallow",
+      "class_id": "knight",
+      "level": 7,
+      "house": "brennhallow",
+      "weapon_id": "longsword",
+      "armor_def": 8,
+      "armor_res": 2,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 42,
+        "mp": 6,
+        "str": 12,
+        "dex": 8,
+        "int": 5,
+        "vit": 12,
+        "spd": 7,
+        "lck": 7,
+        "acc": 86,
+        "eva": 12,
+        "ldr": 15,
+        "mor": 68
+      },
+      "loyalty": 68,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "late_act_iv",
+        "cost": 250,
+        "requirements": {
+          "flags_all": [
+            "act_4_unlocked"
+          ]
+        }
+      }
+    },
+    "seraphine_tarnholt": {
+      "name": "Seraphine Tarnholt",
+      "class_id": "paladin",
+      "level": 7,
+      "house": "tarnholt",
+      "weapon_id": "mace",
+      "armor_def": 7,
+      "armor_res": 4,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 39,
+        "mp": 18,
+        "str": 8,
+        "dex": 7,
+        "int": 11,
+        "vit": 11,
+        "spd": 7,
+        "lck": 9,
+        "acc": 84,
+        "eva": 14,
+        "ldr": 12,
+        "mor": 82
+      },
+      "loyalty": 86,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "late_act_iv",
+        "cost": 250,
+        "requirements": {
+          "flags_all": [
+            "act_4_unlocked"
+          ]
+        }
+      }
+    },
+    "ilyan_voss": {
+      "name": "Ilyan Voss",
+      "class_id": "battle_mage",
+      "level": 6,
+      "house": "quillon",
+      "weapon_id": "staff",
+      "armor_def": 4,
+      "armor_res": 5,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 34,
+        "mp": 24,
+        "str": 8,
+        "dex": 8,
+        "int": 13,
+        "vit": 8,
+        "spd": 8,
+        "lck": 8,
+        "acc": 86,
+        "eva": 15,
+        "ldr": 9,
+        "mor": 74
+      },
+      "loyalty": 74,
+      "roster_wave": 1,
+      "recruit": {
+        "wave": 1,
+        "method": "mage_tower",
+        "cost": 220,
+        "requirements": {
+          "flags_all": [
+            "act_4_unlocked"
+          ]
+        }
       }
     }
   }

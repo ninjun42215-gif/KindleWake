@@ -1,6 +1,7 @@
 extends SceneTree
 
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
+const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -27,6 +28,7 @@ func _initialize() -> void:
     _test_controller()
     _test_auto_battle()
     _test_progression()
+    _test_recruitment()
     _test_sigils()
     _test_runes()
     _test_weapon_skills()
@@ -797,6 +799,63 @@ func _test_locations() -> void:
     check(not cm.door_at(Vector2i(4, 4)).is_empty() and cm.door_at(Vector2i(5, 4)).is_empty(), "door tiles lead somewhere and plain wall does not")
 
 
+func _test_recruitment() -> void:
+    print("[recruitment and loyalty]")
+    var wave_one: int = 0
+    for raw in gd.characters.values():
+        if int((raw as Dictionary).get("roster_wave", 0)) == 1:
+            wave_one += 1
+    check(wave_one == 24, "all 24 Wave-1 named characters have complete data definitions")
+    var valid_recruits: bool = true
+    for cid in gd.characters.keys():
+        var def: Dictionary = gd.characters[cid]
+        if not def.has("recruit"):
+            continue
+        if not gd.classes.has(str(def.get("class_id", ""))) or not gd.weapons.has(str(def.get("weapon_id", ""))):
+            valid_recruits = false
+        if int(def.get("loyalty", -1)) < 0 or int(def.get("loyalty", 101)) > 100:
+            valid_recruits = false
+    check(valid_recruits, "every recruit has a valid class, weapon and 0-100 starting loyalty")
+
+    var party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    var flags: Dictionary = {}
+    var joss: Dictionary = gd.character_def("joss_harrow")
+    var joss_check: Dictionary = RecruitmentSystem.inspect(party, "joss_harrow", joss, flags)
+    check(bool(joss_check.get("available", false)) and int(joss_check.get("cost", -1)) == 50, "Joss is available at the data-defined 50-gold cost")
+    party.gold = 40
+    var poor_check: Dictionary = RecruitmentSystem.inspect(party, "joss_harrow", joss, flags)
+    check(not bool(poor_check.get("available", true)) and party.roster.size() == 4 and not flags.has("recruited_joss_harrow"), "insufficient gold refuses recruitment without changing roster or flags")
+    party.gold = 100
+    var joined: Dictionary = RecruitmentSystem.recruit(party, "joss_harrow", joss, flags)
+    check(bool(joined.get("ok", false)) and party.roster.has("joss_harrow") and party.gold == 50 and bool(flags.get("recruited_joss_harrow", false)), "successful recruitment adds the member, spends gold and records the one-time flag")
+    check(party.sheet("joss_harrow").loyalty == 38, "a recruit receives their authored starting loyalty")
+    var duplicate: Dictionary = RecruitmentSystem.recruit(party, "joss_harrow", joss, flags)
+    check(not bool(duplicate.get("ok", true)) and party.gold == 50, "duplicate recruitment is refused without charging twice")
+
+    party.gold = 500 # keep prerequisite tests independent from recruit affordability
+    var verra: Dictionary = gd.character_def("verra_nightsong")
+    var fresh_party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    var locked: Dictionary = RecruitmentSystem.inspect(fresh_party, "verra_nightsong", verra, flags)
+    check(not bool(locked.get("available", true)) and str(locked.get("reason", "")).contains("joss harrow"), "recruit dependencies remain locked until their companion joins")
+    var unlocked: Dictionary = RecruitmentSystem.inspect(party, "verra_nightsong", verra, flags)
+    check(bool(unlocked.get("available", false)), "joining Joss unlocks Verra's recruitment")
+    var bram: Dictionary = gd.character_def("bram_cullen")
+    var camp_locked: Dictionary = RecruitmentSystem.inspect(party, "bram_cullen", bram, flags)
+    check(not bool(camp_locked.get("available", true)), "story-flag requirements block Bram before the camp is cleared")
+    flags["camp_cleared"] = true
+    var camp_open: Dictionary = RecruitmentSystem.inspect(party, "bram_cullen", bram, flags)
+    check(bool(camp_open.get("available", false)), "clearing the camp unlocks Bram's recruitment")
+
+    check(party.adjust_loyalty("joss_harrow", 90) == 100 and party.adjust_loyalty("joss_harrow", -150) == 0, "loyalty adjustments clamp safely to 0-100")
+    var restored: PartyState = PartyState.from_dict(party.to_dict())
+    check(restored.sheet("joss_harrow").loyalty == 0, "character loyalty survives party save/load serialization")
+    var legacy_sheet: Dictionary = {"character_id":"legacy","name":"Legacy Recruit","class_id":"knight","level":1,"base_stats":{},"skills":[],"equipment":{}}
+    var legacy_party: Dictionary = {"roster":["legacy"],"sheets":{"legacy":legacy_sheet},"gold":10}
+    var migrated: Dictionary = ss.migrate({"party":legacy_party}, 3)
+    var migrated_sheets: Dictionary = (migrated.get("party", {}) as Dictionary).get("sheets", {})
+    check(int((migrated_sheets.get("legacy", {}) as Dictionary).get("loyalty", -1)) == 50, "v3 saves migrate existing members to neutral loyalty 50")
+
+
 func _test_sigils() -> void:
     print("[runes]")
     var db: Dictionary = gd.as_db()
@@ -1194,8 +1253,11 @@ func _test_save_system() -> void:
     check(bool(legacy_loaded.get("ok", false)) and legacy_loaded["payload"].has("creation_profile"), "loading a real v1 save applies the v2 migration")
     check(int(legacy_loaded["payload"]["battle"]["turn"]) == 7 and int(legacy_loaded["payload"]["party"]["gold"]) == 25, "loaded v1 save retains its existing game state")
     var v2_regional: Dictionary = ss.migrate({"battle": {"turn": 9}, "party": {"gold": 41}}, 2)
-    check(v2_regional.has("world_flags") and (v2_regional["world_flags"] as Dictionary).is_empty() and v2_regional.has("world_pos") and v2_regional.has("from_world"), "v2 saves migrate to v3 with safe regional-context defaults")
-    check(int((v2_regional["battle"] as Dictionary)["turn"]) == 9 and int((v2_regional["party"] as Dictionary)["gold"]) == 41, "v2-to-v3 migration preserves existing battle and party data")
+    check(v2_regional.has("world_flags") and (v2_regional["world_flags"] as Dictionary).is_empty() and v2_regional.has("world_pos") and v2_regional.has("from_world"), "v2 saves migrate through v4 with safe regional-context defaults")
+    check(int(v2_regional["battle"]["turn"]) == 9 and int(v2_regional["party"]["gold"]) == 41, "v2-to-v4 migration preserves existing battle and party data")
+    var v3_member: Dictionary = {"roster":["old"],"sheets":{"old":{"character_id":"old","name":"Old","class_id":"knight","level":1,"base_stats":{},"skills":[],"equipment":{}}}}
+    var v3_to_v4: Dictionary = ss.migrate({"party":v3_member,"world_flags":{"camp_cleared":true}},3)
+    check(int(v3_to_v4["party"]["sheets"]["old"].get("loyalty",-1)) == 50 and bool(v3_to_v4["world_flags"]["camp_cleared"]), "v3-to-v4 migration adds neutral loyalty and preserves world flags")
     ss.delete_slot("legacy")
     check(bool(ss.save_slot("test", {"hello": "again"}, "second")), "second save succeeds")
     check(FileAccess.file_exists(ss.slot_path("test") + ".bak"), "previous save kept as .bak")

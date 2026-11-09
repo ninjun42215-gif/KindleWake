@@ -55,6 +55,15 @@ func sheet(char_id: String) -> CharacterSheetScript:
     return sheets.get(char_id)
 
 
+## Apply a story, victory, gift or consequence adjustment without allowing loyalty outside 0-100.
+func adjust_loyalty(char_id: String, amount: int) -> int:
+    var member: CharacterSheetScript = sheet(char_id)
+    if member == null:
+        return -1
+    member.loyalty = clampi(member.loyalty + amount, 0, 100)
+    return member.loyalty
+
+
 # ---------------------------------------------------------------- inventory and equipment
 
 func item_count(item_id: String) -> int:

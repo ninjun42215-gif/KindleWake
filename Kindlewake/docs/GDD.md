@@ -1,5 +1,5 @@
 # KINDLEWAKE: THE SUNDERED VOW — Game Design Document
-Version 0.10.0 Rune Mastery & World Expansion (gameplay checkpoint v0.10.0) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
+Version 0.11.0 Recruitment & Company Bonds (gameplay checkpoint v0.11.0) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
 
 > Inspiration only: tactical depth and mercenary management in the spirit of *Knights of Ages*, and recruitment/headquarters/platoon ideas in the spirit of *Suikoden II*. All characters, names, maps, story, art and music are original. Nothing is copied.
 
@@ -288,6 +288,11 @@ Battle manual saves and autosaves now include `creation_profile`. `SaveSystem.SA
 
 ## 5. Recruitment System
 
+### v0.11.0 — Recruitment and loyalty foundation
+All 24 Wave-1 named characters now have data definitions (four starting members and 20 recruitable profiles). The six original recruit definitions were aligned to their intended classes and weapons; fourteen additional recruits were added. Six muster halls expose the full Wave-1 roster. Recruitment is data-driven and checks duplicate state, gold cost, required world flags and companion prerequisites before adding a character and recording the one-time recruitment flag. The party screen displays a 0–100 loyalty value and its bond band. Save schema v4 persists loyalty and migrates schema-v3 members to neutral 50.
+
+**Still outstanding:** authored personal quest chains, the Act II duel and Act IV unlock event, weekly wages/calendar, loyalty gains/losses from story and battle events, and desertion at the end of a week. The three Act IV recruits remain gated by `act_4_unlocked`; do not claim their story content is playable yet.
+
 **Target roster:** 80 recruitable characters (1 protagonist + 79), delivered progressively (24 in Milestones 3–4, +56 by Milestone 7). Roster list in section 12.
 
 **Character data schema** (`data/characters.json`):
@@ -488,7 +493,7 @@ The campaign spans four large continents connected through a gradually expanding
 
 **Data blueprint:** `data/continents.json` records the four continents, 16 subregions, 40+ named settlement/dungeon hooks, travel modes and route gates. It is content planning data only: current runtime still uses `data/world.json` and `data/locations.json`. Do not present a listed destination as playable until its map, encounter set, quest flags, entry/exit links and regression tests exist. Keep the Sallow Marches as the playable starting slice.
 
-**Save/travel rules:** future campaign persistence must store continent id, region id, local map id, player tile, discovered route nodes, unlocked transport tiers, visited landmarks, dungeon completion flags and travel-calendar state. Implement this as an explicit campaign-save schema and migration. SaveSystem v3 currently carries only regional context in battle saves; it is not a replacement for full campaign persistence. Preserve sequential migration from v1 and v2. Fast travel is available only between discovered hubs and must preserve the party's current roster/equipment.
+**Save/travel rules:** future campaign persistence must store continent id, region id, local map id, player tile, discovered route nodes, unlocked transport tiers, visited landmarks, dungeon completion flags and travel-calendar state. Implement this as an explicit campaign-save schema and migration. SaveSystem v4 carries regional context and character loyalty, but it is not a replacement for the full campaign calendar, local town/interior position, route discovery and quest-state persistence described above. Preserve sequential migration from v1 and v2. Fast travel is available only between discovered hubs and must preserve the party's current roster/equipment.
 
 **Originality guardrail:** use only broad genre-level conventions (regional world maps, vehicles, ports, recruitment hubs and gated exploration). All geography, routes, characters, quests, visual designs and story beats remain original.
 
@@ -684,7 +689,7 @@ Kindlewake/
 |---|---|---|
 | 1 | Playable tactical combat prototype | Data-driven grid battle: CTB turns, A*/Dijkstra movement, ranges, hit/crit, flank/height/terrain, AI, victory/defeat, touch input, save/load slot with checksum, headless tests |
 | 2 | Stats, classes, leveling, equipment | Full stat sheet, class data, EXP/level-up, promotion, equipment slots, skills v1, battle simulator for balance |
-| 3 | Recruitment and character management | Roster UI, 24 Wave-1 characters with data, recruitment flags/quests, loyalty |
+| 3 | Recruitment and character management | 24 Wave-1 definitions, 20 recruit profiles, cost/prerequisite checks, duplicate-safe joins, loyalty persistence/display; personal quests and calendar-driven loyalty events remain in progress |
 | 4 | Platoon creation and assignment | Platoon editor (drag-and-drop), FP/CA formulas, formations |
 | 5 | Army battles | Order/Resolve phases, morale, commander abilities, siege basics |
 | 6 | Castle HQ | Facilities, weekly calendar, resources, upkeep |
@@ -781,6 +786,7 @@ Legacy sigil_* script entry points remain internal compatibility wrappers during
 
 | 0.9.1-rune-system | Renamed sigils to runes in player-facing systems; added six rune families, six grades, chance-based three-to-one fusion, specialist-only regional rune shops, grade scaling, elemental status effects and original rune atlas. CI validation passed on 2026-11-09: Godot 4.2.2 import succeeded without script or parse errors; 312 strict checks passed with zero failures; balance report passed; signed Android APK exported for arm64-v8a and armeabi-v7a. Device playtesting remains pending. |
 | 0.10.5-verification-audit | Audited 0.10.1–0.10.4 source implementation, test coverage, current-main APK and portable source handoff; no gameplay/version/save-schema change. |
+| 0.11.0 | Recruitment v1: complete 24-character Wave-1 data roster; add 14 recruit profiles and 14 town-hall placements; align six existing recruits to their GDD classes; add prerequisite/cost/duplicate-safe recruitment rules, 0–100 loyalty, party-screen bond display and save schema v4 migration. |
 
 
 ### 14.3 Responsive mobile HUD pass (2026-11-10)
@@ -840,3 +846,7 @@ Legacy sigil_* script entry points remain internal compatibility wrappers during
 - Current main `d25ac6840ab0cdcc339b6fa89ed4ef42dec917dc` has the same Git tree as tested PR head `769022ebee463a35af95e4cd9dfcab7a55e89cb7`. Build run `42711243963` passed with Godot 4.2.2, 342 checks / 0 failures, balance report and signed APK export. The APK requests no Android permissions. Build artifacts and hashes are recorded in `docs/SESSION_HANDOFF.md`.
 - Build logs retain a transient first-import global-class resolution warning and ObjectDB/resource cleanup warnings; the final strict suite and export succeeded. Investigate these warnings separately rather than misreporting them as test failures.
 - Project version remains `0.10.0`, Android code `1000`, and save schema `3`. This audit does not change gameplay, save data or release version.
+
+
+### 14.8 Recruitment and company-bond UI (v0.11.0)
+The character sheet includes a Company bond tile with a loyalty value and readable state (Fractured, Wary, Committed or Steadfast). Muster-hall recruit prompts show the authored gold cost or the first unmet prerequisite; successful recruitment records a one-time flag and shows the recruit's starting loyalty. This is a foundation only: there is not yet a calendar-driven desertion or event-based loyalty loop.
