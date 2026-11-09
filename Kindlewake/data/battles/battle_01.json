@@ -1,42 +1,129 @@
 {
   "id": "battle_01",
   "title": "Prologue: The Sallow Road",
-  "briefing": "Roadwolves hold the northern bank of the river. Cross the bridge or the ford, break their line, and defeat their chief.",
+  "briefing": "Roadwolves hold the northern bank of the river. Cross the bridge or the ford, break their line, and defeat their chief. Battlefield terrain changes movement, cover and line of sight; scout the ground before committing your formation.",
   "weather": "clear",
-  "legend": {".": "grass", "f": "forest", "r": "road", "h": "hill", "w": "ford", "~": "deep_water", "b": "bridge", "#": "rock"},
+  "legend": {
+    ".": "grass",
+    "f": "forest",
+    "r": "road",
+    "h": "hill",
+    "w": "ford",
+    "~": "deep_water",
+    "b": "bridge",
+    "#": "rock"
+  },
   "terrain": [
-    "..ff....hh..",
-    ".fff...hhh..",
-    "..f....hh.#.",
-    ".....r......",
-    "~~~~~b~~~w~~",
-    "~~~~~b~~~w~~",
-    ".....r......",
-    ".f...r...f..",
-    ".ff..r......",
-    "..f........."
+    "................",
+    "................",
+    "......ff....hh......",
+    ".....fff...hhh......",
+    "......f....hh.#.....",
+    ".........r..........",
+    "....~~~~~b~~~w~~....",
+    "....~~~~~b~~~w~~....",
+    ".........r..........",
+    ".....f...r...f......",
+    ".....ff..r..........",
+    "......f.............",
+    "................",
+    "................"
   ],
   "heights": [
-    "000000001100",
-    "000000012200",
-    "000000011000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000"
+    "0000000000000000",
+    "0000000000000000",
+    "00000000000011000000",
+    "00000000000122000000",
+    "00000000000110000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "0000000000000000",
+    "0000000000000000"
   ],
-  "victory": ["rout_all", "defeat_commander"],
+  "victory": [
+    "rout_all",
+    "defeat_commander"
+  ],
   "units": [
-    {"character_id": "torren", "team": "player", "cell": [5, 8], "facing": 0, "protagonist": true},
-    {"character_id": "bram", "team": "player", "cell": [4, 7], "facing": 0},
-    {"character_id": "sela", "team": "player", "cell": [6, 8], "facing": 0},
-    {"character_id": "brother_wystan", "team": "player", "cell": [3, 8], "facing": 0},
-    {"character_id": "hask_gravelteeth", "team": "enemy", "cell": [9, 2], "facing": 2, "commander": true},
-    {"character_id": "roadreaver", "team": "enemy", "cell": [6, 1], "facing": 2},
-    {"character_id": "roadreaver", "team": "enemy", "cell": [4, 2], "facing": 2},
-    {"character_id": "roadbowman", "team": "enemy", "cell": [8, 1], "facing": 2}
-  ]
+    {
+      "character_id": "torren",
+      "team": "player",
+      "cell": [
+        7,
+        10
+      ],
+      "facing": 0,
+      "protagonist": true
+    },
+    {
+      "character_id": "bram",
+      "team": "player",
+      "cell": [
+        6,
+        9
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "sela",
+      "team": "player",
+      "cell": [
+        8,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "brother_wystan",
+      "team": "player",
+      "cell": [
+        5,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "hask_gravelteeth",
+      "team": "enemy",
+      "cell": [
+        11,
+        4
+      ],
+      "facing": 2,
+      "commander": true
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        8,
+        3
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        6,
+        4
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadbowman",
+      "team": "enemy",
+      "cell": [
+        10,
+        3
+      ],
+      "facing": 2
+    }
+  ],
+  "battlefield": "river_crossing"
 }
