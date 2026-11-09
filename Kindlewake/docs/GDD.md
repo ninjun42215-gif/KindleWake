@@ -493,7 +493,7 @@ The campaign spans four large continents connected through a gradually expanding
 **Originality guardrail:** use only broad genre-level conventions (regional world maps, vehicles, ports, recruitment hubs and gated exploration). All geography, routes, characters, quests, visual designs and story beats remain original.
 
 ### 11.4 Sethmarch first regional expansion (v0.7.13)
-The playable Sallow Marches overworld now has three additional searchable ruin landmarks connected to the existing road graph: Sunken Tollhouse (45 gold), Hollowroot Warren (75 gold) and Warden's Barrow (90 gold). They reuse the existing `kind: ruin` interaction and persistent `found_<id>` world flags, so each reward is claimable once per new game. Their road links branch from Kaer Sethorn or Sallow Crossing; no new scene or map format is introduced. These are exploration/reward landmarks, not fully traversable dungeon interiors yet. The larger Sethmarch town network and actual dungeon maps remain future work. Runtime testing is still deferred; static JSON validation is not a Godot runtime test.
+The playable Sallow Marches overworld gained three road-connected ruin landmarks: Sunken Tollhouse (45 gold), Hollowroot Warren (originally 75 gold) and Warden's Barrow (90 gold). The first implementation used one-time `kind: ruin` searches. In v0.7.14, Hollowroot Warren is upgraded to a traversable dungeon with a 120-gold cache and a boss; its former surface-search reward is superseded. Sunken Tollhouse and Warden's Barrow remain searchable landmarks.
 
 ### 11.5 The Sethmarch Frontier: Orrowen and Vessmoor (v0.7.14)
 The first expanded regional network is now connected to the existing Sallow Crossing field map. The player can follow the Greenward Gate north-east into **Orrowen Weald** or the Vessmoor Causeway south-east into **Vessmoor Plains**. Interacting with either arch records a one-time passage flag, while the roads remain physically continuous on the same 64×48 Eldrimar overworld; no disconnected map hop interrupts the journey. The overworld HUD names the current subregion.
@@ -501,7 +501,7 @@ The first expanded regional network is now connected to the existing Sallow Cros
 **Road network and settlements**
 - Orrowen: Thornmere (regional hub), Foxglove and Elderbough. The roads branch from the Greenward Gate and continue between each settlement and the Bell Under Leaves dungeon.
 - Vessmoor: Cindermead (regional hub), Redwater and Milefort. The Vessmoor Causeway links the settlements and the Kingsroad Catacombs.
-- Sethmarch's existing Sallow Crossing, Kaer Sethorn, Old Watchtower, Roadwolf Camp, Sunken Tollhouse and Warden's Barrow remain in place. Existing searchable ruins are preserved; Hollowroot Warren is upgraded into a traversable dungeon.
+- Sethmarch's existing Sallow Crossing, Kaer Sethorn, Old Watchtower, Roadwolf Camp, Sunken Tollhouse and Warden's Barrow remain in place. The two searchable ruins retain their one-time rewards; Hollowroot Warren is upgraded into a traversable dungeon.
 
 **Functional town services**
 - Each of the six new settlements has its own town map and inn, market and muster-hall interiors.
