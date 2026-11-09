@@ -19,13 +19,13 @@ permissions:
   contents: write
 
 concurrency:
-  group: kindlewake-production-release-\${{ inputs.tag }}
+  group: kindlewake-production-release-${{ inputs.tag }}
   cancel-in-progress: false
 
 jobs:
   publish:
     name: Build, verify and publish signed APK
-    if: \${{ inputs.confirmation == 'PUBLISH' }}
+    if: ${{ inputs.confirmation == 'PUBLISH' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     environment: android-production
@@ -33,14 +33,14 @@ jobs:
       - name: Check out the requested immutable tag
         uses: actions/checkout@v4
         with:
-          ref: \${{ inputs.tag }}
+          ref: ${{ inputs.tag }}
           fetch-depth: 0
           persist-credentials: false
 
       - name: Refuse to overwrite an existing published release
         env:
-          GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
-          REQUESTED_TAG: \${{ inputs.tag }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REQUESTED_TAG: ${{ inputs.tag }}
         run: |
           set -euo pipefail
           if gh release view "$REQUESTED_TAG" >/dev/null 2>&1; then
@@ -51,7 +51,7 @@ jobs:
       - name: Verify tag, project version and release configuration
         shell: bash
         env:
-          REQUESTED_TAG: \${{ inputs.tag }}
+          REQUESTED_TAG: ${{ inputs.tag }}
         run: |
           set -euo pipefail
           [[ "$REQUESTED_TAG" == v* ]] || { echo "::error::Release tags must begin with v."; exit 1; }
@@ -86,9 +86,9 @@ jobs:
       - name: Install protected production signing key
         shell: bash
         env:
-          KEYSTORE_BASE64: \${{ secrets.ANDROID_RELEASE_KEYSTORE_BASE64 }}
-          KEY_ALIAS: \${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
-          KEY_PASSWORD: \${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_RELEASE_KEYSTORE_BASE64 }}
+          KEY_ALIAS: ${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
         run: |
           set -euo pipefail
           test -n "$KEYSTORE_BASE64" || { echo "::error::Missing ANDROID_RELEASE_KEYSTORE_BASE64 environment secret."; exit 1; }
@@ -106,9 +106,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.kindlewake_build
-          key: \${{ runner.os }}-kindlewake-release-\${{ hashFiles('Kindlewake/tools/build_apk.py') }}
+          key: ${{ runner.os }}-kindlewake-release-${{ hashFiles('Kindlewake/tools/build_apk.py') }}
           restore-keys: |
-            \${{ runner.os }}-kindlewake-
+            ${{ runner.os }}-kindlewake-
 
       - name: Import, run strict tests and build production-signed APK
         working-directory: Kindlewake
@@ -117,7 +117,7 @@ jobs:
       - name: Verify the production signing certificate identity
         working-directory: Kindlewake
         env:
-          EXPECTED_CERT_SHA256: \${{ vars.ANDROID_RELEASE_CERT_SHA256 }}
+          EXPECTED_CERT_SHA256: ${{ vars.ANDROID_RELEASE_CERT_SHA256 }}
         run: |
           set -euo pipefail
           test -n "$EXPECTED_CERT_SHA256" || {
@@ -147,8 +147,8 @@ jobs:
       - name: Create production release checksums and manifest
         working-directory: Kindlewake
         env:
-          RELEASE_TAG: \${{ inputs.tag }}
-          SOURCE_SHA: \${{ github.sha }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          SOURCE_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -185,7 +185,7 @@ jobs:
       - name: Upload immutable production build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Kindlewake-Production-APK-\${{ inputs.tag }}
+          name: Kindlewake-Production-APK-${{ inputs.tag }}
           path: |
             Kindlewake/dist/Kindlewake.apk
             Kindlewake/dist/Kindlewake.apk.sha256
@@ -196,19 +196,19 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: \${{ inputs.tag }}
-          name: Kindlewake \${{ inputs.tag }}
+          tag_name: ${{ inputs.tag }}
+          name: Kindlewake ${{ inputs.tag }}
           generate_release_notes: true
           fail_on_unmatched_files: true
           files: |
             Kindlewake/dist/Kindlewake.apk
             Kindlewake/dist/Kindlewake.apk.sha256
             Kindlewake/dist/release-manifest.json
-          token: \${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   rejected:
     name: Explain missing release confirmation
-    if: \${{ inputs.confirmation != 'PUBLISH' }}
+    if: ${{ inputs.confirmation != 'PUBLISH' }}
     runs-on: ubuntu-latest
     steps:
       - run: |
