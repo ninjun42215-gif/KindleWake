@@ -1,24 +1,31 @@
 # KindleWake — The Sundered Vow
 
-Offline-first medieval tactical RPG built with Godot 4 (GDScript), targeting Android and iOS.
+Offline-first medieval tactical RPG built with Godot 4.2.2 (GDScript, GL Compatibility), targeting Android and iOS.
 
-## Project source — archive-free workflow
+## Live project checkpoint
 
-The one-time import is complete. The extracted `Kindlewake/` directory on `main` is the canonical source, including the reconstructed optional sprite archive. GitHub Actions extracted 129 project files; the static checker passed with 0 errors and 0 warnings, and the Android offline preflight passed.
+- Canonical source: tracked files under `Kindlewake/` in `ninjun42215-gif/KindleWake`.
+- Current main: `d25ac6840ab0cdcc339b6fa89ed4ef42dec917dc`; gameplay version 0.10.0; Android code 1000; save schema 3.
+- The current main tree is identical to tested PR head `769022ebee463a35af95e4cd9dfcab7a55e89cb7`.
+- Android build run [42711243963](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42711243963) passed with Godot 4.2.2, 342 strict checks and 0 failures, balance report, signed APK export and no Android permissions.
+- APK artifact ID: `13715144284`; SHA-256: `e1f303c2c9f5ef73b527988636ef5e467f6162ca043c1f443ad3fa33ea833c72`.
+- Verified source handoff run [42711223545](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42711223545) produced 177 tracked files in four parts, each no larger than 25,000,000 bytes. Reassembly, ZIP integrity, file hashes and safe extraction passed.
 
-Routine development is done by editing and committing ordinary files under `Kindlewake/`. **Do not upload or rebuild a master project ZIP.** The old four-part upload instructions are retained only as historical documentation; the temporary upload files are being removed.
-## Automatic Android build
+## Routine development
 
-After `Kindlewake/` is present, open **Actions → Build Android APK → Run workflow**. The build imports the project, runs the strict headless test suite and balance report, then exports the APK. A test failure blocks the APK. Download the `Kindlewake-APK` artifact and `test-logs` artifact from the completed run.
+Edit ordinary tracked files under `Kindlewake/`; do not upload or rebuild a master project ZIP. Use a short-lived feature/workflow branch and pull request. The exact-SHA safe auto-merge gate requires the four core checks and every additional PR-triggered workflow discovered for that SHA to pass.
 
-## Project constraints
+## Build an Android APK
 
-- Godot 4.2+, GDScript, GL Compatibility.
-- Offline-only game: no account, cloud, multiplayer or server dependency; no INTERNET permission.
-- Local JSON data and local save files.
-- Optional sprite packs remain unimported pending asset/license review.
-- Static checks and APK preflight are not substitutes for running the game in Godot or testing it on a phone.
+Open **Actions → Build Android APK → Run workflow**. The workflow imports the Godot project, runs the strict headless tests and balance report, exports and verifies the signed APK, then uploads `Kindlewake-APK` and `test-logs` artifacts.
 
-## Current gameplay checkpoint
+## Product constraints and release gates
 
-Gameplay checkpoint: **v0.10.0** (Godot source of truth). The main branch includes the Rune System, campaign title/save flow, regional world content, mobile UI refinements and battle identity-art work recorded in the GDD. The GDD's 0.10.1–0.10.4 notes are implementation/revision records, not a project version bump. Latest inspected main: `843d21be5b201b95736e98a38f0485274e5dcc03`. Verify Actions for a fresh APK before distribution. Physical-device QA and voxel-building asset licence verification remain outstanding.
+- Fully offline: no accounts, servers, multiplayer or INTERNET permission.
+- Local JSON data and local saves; preserve save migrations and schema compatibility.
+- Optional sprite packs remain source-only pending licence and suitability review.
+- Physical Android QA remains outstanding. CI is not proof of fit on a real phone.
+- Public/commercial release remains blocked until the voxel-building pack's redistribution licence is verified or those assets are replaced.
+- GDD notes 0.10.1–0.10.4 record implementation changes; the released project version remains 0.10.0.
+
+See `Kindlewake/docs/SESSION_HANDOFF.md` and `Kindlewake/docs/NEXT_AI_START_HERE.md` before continuing work.

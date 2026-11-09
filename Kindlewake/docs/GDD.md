@@ -780,6 +780,7 @@ Rune combat effects are data-driven: Flame can Burn, Frost can Chill, Storm can 
 Legacy sigil_* script entry points remain internal compatibility wrappers during this transition. New player-facing text, shop stock, data, fusion, and asset naming use Rune terminology.
 
 | 0.9.1-rune-system | Renamed sigils to runes in player-facing systems; added six rune families, six grades, chance-based three-to-one fusion, specialist-only regional rune shops, grade scaling, elemental status effects and original rune atlas. CI validation passed on 2026-11-09: Godot 4.2.2 import succeeded without script or parse errors; 312 strict checks passed with zero failures; balance report passed; signed Android APK exported for arm64-v8a and armeabi-v7a. Device playtesting remains pending. |
+| 0.10.5-verification-audit | Audited 0.10.1–0.10.4 source implementation, test coverage, current-main APK and portable source handoff; no gameplay/version/save-schema change. |
 
 
 ### 14.3 Responsive mobile HUD pass (2026-11-10)
@@ -829,3 +830,13 @@ Legacy sigil_* script entry points remain internal compatibility wrappers during
 - The source handoff workflow generated 177 tracked files in four verified parts (each <=25,000,000 bytes). Reconstructed archive SHA-256: `aba0eea9f02f0ca1c96be8ac91259cef50ba6c71145cca41c349ec5f4d76d976`.
 - Build logs showed transient global-class registration compile errors on the first import scan; the clean second scan succeeded and tests/build passed. This remains a technical follow-up, not a suppressed failure.
 - This was documentation-only; project version remains 0.10.0 and save schema remains 3.
+
+
+## 14.7 Verification audit — 2026-11-10 (no app version bump)
+
+- 0.10.1–0.10.2 responsive layout implementation is present in `scripts/ui/battle_scene.gd`, `party_screen.gd`, `world_scene.gd` and `location_scene.gd`: safe-area insets, viewport-based control sizing, compact HUD behavior, portrait company tabs and proportional landscape panes. Headless coverage verifies party-screen construction and tap-versus-drag behavior, but there is no automated viewport/orientation matrix or screenshot regression suite. Physical-device validation remains required.
+- 0.10.3 battle identity presentation is present in `battle_scene.gd`: class-specific equipment silhouettes, enemy archetype marks and animated magic/spectral accents over the shared animated base sprites. No dedicated automated visual assertion or per-device rendering test was found; treat this as implemented presentation code, not art-complete validation.
+- 0.10.4 external intake and portable handoff are present: `receiving/README.md`, `tools/source_handoff.py`, `tests/test_source_handoff.py` and `.github/workflows/manual-source-handoff.yml`. The handoff workflow passed and produced a verified 177-file snapshot.
+- Current main `d25ac6840ab0cdcc339b6fa89ed4ef42dec917dc` has the same Git tree as tested PR head `769022ebee463a35af95e4cd9dfcab7a55e89cb7`. Build run `42711243963` passed with Godot 4.2.2, 342 checks / 0 failures, balance report and signed APK export. The APK requests no Android permissions. Build artifacts and hashes are recorded in `docs/SESSION_HANDOFF.md`.
+- Build logs retain a transient first-import global-class resolution warning and ObjectDB/resource cleanup warnings; the final strict suite and export succeeded. Investigate these warnings separately rather than misreporting them as test failures.
+- Project version remains `0.10.0`, Android code `1000`, and save schema `3`. This audit does not change gameplay, save data or release version.

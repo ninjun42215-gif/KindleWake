@@ -3,7 +3,11 @@
 name: Safe Auto Merge
 
 on:
+  # GitHub requires an explicit workflow name as the workflow_run kickoff.
+  # The gate below still discovers and verifies every PR workflow for the exact SHA.
   workflow_run:
+    workflows:
+      - Build Android APK
     types:
       - completed
 
