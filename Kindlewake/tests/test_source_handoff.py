@@ -41,6 +41,7 @@ class SourceHandoffTests(unittest.TestCase):
             self.run_tool("verify", "--archive", archive, "--extract-to", extracted)
             self.assertEqual((extracted / "README.md").read_text(), "handoff test\n")
             self.assertTrue((extracted / "AI_NEXT_SESSION.md").is_file())
+            self.assertTrue((extracted / "REASSEMBLE.txt").is_file())
 
     def test_missing_part_is_rejected(self):
         with tempfile.TemporaryDirectory() as temp:
