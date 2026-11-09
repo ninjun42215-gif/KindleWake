@@ -9,6 +9,14 @@ Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Ne
 - The nested sprite packs are optional source material only; they are not imported into scenes or license-cleared.
 
 ## v0.9.0 — Title screen, campaign saves and economy
+
+## Feature branch: Rune System v1 (in validation)
+- Player-facing Sigils are renamed to Runes with 17 definitions across 10 rune families and six grades.
+- Three matching runes can be fused with a chance of increasing grade; failed fusion returns one rune at its original grade.
+- Rune stock is restricted to named regional specialist merchants.
+- Flame/Frost/Storm/Holy/Shadow/Mending runes add combat statuses, life drain or regeneration; grade increases rune power.
+- Original 8×6 rune atlas SVG; optional third-party asset archives remain excluded pending licence checks.
+- See docs/SESSION_HANDOFF.md for branch validation and merge requirements.
 - New title menu: New Game, Continue, Load Game and Settings.
 - Campaign saves preserve the party, protagonist choices, overworld position and regional flags. The overworld autosaves periodically and before travel transitions.
 - Equipment price bands now scale sharply by rarity; Unique relics remain special rewards. High-tier armor stats have been moderated.
