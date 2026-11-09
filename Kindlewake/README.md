@@ -3,7 +3,7 @@
 Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (GDScript, GL Compatibility).
 Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md`
 
-## Source-of-truth and GitHub workflow (v0.7.10)
+## Source-of-truth and GitHub workflow (v0.7.11)
 - The extracted `Kindlewake/` directory in `ninjun42215-gif/KindleWake` on `main` is the canonical source. Routine development edits are committed as ordinary files; do not upload or rebuild a master project ZIP.
 - One-time phone import: follow the repository-root `UPLOAD_PROJECT_FROM_PHONE.md`, upload all four `KindleWake_Project_part1.zip` through `KindleWake_Project_part4.zip` files, then run **Actions → Extract KindleWake Upload Parts**. Each shard is below GitHub's 25 MB browser upload limit. The workflow validates and merges them, reconstructs the large optional `zxf.zip` source pack, replaces `Kindlewake/` transactionally, runs static checks and APK preflight, then removes the temporary shard files.
 - After the extracted folder is present, future updates are direct file commits. Keep `docs/SESSION_HANDOFF.md`, `docs/GDD.md`, this README, and `docs/CONTINUATION_PROMPT.md` current with each meaningful change.
