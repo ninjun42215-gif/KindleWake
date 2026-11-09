@@ -91,3 +91,9 @@ If the confirmation text is not exactly `PUBLISH`, the publishing job is rejecte
 | Production workflow says secrets are missing | Configure all three `android-production` environment secrets. |
 | Production workflow starts without reviewer approval | Stop and configure required reviewers on the GitHub Environment before using it. |
 | Existing app refuses update | Check that the same production signing identity was used and that version code increased. Do not tell users to uninstall if save preservation matters. |
+
+## Build verification hardening
+
+The local builder now treats APK permission inspection and signature verification as mandatory: missing `aapt2`, missing `apksigner`, or a failed inspection blocks the build. A non-zero balance report or reported `FAIL` / script / parse errors also blocks the strict build. The builder checks that `project.godot` `config/version` matches the Android preset `version/name`, including for local builds.
+
+Production setup also requires the `ANDROID_RELEASE_CERT_SHA256` GitHub Environment variable (the expected certificate fingerprint, hexadecimal with or without colons). The release workflow compares the actual APK signer fingerprint against this value before creating the GitHub Release. Obtain the fingerprint from the production certificate/keystore and protect the signing identity; do not copy a fingerprint from an untrusted APK.
