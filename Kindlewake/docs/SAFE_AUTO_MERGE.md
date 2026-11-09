@@ -16,6 +16,8 @@ The `.github/workflows/safe-auto-merge.yml` workflow merges only after the same 
 6. The gate waits for all required workflows, keeps the latest attempt per workflow, and requires the discovered run set to remain stable across repeated polls.
 7. Immediately before merging, it rechecks draft state, mergeability, default-branch target and exact head SHA. The REST merge request includes the expected SHA; a concurrent push is rejected.
 
+The privileged `workflow_run` job is intentionally kicked off by completion of **Build Android APK**. This is a stable sentinel, not an exhaustive check list: once started, the gate discovers all PR-triggered workflows for the exact head SHA and requires them all to pass. New feature-specific PR workflows therefore join the gate automatically without needing to be added to the kickoff list. Keeping an explicit kickoff also prevents the merge workflow from being treated as a push workflow.
+
 The privileged `workflow_run` job does not check out or execute pull-request code. It uses GitHub's Actions REST API because workflow-run jobs do not have local Git metadata. It fails closed on missing core checks, failed or incomplete workflows, stale heads, conflicts, drafts, ambiguous PR discovery, or timeouts.
 
 ## Required repository configuration
