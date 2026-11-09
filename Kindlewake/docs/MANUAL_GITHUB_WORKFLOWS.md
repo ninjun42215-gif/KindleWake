@@ -1,45 +1,51 @@
 # Manual GitHub Workflows — Kindlewake
 
-These workflows are designed for use directly from GitHub Actions. They do not require ChatGPT or another AI assistant. All manual workflows are available from the repository's Actions tab after their workflow files exist on the repository's default branch.
+These tools are launched directly from GitHub Actions and do not require ChatGPT or another AI assistant.
 
-## Launching a workflow
+## How to launch
 
-1. Open the Kindlewake GitHub repository and select **Actions**.
+1. Open the repository and select Actions.
 2. Choose the workflow from the left sidebar.
-3. Select **Run workflow**.
-4. Choose the branch and inputs described below.
-5. Open the run summary and download its artifact report when the run finishes.
+3. Select Run workflow.
+4. Select the branch and fill in the requested inputs.
+5. Read the run summary and download its artifact.
 
-A workflow file added only to a feature branch may run on push or pull-request events, but a new workflow_dispatch workflow generally must first be present on the default branch before GitHub exposes it for manual dispatch. Review and merge the pull request before expecting these new manual tools to appear.
+New workflow_dispatch workflows become available for manual launch after their YAML files are merged into the repository default branch. The PR for this toolbox is separate from the Rune System feature PR.
 
-## Available manual tools
+## Available workflows
 
-### 1. Build Android APK and Source Handoff
+### 1. Build Android APK
 
 File: .github/workflows/build-apk.yml
 
-Use this for complete strict project validation, Android APK candidate build, logs, and a portable source handoff. It can also be launched manually for the selected branch. An APK is uploaded only when the strict build succeeds. A successful CI build is not a substitute for installing and testing on a real Android device.
+Use the existing Build Android APK workflow for strict validation, Android APK export and logs. Select the branch in the Actions UI. The APK is uploaded only if the build succeeds. A successful cloud build is not physical-device QA.
 
-Outputs:
-- Kindlewake-APK (only on success)
-- test-logs
-- Kindlewake-Source-Handoff-Parts
-- Kindlewake-Workflow-Report
+Artifacts: Kindlewake-APK and test-logs.
 
-### 2. Repository Organizer and Structure Audit
+### 2. Manual Source Handoff Snapshot
+
+File: .github/workflows/manual-source-handoff.yml
+
+Use this when you need a portable source snapshot without building an APK. It packages the exact checked-out commit, inventories tracked files, hashes each file and splits the ZIP into parts no larger than 25,000,000 bytes.
+
+Artifacts: Kindlewake-Manual-Source-Handoff, including source_handoff.py, PARTS-MANIFEST.json, SHA256SUMS.txt, REASSEMBLE.txt and the split archive parts.
+
+Download every file into one folder. Do not extract the parts individually. Run the included recovery helper to reassemble and verify the ZIP, then extract into a new empty directory.
+
+### 3. Repository Organizer and Structure Audit
 
 File: .github/workflows/repository-organizer.yml
 
 Inputs:
-- base_branch: exact branch snapshot to inspect
+- base_branch: branch snapshot to inspect
 - mode: audit (default, read-only) or organize
 - confirmation: for organize mode, enter exactly CREATE ORGANIZATION PR
 
-Audit mode reports structure and safe documentation moves without changing files. Organize mode runs only on a new maintenance branch, stages the permitted moves and opens a draft PR. It never commits directly to the selected base branch.
+Audit mode inventories tracked files by category and reports recommendations without changing files. Organize mode uses a separate maintenance branch and opens a draft PR. It never commits directly to the selected base branch.
 
 Current automatic move rule:
 - Standalone Markdown files directly inside Kindlewake/ move into Kindlewake/docs/.
-- README and policy/entry-point files remain at the project root.
+- README and policy/entry-point files stay at the project root.
 - Destination collisions stop the operation and are reported.
 
 Protected from automatic relocation:
@@ -48,11 +54,11 @@ Protected from automatic relocation:
 - assets, data, tests, addons and plugins
 - optional asset archives and build/release configuration
 
-This conservative boundary is intentional: moving Godot resources can break res:// paths, UID references, imports and scene dependencies. To broaden the rules, update repository_organizer.py and its tests first; do not use a blind extension-based move.
+This conservative boundary is intentional: moving Godot resources can break res:// paths, UID references, imports and scene dependencies. Expand the rules only after reviewing references and adding tests. The organizer's report includes category counts and file inventory so future placement rules can be reviewed safely.
 
-Output: Kindlewake-Organization-Report.
+Artifact: Kindlewake-Organization-Report.
 
-### 3. Safe Branch Integration (Prepare Review PR)
+### 4. Safe Branch Integration (Prepare Review PR)
 
 File: .github/workflows/safe-branch-integration.yml
 
@@ -61,36 +67,37 @@ Inputs:
 - target_branch: destination branch (normally main)
 - confirmation: when target_branch is main, enter exactly PREPARE PR FOR main
 
-What it does:
+The workflow:
 1. Fetches the exact source and target refs.
-2. Creates an isolated integration branch from the current target head.
-3. Attempts a non-fast-forward merge on that isolated branch.
-4. If conflicts occur, records conflicting paths and aborts the merge candidate.
-5. If conflict-free, runs source-handoff tests and Android offline preflight.
-6. Pushes only the isolated integration branch and opens a draft PR against the chosen target.
+2. Checks whether the source is already contained in the target.
+3. Creates an isolated integration branch from the current target head.
+4. Attempts a non-fast-forward merge on that isolated branch.
+5. If conflicts occur, records conflicting paths and aborts the candidate.
+6. If conflict-free, runs source-handoff and organizer tests plus Android offline preflight.
+7. Pushes only the isolated integration branch and opens a draft PR against the chosen target.
 
-It NEVER pushes to, resets, force-pushes, or merges directly into the target branch. Review the PR diff, wait for all PR CI checks, resolve review feedback, and perform the final merge manually through GitHub. Device/gameplay review is still required for changes that affect the game.
+It never pushes to, resets, force-pushes or merges directly into the target branch. Review the PR diff, wait for PR CI checks, resolve feedback and perform the final merge manually through GitHub. Device/gameplay review remains necessary for game changes.
 
-Output: Kindlewake-Safe-Merge-Report and a draft PR when all preparation checks pass.
+Artifact: Kindlewake-Safe-Merge-Report.
 
-### 4. Branch Hygiene and Cleanup Recommendations
+### 5. Branch Hygiene and Cleanup Recommendations
 
 File: .github/workflows/branch-hygiene.yml
 
 Inputs:
-- base_branch: branch used to check whether other branches have been integrated
+- base_branch: branch used to determine whether other branches have been integrated
 - stale_days: age threshold for review recommendations (default 60)
 
-The report lists remote branches, latest commit, age, whether each branch is already merged into the selected base, and a suggested next action. It is read-only. It never deletes branches or changes refs. Verify that a branch is no longer needed before deleting it manually.
+The report lists remote branches, latest commit, age, whether each branch is already merged into the selected base, and a suggested next action. It is read-only and never deletes remote branches. Verify open PRs, backup needs and ownership before deleting a branch manually.
 
-Output: Kindlewake-Branch-Hygiene-Report.
+Artifact: Kindlewake-Branch-Hygiene-Report.
 
-### 5. Manual Full Repository Backup
+### 6. Manual Full Repository Backup
 
 File: .github/workflows/manual-full-backup.yml
 
 Inputs:
-- snapshot_branch: branch whose checked-out tracked files become the portable source snapshot
+- snapshot_branch: branch whose tracked files become the portable source snapshot
 - include_all_git_refs: include all fetched branches and tags in the Git bundle (default true)
 
 The artifact contains:
@@ -99,47 +106,30 @@ The artifact contains:
 - a Git bundle containing repository history and refs
 - BACKUP-MANIFEST.json and SHA256SUMS.txt
 
-Verify checksums before restoring. Restore a Git bundle into a new repository or temporary clone first; never overwrite the working copy as the first recovery attempt. A full-history Git bundle may contain secrets that were committed in the past. Keep it private and do not publish it.
+Verify checksums before restoring. Restore a Git bundle into a new repository or temporary clone first; never overwrite the working copy as the first recovery attempt. A full-history bundle may contain secrets committed in the past. Keep it private and never publish it.
 
-Output: Kindlewake-Full-Backup.
+Artifact: Kindlewake-Full-Backup.
 
-### 6. Production Android Release
+### 7. Workflow YAML Lint
 
-File: .github/workflows/publish-android-release.yml
+File: .github/workflows/workflow-lint.yml
 
-This is a separate protected release process. It requires an exact version tag, explicit publish confirmation, protected android-production environment approval, and configured signing secrets/certificate fingerprint. Do not use it for routine APK testing. Never commit signing keys or passwords.
+Runs on pushes, pull requests and manual dispatch. It parses every workflow YAML file so syntax errors are caught early. This validates YAML syntax, not every GitHub Actions semantic, permission or runtime rule.
 
-## Recommended manual operating routine
+## Recommended routine
 
 - Before risky work: run Manual Full Repository Backup.
-- Before moving or reorganizing files: run Repository Organizer in audit mode; inspect the report; then rerun with organize mode if the moves are appropriate.
+- Before moving files: run Repository Organizer in audit mode, inspect the report, then rerun in organize mode if appropriate.
 - Before cleaning branches: run Branch Hygiene and inspect the report. Delete branches manually only after checking open PRs and backup needs.
-- Before integrating a feature: run Safe Branch Integration with the source branch and main as target; inspect the draft PR and require CI/review before merging.
-- Before distributing an APK: run Build Android APK and Source Handoff, verify its checksum/manifest, then install and test on a physical device.
-- After meaningful changes: generate a fresh source handoff and update SESSION_HANDOFF.md and CONTINUATION_PROMPT.md.
+- Before integrating a feature: run Safe Branch Integration with the feature branch as source and main as target. Review the draft PR and require CI/review before merging.
+- Before distributing an APK: run Build Android APK, verify the artifact, then install and test on a physical device.
+- When handing work to another person or AI: run Manual Source Handoff Snapshot and give them the exact commit and recovery instructions.
 
 ## Safety guarantees and limits
 
-- No manual maintenance workflow silently merges into main.
+- No maintenance workflow silently merges into main.
 - Organizer apply mode uses a separate branch and draft PR.
 - Branch cleanup is report-only.
 - Backups and handoffs are tied to exact refs and commits.
-- CI success, merge conflict-free status, and APK export do not prove real-device gameplay quality.
-- These workflows do not replace human review of file moves, branch diffs, licensing, gameplay, or production release approval.
-
-
-## Latest manual workflow implementation checkpoint — 2026-11-10
-The manual workflow set now includes:
-- Repository Organizer and Structure Audit: inventories tracked files by category; reports safe placement recommendations; only moves standalone Markdown docs from Kindlewake/ to Kindlewake/docs/ after explicit confirmation, on a maintenance branch, with a draft PR. Never moves Godot code/resources/assets/data/tests/addons/project settings.
-- Safe Branch Integration: arbitrary source/target refs; detects already-integrated sources; creates an isolated merge candidate; reports and aborts conflicts; runs source handoff and organizer tests plus offline Android preflight; opens a draft PR only. It never writes to the target branch or auto-merges main.
-- Branch Hygiene: reports remote branch age and whether merged into chosen base; read-only, no deletion.
-- Manual Full Repository Backup: portable split source handoff plus verified Git bundle of all fetched refs/tags; the bundle may include previously committed secrets and must remain private.
-- Added repository_organizer.py, branch_hygiene.py, and test_repository_organizer.py.
-- Updated Build Android APK and Source Handoff to run the organizer boundary tests and corrected the source-handoff summary output so it no longer references an undefined REPORT_PATH.
-- Manual workflow instructions: docs/MANUAL_GITHUB_WORKFLOWS.md.
-- Current PR #4 remains a draft against main. The feature branch is 287 commits ahead and 0 behind at the time of this checkpoint. No merge to main was performed.
-- New manual workflow files are present only on the feature branch until PR review/merge. GitHub generally exposes workflow_dispatch in the Actions UI only after the workflow file exists on the default branch. Do not merge automatically.
-- Validation is pending: wait for the updated PR CI run and test each manual workflow after the YAML is available on the default branch. Do not claim the new manual workflows have passed yet.
-
-
-Workflow CI also now has a dedicated workflow-lint job. It parses every YAML file in .github/workflows before relying on the manual maintenance workflows, and its result is included in the portable Kindlewake-Workflow-Report.
+- CI success, conflict-free merge status and APK export do not prove real-device gameplay quality.
+- Human review remains required for file moves, branch diffs, licensing, gameplay and release approval.
