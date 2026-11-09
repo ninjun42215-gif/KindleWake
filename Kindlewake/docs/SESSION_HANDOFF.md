@@ -1,3 +1,7 @@
+# Repository delivery note — v0.7.12 (2026-11-09)
+
+Gameplay remains at v0.7.9. Added `data/continents.json` as a design-only blueprint for four large continents (Eldrimar, Thalassar, Varakhan, Nhalor), 16 subregions, settlement/dungeon hooks and staged travel gates. Expanded GDD section 11.3 with regional exploration, a travel progression inspired by broad genre conventions, and campaign-save requirements. This does not add playable regions or change `data/world.json`, `data/locations.json`, project version, or save schema v2. Runtime tests are deliberately deferred per the user's earlier instruction; do not claim this design-only change was runtime-tested. Repository source remains `Kindlewake/` on `main`; future changes are direct file commits, never routine ZIP uploads.
+
 # Repository delivery note — v0.7.11 (2026-11-09)
 
 Gameplay remains at v0.7.9. The one-time four-part import is complete. GitHub Actions reconstructed `assets/optional_sprite_packs/zxf.zip`, extracted 129 project files, passed the static checker (27 files/classes, 0 errors, 0 warnings), and passed Android offline preflight. The extracted `Kindlewake/` tree on `main` is the canonical source. Temporary upload shards and the one-time import workflow have been removed. Continue by editing and committing ordinary files directly; do not ask for or rebuild a project ZIP for routine work.
