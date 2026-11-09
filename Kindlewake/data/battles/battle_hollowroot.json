@@ -119,5 +119,6 @@
   ],
   "world_flag_on_victory": "dungeon_hollowroot_cleared",
   "victory_text": "The Rootbound Warden falls. The roots loosen their grip on the old watch-post.",
-  "defeat_text": "The guardian holds the chamber. Your company is driven back to the road."
+  "defeat_text": "The guardian holds the chamber. Your company is driven back to the road.",
+  "reward_item": "unique_kingbreaker"
 }
