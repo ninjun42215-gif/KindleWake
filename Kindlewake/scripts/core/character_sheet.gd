@@ -97,8 +97,9 @@ func armor_totals(items: Dictionary) -> Dictionary:
     var r: int = natural_res
     for slot in SLOTS:
         var it: Dictionary = items.get(item_in(slot), {})
-        d += int(it.get("armor_def", 0))
-        r += int(it.get("armor_res", 0))
+        var enhance_mult := 1.0 + float(int(enhancements.get(slot, 0))) * 0.05
+        d += int(round(float(it.get("armor_def", 0)) * enhance_mult))
+        r += int(round(float(it.get("armor_res", 0)) * enhance_mult))
     return {"def": d, "res": r}
 
 
@@ -108,8 +109,11 @@ func total_stats(items: Dictionary, sdefs: Dictionary = {}) -> Dictionary:
     for slot in SLOTS:
         var it: Dictionary = items.get(item_in(slot), {})
         var bonus: Dictionary = it.get("bonus", {})
+        var enhance_mult := 1.0 + float(int(enhancements.get(slot, 0))) * 0.05
         for k in bonus.keys():
-            t[str(k)] = int(t.get(str(k), 0)) + int(bonus[k])
+            t[str(k)] = int(t.get(str(k), 0)) + int(round(float(bonus[k]) * enhance_mult))
+        if slot == "weapon":
+            t["weapon_power_pct"] = int(t.get("weapon_power_pct", 0)) + int(enhancements.get(slot, 0)) * 5
     var mods: Dictionary = sigil_mods(items, sdefs)
     for k in mods.keys():
         var key: String = str(k)
