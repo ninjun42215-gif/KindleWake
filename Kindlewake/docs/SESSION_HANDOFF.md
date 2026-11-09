@@ -208,3 +208,27 @@
 - Production workflow commit `b9b8216fececc479ca9b7a5fe41b2138f6121fb4` refuses to overwrite an existing GitHub Release for the same tag; use a new version tag for every new published release.
 - GitHub exposes `workflow_dispatch` only after a workflow file exists on the default branch. `.github/workflows/publish-android-release.yml` is currently on `feature/rune-system-v1` only. It is intentionally not available for manual dispatch until the reviewed PR is merged to the default branch. Do not merge PR #4 or modify `main` without explicit authorization.
 - No production environment/secrets have been configured by this change; setup remains a GitHub repository administrator action.
+
+
+## Verified AI handoff pipeline (required)
+- Use Kindlewake/tools/source_handoff.py as the canonical portable handoff utility; do not duplicate ad-hoc ZIP splitting code inside workflows.
+- The repository-wide CI packages the exact triggering Git checkout using git ls-files -z, so new/renamed/deleted tracked paths and all branches/PR refs/tags are handled without hard-coded feature lists. The ZIP is a source snapshot, not a Git clone: it intentionally omits Git history, untracked/ignored files, build outputs, caches, symlinks and sensitive key/credential formats. Inspect exclusion rules when adding new secret formats.
+- Each archive includes HANDOFF-METADATA.json (repo/ref/commit/event/run), FILE-MANIFEST.json (per-file size and SHA-256 plus excluded paths/reasons), and AI_NEXT_SESSION.md (first actions, authority rules and stale-snapshot warning).
+- Partitioning is binary and sequential: Kindlewake-Source-Handoff.zip.part001, .part002, etc. Each part must be <=25,000,000 bytes decimal. PARTS-MANIFEST.json records exact ordered names, byte sizes, per-part hashes, total archive size and archive SHA-256. SHA256SUMS.txt is a human-readable checksum companion.
+- The artifact also includes REASSEMBLE.txt. Download every artifact file into one folder; never extract individual parts. Run the helper's reassemble command, then verify --extract-to into a new empty directory. It detects missing/extra/corrupt parts, checks reconstructed archive checksum and ZIP CRC, verifies every tracked file against the internal inventory, rejects path traversal, and refuses extraction over a non-empty directory.
+- Supported recovery environments: Linux, macOS, Android Termux and Windows PowerShell with Python 3. The guide also provides a manual concatenation fallback; helper-based verification remains mandatory.
+- Kindlewake-Source-Handoff-Parts must be uploaded independently of APK success. Never claim it is ready unless artifact upload succeeds and the part manifest confirms every part is within the byte limit.
+- CI now publishes a final workflow result report with exact ref/SHA, job outcomes, artifact expectations and conditional next-step recommendations. For APK success, verify manifest/checksum then proceed to physical-device QA; for APK failure, inspect the first failing step and test logs; for handoff failure, fix packaging before treating the snapshot as transferable.
+- Every receiving AI must read AI_NEXT_SESSION.md plus repository continuation/GDD/session docs, compare snapshot metadata to the live GitHub branch head, inspect latest CI run/PR state, and then act. Do not treat the ZIP as more authoritative than the live repository.
+- After every meaningful implementation, record exact changed paths, commit, tests/results, limitations, artifacts and next priorities in SESSION_HANDOFF.md; produce a fresh verified split handoff from the new commit. Recommend the next action based on evidence, not generic boilerplate. Never modify main, merge PRs, or publish production releases without explicit authorization.
+
+
+## 2026-11-10 — Verified AI handoff and result-driven workflow upgrade
+- Added Kindlewake/tools/source_handoff.py with pack, reassemble and verify commands; standard-library only.
+- Source packaging inventories tracked files, records per-file SHA-256 and size, records exclusions, embeds exact repo/ref/commit/event/run metadata and a generated AI_NEXT_SESSION.md.
+- Binary partitioning remains capped at 25,000,000 bytes per part. PARTS-MANIFEST.json includes ordered part names, sizes and individual hashes plus whole-archive size/hash; SHA256SUMS.txt is included.
+- Recovery checks missing/extra parts, size, hashes, reconstructed ZIP integrity and every tracked file; safe extraction rejects traversal paths and non-empty destination folders. Instructions cover Windows PowerShell, Linux, macOS and Android Termux.
+- Added Kindlewake/tests/test_source_handoff.py for round-trip packing/reassembly/extraction, missing-part rejection and ZIP traversal rejection.
+- Updated .github/workflows/build-apk.yml: handoff tests and packaging run independently of APK success; added a final result-report job with outcome-aware recommendations.
+- Validation status: GitHub Actions must run against the resulting branch-head commit; do not claim the new packer/tests pass until that run succeeds. Physical Android device QA remains separate.
+- Next: inspect the new CI run and uploaded manifest/artifacts; fix any script or YAML errors; verify every part limit and round-trip; then test a handoff download/reconstruction on a second environment. Keep main untouched and PR #4 draft.
