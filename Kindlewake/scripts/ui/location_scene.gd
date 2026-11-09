@@ -275,6 +275,15 @@ func _challenge_boss(spot: Dictionary) -> void:
 
 
 func _open_party() -> void:
+    # Company stores are a staffed service, not a remote menu. The player must
+    # still be beside the actual market/company NPC to open this screen.
+    if near_spot.is_empty() or str(near_spot.get("kind", "")) != "party":
+        hud_text = "The shopkeeper is not available here."
+        return
+    var keeper_id: String = str(near_spot.get("shopkeeper_id", ""))
+    if not bool(near_spot.get("npc_active", true)) or (keeper_id != "" and not bool(GameState.world_flags.get("npc_active_" + keeper_id, true))):
+        spot_text.text += "\n\nThe shopkeeper is away. The market is closed."
+        return
     party_screen.setup(GameState.party, GameData.party_db(), GameData.shop)
     party_screen.open()
 
