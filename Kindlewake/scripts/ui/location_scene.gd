@@ -10,6 +10,7 @@ const PLAYER_RADIUS := 11.0
 const SPOT_RADIUS := 1.6                 # tiles
 
 var maps: Dictionary = {}
+var current_map_id: String = ""
 var lmap: LocalMap
 var camera: Camera2D
 var player_pos: Vector2 = Vector2.ZERO
@@ -54,6 +55,7 @@ func cell_of(pos: Vector2) -> Vector2i:
 
 
 func _load_map(id: String, spawn: Vector2i) -> void:
+    current_map_id = id
     lmap = maps[id]
     var sp: Vector2i = spawn if spawn.x >= 0 else lmap.entry
     player_pos = cell_center(sp)
@@ -289,7 +291,13 @@ func _open_party() -> void:
     if not bool(near_spot.get("npc_active", true)) or (keeper_id != "" and not bool(GameState.world_flags.get("npc_active_" + keeper_id, true))):
         spot_text.text += "\n\nThe shopkeeper is away. The market is closed."
         return
-    party_screen.setup(GameState.party, GameData.party_db(), GameData.shop)
+    var shop_def: Dictionary = GameData.shop.duplicate(true)
+    var regional: Dictionary = shop_def.get("regional_stocks", {})
+    if regional.has(current_map_id):
+        var stock: Dictionary = regional[current_map_id]
+        shop_def["items"] = (stock.get("items", []) as Array).duplicate()
+        shop_def["sigils"] = (stock.get("sigils", shop_def.get("sigils", [])) as Array).duplicate()
+    party_screen.setup(GameState.party, GameData.party_db(), shop_def)
     party_screen.open()
 
 
