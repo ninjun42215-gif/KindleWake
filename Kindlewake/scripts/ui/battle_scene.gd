@@ -520,10 +520,19 @@ func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
         var hit_target: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
         if hit_target != null:
             _add_popup(hit_target, str(data["damage"]) + "*", Color(1.0, 0.55, 0.25))
+            var rune_status: String = str(data.get("status", ""))
+            if rune_status != "":
+                var effect_color := Color(1.0, 0.4, 0.2)
+                if rune_status == "chill": effect_color = Color(0.45, 0.8, 1.0)
+                elif rune_status == "shock": effect_color = Color(1.0, 0.95, 0.35)
+                elif rune_status == "exposed": effect_color = Color(0.85, 0.55, 1.0)
+                _add_popup(hit_target, rune_status.to_upper(), effect_color)
     elif kind == "heal":
         var healed: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
         if healed != null:
             _add_popup(healed, "+" + str(data["amount"]), Color(0.4, 1.0, 0.5))
+            if str(data.get("status", "")) == "regen":
+                _add_popup(healed, "REGEN", Color(0.55, 1.0, 0.65))
 
 
 func _on_battle_ended(_outcome: String) -> void:
