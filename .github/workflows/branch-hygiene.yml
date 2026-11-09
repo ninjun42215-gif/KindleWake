@@ -32,7 +32,7 @@ jobs:
         with:
           ref: ${{ inputs.base_branch }}
           fetch-depth: 0
-          persist-credentials: false
+          persist-credentials: true
 
       - name: Generate branch status and cleanup recommendations
         env:
