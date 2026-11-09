@@ -519,7 +519,7 @@ func _on_battle_ended(_outcome: String) -> void:
 func _show_result() -> void:
     var won: bool = controller.result == "victory"
     result_title.text = "VICTORY" if won else "DEFEAT"
-    result_text.text = "The roadwolves are broken. The road to Eldrimar is open." if won else "The Dunmarrow company has fallen."
+    result_text.text = str(battle_def.get("victory_text", "The roadwolves are broken. The road to Eldrimar is open.")) if won else str(battle_def.get("defeat_text", "The Dunmarrow company has fallen."))
     result_text.text += "\nTurns taken: %d" % controller.turn_count
     if won:
         if str(battle_def.get("id", "")) == BATTLE_ID:
