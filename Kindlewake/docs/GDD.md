@@ -860,3 +860,14 @@ The character sheet includes a Company bond tile with a loyalty value and readab
 - First overworld arrival displays a one-time companion acknowledgement based on the selected outcome. Existing campaign serialization preserves these flags.
 - Headless regression assertions cover all three outcomes, preservation of pre-existing world flags, acknowledgement text and invalid choices.
 - Scope boundary: this is the first playable narrative decision and consequence hand-off, **not** the complete 45–60 minute vertical slice. Escape traversal/battle, persistent journal, first keep restoration decision and first investigation remain future work. No third-party art/audio is introduced.
+
+
+## Opening-hour playable slice — courtyard escape
+
+- After choosing the east-gallery consequence, the player now enters `Escape.tscn` rather than jumping directly to the overworld.
+- The courtyard traversal is touch-first: tap the ground to guide the company through a burning, collapsing estate court to the postern gate. The scene communicates the selected rescue/record outcome in its companion narration.
+- Reaching the gate starts a dedicated tactical encounter, `east_gallery_escape`, built by deep-copying the canonical `battle_01` definition and replacing its battlefield, deployment, briefing and victory/defeat text. Canonical battle data is never mutated.
+- The tactical battle has a distinct courtyard layout and four enemy raiders including a commander. The existing turn-based combat, equipment, rune, party, reward and result systems are reused. Escape victory writes `east_gallery_escaped`; defeat returns the player to the traversal for another attempt. The escape battle cannot be fled.
+- On returning to the overworld after victory, the company receives a one-time authored acknowledgement and the campaign is saved.
+- Regression tests cover battle identity, persistent victory flag, authored text, map dimensions, unit deployment, canonical-data immutability and controller setup.
+- Scope boundary: this completes the opening prologue decision -> traversal -> tactical escape hand-off, not the entire 45–60 minute vertical slice. The persistent journal, first keep restoration decision, investigation, expanded cinematic scenes and physical Android-device QA remain future work.

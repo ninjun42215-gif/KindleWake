@@ -3,6 +3,7 @@ extends SceneTree
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
+const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -31,6 +32,7 @@ func _initialize() -> void:
     _test_progression()
     _test_recruitment()
     _test_prologue()
+    _test_escape_mission()
     _test_sigils()
     _test_runes()
     _test_weapon_skills()
@@ -109,6 +111,35 @@ func _test_prologue() -> void:
     check(str(PrologueSystem.acknowledgement(record)).contains("kept the record"), "record choice receives a later narrative acknowledgement")
     check(str(PrologueSystem.acknowledgement(split)).contains("both lives and truth"), "split choice receives a later narrative acknowledgement")
     check(PrologueSystem.apply_choice(prior, "unknown").is_empty(), "unknown prologue choices are rejected")
+
+
+func _test_escape_mission() -> void:
+    print("[escape mission]")
+    var base: Dictionary = gd.battle_def("battle_01")
+    var original_id: String = str(base.get("id", ""))
+    var original_units: Array = (base.get("units", []) as Array).duplicate(true)
+    var battle: Dictionary = EscapeMissionSystem.build_battle(base)
+    check(str(battle.get("id", "")) == "east_gallery_escape", "escape mission has its own battle identity")
+    check(str(battle.get("world_flag_on_victory", "")) == EscapeMissionSystem.CLEAR_FLAG, "escape victory is wired to a persistent campaign flag")
+    check(str(battle.get("title", "")).contains("Burning Courtyard") and str(battle.get("victory_text", "")).contains("postern"), "escape encounter has authored briefing and victory narrative")
+    check((battle.get("terrain", []) as Array).size() == 14 and str((battle["terrain"] as Array)[0]).length() == 20, "courtyard battlefield is a valid 20x14 grid")
+    var spawn_ok := true
+    var player_count := 0
+    var enemy_count := 0
+    for spawn in battle.get("units", []):
+        var unit: Dictionary = spawn
+        var cell: Array = unit.get("cell", [])
+        if cell.size() != 2 or int(cell[0]) < 0 or int(cell[0]) >= 20 or int(cell[1]) < 0 or int(cell[1]) >= 14:
+            spawn_ok = false
+        if str(unit.get("team", "")) == "player":
+            player_count += 1
+        elif str(unit.get("team", "")) == "enemy":
+            enemy_count += 1
+    check(spawn_ok and player_count == 4 and enemy_count == 4, "all eight escape combatants spawn within the courtyard")
+    check(str(base.get("id", "")) == original_id and (base.get("units", []) as Array) == original_units, "building the escape encounter never mutates canonical battle data")
+    var controller := BattleController.new()
+    controller.setup(battle, gd.as_db(), 77)
+    check(controller.map.width == 20 and controller.map.height == 14 and controller.units.size() == 8, "escape encounter loads into the tactical battle controller")
 
 
 func _test_class_tree() -> void:
