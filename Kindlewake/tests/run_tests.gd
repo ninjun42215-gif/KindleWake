@@ -4,6 +4,8 @@ const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
+const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
+const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -38,6 +40,10 @@ func _initialize() -> void:
     _test_weapon_skills()
     _test_world()
     _test_world_atlas()
+    _test_thalassar_region()
+    _test_wraparound_world()
+    _test_brinegate_quest()
+    _test_region_save_compatibility()
     _test_locations()
     _test_shop_and_screen()
     _test_save_system()
@@ -783,7 +789,7 @@ func _test_world() -> void:
             roads_ok = false
     check(roads_ok, "every road in world.json really connects its two places")
     check(w1.connected(w1.start_cell, w1.place_cell("camp")), "the Roadwolf Camp can be reached on foot from Kaer Sethorn")
-    check(w1.terrain_at(Vector2i(0, 0)) == WorldMap.MOUNTAIN and not w1.walkable(Vector2i(-5, -5)), "the map edge and anything outside it is blocked")
+    check(w1.wrap_enabled and w1.walkable(Vector2i(-1, 0)) and w1.walkable(Vector2i(w1.width, 0)), "the campaign map wraps at every edge instead of blocking movement")
     check(w1.speed_at(w1.start_cell) > 1.0 and WorldMap.SPEED[WorldMap.FOREST] < 1.0 and WorldMap.SPEED[WorldMap.WATER] == 0.0, "roads are fast, forests slow and deep water blocks")
     check(WorldMap.DANGER[WorldMap.FOREST] > WorldMap.DANGER[WorldMap.GRASS] and WorldMap.DANGER[WorldMap.ROAD] < WorldMap.DANGER[WorldMap.GRASS], "forests are more dangerous than grass and roads are safer")
     check(WorldMap.encounter_threshold(cfg, 0.0) == float(cfg["encounter_min"]) and WorldMap.encounter_threshold(cfg, 1.0) == float(cfg["encounter_max"]), "the ambush threshold runs from encounter_min to encounter_max")
@@ -835,6 +841,92 @@ func _test_world_atlas() -> void:
     check(regions_ok, "each continent has at least four named regional territories")
     check(current_ok and str(gd.continents.get("current_continent", "")) == "eldrimar", "existing Sethmarch Frontier remains anchored to current continent Eldrimar")
     check(str(gd.continents.get("world_age", "")) != "" and str(gd.continents.get("central_mystery", "")) != "", "global atlas establishes a shared campaign-age mystery")
+
+func _test_thalassar_region() -> void:
+    print("[Thalassar / Brinegate Coast]")
+    var cfg: Dictionary = gd.thalassar_world
+    check(not cfg.is_empty() and str(cfg.get("name", "")) == "The Brinegate Coast", "Brinegate Coast is loaded as a separate regional world")
+    var coast: WorldMap = WorldMap.generate(cfg)
+    check(coast.width == 64 and coast.height == 48 and coast.tiles.size() == 64 * 48, "Brinegate Coast generates a deterministic 64x48 overworld")
+    var routes_ok := true
+    for raw in cfg.get("roads", []):
+        var pair: Array = raw
+        if not coast.connected(coast.place_cell(str(pair[0])), coast.place_cell(str(pair[1]))):
+            routes_ok = false
+    check(routes_ok, "all Brinegate coastal roads connect their authored destinations")
+    var places_ok := true
+    for raw in cfg.get("places", []):
+        var place: Dictionary = raw
+        if not coast.walkable(coast.place_cell(str(place.get("id", "")))):
+            places_ok = false
+    check(places_ok and coast.connected(coast.start_cell, coast.place_cell("tideglass_grotto")), "the harbour, settlements, ruins and Tideglass Grotto are reachable")
+    var tideglass_battle: Dictionary = gd.battle_def("battle_tideglass")
+    check(not tideglass_battle.is_empty(), "Tideglass Grotto resolves to its own tactical battle")
+    var battle_roster_ok := true
+    for spawn in tideglass_battle.get("units", []):
+        var cid: String = str((spawn as Dictionary).get("character_id", ""))
+        var enemy_def: Dictionary = gd.character_def(cid)
+        if enemy_def.is_empty() or not gd.classes.has(str(enemy_def.get("class_id", ""))) or not gd.weapons.has(str(enemy_def.get("weapon_id", ""))):
+            battle_roster_ok = false
+    check(battle_roster_ok, "every Tideglass combatant resolves to an authored character, class and weapon")
+    check(gd.world_for_region("brinegate_coast").get("name", "") == "The Brinegate Coast" and gd.world_for_region("sethmarch").get("name", "") == gd.world.get("name", ""), "region routing selects Thalassar without mutating Sethmarch data")
+    check(gd.characters.has("maren_vey"), "Maren Vey has a complete recruit character definition")
+    var recruit_party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    var maren: Dictionary = gd.character_def("maren_vey")
+    var locked: Dictionary = RecruitmentSystem.inspect(recruit_party, "maren_vey", maren, {})
+    check(not bool(locked.get("available", true)), "Maren remains unavailable until the Tideglass ledger is recovered")
+    var flags: Dictionary = {"tideglass_grotto_cleared": true, "tideglass_ledger_found": true}
+    var unlocked: Dictionary = RecruitmentSystem.inspect(recruit_party, "maren_vey", maren, flags)
+    check(bool(unlocked.get("available", false)), "recovering the Tideglass ledger unlocks Maren's recruitment")
+    var maps: Dictionary = LocalMap.load_all(gd.locations)
+    var coast_maps_ok := maps.has("brinegate") and maps.has("saltmere") and maps.has("lantern_quay") and maps.has("dungeon_tideglass")
+    check(coast_maps_ok, "Brinegate, Saltmere, Lantern Quay and Tideglass have playable location maps")
+    if maps.has("dungeon_tideglass"):
+        check((maps["dungeon_tideglass"] as LocalMap).kind == "dungeon", "Tideglass is an explorable dungeon, not a static story panel")
+
+
+func _test_wraparound_world() -> void:
+    print("[continuous wraparound world]")
+    var cfg: Dictionary = gd.thalassar_world
+    var coast: WorldMap = WorldMap.generate(cfg)
+    check(coast.wrap_enabled, "campaign world is configured as a continuous wraparound surface")
+    check(is_equal_approx(WorldMap.periodic_noise(0, 13, coast.width, coast.height, 10.0, coast.seed_value), WorldMap.periodic_noise(coast.width, 13, coast.width, coast.height, 10.0, coast.seed_value)), "periodic terrain noise matches exactly across the east/west seam")
+    check(is_equal_approx(WorldMap.periodic_noise(13, 0, coast.width, coast.height, 10.0, coast.seed_value), WorldMap.periodic_noise(13, coast.height, coast.width, coast.height, 10.0, coast.seed_value)), "periodic terrain noise matches exactly across the north/south seam")
+    check(coast.wrap_cell(Vector2i(-1, 7)) == Vector2i(coast.width - 1, 7), "west edge wraps to the east edge")
+    check(coast.wrap_cell(Vector2i(coast.width, 7)) == Vector2i(0, 7), "east edge wraps to the west edge")
+    check(coast.wrap_cell(Vector2i(7, -1)) == Vector2i(7, coast.height - 1), "north edge wraps to the south edge")
+    check(coast.wrap_cell(Vector2i(7, coast.height)) == Vector2i(7, 0), "south edge wraps to the north edge")
+    check(coast.walkable(Vector2i(-1, 12)) and coast.walkable(Vector2i(coast.width, 12)), "the opposite map edges are traversable rather than blocked by a boundary wall")
+    check(coast.connected(Vector2i(0, 12), Vector2i(coast.width - 1, 12)), "pathfinding connectivity crosses the horizontal world seam")
+    check(coast.wrapped_delta(Vector2i(0, 10), Vector2i(coast.width - 1, 10)) == Vector2i(-1, 0), "navigation chooses the short route across the seam")
+    check(coast.wrap_position(Vector2(-1.0, 100.0)).x >= 0.0, "world coordinates normalize safely when saved at the western edge")
+
+
+func _test_brinegate_quest() -> void:
+    print("[Brinegate quest]")
+    var empty: Dictionary = {}
+    check(not BrinegateQuestSystem.can_report_ledger(empty), "the ledger cannot be reported before evidence and guardian are secured")
+    var partial: Dictionary = {"tideglass_ledger_found": true}
+    check(not BrinegateQuestSystem.can_report_ledger(partial), "finding the ledger alone does not complete the grotto operation")
+    var ready_flags: Dictionary = {"tideglass_ledger_found": true, "tideglass_grotto_cleared": true}
+    var public_result: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(ready_flags, "public")
+    var private_result: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(ready_flags, "private")
+    check(bool(public_result.get("ok", false)) and bool((public_result.get("world_flags", {}) as Dictionary).get("brinegate_ledger_shared", false)) and int(public_result.get("gold", -1)) == 0, "public disclosure records the trust outcome without a gold bribe")
+    check(bool(private_result.get("ok", false)) and bool((private_result.get("world_flags", {}) as Dictionary).get("brinegate_ledger_withheld", false)) and int(private_result.get("gold", 0)) == 60, "private handling records a distinct outcome and its 60-gold payment")
+    var duplicate: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(public_result.get("world_flags", {}), "private")
+    check(not bool(duplicate.get("ok", true)), "the harbour decision can only be recorded once")
+    check(not bool(BrinegateQuestSystem.resolve_ledger_choice(ready_flags, "unknown").get("ok", true)), "unknown harbour choices are rejected")
+
+
+func _test_region_save_compatibility() -> void:
+    print("[region save compatibility]")
+    var legacy: Dictionary = RegionSaveState.from_payload({"world_pos": [123.0, 456.0]})
+    check(str(legacy.get("active_region_id", "")) == "sethmarch" and legacy.get("world_pos", Vector2.ZERO) == Vector2(123.0, 456.0), "schema-4 campaign saves restore to Sethmarch without losing their position")
+    check((legacy.get("world_positions", {}) as Dictionary).get("sethmarch", []) == [123.0, 456.0], "legacy saves seed the per-region position table")
+    var coastal: Dictionary = RegionSaveState.from_payload({"world_pos": [8.0, 9.0], "active_region_id": "brinegate_coast", "world_positions": {"sethmarch": [100.0, 200.0]}})
+    check(str(coastal.get("active_region_id", "")) == "brinegate_coast" and coastal.get("world_pos", Vector2.ZERO) == Vector2(8.0, 9.0), "new saves restore the active Thalassar position")
+    check((coastal.get("world_positions", {}) as Dictionary).get("sethmarch", []) == [100.0, 200.0], "switching continents preserves the other region's last position")
+
 
 func _test_locations() -> void:
     print("[towns and interiors]")

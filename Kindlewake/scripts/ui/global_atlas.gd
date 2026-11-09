@@ -9,6 +9,7 @@ var detail_epithet: Label
 var detail_text: Label
 var detail_status: Label
 var detail_locations: Label
+var detail_action_btn: Button
 
 func _ready() -> void:
     _build_interface()
@@ -90,6 +91,11 @@ func _build_interface() -> void:
     route_note.add_theme_font_size_override("font_size", 12)
     route_note.add_theme_color_override("font_color", Color("#a8b5b7"))
     column.add_child(route_note)
+    detail_action_btn = Button.new()
+    detail_action_btn.custom_minimum_size = Vector2(0, 50)
+    detail_action_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    detail_action_btn.pressed.connect(_travel_to_selected)
+    column.add_child(detail_action_btn)
     var scroll := ScrollContainer.new()
     scroll.custom_minimum_size = Vector2(0, 190)
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -137,6 +143,13 @@ func _refresh_selection() -> void:
         str(continent.get("conflict", "")), str(continent.get("campaign_hook", ""))
     ]
     detail_locations.text = "SIGNATURE PLACES\n" + "  •  ".join(continent.get("signature_locations", []))
+    detail_action_btn.visible = false
+    if str(continent.get("id", "")) == "thalassar" and unlocked:
+        detail_action_btn.text = "SAIL TO BRINEGATE COAST"
+        detail_action_btn.visible = true
+    elif str(continent.get("id", "")) == "eldrimar":
+        detail_action_btn.text = "RETURN TO SETHMARCH FRONTIER"
+        detail_action_btn.visible = true
     for i in range(continent_buttons.size()):
         continent_buttons[i].add_theme_color_override("font_color", SELECTED_GOLD if i == selected_index else Color("#d6ded9"))
         continent_buttons[i].add_theme_color_override("font_hover_color", Color("#fff0c8"))
@@ -173,6 +186,22 @@ func _draw() -> void:
             draw_string(ThemeDB.fallback_font, label_pos - Vector2(42, -4), str(continent.get("name", "")), HORIZONTAL_ALIGNMENT_CENTER, 112, 16, Color("#102029"), 5)
             draw_string(ThemeDB.fallback_font, label_pos - Vector2(42, -5), str(continent.get("name", "")), HORIZONTAL_ALIGNMENT_CENTER, 112, 16, Color("#fff0cf"), 4)
     draw_string(ThemeDB.fallback_font, Vector2(rect.position.x + 16, rect.end.y - 18), "THE KNOWN WORLD  •  SEVEN CONTINENTS", HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 32, 14, Color("#b9d0cb"))
+
+func _travel_to_selected() -> void:
+    var atlas: Array = GameData.continents.get("continents", [])
+    if selected_index < 0 or selected_index >= atlas.size():
+        return
+    var continent: Dictionary = atlas[selected_index]
+    var cid: String = str(continent.get("id", ""))
+    if cid == "thalassar" and bool(GameState.world_flags.get("chapter_2_sea_passage", false)):
+        GameState.set_active_region("brinegate_coast")
+    elif cid == "eldrimar":
+        GameState.set_active_region("sethmarch")
+    else:
+        return
+    GameState.save_campaign("auto_a")
+    get_tree().change_scene_to_file(WORLD_SCENE)
+
 
 func _return_to_world() -> void:
     get_tree().change_scene_to_file(WORLD_SCENE)

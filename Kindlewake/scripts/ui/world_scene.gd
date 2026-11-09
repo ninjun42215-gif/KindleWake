@@ -3,6 +3,9 @@ extends Node2D
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
+const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
+const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
+const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
 ## Overworld (Milestone 7, first step): walk freely over the Sallow Marches, find places, get ambushed.
 ## Touch: tap to walk to a spot, hold and drag to steer. Terrain changes speed; forests are more dangerous.
 ## All rules live in WorldMap; battles reuse the battle scene through GameState.start_battle_from_world().
@@ -19,6 +22,7 @@ const TERRAIN_COLORS: Array[Color] = [
     Color("#2d4a63"), Color("#6a7380"), Color("#8a6b4a"), Color("#b78b52"),
 ]
 
+var active_world: Dictionary = {}
 var wmap: WorldMap
 var camera: Camera2D
 var rng := RandomNumberGenerator.new()
@@ -53,11 +57,17 @@ var party_screen: PartyScreenScript
 var minimap_dot: ColorRect
 var campaign_save_timer: float = 0.0
 var creator_screen: Control
+var move_stick: VirtualStick
+var run_btn: Button
+var run_toggled: bool = false
+var moving_vector: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
     rng.randomize()
-    wmap = WorldMap.generate(GameData.world)
+    ExplorationControls.configure()
+    active_world = GameData.world_for_region(GameState.active_region_id)
+    wmap = WorldMap.generate(active_world)
     camera = Camera2D.new()
     add_child(camera)
     camera.make_current()
@@ -67,7 +77,7 @@ func _ready() -> void:
     else:
         player_pos = GameState.world_pos
     camera.position = player_pos
-    next_threshold = WorldMap.encounter_threshold(GameData.world, rng.randf())
+    next_threshold = WorldMap.encounter_threshold(active_world, rng.randf())
     _build_ui()
     _build_minimap()
     _show_prologue_acknowledgement()
@@ -148,7 +158,7 @@ func _process(delta: float) -> void:
     campaign_save_timer += delta
     if campaign_save_timer >= 25.0 and not panel_open and not party_screen.visible:
         campaign_save_timer = 0.0
-        GameState.world_pos = player_pos
+        GameState.world_pos = wmap.wrap_position(player_pos)
         GameState.save_campaign("auto_a")
     if ambush_timer >= 0.0:
         ambush_timer -= delta
@@ -157,8 +167,16 @@ func _process(delta: float) -> void:
         queue_redraw()
         return
     if not panel_open and not party_screen.visible:
-        _move(delta)
+        moving_vector = ExplorationControls.movement_vector()
+        if move_stick != null and move_stick.value.length() > moving_vector.length():
+            moving_vector = move_stick.value
+        if moving_vector.length() > 0.12:
+            _move_direction(delta, moving_vector.normalized())
+        else:
+            _move(delta)
         _update_near()
+        if Input.is_action_just_pressed("interact") and not near_place.is_empty():
+            _on_prompt_pressed()
     camera.position = camera.position.lerp(player_pos, clampf(delta * 8.0, 0.0, 1.0))
     _update_hud()
     queue_redraw()
@@ -173,7 +191,8 @@ func _move(delta: float) -> void:
         has_target = false
         return
     var cell: Vector2i = cell_of(player_pos)
-    var step: float = minf(dist, WALK_SPEED * wmap.speed_at(cell) * delta)
+    var speed_multiplier: float = 1.6 if run_toggled or ExplorationControls.running() else 1.0
+    var step: float = minf(dist, WALK_SPEED * speed_multiplier * wmap.speed_at(cell) * delta)
     var dir: Vector2 = to / dist
     var before: Vector2 = player_pos
     var nx: Vector2 = player_pos + Vector2(dir.x * step, 0.0)
@@ -193,13 +212,40 @@ func _move(delta: float) -> void:
     _accumulate_danger(moved, cell)
 
 
+
+func _move_direction(delta: float, direction: Vector2) -> void:
+    has_target = false
+    var cell := wmap.wrap_cell(cell_of(player_pos))
+    var multiplier: float = 1.6 if run_toggled or ExplorationControls.running() else 1.0
+    var step: float = WALK_SPEED * multiplier * wmap.speed_at(cell) * delta
+    var before := player_pos
+    var nx := player_pos + Vector2(direction.x * step, 0.0)
+    if _free_at(nx):
+        player_pos = nx
+    var ny := player_pos + Vector2(0.0, direction.y * step)
+    if _free_at(ny):
+        player_pos = ny
+    var moved := player_pos.distance_to(before)
+    if moved > 0.01:
+        if absf(direction.x) > 0.12:
+            facing_left = direction.x < 0.0
+        walk_phase += moved * 0.12
+        _accumulate_danger(moved, wmap.wrap_cell(cell_of(player_pos)))
+
+
+func _toggle_run() -> void:
+    run_toggled = not run_toggled
+    if run_btn != null:
+        run_btn.text = "RUN: ON" if run_toggled else "RUN"
+
 func _in_safe_zone(cell: Vector2i) -> bool:
-    var radius: float = float(GameData.world.get("safe_radius", 5))
+    cell = wmap.wrap_cell(cell)
+    var radius: float = float(active_world.get("safe_radius", 5))
     for p in wmap.places:
         var d: Dictionary = p
         var kind: String = str(d.get("kind", ""))
-        if kind == "keep" or kind == "village":
-            if Vector2(cell - wmap.place_cell(str(d.get("id", "")))).length() < radius:
+        if kind == "keep" or kind == "village" or kind == "port":
+            if Vector2(wmap.wrapped_delta(cell, wmap.place_cell(str(d.get("id", ""))))).length() < radius:
                 return true
     return false
 
@@ -210,7 +256,7 @@ func _accumulate_danger(dist: float, cell: Vector2i) -> void:
     danger_accum += dist * wmap.danger_at(cell)
     if danger_accum >= next_threshold:
         danger_accum = 0.0
-        next_threshold = WorldMap.encounter_threshold(GameData.world, rng.randf())
+        next_threshold = WorldMap.encounter_threshold(active_world, rng.randf())
         has_target = false
         pressing = false
         ambush_timer = AMBUSH_DELAY
@@ -227,7 +273,7 @@ func _launch_ambush() -> void:
 
 
 func _go_to_battle(def: Dictionary) -> void:
-    GameState.world_pos = player_pos
+    GameState.world_pos = wmap.wrap_position(player_pos)
     GameState.save_campaign("auto_a")
     GameState.start_battle_from_world(def)
     get_tree().change_scene_to_file("res://Main.tscn")
@@ -235,19 +281,25 @@ func _go_to_battle(def: Dictionary) -> void:
 
 # ------------------------------------------------------------------ places
 
+func _place_world_position(place_cell: Vector2i) -> Vector2:
+    return cell_center(cell_of(player_pos) + wmap.wrapped_delta(wmap.wrap_cell(cell_of(player_pos)), place_cell))
+
+
 func _update_near() -> void:
     var best: Dictionary = {}
     var best_d: float = INTERACT_RADIUS
     for p in wmap.places:
         var d: Dictionary = p
-        var dist: float = cell_center(wmap.place_cell(str(d.get("id", "")))).distance_to(player_pos)
+        var place_cell: Vector2i = wmap.place_cell(str(d.get("id", "")))
+        var dist: float = _place_world_position(place_cell).distance_to(player_pos)
         if dist < best_d:
             best_d = dist
             best = d
     near_place = best
     prompt_btn.visible = not best.is_empty() and not panel_open
     if not best.is_empty():
-        prompt_btn.text = "Enter %s" % str(best.get("name", "place"))
+        var verb: String = "Speak with" if str(best.get("kind", "")) == "charter" else "Enter"
+        prompt_btn.text = "A  %s %s" % [verb, str(best.get("name", "place"))]
 
 
 func _on_prompt_pressed() -> void:
@@ -274,7 +326,14 @@ func _open_place(p: Dictionary, extra: String = "") -> void:
     var town: String = str(p.get("town", ""))
     if town != "" and GameData.locations.get("maps", {}).has(town):
         place_buttons.add_child(_btn("Enter %s" % str(p.get("name", "town")), _enter_town.bind(p), 24))
-    if kind == "gate":
+    if kind == "charter":
+        if not bool(GameState.world_flags.get("east_gallery_escaped", false)):
+            text += "\n\nThe envoy is waiting for proof that the Dunmarrow company survived the escape."
+        elif not bool(GameState.world_flags.get("chapter_2_sea_passage", false)):
+            place_buttons.add_child(_btn("Accept the Tidebound sea charter", _accept_sea_charter.bind(p), 24))
+        else:
+            text += "\n\nThe Tidebound charter is sealed. A ship is waiting at the harbour."
+    elif kind == "gate":
         var gate_flag: String = str(p.get("world_flag", ""))
         if gate_flag != "" and not bool(GameState.world_flags.get(gate_flag, false)):
             place_buttons.add_child(_btn("Pass through the regional gate", _pass_gate.bind(p), 24))
@@ -308,6 +367,13 @@ func _close_place() -> void:
     place_panel.visible = false
 
 
+func _accept_sea_charter(p: Dictionary) -> void:
+    GameState.world_flags["chapter_2_sea_passage"] = true
+    GameState.world_flags["tidebound_charter_accepted"] = true
+    GameState.save_campaign("auto_a")
+    _open_place(p, "Captain Ilyra Venn accepts the seal. The Tidebound Assembly will grant your company passage to Brinegate. The route is now charted.")
+
+
 func _pass_gate(p: Dictionary) -> void:
     var flag: String = str(p.get("world_flag", ""))
     if flag == "":
@@ -319,7 +385,7 @@ func _pass_gate(p: Dictionary) -> void:
 
 ## Walk into a town: the location scene opens the town map; leaving it puts us back just south of the place.
 func _enter_town(p: Dictionary) -> void:
-    GameState.world_pos = player_pos
+    GameState.world_pos = wmap.wrap_position(player_pos)
     GameState.save_campaign("auto_a")
     GameState.pending_location = str(p.get("town", ""))
     GameState.world_pos = cell_center(wmap.place_cell(str(p.get("id", "")))) + Vector2(0, 58)
@@ -359,18 +425,21 @@ func _draw() -> void:
     var vp: Vector2 = get_viewport_rect().size
     var tl: Vector2 = inv * Vector2.ZERO
     var br: Vector2 = inv * vp
-    var x0: int = clampi(floori(tl.x / TILE) - 1, 0, wmap.width - 1)
-    var y0: int = clampi(floori(tl.y / TILE) - 1, 0, wmap.height - 1)
-    var x1: int = clampi(floori(br.x / TILE) + 1, 0, wmap.width - 1)
-    var y1: int = clampi(floori(br.y / TILE) + 1, 0, wmap.height - 1)
+    var x0: int = floori(tl.x / TILE) - 1
+    var y0: int = floori(tl.y / TILE) - 1
+    var x1: int = floori(br.x / TILE) + 1
+    var y1: int = floori(br.y / TILE) + 1
     for y in range(y0, y1 + 1):
         for x in range(x0, x1 + 1):
             _draw_tile(Vector2i(x, y))
     # props (trees, rocks, buildings) and the walker are drawn back to front so they overlap correctly
     var props: Array = _collect_props(x0, y0, x1, y1)
     for p in wmap.places:
-        var pc: Vector2 = cell_center(wmap.place_cell(str((p as Dictionary).get("id", ""))))
-        props.append({"y": pc.y + 26.0, "kind": "place", "place": p})
+        var base_cell: Vector2i = wmap.place_cell(str((p as Dictionary).get("id", "")))
+        var pc: Vector2 = _place_world_position(base_cell)
+        var display_place: Dictionary = (p as Dictionary).duplicate(true)
+        display_place["_render_pos"] = pc
+        props.append({"y": pc.y + 26.0, "kind": "place", "place": display_place})
     props.append({"y": player_pos.y + 6.0, "kind": "player"})
     props.sort_custom(func(a, b): return float(a["y"]) < float(b["y"]))
     for o in props:
@@ -397,8 +466,9 @@ func _collect_props(x0: int, y0: int, x1: int, y1: int) -> Array:
         for x in range(x0, x1 + 1):
             var c := Vector2i(x, y)
             var t: int = wmap.terrain_at(c)
-            var h: float = WorldMap.hash01(x, y, 21)
-            var h2: float = WorldMap.hash01(x, y, 22)
+            var canonical := wmap.wrap_cell(c)
+            var h: float = WorldMap.hash01(canonical.x, canonical.y, 21)
+            var h2: float = WorldMap.hash01(canonical.x, canonical.y, 22)
             var origin := Vector2(float(x), float(y)) * TILE
             if t == WorldMap.FOREST:
                 var name: String = FOREST_SPRITES[int(h * 5.99)]
@@ -416,11 +486,22 @@ func _draw_tile(c: Vector2i) -> void:
     var art: bool = Art.world("pine_a") != null
     var t: int = wmap.terrain_at(c)
     var base: Color = TERRAIN_COLORS[t]
-    var f: float = 0.93 + 0.14 * WorldMap.hash01(c.x, c.y, 3)
+    if GameState.active_region_id == "brinegate_coast":
+        match t:
+            WorldMap.GRASS: base = Color("#779384")
+            WorldMap.FOREST: base = Color("#426b68")
+            WorldMap.HILL: base = Color("#8a9b80")
+            WorldMap.FORD: base = Color("#5b91a0")
+            WorldMap.WATER: base = Color("#285d70")
+            WorldMap.MOUNTAIN: base = Color("#7d8587")
+            WorldMap.ROAD: base = Color("#b59a70")
+            WorldMap.BRIDGE: base = Color("#9c7654")
+    var canonical := wmap.wrap_cell(c)
+    var f: float = 0.93 + 0.14 * WorldMap.hash01(canonical.x, canonical.y, 3)
     var col := Color(base.r * f, base.g * f, base.b * f)
     var origin := Vector2(float(c.x), float(c.y)) * TILE
     draw_rect(Rect2(origin, Vector2(TILE + 0.5, TILE + 0.5)), col)
-    var h: float = WorldMap.hash01(c.x, c.y, 11)
+    var h: float = WorldMap.hash01(canonical.x, canonical.y, 11)
     if art and (t == WorldMap.FOREST or t == WorldMap.MOUNTAIN or t == WorldMap.HILL):
         pass                                  # the sprite props are drawn after the ground
     elif t == WorldMap.FOREST:
@@ -433,7 +514,10 @@ func _draw_tile(c: Vector2i) -> void:
         draw_colored_polygon(PackedVector2Array([origin + Vector2(4, TILE - 4), origin + Vector2(TILE - 4, TILE - 4), origin + Vector2(TILE * 0.5, 6)]), Color(0.46, 0.50, 0.57))
         draw_colored_polygon(PackedVector2Array([origin + Vector2(TILE * 0.38, 18), origin + Vector2(TILE * 0.62, 18), origin + Vector2(TILE * 0.5, 6)]), Color(0.9, 0.92, 0.95))
     elif t == WorldMap.WATER or t == WorldMap.FORD:
-        if h > 0.55:
+        if GameState.active_region_id == "brinegate_coast":
+            draw_line(origin + Vector2(7, 16 + h * 7), origin + Vector2(25, 16 + h * 7), Color(0.82, 0.94, 0.92, 0.25), 1.5)
+            draw_line(origin + Vector2(21, 29 - h * 5), origin + Vector2(39, 29 - h * 5), Color(0.82, 0.94, 0.92, 0.16), 1.0)
+        elif h > 0.55:
             draw_line(origin + Vector2(10, 20), origin + Vector2(26, 20), Color(1, 1, 1, 0.18), 2.0)
     elif t == WorldMap.BRIDGE:
         draw_rect(Rect2(origin + Vector2(0, 6), Vector2(TILE, TILE - 12)), Color(0.55, 0.40, 0.22))
@@ -446,12 +530,20 @@ func _draw_place(p: Dictionary) -> void:
         return
     var id: String = str(p.get("id", ""))
     var kind: String = str(p.get("kind", ""))
-    var c: Vector2 = cell_center(wmap.place_cell(id))
+    var c: Vector2 = p.get("_render_pos", cell_center(wmap.place_cell(id)))
     draw_circle(c + Vector2(0, 14), 26.0, Color(0, 0, 0, 0.22))
     var top: float = 60.0
     if kind == "keep":
         Art.draw_world(self, "keep", c + Vector2(0, 26), 0.85)
         top = 100.0
+    elif kind == "port":
+        draw_rect(Rect2(c + Vector2(-48, 18), Vector2(96, 12)), Color("#7d684e"))
+        draw_line(c + Vector2(-42, 16), c + Vector2(-42, 44), Color("#b99a6b"), 4.0)
+        draw_line(c + Vector2(30, 16), c + Vector2(30, 44), Color("#b99a6b"), 4.0)
+        draw_colored_polygon(PackedVector2Array([c + Vector2(-25, 22), c + Vector2(25, 22), c + Vector2(16, 38), c + Vector2(-16, 38)]), Color("#463d35"))
+        draw_line(c + Vector2(0, 20), c + Vector2(0, -32), Color("#d7c49a"), 3.0)
+        draw_colored_polygon(PackedVector2Array([c + Vector2(2, -30), c + Vector2(24, -18), c + Vector2(2, -6)]), Color("#7aaeb0"))
+        top = 82.0
     elif kind == "village":
         Art.draw_world(self, "house_a", c + Vector2(-28, 14), 0.85)
         Art.draw_world(self, "house_c", c + Vector2(26, 12), 0.85)
@@ -465,6 +557,11 @@ func _draw_place(p: Dictionary) -> void:
     elif kind == "gate":
         Art.draw_world(self, "tower_a", c + Vector2(0, 24), 0.9, Color(0.75, 0.68, 0.48))
         top = 70.0
+    elif kind == "charter":
+        draw_line(c + Vector2(0, 18), c + Vector2(0, -42), Color("#d9c18a"), 4.0)
+        draw_colored_polygon(PackedVector2Array([c + Vector2(2, -38), c + Vector2(34, -24), c + Vector2(2, -8)]), Color("#7aaeb0"))
+        draw_colored_polygon(PackedVector2Array([c + Vector2(-2, -30), c + Vector2(-27, -18), c + Vector2(-2, -5)]), Color("#e4d5b0"))
+        top = 76.0
     elif kind == "camp":
         var cleared: bool = bool(GameState.world_flags.get("camp_cleared", false))
         var tint: Color = Color(0.55, 0.55, 0.55) if cleared else Color(1.0, 0.82, 0.78)
@@ -481,15 +578,26 @@ func _draw_place(p: Dictionary) -> void:
 func _draw_place_fallback(p: Dictionary) -> void:
     var id: String = str(p.get("id", ""))
     var kind: String = str(p.get("kind", ""))
-    var c: Vector2 = cell_center(wmap.place_cell(id))
+    var c: Vector2 = p.get("_render_pos", cell_center(wmap.place_cell(id)))
     draw_circle(c + Vector2(0, 10), 22.0, Color(0, 0, 0, 0.25))
-    if kind == "keep":
+    if kind == "port":
+        draw_rect(Rect2(c + Vector2(-48, 18), Vector2(96, 12)), Color("#7d684e"))
+        draw_line(c + Vector2(-42, 16), c + Vector2(-42, 44), Color("#b99a6b"), 4.0)
+        draw_line(c + Vector2(30, 16), c + Vector2(30, 44), Color("#b99a6b"), 4.0)
+        draw_colored_polygon(PackedVector2Array([c + Vector2(-25, 22), c + Vector2(25, 22), c + Vector2(16, 38), c + Vector2(-16, 38)]), Color("#463d35"))
+        draw_line(c + Vector2(0, 20), c + Vector2(0, -32), Color("#d7c49a"), 3.0)
+        draw_colored_polygon(PackedVector2Array([c + Vector2(2, -30), c + Vector2(24, -18), c + Vector2(2, -6)]), Color("#7aaeb0"))
+    elif kind == "keep":
         draw_rect(Rect2(c + Vector2(-20, -18), Vector2(40, 32)), Color(0.55, 0.55, 0.58))
         draw_rect(Rect2(c + Vector2(-24, -28), Vector2(12, 16)), Color(0.48, 0.48, 0.52))
         draw_rect(Rect2(c + Vector2(12, -28), Vector2(12, 16)), Color(0.48, 0.48, 0.52))
         draw_rect(Rect2(c + Vector2(-6, -2), Vector2(12, 16)), Color(0.15, 0.12, 0.10))
         draw_line(c + Vector2(0, -18), c + Vector2(0, -38), Color(0.8, 0.8, 0.8), 2.0)
         draw_rect(Rect2(c + Vector2(0, -38), Vector2(12, 8)), Color(0.75, 0.62, 0.20))
+    elif kind == "charter":
+        draw_line(c + Vector2(0, 18), c + Vector2(0, -42), Color("#d9c18a"), 4.0)
+        draw_colored_polygon(PackedVector2Array([c + Vector2(2, -38), c + Vector2(34, -24), c + Vector2(2, -8)]), Color("#7aaeb0"))
+        draw_colored_polygon(PackedVector2Array([c + Vector2(-2, -30), c + Vector2(-27, -18), c + Vector2(-2, -5)]), Color("#e4d5b0"))
     elif kind == "village":
         for i in range(3):
             var o := Vector2(-18.0 + 18.0 * float(i), 4.0 - 6.0 * float(i % 2))
@@ -521,7 +629,10 @@ func _draw_player() -> void:
     if Art.unit_sheet("soldier", "idle") != null:
         draw_colored_polygon(_ellipse(p + Vector2(0, 6), 14.0, 5.0), Color(0, 0, 0, 0.35))
         var t: float = float(Time.get_ticks_msec()) / 1000.0
-        Art.draw_unit(self, "soldier", "walk" if has_target and not panel_open else "idle", t, p + Vector2(0, 8), 2.0, facing_left)
+        var moving: bool = (has_target or moving_vector.length() > 0.12) and not panel_open
+        var sprinting: bool = moving and (run_toggled or ExplorationControls.running())
+        var motion_state: String = "run" if sprinting and Art.unit_sheet("soldier", "run") != null else ("walk" if moving else "idle")
+        Art.draw_unit(self, "soldier", motion_state, t, p + Vector2(0, 8), 2.0, facing_left)
         if has_target and not panel_open:
             draw_arc(target, 8.0, 0.0, TAU, 16, Color(1, 1, 1, 0.5), 2.0)
         return
@@ -548,27 +659,20 @@ func _ellipse(center: Vector2, rx: float, ry: float) -> PackedVector2Array:
 # ------------------------------------------------------------------ HUD
 
 func _hud_panel(alpha: float = 0.84) -> PanelContainer:
-    var p := PanelContainer.new()
-    var sb := StyleBoxFlat.new()
-    sb.bg_color = Color(0.09, 0.08, 0.07, alpha)
-    sb.border_color = Color(0.62, 0.52, 0.34, 0.9)
-    sb.set_border_width_all(2)
-    sb.set_corner_radius_all(8)
-    sb.set_content_margin_all(10)
-    p.add_theme_stylebox_override("panel", sb)
-    return p
-
+    var panel := PanelContainer.new()
+    panel.add_theme_stylebox_override("panel", PremiumUITheme.panel_style(alpha))
+    return panel
 
 func _btn(text: String, handler: Callable, font_size: int = 24) -> Button:
-    var b := Button.new()
-    b.text = text
+    var button := Button.new()
+    button.text = text
     var viewport_size: Vector2 = get_viewport().get_visible_rect().size
     var compact: bool = viewport_size.x < 900.0 or viewport_size.y > viewport_size.x * 1.15
-    b.custom_minimum_size = Vector2(clampf(viewport_size.x * 0.42, 210.0, 300.0), 58.0 if compact else 72.0)
-    b.add_theme_font_size_override("font_size", mini(font_size, 19) if compact else font_size)
-    b.pressed.connect(handler)
-    return b
-
+    button.custom_minimum_size = Vector2(clampf(viewport_size.x * 0.42, 210.0, 300.0), 58.0 if compact else 72.0)
+    button.add_theme_font_size_override("font_size", mini(font_size, 19) if compact else font_size)
+    PremiumUITheme.apply_button(button)
+    button.pressed.connect(handler)
+    return button
 
 func _apply_safe_area() -> void:
     if hud_root == null or not is_inside_tree():
@@ -692,6 +796,20 @@ func _build_ui() -> void:
     prompt_btn.grow_horizontal = Control.GROW_DIRECTION_BOTH
     prompt_btn.grow_vertical = Control.GROW_DIRECTION_BEGIN
 
+    move_stick = VirtualStick.new()
+    root.add_child(move_stick)
+    move_stick.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+    move_stick.offset_left = 18
+    move_stick.offset_top = -174
+    move_stick.offset_right = 174
+    move_stick.offset_bottom = -18
+    run_btn = _btn("RUN", _toggle_run, 17)
+    run_btn.custom_minimum_size = Vector2(112, 58)
+    root.add_child(run_btn)
+    run_btn.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 18)
+    run_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    run_btn.grow_vertical = Control.GROW_DIRECTION_BEGIN
+
     # Centre: place panel
     place_panel = _hud_panel(0.97)
     var box := VBoxContainer.new()
@@ -728,13 +846,13 @@ func _open_world_atlas() -> void:
         return
     has_target = false
     pressing = false
-    GameState.world_pos = player_pos
+    GameState.world_pos = wmap.wrap_position(player_pos)
     GameState.save_campaign("auto_a")
     get_tree().change_scene_to_file("res://GlobalAtlas.tscn")
 
 
 func _save_campaign_manual() -> void:
-    GameState.world_pos = player_pos
+    GameState.world_pos = wmap.wrap_position(player_pos)
     if GameState.save_campaign("1"):
         GameState.campaign_slot = "1"
         banner_label.text = "Chronicle saved."
@@ -810,6 +928,13 @@ func _build_minimap() -> void:
 
 
 func _region_name_at(cell: Vector2i) -> String:
+    cell = wmap.wrap_cell(cell)
+    if GameState.active_region_id == "brinegate_coast":
+        if cell.x >= 42 and cell.y <= 27:
+            return "Lantern Reach"
+        if cell.x >= 24 and cell.y >= 24:
+            return "Saltmere Strand"
+        return "Brinegate Coast"
     if cell.x >= 42 and cell.y <= 27:
         return "Orrowen Weald"
     if cell.x >= 35 and cell.y >= 30:
@@ -838,4 +963,4 @@ func _update_hud() -> void:
                 leader_exp_bar.max_value = float(maxi(1, leader.exp_to_next()))
                 leader_exp_bar.value = float(leader.xp)
     if minimap_dot != null:
-        minimap_dot.position = player_pos / TILE * float(MINIMAP_SCALE) - Vector2(3, 3)
+        minimap_dot.position = Vector2(wmap.wrap_cell(cell_of(player_pos))) * float(MINIMAP_SCALE) + Vector2(MINIMAP_SCALE * 0.5 - 3.0, MINIMAP_SCALE * 0.5 - 3.0)

@@ -1800,6 +1800,264 @@
           "world_flag_on_victory": "dungeon_catacombs_cleared"
         }
       ]
+    },
+    "brinegate": {
+      "name": "Brinegate",
+      "kind": "town",
+      "entry": [
+        9,
+        11
+      ],
+      "zoom": 1.2,
+      "rows": [
+        "TTTTTTTTTTTTTTTTTTTT",
+        "T..rrrr....bbbb....T",
+        "T..wwww....wwww....T",
+        "T..................T",
+        "T....,,,,,,,,,,....T",
+        "T....,........,....T",
+        "T....,........,....T",
+        "T....,........,....T",
+        "T....,,,,,,,,,,....T",
+        "T..................T",
+        "T..rrrr......bbbb..T",
+        "T..wwww......wwww..T",
+        "T..................T",
+        "TTTTTTTEEEEEETTTTTTT"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            5,
+            5
+          ],
+          "kind": "choice",
+          "npc": true,
+          "name": "Captain Ilyra Venn",
+          "tint": [
+            0.55,
+            0.82,
+            0.86
+          ],
+          "text": "The Assembly calls this a port. The sailors call it the last honest light before the black current. Three beacon crews vanished in one month.",
+          "dialogue": [
+            "A sealed lighthouse ledger was carried into Tideglass Grotto before the last keeper disappeared.",
+            "Bring the ledger back intact. I will put the truth before the Assembly, even if it costs me my chair."
+          ]
+        },
+        {
+          "cell": [
+            14,
+            5
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Tidebound Factor",
+          "tint": [
+            0.88,
+            0.77,
+            0.55
+          ],
+          "text": "Charts, rope, salt-proof mail and provisions. No one sails the outer shoals without a proper line."
+        },
+        {
+          "cell": [
+            5,
+            9
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Maren Vey",
+          "character_id": "maren_vey",
+          "tint": [
+            0.65,
+            0.82,
+            0.78
+          ],
+          "text": "A quiet pilot who knows the reefs by the sound of water against stone. Maren will only sail with a company that brings the Tideglass ledger back."
+        },
+        {
+          "cell": [
+            14,
+            9
+          ],
+          "kind": "inn",
+          "npc": true,
+          "name": "The Lantern & Keel",
+          "tint": [
+            0.82,
+            0.69,
+            0.56
+          ],
+          "text": "A warm room above the tide stairs. The keeper serves fish stew and keeps a dry chart table."
+        }
+      ]
+    },
+    "saltmere": {
+      "name": "Saltmere",
+      "kind": "town",
+      "entry": [
+        7,
+        11
+      ],
+      "zoom": 1.2,
+      "rows": [
+        "TTTTTTTTTTTTTTTTTTTT",
+        "T..rrrr............T",
+        "T..wwww............T",
+        "T..................T",
+        "T....,,,,,,,,,,....T",
+        "T....,........,....T",
+        "T....,........,....T",
+        "T....,........,....T",
+        "T....,,,,,,,,,,....T",
+        "T..................T",
+        "T........bbbb......T",
+        "T........wwww......T",
+        "T..................T",
+        "TTTTTTTEEEEEETTTTTTT"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            5,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Net-mender Ossa",
+          "tint": [
+            0.74,
+            0.83,
+            0.77
+          ],
+          "text": "The tide pools have gone quiet. Even the gulls avoid the northern rocks. My brother saw lanterns moving under the water."
+        },
+        {
+          "cell": [
+            14,
+            5
+          ],
+          "kind": "inn",
+          "npc": true,
+          "name": "The Brackish Cup",
+          "tint": [
+            0.85,
+            0.74,
+            0.59
+          ],
+          "text": "The keeper offers a dry bed and a bowl of hot shellfish broth."
+        }
+      ]
+    },
+    "lantern_quay": {
+      "name": "Lantern Quay",
+      "kind": "town",
+      "entry": [
+        9,
+        11
+      ],
+      "zoom": 1.2,
+      "rows": [
+        "TTTTTTTTTTTTTTTTTTTT",
+        "T.............rrrr.T",
+        "T.............wwww.T",
+        "T..................T",
+        "T....,,,,,,,,,,....T",
+        "T....,........,....T",
+        "T....,........,....T",
+        "T....,........,....T",
+        "T....,,,,,,,,,,....T",
+        "T..................T",
+        "T..bbbb............T",
+        "T..wwww............T",
+        "T..................T",
+        "TTTTTTTEEEEEETTTTTTT"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            5,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Beacon Apprentice",
+          "tint": [
+            0.9,
+            0.8,
+            0.56
+          ],
+          "text": "The old signal lens was removed three nights before the beacon went dark. The official log says it was never there."
+        },
+        {
+          "cell": [
+            14,
+            5
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Quay Provisioner",
+          "tint": [
+            0.77,
+            0.84,
+            0.87
+          ],
+          "text": "Fresh rope, lamp oil and travel gear for the coast road."
+        }
+      ]
+    },
+    "dungeon_tideglass": {
+      "name": "Tideglass Grotto",
+      "kind": "dungeon",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.25,
+      "rows": [
+        "##############",
+        "#............#",
+        "#............#",
+        "#..#######...#",
+        "#..#.....#...#",
+        "#..#.....#...#",
+        "#..#.....#...#",
+        "#..#######...#",
+        "#............#",
+        "#............#",
+        "#............#",
+        "#######E######"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            3,
+            2
+          ],
+          "kind": "treasure",
+          "name": "Keeper's Strongbox",
+          "npc": false,
+          "text": "Inside is a salt-stained chart and the missing lighthouse ledger. The last page bears the Seven Flames seal, deliberately scraped away.",
+          "reward_gold": 90
+        },
+        {
+          "cell": [
+            10,
+            6
+          ],
+          "kind": "boss",
+          "npc": true,
+          "name": "The Reef Warden",
+          "text": "A former beacon guard stands between you and the outer chamber. He has been ordered to keep the ledger buried, but his hands shake when he sees the seal.",
+          "battle_id": "battle_tideglass",
+          "world_flag_on_victory": "tideglass_grotto_cleared"
+        }
+      ]
     }
   }
 }

@@ -1,6 +1,7 @@
 extends Node
 
 const PartyStateScript = preload("res://scripts/core/party_state.gd")
+const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
@@ -12,11 +13,15 @@ var rng := RandomNumberGenerator.new()
 # Overworld state (Milestone 7). The world scene and the battle scene hand over through these fields.
 var pending_battle: Dictionary = {}      # battle the battle scene should open next (empty = default story battle)
 var from_world: bool = false             # true when the battle was started from the overworld
-var world_pos: Vector2 = Vector2.ZERO    # last overworld position in pixels (ZERO = start at the keep)
+var world_pos: Vector2 = Vector2.ZERO    # active region position in pixels (ZERO = region start)
+var active_region_id: String = "sethmarch"
+var world_positions: Dictionary = {}       # region id -> [x, y], preserving each continent route
 var world_flags: Dictionary = {}         # e.g. "camp_cleared", "found_watch"
 var pending_location: String = ""        # town map the location scene opens next (set by the overworld)
 var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored with battle saves
 var campaign_slot: String = ""
+
+
 
 
 func _ready() -> void:
@@ -42,6 +47,8 @@ func new_game(profile: Dictionary = {}) -> void:
     pending_battle = {}
     from_world = false
     world_pos = Vector2.ZERO
+    active_region_id = "sethmarch"
+    world_positions = {}
     world_flags = {}
     pending_location = ""
 
@@ -60,6 +67,16 @@ func award_battle(units: Array, result: String) -> Dictionary:
 ## A road ambush generated during campaign travel; encounters are part of the world, not a separate mode.
 func travel_encounter_def() -> Dictionary:
     return EncounterBuilderScript.build_skirmish(GameData.encounters, GameData.battles, rng)
+
+
+## Switch regions while preserving the last safe position in each one.
+func set_active_region(region_id: String) -> void:
+    if region_id == "" or region_id == active_region_id:
+        return
+    world_positions[active_region_id] = [world_pos.x, world_pos.y]
+    active_region_id = region_id
+    var saved: Array = world_positions.get(region_id, [])
+    world_pos = Vector2(float(saved[0]), float(saved[1])) if saved.size() >= 2 else Vector2.ZERO
 
 
 ## Called by the overworld: the battle scene picks `def` up when it loads.
@@ -82,6 +99,8 @@ func campaign_payload() -> Dictionary:
         "party": party.to_dict(),
         "creation_profile": creation_profile.duplicate(true),
         "world_pos": [world_pos.x, world_pos.y],
+        "active_region_id": active_region_id,
+        "world_positions": world_positions.duplicate(true),
         "world_flags": world_flags.duplicate(true),
         "from_world": true
     }
@@ -101,9 +120,10 @@ func load_campaign(slot_id: String) -> bool:
     party = PartyStateScript.from_dict(payload["party"])
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
-    var pos: Array = payload.get("world_pos", [0.0, 0.0])
-    if pos.size() >= 2:
-        world_pos = Vector2(float(pos[0]), float(pos[1]))
+    var region_state: Dictionary = RegionSaveState.from_payload(payload)
+    world_pos = region_state["world_pos"]
+    active_region_id = str(region_state["active_region_id"])
+    world_positions = region_state["world_positions"]
     from_world = true
     pending_battle = {}
     pending_location = ""

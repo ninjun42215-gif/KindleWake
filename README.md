@@ -1,10 +1,15 @@
-> **ACTIVE IMPLEMENTATION CHECKPOINT — 2026-11-10:** Main is `b322c86fbb44696dfc85382f49478dcb5bce2cd9` (v0.10.0, Android code 1000, save schema 3). The active candidate is branch `feature/recruitment-system-v1-2026-11-10`; do not describe it as merged until its PR is merged. The candidate bumps the game to v0.11.0, Android code 1100 and save schema 4.
+> **CONSOLIDATED 0.12.0 DEVELOPMENT CANDIDATE — 2026-11-10:** Canonical repository `ninjun42215-gif/KindleWake`; verified `main` baseline is `eb589c08b40b639a83b45bcc8d10718fd8223d7a`, game/Android version `0.11.0 / 1100`, save schema `4`. All new work is isolated on `docs/authoritative-live-handoff-2026-11-10` and consolidated in **one** PR: [#28](https://github.com/ninjun42215-gif/KindleWake/pull/28). Main and its APK have not been changed by this candidate. Do not build, distribute or describe a new APK as released until the full candidate passes CI and the one PR is merged.
 >
-> **Recruitment v1 scope:** the data now defines all 24 Wave-1 named characters (4 starting members + 20 recruitable profiles). Fourteen recruit profiles were added; the six existing recruit definitions were aligned to their intended class/weapon identities. Six muster halls now expose the recruit roster. Recruitment validates duplicate flags, gold costs, story flags and companion prerequisites before atomically adding the member and recording the one-time world flag.
+> **Candidate upgrade:** project version `0.12.0`, Android version code `1200`, save schema remains `4` (new region fields are additive and legacy schema-4 saves default safely to Sethmarch). The overworld now uses a continuous wraparound surface in all four directions, with toroidal pathfinding, seam-aware landmarks, canonical save coordinates and tests for edge traversal. Exploration in the overworld, towns and dungeons now supports controller/keyboard movement, Android virtual-stick movement, contextual A/E interaction and 1.6× sprint via B/Shift or the touch RUN toggle. The branch now contains the approved [Premium Production Bible](Kindlewake/docs/PREMIUM_PRODUCTION_BIBLE.md), a four-direction wraparound overworld with seam-aware navigation, a shared controller-first exploration layer (D-pad/left stick, A/E interact, B/Shift run), Android virtual sticks and run toggles across world/town/dungeon scenes, a separate 64×48 Brinegate Coast overworld, Brinegate/Saltmere/Lantern Quay town maps, Tideglass Grotto dungeon and tactical battle, the Tidebound sea-charter unlock from Eldrimar, region-specific coastal rendering, Maren Vey recruitment, a persistent ledger quest with public/private outcomes, per-region save positions, and automated tests for map connectivity, recruitment, quest idempotency and old-save restoration.
 >
-> **Company bonds:** each CharacterSheet now carries loyalty 0–100, the party screen displays its bond band, and story systems can adjust it through `PartyState.adjust_loyalty()`. Save schema v4 migrates v3 members to neutral loyalty 50 and preserves existing party/world data. Calendar-based desertion, weekly wages, personal-quest scenes and automatic loyalty event changes are not implemented yet; late Act IV recruits remain correctly gated behind the future `act_4_unlocked` flag.
+> **Implementation honesty:** these features exist on the candidate branch but are not yet CI-validated or merged. The rest of Thalassar (Isles of Vey, Kelpward Reach and Deepwake Reach), the Wreck-King's Hold and Old Beacon Vault are still future content; do not present all seven continents as explorable. The production bible is a quality standard, not proof that every proposed portrait, animation, audio cue or asset pack has shipped. Unknown third-party asset licences remain a release blocker.
 >
-> **Validation state:** implementation is committed on the feature branch but has not yet passed its new exact-SHA CI build. The next AI must inspect the branch head, run the full APK workflow and strict tests, fix every failure, then open a PR. Merge only after all four core PR checks and every discovered PR workflow pass for the same exact head SHA. Physical-phone QA remains separate.
+> **Single-delivery rule:** keep improving this same branch and PR #28; do not create separate feature PRs or run an APK release for partial work. Before merge, validate Godot import, the full strict test suite, battle simulation/balance, Android export, YAML lint, version sync and project health on the exact final PR head SHA. Fix failures, refresh the handoff, mark this PR ready, and use the exact-head safe merge guard. Physical Android QA remains separate from CI. The game remains fully offline and must not request INTERNET permission.
+
+
+---
+
+
 
 # KindleWake — The Sundered Vow
 
@@ -13,11 +18,10 @@ Offline-first medieval tactical RPG built with Godot 4.2.2 (GDScript, GL Compati
 ## Live project checkpoint
 
 - Canonical source: tracked files under `Kindlewake/` in `ninjun42215-gif/KindleWake`.
-- Current main: `d25ac6840ab0cdcc339b6fa89ed4ef42dec917dc`; gameplay version 0.10.0; Android code 1000; save schema 3.
-- The current main tree is identical to tested PR head `769022ebee463a35af95e4cd9dfcab7a55e89cb7`.
-- Android build run [42711243963](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42711243963) passed with Godot 4.2.2, 342 strict checks and 0 failures, balance report, signed APK export and no Android permissions.
-- APK artifact ID: `13715144284`; SHA-256: `e1f303c2c9f5ef73b527988636ef5e467f6162ca043c1f443ad3fa33ea833c72`.
-- Verified source handoff run [42711223545](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42711223545) produced 177 tracked files in four parts, each no larger than 25,000,000 bytes. Reassembly, ZIP integrity, file hashes and safe extraction passed.
+- Current `main` commit: `b982f2f665ab9ecf8b3862ca676d61dac55fde96`; its Git tree is identical to the verified pre-candidate baseline `eb589c08b40b639a83b45bcc8d10718fd8223d7a`. Main remains on game version **0.11.0**, Android code **1100**, save schema **4**.
+- The consolidated **0.12.0** candidate is isolated on `docs/authoritative-live-handoff-2026-11-10` and PR **#28**. It adds the playable Brinegate Coast slice, continuous four-edge overworld, premium exploration controls/UI and additive region-save state. It is not released or merged.
+- Latest completed candidate validation is tracked on the PR head; refresh the live PR head and its exact-SHA checks before making release or merge claims. Do not reuse old APK artifact IDs or report a download percentage without a verified current artifact.
+- The single-PR delivery rule is mandatory: finish the candidate, run Godot import/strict tests/balance/Android export/YAML lint/version sync/project health on the exact final PR head, then use the exact-head safe merge guard. Physical-device QA remains a separate release gate.
 
 ## Routine development
 

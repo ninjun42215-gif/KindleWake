@@ -1103,6 +1103,135 @@
           ]
         }
       }
+    },
+    "maren_vey": {
+      "name": "Maren Vey",
+      "class_id": "archer",
+      "level": 4,
+      "house": "thalassar",
+      "weapon_id": "hunting_bow",
+      "armor_def": 3,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 24,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 29,
+        "mp": 4,
+        "str": 5,
+        "dex": 12,
+        "int": 6,
+        "vit": 7,
+        "spd": 10,
+        "lck": 9,
+        "acc": 86,
+        "eva": 18,
+        "ldr": 7,
+        "mor": 62
+      },
+      "loyalty": 74,
+      "roster_wave": 2,
+      "recruit": {
+        "wave": 2,
+        "method": "tideglass_ledger",
+        "cost": 0,
+        "requirements": {
+          "flags_all": [
+            "tideglass_grotto_cleared",
+            "tideglass_ledger_found"
+          ]
+        }
+      }
+    },
+    "reefwarden": {
+      "name": "The Reef Warden",
+      "class_id": "roadreaver",
+      "level": 4,
+      "house": "none",
+      "weapon_id": "battle_axe",
+      "armor_def": 5,
+      "armor_res": 2,
+      "skills": [],
+      "reward": {
+        "exp": 155,
+        "ap": 28,
+        "gold": 105
+      },
+      "stats": {
+        "hp": 50,
+        "mp": 0,
+        "str": 13,
+        "dex": 8,
+        "int": 3,
+        "vit": 11,
+        "spd": 7,
+        "lck": 7,
+        "acc": 84,
+        "eva": 11,
+        "ldr": 6,
+        "mor": 68
+      }
+    },
+    "saltcutthroat": {
+      "name": "Salt-Cut Cutthroat",
+      "class_id": "roadreaver",
+      "level": 3,
+      "house": "none",
+      "weapon_id": "hand_axe",
+      "armor_def": 3,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 55,
+        "ap": 10,
+        "gold": 24
+      },
+      "stats": {
+        "hp": 31,
+        "mp": 0,
+        "str": 9,
+        "dex": 7,
+        "int": 3,
+        "vit": 7,
+        "spd": 8,
+        "lck": 5,
+        "acc": 80,
+        "eva": 12,
+        "ldr": 3,
+        "mor": 48
+      }
+    },
+    "saltbow": {
+      "name": "Salt-Reef Lookout",
+      "class_id": "archer",
+      "level": 3,
+      "house": "none",
+      "weapon_id": "short_bow",
+      "armor_def": 2,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 48,
+        "ap": 9,
+        "gold": 22
+      },
+      "stats": {
+        "hp": 25,
+        "mp": 0,
+        "str": 5,
+        "dex": 11,
+        "int": 3,
+        "vit": 6,
+        "spd": 9,
+        "lck": 6,
+        "acc": 82,
+        "eva": 15,
+        "ldr": 3,
+        "mor": 48
+      }
     }
   }
 }

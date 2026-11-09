@@ -1,6 +1,10 @@
 extends Node2D
 
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
+const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
+const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
+const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
+const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
 ## Towns and building interiors (data/locations.json, rules in LocalMap).
 ## Walk with tap / drag like the overworld. Walking into a door loads the next map (town -> house -> town) inside this
 ## scene; walking onto the exit (E) of a town returns to the overworld. People and objects ("spots") are used with the
@@ -34,9 +38,14 @@ var spot_title: Label
 var spot_text: Label
 var spot_buttons: VBoxContainer
 var party_screen: PartyScreen
+var move_stick: VirtualStick
+var run_btn: Button
+var run_toggled: bool = false
+var moving_vector: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
+    ExplorationControls.configure()
     maps = LocalMap.load_all(GameData.locations)
     camera = Camera2D.new()
     add_child(camera)
@@ -103,8 +112,16 @@ func _process(delta: float) -> void:
     if leaving:
         return
     if not panel_open and not party_screen.visible:
-        _move(delta)
+        moving_vector = ExplorationControls.movement_vector()
+        if move_stick != null and move_stick.value.length() > moving_vector.length():
+            moving_vector = move_stick.value
+        if moving_vector.length() > 0.12:
+            _move_direction(delta, moving_vector.normalized())
+        else:
+            _move(delta)
         _update_near()
+        if Input.is_action_just_pressed("interact") and not near_spot.is_empty():
+            _on_prompt_pressed()
     _update_camera(false)
     _update_hud()
     queue_redraw()
@@ -118,7 +135,8 @@ func _move(delta: float) -> void:
     if dist < 4.0:
         has_target = false
         return
-    var step: float = minf(dist, WALK_SPEED * delta)
+    var multiplier: float = 1.6 if run_toggled or ExplorationControls.running() else 1.0
+    var step: float = minf(dist, WALK_SPEED * multiplier * delta)
     var dir: Vector2 = to / dist
     var before: Vector2 = player_pos
     var nx: Vector2 = player_pos + Vector2(dir.x * step, 0.0)
@@ -138,6 +156,33 @@ func _move(delta: float) -> void:
         last_cell = cell
         _on_enter_cell(cell)
 
+
+
+func _move_direction(delta: float, direction: Vector2) -> void:
+    has_target = false
+    var multiplier: float = 1.6 if run_toggled or ExplorationControls.running() else 1.0
+    var step: float = WALK_SPEED * multiplier * delta
+    var before := player_pos
+    var nx := player_pos + Vector2(direction.x * step, 0.0)
+    if _free_at(nx):
+        player_pos = nx
+    var ny := player_pos + Vector2(0.0, direction.y * step)
+    if _free_at(ny):
+        player_pos = ny
+    if player_pos.distance_to(before) < 0.01:
+        return
+    if absf(direction.x) > 0.12:
+        facing_left = direction.x < 0.0
+    var cell := cell_of(player_pos)
+    if cell != last_cell:
+        last_cell = cell
+        _on_enter_cell(cell)
+
+
+func _toggle_run() -> void:
+    run_toggled = not run_toggled
+    if run_btn != null:
+        run_btn.text = "RUN: ON" if run_toggled else "RUN"
 
 func _on_enter_cell(cell: Vector2i) -> void:
     var door: Dictionary = lmap.door_at(cell)
@@ -177,7 +222,7 @@ func _update_near() -> void:
     prompt_btn.visible = not best.is_empty() and not panel_open
     if not best.is_empty():
         var verb: String = "Talk to" if bool(best.get("npc", false)) else "Use"
-        prompt_btn.text = "%s %s" % [verb, str(best.get("name", ""))]
+        prompt_btn.text = "A  %s %s" % [verb, str(best.get("name", ""))]
 
 
 func _on_prompt_pressed() -> void:
@@ -200,6 +245,14 @@ func _on_prompt_pressed() -> void:
         spot_buttons.add_child(_btn("Open market and company stores", _open_party))
     elif spot_kind == "inn":
         spot_buttons.add_child(_btn("Rest the company — 20 gold", _rest_at_inn))
+    elif spot_kind == "choice":
+        if not BrinegateQuestSystem.can_report_ledger(GameState.world_flags):
+            spot_text.text += "\n\nThe missing lighthouse ledger is still in Tideglass Grotto. Ilyra will not put an incomplete account before the Assembly."
+        elif bool(GameState.world_flags.get("brinegate_ledger_decision", false)):
+            spot_text.text += "\n\nYour decision has been entered into the harbour chronicle."
+        else:
+            spot_buttons.add_child(_btn("Present the ledger publicly", _resolve_brinegate_choice.bind("public")))
+            spot_buttons.add_child(_btn("Keep the Codicil seal private", _resolve_brinegate_choice.bind("private")))
     elif spot_kind == "recruit":
         var cid: String = str(near_spot.get("character_id", ""))
         var definition: Dictionary = GameData.characters.get(cid, {})
@@ -227,6 +280,19 @@ func _on_prompt_pressed() -> void:
     spot_buttons.add_child(_btn("Close", _close_panel))
     spot_panel.visible = true
 
+
+func _resolve_brinegate_choice(choice: String) -> void:
+    var outcome: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(GameState.world_flags, choice)
+    if not bool(outcome.get("ok", false)):
+        spot_text.text += "\n\n" + str(outcome.get("reason", "The decision cannot be made."))
+        return
+    GameState.world_flags = (outcome.get("world_flags", GameState.world_flags) as Dictionary).duplicate(true)
+    GameState.party.gold += int(outcome.get("gold", 0))
+    spot_text.text += "\n\n" + str(outcome.get("text", ""))
+    GameState.save_campaign("auto_a")
+    for child in spot_buttons.get_children():
+        if child is Button and ((child as Button).text.begins_with("Present") or (child as Button).text.begins_with("Keep")):
+            (child as Button).disabled = true
 
 func _close_panel() -> void:
     panel_open = false
@@ -278,6 +344,8 @@ func _claim_treasure(spot: Dictionary) -> void:
         GameState.party.add_item(reward_item, 1)
         loot_text = " You also recover %s." % str(GameData.items[reward_item].get("name", reward_item))
     GameState.world_flags[flag] = true
+    if current_map_id == "dungeon_tideglass":
+        GameState.world_flags["tideglass_ledger_found"] = true
     spot_text.text += "\n\nYou recover %d gold.%s" % [reward, loot_text]
 
 
@@ -500,8 +568,10 @@ func _draw_player() -> void:
     var p: Vector2 = player_pos
     draw_colored_polygon(_ellipse(p + Vector2(0, 6), 14.0, 5.0), Color(0, 0, 0, 0.35))
     var t: float = float(Time.get_ticks_msec()) / 1000.0
-    var walking: bool = has_target and not panel_open
-    if not Art.draw_unit(self, "soldier", "walk" if walking else "idle", t, p + Vector2(0, 8), 2.0, facing_left):
+    var walking: bool = (has_target or moving_vector.length() > 0.12) and not panel_open
+    var sprinting: bool = walking and (run_toggled or ExplorationControls.running())
+    var motion_state: String = "run" if sprinting and Art.unit_sheet("soldier", "run") != null else ("walk" if walking else "idle")
+    if not Art.draw_unit(self, "soldier", motion_state, t, p + Vector2(0, 8), 2.0, facing_left):
         draw_rect(Rect2(p + Vector2(-8, -24), Vector2(16, 28)), Color(0.22, 0.50, 0.88))
 
 
@@ -516,27 +586,20 @@ func _ellipse(center: Vector2, rx: float, ry: float) -> PackedVector2Array:
 # ------------------------------------------------------------------ HUD
 
 func _hud_panel(alpha: float = 0.84) -> PanelContainer:
-    var p := PanelContainer.new()
-    var sb := StyleBoxFlat.new()
-    sb.bg_color = Color(0.09, 0.08, 0.07, alpha)
-    sb.border_color = Color(0.62, 0.52, 0.34, 0.9)
-    sb.set_border_width_all(2)
-    sb.set_corner_radius_all(8)
-    sb.set_content_margin_all(10)
-    p.add_theme_stylebox_override("panel", sb)
-    return p
-
+    var panel := PanelContainer.new()
+    panel.add_theme_stylebox_override("panel", PremiumUITheme.panel_style(alpha))
+    return panel
 
 func _btn(text: String, handler: Callable, font_size: int = 24) -> Button:
-    var b := Button.new()
-    b.text = text
+    var button := Button.new()
+    button.text = text
     var viewport_size: Vector2 = get_viewport().get_visible_rect().size
     var compact: bool = viewport_size.x < 900.0 or viewport_size.y > viewport_size.x * 1.15
-    b.custom_minimum_size = Vector2(clampf(viewport_size.x * 0.42, 210.0, 300.0), 58.0 if compact else 72.0)
-    b.add_theme_font_size_override("font_size", mini(font_size, 19) if compact else font_size)
-    b.pressed.connect(handler)
-    return b
-
+    button.custom_minimum_size = Vector2(clampf(viewport_size.x * 0.42, 210.0, 300.0), 58.0 if compact else 72.0)
+    button.add_theme_font_size_override("font_size", mini(font_size, 19) if compact else font_size)
+    PremiumUITheme.apply_button(button)
+    button.pressed.connect(handler)
+    return button
 
 func _apply_safe_area() -> void:
     if hud_root == null or not is_inside_tree():
@@ -604,6 +667,20 @@ func _build_ui() -> void:
     prompt_btn.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM, Control.PRESET_MODE_MINSIZE, 16)
     prompt_btn.grow_horizontal = Control.GROW_DIRECTION_BOTH
     prompt_btn.grow_vertical = Control.GROW_DIRECTION_BEGIN
+
+    move_stick = VirtualStick.new()
+    root.add_child(move_stick)
+    move_stick.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+    move_stick.offset_left = 18
+    move_stick.offset_top = -174
+    move_stick.offset_right = 174
+    move_stick.offset_bottom = -18
+    run_btn = _btn("RUN", _toggle_run, 17)
+    run_btn.custom_minimum_size = Vector2(112, 58)
+    root.add_child(run_btn)
+    run_btn.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 18)
+    run_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    run_btn.grow_vertical = Control.GROW_DIRECTION_BEGIN
 
     spot_panel = _hud_panel(0.97)
     var box := VBoxContainer.new()
