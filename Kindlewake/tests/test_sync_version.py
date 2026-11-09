@@ -19,6 +19,10 @@ class VersionSyncTests(unittest.TestCase):
         (project / "README.md").write_text(
             f"# Kindlewake: The Sundered Vow (v{readme_version})\n", encoding="utf-8"
         )
+        (project / "scripts" / "core").mkdir(parents=True)
+        (project / "scripts" / "core" / "save_system.gd").write_text(
+            'const SAVE_VERSION := 3\nconst GAME_VERSION := "0.1.0"\n', encoding="utf-8"
+        )
         (project / "export_presets.cfg").write_text(
             f'[preset.0.options]\nversion/code={code}\nversion/name="{export_version}"\n',
             encoding="utf-8",
@@ -32,6 +36,7 @@ class VersionSyncTests(unittest.TestCase):
             self.assertIn("(v0.9.0)", updates[project / "README.md"])
             self.assertIn('version/name="0.9.0"', updates[project / "export_presets.cfg"])
             self.assertIn("version/code=900", updates[project / "export_presets.cfg"])
+            self.assertIn('const GAME_VERSION := "0.9.0"', updates[project / "scripts" / "core" / "save_system.gd"])
 
     def test_apply_then_check_is_idempotent(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -43,6 +48,22 @@ class VersionSyncTests(unittest.TestCase):
                 path for path, content in MODULE.synchronized_contents(project).items()
                 if path.read_text(encoding="utf-8") != content
             ])
+
+    def test_save_metadata_is_synchronized_without_changing_save_schema(self):
+        with tempfile.TemporaryDirectory() as temp:
+            project = self.fixture(Path(temp), version="0.10.0")
+            updates = MODULE.synchronized_contents(project)
+            save_text = updates[project / "scripts" / "core" / "save_system.gd"]
+            self.assertIn('const GAME_VERSION := "0.10.0"', save_text)
+            self.assertIn("const SAVE_VERSION := 3", save_text)
+
+    def test_missing_save_version_constant_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            project = self.fixture(Path(temp))
+            save_file = project / "scripts" / "core" / "save_system.gd"
+            save_file.write_text("const SAVE_VERSION := 3\n", encoding="utf-8")
+            with self.assertRaises(ValueError):
+                MODULE.synchronized_contents(project)
 
     def test_semver_components_outside_mapping_are_rejected(self):
         with tempfile.TemporaryDirectory() as temp:

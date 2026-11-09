@@ -17,13 +17,15 @@ VERSION_RE = re.compile(r'^config/version="(\d+)\.(\d+)\.(\d+)"$', re.M)
 README_RE = re.compile(r'^(# Kindlewake:.*?\(v)\d+\.\d+\.\d+(\).*)$', re.M)
 EXPORT_NAME_RE = re.compile(r'^version/name="[^"]*"$', re.M)
 EXPORT_CODE_RE = re.compile(r'^version/code=\d+$', re.M)
+SAVE_GAME_VERSION_RE = re.compile(r'^const GAME_VERSION := "[^"]*"$', re.M)
 
 
 def synchronized_contents(project_dir: Path) -> dict[Path, str]:
     project_file = project_dir / "project.godot"
     readme_file = project_dir / "README.md"
     export_file = project_dir / "export_presets.cfg"
-    for path in (project_file, readme_file, export_file):
+    save_system_file = project_dir / "scripts" / "core" / "save_system.gd"
+    for path in (project_file, readme_file, export_file, save_system_file):
         if not path.is_file():
             raise ValueError(f"Required version file is missing: {path}")
 
@@ -52,7 +54,18 @@ def synchronized_contents(project_dir: Path) -> dict[Path, str]:
     updated_export = EXPORT_NAME_RE.sub(f'version/name="{version}"', export_text, count=1)
     updated_export = EXPORT_CODE_RE.sub(f"version/code={version_code}", updated_export, count=1)
 
-    return {readme_file: updated_readme, export_file: updated_export}
+    save_system_text = save_system_file.read_text(encoding="utf-8")
+    if len(SAVE_GAME_VERSION_RE.findall(save_system_text)) != 1:
+        raise ValueError("scripts/core/save_system.gd must contain exactly one GAME_VERSION constant")
+    updated_save_system = SAVE_GAME_VERSION_RE.sub(
+        f'const GAME_VERSION := "{version}"', save_system_text, count=1
+    )
+
+    return {
+        readme_file: updated_readme,
+        export_file: updated_export,
+        save_system_file: updated_save_system,
+    }
 
 
 def main() -> int:
