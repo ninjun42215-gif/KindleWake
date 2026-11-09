@@ -88,6 +88,9 @@ static func sell_rune(party: PartyState, inv_index: int, db: Dictionary, shop: D
     if inv_index < 0 or inv_index >= party.sigil_inv.size():
         return "That rune is not in the bag."
     var inst: Dictionary = party.sigil_inv[inv_index]
+    var rune_def: Dictionary = (db.get("runes", db.get("sigils", {})) as Dictionary).get(str(inst.get("id", "")), {})
+    if bool(rune_def.get("unique", false)) or bool(rune_def.get("heirloom", false)):
+        return "Unique and heirloom runes cannot be sold."
     var price: int = sigil_price(str(inst.get("id", "")), db)
     if price <= 0:
         return "That cannot be sold."
