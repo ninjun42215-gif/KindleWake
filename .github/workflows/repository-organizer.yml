@@ -63,6 +63,9 @@ jobs:
           set -euo pipefail
           git switch -c "$MAINTENANCE_BRANCH" "origin/$BASE_BRANCH"
 
+      - name: Test organizer safety boundaries
+        run: python3 -m unittest discover -s Kindlewake/tests -p 'test_repository_organizer.py' -v
+
       - name: Run structure audit or safe organization
         env:
           MODE: ${{ inputs.mode }}
