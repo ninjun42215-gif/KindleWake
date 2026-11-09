@@ -295,7 +295,7 @@ func _on_attack_camp(p: Dictionary) -> void:
 
 
 func _open_party() -> void:
-    party_screen.setup(GameState.party, GameData.party_db(), GameData.shop)
+    party_screen.setup(GameState.party, GameData.party_db(), {}, false)
     party_screen.open()
 
 
