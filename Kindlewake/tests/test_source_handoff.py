@@ -1,3 +1,4 @@
+import hashlib
 import json
 import subprocess
 import sys
@@ -47,10 +48,14 @@ class SourceHandoffTests(unittest.TestCase):
     def test_missing_part_is_rejected(self):
         with tempfile.TemporaryDirectory() as temp:
             folder = Path(temp)
+            helper = folder / "source_handoff.py"
+            helper.write_bytes(SCRIPT.read_bytes())
+            helper_sha = hashlib.sha256(helper.read_bytes()).hexdigest()
             (folder / "PARTS-MANIFEST.json").write_text(json.dumps({
                 "parts": [{"name": "Kindlewake-Source-Handoff.zip.part001",
                            "size_bytes": 1, "sha256": "0" * 64}],
-                "part_limit_bytes": 25000000
+                "part_limit_bytes": 25000000,
+                "recovery_tool": {"name": "source_handoff.py", "sha256": helper_sha}
             }))
             result = self.run_tool("reassemble", "--parts-dir", folder,
                                    "--output", folder / "out.zip", expect=1)
