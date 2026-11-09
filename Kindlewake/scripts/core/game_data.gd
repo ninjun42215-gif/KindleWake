@@ -6,7 +6,7 @@ const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 
 const DATA_DIR := "res://data/"
 ## Listed explicitly (instead of scanning the folder) so it also works inside exported builds.
-const BATTLE_FILES := ["battle_01", "battle_hollowroot", "battle_bell", "battle_catacombs"]
+const BATTLE_FILES := ["battle_01", "battle_hollowroot", "battle_bell", "battle_catacombs", "battle_tideglass"]
 
 var classes: Dictionary = {}
 var terrain: Dictionary = {}
@@ -22,7 +22,8 @@ var shop: Dictionary = {}                # shop.json: stock lists and sell ratio
 var start: Dictionary = {}               # campaign_start.json: starting party, gold, inventory
 var locations: Dictionary = {}           # locations.json: town and interior maps
 var character_creation: Dictionary = {}   # protagonist creator options and stat effects
-var world: Dictionary = {}               # world.json: the current regional overworld
+var world: Dictionary = {}               # world.json: the Eldrimar regional overworld
+var thalassar_world: Dictionary = {}     # thalassar_world.json: Brinegate Coast
 var continents: Dictionary = {}          # continents.json: the seven-continent campaign atlas
 var battles: Dictionary = {}
 
@@ -48,6 +49,7 @@ func reload() -> void:
     shop = _load_json("shop.json")
     start = _load_json("campaign_start.json")
     world = _load_json("world.json")
+    thalassar_world = _load_json("thalassar_world.json")
     continents = _load_json("continents.json")
     locations = _load_json("locations.json")
     character_creation = _load_json("character_creation.json")
@@ -91,6 +93,11 @@ func party_db() -> Dictionary:
 
 func battle_def(battle_id: String) -> Dictionary:
     return battles.get(battle_id, {})
+
+
+## Resolve the campaign region without mutating the canonical Eldrimar world data.
+func world_for_region(region_id: String) -> Dictionary:
+    return thalassar_world if region_id == "brinegate_coast" and not thalassar_world.is_empty() else world
 
 
 func class_def(class_id: String) -> Dictionary:
