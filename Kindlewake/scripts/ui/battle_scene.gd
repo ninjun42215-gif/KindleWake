@@ -67,6 +67,8 @@ var btn_auto: Button
 var result_panel: PanelContainer
 var result_title: Label
 var result_text: Label
+var result_scroll: ScrollContainer
+var prep_scroll: ScrollContainer
 var prep_panel: PanelContainer          # shown before every battle: briefing, Party / Gear / Shop, Begin
 var prep_title: Label
 var prep_text: Label
@@ -422,18 +424,8 @@ func _on_zoom_out() -> void:
     _set_zoom(camera.zoom.x / 1.15)
 
 
-func _on_skirmish_pressed() -> void:
-    battle_def = GameState.skirmish_def()
-    _start_battle()
-
-
 func _on_world_pressed() -> void:
     get_tree().change_scene_to_file("res://World.tscn")
-
-
-func _on_story_pressed() -> void:
-    battle_def = GameData.battle_def(BATTLE_ID)
-    _start_battle()
 
 
 func _on_restart_pressed() -> void:
@@ -1036,6 +1028,36 @@ func _apply_safe_area() -> void:
     hud_root.offset_right = -r
     hud_root.offset_bottom = -b
 
+    # Reflow key HUD elements for narrow phones without shrinking the game world.
+    var vw: float = get_viewport().get_visible_rect().size.x
+    var vh: float = get_viewport().get_visible_rect().size.y
+    var compact: bool = vw < 900.0
+    if info_label != null:
+        info_label.custom_minimum_size = Vector2(clampf(vw * 0.27, 190.0, 330.0), 0.0)
+        info_label.add_theme_font_size_override("font_size", 16 if compact else 20)
+    if log_label != null:
+        log_label.custom_minimum_size = Vector2(clampf(vw * 0.25, 170.0, 370.0), 0.0)
+        log_label.add_theme_font_size_override("font_size", 14 if compact else 18)
+    if preview_label != null:
+        preview_label.custom_minimum_size = Vector2(clampf(vw * 0.48, 250.0, 440.0), 0.0)
+        preview_label.add_theme_font_size_override("font_size", 16 if compact else 20)
+    var action_width: float = clampf(vw * 0.19, 138.0, 230.0)
+    var action_height: float = clampf(vh * 0.09, 54.0, 76.0)
+    for action in [btn_move, btn_attack, btn_skill, btn_wait]:
+        if action != null:
+            action.custom_minimum_size = Vector2(action_width, action_height)
+            action.add_theme_font_size_override("font_size", 18 if compact else 25)
+    if btn_confirm != null:
+        btn_confirm.custom_minimum_size = Vector2(clampf(vw * 0.22, 150.0, 250.0), clampf(vh * 0.10, 58.0, 84.0))
+    if btn_cancel != null:
+        btn_cancel.custom_minimum_size = Vector2(clampf(vw * 0.16, 120.0, 180.0), clampf(vh * 0.10, 58.0, 84.0))
+    if result_scroll != null:
+        result_scroll.custom_minimum_size = Vector2(clampf(vw * 0.78, 280.0, 660.0), clampf(vh * 0.28, 130.0, 190.0))
+        result_text.custom_minimum_size = Vector2(clampf(vw * 0.76, 260.0, 640.0), 0.0)
+    if prep_scroll != null:
+        prep_scroll.custom_minimum_size = Vector2(clampf(vw * 0.78, 280.0, 660.0), clampf(vh * 0.25, 120.0, 170.0))
+        prep_text.custom_minimum_size = Vector2(clampf(vw * 0.76, 260.0, 640.0), 0.0)
+
 
 func _build_ui() -> void:
     var layer := CanvasLayer.new()
@@ -1150,27 +1172,24 @@ func _build_ui() -> void:
     result_title = Label.new()
     result_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     result_title.add_theme_font_size_override("font_size", 44)
-    var rscroll := ScrollContainer.new()
-    rscroll.custom_minimum_size = Vector2(660, 190)
-    rscroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    result_scroll = ScrollContainer.new()
+    result_scroll.custom_minimum_size = Vector2(660, 190)
+    result_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     result_text = Label.new()
     result_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     result_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     result_text.custom_minimum_size = Vector2(640, 0)
     result_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     result_text.add_theme_font_size_override("font_size", 21)
-    rscroll.add_child(result_text)
+    result_scroll.add_child(result_text)
     var rgrid := GridContainer.new()
     rgrid.columns = 2
     rgrid.add_theme_constant_override("h_separation", 10)
     rgrid.add_theme_constant_override("v_separation", 10)
-    rgrid.add_child(_make_button("Party, Gear and Shop", _on_party_pressed, Vector2(320, 72), 22))
-    rgrid.add_child(_make_button("Skirmish (grind)", _on_skirmish_pressed, Vector2(320, 72), 22))
-    rgrid.add_child(_make_button("Story Battle", _on_story_pressed, Vector2(320, 72), 22))
-    rgrid.add_child(_make_button("Restart Battle", _on_restart_pressed, Vector2(320, 72), 22))
-    rgrid.add_child(_make_button("Back to the World", _on_world_pressed, Vector2(320, 72), 22))
+    rgrid.add_child(_make_button("Company • Gear • Sigils", _on_party_pressed, Vector2(320, 72), 22))
+    rgrid.add_child(_make_button("Continue Journey", _on_world_pressed, Vector2(320, 72), 22))
     rbox.add_child(result_title)
-    rbox.add_child(rscroll)
+    rbox.add_child(result_scroll)
     rbox.add_child(rgrid)
     result_panel.add_child(rbox)
     root.add_child(result_panel)
@@ -1189,16 +1208,16 @@ func _build_ui() -> void:
     prep_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     prep_title.custom_minimum_size = Vector2(640, 0)
     prep_title.add_theme_font_size_override("font_size", 36)
-    var pscroll := ScrollContainer.new()
-    pscroll.custom_minimum_size = Vector2(660, 170)
-    pscroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    prep_scroll = ScrollContainer.new()
+    prep_scroll.custom_minimum_size = Vector2(660, 170)
+    prep_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     prep_text = Label.new()
     prep_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     prep_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     prep_text.custom_minimum_size = Vector2(640, 0)
     prep_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     prep_text.add_theme_font_size_override("font_size", 21)
-    pscroll.add_child(prep_text)
+    prep_scroll.add_child(prep_text)
     var prow := HBoxContainer.new()
     prow.alignment = BoxContainer.ALIGNMENT_CENTER
     prow.add_theme_constant_override("separation", 10)
@@ -1207,7 +1226,7 @@ func _build_ui() -> void:
     btn_flee = _make_button("Back to the World", _on_world_pressed, Vector2(320, 80), 22)
     prow.add_child(btn_flee)
     pbox.add_child(prep_title)
-    pbox.add_child(pscroll)
+    pbox.add_child(prep_scroll)
     pbox.add_child(prow)
     prep_panel.add_child(pbox)
     root.add_child(prep_panel)
@@ -1319,7 +1338,12 @@ func _info_text() -> String:
     if u.team == "player":
         var sh: CharacterSheet = GameState.party.sheet(u.character_id)
         if sh != null:
-            lv_line += "   EXP %d/%d" % [sh.xp, sh.exp_to_next()]
+            if sh.level >= CharacterSheet.MAX_LEVEL:
+                lv_line += "   MAX LEVEL"
+            else:
+                var need: int = sh.exp_to_next()
+                var pct: int = roundi(float(sh.xp) * 100.0 / float(maxi(1, need)))
+                lv_line += "   EXP %d/%d (%d%%)" % [sh.xp, need, pct]
     lines.append(lv_line)
     lines.append("HP %d/%d   MP %d/%d" % [u.hp, u.max_hp(), u.mp, u.stat("mp")])
     lines.append("ATK %d  DEF %d  SPD %d  MOV %d" % [roundi(CombatCalc.attack_power(u, w)), roundi(CombatCalc.defense(u, "physical")), u.stat("spd"), u.move])
