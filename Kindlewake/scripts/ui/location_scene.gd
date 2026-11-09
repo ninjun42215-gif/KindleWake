@@ -2,6 +2,8 @@ extends Node2D
 
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
+const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
+const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 ## Towns and building interiors (data/locations.json, rules in LocalMap).
 ## Walk with tap / drag like the overworld. Walking into a door loads the next map (town -> house -> town) inside this
 ## scene; walking onto the exit (E) of a town returns to the overworld. People and objects ("spots") are used with the
@@ -35,9 +37,14 @@ var spot_title: Label
 var spot_text: Label
 var spot_buttons: VBoxContainer
 var party_screen: PartyScreen
+var move_stick: VirtualStick
+var run_btn: Button
+var run_toggled: bool = false
+var moving_vector: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
+    ExplorationControls.configure()
     maps = LocalMap.load_all(GameData.locations)
     camera = Camera2D.new()
     add_child(camera)
@@ -104,7 +111,13 @@ func _process(delta: float) -> void:
     if leaving:
         return
     if not panel_open and not party_screen.visible:
-        _move(delta)
+        moving_vector = ExplorationControls.movement_vector()
+        if move_stick != null and move_stick.value.length() > moving_vector.length():
+            moving_vector = move_stick.value
+        if moving_vector.length() > 0.12:
+            _move_direction(delta, moving_vector.normalized())
+        else:
+            _move(delta)
         _update_near()
     _update_camera(false)
     _update_hud()
@@ -119,7 +132,8 @@ func _move(delta: float) -> void:
     if dist < 4.0:
         has_target = false
         return
-    var step: float = minf(dist, WALK_SPEED * delta)
+    var multiplier: float = 1.6 if run_toggled or ExplorationControls.running() else 1.0
+    var step: float = minf(dist, WALK_SPEED * multiplier * delta)
     var dir: Vector2 = to / dist
     var before: Vector2 = player_pos
     var nx: Vector2 = player_pos + Vector2(dir.x * step, 0.0)
@@ -139,6 +153,33 @@ func _move(delta: float) -> void:
         last_cell = cell
         _on_enter_cell(cell)
 
+
+
+func _move_direction(delta: float, direction: Vector2) -> void:
+    has_target = false
+    var multiplier: float = 1.6 if run_toggled or ExplorationControls.running() else 1.0
+    var step: float = WALK_SPEED * multiplier * delta
+    var before := player_pos
+    var nx := player_pos + Vector2(direction.x * step, 0.0)
+    if _free_at(nx):
+        player_pos = nx
+    var ny := player_pos + Vector2(0.0, direction.y * step)
+    if _free_at(ny):
+        player_pos = ny
+    if player_pos.distance_to(before) < 0.01:
+        return
+    if absf(direction.x) > 0.12:
+        facing_left = direction.x < 0.0
+    var cell := cell_of(player_pos)
+    if cell != last_cell:
+        last_cell = cell
+        _on_enter_cell(cell)
+
+
+func _toggle_run() -> void:
+    run_toggled = not run_toggled
+    if run_btn != null:
+        run_btn.text = "RUN: ON" if run_toggled else "RUN"
 
 func _on_enter_cell(cell: Vector2i) -> void:
     var door: Dictionary = lmap.door_at(cell)
@@ -524,7 +565,7 @@ func _draw_player() -> void:
     var p: Vector2 = player_pos
     draw_colored_polygon(_ellipse(p + Vector2(0, 6), 14.0, 5.0), Color(0, 0, 0, 0.35))
     var t: float = float(Time.get_ticks_msec()) / 1000.0
-    var walking: bool = has_target and not panel_open
+    var walking: bool = (has_target or moving_vector.length() > 0.12) and not panel_open
     if not Art.draw_unit(self, "soldier", "walk" if walking else "idle", t, p + Vector2(0, 8), 2.0, facing_left):
         draw_rect(Rect2(p + Vector2(-8, -24), Vector2(16, 28)), Color(0.22, 0.50, 0.88))
 
@@ -628,6 +669,20 @@ func _build_ui() -> void:
     prompt_btn.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM, Control.PRESET_MODE_MINSIZE, 16)
     prompt_btn.grow_horizontal = Control.GROW_DIRECTION_BOTH
     prompt_btn.grow_vertical = Control.GROW_DIRECTION_BEGIN
+
+    move_stick = VirtualStick.new()
+    root.add_child(move_stick)
+    move_stick.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+    move_stick.offset_left = 18
+    move_stick.offset_top = -174
+    move_stick.offset_right = 174
+    move_stick.offset_bottom = -18
+    run_btn = _btn("RUN", _toggle_run, 17)
+    run_btn.custom_minimum_size = Vector2(112, 58)
+    root.add_child(run_btn)
+    run_btn.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 18)
+    run_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    run_btn.grow_vertical = Control.GROW_DIRECTION_BEGIN
 
     spot_panel = _hud_panel(0.97)
     var box := VBoxContainer.new()
