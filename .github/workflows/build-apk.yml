@@ -1,5 +1,5 @@
 # Builds the Android installer from the extracted Godot source tree.
-# First run "Extract Godot Project into Repository" after uploading the latest Kindlewake_Project.zip.
+# The extracted Kindlewake/ source tree is canonical; no project ZIP upload is required.
 name: Build Android APK
 
 on:
@@ -23,7 +23,7 @@ jobs:
         run: |
           set -euo pipefail
           test -f Kindlewake/project.godot || {
-            echo "::error::Kindlewake source tree is missing. Upload the latest Kindlewake_Project.zip and run the 'Extract Godot Project into Repository' workflow first."
+            echo "::error::Kindlewake source tree is missing. Restore the project files under Kindlewake/ before running the Android build."
             exit 1
           }
           test -f Kindlewake/tools/build_apk.py
