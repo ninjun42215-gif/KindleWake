@@ -11,7 +11,7 @@ signal app_paused
 
 const SAVE_DIR := "user://saves/"
 const SAVE_VERSION := 4
-const GAME_VERSION := "0.11.0"
+const GAME_VERSION := "0.12.0"
 const AUTOSAVE_SLOTS := ["auto_a", "auto_b"]
 
 
