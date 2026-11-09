@@ -15,7 +15,7 @@ Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Ne
 - Three matching runes can be fused with a chance of increasing grade; failed fusion returns one rune at its original grade.
 - Rune stock is restricted to named regional specialist merchants.
 - Flame/Frost/Storm/Holy/Shadow/Mending runes add combat statuses, life drain or regeneration; grade increases rune power.
-- Original 8×6 rune atlas SVG; optional third-party asset archives remain excluded pending licence checks.
+- Original 10×6 rune atlas SVG; optional third-party asset archives remain excluded pending licence checks.
 - See docs/SESSION_HANDOFF.md for branch validation and merge requirements.
 - New title menu: New Game, Continue, Load Game and Settings.
 - Campaign saves preserve the party, protagonist choices, overworld position and regional flags. The overworld autosaves periodically and before travel transitions.
