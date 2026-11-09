@@ -185,3 +185,6 @@ The manual workflow set now includes:
 - Current PR #4 remains a draft against main. The feature branch is 287 commits ahead and 0 behind at the time of this checkpoint. No merge to main was performed.
 - New manual workflow files are present only on the feature branch until PR review/merge. GitHub generally exposes workflow_dispatch in the Actions UI only after the workflow file exists on the default branch. Do not merge automatically.
 - Validation is pending: wait for the updated PR CI run and test each manual workflow after the YAML is available on the default branch. Do not claim the new manual workflows have passed yet.
+
+
+Workflow CI also now has a dedicated workflow-lint job. It parses every YAML file in .github/workflows before relying on the manual maintenance workflows, and its result is included in the portable Kindlewake-Workflow-Report.
