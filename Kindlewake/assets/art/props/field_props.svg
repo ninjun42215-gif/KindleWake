@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<defs>
+ <linearGradient id="stone" x2="0" y2="1"><stop stop-color="#9a9a83"/><stop offset="1" stop-color="#454c49"/></linearGradient>
+ <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#9b7045"/><stop offset="1" stop-color="#493020"/></linearGradient>
+ <linearGradient id="leaf" x2="0" y2="1"><stop stop-color="#71915c"/><stop offset="1" stop-color="#263f32"/></linearGradient>
+ <linearGradient id="glow" x2="0" y2="1"><stop stop-color="#fff1a2"/><stop offset="1" stop-color="#e46d2d"/></linearGradient>
+ <filter id="shadow"><feGaussianBlur stdDeviation="3"/></filter>
+</defs>
+<!-- 4x4 original prop atlas, 128px cells -->
+<g stroke="#252b2a" stroke-width="4" stroke-linejoin="round">
+<!-- 0 ancient arch -->
+<g transform="translate(0 0)"><ellipse cx="64" cy="111" rx="42" ry="8" fill="#161c1c" opacity=".45" filter="url(#shadow)"/><path d="M22 112V48Q22 12 64 12t42 36v64H84V49Q84 32 64 32T44 49v63Z" fill="url(#stone)"/><path d="M17 44h94v15H17zM17 103h22v13H17zm56 0h38v13H73z" fill="#aaa78b"/><path d="M48 58h32v48H48z" fill="#182328"/><path d="M56 66h16v40H56z" fill="#28383a"/></g>
+<!-- 1 broken column -->
+<g transform="translate(128 0)"><ellipse cx="64" cy="113" rx="35" ry="7" fill="#161c1c" opacity=".45"/><path d="M35 35l57-8 7 15-6 61-54 5-9-63z" fill="url(#stone)"/><path d="M29 30l68-9 10 15-72 11zM32 104l63-7 7 13-66 8z" fill="#aaa78b"/><path d="M40 47l13 4-7 43-10-2zm36-8l10 1-6 54-9 1z" fill="#c0b99a" opacity=".6"/><path d="M38 29l14-12 13 9 13-14 18 10" fill="none" stroke="#333a39" stroke-width="5"/></g>
+<!-- 2 rune stone -->
+<g transform="translate(256 0)"><ellipse cx="64" cy="112" rx="37" ry="8" fill="#161c1c" opacity=".5"/><path d="M27 108l5-70 32-25 33 25 8 70z" fill="url(#stone)"/><path d="M64 28l-13 28 13 9-14 27 15-9 14-25-13-9 12-21" fill="none" stroke="#79d7d0" stroke-width="6"/><path d="M39 102h50" stroke="#c1b999" stroke-width="4"/></g>
+<!-- 3 torch -->
+<g transform="translate(384 0)"><path d="M59 112V46h10v66" fill="url(#wood)"/><path d="M48 50h32l-5 9H53z" fill="#b08b58"/><path d="M64 44Q39 26 60 4q-2 17 10 17 13-15 12 1 0 13-18 22z" fill="url(#glow)" stroke="#7d422b"/><path d="M64 38q-8-12 1-20 1 9 8 11-1 6-9 9" fill="#fff4c0" stroke="none"/></g>
+<!-- 4 reeds -->
+<g transform="translate(0 128)"><path d="M22 111q14-40 10-86M42 112q18-55 9-91M66 112q-3-51 11-89M89 112q-5-45 13-70" fill="none" stroke="#9da66b" stroke-width="7"/><path d="M30 36q-20-4-18-22 17 2 18 22m3 18q20-16 27-2-12 15-27 2m20-21q-4-20 10-29 8 17-10 29m26 45q17-17 30-8-10 17-30 8" fill="#557b4d"/><path d="M10 112h96" stroke="#4b5e42" stroke-width="7"/></g>
+<!-- 5 crystal cluster -->
+<g transform="translate(128 128)"><ellipse cx="64" cy="112" rx="40" ry="7" fill="#161c1c" opacity=".5"/><path d="M20 108l14-38 17 38zm24 0l9-72 21 72zm29 0l18-52 16 52z" fill="#63a9bb" stroke="#244b59" stroke-width="4"/><path d="M54 42l9-6 7 72H54zM91 59l10-3-4 52H82z" fill="#b7edf0" opacity=".7" stroke="none"/></g>
+<!-- 6 grave marker -->
+<g transform="translate(256 128)"><ellipse cx="64" cy="112" rx="38" ry="8" fill="#161c1c" opacity=".5"/><path d="M36 110V54Q36 18 64 18t28 36v56z" fill="url(#stone)"/><path d="M64 34v54m-17-27h34" stroke="#c7c4a6" stroke-width="7"/><path d="M28 108h72v9H28z" fill="#777c71"/></g>
+<!-- 7 banner -->
+<g transform="translate(384 128)"><path d="M34 115V8h8v107" fill="#745232"/><path d="M42 16h65l-13 23 13 22H42z" fill="#853f3b"/><path d="M55 26l11 9-11 10 11 9 11-9-11-10" fill="none" stroke="#e3c887" stroke-width="4"/><path d="M42 61l10 10 10-8 10 8 10-8 12 8 10-9" fill="none" stroke="#592d2b" stroke-width="4"/></g>
+<!-- 8 mushrooms -->
+<g transform="translate(0 256)"><path d="M34 111V77h10v34m29 0V65h10v46" fill="#d8c5a0"/><path d="M16 80q1-36 24-36t24 36z" fill="#a64c3e"/><path d="M58 68q1-32 21-32t23 32z" fill="#c18b52"/><g fill="#f1d9ad" stroke="none"><circle cx="31" cy="60" r="4"/><circle cx="46" cy="70" r="3"/><circle cx="73" cy="51" r="4"/><circle cx="89" cy="60" r="3"/></g><path d="M14 111h91" stroke="#40513d" stroke-width="5"/></g>
+<!-- 9 stump -->
+<g transform="translate(128 256)"><path d="M26 108l9-50 55-5 13 55z" fill="url(#wood)"/><ellipse cx="63" cy="53" rx="28" ry="13" fill="#bd9864"/><ellipse cx="63" cy="53" rx="16" ry="7" fill="none" stroke="#785033" stroke-width="3"/><path d="M36 68l-7 35m55-42 11 40" stroke="#c3945b" stroke-width="5"/></g>
+<!-- 10 barrel -->
+<g transform="translate(256 256)"><path d="M31 39q32-18 65 0l-4 66q-30 18-57 0z" fill="url(#wood)"/><ellipse cx="63" cy="39" rx="32" ry="12" fill="#c49a64"/><path d="M29 51h68m-69 42h67" stroke="#c0a06d" stroke-width="7"/><path d="M48 33v75m31-75v75" stroke="#5a3925" stroke-width="3"/></g>
+<!-- 11 crate -->
+<g transform="translate(384 256)"><path d="M22 47l42-19 42 19v55l-42 20-42-20z" fill="url(#wood)"/><path d="M22 47l42 20 42-20M64 67v55M30 52l68 45M98 52L30 97" fill="none" stroke="#d0a46c" stroke-width="6"/><path d="M48 38l16-7 16 7-16 8z" fill="#e1bd83"/></g>
+<!-- 12 campfire -->
+<g transform="translate(0 384)"><path d="M27 107l67-28m-62 0 61 31" stroke="#69452b" stroke-width="10"/><path d="M64 88Q25 64 54 35q-2 20 11 23 22-24 22 2 0 19-23 28" fill="url(#glow)" stroke="#a34c2c" stroke-width="4"/><path d="M63 80q-9-15 3-27 1 13 10 15-2 9-13 12" fill="#fff3b4" stroke="none"/></g>
+<!-- 13 frost pine -->
+<g transform="translate(128 384)"><path d="M64 115V40" stroke="#61462d" stroke-width="9"/><path d="M64 5L25 65h22L16 91h96L81 65h22z" fill="#315b55"/><path d="M64 5L25 65h22L16 91h96L81 65h22z" fill="none" stroke="#c8e3e0" stroke-width="5" stroke-dasharray="7 8"/><path d="M34 62l30-49 28 49" fill="none" stroke="#e8f1e7" stroke-width="4"/></g>
+<!-- 14 statue -->
+<g transform="translate(256 384)"><path d="M27 113h74l-8-16H35z" fill="#858979"/><path d="M42 98V51l22-25 22 25v47z" fill="url(#stone)"/><circle cx="64" cy="35" r="17" fill="#a9a891"/><path d="M52 33h24M64 50v35m-18-14h36" stroke="#d2c7a2" stroke-width="5"/><path d="M53 16l11-12 11 12" fill="#a9a891"/></g>
+<!-- 15 flower -->
+<g transform="translate(384 384)"><path d="M64 112V56" stroke="#567a45" stroke-width="5"/><g fill="#d58a9b"><ellipse cx="64" cy="36" rx="8" ry="18"/><ellipse cx="64" cy="36" rx="8" ry="18" transform="rotate(72 64 36)"/><ellipse cx="64" cy="36" rx="8" ry="18" transform="rotate(144 64 36)"/><ellipse cx="64" cy="36" rx="8" ry="18" transform="rotate(216 64 36)"/><ellipse cx="64" cy="36" rx="8" ry="18" transform="rotate(288 64 36)"/></g><circle cx="64" cy="36" r="7" fill="#e9c76f"/><path d="M64 82q-25-20-30-5 12 16 30 5" fill="#73945b"/></g>
+</g></svg>

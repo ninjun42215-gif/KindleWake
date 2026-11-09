@@ -298,18 +298,38 @@ func try_skill(unit: BattleUnit, skill_id: String, target: BattleUnit) -> bool:
     unit.facing = BattleMap.facing_from_delta(target.cell - unit.cell) if target.cell != unit.cell else unit.facing
     var healed: int = target.hp - before
     log_message.emit("%s casts %s on %s (+%d HP)." % [unit.display_name, str(sk.get("name", skill_id)), target.display_name, healed])
-    unit_acted.emit(unit.id, "heal", {"target_id": target.id, "amount": healed})
+    var heal_effect: Dictionary = sk.get("rune_effect", {})
+    if not heal_effect.is_empty() and rng.randi_range(1, 100) <= int(heal_effect.get("chance", 100)):
+        target.statuses[str(heal_effect.get("status", "regen"))] = {"turns": int(heal_effect.get("turns", 2)), "heal": int(heal_effect.get("heal", 2))}
+    unit_acted.emit(unit.id, "heal", {"target_id": target.id, "amount": healed, "status": str(heal_effect.get("status", ""))})
     state_changed.emit()
     return true
 
 
 func _cast_damage(unit: BattleUnit, skill_id: String, sk: Dictionary, target: BattleUnit) -> bool:
     var res: Dictionary = CombatCalc.skill_resolve(unit, target, sk, skill_id, rng, weapon_of(unit))
+    var rune_effect: Dictionary = sk.get("rune_effect", {})
+    var applied_status := ""
+    if not rune_effect.is_empty() and rng.randi_range(1, 100) <= int(rune_effect.get("chance", 0)):
+        applied_status = str(rune_effect.get("status", ""))
+        if applied_status != "":
+            var status_data: Dictionary = {"turns": int(rune_effect.get("turns", 1))}
+            if rune_effect.has("damage"):
+                status_data["damage"] = int(rune_effect["damage"])
+            if rune_effect.has("heal"):
+                status_data["heal"] = int(rune_effect["heal"])
+            target.statuses[applied_status] = status_data
+    var drain_pct: int = int(rune_effect.get("drain_pct", 0))
+    if drain_pct > 0:
+        var drained: int = mini(unit.max_hp() - unit.hp, int(floor(float(res["damage"]) * float(drain_pct) / 100.0)))
+        unit.hp += drained
+        if drained > 0:
+            log_message.emit("%s drains %d vitality." % [unit.display_name, drained])
     unit.mp -= int(sk.get("mp", 0))
     unit.has_acted = true
     unit.facing = BattleMap.facing_from_delta(target.cell - unit.cell)
     log_message.emit("%s uses %s on %s for %d." % [unit.display_name, str(sk.get("name", skill_id)), target.display_name, int(res["damage"])])
-    unit_acted.emit(unit.id, "skill_damage", {"target_id": target.id, "damage": int(res["damage"]), "killed": bool(res["killed"])})
+    unit_acted.emit(unit.id, "skill_damage", {"target_id": target.id, "damage": int(res["damage"]), "killed": bool(res["killed"]), "status": applied_status})
     if bool(res["killed"]):
         log_message.emit("%s is defeated!" % target.display_name)
         unit.kills += 1
@@ -360,6 +380,8 @@ func _start_next_turn() -> void:
     nxt.has_moved = false
     nxt.has_acted = false
     turn_count += 1
+    if _tick_rune_statuses(nxt):
+        return
     if nxt.morale <= 0 and _skip_guard < 64:
         _skip_guard += 1
         log_message.emit("%s is routed and cannot act." % nxt.display_name)
@@ -368,6 +390,41 @@ func _start_next_turn() -> void:
         return
     _skip_guard = 0
     state_changed.emit()
+
+
+func _tick_rune_statuses(unit: BattleUnit) -> bool:
+    var skip_turn := false
+    var keys: Array = unit.statuses.keys()
+    for key in keys:
+        var status: String = str(key)
+        var data: Dictionary = unit.statuses.get(status, {})
+        if status == "burn":
+            var damage: int = int(data.get("damage", 2))
+            unit.hp = maxi(0, unit.hp - damage)
+            log_message.emit("%s takes %d burn damage." % [unit.display_name, damage])
+        elif status == "regen":
+            var healing: int = mini(unit.max_hp() - unit.hp, int(data.get("heal", 2)))
+            unit.hp += healing
+            if healing > 0:
+                log_message.emit("%s recovers %d HP." % [unit.display_name, healing])
+        elif status == "shock":
+            skip_turn = true
+        var turns: int = int(data.get("turns", 1)) - 1
+        if turns <= 0:
+            unit.statuses.erase(status)
+        else:
+            data["turns"] = turns
+            unit.statuses[status] = data
+    if not unit.is_alive():
+        log_message.emit("%s falls from rune affliction." % unit.display_name)
+        _check_end()
+        return true
+    if skip_turn:
+        log_message.emit("%s is stunned by the Storm Rune and loses the turn." % unit.display_name)
+        unit.ctb = TurnQueue.ACTION_BASE / unit.effective_spd()
+        _start_next_turn()
+        return true
+    return false
 
 
 func _apply_kill_morale(killer: BattleUnit, victim: BattleUnit) -> void:

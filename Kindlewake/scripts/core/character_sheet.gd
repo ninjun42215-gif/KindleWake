@@ -3,6 +3,7 @@ extends RefCounted
 
 const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
+const RuneSystemScript = preload("res://scripts/core/rune_system.gd")
 ## Persistent character: class, level, EXP, base stats, skills and equipment.
 ## A BattleUnitScript is a per-battle snapshot built from `to_battle_def()`; formulas stay in CombatCalcScript.
 ## `db` arguments are the dictionaries from GameData.as_db(): they need "items", "weapons" and "classes".
@@ -28,12 +29,13 @@ var equipment: Dictionary = {}           # slot -> item id ("" = empty)
 var natural_def: int = 0                 # only for characters without an equipment block (generic enemies)
 var natural_res: int = 0
 var fallback_weapon_id: String = ""      # same: weapon of characters without an equipment block
-var sigils: Dictionary = {"weapon": [], "armor": []}   # group -> Array of sigil instances ({"id","ap"}; {} = empty socket)
+var sigils: Dictionary = {"weapon": [], "armor": []}
+var enhancements: Dictionary = {}  # equipment slot -> +0..+15   # group -> Array of sigil instances ({"id","ap"}; {} = empty socket)
 var reward: Dictionary = {}              # enemies only: {"exp","ap","gold"} paid when defeated
 
 
 static func from_def(char_id: String, def: Dictionary) -> CharacterSheet:
-    var s := CharacterSheet.new()
+    var s = load("res://scripts/core/character_sheet.gd").new()
     s.character_id = char_id
     s.display_name = str(def.get("name", char_id))
     s.house = str(def.get("house", ""))
@@ -58,6 +60,7 @@ static func from_def(char_id: String, def: Dictionary) -> CharacterSheet:
         s.natural_def = int(def.get("armor_def", 0))
         s.natural_res = int(def.get("armor_res", 0))
         s.fallback_weapon_id = str(def.get("weapon_id", ""))
+    s.enhancements = (def.get("enhancements", {}) as Dictionary).duplicate(true)
     s.reward = (def.get("reward", {}) as Dictionary).duplicate()
     var sg: Dictionary = def.get("sigils", {})
     for group in SIGIL_GROUPS:
@@ -94,8 +97,9 @@ func armor_totals(items: Dictionary) -> Dictionary:
     var r: int = natural_res
     for slot in SLOTS:
         var it: Dictionary = items.get(item_in(slot), {})
-        d += int(it.get("armor_def", 0))
-        r += int(it.get("armor_res", 0))
+        var enhance_mult := 1.0 + float(int(enhancements.get(slot + "|" + item_in(slot), 0))) * 0.05
+        d += int(round(float(it.get("armor_def", 0)) * enhance_mult))
+        r += int(round(float(it.get("armor_res", 0)) * enhance_mult))
     return {"def": d, "res": r}
 
 
@@ -105,8 +109,11 @@ func total_stats(items: Dictionary, sdefs: Dictionary = {}) -> Dictionary:
     for slot in SLOTS:
         var it: Dictionary = items.get(item_in(slot), {})
         var bonus: Dictionary = it.get("bonus", {})
+        var enhance_mult := 1.0 + float(int(enhancements.get(slot, 0))) * 0.05
         for k in bonus.keys():
-            t[str(k)] = int(t.get(str(k), 0)) + int(bonus[k])
+            t[str(k)] = int(t.get(str(k), 0)) + int(round(float(bonus[k]) * enhance_mult))
+        if slot == "weapon":
+            t["weapon_power_pct"] = int(t.get("weapon_power_pct", 0)) + int(enhancements.get(slot + "|" + item_in(slot), 0)) * 5
     var mods: Dictionary = sigil_mods(items, sdefs)
     for k in mods.keys():
         var key: String = str(k)
@@ -277,7 +284,7 @@ func to_dict() -> Dictionary:
         "character_id": character_id, "name": display_name, "house": house, "class_id": class_id,
         "level": level, "xp": xp, "base_stats": base_stats.duplicate(), "skills": skills.duplicate(),
         "equipment": equipment.duplicate(), "natural_def": natural_def, "natural_res": natural_res,
-        "fallback_weapon_id": fallback_weapon_id, "sigils": sigils.duplicate(true), "reward": reward.duplicate(),
+        "fallback_weapon_id": fallback_weapon_id, "sigils": sigils.duplicate(true), "enhancements": enhancements.duplicate(true), "reward": reward.duplicate(),
     }
 
 
@@ -306,6 +313,7 @@ static func from_dict(d: Dictionary) -> CharacterSheet:
     s.natural_res = int(d.get("natural_res", 0))
     s.fallback_weapon_id = str(d.get("fallback_weapon_id", ""))
     s.reward = (d.get("reward", {}) as Dictionary).duplicate()
+    s.enhancements = (d.get("enhancements", {}) as Dictionary).duplicate(true)
     var sg: Dictionary = d.get("sigils", {})
     for group in SIGIL_GROUPS:
         var arr: Array = []
@@ -438,7 +446,9 @@ func linked_support(group: String, index: int, items: Dictionary, sdefs: Diction
         if str(od.get("kind", "")) != "support":
             continue
         var ld: Dictionary = sigil_level_data(od, sigil_level(other, od))
-        total += int((ld.get("support", {}) as Dictionary).get(key, 0))
+        var base_value: int = int((ld.get("support", {}) as Dictionary).get(key, 0))
+        var grade_bonus: int = RuneSystemScript.grade_power_bonus(other, sdefs)
+        total += int(round(float(base_value) * (100.0 + float(grade_bonus)) / 100.0))
     return total
 
 
@@ -472,7 +482,7 @@ func skill_mods(items: Dictionary, sdefs: Dictionary) -> Dictionary:
         var sd: Dictionary = sdefs.get(str(inst.get("id", "")), {})
         if str(sd.get("kind", "")) != "magic":
             continue
-        var pct: int = linked_support(str(e["group"]), int(e["index"]), items, sdefs, "skill_power_pct")
+        var pct: int = linked_support(str(e["group"]), int(e["index"]), items, sdefs, "skill_power_pct") + RuneSystemScript.grade_power_bonus(inst, sdefs)
         if pct == 0:
             continue
         for sid in sigil_skills_at(sd, sigil_level(inst, sd)):
@@ -487,11 +497,13 @@ func sigil_mods(items: Dictionary, sdefs: Dictionary) -> Dictionary:
         var inst: Dictionary = e["inst"]
         var sd: Dictionary = sdefs.get(str(inst.get("id", "")), {})
         var kind: String = str(sd.get("kind", ""))
-        if kind != "stat" and kind != "independent":
+        if kind != "stat" and kind != "independent" and kind != "passive":
             continue
         var mods: Dictionary = sigil_level_data(sd, sigil_level(inst, sd)).get("mods", {})
         for k in mods.keys():
-            out[str(k)] = int(out.get(str(k), 0)) + int(mods[k])
+            var bonus_pct: int = RuneSystemScript.grade_power_bonus(inst, sdefs)
+            var scaled: int = int(round(float(mods[k]) * (100.0 + float(bonus_pct)) / 100.0))
+            out[str(k)] = int(out.get(str(k), 0)) + scaled
     return out
 
 

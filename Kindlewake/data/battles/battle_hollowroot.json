@@ -1,7 +1,7 @@
 {
   "id": "battle_hollowroot",
   "title": "The Rootbound Warden",
-  "briefing": "The old watch-post has become a warren. Break the Warden's guard and clear the tunnels.",
+  "briefing": "The old watch-post has become a warren. Break the Warden's guard and clear the tunnels. Battlefield terrain changes movement, cover and line of sight; scout the ground before committing your formation.",
   "weather": "clear",
   "legend": {
     ".": "grass",
@@ -11,31 +11,40 @@
     "w": "ford",
     "~": "deep_water",
     "b": "bridge",
-    "#": "rock"
+    "#": "rock",
+    "m": "marsh"
   },
   "terrain": [
-    "..ff....hh..",
-    ".fff...hhh..",
-    "..f....hh.#.",
-    ".....r......",
-    "~~~~~b~~~w~~",
-    "~~~~~b~~~w~~",
-    ".....r......",
-    ".f...r...f..",
-    ".ff..r......",
-    "..f........."
+    "....................",
+    "....................",
+    "......ff....hh......",
+    ".....fff...hhh......",
+    "......f....hh.#.....",
+    ".........r..........",
+    "....~~~~~b~~~w~~m...",
+    "....~~~~~b~~~w~~...m",
+    "......m..rm...m...m.",
+    ".....f...r...f...m..",
+    "....mff.mr..m...m...",
+    "......fm...m...m...m",
+    "....................",
+    "...................."
   ],
   "heights": [
-    "000000001100",
-    "000000012200",
-    "000000011000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000"
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000011000000",
+    "00000000000122000000",
+    "00000000000110000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000"
   ],
   "victory": [
     "rout_all",
@@ -46,8 +55,8 @@
       "character_id": "torren",
       "team": "player",
       "cell": [
-        5,
-        8
+        9,
+        10
       ],
       "facing": 0,
       "protagonist": true
@@ -56,8 +65,8 @@
       "character_id": "bram",
       "team": "player",
       "cell": [
-        4,
-        7
+        8,
+        9
       ],
       "facing": 0
     },
@@ -65,8 +74,8 @@
       "character_id": "sela",
       "team": "player",
       "cell": [
-        6,
-        8
+        10,
+        10
       ],
       "facing": 0
     },
@@ -74,8 +83,8 @@
       "character_id": "brother_wystan",
       "team": "player",
       "cell": [
-        3,
-        8
+        7,
+        10
       ],
       "facing": 0
     },
@@ -83,8 +92,8 @@
       "character_id": "rootbound_warden",
       "team": "enemy",
       "cell": [
-        9,
-        2
+        13,
+        4
       ],
       "facing": 2,
       "commander": true
@@ -93,8 +102,8 @@
       "character_id": "roadreaver",
       "team": "enemy",
       "cell": [
-        6,
-        1
+        10,
+        3
       ],
       "facing": 2
     },
@@ -102,8 +111,8 @@
       "character_id": "roadreaver",
       "team": "enemy",
       "cell": [
-        4,
-        2
+        8,
+        4
       ],
       "facing": 2
     },
@@ -111,8 +120,8 @@
       "character_id": "roadbowman",
       "team": "enemy",
       "cell": [
-        8,
-        1
+        12,
+        3
       ],
       "facing": 2
     }
@@ -120,5 +129,7 @@
   "world_flag_on_victory": "dungeon_hollowroot_cleared",
   "victory_text": "The Rootbound Warden falls. The roots loosen their grip on the old watch-post.",
   "defeat_text": "The guardian holds the chamber. Your company is driven back to the road.",
-  "reward_item": "unique_kingbreaker"
+  "reward_item": "unique_kingbreaker",
+  "battlefield": "deep_forest_marsh",
+  "reward_rune": "worldtree"
 }

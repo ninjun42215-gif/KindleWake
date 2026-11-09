@@ -64,3 +64,13 @@ same key (`tools/keys/kindlewake-sideload.keystore`), which is what lets Android
 
 ## Building from a phone only (no PC)
 Put two things in a GitHub repo: `Kindlewake_Project.zip` at the root, and the workflow `.github/workflows/build-apk.yml` (a copy is in `tools/phone_build_apk.yml`). In the repo open Actions, Build Android APK, Run workflow. When it is green, open Releases and tap `Kindlewake.apk`. To update: upload the new zip with the same file name, then Run workflow again (do not use Re-run, it rebuilds the old commit). The run page now shows a "Kindlewake build report" (open the run, then Summary): build result, test problems and the last lines of the test output, so you can read or screenshot it without downloading anything. The `build-logs` artifact still holds the full files.
+
+
+## Updated CI and production release workflow
+
+For the current repository-wide process, see [`ANDROID_RELEASE_WORKFLOW.md`](ANDROID_RELEASE_WORKFLOW.md). The CI workflow creates a development/test APK artifact and an independent split source handoff on every branch push, pull request, tag push and manual run. It does not publish a production release. Production publishing is a separate manual workflow protected by the `android-production` GitHub Environment and a private keystore supplied through environment secrets. Do not use the sideload/test key for production or Google Play. The current builder exports APK only; AAB/Gradle publishing is not implemented yet. CI success is not a substitute for physical Android device testing.
+
+
+### Strict verification behavior
+
+The builder now fails closed if APK permissions cannot be inspected (`aapt2` missing/failing), if the APK signature cannot be verified (`apksigner` missing/failing), if the balance report exits unsuccessfully or reports failures, or if `project.godot` and Android export preset version names differ. Do not bypass these checks to force a release.

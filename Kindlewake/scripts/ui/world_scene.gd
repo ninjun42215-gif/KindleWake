@@ -39,6 +39,7 @@ var info_label: Label
 var leader_status_label: Label
 var leader_exp_bar: ProgressBar
 var company_btn: Button
+var manual_save_btn: Button
 var prompt_btn: Button
 var place_panel: PanelContainer
 var place_title: Label
@@ -525,8 +526,10 @@ func _hud_panel(alpha: float = 0.84) -> PanelContainer:
 func _btn(text: String, handler: Callable, font_size: int = 24) -> Button:
     var b := Button.new()
     b.text = text
-    b.custom_minimum_size = Vector2(300, 72)
-    b.add_theme_font_size_override("font_size", font_size)
+    var viewport_size: Vector2 = get_viewport().get_visible_rect().size
+    var compact: bool = viewport_size.x < 900.0 or viewport_size.y > viewport_size.x * 1.15
+    b.custom_minimum_size = Vector2(clampf(viewport_size.x * 0.42, 210.0, 300.0), 58.0 if compact else 72.0)
+    b.add_theme_font_size_override("font_size", mini(font_size, 19) if compact else font_size)
     b.pressed.connect(handler)
     return b
 
@@ -561,10 +564,23 @@ func _apply_safe_area() -> void:
     if leader_status_label != null:
         leader_status_label.add_theme_font_size_override("font_size", 12 if compact else 14)
     if company_btn != null:
-        company_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 58.0)
-        company_btn.add_theme_font_size_override("font_size", 17 if compact else 20)
+        company_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 56.0 if compact else 64.0)
+        company_btn.add_theme_font_size_override("font_size", 16 if compact else 20)
+    if manual_save_btn != null:
+        manual_save_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0 if compact else 52.0)
+        manual_save_btn.add_theme_font_size_override("font_size", 15 if compact else 18)
     if prompt_btn != null:
-        prompt_btn.custom_minimum_size = Vector2(clampf(vw * 0.42, 230.0, 380.0), 68.0)
+        prompt_btn.custom_minimum_size = Vector2(clampf(vw * 0.42, 230.0, 380.0), 64.0 if compact else 68.0)
+        prompt_btn.add_theme_font_size_override("font_size", 20 if compact else 28)
+    if place_panel != null:
+        place_panel.custom_minimum_size = Vector2(maxf(260.0, minf(vw - 24.0, 720.0)), 0.0)
+    if place_title != null:
+        place_title.add_theme_font_size_override("font_size", 26 if compact else 38)
+    if place_text != null:
+        place_text.custom_minimum_size = Vector2(maxf(220.0, minf(vw - 72.0, 560.0)), 0.0)
+        place_text.add_theme_font_size_override("font_size", 17 if compact else 22)
+    if banner_label != null:
+        banner_label.add_theme_font_size_override("font_size", 20 if compact else 30)
 
 
 func _build_ui() -> void:
@@ -606,11 +622,11 @@ func _build_ui() -> void:
     root.add_child(company_btn)
     company_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
     company_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-    var save_btn := _btn("SAVE", _save_campaign_manual, 18)
-    save_btn.custom_minimum_size = Vector2(190, 52)
-    root.add_child(save_btn)
-    save_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 84)
-    save_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    manual_save_btn = _btn("SAVE", _save_campaign_manual, 18)
+    manual_save_btn.custom_minimum_size = Vector2(190, 52)
+    root.add_child(manual_save_btn)
+    manual_save_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 84)
+    manual_save_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 
     # Top-centre: ambush banner
     banner = _hud_panel(0.95)

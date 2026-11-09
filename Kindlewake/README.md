@@ -1,7 +1,7 @@
-# Kindlewake: The Sundered Vow — Campaign menu and economy rebalance (v0.9.0)
+# Kindlewake: The Sundered Vow — Campaign menu and economy rebalance (v0.10.0)
 
 Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (GDScript, GL Compatibility).
-Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md`
+Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md` · Start here: `docs/NEXT_AI_START_HERE.md`
 
 Manual repository workflows: `docs/MANUAL_GITHUB_WORKFLOWS.md`.
 
@@ -10,6 +10,14 @@ Manual repository workflows: `docs/MANUAL_GITHUB_WORKFLOWS.md`.
 - The extracted `Kindlewake/` directory in `ninjun42215-gif/KindleWake` on `main` is the canonical source. Routine development edits are committed as ordinary files; do not upload or rebuild a master project ZIP.
 - After the extracted folder is present, future updates are direct file commits. Keep `docs/SESSION_HANDOFF.md`, `docs/GDD.md`, this README, and `docs/CONTINUATION_PROMPT.md` current with each meaningful change.
 - The nested sprite packs are optional source material only; they are not imported into scenes or license-cleared.
+
+## v0.10.0 — Rune mastery and expanded battle systems
+- Replaces player-facing Sigils with a data-driven Rune library: 77 definitions across active magic, passive, support, stat and independent effects, including unique and heirloom runes.
+- Three-copy fusion supports mixed grades; rune mastery/AP improves fusion success. Unique and heirloom runes have safeguards against accidental sale or fusion.
+- Adds rune-driven Burn, Chill, Shock, Exposed, Regeneration and Shadow life-drain effects, combat feedback, rune sockets and specialist regional rune merchants.
+- Adds original rune atlas and UI/environment artwork, expanded battle data and supporting GDD coverage.
+- Android project version: 0.10.0 (version code 1000). CI validates imports/tests and APK export; physical-device gameplay QA remains outstanding.
+- Public/commercial release remains blocked until the used voxel-building pack's redistribution licence is verified or those assets are replaced.
 
 ## v0.9.0 — Title screen, campaign saves and economy
 - New title menu: New Game, Continue, Load Game and Settings.

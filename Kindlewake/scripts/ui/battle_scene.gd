@@ -39,6 +39,7 @@ var anim_clock: float = 0.0              # seconds, drives the unit sprite anima
 var anim_last_draw: float = 0.0
 var anim_override: Dictionary = {}       # unit id -> {"anim": String, "start": float} (attack / hurt one-shots)
 var popups: Array[Dictionary] = []
+var battle_vfx: Array[Dictionary] = []
 var log_lines: Array[String] = []
 var last_turn_count: int = -1
 var ai_busy: bool = false
@@ -109,6 +110,7 @@ func _ready() -> void:
 
 func _start_battle() -> void:
     popups.clear()
+    battle_vfx.clear()
     log_lines.clear()
     visual_pos.clear()
     mode = Mode.IDLE
@@ -513,17 +515,33 @@ func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
             return
         if bool(res["hit"]):
             var crit: bool = bool(res["crit"])
+            _add_battle_vfx(target, "slash", Color(1.0, 0.82, 0.42) if crit else Color(0.85, 0.92, 1.0))
             _add_popup(target, str(res["damage"]) + ("!" if crit else ""), Color(1.0, 0.85, 0.3) if crit else Color.WHITE)
         else:
             _add_popup(target, "Miss", Color(0.75, 0.75, 0.75))
     elif kind == "skill_damage":
         var hit_target: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
         if hit_target != null:
+            var skill_color := Color(1.0, 0.48, 0.24)
+            var rune_status: String = str(data.get("status", ""))
+            if rune_status == "chill": skill_color = Color(0.42, 0.78, 1.0)
+            elif rune_status == "shock": skill_color = Color(1.0, 0.92, 0.32)
+            elif rune_status == "exposed": skill_color = Color(0.82, 0.52, 1.0)
+            _add_battle_vfx(hit_target, "burst", skill_color)
             _add_popup(hit_target, str(data["damage"]) + "*", Color(1.0, 0.55, 0.25))
+            if rune_status != "":
+                var effect_color := Color(1.0, 0.4, 0.2)
+                if rune_status == "chill": effect_color = Color(0.45, 0.8, 1.0)
+                elif rune_status == "shock": effect_color = Color(1.0, 0.95, 0.35)
+                elif rune_status == "exposed": effect_color = Color(0.85, 0.55, 1.0)
+                _add_popup(hit_target, rune_status.to_upper(), effect_color)
     elif kind == "heal":
         var healed: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
         if healed != null:
+            _add_battle_vfx(healed, "heal", Color(0.48, 1.0, 0.62))
             _add_popup(healed, "+" + str(data["amount"]), Color(0.4, 1.0, 0.5))
+            if str(data.get("status", "")) == "regen":
+                _add_popup(healed, "REGEN", Color(0.55, 1.0, 0.65))
 
 
 func _on_battle_ended(_outcome: String) -> void:
@@ -552,10 +570,14 @@ func _show_result() -> void:
     if not exp_awarded:
         exp_awarded = true
         battle_rewards = GameState.award_battle(controller.units, controller.result)
+        var reward_rune: String = str(battle_def.get("reward_rune", ""))
+        if won and reward_rune != "" and GameData.runes.has(reward_rune):
+            GameState.party.add_rune(reward_rune)
+            result_text.text += "\n\nRare rune recovered: %s" % str(GameData.runes[reward_rune].get("name", reward_rune))
         var reward_item: String = str(battle_def.get("reward_item", ""))
         if won and reward_item != "" and GameData.items.has(reward_item):
             GameState.party.add_item(reward_item, 1)
-            result_text.text += "\\n\\nUnique relic recovered: %s" % str(GameData.items[reward_item].get("name", reward_item))
+            result_text.text += "\n\nUnique relic recovered: %s" % str(GameData.items[reward_item].get("name", reward_item))
     if not (battle_rewards.get("reports", []) as Array).is_empty():
         result_text.text += "\n\n" + _rewards_summary(battle_rewards)
     elif not won:
@@ -766,6 +788,11 @@ func _process(delta: float) -> void:
         if cur != target:
             visual_pos[u.id] = cur.move_toward(target, MOVE_SPEED * delta)
             dirty = true
+    for i in range(battle_vfx.size() - 1, -1, -1):
+        battle_vfx[i]["age"] = float(battle_vfx[i]["age"]) + delta
+        if float(battle_vfx[i]["age"]) > 0.62:
+            battle_vfx.remove_at(i)
+        dirty = true
     for i in range(popups.size() - 1, -1, -1):
         popups[i]["age"] = float(popups[i]["age"]) + delta
         if float(popups[i]["age"]) > 1.1:
@@ -784,6 +811,38 @@ func _add_popup(unit: BattleUnitScript, text: String, color: Color) -> void:
     popups.append({"text": text, "pos": p, "age": 0.0, "color": color})
 
 
+## Lightweight vector impact/cast effects: no external textures, safe on low-end phones.
+func _add_battle_vfx(unit: BattleUnitScript, kind: String, color: Color) -> void:
+    var p: Vector2 = visual_pos.get(unit.id, cell_to_world(unit.cell))
+    battle_vfx.append({"pos": p, "age": 0.0, "kind": kind, "color": color, "seed": float(unit.id) * 1.71})
+
+
+func _draw_battle_vfx() -> void:
+    for effect in battle_vfx:
+        var age: float = float(effect["age"])
+        var t: float = clampf(age / 0.62, 0.0, 1.0)
+        var center: Vector2 = effect["pos"]
+        var col: Color = effect["color"]
+        col.a = 1.0 - t
+        var kind: String = str(effect["kind"])
+        if kind == "slash":
+            var spread: float = 12.0 + t * 24.0
+            draw_arc(center + Vector2(0, -25), spread, -PI * 0.82, PI * 0.18, 18, col, 4.0 * (1.0 - t) + 1.0)
+            draw_line(center + Vector2(-spread, -42), center + Vector2(spread, -8), col.lightened(0.25), 2.5 * (1.0 - t))
+        elif kind == "heal":
+            for k in range(3):
+                var rise: float = age * 42.0 + float(k) * 13.0
+                draw_circle(center + Vector2(sin(age * 8.0 + float(k)) * 12.0, -20.0 - rise), 3.5 * (1.0 - t * 0.45), col)
+            draw_arc(center + Vector2(0, -24), 12.0 + t * 18.0, 0.0, TAU, 20, col, 2.5)
+        else:
+            var radius: float = 8.0 + t * 30.0
+            draw_arc(center + Vector2(0, -25), radius, 0.0, TAU, 24, col, 3.5 * (1.0 - t) + 0.5)
+            for k in range(6):
+                var angle: float = TAU * float(k) / 6.0 + float(effect["seed"])
+                var dot := center + Vector2(cos(angle), sin(angle)) * radius
+                draw_circle(dot + Vector2(0, -25), 2.5 * (1.0 - t * 0.5), col)
+
+
 # ------------------------------------------------------------------ drawing
 
 func _draw() -> void:
@@ -797,6 +856,7 @@ func _draw() -> void:
                 _draw_tile(Vector2i(x, y))
     _draw_overlays()
     _draw_units()
+    _draw_battle_vfx()
     _draw_popups()
 
 
@@ -836,8 +896,9 @@ func _draw_tile(cell: Vector2i) -> void:
     _outline(top, Color(0.05, 0.08, 0.07, 0.55), 1.0)
     match tid:
         "forest":
-            _draw_tree(top + Vector2(-9, 3))
-            _draw_tree(top + Vector2(9, 1))
+            if not Art.draw_world(self, "pine_a", top + Vector2(0, 4), 0.34):
+                _draw_tree(top + Vector2(-9, 3))
+                _draw_tree(top + Vector2(9, 1))
         "hill":
             draw_colored_polygon(_diamond(top, 0.55), col.lightened(0.12))
         "deep_water", "ford":
@@ -856,6 +917,27 @@ func _draw_tile(cell: Vector2i) -> void:
         "road":
             draw_circle(top + Vector2(-6, 2), 1.5, col.lightened(0.2))
             draw_circle(top + Vector2(7, -2), 1.5, col.lightened(0.2))
+        "marsh":
+            draw_circle(top + Vector2(-8, 2), 5.0, col.darkened(0.25))
+            draw_circle(top + Vector2(8, -3), 3.0, col.lightened(0.15))
+            draw_line(top + Vector2(-13, -5), top + Vector2(-4, -7), Color(0.75, 0.85, 0.68, 0.55), 1.5)
+            Art.draw_prop(self, "reeds", top + Vector2(0, -7), 0.48)
+        "snow":
+            draw_line(top + Vector2(-12, -4), top + Vector2(-3, -7), Color(1, 1, 1, 0.65), 2.0)
+            draw_line(top + Vector2(2, 4), top + Vector2(12, 1), Color(1, 1, 1, 0.55), 2.0)
+            Art.draw_prop(self, "frost_pine", top + Vector2(0, -10), 0.44)
+        "ash":
+            draw_circle(top + Vector2(-7, 2), 2.0, col.darkened(0.3))
+            draw_circle(top + Vector2(8, -3), 1.5, col.lightened(0.2))
+            Art.draw_prop(self, "campfire", top + Vector2(0, -7), 0.42)
+        "ruins":
+            draw_rect(Rect2(top + Vector2(-10, -5), Vector2(7, 5)), col.darkened(0.35))
+            draw_rect(Rect2(top + Vector2(3, 1), Vector2(8, 4)), col.darkened(0.25))
+            Art.draw_prop(self, "column", top + Vector2(0, -8), 0.42)
+        "cliff":
+            draw_colored_polygon(_diamond(top, 0.65), col.darkened(0.35))
+            draw_line(top + Vector2(-10, -2), top + Vector2(5, -7), col.lightened(0.2), 2.0)
+            Art.draw_prop(self, "crystals", top + Vector2(0, -8), 0.42)
 
 
 func _draw_tree(base: Vector2) -> void:
@@ -954,8 +1036,110 @@ func _draw_unit(u: BattleUnitScript, p: Vector2) -> void:
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40, 7)), Color(0.1, 0.08, 0.08))
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40.0 * ratio, 7)), Color(0.85, 0.2, 0.2).lerp(Color(0.25, 0.85, 0.38), ratio))
     draw_string(ThemeDB.fallback_font, p + Vector2(-40, -55), u.display_name, HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color.WHITE)
+    _draw_status_pips(u, p)
     if u.morale <= 0:
         draw_string(ThemeDB.fallback_font, p + Vector2(-40, -70), "ROUTED", HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color(1, 0.6, 0.3))
+
+
+## Palette variants make classes and enemy archetypes readable even while the project expands its bespoke sprite sheets.
+func _battle_sprite_tint(u: BattleUnitScript, is_player: bool) -> Color:
+    if is_player:
+        match u.class_id:
+            "knight": return Color(0.78, 0.88, 1.0)
+            "swordsman": return Color(1.0, 0.83, 0.72)
+            "archer": return Color(0.72, 1.0, 0.76)
+            "cleric": return Color(1.0, 0.96, 0.72)
+            "roadreaver": return Color(0.92, 0.76, 0.58)
+            _: return Color.WHITE
+    var key: String = (u.character_id + " " + u.display_name).to_lower()
+    if key.contains("hask") or key.contains("boss") or key.contains("chieftain"):
+        return Color(1.0, 0.72, 0.52)
+    if key.contains("bow") or key.contains("archer") or key.contains("scout"):
+        return Color(0.78, 0.92, 0.62)
+    if key.contains("shaman") or key.contains("witch") or key.contains("mage"):
+        return Color(0.78, 0.68, 1.0)
+    if key.contains("wraith") or key.contains("ghost") or key.contains("spect"):
+        return Color(0.58, 0.88, 1.0)
+    if key.contains("skeleton") or key.contains("bone"):
+        return Color(0.88, 0.86, 0.72)
+    if key.contains("brute") or key.contains("ogre") or key.contains("troll"):
+        return Color(1.0, 0.70, 0.58)
+    return Color(0.88, 1.0, 0.82)
+
+
+## Small class/archetype accents sit in screen space above the shared animated base sprite.
+func _draw_sprite_identity_marks(u: BattleUnitScript, p: Vector2, is_player: bool, sprite_scale: float, time: float) -> void:
+    # Class-specific equipment silhouettes make the shared base animation read as a
+    # distinct tactical role without changing the existing 100px sprite-sheet contract.
+    if is_player:
+        var steel := Color(0.78, 0.84, 0.91, 0.96)
+        var gold := Color(0.96, 0.78, 0.34, 0.96)
+        var leather := Color(0.43, 0.27, 0.16, 0.96)
+        match u.class_id:
+            "knight":
+                draw_arc(p + Vector2(0, -48), 11.0, PI * 1.08, PI * 1.92, 12, Color(0.78, 0.88, 1.0, 0.9), 2.0)
+                draw_rect(Rect2(p + Vector2(-19, -31), Vector2(8, 18)), Color(0.34, 0.48, 0.68, 0.98))
+                draw_rect(Rect2(p + Vector2(-18, -30), Vector2(6, 16)), steel)
+                draw_line(p + Vector2(13, -18), p + Vector2(22, -43), steel, 3.0)
+                draw_line(p + Vector2(9, -22), p + Vector2(17, -22), gold, 2.0)
+            "swordsman":
+                draw_line(p + Vector2(12, -19), p + Vector2(23, -47), steel, 3.0)
+                draw_line(p + Vector2(9, -24), p + Vector2(17, -21), gold, 2.5)
+                draw_line(p + Vector2(11, -18), p + Vector2(17, -14), leather, 2.0)
+            "archer":
+                draw_line(p + Vector2(11, -30), p + Vector2(17, -52), Color(0.48, 0.82, 0.48, 0.9), 2.0)
+                draw_arc(p + Vector2(17, -25), 13.0, -PI * 0.48, PI * 0.48, 14, leather, 2.5)
+                draw_line(p + Vector2(17, -38), p + Vector2(17, -12), steel, 1.2)
+                draw_line(p + Vector2(13, -36), p + Vector2(21, -36), gold, 2.0)
+            "cleric":
+                draw_line(p + Vector2(-11, -42), p + Vector2(11, -42), Color(1.0, 0.92, 0.58, 0.95), 2.0)
+                draw_line(p + Vector2(0, -51), p + Vector2(0, -33), Color(1.0, 0.92, 0.58, 0.95), 2.0)
+                draw_line(p + Vector2(14, -8), p + Vector2(14, -48), leather, 3.0)
+                draw_circle(p + Vector2(14, -49), 4.0, gold)
+                draw_circle(p + Vector2(14, -49), 2.0, Color(1.0, 0.96, 0.76))
+            "roadreaver":
+                draw_line(p + Vector2(-12, -17), p + Vector2(-22, -37), steel, 2.5)
+                draw_line(p + Vector2(12, -17), p + Vector2(21, -36), steel, 2.5)
+                draw_line(p + Vector2(-14, -15), p + Vector2(-9, -11), gold, 2.0)
+                draw_line(p + Vector2(10, -15), p + Vector2(15, -11), gold, 2.0)
+            "cavalier", "cavalry":
+                draw_line(p + Vector2(12, -20), p + Vector2(25, -53), leather, 3.0)
+                draw_line(p + Vector2(24, -54), p + Vector2(29, -61), steel, 2.0)
+                draw_colored_polygon(PackedVector2Array([p + Vector2(24, -55), p + Vector2(33, -57), p + Vector2(27, -48)]), gold)
+            "mage", "sorcerer", "sage":
+                var pulse: float = 0.65 + 0.25 * sin(time * 4.0)
+                draw_circle(p + Vector2(15, -44), 5.0, Color(0.55, 0.36, 0.95, pulse))
+                draw_arc(p + Vector2(15, -44), 8.0, 0.0, TAU, 16, Color(0.82, 0.68, 1.0, pulse), 1.5)
+                draw_line(p + Vector2(15, -36), p + Vector2(18, -7), leather, 2.5)
+        return
+    var key: String = (u.character_id + " " + u.display_name).to_lower()
+    if key.contains("hask") or key.contains("boss") or key.contains("chieftain"):
+        draw_colored_polygon(PackedVector2Array([p + Vector2(-17, -47), p + Vector2(-12, -61), p + Vector2(-5, -48), p + Vector2(0, -55), p + Vector2(6, -47), p + Vector2(14, -60), p + Vector2(17, -44)]), Color(0.42, 0.18, 0.12, 0.95))
+        draw_line(p + Vector2(-9, -25), p + Vector2(9, -25), Color(1.0, 0.72, 0.28, 0.9), 2.5)
+        draw_arc(p + Vector2(0, -34), 28.0, PI * 1.08, PI * 1.92, 16, Color(0.95, 0.28, 0.16, 0.72), 2.0)
+    elif key.contains("shaman") or key.contains("witch") or key.contains("mage"):
+        var glow: float = 0.55 + 0.25 * sin(time * 5.0)
+        draw_circle(p + Vector2(13, -37), 4.0, Color(0.72, 0.45, 1.0, glow))
+        draw_line(p + Vector2(13, -31), p + Vector2(16, -8), Color(0.58, 0.38, 0.82, 0.95), 2.0)
+        draw_arc(p + Vector2(13, -37), 8.0, 0.0, TAU, 12, Color(0.82, 0.62, 1.0, glow), 1.5)
+    elif key.contains("wraith") or key.contains("ghost") or key.contains("spect"):
+        var wraith_glow: float = 0.45 + 0.2 * sin(time * 3.0)
+        draw_arc(p + Vector2(0, -32), 25.0, PI * 1.05, PI * 1.95, 16, Color(0.42, 0.84, 1.0, wraith_glow), 2.0)
+        draw_circle(p + Vector2(-5, -35), 2.0, Color(0.48, 0.9, 1.0, wraith_glow))
+        draw_circle(p + Vector2(5, -35), 2.0, Color(0.48, 0.9, 1.0, wraith_glow))
+    elif key.contains("skeleton") or key.contains("bone"):
+        draw_line(p + Vector2(-10, -30), p + Vector2(10, -30), Color(0.95, 0.91, 0.72, 0.95), 2.0)
+        draw_circle(p + Vector2(-4, -35), 1.8, Color(0.18, 0.16, 0.12))
+        draw_circle(p + Vector2(4, -35), 1.8, Color(0.18, 0.16, 0.12))
+        draw_line(p + Vector2(-8, -22), p + Vector2(8, -22), Color(0.88, 0.84, 0.68, 0.9), 1.5)
+    elif key.contains("bow") or key.contains("archer") or key.contains("scout"):
+        draw_arc(p + Vector2(16, -25), 9.0, -PI * 0.55, PI * 0.55, 10, Color(0.55, 0.82, 0.42, 0.95), 2.0)
+        draw_line(p + Vector2(16, -34), p + Vector2(16, -16), Color(0.82, 0.9, 0.72, 0.9), 1.2)
+    elif key.contains("brute") or key.contains("ogre") or key.contains("troll"):
+        draw_rect(Rect2(p + Vector2(-19, -29), Vector2(8, 13)), Color(0.48, 0.22, 0.16, 0.95))
+        draw_rect(Rect2(p + Vector2(11, -29), Vector2(8, 13)), Color(0.48, 0.22, 0.16, 0.95))
+        draw_colored_polygon(PackedVector2Array([p + Vector2(-17, -29), p + Vector2(-22, -39), p + Vector2(-10, -32)]), Color(0.62, 0.29, 0.19, 0.95))
+        draw_colored_polygon(PackedVector2Array([p + Vector2(17, -29), p + Vector2(22, -39), p + Vector2(10, -32)]), Color(0.62, 0.29, 0.19, 0.95))
 
 
 ## Animated pixel sprite (Tiny RPG Soldier for the player's side, Orc for the enemy). Returns false without the art,
@@ -979,8 +1163,11 @@ func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: V
         anim = "walk"
     var t: float = anim_clock - start if anim != "idle" and anim != "walk" else anim_clock + float(u.id) * 0.37
     var scale: float = 2.1 if is_player else 2.4
-    var tint := Color(1, 0.75, 0.75) if (anim == "hurt") else Color.WHITE
+    var tint: Color = _battle_sprite_tint(u, is_player)
+    if anim == "hurt":
+        tint = tint.lerp(Color(1.0, 0.58, 0.52), 0.58)
     Art.draw_unit(self, kind, anim, t, p + Vector2(0, 4), scale, fdir.x < 0.0, tint)
+    _draw_sprite_identity_marks(u, p, is_player, scale, t)
     var ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40, 7)), Color(0.1, 0.08, 0.08))
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40.0 * ratio, 7)), Color(0.85, 0.2, 0.2).lerp(Color(0.25, 0.85, 0.38), ratio))
@@ -988,6 +1175,39 @@ func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: V
     if u.morale <= 0:
         draw_string(ThemeDB.fallback_font, p + Vector2(-40, -70), "ROUTED", HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color(1, 0.6, 0.3))
     return true
+
+
+## Compact elemental/status markers remain visible without opening the unit inspector.
+func _draw_status_pips(u: BattleUnitScript, p: Vector2) -> void:
+    var keys: Array = u.statuses.keys()
+    keys.sort()
+    var shown := mini(keys.size(), 4)
+    for i in range(shown):
+        var status := str(keys[i])
+        var tint := Color(0.8, 0.8, 0.8)
+        var glyph := "?"
+        match status:
+            "burn":
+                tint = Color(1.0, 0.34, 0.12)
+                glyph = "B"
+            "chill":
+                tint = Color(0.35, 0.78, 1.0)
+                glyph = "C"
+            "shock":
+                tint = Color(1.0, 0.88, 0.25)
+                glyph = "S"
+            "regen":
+                tint = Color(0.35, 0.95, 0.48)
+                glyph = "R"
+            "exposed":
+                tint = Color(0.92, 0.48, 0.72)
+                glyph = "E"
+        var center := p + Vector2(24.0, -58.0 + float(i) * 11.0)
+        draw_circle(center, 5.0, Color(0.08, 0.08, 0.1, 0.92))
+        draw_circle(center, 4.0, tint)
+        draw_string(ThemeDB.fallback_font, center + Vector2(-3.0, 3.0), glyph, HORIZONTAL_ALIGNMENT_LEFT, 7, 8, Color(0.08, 0.08, 0.1))
+    if keys.size() > shown:
+        draw_string(ThemeDB.fallback_font, p + Vector2(29, -58.0 + float(shown) * 11.0), "+%d" % (keys.size() - shown), HORIZONTAL_ALIGNMENT_LEFT, 20, 10, Color.WHITE)
 
 
 ## Placeholder glyph for classes without their own drawing (promoted heroes): one simple shape per branch.
@@ -1061,34 +1281,79 @@ func _apply_safe_area() -> void:
     hud_root.offset_top = t
     hud_root.offset_right = -r
     hud_root.offset_bottom = -b
+    _apply_responsive_hud()
+
+
+## Reflow the battle overlay for narrow portrait screens. The tactical map remains
+## fully touchable; only the HUD controls move and shrink.
+func _apply_responsive_hud() -> void:
+    if hud_root == null or hud_root.get_child_count() < 6:
+        return
+    var size: Vector2 = get_viewport().get_visible_rect().size
+    var compact: bool = size.x < 900.0 or size.y > size.x * 1.15
+    var info_panel: Control = hud_root.get_child(0) as Control
+    var timeline: Control = hud_root.get_child(1) as Control
+    var menu: Control = hud_root.get_child(2) as Control
+    var actions: Control = hud_root.get_child(3) as Control
+    var middle: Control = hud_root.get_child(4) as Control
+    var log_panel: Control = hud_root.get_child(5) as Control
+    timeline.visible = not compact
+    log_panel.visible = not compact
+    if compact:
+        info_panel.custom_minimum_size = Vector2(minf(size.x * 0.56, 270.0), 0)
+        menu.scale = Vector2(0.78, 0.78)
+        actions.scale = Vector2(0.76, 0.76)
+        middle.scale = Vector2(0.72, 0.72)
+        middle.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT, Control.PRESET_MODE_MINSIZE, 8)
+        middle.grow_horizontal = Control.GROW_DIRECTION_END
+        middle.grow_vertical = Control.GROW_DIRECTION_BEGIN
+        actions.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 8)
+        actions.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+        actions.grow_vertical = Control.GROW_DIRECTION_BEGIN
+        menu.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 8)
+        menu.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    else:
+        info_panel.custom_minimum_size = Vector2(330, 0)
+        menu.scale = Vector2.ONE
+        actions.scale = Vector2.ONE
+        middle.scale = Vector2.ONE
+        middle.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM, Control.PRESET_MODE_MINSIZE, 12)
+        actions.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
+        menu.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
+    if result_panel != null and is_instance_valid(result_panel):
+        result_panel.custom_minimum_size = Vector2(minf(size.x - 24.0, 700.0), 0)
+    if prep_panel != null and is_instance_valid(prep_panel):
+        prep_panel.custom_minimum_size = Vector2(minf(size.x - 24.0, 700.0), 0)
 
     # Reflow key HUD elements for narrow phones without shrinking the game world.
     var vw: float = get_viewport().get_visible_rect().size.x
     var vh: float = get_viewport().get_visible_rect().size.y
-    var compact: bool = vw < 900.0
+    # Reuse the orientation-aware compact flag declared above.
     if info_label != null:
-        info_label.custom_minimum_size = Vector2(clampf(vw * 0.27, 190.0, 330.0), 0.0)
-        info_label.add_theme_font_size_override("font_size", 15 if compact else 18)
+        info_label.custom_minimum_size = Vector2(clampf(vw * 0.24, 155.0, 330.0), 0.0)
+        info_label.add_theme_font_size_override("font_size", 14 if compact else 18)
     if hp_caption != null:
         hp_caption.add_theme_font_size_override("font_size", 12 if compact else 13)
     if mp_caption != null:
         mp_caption.add_theme_font_size_override("font_size", 12 if compact else 13)
     if log_label != null:
-        log_label.custom_minimum_size = Vector2(clampf(vw * 0.25, 170.0, 370.0), 0.0)
-        log_label.add_theme_font_size_override("font_size", 14 if compact else 18)
+        log_label.custom_minimum_size = Vector2(clampf(vw * 0.20, 138.0, 370.0), 0.0)
+        log_label.add_theme_font_size_override("font_size", 13 if compact else 18)
     if preview_label != null:
-        preview_label.custom_minimum_size = Vector2(clampf(vw * 0.48, 250.0, 440.0), 0.0)
-        preview_label.add_theme_font_size_override("font_size", 16 if compact else 20)
-    var action_width: float = clampf(vw * 0.19, 138.0, 230.0)
-    var action_height: float = clampf(vh * 0.09, 54.0, 76.0)
+        preview_label.custom_minimum_size = Vector2(clampf(vw * 0.38, 220.0, 440.0), 0.0)
+        preview_label.add_theme_font_size_override("font_size", 15 if compact else 20)
+    var action_width: float = clampf(vw * 0.17, 124.0, 230.0)
+    var action_height: float = clampf(vh * 0.085, 48.0, 76.0)
     for action in [btn_move, btn_attack, btn_skill, btn_wait]:
         if action != null:
             action.custom_minimum_size = Vector2(action_width, action_height)
             action.add_theme_font_size_override("font_size", 18 if compact else 25)
     if btn_confirm != null:
-        btn_confirm.custom_minimum_size = Vector2(clampf(vw * 0.22, 150.0, 250.0), clampf(vh * 0.10, 58.0, 84.0))
+        btn_confirm.custom_minimum_size = Vector2(clampf(vw * 0.20, 140.0, 250.0), clampf(vh * 0.10, 54.0, 84.0))
+        btn_confirm.add_theme_font_size_override("font_size", 22 if compact else 30)
     if btn_cancel != null:
-        btn_cancel.custom_minimum_size = Vector2(clampf(vw * 0.16, 120.0, 180.0), clampf(vh * 0.10, 58.0, 84.0))
+        btn_cancel.custom_minimum_size = Vector2(clampf(vw * 0.15, 108.0, 180.0), clampf(vh * 0.10, 54.0, 84.0))
+        btn_cancel.add_theme_font_size_override("font_size", 20 if compact else 26)
     if result_scroll != null:
         result_scroll.custom_minimum_size = Vector2(clampf(vw * 0.78, 280.0, 660.0), clampf(vh * 0.28, 130.0, 190.0))
         result_text.custom_minimum_size = Vector2(clampf(vw * 0.76, 260.0, 640.0), 0.0)

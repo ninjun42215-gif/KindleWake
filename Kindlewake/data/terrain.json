@@ -1,12 +1,108 @@
 {
   "terrain": {
-    "grass":      {"name": "Grass",      "cost": 1, "cover": 0,  "blocks_move": false, "blocks_los": false, "color": "#41714f"},
-    "forest":     {"name": "Forest",     "cost": 2, "cover": 15, "blocks_move": false, "blocks_los": false, "color": "#2f4a38"},
-    "road":       {"name": "Road",       "cost": 1, "cover": 0,  "blocks_move": false, "blocks_los": false, "color": "#8a6b4a"},
-    "hill":       {"name": "Hill",       "cost": 2, "cover": 5,  "blocks_move": false, "blocks_los": false, "color": "#6f8f5a"},
-    "ford":       {"name": "Ford",       "cost": 3, "cover": 0,  "blocks_move": false, "blocks_los": false, "color": "#5c7f94"},
-    "deep_water": {"name": "Deep Water", "cost": 1, "cover": 0,  "blocks_move": true,  "blocks_los": false, "color": "#2d4a63"},
-    "bridge":     {"name": "Bridge",     "cost": 1, "cover": 0,  "blocks_move": false, "blocks_los": false, "color": "#b78b52"},
-    "rock":       {"name": "Rock Wall",  "cost": 1, "cover": 0,  "blocks_move": true,  "blocks_los": true,  "color": "#6a7380"}
+    "grass": {
+      "name": "Grass",
+      "cost": 1,
+      "cover": 0,
+      "blocks_move": false,
+      "blocks_los": false,
+      "color": "#41714f"
+    },
+    "forest": {
+      "name": "Forest",
+      "cost": 2,
+      "cover": 15,
+      "blocks_move": false,
+      "blocks_los": false,
+      "color": "#2f4a38"
+    },
+    "road": {
+      "name": "Road",
+      "cost": 1,
+      "cover": 0,
+      "blocks_move": false,
+      "blocks_los": false,
+      "color": "#8a6b4a"
+    },
+    "hill": {
+      "name": "Hill",
+      "cost": 2,
+      "cover": 5,
+      "blocks_move": false,
+      "blocks_los": false,
+      "color": "#6f8f5a"
+    },
+    "ford": {
+      "name": "Ford",
+      "cost": 3,
+      "cover": 0,
+      "blocks_move": false,
+      "blocks_los": false,
+      "color": "#5c7f94"
+    },
+    "deep_water": {
+      "name": "Deep Water",
+      "cost": 1,
+      "cover": 0,
+      "blocks_move": true,
+      "blocks_los": false,
+      "color": "#2d4a63"
+    },
+    "bridge": {
+      "name": "Bridge",
+      "cost": 1,
+      "cover": 0,
+      "blocks_move": false,
+      "blocks_los": false,
+      "color": "#b78b52"
+    },
+    "rock": {
+      "name": "Rock Wall",
+      "cost": 1,
+      "cover": 0,
+      "blocks_move": true,
+      "blocks_los": true,
+      "color": "#6a7380"
+    },
+    "marsh": {
+      "name": "Marsh",
+      "cost": 3,
+      "cover": 10,
+      "blocks_move": false,
+      "blocks_los": false,
+      "color": "#536b58"
+    },
+    "snow": {
+      "name": "Snow",
+      "cost": 2,
+      "cover": 0,
+      "blocks_move": false,
+      "blocks_los": false,
+      "color": "#b9cbd0"
+    },
+    "ash": {
+      "name": "Ashen Ground",
+      "cost": 2,
+      "cover": 0,
+      "blocks_move": false,
+      "blocks_los": false,
+      "color": "#74615c"
+    },
+    "ruins": {
+      "name": "Broken Ruins",
+      "cost": 2,
+      "cover": 20,
+      "blocks_move": false,
+      "blocks_los": true,
+      "color": "#77716b"
+    },
+    "cliff": {
+      "name": "Cliff",
+      "cost": 1,
+      "cover": 0,
+      "blocks_move": true,
+      "blocks_los": true,
+      "color": "#555b65"
+    }
   }
 }
