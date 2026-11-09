@@ -201,3 +201,10 @@
 - APK verification now fails closed if `aapt2` cannot inspect permissions or `apksigner` cannot verify the APK. A missing verification tool is no longer downgraded to a warning.
 - Production publishing pins the signer fingerprint through `ANDROID_RELEASE_CERT_SHA256`; workflow commit `86f4be7d863dd12daad65348e8cea0eb176ee775` refuses to publish if the APK certificate does not match.
 - These changes still require a new branch-head GitHub Actions run. Do not claim the modified builder/workflows passed until that run completes and its artifacts are inspected.
+
+
+## Release safety / availability note
+
+- Production workflow commit `b9b8216fececc479ca9b7a5fe41b2138f6121fb4` refuses to overwrite an existing GitHub Release for the same tag; use a new version tag for every new published release.
+- GitHub exposes `workflow_dispatch` only after a workflow file exists on the default branch. `.github/workflows/publish-android-release.yml` is currently on `feature/rune-system-v1` only. It is intentionally not available for manual dispatch until the reviewed PR is merged to the default branch. Do not merge PR #4 or modify `main` without explicit authorization.
+- No production environment/secrets have been configured by this change; setup remains a GitHub repository administrator action.
