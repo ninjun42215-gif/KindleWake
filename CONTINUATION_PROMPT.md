@@ -1,99 +1,133 @@
-# CONTINUATION MASTER PROMPT — KINDLEWAKE: THE SUNDERED VOW
+# KINDLEWAKE — MASTER CONTINUATION PROMPT FOR THE NEXT AI
 
-> **Latest checkpoint: v0.7.13 (2026-11-09; three new road-connected Sethmarch ruin landmarks; no save schema change).** The supplied sprite bundle is preserved as 26 nested source ZIPs in `assets/optional_sprite_packs/`. They have not been imported into scenes or license-reviewed. Continue from `docs/SESSION_HANDOFF.md`.
+> **Read this first.** This file is the operating contract for every future AI session. The GitHub repository is the source of truth; the session handoff and GDD contain the detailed game history and design.
 
-**Repository-first workflow:** the canonical project is the extracted `Kindlewake/` folder in GitHub repository `ninjun42215-gif/KindleWake`, branch `main`. Do not ask the user to attach or rebuild a master project ZIP for routine continuation. Inspect and edit the repository files directly. The one-time import is already complete; the temporary upload shards and import workflow have been removed. If the project tree is ever missing, inspect Git history and restore tracked files rather than asking the user for a master ZIP. Future development commits ordinary changed files to the active feature branch and keeps PR #4 draft; do not merge to `main`.
+## 1. Project identity and source of truth
+- Game: **KINDLEWAKE: THE SUNDERED VOW**, an offline-first medieval tactical RPG built with Godot 4 / GDScript.
+- Repository: https://github.com/ninjun42215-gif/KindleWake
+- **Active development branch: `feature/rune-system-v1`.**
+- **PR #4 must remain draft and unmerged. Do not modify or merge `main` without explicit user authorization.**
+- Canonical project source: tracked files under `Kindlewake/` in the repository. Do not ask the user to upload a master project ZIP.
+- Save compatibility: schema v3. Preserve legacy save fields and compatibility aliases unless a deliberate migration is designed, tested and documented.
+- The project is offline-first. Do not add accounts, cloud services, multiplayer, server calls or Android INTERNET permission.
 
-You are continuing development of **KINDLEWAKE: THE SUNDERED VOW**, an offline-first medieval tactical RPG for Android and iOS. You act as AAA game director, tactical-RPG systems architect, Godot 4 developer, pixel-art director and narrative writer.
+## 2. Mandatory first actions in every new session
+1. Inspect the latest commit and branch head for `feature/rune-system-v1`; do not assume this prompt's checkpoint SHA is still current.
+2. Read, in order:
+   - `Kindlewake/docs/SESSION_HANDOFF.md`
+   - `Kindlewake/docs/GDD.md`
+   - `Kindlewake/README.md`
+   - this root `CONTINUATION_PROMPT.md`
+   - `Kindlewake/receiving/README.md`
+3. Inspect recent commits, PR #4 status and the latest **Build Android APK** workflow run. Confirm its head SHA matches the branch head before calling that build current.
+4. Inspect actual files and tests before editing. Preserve existing work; make small, reviewable commits. Never force-push or blindly replace the project tree.
+5. If any information conflicts, trust the latest repository code and latest successful CI for implementation facts; reconcile the docs and record the correction. This prompt is a workflow contract, not a substitute for inspecting the current branch.
 
-## Step 0 — do this first
-1. Inspect the GitHub repository `ninjun42215-gif/KindleWake` on branch `main`. Read `Kindlewake/docs/SESSION_HANDOFF.md`, `Kindlewake/docs/GDD.md`, and this prompt before editing. Treat the checked-in extracted `Kindlewake/` directory as the source of truth; do not require a ZIP attachment.
-2. If `Kindlewake/` is missing, inspect the latest commits and Git tree first. Restore the project from repository history where possible; do not ask for a master ZIP or attempt to fetch a binary archive through a text-file API.
-3. Preserve existing repository work. Inspect `git`/GitHub state and the target files before changes. Make small, reviewable commits; never force-push or replace the whole tree blindly.
-4. None of the code (Milestone 1, Auto Battle, Milestone 2 step 1, v0.4.0 sigils, v0.5.0 party screen/shop, and later creator/overworld updates) has been executed in Godot unless a committed CI run or user-provided device output proves it. Distinguish static checks, CI tests, and real-device verification. If the user pastes test output or Godot errors, interpret every line and fix root causes first.
-5. **Capacity rule:** work in small, complete steps. Reserve the last ~15% of capacity. Before you stop, update `Kindlewake/docs/SESSION_HANDOFF.md` and `Kindlewake/README.md`, update the GDD revision log and this prompt's state/task list, and commit all changed files. A partial milestone that is saved and documented is better than an unfinished one with no handoff. Do not rebuild a master ZIP as a required deliverable.
-6. **ALWAYS-DELIVER RULE:** whenever you change the game or its design, update `Kindlewake/docs/GDD.md` (new/changed sections plus a revision-log line) and `Kindlewake/docs/CONTINUATION_PROMPT.md` (state and task list). Update the session handoff and project README too. Commit these documents alongside the code. Only create downloadable ZIP/GDD/prompt exports if the user explicitly asks for offline copies.
-7. **Source-of-truth rule:** edit and commit normal files under `Kindlewake/` directly; do not replace the repository with a master project ZIP. The 26 nested sprite source packs stay as assets inside the project; do not unpack or import them without license and suitability review. The user explicitly requires a downloadable handoff: CI must package the source tree into a ZIP, split it into numbered binary parts each <=25 MB (25,000,000 bytes), and upload the parts plus reassembly instructions. This is a transport deliverable, not the canonical source.
+## 3. Game design and engineering constraints
+- Engine: Godot 4.2+, standard GDScript, GL Compatibility; landscape-first and touch-first, with responsive portrait support where applicable.
+- Art: original dark-medieval pixel-art identity, muted palette, parchment UI and heraldry. Do not copy protected game assets.
+- Maintain data-driven content, modular code, stable scene/resource paths and Godot resource UIDs.
+- Preserve existing animation/frame contracts unless importer, renderer and tests are updated together.
+- Do not import third-party art until the exact source, license, attribution and redistribution/modification rights are checked and recorded in `assets/art/CREDITS.md`.
+- Keep UI controls reachable on compact landscape and portrait screens; do not sacrifice essential actions to hide overflow.
+- Preserve save schema v3 compatibility. Any schema change needs sequential migrations and regression tests for old saves.
+- Prefer a small, complete, playable and tested feature over broad placeholder content. No pseudocode or empty placeholders for requested implementation.
 
-## Fixed requirements (condensed master prompt)
-- Engine: Godot 4.2+, GDScript, GL Compatibility. Landscape, touch-first, large touch targets, battery-conscious, fast loading.
-- 100% offline: no accounts, no cloud, no multiplayer, no server calls, no INTERNET permission. Local JSON data, local saves (multiple slots, autosave, versioning, integrity checks).
-- Original IP only. Inspiration (not copying): Knights of Ages for tactical combat/mercenary management, Suikoden II for large recruitable cast, headquarters and platoons.
-- World: Eldrimar, six noble houses (Brennhallow, Ysmark, Quillon, Vessmoor, Tarnholt, Orrowen) plus the fallen House Dunmarrow. Protagonist Torren Dunmarrow reclaims Kaer Sethorn; the Covenant of the Seven Flames and a suppressed Hidden Codicil drive the plot; antagonists are not purely evil; multiple endings.
-- Core systems: grid tactics (terrain, height, forest, rivers, flanking/rear, status, morale, fatigue, weather, victory/defeat), full class tree, 60-100 recruitable characters with distinct personalities, platoon management (Fighting Power vs Command Aptitude), large army battles (Order/Resolve phases, morale, siege), upgradeable castle with functional facilities, optional generational system.
-- Art direction: detailed dark-medieval 2D pixel art, isometric/three-quarter view, muted palette, parchment UI, heraldry (specs in GDD section 13).
-- Quality bar: never pseudocode when code is requested; no empty placeholders for core features; modular maintainable architecture; data-driven content; prioritize a small fully playable game over a large unfinished one.
-- For every milestone provide: design specifications, complete implementation code, folder structure, required assets, scene architecture, data structures, testing instructions, expected results, known limitations.
+## 4. Current project context
+The detailed feature inventory, architecture, narrative, maps, economy, systems and historical implementation notes are in `Kindlewake/docs/GDD.md` and `Kindlewake/docs/SESSION_HANDOFF.md`. Read them rather than relying on stale chat memory.
 
-## Milestones
-1 Tactical combat prototype (written, unverified) · 2 Stats/classes/leveling/equipment · 3 Recruitment and character management · 4 Platoons · 5 Army battles · 6 Castle HQ · 7 World map and campaign · 8 Generations · 9 Complete offline save/load · 10 Polish and deployment.
+Known major systems include the overworld, towns/interiors, tactical battles, recruitable party, class progression, equipment, rune library/fusion/passives/unique/heirloom runes, rune services, +15 equipment enhancement, regional merchants, save/load, title/creator flows, mobile HUD and original environment/UI assets. Existing hero/enemy sprite sheets and renderer overlays are not yet equivalent to a complete bespoke per-class/per-species animation library; consult the latest handoff for remaining art work.
 
-## Current state (v0.7.11 repository import completed; gameplay remains v0.7.9. The canonical source is the extracted GitHub `Kindlewake/` tree with 129 tracked project files and the reconstructed optional sprite archive. The four temporary upload shards and one-time extraction workflow have been removed. Future edits are direct Git commits; no project ZIP is needed. v0.7.9 = v0.7.8 + balanced creator weapon-preference starting loadouts; v0.7.8 = v0.7.7 + creator preview polish and checkpoint verification; v0.7.7 = v0.7.6 + interactive protagonist creator, campaign hookup and save migration; v0.7.6 = v0.7.5 + protagonist creation foundation; v0.7.4 = v0.7.3 + supplied sprite source-pack integration; v0.7.3 = v0.7.2 + touch scrolling fix; v0.7.2 = v0.7.1 + shop compare and confirm; v0.7.1 = v0.7.0 + party screen redesign; v0.7.0 = v0.6.1 + towns and interiors; v0.6.1 = v0.6.0 + art pass; v0.6.0 = v0.5.6 + free-roam overworld; v0.5.6 = v0.5.5 + class skills; v0.5.5 = v0.5.4 + weapon skills; v0.5.4 = v0.5.3 + phone HUD rework; v0.5.3 = v0.5.2 + CI results page; v0.5.2 = v0.5.1 + full class tree as data; v0.5.1 = v0.5.0 + Android APK pipeline; v0.5.0 = v0.4.0 + party screen, shop, pre-battle panel, static checker, balance report)
-- `docs/GDD.md` is complete (17 sections + risks); section 4.7 describes the party screen and shop.
-- Architecture (keep it): data in `data/*.json`; rules in `scripts/battle/*` (BattleMap, BattleUnit, CombatCalc, TurnQueue, BattleAI, BattleController); persistent party in `scripts/core/*` (CharacterSheet, PartyState, ShopSystem, ItemInfo, EncounterBuilder); autoloads `GameData`, `SaveSystem`, `GameState` (no class_name); `scripts/ui/battle_scene.gd` (rendering, input, HUD, pre-battle panel) and `scripts/ui/party_screen.gd` (`PartyScreen`, injected dependencies via `setup(party, db, shop)`); headless tests `tests/run_tests.gd`, `tests/balance_report.gd`; linter `tools/gd_static_check.py`. One battle map (Prologue: The Sallow Road, 4 vs 4) plus Roadside Skirmish groups.
-- Done earlier: Auto Battle (v0.2.1, GDD 3.12); items, slots, sheets, EXP, promotion, persistent party (v0.3.0); full rename (never use the old names Ashvale, Valtherion, Rowan, etc.) and the FF7-style grind with Sigils, mastery copies, damage skills and Skirmish (v0.4.0, GDD 4.6).
-- **v0.7.3 (this handoff): lists in the party screen scroll by touch: cards are `TapCard`s (tap vs drag) instead of Buttons, panels ignore the mouse (GDD 4.7). Not run in Godot; ask whether scrolling feels right.**
-- **v0.7.2: the Shop tab compares gear with what each hero wears before buying and every buy/sell needs a Confirm press (GDD 4.7). Not run in Godot.**
-- **v0.7.1: Party screen redesign for phones (GDD 4.7, v0.7.1 block): fixed the wrapped Gold label that made the top bar half the screen high, card-based roster/gear/sigils/shop, stat tiles, green/red gear deltas, Bag list, sell needs a second tap, message banner, Back button, scroll positions kept. Same API and test strings. Static check 0/0. Not run in Godot; ask for a new screenshot of the three tabs.**
-- **v0.7.0: towns and house interiors (GDD 11.2): `Location.tscn`, `locations.json`, `LocalMap`; the party screen opens only from the shop counter and the war table. Not run in Godot. Nothing about the current location is saved yet.**
-- **v0.6.1: art pass (GDD 14.2): animated Soldier/Orc sprites, rendered tree/rock/building sprites, `Art` helper, CREDITS (licences unverified for buildings and Tiny RPG). Not run in Godot.**
-- **v0.6.0: free-roam overworld, GDD 11.1. `World.tscn` is the main scene (walk, ambushes, places, minimap); battles run in `Main.tscn` and return with "Back to the World". Not run in Godot. World position and flags are not saved yet.**
-- **v0.5.6: weapon skills are granted by class (`class_skills`), see GDD 3.13. Not run in Godot.**
-- **v0.5.5: weapon skills (`strike` type: Power Strike, Aimed Shot; GDD 3.13), Skill button cycles skills, `_test_weapon_skills()`. Not run in Godot; needs a balance run.**
-- **v0.5.4: battle HUD rebuilt for phones (GDD 14.1): bigger text and buttons, safe-area inset, Menu popup (Save/Load), preview panel with Confirm/Cancel bottom-centre, scrollable result and pre-battle overlays. Only `battle_scene.gd` changed (plus the checker's class list). Not run in Godot; ask the user for a screenshot of the battle screen, the pre-battle panel and the result screen on their phone.**
-- **v0.5.3:** the GitHub run page now shows a "Kindlewake build report" (test problems with locations, last 40 test lines, import/export errors), so the user can send a saved page or screenshot of the run instead of logs. No game code changed.**
-- **v0.5.2: classes as data.** `data/classes.json` has the full GDD 4.2 tree (28 classes, tiers 1-4) with optional `locked` / `story_only` / `requires`; promotion skips locked classes; one placeholder glyph per branch for classes without a drawing; `_test_class_tree()` and updated promotion tests (never run in Godot). Linter quirk: avoid the `_:` wildcard in `match` (reported as an error); use if/elif.
-- **APK status (historical):** a previous phone-triggered GitHub Actions run successfully published `Kindlewake.apk` as a Release. Static inspection found a valid signed APK (`com.kindlewake.game`, arm64 + armv7, no INTERNET, data and scripts packed). **Unknown:** whether it launches on the user’s phone and the associated `run_tests.txt` result. After the extracted `Kindlewake/` tree is imported, use the repository’s current **Build Android APK** workflow; do not upload a replacement master ZIP.
-- **v0.5.1: Android installer pipeline.** The user asked for an APK installer. The sandbox had no Godot and no internet, so no APK was built; the pipeline was verified offline only. Files: `export_presets.cfg` (preset `Android`, release template export, no permissions, `*.json` packed), `project.godot` (icon, `import_etc2_astc=true`, orientation 4), `assets/icons/*` (generated by `tools/make_icon.py`), `tools/keys/kindlewake-sideload.keystore` (public sideload key, not for Google Play), `tools/build_apk.py` + `Build_APK.bat` + `tools/build_apk.sh` (download/cache JDK 17, Android SDK, Godot 4.2.2 + templates; import; run tests (logged, non-blocking); export `dist/Kindlewake.apk`; verify signature and that INTERNET is NOT requested), `.github/workflows/build-apk.yml` (cloud build), `docs/BUILD_APK.md` (user guide; GDD section 15.1). `python tools/build_apk.py --check` is the offline preflight. Game code and save format unchanged.
-- **v0.5.0:** every battle opens on a pre-battle panel (Begin Battle / Party, Gear and Shop); the Party screen has a roster, a character sheet and Equipment / Sigils / Shop tabs (stat deltas, sockets, links, AP progress); `ShopSystem` + `data/shop.json` (sell ratio 0.5; heirlooms/equipped items not sellable; sigils sell flat); Sigil of Frost (Frost Shard, Frost Lance); `EncounterBuilder`; `ItemInfo`; `tools/gd_static_check.py` (0 errors, 0 warnings, mutation-tested); `tests/balance_report.gd`. New test `_test_shop_and_screen()` (shop rules, text helpers, `with_item` preview and a headless PartyScreen smoke test that checks `PartyScreen.builds` so a half-built screen fails). Details: SESSION_HANDOFF section v0.5.0.
-- **The APK pipeline has not been run against the real downloads yet.** First-run risks: download URLs, Godot's Android export check, editor-settings location in self-contained mode, Windows `.bat` quoting, sdkmanager licences (details: SESSION_HANDOFF v0.5.1).
-- **Not run in Godot yet.** The sandbox had no Godot and no package installs, so v0.5.0 was verified only by the static linter and by hand. Likely first-run trouble: engine-API details in `party_screen.gd` (Control/ScrollContainer/Button sizing, `call_deferred` scroll restore), typed-array assignments, and layout at phone size. A fresh unzip MUST be imported once (`godot --headless --path . --import`) before the tests, otherwise every `class_name` type fails to resolve.
-- Not implemented yet (besides Milestone 10 store builds): remaining classes as data, skills v1, status effects, fatigue, counter-attacks, forest concealment, weather, enemy tables/maps beyond the Prologue, HQ screen (the party screen is only reachable from the pre-battle panel and results screen), blacksmith upgrades, class/weapon restrictions, sprites and audio.
+Do not assume any feature is complete or validated solely because it is described here. Verify the current source and exact CI run.
 
-## This session's task — continue from v0.7.9
-1. The v0.7.7 creator scene, preview, validation, confirm/back flow, GameState/PartyState hookup, battle-save profile and v1→v2 migration are already implemented. Do not rebuild these systems or assume they are missing.
-2. v0.7.8 polishes the geometric preview: presentation-sensitive head silhouette and distinct weathered / soft / scarred / sharp face details. A GDScript regression test covers the presentation mapping.
-3. v0.7.9 equips a matching common-tier starter for every compatible weapon preference and adds spear, crossbow, staff and dagger data. Do not re-implement this mapping.
-4. **First runtime task when Godot is available:** `godot --headless --path . --import`, then `godot --headless --path . --script res://tests/run_tests.gd`, then `godot --headless --path . --script res://tests/balance_report.gd`. Resolve every parse/runtime error before adding features. Godot is absent in the v0.7.9 environment; none of these commands ran.
-5. **Phone verification:** test New Chronicle in landscape, all appearance selectors, origin/discipline/weapon filtering, live preview, stat summary, confirm, and Back preserving the existing party. Check safe areas, scroll, readability and touch targets.
-6. Add origin-tag story hooks in small, testable steps. Tags are stored but do not yet trigger branches. Review the 26 nested optional sprite-pack licenses before importing art; no production portrait/body layers are approved yet.
-7. Extend saves when world/local-map persistence is designed. Current v2 battle saves preserve party and creation profile; world position, interior state and full campaign state are not independently persisted.
-8. After every code edit run `python3 -I tools/gd_static_check.py`; run `python3 tools/build_apk.py --check` before each checkpoint. Treat Godot/runtime behavior as unverified until actually executed.
-9. After every finished subtask update `docs/GDD.md`, `docs/SESSION_HANDOFF.md`, `README.md` and this prompt, then commit changed text/source/assets directly to GitHub. Do not rebuild or deliver a project ZIP unless the user explicitly requests an offline archive.
+## 5. Required development and validation loop
+For each meaningful feature:
+1. Inspect existing implementation and identify affected data, scripts, scenes, save fields, UI and tests.
+2. Implement the complete feature in the correct canonical paths; do not leave half-wired UI or dead data.
+3. Add/update regression tests for behavior, edge cases, save compatibility and UI contracts where testable.
+4. Run available local checks, including `python3 -I tools/gd_static_check.py` and `python3 tools/build_apk.py --check` from `Kindlewake/`.
+5. When authorized/available, run Godot import, strict headless tests, balance report and Android export. Use the repository's CI workflow when local Godot/Android tooling is unavailable.
+6. Inspect logs and fix all failures before moving on. Distinguish static checks, CI runtime tests, APK export and physical-device QA. Never claim a phone test unless it was actually performed.
+7. Update all required documentation (below) and commit to `feature/rune-system-v1`.
+8. Verify the resulting CI run belongs to the new branch-head SHA and confirm the artifacts exist.
 
-## Style
-Answer in plain English. Lead with what you did and what I should do next. Keep chat messages short; put code, documents and reports in downloadable files. Tell me honestly what is tested and what is not.
+## 6. Mandatory documentation updates
+Whenever code, assets, data, tests or design changes:
+- Update `Kindlewake/docs/GDD.md`: design/implementation details and a dated revision-log entry.
+- Update `Kindlewake/docs/SESSION_HANDOFF.md`: exact changes, paths, commit SHA, tests and results, known limitations, next concrete tasks and exact CI run/artifact links.
+- Update `Kindlewake/docs/CONTINUATION_PROMPT.md` and this root `CONTINUATION_PROMPT.md`: current state, constraints and next tasks; remove obsolete or contradictory instructions.
+- Update `Kindlewake/README.md` when user-facing setup, controls, features or workflow changes.
+- Keep `Kindlewake/receiving/README.md` accurate when intake rules change.
+Commit these updates together with the relevant work. Never leave the next AI to infer what was done or whether it passed.
 
+## 7. External AI contributions — receiving folder procedure
+The dedicated intake directory is **`Kindlewake/receiving/`**. The folder is included in every source handoff ZIP.
 
-## v0.7.7 — Interactive protagonist creator
-- `CharacterCreator.tscn` and `scripts/ui/character_creator.gd` provide the touch-first New Chronicle overlay with name, presentation, face, hair, skin, build, origin, starting discipline, compatible weapon preference and temperament selectors, validation, Confirm and Back.
-- `scripts/ui/character_preview.gd` draws the geometric bust and stat/choice summary. It is a UI preview, not production portrait art.
-- Confirm routes through `GameState.new_game(profile)` and `PartyState.new_game(..., protagonist_definition)`. Stable id `torren` and the four-member starting roster remain; companion definitions are unchanged. Back does not replace the current party.
-- Battle manual saves/autosaves carry `creation_profile`; save schema v2 migrates v1 by adding an empty profile while preserving battle and party payloads. Tests cover party initialization and save/migration behavior.
-- Limitations: weapon preference remains metadata only; origin tags have no story consumers; world/interior/full-campaign persistence is incomplete. Static check and APK preflight passed at that checkpoint; Godot runtime was not run.
+When another AI assistant produces code, assets, documents or a patch:
+1. Preserve the original output as an incoming contribution under a uniquely named folder, e.g. `Kindlewake/receiving/2026-11-10-ai-name-rune-vfx/`. Do not overwrite another contribution.
+2. Include a `HANDOFF.md` in that folder. It must state: summary; exact intended target paths; file inventory; Godot/runtime assumptions; dependencies; license/source/attribution and redistribution rights; tests performed with actual results; known limitations; and any manual import steps.
+3. For a small bundle, place its original ZIP or patch and `HANDOFF.md` in that folder. For a larger bundle, split the ZIP into sequential binary parts named `contribution.zip.part001`, `part002`, etc. **Every part must be <=25,000,000 bytes (25 MB decimal).** Include a `REASSEMBLE.txt` with exact commands for Windows and Linux/macOS.
+4. Commit and push the incoming contribution (including every part and both instruction files) to `feature/rune-system-v1`. Do not leave the only copy in chat, a temporary workspace or an unlinked cloud file. Never commit credentials, private tokens, signing keys or personal data.
+5. Reassemble all parts in numeric order inside the receiving subfolder, verify the reconstructed ZIP with `unzip -t` or 7-Zip, then extract it into a separate review subfolder. Keep the original parts/ZIP intact until review is complete.
+6. Review every file before integration. Check for malware, unexpected executables, licensing, asset dimensions/frame layout, Godot compatibility, resource UIDs, references, save schema and conflicts. Do not blindly copy/overwrite incoming files.
+7. Integrate approved changes into canonical `Kindlewake/` paths, add/update tests and documentation, run the validation loop, and commit the integration. Mark the intake folder's HANDOFF.md with accepted/rejected/deferred status and the integration commit.
+8. Keep the original contribution in `receiving/` as provenance unless the user explicitly asks to remove it. Do not let unreviewed incoming files be loaded by the game at runtime.
 
-## v0.7.6 — Protagonist creation foundation
-- `data/character_creation.json` and `scripts/core/character_creation.gd` provide profile defaults, validation, and a pure protagonist-definition builder. `GameData` loads the creator options.
-- Choices include name, presentation, face/hair/skin/build presets, three origins, eight tier-one disciplines, compatible weapon preferences and four temperaments. Origin and temperament bonuses apply to base stats; the stable character id remains `torren`.
-- Tests cover defaults, valid/invalid profiles, class choice, bonuses and source-data immutability. The visual creator and campaign/save integration were added in v0.7.7.
+### Required HANDOFF.md template
+```md
+# Contribution handoff
+- Contributor/AI:
+- Date:
+- Summary:
+- Intended target paths:
+- Included files:
+- Engine/version and assumptions:
+- Dependencies/plugins:
+- Asset source and license:
+- Attribution and redistribution rights:
+- Tests run and exact results:
+- Known limitations/risks:
+- Manual integration steps:
+- Status: awaiting review
+```
 
-## v0.7.9 — Weapon-preference starting loadouts
-- Every compatible weapon preference equips a matching common-tier starter; four missing weapon/item families (spear, crossbow, staff, dagger) are defined.
-- Regression coverage iterates all compatible discipline/preference combinations. Project and save metadata versions are 0.7.9; save schema remains v2.
-- Static checker 0 errors / 0 warnings; Android offline preflight and JSON parsing pass. Godot tests and actual balance are unverified.
+## 8. Mandatory ZIP handoff for every future session
+The user requires a ready-to-download source handoff after development. **Every future AI session that changes the project must leave the next session with a merge-ready ZIP handoff split into parts.**
+- The existing GitHub Actions workflow `.github/workflows/build-apk.yml` creates `Kindlewake-Source-Handoff.zip` from the tracked `Kindlewake/` project, includes the root GDD/continuation prompt and root `Feature_*.zip` packs, excludes generated caches/build output and signing keys, then splits it into numbered parts.
+- The workflow uploads the artifact **`Kindlewake-Source-Handoff-Parts`** with `REASSEMBLE.txt`.
+- Every part must be **<=25,000,000 bytes (25 MB decimal)**. Never use 25 MiB as the limit.
+- The archive includes `Kindlewake/receiving/`, so reviewed or pending incoming contributions and their HANDOFF instructions travel with the project.
+- After pushing changes, wait for CI, inspect the exact branch-head run, and verify both `Kindlewake-APK` and `Kindlewake-Source-Handoff-Parts` artifacts exist. Check individual part sizes and verify the reconstructed ZIP if possible.
+- If CI packaging fails, fix the workflow and rerun it. Do not tell the user a handoff is ready until the artifact is present and verified.
+- Do not treat split parts as separate ZIPs. The next AI must download **all** parts, keep them together, concatenate in numeric order, test the reconstructed ZIP, then extract it. The GitHub repository remains canonical; the archive is the portable handoff copy.
 
-## v0.7.8 — Creator preview polish and verification
-- Presentation now changes the geometric head/jaw silhouette; weathered, soft, scarred and sharp face presets have distinct details. Skin, hair, build and origin palette remain live.
-- Added a regression test for the three presentation silhouette mappings.
-- Static checker: 0 errors / 0 warnings. APK offline preflight passed. Project JSON and ZIP integrity checks passed.
-- **Not run:** Godot import, GDScript headless suite, balance report, scene rendering, touch layout or phone playthrough; no Godot executable was available.
-- v0.7.7 creator UI/campaign/save integration remains implemented as described above. Save schema stays v2; only `GAME_VERSION` metadata advanced to 0.7.8.
+Linux/macOS:
+```sh
+cat Kindlewake-Source-Handoff.zip.part* > Kindlewake-Source-Handoff.zip
+unzip -t Kindlewake-Source-Handoff.zip
+unzip Kindlewake-Source-Handoff.zip
+```
 
-## External AI receiving folder and split handoff rule\n- Put contributions from another AI in `Kindlewake/receiving/` with a `HANDOFF.md` describing changes, target paths, dependencies, tests, limitations and licensing. Review before integrating; never blindly overwrite canonical files or accept secrets.\n- Every successful Android CI run should upload `Kindlewake-Source-Handoff-Parts`; every part must be <=25 MB. Reassemble in numeric order before extracting. Confirm the artifact exists before telling the user it is downloadable.\n\n## Next tasks
-1. Expand Sethmarch with proper traversable dungeon interiors and a second functional settlement, preserving the Sallow Marches starting slice and current one-time ruin rewards.
-2. Continue the four-continent foundation by turning Eldrimar's Sethmarch/Orrowen/Vessmoor routes into connected regional map data,
-2. Define a versioned campaign-world save model (continent, region, map, tile, discovered hubs, route unlocks, quest/dungeon flags) and a v2 migration plan before implementation.
-3. Add town hubs and dungeon maps incrementally: each needs reachable exits, NPC/quest hooks, encounter data and regression tests.
-4. Add travel modes in progression order: roads/carts, ferries and barges, charter ships, caravan routes, northern pass, then airship. Do not consume campaign weeks until the calendar is implemented.
-5. Run Godot import, the full headless test suite and balance report later as previously requested; static checks are not runtime proof. Then verify creator/touch layouts and starter weapons on a landscape phone.
-6. Add origin-tag story hooks and review sprite-pack licenses before importing original art.
+Windows PowerShell (run in the folder containing the parts):
+```powershell
+$parts = Get-ChildItem 'Kindlewake-Source-Handoff.zip.part*' | Sort-Object Name
+$out = [System.IO.File]::Create('Kindlewake-Source-Handoff.zip')
+try { foreach ($part in $parts) { $input = [System.IO.File]::OpenRead($part.FullName); try { $input.CopyTo($out) } finally { $input.Dispose() } } } finally { $out.Dispose() }
+7z t Kindlewake-Source-Handoff.zip
+```
+If 7-Zip is unavailable, use another ZIP integrity checker after reassembly.
+
+## 9. Stop/handoff checklist — mandatory before ending a session
+- [ ] All intended source changes are committed to `feature/rune-system-v1`.
+- [ ] PR #4 is still draft/unmerged; `main` was not modified.
+- [ ] GDD, session handoff, both continuation prompts and README are synchronized.
+- [ ] Incoming AI contributions are in `Kindlewake/receiving/` with HANDOFF.md and reassembly notes when needed.
+- [ ] Static checks, Godot tests, balance report and Android build are reported accurately (passed/failed/not run).
+- [ ] Latest branch-head GitHub Actions run completed successfully.
+- [ ] `Kindlewake-Source-Handoff-Parts` artifact exists; all parts are <=25,000,000 bytes; reconstruction/integrity was verified.
+- [ ] APK artifact exists if the Android workflow succeeded; do not claim device testing without a real device.
+- [ ] Session handoff states exact commit SHA, workflow URL, artifact names/IDs/expiry, test counts and next tasks.
+- [ ] Final user message says what changed, what passed, what remains unverified, and where to get the handoff.
+
+## 10. Working style
+Be proactive and implementation-focused. The user often says “continue” to authorize the next sensible development step. Do useful repository work rather than returning status-only updates. Do not ask the user to repeat project context that is already in these files. Ask only when an essential product decision or authorization is missing. Lead with completed work and the next action; be concise but specific and honest.
