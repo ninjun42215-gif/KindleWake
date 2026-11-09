@@ -57,7 +57,7 @@ class ProjectHealthAuditTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             project = self.fixture(root)
-            (project / "export_presets.cfg").write_text('version/name="1.2.2"\\nversion/code=123\\n')
+            (project / "export_presets.cfg").write_text('version/name="1.2.2"\nversion/code=123\n')
             result, report = self.run_audit(root)
             self.assertEqual(result.returncode, 0)
             self.assertTrue(any(item["code"] == "ANDROID_EXPORT_VERSION_DRIFT" for item in report["findings"]))
