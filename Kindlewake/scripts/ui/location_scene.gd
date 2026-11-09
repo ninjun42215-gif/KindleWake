@@ -201,7 +201,7 @@ func _on_prompt_pressed() -> void:
     elif spot_kind == "inn":
         spot_buttons.add_child(_btn("Rest the company — 20 gold", _rest_at_inn))
     elif spot_kind == "choice":
-        if not bool(GameState.world_flags.get("tideglass_grotto_cleared", false)):
+        if not bool(GameState.world_flags.get("tideglass_grotto_cleared", false)) or not bool(GameState.world_flags.get("tideglass_ledger_found", false)):
             spot_text.text += "\n\nThe missing lighthouse ledger is still in Tideglass Grotto. Ilyra will not put an incomplete account before the Assembly."
         elif bool(GameState.world_flags.get("brinegate_ledger_decision", false)):
             spot_text.text += "\n\nYour decision has been entered into the harbour chronicle."
