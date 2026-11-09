@@ -47,7 +47,7 @@ static func combine(inventory: Array, rune_id: String, _grade: String, rune_defs
         grade_sum += maxi(0, GRADES.find(grade_of(inst, rune_defs)))
         level_sum += rune_level(inst, rune_defs)
     var avg_grade := int(floor(float(grade_sum) / 3.0))
-    var base_grade := maxi(avg_grade, GRADES.find(str(def.get("grade", "common"))))
+    var base_grade := maxi(avg_grade, GRADES.find(str(def.get("grade", "common"))) - 1)
     var target_index := mini(base_grade + 1, GRADES.size() - 1)
     if target_index <= base_grade:
         return {"ok":false,"success":false,"error":"This rune has reached its maximum grade."}
