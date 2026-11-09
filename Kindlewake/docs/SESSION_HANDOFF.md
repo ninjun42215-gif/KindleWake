@@ -112,3 +112,16 @@
 - Latest branch head: `e55242d78643bd3dde56e3bafdc623a4dfa6479e`. Android workflow run `42671737916` was queued at handoff; do not claim this combined UI/VFX batch passed until this exact head is validated.
 - Remaining art work: bespoke per-class hero sprite sheets and per-species enemy sprite sheets are still not present; current battle sprites use the existing Soldier/Orc animation strips with tint/identity accents. Device visual testing remains required.
 - `main` untouched; PR #4 remains open and draft.
+
+
+## 2026-11-10 — Mobile UI/HUD finalization and CI validation
+- Final UI code head validated: 99fcc28dd37652c293eaf240ec017500bbd698e6 on feature/rune-system-v1.
+- Battle HUD responsive pass: compact selected-unit/log/preview widths, scaled touch controls, preview and action controls separated for narrow layouts, timeline/log hidden when there is insufficient space, safe-area insets retained.
+- Overworld/town HUD: responsive company/save buttons, resized place/NPC interaction panels, viewport-scaled action buttons and prompts.
+- Company management: portrait uses full-height Company / Hero / Gear & Runes tabs; narrow landscape uses proportional three-pane columns; desktop keeps a balanced wider layout. Headless smoke tests use a design-size fallback until the Control enters the SceneTree.
+- Original lightweight combat feedback: vector slash impacts, elemental/status bursts and healing rings/particles; effects expire quickly and use no additional textures.
+- Compile/test fixes: removed duplicate compact flag in battle HUD; removed unsafe get_viewport_rect() calls from party screen when the Control is outside the SceneTree.
+- Validation: workflow 42672539871 — Godot 4.2.2, strict tests **333 checks / 0 failures**, balance report completed, signed Android APK exported and verified (arm64-v8a + armeabi-v7a; no requested permissions). Artifact: Kindlewake-APK, ID 13699850975, expires 2027-02-07. Artifact ZIP SHA-256: 1246feb4c56cdcf738c3299b0f01ab842506847604f8d07d3f5a194b35defab7. Workflow URL: https://github.com/ninjun42215-gif/KindleWake/actions/runs/42672539871.
+- Note: first editor scan emits transient class-registration errors; the build script performs a clean second scan, after which strict tests pass and the APK export succeeds. Existing non-blocking JSON-corruption test log and ObjectDB/resource cleanup warnings remain.
+- Still required: install and visually test the APK on a physical Android device at 16:9 and narrow landscape, plus portrait company tabs, notches/safe areas, scrolling, and touch hit targets. CI does not prove visual correctness on-device.
+- main remains untouched; PR #4 remains draft and unmerged.
