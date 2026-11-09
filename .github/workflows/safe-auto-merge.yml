@@ -1,5 +1,5 @@
-# Merge only after the Android build and version guard both pass for the exact PR head.
-# GitHub's native auto-merge remains subject to repository branch rules and required checks.
+# Merge only after all four required workflows pass for the exact PR head SHA.
+# The REST merge endpoint enforces the expected head and any repository branch rules.
 name: Safe Auto Merge
 
 on:
@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  enable-auto-merge:
+  merge-safe-pr:
     if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
