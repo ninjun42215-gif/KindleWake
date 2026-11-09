@@ -91,3 +91,15 @@ Unless explicitly overridden by the user:
 
 ---
 Living snapshot: refresh branch SHA, workflow evidence, artifacts, implementation status and next actions after meaningful updates. Never present stale checkpoint facts as current.
+
+
+## Android release workflow update — 2026-11-10
+
+- CI workflow `.github/workflows/build-apk.yml` now has separate `android-build` and `source-handoff` jobs. The source handoff is independent and still uploads when build/tests fail.
+- APK artifacts include `Kindlewake.apk`, SHA-256 and `release-manifest.json` with ref/commit/version provenance. Test/build logs remain downloadable.
+- Every branch, tag, PR target and manual dispatch uses the triggering checkout; the source handoff is generated from `git ls-files`, not a fixed feature-file list. Each split part is <=25,000,000 bytes.
+- Tag pushes produce build candidates only. They do not publish production releases.
+- `.github/workflows/publish-android-release.yml` is the separate manual production publisher. Before use, create the `android-production` GitHub Environment, configure required reviewers and add `ANDROID_RELEASE_KEYSTORE_BASE64`, `ANDROID_RELEASE_KEY_ALIAS`, and `ANDROID_RELEASE_KEY_PASSWORD` as environment secrets. Never commit the private production key.
+- `project.godot` and Android export preset version names must match. Current version is `0.10.0`; Android version code is `1000` and must increase for every published update.
+- Current builder supports APK export only, not AAB. CI does not prove physical-device QA. See `docs/ANDROID_RELEASE_WORKFLOW.md` for complete operating instructions.
+- Workflow edits have been committed, but their new CI execution must be inspected on the exact latest branch-head SHA before calling this revision validated.
