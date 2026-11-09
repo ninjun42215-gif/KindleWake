@@ -481,6 +481,11 @@ func _draw_place(p: Dictionary) -> void:
     elif kind == "gate":
         Art.draw_world(self, "tower_a", c + Vector2(0, 24), 0.9, Color(0.75, 0.68, 0.48))
         top = 70.0
+    elif kind == "charter":
+        draw_line(c + Vector2(0, 18), c + Vector2(0, -42), Color("#d9c18a"), 4.0)
+        draw_colored_polygon(PackedVector2Array([c + Vector2(2, -38), c + Vector2(34, -24), c + Vector2(2, -8)]), Color("#7aaeb0"))
+        draw_colored_polygon(PackedVector2Array([c + Vector2(-2, -30), c + Vector2(-27, -18), c + Vector2(-2, -5)]), Color("#e4d5b0"))
+        top = 76.0
     elif kind == "camp":
         var cleared: bool = bool(GameState.world_flags.get("camp_cleared", false))
         var tint: Color = Color(0.55, 0.55, 0.55) if cleared else Color(1.0, 0.82, 0.78)
@@ -506,6 +511,10 @@ func _draw_place_fallback(p: Dictionary) -> void:
         draw_rect(Rect2(c + Vector2(-6, -2), Vector2(12, 16)), Color(0.15, 0.12, 0.10))
         draw_line(c + Vector2(0, -18), c + Vector2(0, -38), Color(0.8, 0.8, 0.8), 2.0)
         draw_rect(Rect2(c + Vector2(0, -38), Vector2(12, 8)), Color(0.75, 0.62, 0.20))
+    elif kind == "charter":
+        draw_line(c + Vector2(0, 18), c + Vector2(0, -42), Color("#d9c18a"), 4.0)
+        draw_colored_polygon(PackedVector2Array([c + Vector2(2, -38), c + Vector2(34, -24), c + Vector2(2, -8)]), Color("#7aaeb0"))
+        draw_colored_polygon(PackedVector2Array([c + Vector2(-2, -30), c + Vector2(-27, -18), c + Vector2(-2, -5)]), Color("#e4d5b0"))
     elif kind == "village":
         for i in range(3):
             var o := Vector2(-18.0 + 18.0 * float(i), 4.0 - 6.0 * float(i % 2))
