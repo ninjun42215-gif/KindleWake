@@ -1,0 +1,132 @@
+{
+  "id": "battle_tideglass",
+  "title": "Tideglass Grotto: The Drowned Ledger",
+  "briefing": "The missing lighthouse ledger lies beyond the flooded causeway. The Reef Warden and his hired lookouts have been ordered to keep it buried. Reach the outer chamber, break their line and defeat the Warden. The tide is rising.",
+  "weather": "rain",
+  "legend": {
+    ".": "grass",
+    "f": "forest",
+    "r": "road",
+    "h": "hill",
+    "w": "ford",
+    "~": "deep_water",
+    "b": "bridge",
+    "#": "rock"
+  },
+  "terrain": [
+    "....................",
+    "....................",
+    "......ff....hh......",
+    ".....fff...hhh......",
+    "......f....hh.#.....",
+    ".........r..........",
+    "....~~~~~b~~~w~~....",
+    "....~~~~~b~~~w~~....",
+    ".........r..........",
+    ".....f...r...f......",
+    ".....ff..r..........",
+    "......f.............",
+    "....................",
+    "...................."
+  ],
+  "heights": [
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000011000000",
+    "00000000000122000000",
+    "00000000000110000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000"
+  ],
+  "victory": [
+    "rout_all",
+    "defeat_commander"
+  ],
+  "units": [
+    {
+      "character_id": "torren",
+      "team": "player",
+      "cell": [
+        9,
+        10
+      ],
+      "facing": 0,
+      "protagonist": true
+    },
+    {
+      "character_id": "bram",
+      "team": "player",
+      "cell": [
+        8,
+        9
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "sela",
+      "team": "player",
+      "cell": [
+        10,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "brother_wystan",
+      "team": "player",
+      "cell": [
+        7,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "reefwarden",
+      "team": "enemy",
+      "cell": [
+        13,
+        4
+      ],
+      "facing": 2,
+      "commander": true
+    },
+    {
+      "character_id": "saltcutthroat",
+      "team": "enemy",
+      "cell": [
+        10,
+        3
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "saltcutthroat",
+      "team": "enemy",
+      "cell": [
+        8,
+        4
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "saltbow",
+      "team": "enemy",
+      "cell": [
+        12,
+        3
+      ],
+      "facing": 2
+    }
+  ],
+  "battlefield": "river_crossing",
+  "reward_rune": "dragon",
+  "world_flag_on_victory": "tideglass_grotto_cleared",
+  "victory_text": "The Warden lowers his axe. Behind him, the ledger bears the same Seven Flames seal Torren saw in the burned estate. Someone scraped away the final oath—and paid to keep the sea-lanes dark."
+}
