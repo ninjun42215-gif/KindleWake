@@ -3,6 +3,8 @@ extends Node2D
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
+const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
+const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 ## Overworld (Milestone 7, first step): walk freely over the Sallow Marches, find places, get ambushed.
 ## Touch: tap to walk to a spot, hold and drag to steer. Terrain changes speed; forests are more dangerous.
 ## All rules live in WorldMap; battles reuse the battle scene through GameState.start_battle_from_world().
@@ -54,10 +56,15 @@ var party_screen: PartyScreenScript
 var minimap_dot: ColorRect
 var campaign_save_timer: float = 0.0
 var creator_screen: Control
+var move_stick: VirtualStick
+var run_btn: Button
+var run_toggled: bool = false
+var moving_vector: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
     rng.randomize()
+    ExplorationControls.configure()
     active_world = GameData.world_for_region(GameState.active_region_id)
     wmap = WorldMap.generate(active_world)
     camera = Camera2D.new()
@@ -150,7 +157,7 @@ func _process(delta: float) -> void:
     campaign_save_timer += delta
     if campaign_save_timer >= 25.0 and not panel_open and not party_screen.visible:
         campaign_save_timer = 0.0
-        GameState.world_pos = player_pos
+        GameState.world_pos = wmap.wrap_position(player_pos)
         GameState.save_campaign("auto_a")
     if ambush_timer >= 0.0:
         ambush_timer -= delta
@@ -159,7 +166,13 @@ func _process(delta: float) -> void:
         queue_redraw()
         return
     if not panel_open and not party_screen.visible:
-        _move(delta)
+        moving_vector = ExplorationControls.movement_vector()
+        if move_stick != null and move_stick.value.length() > moving_vector.length():
+            moving_vector = move_stick.value
+        if moving_vector.length() > 0.12:
+            _move_direction(delta, moving_vector.normalized())
+        else:
+            _move(delta)
         _update_near()
     camera.position = camera.position.lerp(player_pos, clampf(delta * 8.0, 0.0, 1.0))
     _update_hud()
@@ -175,7 +188,8 @@ func _move(delta: float) -> void:
         has_target = false
         return
     var cell: Vector2i = cell_of(player_pos)
-    var step: float = minf(dist, WALK_SPEED * wmap.speed_at(cell) * delta)
+    var speed_multiplier: float = 1.6 if run_toggled or ExplorationControls.running() else 1.0
+    var step: float = minf(dist, WALK_SPEED * speed_multiplier * wmap.speed_at(cell) * delta)
     var dir: Vector2 = to / dist
     var before: Vector2 = player_pos
     var nx: Vector2 = player_pos + Vector2(dir.x * step, 0.0)
@@ -195,13 +209,39 @@ func _move(delta: float) -> void:
     _accumulate_danger(moved, cell)
 
 
+
+func _move_direction(delta: float, direction: Vector2) -> void:
+    has_target = false
+    var cell := wmap.wrap_cell(cell_of(player_pos))
+    var multiplier: float = 1.6 if run_toggled or ExplorationControls.running() else 1.0
+    var step: float = WALK_SPEED * multiplier * wmap.speed_at(cell) * delta
+    var before := player_pos
+    var nx := player_pos + Vector2(direction.x * step, 0.0)
+    if _free_at(nx):
+        player_pos = nx
+    var ny := player_pos + Vector2(0.0, direction.y * step)
+    if _free_at(ny):
+        player_pos = ny
+    var moved := player_pos.distance_to(before)
+    if moved > 0.01:
+        if absf(direction.x) > 0.12:
+            facing_left = direction.x < 0.0
+        walk_phase += moved * 0.12
+        _accumulate_danger(moved, wmap.wrap_cell(cell_of(player_pos)))
+
+
+func _toggle_run() -> void:
+    run_toggled = not run_toggled
+    if run_btn != null:
+        run_btn.text = "RUN: ON" if run_toggled else "RUN"
+
 func _in_safe_zone(cell: Vector2i) -> bool:
     var radius: float = float(active_world.get("safe_radius", 5))
     for p in wmap.places:
         var d: Dictionary = p
         var kind: String = str(d.get("kind", ""))
         if kind == "keep" or kind == "village" or kind == "port":
-            if Vector2(cell - wmap.place_cell(str(d.get("id", "")))).length() < radius:
+            if Vector2(wmap.wrapped_delta(cell, wmap.place_cell(str(d.get("id", "")))).length() < radius:
                 return true
     return false
 
@@ -237,12 +277,17 @@ func _go_to_battle(def: Dictionary) -> void:
 
 # ------------------------------------------------------------------ places
 
+func _place_world_position(place_cell: Vector2i) -> Vector2:
+    return cell_center(cell_of(player_pos) + wmap.wrapped_delta(wmap.wrap_cell(cell_of(player_pos)), place_cell))
+
+
 func _update_near() -> void:
     var best: Dictionary = {}
     var best_d: float = INTERACT_RADIUS
     for p in wmap.places:
         var d: Dictionary = p
-        var dist: float = cell_center(wmap.place_cell(str(d.get("id", "")))).distance_to(player_pos)
+        var place_cell: Vector2i = wmap.place_cell(str(d.get("id", "")))
+        var dist: float = _place_world_position(place_cell).distance_to(player_pos)
         if dist < best_d:
             best_d = dist
             best = d
@@ -376,18 +421,21 @@ func _draw() -> void:
     var vp: Vector2 = get_viewport_rect().size
     var tl: Vector2 = inv * Vector2.ZERO
     var br: Vector2 = inv * vp
-    var x0: int = clampi(floori(tl.x / TILE) - 1, 0, wmap.width - 1)
-    var y0: int = clampi(floori(tl.y / TILE) - 1, 0, wmap.height - 1)
-    var x1: int = clampi(floori(br.x / TILE) + 1, 0, wmap.width - 1)
-    var y1: int = clampi(floori(br.y / TILE) + 1, 0, wmap.height - 1)
+    var x0: int = floori(tl.x / TILE) - 1
+    var y0: int = floori(tl.y / TILE) - 1
+    var x1: int = floori(br.x / TILE) + 1
+    var y1: int = floori(br.y / TILE) + 1
     for y in range(y0, y1 + 1):
         for x in range(x0, x1 + 1):
             _draw_tile(Vector2i(x, y))
     # props (trees, rocks, buildings) and the walker are drawn back to front so they overlap correctly
     var props: Array = _collect_props(x0, y0, x1, y1)
     for p in wmap.places:
-        var pc: Vector2 = cell_center(wmap.place_cell(str((p as Dictionary).get("id", ""))))
-        props.append({"y": pc.y + 26.0, "kind": "place", "place": p})
+        var base_cell: Vector2i = wmap.place_cell(str((p as Dictionary).get("id", "")))
+        var pc: Vector2 = _place_world_position(base_cell)
+        var display_place: Dictionary = (p as Dictionary).duplicate(true)
+        display_place["_render_pos"] = pc
+        props.append({"y": pc.y + 26.0, "kind": "place", "place": display_place})
     props.append({"y": player_pos.y + 6.0, "kind": "player"})
     props.sort_custom(func(a, b): return float(a["y"]) < float(b["y"]))
     for o in props:
@@ -414,8 +462,9 @@ func _collect_props(x0: int, y0: int, x1: int, y1: int) -> Array:
         for x in range(x0, x1 + 1):
             var c := Vector2i(x, y)
             var t: int = wmap.terrain_at(c)
-            var h: float = WorldMap.hash01(x, y, 21)
-            var h2: float = WorldMap.hash01(x, y, 22)
+            var canonical := wmap.wrap_cell(c)
+            var h: float = WorldMap.hash01(canonical.x, canonical.y, 21)
+            var h2: float = WorldMap.hash01(canonical.x, canonical.y, 22)
             var origin := Vector2(float(x), float(y)) * TILE
             if t == WorldMap.FOREST:
                 var name: String = FOREST_SPRITES[int(h * 5.99)]
@@ -443,11 +492,12 @@ func _draw_tile(c: Vector2i) -> void:
             WorldMap.MOUNTAIN: base = Color("#7d8587")
             WorldMap.ROAD: base = Color("#b59a70")
             WorldMap.BRIDGE: base = Color("#9c7654")
-    var f: float = 0.93 + 0.14 * WorldMap.hash01(c.x, c.y, 3)
+    var canonical := wmap.wrap_cell(c)
+    var f: float = 0.93 + 0.14 * WorldMap.hash01(canonical.x, canonical.y, 3)
     var col := Color(base.r * f, base.g * f, base.b * f)
     var origin := Vector2(float(c.x), float(c.y)) * TILE
     draw_rect(Rect2(origin, Vector2(TILE + 0.5, TILE + 0.5)), col)
-    var h: float = WorldMap.hash01(c.x, c.y, 11)
+    var h: float = WorldMap.hash01(canonical.x, canonical.y, 11)
     if art and (t == WorldMap.FOREST or t == WorldMap.MOUNTAIN or t == WorldMap.HILL):
         pass                                  # the sprite props are drawn after the ground
     elif t == WorldMap.FOREST:
@@ -476,7 +526,7 @@ func _draw_place(p: Dictionary) -> void:
         return
     var id: String = str(p.get("id", ""))
     var kind: String = str(p.get("kind", ""))
-    var c: Vector2 = cell_center(wmap.place_cell(id))
+    var c: Vector2 = p.get("_render_pos", cell_center(wmap.place_cell(id)))
     draw_circle(c + Vector2(0, 14), 26.0, Color(0, 0, 0, 0.22))
     var top: float = 60.0
     if kind == "keep":
@@ -575,7 +625,7 @@ func _draw_player() -> void:
     if Art.unit_sheet("soldier", "idle") != null:
         draw_colored_polygon(_ellipse(p + Vector2(0, 6), 14.0, 5.0), Color(0, 0, 0, 0.35))
         var t: float = float(Time.get_ticks_msec()) / 1000.0
-        Art.draw_unit(self, "soldier", "walk" if has_target and not panel_open else "idle", t, p + Vector2(0, 8), 2.0, facing_left)
+        Art.draw_unit(self, "soldier", "walk" if (has_target or moving_vector.length() > 0.12) and not panel_open else "idle", t, p + Vector2(0, 8), 2.0, facing_left)
         if has_target and not panel_open:
             draw_arc(target, 8.0, 0.0, TAU, 16, Color(1, 1, 1, 0.5), 2.0)
         return
@@ -745,6 +795,20 @@ func _build_ui() -> void:
     prompt_btn.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM, Control.PRESET_MODE_MINSIZE, 16)
     prompt_btn.grow_horizontal = Control.GROW_DIRECTION_BOTH
     prompt_btn.grow_vertical = Control.GROW_DIRECTION_BEGIN
+
+    move_stick = VirtualStick.new()
+    root.add_child(move_stick)
+    move_stick.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+    move_stick.offset_left = 18
+    move_stick.offset_top = -174
+    move_stick.offset_right = 174
+    move_stick.offset_bottom = -18
+    run_btn = _btn("RUN", _toggle_run, 17)
+    run_btn.custom_minimum_size = Vector2(112, 58)
+    root.add_child(run_btn)
+    run_btn.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 18)
+    run_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    run_btn.grow_vertical = Control.GROW_DIRECTION_BEGIN
 
     # Centre: place panel
     place_panel = _hud_panel(0.97)
