@@ -1,6 +1,6 @@
-# Repository delivery note — v0.7.10 (2026-11-09)
+# Repository delivery note — v0.7.11 (2026-11-09)
 
-Gameplay remains at v0.7.9. This checkpoint changes only how the project is delivered to GitHub. The extracted `Kindlewake/` directory in `ninjun42215-gif/KindleWake` on `main` is the canonical source after the one-time import. The four upload shards are temporary transport files; the extraction workflow merges them, reconstructs `assets/optional_sprite_packs/zxf.zip`, replaces the extracted project transactionally, runs the static checker and APK preflight, and deletes the shards in its commit. Once `Kindlewake/` exists in the repository, continue by editing and committing ordinary files directly. Do not ask for a master ZIP for routine work. See repository-root `UPLOAD_PROJECT_FROM_PHONE.md` for the one-time phone steps.
+Gameplay remains at v0.7.9. The one-time four-part import is complete. GitHub Actions reconstructed `assets/optional_sprite_packs/zxf.zip`, extracted 129 project files, passed the static checker (27 files/classes, 0 errors, 0 warnings), and passed Android offline preflight. The extracted `Kindlewake/` tree on `main` is the canonical source. Temporary upload shards and the one-time import workflow have been removed. Continue by editing and committing ordinary files directly; do not ask for or rebuild a project ZIP for routine work.
 
 # Session Handoff — KINDLEWAKE: THE SUNDERED VOW (state: v0.7.9)
 
