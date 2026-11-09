@@ -1832,7 +1832,7 @@
             5,
             5
           ],
-          "kind": "text",
+          "kind": "choice",
           "npc": true,
           "name": "Captain Ilyra Venn",
           "tint": [
