@@ -125,3 +125,12 @@ Answer in plain English. Lead with what you did and what I should do next. Keep 
 - `Art.draw_prop()` now loads atlas cells. Tactical battle tiles use terrain-matched props (forest trees, marsh reeds, snow pines, ash campfires, ruin columns and cliff crystals); town tiles receive stallside crates, barrels, torches, banners, columns and sparse flowers.
 - These are original project-authored vector assets; no unverified third-party pack was imported in this pass. Existing unit sprite sheets remain in place and should receive a separate animation/character-art upgrade pass.
 - CI validation for this asset pass is still running; prior v0.10.0 CI runs had two balance/stat test failures, so do not call the latest branch build verified until a current run completes.
+
+
+## 2026-11-10 continuation — Godot script registration fixes
+- CI run `42650643361` confirmed that `CharacterSheetScript` was not a registered global class inside `character_sheet.gd`; the file declares `class_name CharacterSheet`. `with_item()` now uses the registered `CharacterSheet` class for its copy factory.
+- `PartyStateScript` was likewise unresolved inside `party_state.gd`; `from_dict()` now instantiates the current script through `load("res://scripts/core/party_state.gd").new()` with an explicit `PartyState` type annotation to avoid inference failure.
+- Commits: `cd30afb04731446e8a5c93fdb2af1e045b70eff9` and `35a8e1c9f546f3f1eddbafd4ea84c47a98d83528` on `feature/rune-system-v1`.
+- Latest build run for `35a8e1c9f546f3f1eddbafd4ea84c47a98d83528`: `42666872518` (in progress at handoff). Do not claim the APK is current or validated until this run completes successfully.
+- Next visual task: integrate the existing hero battle sprite feature pack if compatible with the current project; upgrade enemies beyond the existing Soldier/Orc idle/walk/attack/hurt/death strips, add distinct silhouettes and spell/impact effects. Preserve existing frame contracts in `scripts/ui/art.gd`; verify third-party licences before redistribution.
+- `main` remains untouched; PR #4 remains draft and unmerged.
