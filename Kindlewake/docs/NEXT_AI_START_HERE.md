@@ -27,7 +27,7 @@
 5. Preserve existing systems and compatibility. Make small reviewable commits; never force-push.
 6. PR #4 stays draft. Do not touch `main`.
 7. Meaningful changes require GDD, session handoff, both continuation prompts and relevant README updates.
-8. Every development session must leave a merge-ready source ZIP handoff split into numbered parts, each <=25,000,000 bytes (25 MB decimal), through GitHub Actions.
+8. Every development session must leave a merge-ready source ZIP handoff split into numbered parts, each <=25,000,000 bytes (25 MB decimal), through the repository-wide GitHub Actions workflow. The workflow runs on all branches, tags, pull requests and manual dispatch; it packages all tracked repository files from the triggering ref, not a fixed branch/file list.
 9. Every outside-AI contribution must first be preserved in a unique `Kindlewake/receiving/<date>-<contributor>-<topic>/` folder with a complete `HANDOFF.md`; split large ZIPs and include `REASSEMBLE.txt`. Review before integration.
 10. Report validation accurately. CI success is not physical Android device QA.
 
@@ -58,7 +58,7 @@ Repository source and GDD/session handoff are authoritative. Summary:
 
 ## Immediate next actions — no clarification needed
 
-1. Re-read latest branch head, this page, `docs/SESSION_HANDOFF.md`, `docs/GDD.md`, `README.md`, master continuation prompt and `receiving/README.md`.
+1. Inspect the live working branch/ref and latest commit (never assume the branch name), then re-read this page, `docs/SESSION_HANDOFF.md`, `docs/GDD.md`, `README.md`, master continuation prompt and `receiving/README.md`.
 2. Inspect current PR #4 status and latest workflow run before editing.
 3. Inspect source/tests. Next major development priority: bespoke hero/enemy sprite sheets and animation sets (idle, walk, attack, cast, hurt, death), then cast/projectile/impact VFX and elemental rune effects. Preserve animation contracts or update importer, renderer and tests together.
 4. Add missing regression coverage for rune/status/equipment/save/UI behavior. Verify fusion edge cases and save schema v3.
@@ -74,7 +74,7 @@ Repository source and GDD/session handoff are authoritative. Summary:
 - `Kindlewake/docs/SESSION_HANDOFF.md`: chronological implementation, commits, validation evidence, limitations and next tasks.
 - `Kindlewake/README.md`: setup, running/building and user-facing project information.
 - `Kindlewake/receiving/README.md`: outside-AI contribution intake/reassembly/review/integration.
-- `.github/workflows/build-apk.yml`: CI validation, APK export and split source handoff packaging.
+- `.github/workflows/build-apk.yml`: repository-wide CI validation, APK export and branch/ref-aware split source handoff. Triggers on all branch pushes, tag pushes, pull requests to any branch and manual dispatch; archive is built from `git ls-files` at the triggering commit and includes a ref/SHA metadata file plus SHA-256 verification.
 
 ## No-clarification defaults
 
