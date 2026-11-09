@@ -83,6 +83,18 @@ class ProjectHealthAuditTests(unittest.TestCase):
             self.assertEqual(report["counts"]["unverified_used_assets"], 1)
             self.assertTrue(any(item["code"] == "USED_ASSET_LICENSE_UNVERIFIED" for item in report["findings"]))
 
+    def test_unused_unlicensed_asset_is_not_a_release_warning(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            project = self.fixture(root)
+            (project / "assets" / "art" / "CREDITS.md").write_text(
+                "| not used: old pack | unknown | No licence file | not imported |\n"
+            )
+            result, report = self.run_audit(root)
+            self.assertEqual(result.returncode, 0)
+            self.assertEqual(report["counts"]["unverified_asset_entries"], 0)
+            self.assertEqual(report["summary"]["warnings"], 0)
+
     def test_rune_inventory_counts_kinds_and_rejects_malformed_entries(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
