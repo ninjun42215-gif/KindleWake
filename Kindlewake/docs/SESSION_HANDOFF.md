@@ -132,3 +132,13 @@
 - Existing 100px Soldier/Orc sprite sheet frame contracts, animation timing, battle rules and save schema are unchanged. This is an incremental overlay pass, not the planned dedicated hero/enemy sprite-sheet replacement.
 - Current-head Android CI was triggered by the push; do not claim validation until the run completes successfully.
 - Next: inspect the current-head CI result; fix any parser/import/test/balance/export failures. Then implement dedicated original hero and enemy sheets, followed by cast/projectile/impact/death animations. Keep third-party packs source-only until licensing and frame layout are verified. `main` remains untouched; PR #4 remains draft.
+
+## 2026-11-10 continuation — rune inventory transaction safety
+- Verified the previous checkpoint build (workflow 42673117006, commit 202ffd1) completed successfully: strict tests, balance report and Android APK export/upload all passed.
+- Fixed rune socket operations in `PartyState`: invalid group/socket/index, unknown rune and missing service access are now rejected before `fit_sockets()` can normalize or mutate the socket arrays and bag. This prevents a failed UI action from silently ejecting runes from overflow sockets.
+- Added regression checks for invalid socket selection, missing service access and invalid removal groups; rejected operations must leave the rune bag and socket state unchanged.
+- Added direct combat-rule checks confirming Chill applies a 20% effective-speed penalty and Exposed reduces physical defense by 20%.
+- Commits: transactional socket fix `173a33649b5f6537392c9ba15ffb55af4b75f3a9`; socket regression tests `43de6c5f1fba56218820eebec9b9cc581b590a28`; Chill/Exposed combat tests `acdd739fb8c6681bc43a1160c2b44220f550847d`.
+- CI for the new commits is queued/in progress at handoff; do not claim these changes passed until the latest branch-head workflow completes.
+- The last verified APK artifact remains available from workflow 42673117006 until 2027-02-07; it predates the rune transaction fix and should not be treated as containing these latest changes.
+- Next development: inspect the latest CI results, then proceed with dedicated hero/enemy sprite assets and animation integration. Preserve existing frame contracts, save schema v3, PR #4 draft state and untouched `main`.
