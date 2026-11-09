@@ -443,9 +443,9 @@ func _test_progression() -> void:
     check(sela.level == 3 and sela.xp == 0 and lvls.size() == 1, "120 EXP reaches level 3 with nothing left over")
     var gains: Dictionary = (lvls[0] as Dictionary)["gains"]
     check(not gains.is_empty(), "a level-up always grants at least one stat point")
-    rep = sela.add_exp(310, rng, archer)
+    rep = sela.add_exp(305, rng, archer)
     lvls = rep["levels"]
-    check(sela.level == 5 and sela.xp == 0 and lvls.size() == 2, "310 EXP carries across two increasingly costly level-ups (142 + 168)")
+    check(sela.level == 5 and sela.xp == 0 and lvls.size() == 2, "305 EXP carries across two increasingly costly level-ups (141 + 164)")
     var grew := true
     for k in mira0.base_stats.keys():
         if int(sela.base_stats[k]) < int(mira0.base_stats[k]):
