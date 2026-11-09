@@ -1480,8 +1480,9 @@
           "kind": "treasure",
           "name": "Sealed Cache",
           "npc": false,
-          "text": "A rusted strongbox contains 120 gold and a map fragment.",
-          "reward_gold": 120
+          "text": "A rusted strongbox contains 120 gold and a map fragment. A singular relic rests beneath the coins.",
+          "reward_gold": 120,
+          "reward_item": "unique_ashen_crown"
         },
         {
           "cell": [
@@ -1529,8 +1530,9 @@
           "kind": "treasure",
           "name": "Sealed Cache",
           "npc": false,
-          "text": "A votive coffer holds 120 gold and a silver woodland token.",
-          "reward_gold": 120
+          "text": "A votive coffer holds 120 gold and a silver woodland token. A singular relic rests beneath the coins.",
+          "reward_gold": 120,
+          "reward_item": "unique_oathwall"
         },
         {
           "cell": [
@@ -1578,8 +1580,9 @@
           "kind": "treasure",
           "name": "Sealed Cache",
           "npc": false,
-          "text": "A sealed royal chest contains 120 gold and a signet fragment.",
-          "reward_gold": 120
+          "text": "A sealed royal chest contains 120 gold and a signet fragment. A singular relic rests beneath the coins.",
+          "reward_gold": 120,
+          "reward_item": "unique_starfall_charm"
         },
         {
           "cell": [
