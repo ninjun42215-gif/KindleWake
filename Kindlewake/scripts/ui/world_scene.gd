@@ -2,6 +2,7 @@ extends Node2D
 
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
+const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 ## Overworld (Milestone 7, first step): walk freely over the Sallow Marches, find places, get ambushed.
 ## Touch: tap to walk to a spot, hold and drag to steer. Terrain changes speed; forests are more dangerous.
 ## All rules live in WorldMap; battles reuse the battle scene through GameState.start_battle_from_world().
