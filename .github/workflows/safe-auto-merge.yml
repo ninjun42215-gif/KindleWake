@@ -146,6 +146,7 @@ jobs:
       - name: Revalidate PR and merge using the expected head SHA
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           PR_NUMBER: ${{ steps.gate.outputs.pr_number }}
           DEFAULT_BRANCH: ${{ steps.gate.outputs.default_branch }}
           SHA: ${{ github.event.workflow_run.head_sha }}
@@ -159,6 +160,6 @@ jobs:
           jq -e --arg sha "${SHA}" --arg base "${DEFAULT_BRANCH}" \
             '.isDraft == false and .mergeable == "MERGEABLE" and .headRefOid == $sha and .baseRefName == $base' final-pr.json >/dev/null
 
-          response="$(gh api --method PUT "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/merge" \
+          response="$(gh api --repo "${GH_REPO}" --method PUT "repos/${GH_REPO}/pulls/${PR_NUMBER}/merge" \
             -f sha="${SHA}" -f merge_method=squash)"
           jq -e '.merged == true' <<< "${response}" >/dev/null
