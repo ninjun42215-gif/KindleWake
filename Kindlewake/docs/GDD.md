@@ -852,6 +852,17 @@ Legacy sigil_* script entry points remain internal compatibility wrappers during
 The character sheet includes a Company bond tile with a loyalty value and readable state (Fractured, Wary, Committed or Steadfast). Muster-hall recruit prompts show the authored gold cost or the first unmet prerequisite; successful recruitment records a one-time flag and shows the recruit's starting loyalty. This is a foundation only: there is not yet a calendar-driven desertion or event-based loyalty loop.
 
 
+### 16.1 Opening prologue — first playable narrative slice
+
+- New campaigns now route from the protagonist creator into the playable **Smoke on the Wind** prologue before entering the Sallow Marches.
+- The east-gallery scene presents the fire, the archive survivors and the sealed household record through authored dialogue from Bram, Sela and Wystan.
+- The player chooses to rescue the people, recover the record, or split the company and attempt both. Each choice writes explicit campaign flags (`prologue_decision`, `prologue_people_saved`, `prologue_record_saved`, `prologue_company_split`, `chapter`) without changing the save schema.
+- The first overworld arrival displays a one-time companion acknowledgement derived from the chosen outcome. The flags remain part of the existing campaign payload and are preserved by the current save system.
+- `PrologueSystem` is a pure consequence helper with headless regression coverage for all three outcomes, prior-flag preservation, acknowledgement text and invalid choices.
+- Scope boundary: this is the opening narrative decision and consequence hand-off, **not** the complete 45–60 minute vertical slice. The playable escape traversal/battle, persistent journal, keep restoration decision and first investigation remain future work. No new third-party art or audio is introduced.
+
+| opening-prologue-v1 | New-campaign prologue scene, three authored choices, persisted story flags, one-time overworld acknowledgement and regression tests. Godot import, full strict suite and Android export must pass on the exact PR head before merge; physical-device QA remains separate. |
+
 ## 16. Premium narrative, UX and art direction (2026-11-10)
 The production direction, story reframe, opening-hour structure, character dossier standard, consequence rules, long-session pacing, mobile UX quality bar, visual identity, asset specifications and vertical-slice acceptance criteria are defined in [PREMIUM_PRODUCTION_BIBLE.md](PREMIUM_PRODUCTION_BIBLE.md). This is the creative north star for subsequent implementation; it does not mean the described scenes, journal, dialogue presentation, portrait sets, environment kits or audio systems are already implemented.
 
