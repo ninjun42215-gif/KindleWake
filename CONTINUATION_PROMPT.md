@@ -1,6 +1,6 @@
 # CONTINUATION MASTER PROMPT — KINDLEWAKE: THE SUNDERED VOW
 
-> **Latest checkpoint: v0.7.12 (2026-11-09; four-continent campaign world blueprint; no playable map/save changes).** The supplied sprite bundle is preserved as 26 nested source ZIPs in `assets/optional_sprite_packs/`. They have not been imported into scenes or license-reviewed. Continue from `docs/SESSION_HANDOFF.md`.
+> **Latest checkpoint: v0.7.13 (2026-11-09; three new road-connected Sethmarch ruin landmarks; no save schema change).** The supplied sprite bundle is preserved as 26 nested source ZIPs in `assets/optional_sprite_packs/`. They have not been imported into scenes or license-reviewed. Continue from `docs/SESSION_HANDOFF.md`.
 
 **Repository-first workflow:** the canonical project is the extracted `Kindlewake/` folder in GitHub repository `ninjun42215-gif/KindleWake`, branch `main`. Do not ask the user to attach or rebuild a master project ZIP for routine continuation. Inspect and edit the repository files directly. The one-time import is already complete; the temporary upload shards and import workflow have been removed. If the project tree is ever missing, inspect Git history and restore tracked files rather than asking the user for a master ZIP. Future development commits ordinary changed files directly to `main` (or a feature branch), not a replacement project ZIP.
 
@@ -90,7 +90,8 @@ Answer in plain English. Lead with what you did and what I should do next. Keep 
 - v0.7.7 creator UI/campaign/save integration remains implemented as described above. Save schema stays v2; only `GAME_VERSION` metadata advanced to 0.7.8.
 
 ## Next tasks
-1. Continue the four-continent foundation by turning Eldrimar's Sethmarch/Orrowen/Vessmoor routes into connected regional map data, while preserving the Sallow Marches starting slice.
+1. Expand Sethmarch with proper traversable dungeon interiors and a second functional settlement, preserving the Sallow Marches starting slice and current one-time ruin rewards.
+2. Continue the four-continent foundation by turning Eldrimar's Sethmarch/Orrowen/Vessmoor routes into connected regional map data,
 2. Define a versioned campaign-world save model (continent, region, map, tile, discovered hubs, route unlocks, quest/dungeon flags) and a v2 migration plan before implementation.
 3. Add town hubs and dungeon maps incrementally: each needs reachable exits, NPC/quest hooks, encounter data and regression tests.
 4. Add travel modes in progression order: roads/carts, ferries and barges, charter ships, caravan routes, northern pass, then airship. Do not consume campaign weeks until the calendar is implemented.
