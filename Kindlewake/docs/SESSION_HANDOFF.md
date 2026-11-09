@@ -1,3 +1,14 @@
+# LIVE SESSION UPDATE — 2026-11-10
+
+- Canonical main at session start: `6379826a992e67a2abd92a9a795d97cb1022e4ca`; Godot project version `0.11.0`.
+- Current creative-direction branch: `feature/premium-narrative-ux-art-direction`.
+- Added `Kindlewake/docs/PREMIUM_PRODUCTION_BIBLE.md`: a new story reframe, first-hour sequence, cast-writing standard, choice/consequence architecture, healthy 45–90 minute session design, mobile UX quality bar, visual/asset production bible, audio direction and vertical-slice acceptance criteria.
+- This is a design/documentation foundation. It does **not** claim new playable scenes, dialogue UI, journal, art assets, portraits or audio have been implemented yet.
+- Next implementation: audit the actual prologue/mission/scene systems; build a playable 45–60 minute first-region vertical slice with the journal, first keep choice and a meaningful non-elimination tactical objective. Keep save migration tests and asset licences in scope.
+- Do not use the obsolete checkpoint statements below as live repository truth. Re-check the branch, PRs and Actions before proceeding.
+
+---
+
 > **ACTIVE IMPLEMENTATION CHECKPOINT — 2026-11-10:** Main is `b322c86fbb44696dfc85382f49478dcb5bce2cd9` (v0.10.0, Android code 1000, save schema 3). The active candidate is branch `feature/recruitment-system-v1-2026-11-10`; do not describe it as merged until its PR is merged. The candidate bumps the game to v0.11.0, Android code 1100 and save schema 4.
 >
 > **Recruitment v1 scope:** the data now defines all 24 Wave-1 named characters (4 starting members + 20 recruitable profiles). Fourteen recruit profiles were added; the six existing recruit definitions were aligned to their intended class/weapon identities. Six muster halls now expose the recruit roster. Recruitment validates duplicate flags, gold costs, story flags and companion prerequisites before atomically adding the member and recording the one-time world flag.
