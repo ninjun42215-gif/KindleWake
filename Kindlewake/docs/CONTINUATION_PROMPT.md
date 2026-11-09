@@ -5,14 +5,14 @@
 ## 1. Project identity and source of truth
 - Game: **KINDLEWAKE: THE SUNDERED VOW**, an offline-first medieval tactical RPG built with Godot 4 / GDScript.
 - Repository: https://github.com/ninjun42215-gif/KindleWake
-- **Active development branch: `feature/rune-system-v1`.**
+- Current work normally continues on `feature/rune-system-v1`, but inspect the repository's live refs before every session; do not assume a branch name. The CI handoff workflow automatically runs for pushes to every branch, every tag, pull requests targeting any branch, and manual dispatch.
 - **PR #4 must remain draft and unmerged. Do not modify or merge `main` without explicit user authorization.**
 - Canonical project source: tracked files under `Kindlewake/` in the repository. Do not ask the user to upload a master project ZIP.
 - Save compatibility: schema v3. Preserve legacy save fields and compatibility aliases unless a deliberate migration is designed, tested and documented.
 - The project is offline-first. Do not add accounts, cloud services, multiplayer, server calls or Android INTERNET permission.
 
 ## 2. Mandatory first actions in every new session
-1. Inspect the latest commit and branch head for `feature/rune-system-v1`; do not assume this prompt's checkpoint SHA is still current.
+1. Inspect the current branch/ref, latest commit SHA and remote branches; continue on the user's active working branch unless a newer project instruction says otherwise. Never assume a branch name or stale checkpoint SHA.
 2. Read, in order:
    - `Kindlewake/docs/NEXT_AI_START_HERE.md`
    - `Kindlewake/docs/SESSION_HANDOFF.md`
@@ -49,7 +49,7 @@ For each meaningful feature:
 4. Run available local checks, including `python3 -I tools/gd_static_check.py` and `python3 tools/build_apk.py --check` from `Kindlewake/`.
 5. When authorized/available, run Godot import, strict headless tests, balance report and Android export. Use the repository's CI workflow when local Godot/Android tooling is unavailable.
 6. Inspect logs and fix all failures before moving on. Distinguish static checks, CI runtime tests, APK export and physical-device QA. Never claim a phone test unless it was actually performed.
-7. Update all required documentation (below) and commit to `feature/rune-system-v1`.
+7. Update all required documentation (below) and commit to the current authorized working branch; do not switch branches or target `main` without explicit authorization.
 8. Verify the resulting CI run belongs to the new branch-head SHA and confirm the artifacts exist.
 
 ## 6. Mandatory documentation updates
@@ -68,7 +68,7 @@ When another AI assistant produces code, assets, documents or a patch:
 1. Preserve the original output as an incoming contribution under a uniquely named folder, e.g. `Kindlewake/receiving/2026-11-10-ai-name-rune-vfx/`. Do not overwrite another contribution.
 2. Include a `HANDOFF.md` in that folder. It must state: summary; exact intended target paths; file inventory; Godot/runtime assumptions; dependencies; license/source/attribution and redistribution rights; tests performed with actual results; known limitations; and any manual import steps.
 3. For a small bundle, place its original ZIP or patch and `HANDOFF.md` in that folder. For a larger bundle, split the ZIP into sequential binary parts named `contribution.zip.part001`, `part002`, etc. **Every part must be <=25,000,000 bytes (25 MB decimal).** Include a `REASSEMBLE.txt` with exact commands for Windows and Linux/macOS.
-4. Commit and push the incoming contribution (including every part and both instruction files) to `feature/rune-system-v1`. Do not leave the only copy in chat, a temporary workspace or an unlinked cloud file. Never commit credentials, private tokens, signing keys or personal data.
+4. Commit and push the incoming contribution (including every part and both instruction files) to the current authorized working branch. Do not leave the only copy in chat, a temporary workspace or an unlinked cloud file. Never commit credentials, private tokens, signing keys or personal data.
 5. Reassemble all parts in numeric order inside the receiving subfolder, verify the reconstructed ZIP with `unzip -t` or 7-Zip, then extract it into a separate review subfolder. Keep the original parts/ZIP intact until review is complete.
 6. Review every file before integration. Check for malware, unexpected executables, licensing, asset dimensions/frame layout, Godot compatibility, resource UIDs, references, save schema and conflicts. Do not blindly copy/overwrite incoming files.
 7. Integrate approved changes into canonical `Kindlewake/` paths, add/update tests and documentation, run the validation loop, and commit the integration. Mark the intake folder's HANDOFF.md with accepted/rejected/deferred status and the integration commit.
@@ -94,8 +94,8 @@ When another AI assistant produces code, assets, documents or a patch:
 
 ## 8. Mandatory ZIP handoff for every future session
 The user requires a ready-to-download source handoff after development. **Every future AI session that changes the project must leave the next session with a merge-ready ZIP handoff split into parts.**
-- The existing GitHub Actions workflow `.github/workflows/build-apk.yml` creates `Kindlewake-Source-Handoff.zip` from the tracked `Kindlewake/` project, includes the root GDD/continuation prompt and root `Feature_*.zip` packs, excludes generated caches/build output and signing keys, then splits it into numbered parts.
-- The workflow uploads the artifact **`Kindlewake-Source-Handoff-Parts`** with `REASSEMBLE.txt`.
+- The generalized GitHub Actions workflow `.github/workflows/build-apk.yml` packages the **complete tracked repository snapshot** from the exact triggering checkout using `git ls-files` (not a hard-coded folder/file list). It therefore follows newly added/renamed/deleted tracked files and works on every branch, tag, pull-request merge ref and manually selected ref. It excludes generated caches/build outputs and signing/secret material; inspect/update the exclusion rules if the repository adds a new sensitive-file format.
+- Triggers: pushes to all branches, pushes of tags, pull requests targeting any branch, and manual `workflow_dispatch`. Artifact name: **`Kindlewake-Source-Handoff-Parts`**; it contains numbered parts, `REASSEMBLE.txt` and `SHA256SUMS.txt`. Each run records repository, ref, commit SHA, event and run ID inside `HANDOFF-METADATA.txt`.
 - Every part must be **<=25,000,000 bytes (25 MB decimal)**. Never use 25 MiB as the limit.
 - The archive includes `Kindlewake/receiving/`, so reviewed or pending incoming contributions and their HANDOFF instructions travel with the project.
 - After pushing changes, wait for CI, inspect the exact branch-head run, and verify both `Kindlewake-APK` and `Kindlewake-Source-Handoff-Parts` artifacts exist. Check individual part sizes and verify the reconstructed ZIP if possible.
@@ -119,7 +119,7 @@ try { foreach ($part in $parts) { $input = [System.IO.File]::OpenRead($part.Full
 If 7-Zip is unavailable, use another ZIP integrity checker after reassembly.
 
 ## 9. Stop/handoff checklist — mandatory before ending a session
-- [ ] All intended source changes are committed to `feature/rune-system-v1`.
+- [ ] All intended source changes are committed to the current authorized working branch; the handoff run's commit SHA matches that branch/ref.
 - [ ] PR #4 is still draft/unmerged; `main` was not modified.
 - [ ] GDD, session handoff, both continuation prompts and README are synchronized.
 - [ ] Incoming AI contributions are in `Kindlewake/receiving/` with HANDOFF.md and reassembly notes when needed.
