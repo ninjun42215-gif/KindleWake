@@ -6,7 +6,6 @@ const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const GameStateScript = preload("res://scripts/core/game_state.gd")
-const GameDataScript = preload("res://scripts/core/game_data.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -869,7 +868,7 @@ func _test_thalassar_region() -> void:
         if enemy_def.is_empty() or not gd.classes.has(str(enemy_def.get("class_id", ""))) or not gd.weapons.has(str(enemy_def.get("weapon_id", ""))):
             battle_roster_ok = false
     check(battle_roster_ok, "every Tideglass combatant resolves to an authored character, class and weapon")
-    check(GameDataScript.world_for_region("brinegate_coast").get("name", "") == "The Brinegate Coast" and GameDataScript.world_for_region("sethmarch").get("name", "") == gd.world.get("name", ""), "region routing selects Thalassar without mutating Sethmarch data")
+    check(gd.world_for_region("brinegate_coast").get("name", "") == "The Brinegate Coast" and gd.world_for_region("sethmarch").get("name", "") == gd.world.get("name", ""), "region routing selects Thalassar without mutating Sethmarch data")
     check(gd.characters.has("maren_vey"), "Maren Vey has a complete recruit character definition")
     var recruit_party: PartyState = PartyState.new_game(gd.start, gd.characters)
     var maren: Dictionary = gd.character_def("maren_vey")
