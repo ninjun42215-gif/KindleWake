@@ -12,6 +12,13 @@ var menu_buttons: Array[Button] = []
 
 
 func _ready() -> void:
+    var cfg := ConfigFile.new()
+    cfg.load(SETTINGS_PATH)
+    var volume := clampf(float(cfg.get_value("audio", "master", 0.8)), 0.0, 1.0)
+    var master_bus := AudioServer.get_bus_index("Master")
+    if master_bus >= 0:
+        AudioServer.set_bus_volume_linear(master_bus, volume)
+        AudioServer.set_bus_mute(master_bus, volume <= 0.001)
     _build()
 
 
