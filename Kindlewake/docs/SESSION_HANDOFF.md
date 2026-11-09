@@ -327,3 +327,11 @@ Design specs, complete implementation code (never pseudocode), folder structure,
 ## Session rule
 Reserve the last ~15% of capacity: update this file, README and `CONTINUATION_PROMPT.md`, then commit all changes directly to GitHub. Do not create a project ZIP unless the user explicitly requests one.
 **Always deliver (every change, however small):** updated `docs/GDD.md` (version bump + revision-log line) and updated `docs/CONTINUATION_PROMPT.md` as ordinary committed project files. Provide separate downloads only when explicitly requested.
+
+
+## Manual GitHub workflows
+See docs/MANUAL_GITHUB_WORKFLOWS.md for standalone user-operated workflows: build APK, create source handoffs, audit/organize documentation, prepare safe branch-integration PRs, inspect branch hygiene, create full repository backups, and lint workflow YAML. These tools do not require an AI assistant. The organizer only moves approved Markdown docs; safe integration never merges directly into the destination branch.
+
+
+## Manual operations toolbox checkpoint
+A separate workflow/manual-operations-toolbox branch is being prepared from main so these manual tools can be reviewed and merged independently of the Rune System feature PR. It adds source_handoff.py and its tests, the conservative repository organizer and tests, branch hygiene reporting, manual source handoff, full backup, safe branch integration and workflow YAML lint. No main-branch changes or merges are performed by the workflows. New workflow_dispatch entries become visible for manual launch after their files are merged to the default branch. Review PR #5 and its CI before enabling them.
