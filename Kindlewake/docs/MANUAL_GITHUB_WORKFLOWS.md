@@ -126,3 +126,17 @@ This is a separate protected release process. It requires an exact version tag, 
 - Backups and handoffs are tied to exact refs and commits.
 - CI success, merge conflict-free status, and APK export do not prove real-device gameplay quality.
 - These workflows do not replace human review of file moves, branch diffs, licensing, gameplay, or production release approval.
+
+
+## Latest manual workflow implementation checkpoint — 2026-11-10
+The manual workflow set now includes:
+- Repository Organizer and Structure Audit: inventories tracked files by category; reports safe placement recommendations; only moves standalone Markdown docs from Kindlewake/ to Kindlewake/docs/ after explicit confirmation, on a maintenance branch, with a draft PR. Never moves Godot code/resources/assets/data/tests/addons/project settings.
+- Safe Branch Integration: arbitrary source/target refs; detects already-integrated sources; creates an isolated merge candidate; reports and aborts conflicts; runs source handoff and organizer tests plus offline Android preflight; opens a draft PR only. It never writes to the target branch or auto-merges main.
+- Branch Hygiene: reports remote branch age and whether merged into chosen base; read-only, no deletion.
+- Manual Full Repository Backup: portable split source handoff plus verified Git bundle of all fetched refs/tags; the bundle may include previously committed secrets and must remain private.
+- Added repository_organizer.py, branch_hygiene.py, and test_repository_organizer.py.
+- Updated Build Android APK and Source Handoff to run the organizer boundary tests and corrected the source-handoff summary output so it no longer references an undefined REPORT_PATH.
+- Manual workflow instructions: docs/MANUAL_GITHUB_WORKFLOWS.md.
+- Current PR #4 remains a draft against main. The feature branch is 287 commits ahead and 0 behind at the time of this checkpoint. No merge to main was performed.
+- New manual workflow files are present only on the feature branch until PR review/merge. GitHub generally exposes workflow_dispatch in the Actions UI only after the workflow file exists on the default branch. Do not merge automatically.
+- Validation is pending: wait for the updated PR CI run and test each manual workflow after the YAML is available on the default branch. Do not claim the new manual workflows have passed yet.
