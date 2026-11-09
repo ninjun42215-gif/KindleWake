@@ -98,3 +98,8 @@ If the confirmation text is not exactly `PUBLISH`, the publishing job is rejecte
 The local builder now treats APK permission inspection and signature verification as mandatory: missing `aapt2`, missing `apksigner`, or a failed inspection blocks the build. A non-zero balance report or reported `FAIL` / script / parse errors also blocks the strict build. The builder checks that `project.godot` `config/version` matches the Android preset `version/name`, including for local builds.
 
 Production setup also requires the `ANDROID_RELEASE_CERT_SHA256` GitHub Environment variable (the expected certificate fingerprint, hexadecimal with or without colons). The release workflow compares the actual APK signer fingerprint against this value before creating the GitHub Release. Obtain the fingerprint from the production certificate/keystore and protect the signing identity; do not copy a fingerprint from an untrusted APK.
+
+
+## Publishing safeguards
+
+The production workflow refuses to publish if a GitHub Release already exists for the requested tag; published releases are not overwritten. GitHub only exposes a `workflow_dispatch` workflow after its YAML exists on the repository's default branch. This production workflow currently exists on `feature/rune-system-v1` only, so it will not be manually dispatchable until the reviewed PR is merged to the default branch. Do not merge PR #4 or modify `main` without explicit authorization.
