@@ -2,21 +2,11 @@
 
 Offline-first medieval tactical RPG built with Godot 4 (GDScript), targeting Android and iOS.
 
-## Project source and one-time phone import
+## Project source — archive-free workflow
 
-The canonical source is the extracted `Kindlewake/` directory on `main`. Routine development is done by editing and committing ordinary files in that directory; **do not rebuild or upload a master project ZIP**.
+The one-time import is complete. The extracted `Kindlewake/` directory on `main` is the canonical source, including the reconstructed optional sprite archive. GitHub Actions extracted 129 project files; the static checker passed with 0 errors and 0 warnings, and the Android offline preflight passed.
 
-The initial project checkpoint is prepared as four upload shards, each below GitHub's 25 MB browser-upload limit:
-
-- `KindleWake_Project_part1.zip`
-- `KindleWake_Project_part2.zip`
-- `KindleWake_Project_part3.zip`
-- `KindleWake_Project_part4.zip`
-
-From an Android phone, open the [repository upload page](https://github.com/ninjun42215-gif/KindleWake/upload/main), select all four parts, and commit them to `main`. GitHub Actions runs **Extract KindleWake Upload Parts**. The workflow validates and merges the shards, reconstructs the large optional sprite source archive, replaces `Kindlewake/` transactionally, runs the static GDScript checker and Android preflight, and removes the temporary shards (and the legacy master ZIP) in its commit. If it does not start automatically, run it from **Actions → Extract KindleWake Upload Parts → Run workflow**.
-
-See [UPLOAD_PROJECT_FROM_PHONE.md](UPLOAD_PROJECT_FROM_PHONE.md) for step-by-step instructions.
-
+Routine development is done by editing and committing ordinary files under `Kindlewake/`. **Do not upload or rebuild a master project ZIP.** The old four-part upload instructions are retained only as historical documentation; the temporary upload files are being removed.
 ## Automatic Android build
 
 After `Kindlewake/` is present, open **Actions → Build Android APK → Run workflow**. The build imports the project, runs the strict headless test suite and balance report, then exports the APK. A test failure blocks the APK. Download the `Kindlewake-APK` artifact and `test-logs` artifact from the completed run.
