@@ -1,5 +1,5 @@
 # KINDLEWAKE: THE SUNDERED VOW — Game Design Document
-Version 0.7.13 Sethmarch overworld expansion (gameplay checkpoint v0.7.9) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
+Version 0.7.14 Sethmarch Frontier regional network (gameplay checkpoint v0.7.14) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
 
 > Inspiration only: tactical depth and mercenary management in the spirit of *Knights of Ages*, and recruitment/headquarters/platoon ideas in the spirit of *Suikoden II*. All characters, names, maps, story, art and music are original. Nothing is copied.
 
@@ -494,6 +494,31 @@ The campaign spans four large continents connected through a gradually expanding
 
 ### 11.4 Sethmarch first regional expansion (v0.7.13)
 The playable Sallow Marches overworld now has three additional searchable ruin landmarks connected to the existing road graph: Sunken Tollhouse (45 gold), Hollowroot Warren (75 gold) and Warden's Barrow (90 gold). They reuse the existing `kind: ruin` interaction and persistent `found_<id>` world flags, so each reward is claimable once per new game. Their road links branch from Kaer Sethorn or Sallow Crossing; no new scene or map format is introduced. These are exploration/reward landmarks, not fully traversable dungeon interiors yet. The larger Sethmarch town network and actual dungeon maps remain future work. Runtime testing is still deferred; static JSON validation is not a Godot runtime test.
+
+### 11.5 The Sethmarch Frontier: Orrowen and Vessmoor (v0.7.14)
+The first expanded regional network is now connected to the existing Sallow Crossing field map. The player can follow the Greenward Gate north-east into **Orrowen Weald** or the Vessmoor Causeway south-east into **Vessmoor Plains**. These are continuous roads on the same 64×48 Eldrimar overworld; no loading gate or disconnected map hop interrupts the journey.
+
+**Road network and settlements**
+- Orrowen: Thornmere (regional hub), Foxglove and Elderbough. The roads branch from the Greenward Gate and continue between each settlement and the Bell Under Leaves dungeon.
+- Vessmoor: Cindermead (regional hub), Redwater and Milefort. The Vessmoor Causeway links the settlements and the Kingsroad Catacombs.
+- Sethmarch's existing Sallow Crossing, Kaer Sethorn, Old Watchtower, Roadwolf Camp, Sunken Tollhouse and Warden's Barrow remain in place. Existing searchable ruins are preserved; Hollowroot Warren is upgraded into a traversable dungeon.
+
+**Functional town services**
+- Each of the six new settlements has its own town map and inn, market and muster-hall interiors.
+- Inns charge 20 gold and restore the company's morale to 70 before the next battle.
+- Markets open the existing Party, Gear and Shop screen, reusing shared inventory and stock rules.
+- Recruitment halls offer one named recruit each: Lucan Thorne, Old Brisa, Kestrel, Anselm Pike, Petra Quill and Dorian Vask. Recruitment adds the character to the live PartyState roster and marks a one-time world flag.
+- Town doors lead to their own interiors; the town exit returns to the overworld.
+
+**Dungeons, bosses and rewards**
+- Hollowroot Warren, The Bell Under Leaves and Kingsroad Catacombs each have a distinct explorable local map, a one-time treasure cache and a boss encounter.
+- Boss battles use dedicated data files and named boss characters. Victory writes the dungeon's clear flag; treasure caches pay 120 gold once each. Enemy EXP/AP/gold still flows through the existing battle reward system.
+- The dungeon entrance on the overworld opens the corresponding dungeon map; the player must explore to the cache and guardian rather than trigger a battle from the world-map marker.
+
+**Persistence and validation boundary**
+- SaveSystem v3 adds regional world flags, overworld position and the from-world hand-off to existing battle save/autosave payloads. Sequential v1→v2→v3 migration preserves existing party and battle data.
+- This is not yet the full free-roam campaign save system: town position, current interior, calendar, quest state and automatic overworld saves remain future work. Recruit and dungeon flags are held in memory until a battle save is written; a dedicated campaign save/load UI is still required.
+- Regression assertions now cover the new road graph, dungeon map/battle references and dungeon map presence. Per the user's instruction, do not run Godot import, the headless test suite, balance simulation or device tests until explicitly requested. No runtime validation is claimed.
 
 ## 12. Character Roster
 
