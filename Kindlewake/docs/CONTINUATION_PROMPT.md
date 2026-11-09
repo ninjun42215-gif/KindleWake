@@ -200,3 +200,16 @@ Next actions:
 5. Review the shared workflow overlap between PR #4 and #5, then merge in a deliberate order only after explicit authorization.
 6. Perform physical Android device QA and gameplay/save testing; CI export success is not device certification.
 7. Recheck the live PR heads and produce a fresh handoff artifact from the exact latest commit before handing work to another AI.
+
+
+### Gameplay and release engineering follow-on
+
+After the two draft PRs are reviewed and integrated in an explicitly approved order, continue these remaining recommendations without destabilizing the current save/API compatibility:
+- Architecture: map dependencies among Battle, PartyState, CharacterSheet, GameData, ShopSystem and UI; introduce a small typed signal/event boundary only where it removes direct coupling. Preserve current public APIs until regression tests cover callers.
+- UX/accessibility: test portrait and landscape safe areas, minimum touch targets, text scaling/readability, contrast, scroll behavior and keyboard/controller navigation. Use physical Android devices, not only editor screenshots.
+- Release formats: add an optional Android App Bundle (AAB) export path for Play distribution alongside the existing APK sideload path. Keep signing credentials in protected GitHub secrets, validate package/version/version-code, verify the bundle with bundletool, and never reuse or expose production keys.
+- Scene/runtime QA: add automated Godot scene-load smoke tests and deterministic battle simulations where possible; keep physical-device gameplay, save/restore and touch QA as explicit release gates.
+- Asset production: maintain the provenance manifest for every new pack, keep source archives separate from runtime assets, document attribution/redistribution restrictions, and do not import unverified packs into a public release.
+- Save compatibility: keep explicit v1→v2→v3 and future migration fixtures, backup recovery, corrupt-save handling and newer-version refusal in the strict suite.
+
+Do not claim the architecture, accessibility, AAB, or physical-device items above are complete until implemented and validated. Current CI success covers the current APK export, strict tests, balance report, workflow validation and source handoff only.
