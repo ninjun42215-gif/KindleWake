@@ -372,8 +372,11 @@ func _rebuild() -> void:
     root_box.add_theme_constant_override("separation", 10)
     margin.add_child(root_box)
     root_box.add_child(_build_header())
-    var viewport_width: float = get_viewport_rect().size.x
-    var compact: bool = viewport_width < 1050.0
+    var viewport_size: Vector2 = get_viewport_rect().size
+    var viewport_width: float = viewport_size.x
+    # Stack vertically only in portrait. Narrow landscape phones still have
+    # enough horizontal space for three scaled panes, but not 700 px of height.
+    var compact: bool = viewport_width < viewport_size.y * 1.15
     if compact:
         # Portrait / narrow-screen layout: keep all three work areas in one
         # vertical flow instead of forcing a clipped three-column desktop row.
@@ -403,6 +406,9 @@ func _rebuild() -> void:
         var roster_panel: Control = _build_roster()
         var sheet_panel: Control = _build_sheet()
         var right_panel: Control = _build_right()
+        roster_panel.custom_minimum_size = Vector2(clampf(viewport_width * 0.18, 130.0, 250.0), 0.0)
+        sheet_panel.custom_minimum_size = Vector2(clampf(viewport_width * 0.29, 210.0, 400.0), 0.0)
+        right_panel.custom_minimum_size = Vector2(clampf(viewport_width * 0.43, 300.0, 460.0), 0.0)
         roster_panel.size_flags_horizontal = Control.SIZE_FILL
         sheet_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         right_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -433,16 +439,17 @@ func _build_header() -> Control:
     bar.add_theme_stylebox_override("panel", _style(COL_PANEL, COL_BORDER, 2, 8, 6.0))
     var row := HBoxContainer.new()
     row.add_theme_constant_override("separation", 12)
-    var title := _text("Company of Kaer Sethorn", 28, COL_GOLD)
+    var compact: bool = get_viewport_rect().size.x < 900.0
+    var title := _text("Company of Kaer Sethorn", 20 if compact else 28, COL_GOLD)
     title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     title.clip_text = true
     title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
     row.add_child(title)
     var chip := PanelContainer.new()
     chip.add_theme_stylebox_override("panel", _style(COL_TILE, COL_GOLD.darkened(0.3), 1, 20, 8.0))
-    chip.add_child(_text("Gold  %d" % party.gold, 24, COL_GOLD))
+    chip.add_child(_text("Gold  %d" % party.gold, 17 if compact else 24, COL_GOLD))
     row.add_child(chip)
-    row.add_child(_button("Close", close, Vector2(130, 50), 22, true))
+    row.add_child(_button("Close", close, Vector2(88, 46) if compact else Vector2(130, 50), 18 if compact else 22, true))
     bar.add_child(row)
     return bar
 
