@@ -4,6 +4,7 @@ const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
+const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
 ## Towns and building interiors (data/locations.json, rules in LocalMap).
 ## Walk with tap / drag like the overworld. Walking into a door loads the next map (town -> house -> town) inside this
 ## scene; walking onto the exit (E) of a town returns to the overworld. People and objects ("spots") are used with the
@@ -585,27 +586,20 @@ func _ellipse(center: Vector2, rx: float, ry: float) -> PackedVector2Array:
 # ------------------------------------------------------------------ HUD
 
 func _hud_panel(alpha: float = 0.84) -> PanelContainer:
-    var p := PanelContainer.new()
-    var sb := StyleBoxFlat.new()
-    sb.bg_color = Color(0.09, 0.08, 0.07, alpha)
-    sb.border_color = Color(0.62, 0.52, 0.34, 0.9)
-    sb.set_border_width_all(2)
-    sb.set_corner_radius_all(8)
-    sb.set_content_margin_all(10)
-    p.add_theme_stylebox_override("panel", sb)
-    return p
-
+    var panel := PanelContainer.new()
+    panel.add_theme_stylebox_override("panel", PremiumUITheme.panel_style(alpha))
+    return panel
 
 func _btn(text: String, handler: Callable, font_size: int = 24) -> Button:
-    var b := Button.new()
-    b.text = text
+    var button := Button.new()
+    button.text = text
     var viewport_size: Vector2 = get_viewport().get_visible_rect().size
     var compact: bool = viewport_size.x < 900.0 or viewport_size.y > viewport_size.x * 1.15
-    b.custom_minimum_size = Vector2(clampf(viewport_size.x * 0.42, 210.0, 300.0), 58.0 if compact else 72.0)
-    b.add_theme_font_size_override("font_size", mini(font_size, 19) if compact else font_size)
-    b.pressed.connect(handler)
-    return b
-
+    button.custom_minimum_size = Vector2(clampf(viewport_size.x * 0.42, 210.0, 300.0), 58.0 if compact else 72.0)
+    button.add_theme_font_size_override("font_size", mini(font_size, 19) if compact else font_size)
+    PremiumUITheme.apply_button(button)
+    button.pressed.connect(handler)
+    return button
 
 func _apply_safe_area() -> void:
     if hud_root == null or not is_inside_tree():
