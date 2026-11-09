@@ -432,6 +432,16 @@ func _draw_tile(c: Vector2i) -> void:
     var art: bool = Art.world("pine_a") != null
     var t: int = wmap.terrain_at(c)
     var base: Color = TERRAIN_COLORS[t]
+    if GameState.active_region_id == "brinegate_coast":
+        match t:
+            WorldMap.GRASS: base = Color("#779384")
+            WorldMap.FOREST: base = Color("#426b68")
+            WorldMap.HILL: base = Color("#8a9b80")
+            WorldMap.FORD: base = Color("#5b91a0")
+            WorldMap.WATER: base = Color("#285d70")
+            WorldMap.MOUNTAIN: base = Color("#7d8587")
+            WorldMap.ROAD: base = Color("#b59a70")
+            WorldMap.BRIDGE: base = Color("#9c7654")
     var f: float = 0.93 + 0.14 * WorldMap.hash01(c.x, c.y, 3)
     var col := Color(base.r * f, base.g * f, base.b * f)
     var origin := Vector2(float(c.x), float(c.y)) * TILE
@@ -449,7 +459,10 @@ func _draw_tile(c: Vector2i) -> void:
         draw_colored_polygon(PackedVector2Array([origin + Vector2(4, TILE - 4), origin + Vector2(TILE - 4, TILE - 4), origin + Vector2(TILE * 0.5, 6)]), Color(0.46, 0.50, 0.57))
         draw_colored_polygon(PackedVector2Array([origin + Vector2(TILE * 0.38, 18), origin + Vector2(TILE * 0.62, 18), origin + Vector2(TILE * 0.5, 6)]), Color(0.9, 0.92, 0.95))
     elif t == WorldMap.WATER or t == WorldMap.FORD:
-        if h > 0.55:
+        if GameState.active_region_id == "brinegate_coast":
+            draw_line(origin + Vector2(7, 16 + h * 7), origin + Vector2(25, 16 + h * 7), Color(0.82, 0.94, 0.92, 0.25), 1.5)
+            draw_line(origin + Vector2(21, 29 - h * 5), origin + Vector2(39, 29 - h * 5), Color(0.82, 0.94, 0.92, 0.16), 1.0)
+        elif h > 0.55:
             draw_line(origin + Vector2(10, 20), origin + Vector2(26, 20), Color(1, 1, 1, 0.18), 2.0)
     elif t == WorldMap.BRIDGE:
         draw_rect(Rect2(origin + Vector2(0, 6), Vector2(TILE, TILE - 12)), Color(0.55, 0.40, 0.22))
