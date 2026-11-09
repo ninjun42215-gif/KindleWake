@@ -23,10 +23,10 @@ static func attack_power(u: BattleUnitScript, weapon: Dictionary) -> float:
 
 static func defense(u: BattleUnitScript, damage_type: String) -> float:
     if damage_type == "magic":
-        var exposed_mult := 0.8 if u.statuses.has("exposed") else 1.0
-        return (float(u.armor_res) + 0.3 * float(u.stat("int")) + 0.3 * float(u.stat("vit"))) * exposed_mult
-    var exposed_mult := 0.8 if u.statuses.has("exposed") else 1.0
-    return (float(u.armor_def) + 0.6 * float(u.stat("vit"))) * exposed_mult
+        var magic_exposed_mult := 0.8 if u.statuses.has("exposed") else 1.0
+        return (float(u.armor_res) + 0.3 * float(u.stat("int")) + 0.3 * float(u.stat("vit"))) * magic_exposed_mult
+    var physical_exposed_mult := 0.8 if u.statuses.has("exposed") else 1.0
+    return (float(u.armor_def) + 0.6 * float(u.stat("vit"))) * physical_exposed_mult
 
 
 ## Smooth, never negative: damage = raw^2 / (raw + defense). Defense equal to raw halves the damage.
