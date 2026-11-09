@@ -1,7 +1,7 @@
 # KindleWake — Premium Production Bible
 **Creative direction:** *The Sundered Vow*  
 **Status:** Approved design direction; implementation is staged through small, testable vertical slices.  
-**Source baseline:** main `6379826a992e67a2abd92a9a795d97cb1022e4ca`, game version 0.11.0.  
+**Source baseline:** main `eb589c08b40b639a83b45bcc8d10718fd8223d7a`, game version 0.11.0. The consolidated 0.12.0 candidate is tracked in PR #28.  
 **Production principle:** pursue the emotional clarity, authored detail and interface confidence of a premium console RPG, scaled intelligently for an offline-first mobile game. This is a quality target, not a claim about budget or completed content.
 
 ---
