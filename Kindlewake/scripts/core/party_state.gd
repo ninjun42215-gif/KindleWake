@@ -243,7 +243,7 @@ func apply_battle_result(units: Array, result: String, rng: RandomNumberGenerato
     var rw: Dictionary = battle_rewards(units, result, db)
     var classes: Dictionary = db.get("classes", {})
     var items: Dictionary = db.get("items", {})
-    var sdefs: Dictionary = db.get("sigils", {})
+    var sdefs: Dictionary = db.get("runes", db.get("sigils", {}))
     var reports: Array = []
     var spawned: Array[String] = []
     var exp_map: Dictionary = rw["exp"]
@@ -264,6 +264,7 @@ func apply_battle_result(units: Array, result: String, rng: RandomNumberGenerato
             if bool(one["spawn"]):
                 add_sigil(str(one["id"]))
                 spawned.append(str(one["name"]))
+        rep["runes"] = srep
         rep["runes"] = srep
         rep["sigils"] = srep
         reports.append(rep)
