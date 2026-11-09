@@ -26,13 +26,7 @@
     "pilgrim_medal",
     "hawk_feather"
   ],
-  "sigils": [
-    "mend",
-    "ember",
-    "vigor",
-    "might",
-    "bulwark"
-  ],
+  "sigils": [],
   "regional_stocks": {
     "crossing_shop": {
       "items": [
@@ -60,12 +54,11 @@
         "pilgrim_medal",
         "hawk_feather"
       ],
-      "sigils": [
+      "sigils": [],
+      "runes": [
         "mend",
         "ember",
-        "vigor",
-        "might",
-        "bulwark"
+        "vigor"
       ]
     },
     "thornmere_market": {
@@ -76,7 +69,8 @@
         "rare_armor",
         "rare_helm"
       ],
-      "sigils": [
+      "sigils": [],
+      "runes": [
         "frost",
         "fleet"
       ]
@@ -89,7 +83,8 @@
         "rare_offhand",
         "rare_armor"
       ],
-      "sigils": [
+      "sigils": [],
+      "runes": [
         "mend",
         "vigor",
         "coin_eye"
@@ -103,7 +98,8 @@
         "rare_helm",
         "rare_accessory"
       ],
-      "sigils": [
+      "sigils": [],
+      "runes": [
         "tutor",
         "fleet"
       ]
@@ -118,10 +114,12 @@
         "epic_armor",
         "epic_offhand"
       ],
-      "sigils": [
+      "sigils": [],
+      "runes": [
         "might",
         "bulwark",
-        "amp"
+        "amp",
+        "storm"
       ]
     },
     "redwater_market": {
@@ -133,10 +131,11 @@
         "epic_accessory",
         "epic_helm"
       ],
-      "sigils": [
+      "sigils": [],
+      "runes": [
         "frost",
-        "amp",
-        "coin_eye"
+        "holy",
+        "shadow"
       ]
     },
     "milefort_market": {
@@ -147,11 +146,17 @@
         "legendary_armor",
         "mythical_arming_sword"
       ],
-      "sigils": [
+      "sigils": [],
+      "runes": [
         "veteran",
         "bulwark",
-        "amp"
+        "arcane"
       ]
     }
-  }
+  },
+  "runes": [
+    "mend",
+    "ember",
+    "vigor"
+  ]
 }
