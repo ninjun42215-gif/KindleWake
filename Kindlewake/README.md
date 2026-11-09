@@ -1,4 +1,4 @@
-# Kindlewake: The Sundered Vow — Milestone 1 prototype + Milestone 2 in progress (v0.7.10 docs/repository-delivery update; gameplay v0.7.9)
+# Kindlewake: The Sundered Vow — Milestone 1 prototype + Milestone 2 in progress (v0.7.11 repository import completed; gameplay v0.7.9)
 
 Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (GDScript, GL Compatibility).
 Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md`
