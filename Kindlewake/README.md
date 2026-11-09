@@ -4,7 +4,7 @@ Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (
 Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md`
 
 ## Source-of-truth and GitHub workflow (v0.7.14)
-- The extracted `Kindlewake/` directory in `ninjun42215-gif/KindleWake` on `main` is the canonical source. Routine development edits are committed as ordinary files; do not upload or rebuild a master project ZIP.
+- The Git repository snapshot at the active development ref is canonical; inspect the live branch/ref rather than assuming a fixed branch name. Routine development edits are committed as ordinary tracked files; do not upload or rebuild a master project ZIP.
 - After the extracted folder is present, future updates are direct file commits. Keep `docs/SESSION_HANDOFF.md`, `docs/GDD.md`, this README, and `docs/CONTINUATION_PROMPT.md` current with each meaningful change.
 - The nested sprite packs are optional source material only; they are not imported into scenes or license-cleared.
 
@@ -201,6 +201,6 @@ docs/            GDD.md, SESSION_HANDOFF.md, CONTINUATION_PROMPT.md
 
 ## External AI receiving and handoff packaging (2026-11-10)
 - Added `Kindlewake/receiving/README.md` as the standard intake folder for work supplied by other AI assistants. Incoming patches/assets require a HANDOFF.md and review before integration.
-- CI now emits a source ZIP split into numbered binary parts, each capped at 25 MB (25,000,000 bytes), with a reassembly guide. Artifact name: `Kindlewake-Source-Handoff-Parts`.
+- Repository-wide CI now runs for pushes to every branch, tag pushes, pull requests targeting any branch and manual dispatch. It packages every tracked repository file from the exact triggering ref (not a hard-coded branch or file list), then splits the ZIP into numbered binary parts capped at 25 MB (25,000,000 bytes). Artifact: `Kindlewake-Source-Handoff-Parts`, with `REASSEMBLE.txt` and `SHA256SUMS.txt`.
 - Reassemble all parts in numeric order before unzipping. The split files are transport chunks, not independently extractable archives.
-- Latest changes are on `feature/rune-system-v1`; PR #4 remains draft and `main` remains untouched. Verify the newest Android workflow before treating the parts as available.
+- Current project work is on `feature/rune-system-v1`; PR #4 remains draft and `main` remains untouched. These are project workflow constraints, not CI branch filters. Verify the exact triggering ref and workflow result before treating the parts as available.
