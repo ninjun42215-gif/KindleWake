@@ -151,3 +151,10 @@ Next actions:
 4. Configure main branch protection manually using `docs/MANUAL_GITHUB_WORKFLOWS.md`.
 5. Resolve asset licensing or replace unverified assets, then complete physical-device QA before release.
 6. Produce and verify a fresh split source handoff from the latest commit; compare its embedded SHA to the live branch head.
+
+
+### Final handoff refresh — 2026-11-10
+- Structured provenance ledger is now linked from `Kindlewake/assets/art/CREDITS.md`.
+- Most recent audit/provenance code and ledger checkpoint before this documentation refresh: `6b36e169dfcd3be6e4f4b85a867f249ce9407611`.
+- Read live PR #5 head and CI state before further work; no completed CI result has yet been confirmed for the audit/provenance hardening. Earlier green runs predate these changes.
+- The source handoff workflow is configured to run on `workflow/**` pushes, but do not claim a new downloadable artifact is ready until its run succeeds and the part manifest/checksums are verified.
