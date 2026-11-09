@@ -1,6 +1,6 @@
 # CONTINUATION MASTER PROMPT — KINDLEWAKE: THE SUNDERED VOW
 
- > **Latest checkpoint: v0.9.1 (2026-11-09; graded Rune System, chance-based fusion, specialist rune merchants and elemental combat effects).** Rune System branch CI passed: 312 strict checks, 0 failures, balance report and signed Android APK export. Existing save schema remains v3. See `docs/SESSION_HANDOFF.md` for artifacts and remaining warnings. Continue from `docs/SESSION_HANDOFF.md`.
+ > **Latest checkpoint: v0.10.0 (2026-11-09; 77 active/passive/unique/heirloom runes, mixed-grade mastery fusion, rune specialists, +15 gear enhancement, expanded terrain-specific battlefields, exit menu and richer NPC dialogue).** Rune System branch CI passed: 312 strict checks, 0 failures, balance report and signed Android APK export. Existing save schema remains v3. See `docs/SESSION_HANDOFF.md` for artifacts and remaining warnings. Continue from `docs/SESSION_HANDOFF.md`.
 
 > Previous checkpoint: v0.7.14 (2026-11-09; Sethmarch Frontier adds connected Orrowen/Vessmoor roads, six functional towns, three explorable boss dungeons and SaveSystem v3 regional battle-save context).** The optional sprite archives remain source-only and are not license-cleared. Continue from `docs/SESSION_HANDOFF.md`.
 
