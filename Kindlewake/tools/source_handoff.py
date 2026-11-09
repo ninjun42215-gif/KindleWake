@@ -63,6 +63,8 @@ build outputs or excluded secrets. GitHub remains canonical; inspect live state 
 """
 
 def pack(a):
+    if not 1 <= a.part_size <= LIMIT:
+        raise SystemExit("Part size must be between 1 and 25,000,000 bytes.")
     root, out = a.repository_root.resolve(), a.output_dir.resolve()
     out.mkdir(parents=True, exist_ok=True)
     tracked = subprocess.check_output(["git", "-C", str(root), "ls-files", "-z"]).decode("utf-8", "surrogateescape").split("\0")
@@ -180,15 +182,25 @@ def verify(a):
     with zipfile.ZipFile(archive) as z:
         bad = z.testzip()
         if bad: raise SystemExit("ZIP CRC failure: " + bad)
-        for name in z.namelist():
-            p = PurePosixPath(name)
-            if p.is_absolute() or ".." in p.parts or re.match(r"^[A-Za-z]:", name):
+        names = z.namelist()
+        if len(names) != len(set(names)):
+            raise SystemExit("Duplicate ZIP entry names are not allowed.")
+        for name in names:
+            normalized = name.replace("\\", "/")
+            p = PurePosixPath(normalized)
+            if p.is_absolute() or ".." in p.parts or re.match(r"^[A-Za-z]:", normalized):
                 raise SystemExit("Unsafe ZIP path: " + name)
         inv = json.loads(z.read("FILE-MANIFEST.json"))
         for item in inv["files"]:
-            data = z.read(item["path"])
-            if len(data) != item["size_bytes"] or hashlib.sha256(data).hexdigest() != item["sha256"]:
-                raise SystemExit("File inventory mismatch: " + item["path"])
+            name = item["path"]
+            h = hashlib.sha256()
+            size = 0
+            with z.open(name) as stream:
+                for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                    size += len(chunk)
+                    h.update(chunk)
+            if size != item["size_bytes"] or h.hexdigest() != item["sha256"]:
+                raise SystemExit("File inventory mismatch: " + name)
         print(f"ZIP integrity PASS; {len(inv['files'])} tracked files verified.")
         if a.extract_to:
             dest = a.extract_to.resolve()
