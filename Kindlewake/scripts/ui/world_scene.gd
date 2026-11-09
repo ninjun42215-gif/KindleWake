@@ -662,9 +662,17 @@ func _build_minimap() -> void:
     panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
 
 
+func _region_name_at(cell: Vector2i) -> String:
+    if cell.x >= 42 and cell.y <= 27:
+        return "Orrowen Weald"
+    if cell.x >= 35 and cell.y >= 30:
+        return "Vessmoor Plains"
+    return "Sethmarch"
+
+
 func _update_hud() -> void:
     var cell: Vector2i = cell_of(player_pos)
-    var txt: String = "%s\n%s%s\nGold: %d" % [str(GameData.world.get("name", "World")), wmap.terrain_name(cell), "  (safe)" if _in_safe_zone(cell) else "", GameState.party.gold]
+    var txt: String = "%s\n%s%s\nGold: %d" % [_region_name_at(cell), wmap.terrain_name(cell), "  (safe)" if _in_safe_zone(cell) else "", GameState.party.gold]
     if txt != hud_text:
         hud_text = txt
         info_label.text = txt
