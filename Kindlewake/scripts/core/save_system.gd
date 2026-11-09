@@ -10,8 +10,8 @@ extends Node
 signal app_paused
 
 const SAVE_DIR := "user://saves/"
-const SAVE_VERSION := 2
-const GAME_VERSION := "0.7.9"
+const SAVE_VERSION := 3
+const GAME_VERSION := "0.7.14"
 const AUTOSAVE_SLOTS := ["auto_a", "auto_b"]
 
 
@@ -92,6 +92,9 @@ func migrate(payload: Dictionary, from_version: int) -> Dictionary:
         if v == 1:
             data = _migrate_1_to_2(data)
             v = 2
+        elif v == 2:
+            data = _migrate_2_to_3(data)
+            v = 3
         else:
             v += 1
     return data
@@ -102,6 +105,18 @@ static func _migrate_1_to_2(payload: Dictionary) -> Dictionary:
     var data: Dictionary = payload.duplicate(true)
     if not data.has("creation_profile"):
         data["creation_profile"] = {}
+    return data
+
+
+## v3 adds regional campaign context without changing existing party or battle records.
+static func _migrate_2_to_3(payload: Dictionary) -> Dictionary:
+    var data: Dictionary = payload.duplicate(true)
+    if not data.has("world_flags"):
+        data["world_flags"] = {}
+    if not data.has("world_pos"):
+        data["world_pos"] = [0.0, 0.0]
+    if not data.has("from_world"):
+        data["from_world"] = false
     return data
 
 
