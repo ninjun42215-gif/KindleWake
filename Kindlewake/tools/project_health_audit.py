@@ -26,7 +26,8 @@ def main() -> int:
         "resource_files": 0,
         "rune_definitions": None,
         "rune_kinds": {},
-        "unverified_asset_entries": 0,\n        "unverified_used_assets": 0,
+"unverified_asset_entries": 0,
+"unverified_used_assets": 0,
     }
 
     def add(level: str, code: str, message: str, path: str = "") -> None:
