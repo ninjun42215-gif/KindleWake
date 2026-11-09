@@ -306,3 +306,8 @@ The subsequent run exposed a second organizer-test fixture issue: its temporary 
 - Resolve or replace the voxel-building assets before public/commercial release. Resolve the Android version mismatch in the correct PR integration order; do not overwrite PR #4's 0.10.0/code 1000 values.
 - Physical Android device QA remains outstanding. Also outstanding: architecture/event decoupling review, mobile accessibility/safe-area/touch QA, Android App Bundle (AAB) support, Godot scene smoke tests and full external asset licence review.
 - Recheck live PR heads and create a new exact-head handoff before further work; the artifact links above are verified for the stated commits only.
+
+
+## Version synchronization policy — 2026-11-10
+
+Main now has a version synchronization guard. The branch's project version is 0.10.0, README headline is 0.10.0, and Android export is 0.10.0/code 1000. Main remains 0.9.0/code 900 until reviewed feature changes are merged. The trusted sync tool is loaded from main during PR checks, so this branch does not need to carry it. Keep these three values aligned with project.godot when changing the project version; do not auto-merge this branch into main.
