@@ -16,6 +16,9 @@ var preview_text: Label
 var status_label: Label
 var confirm_button: Button
 var weapon_option: OptionButton
+var allocation_labels: Dictionary = {}
+var allocation_sliders: Dictionary = {}
+var allocation_total_label: Label
 
 
 func _ready() -> void:
@@ -67,11 +70,15 @@ func _build_ui() -> void:
     var scroll := ScrollContainer.new()
     scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    scroll.size_flags_stretch_ratio = 1.0
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+    scroll.follow_focus = true
     outer.add_child(scroll)
 
     var body: Container = VBoxContainer.new() if narrow else HBoxContainer.new()
     body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    body.size_flags_vertical = Control.SIZE_EXPAND_FILL
     body.add_theme_constant_override("separation", 14 if narrow else 18)
     scroll.add_child(body)
 
@@ -92,6 +99,7 @@ func _build_ui() -> void:
     _add_choice(form, "Starting discipline", "discipline", _dictionary_options(config.get("disciplines", {})))
     weapon_option = _add_choice(form, "Weapon preference", "weapon_preference", [])
     _add_choice(form, "Temperament", "temperament", _dictionary_options(config.get("temperaments", {})))
+    _add_attribute_allocation(form)
     _refresh_weapon_options()
 
     var preview_column := VBoxContainer.new()
@@ -217,6 +225,64 @@ func _display_name(field: String, id: String) -> String:
     return id.replace("_", " ").capitalize()
 
 
+func _add_attribute_allocation(parent: VBoxContainer) -> void:
+    var heading := Label.new()
+    heading.text = "Starting attributes"
+    heading.add_theme_color_override("font_color", Color("#e5c98d"))
+    heading.add_theme_font_size_override("font_size", 19)
+    parent.add_child(heading)
+    var allocation: Dictionary = profile.get("stat_allocation", {"str": 2, "dex": 2, "int": 1, "vit": 1, "spd": 1, "lck": 1})
+    profile["stat_allocation"] = allocation.duplicate(true)
+    for stat in ["str", "dex", "int", "vit", "spd", "lck"]:
+        var row := HBoxContainer.new()
+        row.add_theme_constant_override("separation", 8)
+        parent.add_child(row)
+        var caption := Label.new()
+        caption.text = stat.to_upper()
+        caption.custom_minimum_size = Vector2(48, 0)
+        row.add_child(caption)
+        var slider := HSlider.new()
+        slider.min_value = 0
+        slider.max_value = 5
+        slider.step = 1
+        slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        slider.value = int(allocation.get(stat, 0))
+        row.add_child(slider)
+        var value_label := Label.new()
+        value_label.custom_minimum_size = Vector2(24, 0)
+        value_label.text = str(int(slider.value))
+        row.add_child(value_label)
+        allocation_labels[stat] = value_label
+        allocation_sliders[stat] = slider
+        slider.value_changed.connect(_on_stat_allocation_changed.bind(stat))
+    allocation_total_label = Label.new()
+    allocation_total_label.add_theme_color_override("font_color", Color("#b8c2cc"))
+    parent.add_child(allocation_total_label)
+    _refresh_allocation_total()
+
+
+func _on_stat_allocation_changed(value: float, stat: String) -> void:
+    var allocation: Dictionary = profile.get("stat_allocation", {})
+    allocation[stat] = int(value)
+    profile["stat_allocation"] = allocation
+    if allocation_labels.has(stat):
+        (allocation_labels[stat] as Label).text = str(int(value))
+    _refresh_allocation_total()
+    _refresh_preview()
+
+
+func _refresh_allocation_total() -> void:
+    if allocation_total_label == null:
+        return
+    var allocation: Dictionary = profile.get("stat_allocation", {})
+    var spent := 0
+    for stat in ["str", "dex", "int", "vit", "spd", "lck"]:
+        spent += int(allocation.get(stat, 0))
+    var total := int(config.get("stat_points", 8))
+    allocation_total_label.text = "Attribute points: %d / %d" % [spent, total]
+    allocation_total_label.add_theme_color_override("font_color", Color("#a8c7a0") if spent == total else Color("#e6a18f"))
+
+
 func _refresh_weapon_options() -> void:
     if weapon_option == null:
         return
@@ -254,7 +320,7 @@ func _refresh_preview() -> void:
             str(profile.get("name", "")), str(profile.get("presentation", "")).capitalize(),
             str(profile.get("build", "")).capitalize(), str(origin.get("name", "")),
             str(discipline.get("name", "")), str(profile.get("weapon_preference", "")).capitalize(),
-            str(temperament.get("name", "")), str(origin.get("description", "")), origin_bonus, temperament_bonus
+            str(temperament.get("name", "")), str(origin.get("description", "")), origin_bonus, temperament_bonus, allocation_text
         ]
     var reason: String = CharacterCreation.validate(profile, config, GameData.classes)
     if status_label != null:
