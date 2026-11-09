@@ -521,8 +521,12 @@ func _show_result() -> void:
     result_title.text = "VICTORY" if won else "DEFEAT"
     result_text.text = "The roadwolves are broken. The road to Eldrimar is open." if won else "The Dunmarrow company has fallen."
     result_text.text += "\nTurns taken: %d" % controller.turn_count
-    if won and str(battle_def.get("id", "")) == BATTLE_ID:
-        GameState.world_flags["camp_cleared"] = true
+    if won:
+        if str(battle_def.get("id", "")) == BATTLE_ID:
+            GameState.world_flags["camp_cleared"] = true
+        var clear_flag: String = str(battle_def.get("world_flag_on_victory", ""))
+        if clear_flag != "":
+            GameState.world_flags[clear_flag] = true
     if not exp_awarded:
         exp_awarded = true
         battle_rewards = GameState.award_battle(controller.units, controller.result)
