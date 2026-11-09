@@ -550,6 +550,21 @@ func _apply_safe_area() -> void:
     hud_root.offset_top = t
     hud_root.offset_right = -r
     hud_root.offset_bottom = -b
+    var viewport_size: Vector2 = get_viewport().get_visible_rect().size
+    var compact: bool = viewport_size.x < 900.0 or viewport_size.y > viewport_size.x * 1.15
+    if info_label != null:
+        info_label.custom_minimum_size = Vector2(clampf(viewport_size.x * 0.25, 160.0, 300.0), 0.0)
+        info_label.add_theme_font_size_override("font_size", 15 if compact else 20)
+    if prompt_btn != null:
+        prompt_btn.custom_minimum_size = Vector2(clampf(viewport_size.x * 0.48, 230.0, 420.0), clampf(viewport_size.y * 0.11, 56.0, 84.0))
+        prompt_btn.add_theme_font_size_override("font_size", 19 if compact else 28)
+    if spot_panel != null:
+        spot_panel.custom_minimum_size = Vector2(maxf(260.0, minf(viewport_size.x - 24.0, 700.0)), 0.0)
+    if spot_title != null:
+        spot_title.add_theme_font_size_override("font_size", 25 if compact else 36)
+    if spot_text != null:
+        spot_text.custom_minimum_size = Vector2(maxf(220.0, minf(viewport_size.x - 72.0, 560.0)), 0.0)
+        spot_text.add_theme_font_size_override("font_size", 17 if compact else 22)
 
 
 func _build_ui() -> void:
