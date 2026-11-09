@@ -439,6 +439,22 @@ func _draw_tile(c: Vector2i) -> void:
         "C":
             draw_rect(Rect2(o + Vector2(6, 8), Vector2(TILE - 12, TILE - 14)), Color(0.58, 0.42, 0.22))
             draw_rect(Rect2(o + Vector2(6, 8), Vector2(TILE - 12, TILE - 14)), Color(0.28, 0.18, 0.08), false, 2.0)
+    # Small hand-painted props make settlements feel inhabited without cluttering walkable lanes.
+    var prop_center := o + Vector2(TILE * 0.5, TILE * 0.48)
+    match t:
+        "S":
+            Art.draw_prop(self, "crate", prop_center + Vector2(0, -3), 0.34)
+        "U":
+            Art.draw_prop(self, "barrel", prop_center + Vector2(0, -3), 0.34)
+        "H":
+            Art.draw_prop(self, "torch", prop_center + Vector2(0, -2), 0.34)
+        "N":
+            Art.draw_prop(self, "banner", prop_center + Vector2(0, -2), 0.34)
+        "P":
+            Art.draw_prop(self, "column", prop_center + Vector2(0, -2), 0.34)
+        _:
+            if not indoor and t == "." and WorldMap.hash01(c.x, c.y, 43) > 0.94:
+                Art.draw_prop(self, "flower", prop_center + Vector2(0, -5), 0.22)
     if indoor and t == "#" and c.y == 0:
         draw_rect(Rect2(o + Vector2(0, TILE - 6), Vector2(TILE, 6)), Color(0, 0, 0, 0.3))
 
