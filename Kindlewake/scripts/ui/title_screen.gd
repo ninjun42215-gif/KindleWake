@@ -28,6 +28,15 @@ func _build() -> void:
     backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     add_child(backdrop)
 
+    var illustration := TextureRect.new()
+    illustration.texture = load("res://assets/art/ui/title_illustration.svg")
+    illustration.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    illustration.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    illustration.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+    illustration.modulate = Color(0.72, 0.82, 0.78, 0.72)
+    illustration.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    add_child(illustration)
+
     var wash := ColorRect.new()
     wash.color = Color("#17232a")
     wash.anchor_left = 0.0
@@ -74,6 +83,14 @@ func _build() -> void:
     subtitle.add_theme_font_size_override("font_size", 15)
     subtitle.add_theme_color_override("font_color", Color("#aab6bc"))
     root_box.add_child(subtitle)
+
+    var ornament := TextureRect.new()
+    ornament.texture = load("res://assets/art/ui/ornament_divider.svg")
+    ornament.custom_minimum_size = Vector2(320, 54)
+    ornament.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    ornament.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    ornament.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    root_box.add_child(ornament)
 
     var divider := HSeparator.new()
     root_box.add_child(divider)
