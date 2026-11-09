@@ -47,12 +47,12 @@ try { foreach ($part in $parts) { $input = [System.IO.File]::OpenRead($part.Full
 ```
 
 ## Required GitHub delivery and review flow
-1. Commit the original ZIP/patch or every split part, `HANDOFF.md` and `REASSEMBLE.txt` to the unique receiving subfolder on `feature/rune-system-v1`.
+1. Commit the original ZIP/patch or every split part, `HANDOFF.md` and `REASSEMBLE.txt` to the unique receiving subfolder on the current authorized working branch (inspect live refs; do not assume a fixed branch name).
 2. Push the branch. Never leave the only copy in chat or a temporary workspace.
 3. Reassemble in the receiving folder, verify ZIP integrity, and extract to a separate review subfolder.
 4. Review licensing, security, file paths, dependencies, Godot compatibility, UIDs, references, save schema and tests. Treat all incoming content as untrusted until reviewed.
 5. Integrate approved files into canonical project paths; add tests and update the GDD, session handoff, README and continuation prompts.
-6. Run the validation workflow. The automatic `Kindlewake-Source-Handoff-Parts` artifact will then include the receiving folder and all accepted canonical changes.
+6. Run the repository-wide validation workflow. It triggers on pushes to every branch, tags, pull requests targeting any branch and manual dispatch. The `Kindlewake-Source-Handoff-Parts` artifact is generated from the exact triggering Git ref and includes all tracked repository files, including the receiving folder and canonical changes.
 7. Mark the intake HANDOFF.md accepted, rejected or deferred and record the integration commit. Keep original incoming files for provenance unless the user asks otherwise.
 
 ## Safety and compatibility
