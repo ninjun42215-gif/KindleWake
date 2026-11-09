@@ -496,7 +496,7 @@ The campaign spans four large continents connected through a gradually expanding
 The playable Sallow Marches overworld now has three additional searchable ruin landmarks connected to the existing road graph: Sunken Tollhouse (45 gold), Hollowroot Warren (75 gold) and Warden's Barrow (90 gold). They reuse the existing `kind: ruin` interaction and persistent `found_<id>` world flags, so each reward is claimable once per new game. Their road links branch from Kaer Sethorn or Sallow Crossing; no new scene or map format is introduced. These are exploration/reward landmarks, not fully traversable dungeon interiors yet. The larger Sethmarch town network and actual dungeon maps remain future work. Runtime testing is still deferred; static JSON validation is not a Godot runtime test.
 
 ### 11.5 The Sethmarch Frontier: Orrowen and Vessmoor (v0.7.14)
-The first expanded regional network is now connected to the existing Sallow Crossing field map. The player can follow the Greenward Gate north-east into **Orrowen Weald** or the Vessmoor Causeway south-east into **Vessmoor Plains**. These are continuous roads on the same 64×48 Eldrimar overworld; no loading gate or disconnected map hop interrupts the journey.
+The first expanded regional network is now connected to the existing Sallow Crossing field map. The player can follow the Greenward Gate north-east into **Orrowen Weald** or the Vessmoor Causeway south-east into **Vessmoor Plains**. Interacting with either arch records a one-time passage flag, while the roads remain physically continuous on the same 64×48 Eldrimar overworld; no disconnected map hop interrupts the journey. The overworld HUD names the current subregion.
 
 **Road network and settlements**
 - Orrowen: Thornmere (regional hub), Foxglove and Elderbough. The roads branch from the Greenward Gate and continue between each settlement and the Bell Under Leaves dungeon.
@@ -512,7 +512,7 @@ The first expanded regional network is now connected to the existing Sallow Cros
 
 **Dungeons, bosses and rewards**
 - Hollowroot Warren, The Bell Under Leaves and Kingsroad Catacombs each have a distinct explorable local map, a one-time treasure cache and a boss encounter.
-- Boss battles use dedicated data files and named boss characters. Victory writes the dungeon's clear flag; treasure caches pay 120 gold once each. Enemy EXP/AP/gold still flows through the existing battle reward system.
+- Boss battles use dedicated data files, named boss characters and dungeon-specific victory reports. Victory writes the dungeon's clear flag; treasure caches pay 120 gold once each. Enemy EXP/AP/gold still flows through the existing battle reward system.
 - The dungeon entrance on the overworld opens the corresponding dungeon map; the player must explore to the cache and guardian rather than trigger a battle from the world-map marker.
 
 **Persistence and validation boundary**
