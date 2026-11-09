@@ -145,3 +145,5 @@ Be proactive and implementation-focused. The user often says “continue” to a
 - Keep `project.godot` version and Android preset `version/name` synchronized. Android `version/code` must increase monotonically. Current checkpoint: project version `0.10.0`, Android version code `1000`.
 - Current builder exports APK only. Do not claim AAB support until a Gradle/AAB path is implemented and tested. CI success is not physical-device QA.
 - Inspect the exact current branch-head Actions run and artifacts after every workflow change; this documentation update does not itself prove the workflow passed.
+
+- Builder and CI fail closed when the balance report fails, APK permissions cannot be inspected, the signature cannot be verified, or project/export version names differ. Production publishing additionally pins the expected certificate using `ANDROID_RELEASE_CERT_SHA256`.
