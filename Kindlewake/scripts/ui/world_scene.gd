@@ -383,7 +383,7 @@ func _pass_gate(p: Dictionary) -> void:
 
 ## Walk into a town: the location scene opens the town map; leaving it puts us back just south of the place.
 func _enter_town(p: Dictionary) -> void:
-    GameState.world_pos = player_pos
+    GameState.world_pos = wmap.wrap_position(player_pos)
     GameState.save_campaign("auto_a")
     GameState.pending_location = str(p.get("town", ""))
     GameState.world_pos = cell_center(wmap.place_cell(str(p.get("id", "")))) + Vector2(0, 58)
@@ -576,7 +576,7 @@ func _draw_place(p: Dictionary) -> void:
 func _draw_place_fallback(p: Dictionary) -> void:
     var id: String = str(p.get("id", ""))
     var kind: String = str(p.get("kind", ""))
-    var c: Vector2 = cell_center(wmap.place_cell(id))
+    var c: Vector2 = p.get("_render_pos", cell_center(wmap.place_cell(id)))
     draw_circle(c + Vector2(0, 10), 22.0, Color(0, 0, 0, 0.25))
     if kind == "port":
         draw_rect(Rect2(c + Vector2(-48, 18), Vector2(96, 12)), Color("#7d684e"))
@@ -964,4 +964,4 @@ func _update_hud() -> void:
                 leader_exp_bar.max_value = float(maxi(1, leader.exp_to_next()))
                 leader_exp_bar.value = float(leader.xp)
     if minimap_dot != null:
-        minimap_dot.position = player_pos / TILE * float(MINIMAP_SCALE) - Vector2(3, 3)
+        minimap_dot.position = Vector2(wmap.wrap_cell(cell_of(player_pos))) * float(MINIMAP_SCALE) + Vector2(MINIMAP_SCALE * 0.5 - 3.0, MINIMAP_SCALE * 0.5 - 3.0)
