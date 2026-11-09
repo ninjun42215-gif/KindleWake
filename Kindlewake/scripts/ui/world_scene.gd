@@ -728,13 +728,13 @@ func _update_hud() -> void:
         var leader: CharacterSheet = GameState.party.sheet(leader_id)
         if leader != null:
             var class_def: Dictionary = GameData.class_def(leader.class_id)
-            var class_name: String = str(class_def.get("name", leader.class_id))
+            var class_title: String = str(class_def.get("name", leader.class_id))
             if leader.level >= CharacterSheet.MAX_LEVEL:
-                leader_status_label.text = "%s  •  Lv %d %s  •  MAX" % [leader.display_name, leader.level, class_name]
+                leader_status_label.text = "%s  •  Lv %d %s  •  MAX" % [leader.display_name, leader.level, class_title]
                 leader_exp_bar.max_value = 1.0
                 leader_exp_bar.value = 1.0
             else:
-                leader_status_label.text = "%s  •  Lv %d %s  •  EXP %d/%d" % [leader.display_name, leader.level, class_name, leader.xp, leader.exp_to_next()]
+                leader_status_label.text = "%s  •  Lv %d %s  •  EXP %d/%d" % [leader.display_name, leader.level, class_title, leader.xp, leader.exp_to_next()]
                 leader_exp_bar.max_value = float(maxi(1, leader.exp_to_next()))
                 leader_exp_bar.value = float(leader.xp)
     if minimap_dot != null:
