@@ -134,7 +134,9 @@ func fuse_runes(rune_id: String, grade: String, db: Dictionary, rng: RandomNumbe
     return RuneSystemScript.combine(sigil_inv, rune_id, grade, db.get("runes", db.get("sigils", {})), rng)
 
 
-func enhance_equipment(char_id: String, slot: String, db: Dictionary) -> String:
+func enhance_equipment(char_id: String, slot: String, db: Dictionary, service_access: bool = false) -> String:
+    if not service_access:
+        return "Equipment can only be enhanced at a blacksmith."
     var sh: CharacterSheetScript = sheet(char_id)
     if sh == null or not CharacterSheetScript.SLOTS.has(slot):
         return "Unknown character or equipment slot."
@@ -143,14 +145,15 @@ func enhance_equipment(char_id: String, slot: String, db: Dictionary) -> String:
         return "Equip an item before enhancing it."
     if not (db.get("items", {}) as Dictionary).has(item_id):
         return "Unknown equipment."
-    var current := int(sh.enhancements.get(slot, 0))
+    var enhance_key := slot + "|" + item_id
+    var current := int(sh.enhancements.get(enhance_key, 0))
     if current >= 15:
         return "This equipment has reached +15."
     var cost := 100 * (current + 1) * (current + 1)
     if gold < cost:
         return "Enhancement requires %d gold." % cost
     gold -= cost
-    sh.enhancements[slot] = current + 1
+    sh.enhancements[enhance_key] = current + 1
     return ""
 
 
