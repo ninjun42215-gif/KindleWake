@@ -1,12 +1,15 @@
 class_name CombatCalc
 extends RefCounted
+
+const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
+const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
 ## Every combat formula lives here (see GDD section 3.5). Pure functions: easy to unit-test and balance.
 
 const VARIANCE_MIN := 0.95
 const VARIANCE_MAX := 1.05
 
 
-static func attack_power(u: BattleUnit, weapon: Dictionary) -> float:
+static func attack_power(u: BattleUnitScript, weapon: Dictionary) -> float:
     var power := float(weapon.get("power", 0))
     var str_v := float(u.stat("str"))
     var dex_v := float(u.stat("dex"))
@@ -36,7 +39,7 @@ static func facing_class(attacker_cell: Vector2i, defender: BattleUnit) -> Strin
     var delta := Vector2(attacker_cell - defender.cell)
     if delta == Vector2.ZERO:
         return "front"
-    var fd: Vector2i = BattleMap.DIRS[defender.facing]
+    var fd: Vector2i = BattleMapScript.DIRS[defender.facing]
     var dot: float = Vector2(fd).dot(delta.normalized())
     if dot > 0.5:
         return "front"
@@ -65,7 +68,7 @@ static func morale_mult(u: BattleUnit) -> float:
     return 1.0
 
 
-static func hit_chance(attacker: BattleUnit, defender: BattleUnit, weapon: Dictionary, map: BattleMap) -> int:
+static func hit_chance(attacker: BattleUnit, defender: BattleUnit, weapon: Dictionary, map: BattleMapScript) -> int:
     var value: int = attacker.stat("acc") + int(weapon.get("acc", 0)) - defender.stat("eva") - map.cover_at(defender.cell)
     return clampi(value, 10, 98)
 
