@@ -163,3 +163,12 @@
 - Reassemble on Linux/macOS with `cat Kindlewake-Source-Handoff.zip.part* > Kindlewake-Source-Handoff.zip`, then validate using `unzip -t`. Every part must be present and kept in the same folder.
 - Receiving folder and split packaging are committed on the feature branch. Await the new workflow before claiming the split artifact is downloadable.
 - Size cap clarification: each chunk is limited to exactly 25,000,000 bytes (decimal 25 MB), not 25 MiB.
+
+
+## 2026-11-10 — Next-AI visibility and no-clarification guide
+- Added `Kindlewake/docs/NEXT_AI_START_HERE.md` as the concise orientation page: canonical branch/platform/save/network constraints, standing user instructions, current implementation snapshot, latest known CI/artifact evidence, next tasks, source-of-truth document map and explicit defaults.
+- Updated both root and in-project continuation prompts to require reading this guide first and include it in the mandatory startup reading order.
+- Current documentation commit chain: start guide `d92a49f13fedfd6703c5e7d85acd54e2bfeca058`; root prompt `fd5218322d75ce4e1775be3dddad8b29280ea445`; in-project prompt `f1e6934fc4b14117d4dfb521cc715c277b45baf9`.
+- Latest verified build checkpoint before these documentation-only commits: branch head `09c548d92d384b64ba1422f77601cea222753e2c`, workflow #282 `42675923270`, completed successfully. Artifacts: `Kindlewake-APK` ID `13700540809`; `Kindlewake-Source-Handoff-Parts` ID `13699723324`; `test-logs` ID `13699358976`. Workflow: https://github.com/ninjun42215-gif/KindleWake/actions/runs/42675923270.
+- The above CI run predates this documentation commit chain. A fresh branch-head workflow must complete before calling the latest documentation snapshot packaged or validated. No physical Android device QA is claimed.
+- Next AI: follow `docs/NEXT_AI_START_HERE.md` and the master continuation prompt; do not ask the user to repeat documented decisions. Verify current branch head and CI before further work.
