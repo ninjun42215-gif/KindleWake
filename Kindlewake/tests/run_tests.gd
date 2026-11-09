@@ -861,7 +861,7 @@ func _test_thalassar_region() -> void:
     var maren: Dictionary = gd.character_def("maren_vey")
     var locked: Dictionary = RecruitmentSystem.inspect(recruit_party, "maren_vey", maren, {})
     check(not bool(locked.get("available", true)), "Maren remains unavailable until the Tideglass ledger is recovered")
-    var flags: Dictionary = {"tideglass_grotto_cleared": true}
+    var flags: Dictionary = {"tideglass_grotto_cleared": true, "tideglass_ledger_found": true}
     var unlocked: Dictionary = RecruitmentSystem.inspect(recruit_party, "maren_vey", maren, flags)
     check(bool(unlocked.get("available", false)), "recovering the Tideglass ledger unlocks Maren's recruitment")
     var maps: Dictionary = LocalMap.load_all(gd.locations)
