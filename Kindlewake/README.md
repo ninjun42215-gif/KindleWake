@@ -11,7 +11,7 @@
 
 
 
-# Kindlewake: The Sundered Vow — Rune mastery and world expansion (v0.11.0)
+# Kindlewake: The Sundered Vow — Rune mastery and world expansion (v0.12.0)
 
 Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (GDScript, GL Compatibility).
 Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md` · Start here: `docs/NEXT_AI_START_HERE.md`
