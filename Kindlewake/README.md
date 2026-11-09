@@ -10,7 +10,7 @@
 >
 > **Outstanding release gates:** physical Android QA (launch, safe areas, portrait/landscape, touch/scroll, rune fusion, shops, status effects, save/load and performance) and authoritative redistribution/licence verification for the voxel-building pack. Optional sprite packs remain source-only. The first Godot import log contained transient global-class resolution errors, although the final build summary and strict suite passed; investigate that warning separately. The balance/test logs also report ObjectDB/resource cleanup warnings; tests still completed with 342 checks and 0 failures.
 
-# Kindlewake: The Sundered Vow — Rune mastery and world expansion (v0.10.0)
+# Kindlewake: The Sundered Vow — Rune mastery and world expansion (v0.11.0)
 
 Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (GDScript, GL Compatibility).
 Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md` · Start here: `docs/NEXT_AI_START_HERE.md`
