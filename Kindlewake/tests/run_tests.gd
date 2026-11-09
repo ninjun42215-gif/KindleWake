@@ -629,6 +629,15 @@ func _test_world() -> void:
     check(WorldMap.DANGER[WorldMap.FOREST] > WorldMap.DANGER[WorldMap.GRASS] and WorldMap.DANGER[WorldMap.ROAD] < WorldMap.DANGER[WorldMap.GRASS], "forests are more dangerous than grass and roads are safer")
     check(WorldMap.encounter_threshold(cfg, 0.0) == float(cfg["encounter_min"]) and WorldMap.encounter_threshold(cfg, 1.0) == float(cfg["encounter_max"]), "the ambush threshold runs from encounter_min to encounter_max")
     check(not gd.battle_def(str(w1.place_by_id("camp")["battle"])).is_empty(), "the camp points at a real battle")
+    var regional_ok := true
+    for place in w1.places:
+        var pd: Dictionary = place
+        if str(pd.get("kind", "")) == "dungeon":
+            var dungeon_id: String = str(pd.get("town", ""))
+            var boss_battle: String = str(pd.get("battle", ""))
+            if not gd.locations.get("maps", {}).has(dungeon_id) or gd.battle_def(boss_battle).is_empty():
+                regional_ok = false
+    check(regional_ok and w1.connected(w1.place_cell("crossing"), w1.place_cell("thornmere")) and w1.connected(w1.place_cell("crossing"), w1.place_cell("cindermead")), "Orrowen and Vessmoor roads connect to Sallow Crossing with playable dungeon entries")
     var skirmish: Dictionary = EncounterBuilder.build_skirmish(gd.encounters, gd.battles, rng_for_tests())
     check(not skirmish.is_empty() and str(skirmish.get("id", "")) == "skirmish", "an ambush can build a skirmish battle")
 
@@ -650,6 +659,14 @@ func _test_locations() -> void:
             if not maps.has(tid) or (maps[tid] as LocalMap).kind != "town":
                 towns_ok = false
     check(towns_ok, "every keep and village on the overworld opens a town map")
+    var dungeons_ok := true
+    for p in (gd.world.get("places", []) as Array):
+        var pd: Dictionary = p
+        if str(pd.get("kind", "")) == "dungeon":
+            var dungeon_map: String = str(pd.get("town", ""))
+            if not maps.has(dungeon_map) or (maps[dungeon_map] as LocalMap).kind != "dungeon":
+                dungeons_ok = false
+    check(dungeons_ok, "every regional dungeon opens its own explorable map")
     var round_trip := true
     for k in maps.keys():
         var m: LocalMap = maps[k]
