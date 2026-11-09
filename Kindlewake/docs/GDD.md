@@ -789,3 +789,12 @@ Legacy sigil_* script entry points remain internal compatibility wrappers during
 - These changes preserve the existing battle rules, save payloads, party APIs and rune/gear behavior. Validate actual safe-area, notch, scrolling and touch interaction on physical devices; CI cannot replace that check.
 
 | 0.10.1-mobile-ui | Responsive battle HUD, overworld save/company controls and party management layout for compact landscape/portrait viewports; physical-device validation pending. |
+
+
+### 14.4 Mobile layout refinements and validation
+- Portrait company management uses full-height tabs (Company / Hero / Gear & Runes) so all work areas remain reachable without a clipped outer stack. Narrow landscape uses proportional three-column panes; desktop retains wider proportions.
+- The company screen uses a safe 1280×720 design fallback when constructed outside the SceneTree for headless UI tests; live screens use the actual viewport. This avoids viewport-access errors in the UI smoke test.
+- Overworld and town interaction panels, prompt buttons and action buttons resize from the current viewport. Battle compact actions and preview are separated to opposite lower corners; timeline/log are hidden when the compact HUD cannot safely display them.
+- Validation on commit 99fcc28dd37652c293eaf240ec017500bbd698e6: Godot 4.2.2 build workflow 42672539871 completed successfully; strict suite 333 checks / 0 failures; balance report completed; signed Android APK exported and verified. No physical-device test has been performed.
+
+| 0.10.2-mobile-ui | Portrait company tabs, narrow-landscape proportional panes, viewport-safe party tests and responsive town/overworld interaction controls; CI validated on 2026-11-10. |
