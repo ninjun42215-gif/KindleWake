@@ -125,11 +125,11 @@ func _refresh_selection() -> void:
         return
     var continent: Dictionary = atlas[selected_index]
     var is_current := bool(continent.get("current", false))
-    var unlock_flag := str(continent.get("travel_unlock_flag", ""))
+    var unlock_flag := str(continent.get("unlock", ""))
     var unlocked := is_current or (unlock_flag != "" and bool(GameState.world_flags.get(unlock_flag, false)))
     detail_title.text = str(continent.get("name", "Unknown"))
     detail_epithet.text = str(continent.get("epithet", ""))
-    detail_status.text = "CURRENT FRONTIER" if is_current else ("ROUTE CHARTED" if unlocked else "UNREACHED — STORY ROUTE SEALED")
+    detail_status.text = "CURRENT FRONTIER" if is_current else ("ROUTE CHARTED" if unlocked else "STORY ROUTE: " + str(continent.get("unlock", "unavailable")).replace("_", " ").to_upper())
     detail_status.add_theme_color_override("font_color", Color("#9bc49d") if unlocked else Color("#d69a79"))
     detail_text.text = "%s\n\nCapital: %s\nRuling power: %s\nClimate: %s\n\nConflict: %s\n\nCampaign thread: %s" % [
         str(continent.get("identity", "")), str(continent.get("capital", "Unknown")),
