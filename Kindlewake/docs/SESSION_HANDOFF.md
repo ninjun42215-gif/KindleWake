@@ -4,7 +4,7 @@
 - Feature branch: feature/rune-system-v1.
 - Latest validated commit: c643c8fc20b1f96ebaa8aadb2f54d7330fa8b59e (project version 0.9.1).
 - Scope: replace player-facing Sigils with Runes while preserving old save inventory/socket fields and script aliases; add rune types, grade ladder, fusion, specialist regional shops, rune status effects, combat popups and original atlas.
-- New data: data/runes.json (17 runes) and additional storm/holy/shadow spells in data/skills.json.
+- New data: data/runes.json (77 runes: 23 active magic, 43 passive, 7 unique and 5 heirloom) and additional storm/holy/shadow spells in data/skills.json.
 - Fusion: 3 identical id+grade; success chances 70/55/40/25/12% for Uncommon through Mythical; consumes 3 and returns 1 higher-grade rune on success or 1 original-grade rune on failure.
 - Regional vendors: Sallow Crossing, Thornmere, Foxglove, Elderbough, Cindermead, Redwater, Milefort. Each has explicit rune stock; no universal rune catalogue.
 - Status effects: burn damage, chill speed penalty, shock turn skip, exposed defense reduction, regen, shadow life drain. Battle popups show applied effects.
