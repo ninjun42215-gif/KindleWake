@@ -95,12 +95,7 @@
     "mythical_armor",
     "mythical_offhand",
     "mythical_helm",
-    "mythical_accessory",
-    "unique_ashen_crown",
-    "unique_kingbreaker",
-    "unique_oathwall",
-    "unique_sundered_vow",
-    "unique_starfall_charm"
+    "mythical_accessory"
   ],
   "sigils": [
     "mend",
