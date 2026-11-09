@@ -152,12 +152,12 @@ Skill type `strike` (data/skills.json): damage = weapon attack power x `mult` ag
 ## 4. Character Progression
 
 ### 4.1 Levels and experience
-- Levels 1–30. Promotion offered at level 10 (tier 2) and level 20 (tier 3) when requirements are met.
+- Levels 1–250. Promotion offered at level 10 (tier 2) and level 20 (tier 3) when requirements are met.
 - `EXP to next = 80 + 20·level` (flat-ish to avoid grinding). Battle EXP is shared: acting units earn full EXP; bench units earn 40% of the battle total so reserves stay relevant.
 - Each level grants class-based stat growth (probability per stat, 0–100%). Luck and Leadership grow slowly.
 
 **Implemented in v0.3.0 (`CharacterSheet`, `PartyState`, `CombatCalc.kill_exp`)**
-- `EXP to next = 80 + 20 × level`, level cap 30. Leftover EXP carries over; several level-ups can happen at once; no EXP is stored at the cap.
+- `EXP to next = 80 + 20 × level + max(0, level - 2)^2`, level cap 250. Leftover EXP carries over; several level-ups can happen at once; no EXP is stored at the cap.
 - *Growth:* on each level-up every stat in the class's `growth` table (percent) gets one roll; success = +1 (HP: +2, MP: +1). If every roll fails, the class's strongest growth stat gains one point, so a level is never empty. Rolls use a seeded `RandomNumberGenerator` (deterministic in tests). HP gain per success is a tuning constant (`HP_GAIN`) to be set by the balance report.
 - *Battle rewards (changed in v0.4.0, Final Fantasy VII rules):* see 4.6. The old participation/kill/victory EXP formula is gone; `CombatCalc.kill_exp` remains only as a per-unit statistic.
 
@@ -202,7 +202,7 @@ Blacksmith upgrades items by +1…+5 using materials; Heirlooms upgrade through 
 - Budget target: player gear power grows ~12%/chapter; enemy power ~10%/chapter plus authored spikes at set-piece battles.
 - Balance is validated with the headless battle simulator planned for Milestone 2.
 
-### 4.6 Grinding system: EXP, AP, gold and Sigils (v0.4.0, modelled on Final Fantasy VII)
+### 4.6 Campaign rewards, AP, gold and Sigils (v0.4.0, modelled on Final Fantasy VII)
 
 **Rewards.** Every enemy has a fixed `reward` block in `characters.json` (`exp`, `ap`, `gold`; commanders pay more). Defaults when missing: EXP `15 + 5 × level`, AP `2 + level`, gold `5 + 3 × level`, all doubled for a commander.
 - Only **defeated** enemies pay. Winning by killing the chief while others live does not pay for the survivors.
