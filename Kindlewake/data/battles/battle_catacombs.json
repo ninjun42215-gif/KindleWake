@@ -130,5 +130,6 @@
   "world_flag_on_victory": "dungeon_catacombs_cleared",
   "victory_text": "The Ashen Reeve is routed. The Kingsroad dead can rest behind their sealed doors.",
   "defeat_text": "The guardian holds the chamber. Your company is driven back to the road.",
-  "battlefield": "ashen_ruins"
+  "battlefield": "ashen_ruins",
+  "reward_rune": "sundered"
 }
