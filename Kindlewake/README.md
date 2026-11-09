@@ -1,4 +1,4 @@
-# Kindlewake: The Sundered Vow — Campaign menu and economy rebalance (v0.9.0)
+# Kindlewake: The Sundered Vow — Campaign menu and economy rebalance (v0.9.1)
 
 Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (GDScript, GL Compatibility).
 Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md`
@@ -8,7 +8,7 @@ Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Ne
 - After the extracted folder is present, future updates are direct file commits. Keep `docs/SESSION_HANDOFF.md`, `docs/GDD.md`, this README, and `docs/CONTINUATION_PROMPT.md` current with each meaningful change.
 - The nested sprite packs are optional source material only; they are not imported into scenes or license-cleared.
 
-## v0.9.0 — Title screen, campaign saves and economy
+## v0.9.1 — Rune system, fusion and regional rune merchants
 
 ## Feature branch: Rune System v1 (CI validated; draft PR review pending)
 - Player-facing Sigils are renamed to Runes with 17 definitions across 10 rune families and six grades.
