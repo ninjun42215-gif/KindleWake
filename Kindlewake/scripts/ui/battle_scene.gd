@@ -39,6 +39,7 @@ var anim_clock: float = 0.0              # seconds, drives the unit sprite anima
 var anim_last_draw: float = 0.0
 var anim_override: Dictionary = {}       # unit id -> {"anim": String, "start": float} (attack / hurt one-shots)
 var popups: Array[Dictionary] = []
+var battle_vfx: Array[Dictionary] = []
 var log_lines: Array[String] = []
 var last_turn_count: int = -1
 var ai_busy: bool = false
@@ -109,6 +110,7 @@ func _ready() -> void:
 
 func _start_battle() -> void:
     popups.clear()
+    battle_vfx.clear()
     log_lines.clear()
     visual_pos.clear()
     mode = Mode.IDLE
@@ -513,14 +515,20 @@ func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
             return
         if bool(res["hit"]):
             var crit: bool = bool(res["crit"])
+            _add_battle_vfx(target, "slash", Color(1.0, 0.82, 0.42) if crit else Color(0.85, 0.92, 1.0))
             _add_popup(target, str(res["damage"]) + ("!" if crit else ""), Color(1.0, 0.85, 0.3) if crit else Color.WHITE)
         else:
             _add_popup(target, "Miss", Color(0.75, 0.75, 0.75))
     elif kind == "skill_damage":
         var hit_target: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
         if hit_target != null:
-            _add_popup(hit_target, str(data["damage"]) + "*", Color(1.0, 0.55, 0.25))
+            var skill_color := Color(1.0, 0.48, 0.24)
             var rune_status: String = str(data.get("status", ""))
+            if rune_status == "chill": skill_color = Color(0.42, 0.78, 1.0)
+            elif rune_status == "shock": skill_color = Color(1.0, 0.92, 0.32)
+            elif rune_status == "exposed": skill_color = Color(0.82, 0.52, 1.0)
+            _add_battle_vfx(hit_target, "burst", skill_color)
+            _add_popup(hit_target, str(data["damage"]) + "*", Color(1.0, 0.55, 0.25))
             if rune_status != "":
                 var effect_color := Color(1.0, 0.4, 0.2)
                 if rune_status == "chill": effect_color = Color(0.45, 0.8, 1.0)
@@ -530,6 +538,7 @@ func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
     elif kind == "heal":
         var healed: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
         if healed != null:
+            _add_battle_vfx(healed, "heal", Color(0.48, 1.0, 0.62))
             _add_popup(healed, "+" + str(data["amount"]), Color(0.4, 1.0, 0.5))
             if str(data.get("status", "")) == "regen":
                 _add_popup(healed, "REGEN", Color(0.55, 1.0, 0.65))
@@ -779,6 +788,11 @@ func _process(delta: float) -> void:
         if cur != target:
             visual_pos[u.id] = cur.move_toward(target, MOVE_SPEED * delta)
             dirty = true
+    for i in range(battle_vfx.size() - 1, -1, -1):
+        battle_vfx[i]["age"] = float(battle_vfx[i]["age"]) + delta
+        if float(battle_vfx[i]["age"]) > 0.62:
+            battle_vfx.remove_at(i)
+        dirty = true
     for i in range(popups.size() - 1, -1, -1):
         popups[i]["age"] = float(popups[i]["age"]) + delta
         if float(popups[i]["age"]) > 1.1:
@@ -797,6 +811,38 @@ func _add_popup(unit: BattleUnitScript, text: String, color: Color) -> void:
     popups.append({"text": text, "pos": p, "age": 0.0, "color": color})
 
 
+## Lightweight vector impact/cast effects: no external textures, safe on low-end phones.
+func _add_battle_vfx(unit: BattleUnitScript, kind: String, color: Color) -> void:
+    var p: Vector2 = visual_pos.get(unit.id, cell_to_world(unit.cell))
+    battle_vfx.append({"pos": p, "age": 0.0, "kind": kind, "color": color, "seed": float(unit.id) * 1.71})
+
+
+func _draw_battle_vfx() -> void:
+    for effect in battle_vfx:
+        var age: float = float(effect["age"])
+        var t: float = clampf(age / 0.62, 0.0, 1.0)
+        var center: Vector2 = effect["pos"]
+        var col: Color = effect["color"]
+        col.a = 1.0 - t
+        var kind: String = str(effect["kind"])
+        if kind == "slash":
+            var spread: float = 12.0 + t * 24.0
+            draw_arc(center + Vector2(0, -25), spread, -PI * 0.82, PI * 0.18, 18, col, 4.0 * (1.0 - t) + 1.0)
+            draw_line(center + Vector2(-spread, -42), center + Vector2(spread, -8), col.lightened(0.25), 2.5 * (1.0 - t))
+        elif kind == "heal":
+            for k in range(3):
+                var rise: float = age * 42.0 + float(k) * 13.0
+                draw_circle(center + Vector2(sin(age * 8.0 + float(k)) * 12.0, -20.0 - rise), 3.5 * (1.0 - t * 0.45), col)
+            draw_arc(center + Vector2(0, -24), 12.0 + t * 18.0, 0.0, TAU, 20, col, 2.5)
+        else:
+            var radius: float = 8.0 + t * 30.0
+            draw_arc(center + Vector2(0, -25), radius, 0.0, TAU, 24, col, 3.5 * (1.0 - t) + 0.5)
+            for k in range(6):
+                var angle: float = TAU * float(k) / 6.0 + float(effect["seed"])
+                var dot := center + Vector2(cos(angle), sin(angle)) * radius
+                draw_circle(dot + Vector2(0, -25), 2.5 * (1.0 - t * 0.5), col)
+
+
 # ------------------------------------------------------------------ drawing
 
 func _draw() -> void:
@@ -810,6 +856,7 @@ func _draw() -> void:
                 _draw_tile(Vector2i(x, y))
     _draw_overlays()
     _draw_units()
+    _draw_battle_vfx()
     _draw_popups()
 
 
