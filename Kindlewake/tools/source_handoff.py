@@ -101,7 +101,9 @@ def pack(a):
         "previous build results remain current.\n"
         "4. Inspect source/tests before editing. Preserve constraints and use the authorized "
         "development branch; do not alter main without permission.\n"
-        "5. Run documented checks, record exact results, update handoff docs and create a "
+        "5. Inspect the GitHub Actions summary and Kindlewake-Workflow-Report artifact for "
+        "the exact job outcomes and evidence-based next actions.\n"
+        "6. Run documented checks, record exact results, update handoff docs and create a "
         "new verified split handoff after meaningful changes.\n\n"
         "## Snapshot limits\n"
         "- Tracked-source snapshot only: no Git history, untracked/ignored files, build outputs, "
@@ -114,6 +116,7 @@ def pack(a):
         z.writestr("HANDOFF-METADATA.json", json.dumps(meta, indent=2) + "\n")
         z.writestr("FILE-MANIFEST.json", json.dumps(inventory, indent=2) + "\n")
         z.writestr("AI_NEXT_SESSION.md", ai)
+        z.writestr("REASSEMBLE.txt", GUIDE)
     archive_hash = digest(archive)
     parts_dir = out / "Kindlewake-Source-Handoff-Parts"
     if parts_dir.exists(): shutil.rmtree(parts_dir)
