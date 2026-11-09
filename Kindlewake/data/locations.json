@@ -65,7 +65,11 @@
             0.8,
             0.6
           ],
-          "text": "Roadwolves hit the toll cart at dawn. If you go east, keep to the road. Forest is where they wait."
+          "text": "Roadwolves hit the toll cart at dawn. If you go east, keep to the road. Forest is where they wait.",
+          "dialogue": [
+            "'I used to run the east road twice a week. Then the toll cart came back with its wheels still turning and no horses.'",
+            "'The wolves are not all beasts. Their chief pays deserters in silver and lets them keep whatever they can carry.'"
+          ]
         },
         {
           "cell": [
@@ -80,7 +84,11 @@
             0.8,
             1
           ],
-          "text": "Hask Gravelteeth's camp lies far to the east, past the old watchtower road. Bring more than three blades."
+          "text": "Hask Gravelteeth's camp lies far to the east, past the old watchtower road. Bring more than three blades.",
+          "dialogue": [
+            "'The watchtower bell rings when the wind is from the north. Last night it rang with no wind at all.'",
+            "'If you find a brass token in the mud, don't spend it. The old road wardens used those to open the sealed storehouse.'"
+          ]
         }
       ]
     },
@@ -125,7 +133,11 @@
             0.85,
             0.85
           ],
-          "text": "Rest your feet, captain. Beds are full of drovers tonight, but the stew is hot and the gossip is free."
+          "text": "Rest your feet, captain. Beds are full of drovers tonight, but the stew is hot and the gossip is free.",
+          "dialogue": [
+            "'A warm bed buys a man one honest night. A good story buys the next three.'",
+            "'The drover in the corner lost his brother near the old tower. He says the stones whisper names after rain.'"
+          ]
         },
         {
           "cell": [
@@ -184,7 +196,13 @@
             0.9,
             0.6
           ],
-          "text": "Blades, mail, charms and sigils, all honestly priced. And your company's kit can be sorted out right here at the counter."
+          "text": "Blades, mail, charms and sigils, all honestly priced. And your company's kit can be sorted out right here at the counter.",
+          "rune_service": true,
+          "dialogue": [
+            "Oswin rubs a thumb over a scar in the counter. 'A rune is not a bauble. It remembers every hand that has carried it.'",
+            "'I can seat a rune safely, or draw one out without cracking the socket. A field swap is how good steel gets ruined.'",
+            "'Bring me three of the same mark for the Forge. Their grades need not match, but a well-trained rune gives the ritual a steadier chance.'"
+          ]
         }
       ]
     },
@@ -334,7 +352,12 @@
             0.8,
             0.5
           ],
-          "text": "The road is open, my lord, but it is not safe. Train the company, forge sigils, and clear the Roadwolf Camp."
+          "text": "The road is open, my lord, but it is not safe. Train the company, forge sigils, and clear the Roadwolf Camp.",
+          "dialogue": [
+            "'Your house held this valley by oath, not by walls. Walls can be raised again; trust takes longer.'",
+            "'The quartermaster has sent word of a smith at the lower gate. He can temper any weapon or piece of armor to +15, though the price rises with every strike.'",
+            "'The old families kept heirloom runes apart from common stock. They are not merchandise. They choose their bearer.'"
+          ]
         },
         {
           "cell": [
@@ -344,7 +367,33 @@
           "kind": "party",
           "npc": false,
           "name": "War Table",
-          "text": "The war table: sort your company, gear, sigils and promotions here, or send for the market stock."
+          "text": "The war table: sort your company, gear, sigils and promotions here, or send for the market stock.",
+          "dialogue": [
+            "'Scouts have marked three approaches: river, ridge and forest. Each battlefield will answer differently to the ground beneath your boots.'",
+            "'Take the high ground where you can. A narrow ford is a fine place to hold a line, and a poor place to retreat.'"
+          ]
+        },
+        {
+          "cell": [
+            4,
+            8
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Master Smith Rurik",
+          "tint": [
+            0.9,
+            0.65,
+            0.35
+          ],
+          "text": "Rurik's arms are black with forge soot. He measures every blade as if it were a promise.",
+          "dialogue": [
+            "'Steel has a memory. Every temper leaves a little of the smith in it.'",
+            "'I can improve a weapon or armor to +15. I can also draw socketed runes without damaging them. Nothing is free but advice.'"
+          ],
+          "blacksmith": true,
+          "rune_service": true,
+          "shopkeeper_id": "rurik"
         }
       ]
     },
