@@ -1,7 +1,10 @@
 class_name CharacterSheet
 extends RefCounted
+
+const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
+const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
 ## Persistent character: class, level, EXP, base stats, skills and equipment.
-## A BattleUnit is a per-battle snapshot built from `to_battle_def()`; formulas stay in CombatCalc.
+## A BattleUnit is a per-battle snapshot built from `to_battle_def()`; formulas stay in CombatCalcScript.
 ## `db` arguments are the dictionaries from GameData.as_db(): they need "items", "weapons" and "classes".
 
 const SLOTS: Array[String] = ["weapon", "offhand", "armor", "helm", "accessory1", "accessory2"]
@@ -118,7 +121,7 @@ func total_stats(items: Dictionary, sdefs: Dictionary = {}) -> Dictionary:
     return t
 
 
-## The dictionary BattleUnit.create() consumes (same shape as an entry of characters.json).
+## The dictionary BattleUnitScript.create() consumes (same shape as an entry of characters.json).
 func to_battle_def(db: Dictionary) -> Dictionary:
     var items: Dictionary = db.get("items", {})
     var sdefs: Dictionary = db.get("sigils", {})
@@ -137,7 +140,7 @@ func derived(db: Dictionary) -> Dictionary:
     var weapons: Dictionary = db.get("weapons", {})
     var bdef: Dictionary = to_battle_def(db)
     var cdef: Dictionary = classes.get(class_id, {})
-    var u: BattleUnit = BattleUnit.create(0, character_id, bdef, cdef, "player", Vector2i.ZERO, 0)
+    var u: BattleUnitScript = BattleUnit.create(0, character_id, bdef, cdef, "player", Vector2i.ZERO, 0)
     var w: Dictionary = weapons.get(str(bdef["weapon_id"]), {})
     return {
         "max_hp": u.max_hp(), "max_mp": u.stat("mp"),
