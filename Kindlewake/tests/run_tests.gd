@@ -434,7 +434,7 @@ func _test_progression() -> void:
     var sela: CharacterSheet = CharacterSheet.from_def("sela", gd.characters["sela"])
     var mira0: CharacterSheet = CharacterSheet.from_def("sela", gd.characters["sela"])
     var archer: Dictionary = gd.classes["archer"]
-    check(sela.exp_to_next() == 120, "level 2 needs 120 EXP (80 + 20 x level)")
+    check(sela.exp_to_next() == 120, "level 2 needs 120 EXP on the revised campaign curve")
     var rep: Dictionary = sela.add_exp(119, rng, archer)
     var lvls: Array = rep["levels"]
     check(sela.level == 2 and sela.xp == 119 and lvls.is_empty(), "119 EXP is not enough to level up")
@@ -443,9 +443,9 @@ func _test_progression() -> void:
     check(sela.level == 3 and sela.xp == 0 and lvls.size() == 1, "120 EXP reaches level 3 with nothing left over")
     var gains: Dictionary = (lvls[0] as Dictionary)["gains"]
     check(not gains.is_empty(), "a level-up always grants at least one stat point")
-    rep = sela.add_exp(300, rng, archer)
+    rep = sela.add_exp(310, rng, archer)
     lvls = rep["levels"]
-    check(sela.level == 5 and sela.xp == 0 and lvls.size() == 2, "300 EXP carries across two level-ups (140 + 160)")
+    check(sela.level == 5 and sela.xp == 0 and lvls.size() == 2, "310 EXP carries across two increasingly costly level-ups (142 + 168)")
     var grew := true
     for k in mira0.base_stats.keys():
         if int(sela.base_stats[k]) < int(mira0.base_stats[k]):
@@ -460,6 +460,8 @@ func _test_progression() -> void:
     sa.add_exp(900, ra, archer)
     sb.add_exp(900, rb, archer)
     check(sa.level == sb.level and sa.base_stats == sb.base_stats, "level-up rolls are deterministic for a given seed")
+    check(CharacterSheet.MAX_LEVEL == 250, "campaign level cap is 250")
+    check(CharacterSheet.exp_to_next_for(100) > CharacterSheet.exp_to_next_for(10) * 10, "late-game levels require substantially more EXP than early levels")
     sa.level = CharacterSheet.MAX_LEVEL
     sa.xp = 17
     sa.add_exp(5000, ra, archer)
