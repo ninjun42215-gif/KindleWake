@@ -41,6 +41,7 @@ var leader_status_label: Label
 var leader_exp_bar: ProgressBar
 var company_btn: Button
 var manual_save_btn: Button
+var global_atlas_btn: Button
 var prompt_btn: Button
 var place_panel: PanelContainer
 var place_title: Label
@@ -604,6 +605,9 @@ func _apply_safe_area() -> void:
     if manual_save_btn != null:
         manual_save_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0 if compact else 52.0)
         manual_save_btn.add_theme_font_size_override("font_size", 15 if compact else 18)
+    if global_atlas_btn != null:
+        global_atlas_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0)
+        global_atlas_btn.add_theme_font_size_override("font_size", 14 if compact else 17)
     if prompt_btn != null:
         prompt_btn.custom_minimum_size = Vector2(clampf(vw * 0.42, 230.0, 380.0), 64.0 if compact else 68.0)
         prompt_btn.add_theme_font_size_override("font_size", 20 if compact else 28)
@@ -662,6 +666,11 @@ func _build_ui() -> void:
     root.add_child(manual_save_btn)
     manual_save_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 84)
     manual_save_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    global_atlas_btn = _btn("WORLD ATLAS", _open_world_atlas, 17)
+    global_atlas_btn.custom_minimum_size = Vector2(190, 48)
+    root.add_child(global_atlas_btn)
+    global_atlas_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 144)
+    global_atlas_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 
     # Top-centre: ambush banner
     banner = _hud_panel(0.95)
@@ -712,6 +721,16 @@ func _build_ui() -> void:
     party_screen.visible = false
     party_screen.closed.connect(_on_party_closed)
 
+
+
+func _open_world_atlas() -> void:
+    if panel_open or party_screen.visible or ambush_timer >= 0.0:
+        return
+    has_target = false
+    pressing = false
+    GameState.world_pos = player_pos
+    GameState.save_campaign("auto_a")
+    get_tree().change_scene_to_file("res://GlobalAtlas.tscn")
 
 
 func _save_campaign_manual() -> void:

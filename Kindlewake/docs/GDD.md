@@ -871,3 +871,12 @@ The character sheet includes a Company bond tile with a loyalty value and readab
 - On returning to the overworld after victory, the company receives a one-time authored acknowledgement and the campaign is saved.
 - Regression tests cover battle identity, persistent victory flag, authored text, map dimensions, unit deployment, canonical-data immutability and controller setup.
 - Scope boundary: this completes the opening prologue decision -> traversal -> tactical escape hand-off, not the entire 45–60 minute vertical slice. The persistent journal, first keep restoration decision, investigation, expanded cinematic scenes and physical Android-device QA remain future work.
+
+
+## Global world expansion — The Sevenfold World
+
+The campaign now has a seven-continent world atlas above the existing regional overworld, preserving the original four-continent blueprint and expanding it with three new continents. The seven are Eldrimar (The Sundered Crown), Thalassar (The Shattered Isles), Varakhan (The Red Expanse), Nhalor (The Far North), Veyrwood (The Verdant Expanse), Asterreach (The Stormforged Coast) and Ilyr (The Far Lantern). Eldrimar remains the current playable continent, and the 64×48 Sethmarch Frontier remains intact as its first detailed regional map.
+
+Every continent has a capital, ruling power, climate, cultural identity, political conflict, signature locations, at least four named regional territories, campaign hook and original normalized map silhouette. The original region, town, dungeon and route-gate blueprint for Eldrimar, Thalassar, Varakhan and Nhalor is preserved. The new Veyrwood, Asterreach and Ilyr regions extend the same data-driven structure. A shared mystery about seven deliberately unbound covenant seals connects the continents without erasing their local politics or character-driven conflicts.
+
+The World Atlas is reachable from the overworld HUD. Players can inspect all seven continents and their lore; only Eldrimar is currently the active frontier. The other six routes remain explicitly story-locked until their future playable regional maps, travel systems, quests, settlements and encounter content are implemented. The atlas is a navigable campaign overview, **not a claim that all seven continents are already explorable**. No existing regional map, campaign position or save schema is replaced.

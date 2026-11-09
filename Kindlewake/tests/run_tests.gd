@@ -37,6 +37,7 @@ func _initialize() -> void:
     _test_runes()
     _test_weapon_skills()
     _test_world()
+    _test_world_atlas()
     _test_locations()
     _test_shop_and_screen()
     _test_save_system()
@@ -799,6 +800,41 @@ func _test_world() -> void:
     var skirmish: Dictionary = EncounterBuilder.build_skirmish(gd.encounters, gd.battles, rng_for_tests())
     check(not skirmish.is_empty() and str(skirmish.get("id", "")) == "skirmish", "an ambush can build a skirmish battle")
 
+
+func _test_world_atlas() -> void:
+    print("[world atlas]")
+    var atlas: Array = gd.continents.get("continents", [])
+    check(atlas.size() == 7, "global atlas defines exactly seven continents")
+    var ids: Dictionary = {}
+    var metadata_ok := true
+    var shapes_ok := true
+    var regions_ok := true
+    var current_ok := false
+    for entry in atlas:
+        var continent: Dictionary = entry
+        var cid := str(continent.get("id", ""))
+        if cid == "" or ids.has(cid):
+            metadata_ok = false
+        ids[cid] = true
+        for field in ["name", "epithet", "capital", "ruling_power", "climate", "identity", "conflict", "campaign_hook", "signature_locations", "regions", "map_color", "map_label", "map_shape"]:
+            if not continent.has(field):
+                metadata_ok = false
+        var shape: Array = continent.get("map_shape", [])
+        if shape.size() < 7:
+            shapes_ok = false
+        for point in shape:
+            var pair: Array = point
+            if pair.size() != 2 or float(pair[0]) < 0.0 or float(pair[0]) > 1.0 or float(pair[1]) < 0.0 or float(pair[1]) > 1.0:
+                shapes_ok = false
+        if (continent.get("regions", []) as Array).size() < 4:
+            regions_ok = false
+        if cid == "eldrimar" and bool(continent.get("current", false)) and not (continent.get("regions", []) as Array).is_empty() and str(((continent.get("regions", []) as Array)[0] as Dictionary).get("id", "")) == "sethmarch":
+            current_ok = true
+    check(ids.size() == 7 and metadata_ok, "all continents have unique ids and complete worldbuilding records")
+    check(shapes_ok, "every continent has a valid normalized vector-map silhouette")
+    check(regions_ok, "each continent has at least four named regional territories")
+    check(current_ok and str(gd.continents.get("current_continent", "")) == "eldrimar", "existing Sethmarch Frontier remains anchored to current continent Eldrimar")
+    check(str(gd.continents.get("world_age", "")) != "" and str(gd.continents.get("central_mystery", "")) != "", "global atlas establishes a shared campaign-age mystery")
 
 func _test_locations() -> void:
     print("[towns and interiors]")

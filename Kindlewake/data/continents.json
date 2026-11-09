@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "status": "design_data_not_yet_consumed_by_runtime",
+  "schema_version": 2,
+  "status": "atlas_runtime_consumed_regional_content_blueprint",
   "travel_model": {
     "overland": "Free-roam regional maps with roads, terrain costs, settlements, field encounters and hidden paths.",
     "regional_links": "Named exits connect regional maps at gates, ferries, ports, mountain passes and story chokepoints.",
@@ -154,7 +154,72 @@
             "tarnholt_cloisters"
           ]
         }
-      ]
+      ],
+      "capital": "Aurelmont",
+      "ruling_power": "The fractured Crownlands and the old noble houses",
+      "climate": "Temperate marches, river basins, ancient forests and highland roads",
+      "identity": "The old imperial heartland: royal roads, ruined keeps, rival noble houses and cities built upon older foundations. Kaer Sethorn and the Sallow Marches occupy its western frontier.",
+      "conflict": "The king is dead, the succession is disputed, and the Covenant of the Seven Flames is turning old allies against one another.",
+      "campaign_hook": "The Hidden Codicil can prove that House Dunmarrow was condemned by a forged royal order. Its witnesses and missing pages are scattered across the old roads.",
+      "signature_locations": [
+        "Kaer Sethorn",
+        "Aurelmont",
+        "The Sevenfold Archive",
+        "Tarnholt Cloisters"
+      ],
+      "map_color": "#b78b68",
+      "map_label": [
+        0.51,
+        0.49
+      ],
+      "map_shape": [
+        [
+          0.4,
+          0.39
+        ],
+        [
+          0.44,
+          0.32
+        ],
+        [
+          0.52,
+          0.29
+        ],
+        [
+          0.59,
+          0.35
+        ],
+        [
+          0.62,
+          0.44
+        ],
+        [
+          0.59,
+          0.53
+        ],
+        [
+          0.62,
+          0.6
+        ],
+        [
+          0.55,
+          0.66
+        ],
+        [
+          0.47,
+          0.64
+        ],
+        [
+          0.41,
+          0.58
+        ],
+        [
+          0.37,
+          0.48
+        ]
+      ],
+      "current": true,
+      "epithet": "The Sundered Crown"
     },
     {
       "id": "thalassar",
@@ -216,8 +281,86 @@
           "links": [
             "isles_of_vey"
           ]
+        },
+        {
+          "id": "deepwake_reach",
+          "name": "Deepwake Reach",
+          "biome": "black currents, whale roads and isolated lighthouse settlements",
+          "hub": "Lyrhaven",
+          "towns": [
+            "Lyrhaven",
+            "Last Beacon",
+            "Gullwatch"
+          ],
+          "dungeons": [
+            "The Drowned Library",
+            "Blackcurrent Vault"
+          ],
+          "links": [
+            "kelpward"
+          ]
         }
-      ]
+      ],
+      "capital": "Brinegate",
+      "ruling_power": "The Tidebound Assembly and the island principalities",
+      "climate": "Salt coasts, storm islands, kelp forests, fog banks and deep ocean trenches",
+      "identity": "The Shattered Isles are a broad sea-continent of rival harbours, lighthouse cities and island principalities. Pilots, shipwrights and beacon keepers shape its politics.",
+      "conflict": "Three outer island chains have gone silent. Refugee ships report unlit beacons and a fleet sailing without flags.",
+      "campaign_hook": "A surviving pilot recognises the Hidden Codicil's seal and knows why the black current has changed, but will not speak until the lost lighthouse records are recovered.",
+      "signature_locations": [
+        "Brinegate",
+        "Veyhaven",
+        "Morrowtide",
+        "The Drowned Library"
+      ],
+      "map_color": "#5f9b9c",
+      "map_label": [
+        0.82,
+        0.47
+      ],
+      "map_shape": [
+        [
+          0.75,
+          0.31
+        ],
+        [
+          0.82,
+          0.27
+        ],
+        [
+          0.9,
+          0.31
+        ],
+        [
+          0.96,
+          0.39
+        ],
+        [
+          0.94,
+          0.48
+        ],
+        [
+          0.97,
+          0.56
+        ],
+        [
+          0.9,
+          0.63
+        ],
+        [
+          0.83,
+          0.6
+        ],
+        [
+          0.77,
+          0.53
+        ],
+        [
+          0.73,
+          0.42
+        ]
+      ],
+      "epithet": "The Shattered Isles"
     },
     {
       "id": "varakhan",
@@ -278,8 +421,78 @@
           "links": [
             "kharad_steppe"
           ]
+        },
+        {
+          "id": "glasswind_coast",
+          "name": "Glasswind Coast",
+          "biome": "salt cliffs, wind-carved ports and sea-facing caravan markets",
+          "hub": "Qasr Vey",
+          "towns": [
+            "Qasr Vey",
+            "Sable Stair",
+            "Windglass"
+          ],
+          "dungeons": [
+            "The Salt King's Vault",
+            "The Buried Observatory"
+          ],
+          "links": [
+            "obsidian_crown"
+          ]
         }
-      ]
+      ],
+      "capital": "Serekh",
+      "ruling_power": "The Nine Wells Compact and the caravan princes",
+      "climate": "Red dunes, salt flats, dry steppe, basalt mesas and hidden oases",
+      "identity": "The Red Expanse is held together by caravan law, water compacts and city-states built around ancient aqueducts. A well can command more loyalty than a throne.",
+      "conflict": "The Nine Wells Compact is fracturing after sacred reservoirs turn bitter. Rival city-states accuse one another of poisoning the old water roads.",
+      "campaign_hook": "A sealed aqueduct beneath the salt flats contains a relief map of the covenant network and a warning written by a Dunmarrow ancestor.",
+      "signature_locations": [
+        "Serekh",
+        "Glasswell",
+        "The Obsidian Crown",
+        "The Buried Choir"
+      ],
+      "map_color": "#c59a58",
+      "map_label": [
+        0.3,
+        0.7
+      ],
+      "map_shape": [
+        [
+          0.19,
+          0.57
+        ],
+        [
+          0.25,
+          0.52
+        ],
+        [
+          0.34,
+          0.55
+        ],
+        [
+          0.39,
+          0.64
+        ],
+        [
+          0.36,
+          0.74
+        ],
+        [
+          0.29,
+          0.8
+        ],
+        [
+          0.21,
+          0.76
+        ],
+        [
+          0.16,
+          0.66
+        ]
+      ],
+      "epithet": "The Red Expanse"
     },
     {
       "id": "nhalor",
@@ -341,8 +554,474 @@
           "links": [
             "aurora_reach"
           ]
+        },
+        {
+          "id": "frostcairn_coast",
+          "name": "Frostcairn Coast",
+          "biome": "ice fjords, seal-hunting villages and wreck-strewn shores",
+          "hub": "Hearthfjord",
+          "towns": [
+            "Hearthfjord",
+            "Blueglass",
+            "White Lantern"
+          ],
+          "dungeons": [
+            "Mirror Ice Vault",
+            "The Sleeping Observatory"
+          ],
+          "links": [
+            "aurora_reach"
+          ]
         }
-      ]
+      ],
+      "capital": "Skeld",
+      "ruling_power": "The Hearthfjord Jarldoms and the Lantern Synod",
+      "climate": "Snowfields, pine taiga, glacier shelves, frozen rivers and wind-cut plateaus",
+      "identity": "The Far North is a continent of winter settlements, glacier archives and old giant roads. Its people preserve history through oath-stones and oral lineages.",
+      "conflict": "The aurora has appeared out of season, and the northern passes are shaking loose ancient sealed doors.",
+      "campaign_hook": "A scholar at Aurora Spire has a missing page that proves the seven covenant seals were designed as one connected system.",
+      "signature_locations": [
+        "Skeld",
+        "Aurora Spire",
+        "Nhal's Rest",
+        "The Starless Gate"
+      ],
+      "map_color": "#8499b8",
+      "map_label": [
+        0.55,
+        0.17
+      ],
+      "map_shape": [
+        [
+          0.43,
+          0.08
+        ],
+        [
+          0.51,
+          0.05
+        ],
+        [
+          0.6,
+          0.09
+        ],
+        [
+          0.66,
+          0.17
+        ],
+        [
+          0.62,
+          0.27
+        ],
+        [
+          0.54,
+          0.3
+        ],
+        [
+          0.46,
+          0.25
+        ],
+        [
+          0.4,
+          0.16
+        ]
+      ],
+      "epithet": "The Far North"
+    },
+    {
+      "id": "veyrwood",
+      "name": "Veyrwood",
+      "role": "The Verdant Expanse",
+      "unlock": "chapter_5_greenward_charter",
+      "regions": [
+        {
+          "id": "thorncrown",
+          "name": "Thorncrown",
+          "biome": "ancient canopy, ranger roads and hidden spring villages",
+          "hub": "Thorncairn",
+          "towns": [
+            "Thorncairn",
+            "Foxglove Reach",
+            "Elderbough"
+          ],
+          "dungeons": [
+            "The Crownroot Sanctum",
+            "The Bell Beneath Leaves"
+          ],
+          "links": [
+            "eldrimar_by_rootway"
+          ]
+        },
+        {
+          "id": "mossglass_fen",
+          "name": "Mossglass Fen",
+          "biome": "mist marshes, reed cities and luminous wetlands",
+          "hub": "Mossglass",
+          "towns": [
+            "Mossglass",
+            "Reedhaven",
+            "Stillwater"
+          ],
+          "dungeons": [
+            "The Green Maw",
+            "The Drowned Choir"
+          ],
+          "links": [
+            "thorncrown"
+          ]
+        },
+        {
+          "id": "wildmere",
+          "name": "Wildmere",
+          "biome": "wide forest lakes, old stone circles and freehold settlements",
+          "hub": "Wildmere",
+          "towns": [
+            "Wildmere",
+            "Antlerford",
+            "Longbough"
+          ],
+          "dungeons": [
+            "The Rootbound Court",
+            "Warden's Hollow"
+          ],
+          "links": [
+            "mossglass_fen"
+          ]
+        },
+        {
+          "id": "crownroot_basin",
+          "name": "Crownroot Basin",
+          "biome": "colossal tree valleys and pre-imperial sanctuaries",
+          "hub": "Rootspire",
+          "towns": [
+            "Rootspire",
+            "Hushgrove",
+            "Barkstone"
+          ],
+          "dungeons": [
+            "The First Seed Vault",
+            "The Listening Deep"
+          ],
+          "links": [
+            "wildmere"
+          ]
+        }
+      ],
+      "capital": "Thorncairn",
+      "ruling_power": "The Thorn Courts and the free ranger lodges",
+      "climate": "Old-growth forests, mist valleys, fern seas and rain-fed uplands",
+      "identity": "A continent-spanning forest of hidden villages, living stone roads and ancient groves. Its people remember treaties older than the Crownlands.",
+      "conflict": "The Thorn Courts are split between closing the rootways and sheltering refugees. Something beneath the oldest grove has begun answering the forest bells.",
+      "campaign_hook": "A ranger carrying a pre-Covenant map has vanished inside a forest that has begun changing its paths.",
+      "signature_locations": [
+        "Thorncairn",
+        "Mossglass Fen",
+        "The Crownroot Sanctum",
+        "The Listening Deep"
+      ],
+      "map_color": "#668c68",
+      "map_label": [
+        0.17,
+        0.43
+      ],
+      "map_shape": [
+        [
+          0.06,
+          0.31
+        ],
+        [
+          0.13,
+          0.25
+        ],
+        [
+          0.22,
+          0.27
+        ],
+        [
+          0.28,
+          0.34
+        ],
+        [
+          0.26,
+          0.45
+        ],
+        [
+          0.2,
+          0.53
+        ],
+        [
+          0.11,
+          0.51
+        ],
+        [
+          0.05,
+          0.42
+        ]
+      ],
+      "epithet": "The Verdant Expanse"
+    },
+    {
+      "id": "asterreach",
+      "name": "Asterreach",
+      "role": "The Stormforged Coast",
+      "unlock": "chapter_6_stormglass_charter",
+      "regions": [
+        {
+          "id": "meridian_coast",
+          "name": "Meridian Coast",
+          "biome": "wind-cut ports, cliff roads and charter-city harbours",
+          "hub": "Meridian Quay",
+          "towns": [
+            "Meridian Quay",
+            "Brasswater",
+            "Northlight"
+          ],
+          "dungeons": [
+            "The Nine Spires",
+            "The Wreck of the First Charter"
+          ],
+          "links": [
+            "thalassar_by_ship"
+          ]
+        },
+        {
+          "id": "ironvale",
+          "name": "Ironvale",
+          "biome": "iron hills, foundry towns and green inland valleys",
+          "hub": "Coppershade",
+          "towns": [
+            "Coppershade",
+            "Anvilcross",
+            "Marlowe"
+          ],
+          "dungeons": [
+            "The Tempest Foundry",
+            "Deepcoil Engine"
+          ],
+          "links": [
+            "meridian_coast"
+          ]
+        },
+        {
+          "id": "stormbreak",
+          "name": "Stormbreak Shelf",
+          "biome": "storm shelves, high bridges and lightning-struck moors",
+          "hub": "Stormbreak",
+          "towns": [
+            "Stormbreak",
+            "Rainmarket",
+            "High Quay"
+          ],
+          "dungeons": [
+            "The Thunder Vault",
+            "The Broken Beacon"
+          ],
+          "links": [
+            "ironvale"
+          ]
+        },
+        {
+          "id": "nine_spires",
+          "name": "The Nine Spires",
+          "biome": "wind towers, sky docks and abandoned observatories",
+          "hub": "Aetherwatch",
+          "towns": [
+            "Aetherwatch",
+            "Spindle",
+            "Cloudrest"
+          ],
+          "dungeons": [
+            "The Silent Lift",
+            "The Windglass Engine"
+          ],
+          "links": [
+            "stormbreak"
+          ]
+        }
+      ],
+      "capital": "Meridian Quay",
+      "ruling_power": "The Meridian League of ports, foundries and charter houses",
+      "climate": "Wind-cut coasts, iron hills, storm shelves and sheltered green valleys",
+      "identity": "A western continent of independent port cities, stormglass towers and master foundries. Craft guilds and charter houses hold power instead of a single crown.",
+      "conflict": "The stormglass navigation network is failing. The charter houses hire private armies while dockworkers organise a continent-wide strike.",
+      "campaign_hook": "A master navigator offers passage to the company if they recover an engine core that can reveal the location of a lost covenant route.",
+      "signature_locations": [
+        "Meridian Quay",
+        "The Nine Spires",
+        "Brasswater",
+        "The Tempest Foundry"
+      ],
+      "map_color": "#7197a4",
+      "map_label": [
+        0.34,
+        0.22
+      ],
+      "map_shape": [
+        [
+          0.26,
+          0.1
+        ],
+        [
+          0.34,
+          0.08
+        ],
+        [
+          0.41,
+          0.13
+        ],
+        [
+          0.43,
+          0.21
+        ],
+        [
+          0.38,
+          0.29
+        ],
+        [
+          0.3,
+          0.31
+        ],
+        [
+          0.24,
+          0.23
+        ],
+        [
+          0.22,
+          0.15
+        ]
+      ],
+      "epithet": "The Stormforged Coast"
+    },
+    {
+      "id": "ilyr",
+      "name": "Ilyr",
+      "role": "The Far Lantern",
+      "unlock": "chapter_7_southern_chart",
+      "regions": [
+        {
+          "id": "blueglass_fjord",
+          "name": "Blueglass Fjord",
+          "biome": "ice fjords, blue glaciers and isolated fishing settlements",
+          "hub": "Sere Observatory",
+          "towns": [
+            "Sere Observatory",
+            "Blueglass",
+            "Last Hearth"
+          ],
+          "dungeons": [
+            "Mirror Ice Vault",
+            "The Long Night Archive"
+          ],
+          "links": [
+            "nhalor_southern_pass"
+          ]
+        },
+        {
+          "id": "aurora_shelf",
+          "name": "Aurora Shelf",
+          "biome": "aurora tundra, wind-scoured plateaus and beacon monasteries",
+          "hub": "Lantern's Rest",
+          "towns": [
+            "Lantern's Rest",
+            "Starfall",
+            "White Meridian"
+          ],
+          "dungeons": [
+            "The Sleeping Observatory",
+            "The Starless Gate"
+          ],
+          "links": [
+            "blueglass_fjord"
+          ]
+        },
+        {
+          "id": "long_night",
+          "name": "The Long Night",
+          "biome": "subpolar valleys, buried libraries and ancient standing stones",
+          "hub": "Serevale",
+          "towns": [
+            "Serevale",
+            "Nightglass",
+            "Pale Watch"
+          ],
+          "dungeons": [
+            "Vault of Winter Names",
+            "The Unlit Choir"
+          ],
+          "links": [
+            "aurora_shelf"
+          ]
+        },
+        {
+          "id": "sevenfold_meridian",
+          "name": "Sevenfold Meridian",
+          "biome": "southern highlands, celestial observatories and old sky roads",
+          "hub": "Meridian Sanctum",
+          "towns": [
+            "Meridian Sanctum",
+            "Far Lantern",
+            "Orra's Step"
+          ],
+          "dungeons": [
+            "The Sevenfold Meridian",
+            "The Astral Engine"
+          ],
+          "links": [
+            "long_night"
+          ]
+        }
+      ],
+      "capital": "Sere Observatory",
+      "ruling_power": "The Lantern Synod and the independent sky monasteries",
+      "climate": "Glacier shelves, aurora tundra, blue-ice fjords and wind-scoured plateaus",
+      "identity": "The far southern continent of observatories, icebound libraries and remote monasteries. Its scholars chart celestial cycles and preserve histories other nations tried to erase.",
+      "conflict": "The aurora appears at the wrong season, and the Lantern Synod has sealed its oldest observatory. The stars now show seven broken lines.",
+      "campaign_hook": "An astronomer possesses the missing page that proves the covenant seals were designed as a network, not seven separate relics.",
+      "signature_locations": [
+        "Sere Observatory",
+        "The Blueglass Fjord",
+        "The Long Night Archive",
+        "The Sevenfold Meridian"
+      ],
+      "map_color": "#8b9ebc",
+      "map_label": [
+        0.57,
+        0.86
+      ],
+      "map_shape": [
+        [
+          0.43,
+          0.76
+        ],
+        [
+          0.51,
+          0.73
+        ],
+        [
+          0.61,
+          0.76
+        ],
+        [
+          0.68,
+          0.83
+        ],
+        [
+          0.65,
+          0.92
+        ],
+        [
+          0.56,
+          0.96
+        ],
+        [
+          0.47,
+          0.93
+        ],
+        [
+          0.41,
+          0.85
+        ]
+      ],
+      "epithet": "The Far Lantern"
     }
   ],
   "route_gates": [
@@ -373,11 +1052,36 @@
       "to": "discovered_sky_docks",
       "mode": "airship",
       "unlock": "late_game"
+    },
+    {
+      "id": "greenward_rootway",
+      "from": "eldrimar",
+      "to": "thorncrown",
+      "mode": "ancient_rootway",
+      "unlock": "chapter_5"
+    },
+    {
+      "id": "stormglass_charter",
+      "from": "thalassar",
+      "to": "meridian_coast",
+      "mode": "chartered_stormship",
+      "unlock": "chapter_6"
+    },
+    {
+      "id": "southern_star_route",
+      "from": "nhalor",
+      "to": "blueglass_fjord",
+      "mode": "southern_charted_passage",
+      "unlock": "chapter_7"
     }
   ],
   "implementation_notes": [
-    "This file is a content blueprint only. Existing runtime still loads data/world.json and data/locations.json.",
-    "Do not mark any listed town, dungeon or route as playable until it has a connected map, entry/exit contract, quest flags and tests.",
-    "Keep the initial Sallow Marches playable and preserve save schema v2 until a deliberate campaign-save migration is designed."
-  ]
+    "Runtime consumes the continent dossier and vector map silhouettes through GameData.continents and GlobalAtlas.tscn.",
+    "Only Eldrimar and its existing Sethmarch Frontier regional map are currently playable. Other continents remain story-gated until their regional maps, settlement scenes, quest flags, travel links, encounters and tests are implemented.",
+    "Keep the initial Sallow Marches playable and preserve existing campaign saves. This atlas milestone does not change the save schema.",
+    "Transport progression remains walking and carts, river barges/ferries, charter ships and a late-game airship; each route must be unlocked by authored campaign events."
+  ],
+  "world_age": "The Age of Fractured Oaths",
+  "central_mystery": "Seven ancient covenant seals once regulated the roads, sea-lanes and storm currents between the continents. Their failure is being blamed on rival nations, but the surviving records suggest the seals were deliberately unbound.",
+  "current_continent": "eldrimar"
 }

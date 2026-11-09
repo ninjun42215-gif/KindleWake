@@ -22,7 +22,8 @@ var shop: Dictionary = {}                # shop.json: stock lists and sell ratio
 var start: Dictionary = {}               # campaign_start.json: starting party, gold, inventory
 var locations: Dictionary = {}           # locations.json: town and interior maps
 var character_creation: Dictionary = {}   # protagonist creator options and stat effects
-var world: Dictionary = {}               # world.json: the overworld (seed, size, places, roads)
+var world: Dictionary = {}               # world.json: the current regional overworld
+var continents: Dictionary = {}          # continents.json: the seven-continent campaign atlas
 var battles: Dictionary = {}
 
 
@@ -47,6 +48,7 @@ func reload() -> void:
     shop = _load_json("shop.json")
     start = _load_json("campaign_start.json")
     world = _load_json("world.json")
+    continents = _load_json("continents.json")
     locations = _load_json("locations.json")
     character_creation = _load_json("character_creation.json")
     battles.clear()
