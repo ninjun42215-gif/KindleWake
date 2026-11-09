@@ -200,7 +200,7 @@ func _in_safe_zone(cell: Vector2i) -> bool:
     for p in wmap.places:
         var d: Dictionary = p
         var kind: String = str(d.get("kind", ""))
-        if kind == "keep" or kind == "village":
+        if kind == "keep" or kind == "village" or kind == "port":
             if Vector2(cell - wmap.place_cell(str(d.get("id", "")))).length() < radius:
                 return true
     return false
@@ -249,7 +249,8 @@ func _update_near() -> void:
     near_place = best
     prompt_btn.visible = not best.is_empty() and not panel_open
     if not best.is_empty():
-        prompt_btn.text = "Enter %s" % str(best.get("name", "place"))
+        var verb: String = "Speak with" if str(best.get("kind", "")) == "charter" else "Enter"
+        prompt_btn.text = "%s %s" % [verb, str(best.get("name", "place"))]
 
 
 func _on_prompt_pressed() -> void:
@@ -481,6 +482,14 @@ func _draw_place(p: Dictionary) -> void:
     if kind == "keep":
         Art.draw_world(self, "keep", c + Vector2(0, 26), 0.85)
         top = 100.0
+    elif kind == "port":
+        draw_rect(Rect2(c + Vector2(-48, 18), Vector2(96, 12)), Color("#7d684e"))
+        draw_line(c + Vector2(-42, 16), c + Vector2(-42, 44), Color("#b99a6b"), 4.0)
+        draw_line(c + Vector2(30, 16), c + Vector2(30, 44), Color("#b99a6b"), 4.0)
+        draw_colored_polygon(PackedVector2Array([c + Vector2(-25, 22), c + Vector2(25, 22), c + Vector2(16, 38), c + Vector2(-16, 38)]), Color("#463d35"))
+        draw_line(c + Vector2(0, 20), c + Vector2(0, -32), Color("#d7c49a"), 3.0)
+        draw_colored_polygon(PackedVector2Array([c + Vector2(2, -30), c + Vector2(24, -18), c + Vector2(2, -6)]), Color("#7aaeb0"))
+        top = 82.0
     elif kind == "village":
         Art.draw_world(self, "house_a", c + Vector2(-28, 14), 0.85)
         Art.draw_world(self, "house_c", c + Vector2(26, 12), 0.85)
@@ -517,7 +526,14 @@ func _draw_place_fallback(p: Dictionary) -> void:
     var kind: String = str(p.get("kind", ""))
     var c: Vector2 = cell_center(wmap.place_cell(id))
     draw_circle(c + Vector2(0, 10), 22.0, Color(0, 0, 0, 0.25))
-    if kind == "keep":
+    if kind == "port":
+        draw_rect(Rect2(c + Vector2(-48, 18), Vector2(96, 12)), Color("#7d684e"))
+        draw_line(c + Vector2(-42, 16), c + Vector2(-42, 44), Color("#b99a6b"), 4.0)
+        draw_line(c + Vector2(30, 16), c + Vector2(30, 44), Color("#b99a6b"), 4.0)
+        draw_colored_polygon(PackedVector2Array([c + Vector2(-25, 22), c + Vector2(25, 22), c + Vector2(16, 38), c + Vector2(-16, 38)]), Color("#463d35"))
+        draw_line(c + Vector2(0, 20), c + Vector2(0, -32), Color("#d7c49a"), 3.0)
+        draw_colored_polygon(PackedVector2Array([c + Vector2(2, -30), c + Vector2(24, -18), c + Vector2(2, -6)]), Color("#7aaeb0"))
+    elif kind == "keep":
         draw_rect(Rect2(c + Vector2(-20, -18), Vector2(40, 32)), Color(0.55, 0.55, 0.58))
         draw_rect(Rect2(c + Vector2(-24, -28), Vector2(12, 16)), Color(0.48, 0.48, 0.52))
         draw_rect(Rect2(c + Vector2(12, -28), Vector2(12, 16)), Color(0.48, 0.48, 0.52))
