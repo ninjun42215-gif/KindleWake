@@ -670,7 +670,7 @@ func _fill_gear(box: VBoxContainer) -> void:
         if is_open:
             _fill_slot_choices(box, sh, slot, current)
             if iid != "" and blacksmith_access:
-                var enhance_level := int(sh.enhancements.get(slot, 0))
+                var enhance_level := int(sh.enhancements.get(slot + "|" + iid, 0))
                 var enhance_cost := 100 * (enhance_level + 1) * (enhance_level + 1)
                 var enhance_label := "Enhance %s  +%d → +%d  (%d gold)" % [ItemInfo.slot_name(slot), enhance_level, enhance_level + 1, enhance_cost]
                 if enhance_level >= 15:
@@ -1281,7 +1281,7 @@ func _on_promote(class_id: String) -> void:
 
 
 func _on_enhance(slot: String) -> void:
-    var problem: String = party.enhance_equipment(selected_id, slot, db)
+    var problem: String = party.enhance_equipment(selected_id, slot, db, blacksmith_access)
     if problem != "":
         _after(problem)
         return
