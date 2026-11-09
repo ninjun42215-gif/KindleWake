@@ -1,4 +1,6 @@
 extends Node2D
+
+const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 ## Towns and building interiors (data/locations.json, rules in LocalMap).
 ## Walk with tap / drag like the overworld. Walking into a door loads the next map (town -> house -> town) inside this
 ## scene; walking onto the exit (E) of a town returns to the overworld. People and objects ("spots") are used with the
@@ -200,10 +202,16 @@ func _on_prompt_pressed() -> void:
         spot_buttons.add_child(_btn("Rest the company — 20 gold", _rest_at_inn))
     elif spot_kind == "recruit":
         var cid: String = str(near_spot.get("character_id", ""))
-        if cid != "" and not GameState.party.roster.has(cid) and not bool(GameState.world_flags.get("recruited_" + cid, false)):
-            spot_buttons.add_child(_btn("Invite " + str(near_spot.get("name", "traveller")), _recruit.bind(near_spot)))
-        elif cid != "":
-            spot_text.text += "\n\nThis recruit has already joined your company."
+        var definition: Dictionary = GameData.characters.get(cid, {})
+        var availability: Dictionary = RecruitmentSystem.inspect(GameState.party, cid, definition, GameState.world_flags, near_spot)
+        if bool(availability.get("available", false)):
+            var cost: int = int(availability.get("cost", 0))
+            var invite_label: String = "Invite " + str(near_spot.get("name", "traveller"))
+            if cost > 0:
+                invite_label += " — %d gold" % cost
+            spot_buttons.add_child(_btn(invite_label, _recruit.bind(near_spot)))
+        else:
+            spot_text.text += "\n\n" + str(availability.get("reason", "This recruit is not available."))
     elif spot_kind == "treasure":
         var cache_flag: String = _spot_flag("cache")
         if not bool(GameState.world_flags.get(cache_flag, false)):
@@ -247,12 +255,12 @@ func _rest_at_inn() -> void:
 func _recruit(spot: Dictionary) -> void:
     var cid: String = str(spot.get("character_id", ""))
     var definition: Dictionary = GameData.characters.get(cid, {})
-    if cid == "" or definition.is_empty() or GameState.party.roster.has(cid):
-        spot_text.text += "\n\nThere is no available recruit."
+    var result: Dictionary = RecruitmentSystem.recruit(GameState.party, cid, definition, GameState.world_flags, spot)
+    if not bool(result.get("ok", false)):
+        spot_text.text += "\n\n" + str(result.get("reason", "There is no available recruit."))
         return
-    GameState.party.add_member(cid, definition)
-    GameState.world_flags["recruited_" + cid] = true
-    spot_text.text += "\n\n" + str(spot.get("name", "The traveller")) + " has joined the company."
+    var member: CharacterSheet = GameState.party.sheet(cid)
+    spot_text.text += "\n\n" + str(spot.get("name", "The traveller")) + " has joined the company. Loyalty: %d/100." % member.loyalty
     for c in spot_buttons.get_children():
         if c is Button and (c as Button).text.begins_with("Invite"):
             (c as Button).disabled = true
