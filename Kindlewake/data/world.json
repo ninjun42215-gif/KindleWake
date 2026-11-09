@@ -1,5 +1,5 @@
 {
-  "name": "The Sallow Marches",
+  "name": "The Sethmarch Frontier",
   "seed": 1187,
   "width": 64,
   "height": 48,
@@ -66,13 +66,15 @@
     {
       "id": "hollowroot",
       "name": "Hollowroot Warren",
-      "kind": "ruin",
+      "kind": "dungeon",
       "cell": [
-        45,
+        47,
         34
       ],
-      "reward_gold": 75,
-      "text": "A tangle of roots has swallowed a watch-post and the burrows beneath it. Something has been dragging iron into the dark."
+      "town": "dungeon_hollowroot",
+      "battle": "battle_hollowroot",
+      "world_flag_on_victory": "dungeon_hollowroot_cleared",
+      "text": "A root-choked watch-post conceals a warren of old tunnels. Something has dragged iron and bones beneath the roots."
     },
     {
       "id": "barrow",
@@ -84,6 +86,118 @@
       ],
       "reward_gold": 90,
       "text": "A low mound of black stones marks the grave of a road warden. The old boundary runes are cracked, but the cairn has not been emptied."
+    },
+    {
+      "id": "orrowen_gate",
+      "name": "The Greenward Gate",
+      "kind": "gate",
+      "cell": [
+        43,
+        23
+      ],
+      "text": "The old boundary arch marks the road into Orrowen Weald. Its stones bear the antler seal of House Orrowen."
+    },
+    {
+      "id": "vessmoor_gate",
+      "name": "The Vessmoor Causeway",
+      "kind": "gate",
+      "cell": [
+        37,
+        37
+      ],
+      "text": "A raised causeway leaves the marsh for the open Vessmoor grasslands. House Vessmoor toll-keepers still watch the mileposts."
+    },
+    {
+      "id": "thornmere",
+      "name": "Thornmere",
+      "kind": "village",
+      "cell": [
+        53,
+        20
+      ],
+      "town": "thornmere",
+      "text": "The market town of Orrowen, built around a spring beneath the old thorn trees. Rangers trade news here."
+    },
+    {
+      "id": "foxglove",
+      "name": "Foxglove",
+      "kind": "village",
+      "cell": [
+        57,
+        9
+      ],
+      "town": "foxglove",
+      "text": "A quiet woodland village of herbwives, bowyers and charcoal burners."
+    },
+    {
+      "id": "elderbough",
+      "name": "Elderbough",
+      "kind": "village",
+      "cell": [
+        46,
+        4
+      ],
+      "town": "elderbough",
+      "text": "An old timber village guarding the northern paths of the Weald."
+    },
+    {
+      "id": "cindermead",
+      "name": "Cindermead",
+      "kind": "village",
+      "cell": [
+        51,
+        42
+      ],
+      "town": "cindermead",
+      "text": "The Vessmoor market hub, where horse-breeders and river traders meet beneath the red banners."
+    },
+    {
+      "id": "redwater",
+      "name": "Redwater",
+      "kind": "village",
+      "cell": [
+        58,
+        33
+      ],
+      "town": "redwater",
+      "text": "A river crossing town known for its ferrymen, salt beef and hard bargains."
+    },
+    {
+      "id": "milefort",
+      "name": "Milefort",
+      "kind": "village",
+      "cell": [
+        40,
+        44
+      ],
+      "town": "milefort",
+      "text": "A fortified coaching stop built around the old royal milestone. Its garrison keeps the south road open."
+    },
+    {
+      "id": "bell_under_leaves",
+      "name": "The Bell Under Leaves",
+      "kind": "dungeon",
+      "cell": [
+        60,
+        5
+      ],
+      "town": "dungeon_bell",
+      "battle": "battle_bell",
+      "world_flag_on_victory": "dungeon_bell_cleared",
+      "text": "An abandoned bell shrine sinks into the roots. The bell rings although its clapper was buried generations ago."
+    },
+    {
+      "id": "kingsroad_catacombs",
+      "name": "Kingsroad Catacombs",
+      "kind": "dungeon",
+      "cell": [
+        45,
+        44
+      ],
+      "town": "dungeon_catacombs",
+      "battle": "battle_catacombs",
+      "world_flag_on_victory": "dungeon_catacombs_cleared",
+      "text": "Beneath the old Vessmoor milestone lies a royal ossuary, sealed when the kings abandoned the southern road."
     }
   ],
   "roads": [
@@ -110,6 +224,50 @@
     [
       "sethorn",
       "barrow"
+    ],
+    [
+      "crossing",
+      "orrowen_gate"
+    ],
+    [
+      "orrowen_gate",
+      "thornmere"
+    ],
+    [
+      "thornmere",
+      "foxglove"
+    ],
+    [
+      "foxglove",
+      "elderbough"
+    ],
+    [
+      "thornmere",
+      "bell_under_leaves"
+    ],
+    [
+      "crossing",
+      "vessmoor_gate"
+    ],
+    [
+      "vessmoor_gate",
+      "cindermead"
+    ],
+    [
+      "cindermead",
+      "redwater"
+    ],
+    [
+      "cindermead",
+      "milefort"
+    ],
+    [
+      "milefort",
+      "kingsroad_catacombs"
     ]
-  ]
+  ],
+  "region_notes": {
+    "orrowen": "Orrowen Weald: ancient forest roads, ranger settlements and the Bell Under Leaves.",
+    "vessmoor": "Vessmoor Plains: open horse country, market towns and the Kingsroad Catacombs."
+  }
 }
