@@ -1,0 +1,162 @@
+name: Safe Branch Integration (Prepare Review PR)
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: Existing source branch to integrate
+        required: true
+        type: string
+      target_branch:
+        description: Destination branch (normally main)
+        required: true
+        default: main
+        type: string
+      confirmation:
+        description: When target is main, enter PREPARE PR FOR main
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: kindlewake-safe-merge-${{ inputs.target_branch }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Merge on an isolated branch, validate, and open draft PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out destination branch with full history
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_branch }}
+          fetch-depth: 0
+
+      - name: Validate branch names and main confirmation
+        env:
+          SOURCE_BRANCH: ${{ inputs.source_branch }}
+          TARGET_BRANCH: ${{ inputs.target_branch }}
+          CONFIRMATION: ${{ inputs.confirmation }}
+        run: |
+          set -euo pipefail
+          git check-ref-format --branch "$SOURCE_BRANCH"
+          git check-ref-format --branch "$TARGET_BRANCH"
+          if [[ "$SOURCE_BRANCH" == "$TARGET_BRANCH" ]]; then
+            echo "Source and destination branches must be different."
+            exit 1
+          fi
+          if [[ "$TARGET_BRANCH" == "main" && "$CONFIRMATION" != "PREPARE PR FOR main" ]]; then
+            echo "For main, enter the exact confirmation: PREPARE PR FOR main"
+            exit 1
+          fi
+          git fetch --no-tags origin \
+            "+refs/heads/$SOURCE_BRANCH:refs/remotes/origin/$SOURCE_BRANCH" \
+            "+refs/heads/$TARGET_BRANCH:refs/remotes/origin/$TARGET_BRANCH"
+
+      - name: Prepare isolated merge candidate and detect conflicts
+        id: merge
+        env:
+          SOURCE_BRANCH: ${{ inputs.source_branch }}
+          TARGET_BRANCH: ${{ inputs.target_branch }}
+          INTEGRATION_BRANCH: integration/safe-merge-${{ github.run_id }}
+          REPORT_DIR: ${{ runner.temp }}/kindlewake-safe-merge
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$REPORT_DIR"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$INTEGRATION_BRANCH" "origin/$TARGET_BRANCH"
+          BASE_SHA="$(git rev-parse HEAD)"
+          SOURCE_SHA="$(git rev-parse "origin/$SOURCE_BRANCH")"
+          if git merge-base --is-ancestor "origin/$SOURCE_BRANCH" "origin/$TARGET_BRANCH"; then
+            {
+              echo "# Kindlewake safe branch integration"
+              echo ""
+              echo "- Source: $SOURCE_BRANCH ($SOURCE_SHA)"
+              echo "- Target: $TARGET_BRANCH ($BASE_SHA)"
+              echo ""
+              echo "## No integration needed"
+              echo "The target branch already contains the source branch commit. No branch or pull request was created."
+            } > "$REPORT_DIR/safe-merge-report.md"
+            echo "merge_ready=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          {
+            echo "# Kindlewake safe branch integration"
+            echo ""
+            echo "- Source: $SOURCE_BRANCH ($SOURCE_SHA)"
+            echo "- Target: $TARGET_BRANCH ($BASE_SHA)"
+            echo "- Integration branch: $INTEGRATION_BRANCH"
+          } > "$REPORT_DIR/safe-merge-report.md"
+          if git merge --no-ff --no-edit "origin/$SOURCE_BRANCH"; then
+            echo "merge_ready=true" >> "$GITHUB_OUTPUT"
+            echo "" >> "$REPORT_DIR/safe-merge-report.md"
+            echo "## Merge result" >> "$REPORT_DIR/safe-merge-report.md"
+            echo "Conflict-free merge candidate created on an isolated branch." >> "$REPORT_DIR/safe-merge-report.md"
+          else
+            git diff --name-only --diff-filter=U > "$REPORT_DIR/conflict-files.txt" || true
+            {
+              echo ""
+              echo "## Merge blocked"
+              echo "Git reported conflicts. The candidate was aborted; neither source nor target was modified."
+              echo ""
+              echo "### Conflicting paths"
+              if [[ -s "$REPORT_DIR/conflict-files.txt" ]]; then cat "$REPORT_DIR/conflict-files.txt"; else echo "Git reported a merge failure without a listed unmerged path; inspect the job log."; fi
+              echo ""
+              echo "Resolve conflicts on a dedicated branch and relaunch this workflow."
+            } >> "$REPORT_DIR/safe-merge-report.md"
+            git merge --abort || true
+            echo "merge_ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run handoff utility tests and offline Android preflight
+        if: steps.merge.outputs.merge_ready == 'true'
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s Kindlewake/tests -p 'test_source_handoff.py' -v
+          python3 -m unittest discover -s Kindlewake/tests -p 'test_repository_organizer.py' -v
+          python3 Kindlewake/tools/build_apk.py --check
+
+      - name: Push isolated candidate and open draft pull request
+        if: steps.merge.outputs.merge_ready == 'true' && success()
+        env:
+          SOURCE_BRANCH: ${{ inputs.source_branch }}
+          TARGET_BRANCH: ${{ inputs.target_branch }}
+          INTEGRATION_BRANCH: integration/safe-merge-${{ github.run_id }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git push origin "$INTEGRATION_BRANCH"
+          gh pr create \
+            --repo "$GITHUB_REPOSITORY" \
+            --base "$TARGET_BRANCH" \
+            --head "$INTEGRATION_BRANCH" \
+            --draft \
+            --title "chore: safely integrate $SOURCE_BRANCH into $TARGET_BRANCH" \
+            --body "Prepared by the manual Safe Branch Integration workflow. This PR contains a conflict-free merge candidate on an isolated branch. The source and destination branches were not directly modified. Review the diff, require all PR CI checks and gameplay/device checks appropriate to the change, then merge manually through GitHub. This workflow never merges into the destination branch."
+
+      - name: Add integration report to summary
+        if: always()
+        env:
+          REPORT_DIR: ${{ runner.temp }}/kindlewake-safe-merge
+        run: |
+          if [[ -f "$REPORT_DIR/safe-merge-report.md" ]]; then
+            cat "$REPORT_DIR/safe-merge-report.md" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No merge report was produced; inspect the failed validation step." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload safe merge report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kindlewake-Safe-Merge-Report
+          path: ${{ runner.temp }}/kindlewake-safe-merge/
+          if-no-files-found: warn
+          retention-days: 90
