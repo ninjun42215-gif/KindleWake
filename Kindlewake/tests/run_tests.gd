@@ -771,7 +771,7 @@ func _test_locations() -> void:
         for sp in (maps[k] as LocalMap).spots:
             if str((sp as Dictionary).get("kind", "")) == "party":
                 party_spots += 1
-    check(party_spots == 2, "the war table and the shop counter open the party screen")
+    check(party_spots >= 3, "the war table, shop counter and smithy open the party screen")
     var cm: LocalMap = maps["crossing"]
     check(cm.walkable(cm.entry) and cm.is_exit(Vector2i(11, 17)) and not cm.walkable(Vector2i(0, 0)) and not cm.walkable(Vector2i(-3, 4)), "walls and trees block, paths and exits are open, outside the map is blocked")
     check(not cm.door_at(Vector2i(4, 4)).is_empty() and cm.door_at(Vector2i(5, 4)).is_empty(), "door tiles lead somewhere and plain wall does not")
