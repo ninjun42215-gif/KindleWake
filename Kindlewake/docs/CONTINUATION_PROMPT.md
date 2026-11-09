@@ -167,3 +167,7 @@ The result-report job now uploads a separate 90-day artifact named Kindlewake-Wo
 
 
 The split artifact now also contains the exact source_handoff.py recovery helper beside the parts. PARTS-MANIFEST.json stores that helper's SHA-256, and reassembly refuses to run if the helper is missing or altered. This avoids the bootstrap problem of needing to extract the ZIP before obtaining the tool required to reassemble it. The test suite also asserts that the helper is present in the artifact.
+
+
+## Manual GitHub workflows
+See docs/MANUAL_GITHUB_WORKFLOWS.md for user-operated Actions workflows: repository organizer/audit, safe branch integration, branch hygiene, full repository backup, APK/source handoff and protected Android release. These are intended to work without an AI assistant. New workflow_dispatch files must be merged into the repository default branch before GitHub exposes them for manual launch.
