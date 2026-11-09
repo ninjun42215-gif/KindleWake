@@ -849,8 +849,9 @@ func _draw_tile(cell: Vector2i) -> void:
     _outline(top, Color(0.05, 0.08, 0.07, 0.55), 1.0)
     match tid:
         "forest":
-            _draw_tree(top + Vector2(-9, 3))
-            _draw_tree(top + Vector2(9, 1))
+            if not Art.draw_world(self, "pine_a", top + Vector2(0, 4), 0.34):
+                _draw_tree(top + Vector2(-9, 3))
+                _draw_tree(top + Vector2(9, 1))
         "hill":
             draw_colored_polygon(_diamond(top, 0.55), col.lightened(0.12))
         "deep_water", "ford":
@@ -873,18 +874,23 @@ func _draw_tile(cell: Vector2i) -> void:
             draw_circle(top + Vector2(-8, 2), 5.0, col.darkened(0.25))
             draw_circle(top + Vector2(8, -3), 3.0, col.lightened(0.15))
             draw_line(top + Vector2(-13, -5), top + Vector2(-4, -7), Color(0.75, 0.85, 0.68, 0.55), 1.5)
+            Art.draw_prop(self, "reeds", top + Vector2(0, -7), 0.48)
         "snow":
             draw_line(top + Vector2(-12, -4), top + Vector2(-3, -7), Color(1, 1, 1, 0.65), 2.0)
             draw_line(top + Vector2(2, 4), top + Vector2(12, 1), Color(1, 1, 1, 0.55), 2.0)
+            Art.draw_prop(self, "frost_pine", top + Vector2(0, -10), 0.44)
         "ash":
             draw_circle(top + Vector2(-7, 2), 2.0, col.darkened(0.3))
             draw_circle(top + Vector2(8, -3), 1.5, col.lightened(0.2))
+            Art.draw_prop(self, "campfire", top + Vector2(0, -7), 0.42)
         "ruins":
             draw_rect(Rect2(top + Vector2(-10, -5), Vector2(7, 5)), col.darkened(0.35))
             draw_rect(Rect2(top + Vector2(3, 1), Vector2(8, 4)), col.darkened(0.25))
+            Art.draw_prop(self, "column", top + Vector2(0, -8), 0.42)
         "cliff":
             draw_colored_polygon(_diamond(top, 0.65), col.darkened(0.35))
             draw_line(top + Vector2(-10, -2), top + Vector2(5, -7), col.lightened(0.2), 2.0)
+            Art.draw_prop(self, "crystals", top + Vector2(0, -8), 0.42)
 
 
 func _draw_tree(base: Vector2) -> void:
