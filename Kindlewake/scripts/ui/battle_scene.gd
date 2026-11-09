@@ -652,7 +652,7 @@ func _autosave() -> void:
     var a: BattleUnit = controller.active_unit()
     if a == null or a.team != "player" or ai_busy or input_locked:
         return
-    SaveSystem.autosave({"battle": controller.to_dict(), "party": GameState.party.to_dict(), "battle_def": controller.def, "creation_profile": GameState.creation_profile.duplicate(true)}, _save_summary())
+    SaveSystem.autosave({"battle": controller.to_dict(), "party": GameState.party.to_dict(), "battle_def": controller.def, "creation_profile": GameState.creation_profile.duplicate(true), "world_flags": GameState.world_flags.duplicate(true), "world_pos": [GameState.world_pos.x, GameState.world_pos.y], "from_world": GameState.from_world}, _save_summary())
 
 
 func _on_save_pressed() -> void:
@@ -662,7 +662,7 @@ func _on_save_pressed() -> void:
         else:
             _on_log("You can only save during your own turn.")
         return
-    if SaveSystem.save_slot("1", {"battle": controller.to_dict(), "party": GameState.party.to_dict(), "battle_def": controller.def, "creation_profile": GameState.creation_profile.duplicate(true)}, _save_summary()):
+    if SaveSystem.save_slot("1", {"battle": controller.to_dict(), "party": GameState.party.to_dict(), "battle_def": controller.def, "creation_profile": GameState.creation_profile.duplicate(true), "world_flags": GameState.world_flags.duplicate(true), "world_pos": [GameState.world_pos.x, GameState.world_pos.y], "from_world": GameState.from_world}, _save_summary()):
         _on_log("Game saved to slot 1.")
     else:
         _on_log("Save failed.")
@@ -690,6 +690,11 @@ func _on_load_pressed() -> void:
         var saved_party: Dictionary = payload["party"]
         GameState.party = PartyState.from_dict(saved_party)
     GameState.creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
+    GameState.world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
+    var saved_world_pos: Array = payload.get("world_pos", [0.0, 0.0])
+    if saved_world_pos.size() >= 2:
+        GameState.world_pos = Vector2(float(saved_world_pos[0]), float(saved_world_pos[1]))
+    GameState.from_world = bool(payload.get("from_world", false))
     suppress_autosave = true
     var saved_def: Dictionary = payload.get("battle_def", GameData.battle_def(BATTLE_ID))
     var ok: bool = controller.restore(saved_def, GameState.battle_db(), saved)
