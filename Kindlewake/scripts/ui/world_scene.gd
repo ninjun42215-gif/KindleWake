@@ -48,6 +48,7 @@ var banner: PanelContainer
 var banner_label: Label
 var party_screen: PartyScreenScript
 var minimap_dot: ColorRect
+var campaign_save_timer: float = 0.0
 var creator_screen: Control
 
 
@@ -67,6 +68,7 @@ func _ready() -> void:
     _build_ui()
     _build_minimap()
     GameState.from_world = true
+    GameState.save_campaign("auto_a")
 
 
 func cell_center(c: Vector2i) -> Vector2:
@@ -106,6 +108,11 @@ func _free_at(p: Vector2) -> bool:
 
 
 func _process(delta: float) -> void:
+    campaign_save_timer += delta
+    if campaign_save_timer >= 25.0 and not panel_open and not party_screen.visible:
+        campaign_save_timer = 0.0
+        GameState.world_pos = player_pos
+        GameState.save_campaign("auto_a" if GameState.campaign_slot == "" else GameState.campaign_slot)
     if ambush_timer >= 0.0:
         ambush_timer -= delta
         if ambush_timer < 0.0:
@@ -184,6 +191,7 @@ func _launch_ambush() -> void:
 
 func _go_to_battle(def: Dictionary) -> void:
     GameState.world_pos = player_pos
+    GameState.save_campaign("auto_a")
     GameState.start_battle_from_world(def)
     get_tree().change_scene_to_file("res://Main.tscn")
 
@@ -274,6 +282,8 @@ func _pass_gate(p: Dictionary) -> void:
 
 ## Walk into a town: the location scene opens the town map; leaving it puts us back just south of the place.
 func _enter_town(p: Dictionary) -> void:
+    GameState.world_pos = player_pos
+    GameState.save_campaign("auto_a")
     GameState.pending_location = str(p.get("town", ""))
     GameState.world_pos = cell_center(wmap.place_cell(str(p.get("id", "")))) + Vector2(0, 58)
     get_tree().change_scene_to_file("res://Location.tscn")
