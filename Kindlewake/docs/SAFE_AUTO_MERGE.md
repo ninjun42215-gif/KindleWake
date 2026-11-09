@@ -36,3 +36,7 @@ The GitHub connection used to edit repository files cannot administer branch pro
 ## Release blockers
 
 Physical-device QA, asset-rights review, release signing and other non-CI requirements remain separate release gates. A green CI build is not proof of physical-device compatibility or asset redistribution permission.
+
+
+### No-checkout GitHub CLI context
+Both privileged steps set `GH_REPO: ${{ github.repository }}` explicitly. The final merge call also passes `--repo` and uses the same repository-qualified REST endpoint. This is required because `workflow_run` jobs intentionally do not check out a repository and must never depend on a local Git remote.
