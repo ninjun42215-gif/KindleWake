@@ -13,7 +13,7 @@ Offline-first medieval tactical RPG built with Godot 4 (GDScript), targeting And
 
 The root `Kindlewake_Project.zip` is the single source of truth.
 
-Whenever a new version of that ZIP is committed to any branch, GitHub Actions automatically:
+Whenever a new version of that ZIP is committed to the `main` branch, GitHub Actions automatically:
 
 1. Validates the ZIP structure and rejects unsafe paths and symbolic links.
 2. Extracts into a temporary staging directory.
