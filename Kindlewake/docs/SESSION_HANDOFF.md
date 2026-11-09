@@ -142,3 +142,10 @@
 - CI for the new commits is queued/in progress at handoff; do not claim these changes passed until the latest branch-head workflow completes.
 - The last verified APK artifact remains available from workflow 42673117006 until 2027-02-07; it predates the rune transaction fix and should not be treated as containing these latest changes.
 - Next development: inspect the latest CI results, then proceed with dedicated hero/enemy sprite assets and animation integration. Preserve existing frame contracts, save schema v3, PR #4 draft state and untouched `main`.
+
+## 2026-11-10 continuation — status readability and socket test fixture
+- Battle sprite presentation now draws compact colored status pips for Burn, Chill, Shock, Regen and Exposed, with a +N overflow indicator when a unit carries more than four statuses.
+- The first socket regression CI run correctly exposed a test-fixture issue: Torren's sockets had not been normalized before the test deliberately added an overflow rune. The fixture now calls `fit_sockets(items)` before adding that extra instance; the production transactional validation remains unchanged.
+- Added direct checks for Chill's 20% effective-speed penalty and Exposed's 20% physical-defense reduction.
+- Latest source commits include status pips `83ceb66d2a992b9ed4f2659c5da11333e854bc4f` and corrected socket fixture `b4335e394ea526bd626760db9a9d14e758e6b668`.
+- Earlier CI attempts before the fixture correction reported 3 test failures in the newly added overflow checks. The corrected branch-head build must pass before this batch is considered validated.
