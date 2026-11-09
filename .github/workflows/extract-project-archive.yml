@@ -1,6 +1,13 @@
 name: Extract Godot Project into Repository
 
 on:
+  # Any committed replacement of the source archive automatically refreshes
+  # the extracted project on the same branch (including main).
+  push:
+    branches:
+      - "**"
+    paths:
+      - "Kindlewake_Project.zip"
   workflow_dispatch:
 
 permissions:
@@ -112,5 +119,5 @@ jobs:
             echo "Extracted project is already up to date."
             exit 0
           fi
-          git commit -m "Extract and validate Kindlewake Godot project"
+          git commit -m "Sync Kindlewake source from updated project archive"
           git push origin "HEAD:${{ github.ref_name }}"
