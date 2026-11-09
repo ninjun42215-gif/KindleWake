@@ -21,6 +21,20 @@ var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored w
 var campaign_slot: String = ""
 
 
+static func region_state_from_payload(payload: Dictionary) -> Dictionary:
+    var raw_pos: Array = payload.get("world_pos", [0.0, 0.0])
+    var pos := Vector2.ZERO
+    if raw_pos.size() >= 2:
+        pos = Vector2(float(raw_pos[0]), float(raw_pos[1]))
+    var region_id: String = str(payload.get("active_region_id", "sethmarch"))
+    var positions: Dictionary = (payload.get("world_positions", {}) as Dictionary).duplicate(true)
+    if not positions.has("sethmarch"):
+        positions["sethmarch"] = [pos.x, pos.y] if region_id == "sethmarch" else [0.0, 0.0]
+    if region_id != "sethmarch" and not positions.has(region_id):
+        positions[region_id] = [pos.x, pos.y]
+    return {"active_region_id": region_id, "world_positions": positions, "world_pos": pos}
+
+
 func _ready() -> void:
     rng.randomize()
     new_game()
@@ -117,15 +131,10 @@ func load_campaign(slot_id: String) -> bool:
     party = PartyStateScript.from_dict(payload["party"])
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
-    var pos: Array = payload.get("world_pos", [0.0, 0.0])
-    if pos.size() >= 2:
-        world_pos = Vector2(float(pos[0]), float(pos[1]))
-    active_region_id = str(payload.get("active_region_id", "sethmarch"))
-    world_positions = (payload.get("world_positions", {}) as Dictionary).duplicate(true)
-    if not world_positions.has("sethmarch"):
-        world_positions["sethmarch"] = [world_pos.x, world_pos.y] if active_region_id == "sethmarch" else [0.0, 0.0]
-    if active_region_id != "sethmarch" and not world_positions.has(active_region_id):
-        world_positions[active_region_id] = [world_pos.x, world_pos.y]
+    var region_state: Dictionary = region_state_from_payload(payload)
+    world_pos = region_state["world_pos"]
+    active_region_id = str(region_state["active_region_id"])
+    world_positions = region_state["world_positions"]
     from_world = true
     pending_battle = {}
     pending_location = ""
