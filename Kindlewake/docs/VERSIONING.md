@@ -14,6 +14,7 @@ Do not independently edit the version in the README or Android export preset. Th
 - The version in the first Kindlewake README heading.
 - Android `version/name` in `Kindlewake/export_presets.cfg`.
 - Android `version/code` in the same export preset.
+- `GAME_VERSION` in `scripts/core/save_system.gd` save metadata. This does not change `SAVE_VERSION` or the payload migration schema.
 
 ## Android version-code mapping
 
@@ -45,11 +46,11 @@ python Kindlewake/tests/test_sync_version.py
 ```
 
 - `--check` is read-only and returns non-zero on drift.
-- `--apply` updates only README first-heading version and Android export version fields.
+- `--apply` updates the README first-heading version, Android export version fields and SaveSystem's `GAME_VERSION` metadata constant.
 - The operation is idempotent: repeating it without changing project.godot produces no further edits.
 
 ## Branch and release safety
 
 This automation synchronizes version metadata only. It does **not** merge branches, copy feature code into main, publish an APK/release, change signing keys, or alter save data. A feature branch can legitimately have a newer version than main until its pull request is reviewed and merged. The push-to-main workflow then synchronizes main's metadata to the version actually present in the merged main tree.
 
-The current main version remains 0.9.0 until a reviewed project change updates `project.godot`. Feature work at 0.10.0 is not promoted to main merely because its metadata is newer.
+Current main is `0.10.0` (Android code `1000`). `project.godot` remains the sole version source; the synchronizer keeps README, Android export metadata and SaveSystem's displayed save-version metadata aligned. `SAVE_VERSION` is a separate data-schema version and must only change with a tested migration.

@@ -1,4 +1,4 @@
-; Kindlewake - Godot 4 project (Milestone 2 in progress + Milestone 7 first step, v0.7.1 = party screen redesign on top of v0.7.0)
+; Kindlewake - Godot 4 project (offline-first tactical RPG)
 config_version=5
 
 [application]
