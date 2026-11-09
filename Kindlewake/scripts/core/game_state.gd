@@ -1,6 +1,7 @@
 extends Node
 
 const PartyStateScript = preload("res://scripts/core/party_state.gd")
+const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
@@ -21,18 +22,6 @@ var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored w
 var campaign_slot: String = ""
 
 
-static func region_state_from_payload(payload: Dictionary) -> Dictionary:
-    var raw_pos: Array = payload.get("world_pos", [0.0, 0.0])
-    var pos := Vector2.ZERO
-    if raw_pos.size() >= 2:
-        pos = Vector2(float(raw_pos[0]), float(raw_pos[1]))
-    var region_id: String = str(payload.get("active_region_id", "sethmarch"))
-    var positions: Dictionary = (payload.get("world_positions", {}) as Dictionary).duplicate(true)
-    if not positions.has("sethmarch"):
-        positions["sethmarch"] = [pos.x, pos.y] if region_id == "sethmarch" else [0.0, 0.0]
-    if region_id != "sethmarch" and not positions.has(region_id):
-        positions[region_id] = [pos.x, pos.y]
-    return {"active_region_id": region_id, "world_positions": positions, "world_pos": pos}
 
 
 func _ready() -> void:
@@ -131,7 +120,7 @@ func load_campaign(slot_id: String) -> bool:
     party = PartyStateScript.from_dict(payload["party"])
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
-    var region_state: Dictionary = region_state_from_payload(payload)
+    var region_state: Dictionary = RegionSaveState.from_payload(payload)
     world_pos = region_state["world_pos"]
     active_region_id = str(region_state["active_region_id"])
     world_positions = region_state["world_positions"]
