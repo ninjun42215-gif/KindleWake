@@ -106,3 +106,11 @@ Answer in plain English. Lead with what you did and what I should do next. Keep 
 4. Add travel modes in progression order: roads/carts, ferries and barges, charter ships, caravan routes, northern pass, then airship. Do not consume campaign weeks until the calendar is implemented.
 5. Run Godot import, the full headless test suite and balance report later as previously requested; static checks are not runtime proof. Then verify creator/touch layouts and starter weapons on a landscape phone.
 6. Add origin-tag story hooks and review sprite-pack licenses before importing original art.
+
+
+## Manual GitHub workflows
+See docs/MANUAL_GITHUB_WORKFLOWS.md for standalone user-operated workflows: build APK, create source handoffs, audit/organize documentation, prepare safe branch-integration PRs, inspect branch hygiene, create full repository backups, and lint workflow YAML. These tools do not require an AI assistant. The organizer only moves approved Markdown docs; safe integration never merges directly into the destination branch.
+
+
+## Manual operations toolbox checkpoint
+A separate workflow/manual-operations-toolbox branch is being prepared from main so these manual tools can be reviewed and merged independently of the Rune System feature PR. It adds source_handoff.py and its tests, the conservative repository organizer and tests, branch hygiene reporting, manual source handoff, full backup, safe branch integration and workflow YAML lint. No main-branch changes or merges are performed by the workflows. New workflow_dispatch entries become visible for manual launch after their files are merged to the default branch. Review PR #5 and its CI before enabling them.
