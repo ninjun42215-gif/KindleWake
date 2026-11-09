@@ -4,9 +4,9 @@ config_version=5
 [application]
 
 config/name="Kindlewake"
-config/version="0.8.1"
+config/version="0.9.0"
 config/icon="res://assets/icons/icon.png"
-run/main_scene="res://World.tscn"
+run/main_scene="res://TitleScreen.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 
 [autoload]
