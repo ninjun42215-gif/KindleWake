@@ -1,6 +1,6 @@
 # KINDLEWAKE — MASTER CONTINUATION PROMPT FOR THE NEXT AI
 
-> **Read this first.** This file is the operating contract for every future AI session. The GitHub repository is the source of truth; the session handoff and GDD contain the detailed game history and design.
+> **Read this first.** This file is the operating contract for every future AI session. Then read `Kindlewake/docs/NEXT_AI_START_HERE.md` for the concise project snapshot, explicit user decisions, current known CI/artifact checkpoint and no-clarification defaults. The GitHub repository is the source of truth; the session handoff and GDD contain the detailed game history and design.
 
 ## 1. Project identity and source of truth
 - Game: **KINDLEWAKE: THE SUNDERED VOW**, an offline-first medieval tactical RPG built with Godot 4 / GDScript.
@@ -14,6 +14,7 @@
 ## 2. Mandatory first actions in every new session
 1. Inspect the latest commit and branch head for `feature/rune-system-v1`; do not assume this prompt's checkpoint SHA is still current.
 2. Read, in order:
+   - `Kindlewake/docs/NEXT_AI_START_HERE.md`
    - `Kindlewake/docs/SESSION_HANDOFF.md`
    - `Kindlewake/docs/GDD.md`
    - `Kindlewake/README.md`
