@@ -1,4 +1,4 @@
-# Kindlewake: The Sundered Vow — Sethmarch Frontier regional network (v0.7.14)
+# Kindlewake: The Sundered Vow — Campaign-first progression and HUD update (v0.8.0)
 
 Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (GDScript, GL Compatibility).
 Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md`
@@ -51,7 +51,7 @@ godot --headless --path . --script res://tests/balance_report.gd
 1. `--import` runs ONCE on a fresh unzip. It lets Godot register the `class_name` scripts; without it the tests fail with "Could not find type ..." errors. (Opening the project in the editor once does the same.)
 2. `run_tests.gd` prints `ok` / `FAIL` per check, then an AI-vs-AI battle simulation summary. Exit code 0 = all checks passed. **Any `SCRIPT ERROR` or `Parse Error` line matters even if the checks say ok.**
 3. `balance_report.gd` prints how hard each enemy group is and how fast the grind pays off (add `-- 100` for 100 battles per scenario).
-4. Open `project.godot`, press Play, and tap through: pre-battle panel, Party / Gear / Shop, a battle, the results screen, Skirmish.
+4. Open `project.godot`, press Play, and follow the campaign: travel, enter story locations, manage the Company, fight, then Continue Journey from the results screen.
 5. Paste ALL the output (including errors) into the next chat.
 
 Optional, needs only Python 3 (no Godot): `python3 -I tools/gd_static_check.py` lints every script and JSON file (parse-class errors, missing members, bad references). It reports 0 errors on this version, but it cannot see engine-API or logic mistakes.
@@ -81,10 +81,10 @@ Optional, needs only Python 3 (no Godot): `python3 -I tools/gd_static_check.py` 
 - Save system: slots, atomic writes, SHA-256 checksum, `.bak` fallback, version field, autosave rotation.
 - Headless test-suite and battle simulator.
 
-## v0.4.0: FF7-style grinding (written, NOT yet run in Godot)
+## v0.4.0: FF7-inspired battle rewards and Sigils (legacy foundation; campaign flow updated in v0.8.0)
 - Every defeated enemy pays fixed EXP / AP / gold. EXP is split among the surviving heroes, each survivor gets the full AP, gold goes to the party. A defeat pays nothing.
 - **Sigils** (the Materia equivalent) sit in weapon/armor sockets (some linked in pairs), gain AP, level up, teach spells (Mend, Ember Bolt...), boost stats, EXP or gold, and forge a fresh copy when mastered. Support sigils (Resonance, Tutor) work on the linked socket.
-- After a battle the results screen has **Skirmish (grind for EXP / AP / gold)** for endless random fights, and **Story Battle** to return.
+- The old results-screen Skirmish / Story Battle mode buttons have been removed. Random patrol encounters now occur during dangerous world travel; authored battles are entered through campaign locations and events.
 - Details: `docs/GDD.md` section 4.6.
 
 ## v0.5.0: party screen, shop, static checker, balance report (written, NOT yet run in Godot)
