@@ -14,3 +14,6 @@ The overworld sprites are generated with `tools/render_sprites.py` (software ren
 
 Reference images supplied by the project owner (screenshots and sprite sheets from other games and asset sets) were used for
 **art direction only** (style, palette, readability, ideas). No pixels from them are in the game.
+
+| `props/field_props.svg` | Original KindleWake vector art, authored for this project | CC0 / project-created | Added: 16 environment props (ruins, rune stone, torch, reeds, crystals, grave, banner, mushrooms, stump, barrel, crate, campfire, frost pine, statue, flower, arch). |
+| `ui/title_illustration.svg`, `ui/ornament_divider.svg` | Original KindleWake vector art, authored for this project | CC0 / project-created | Added: title landscape and reusable ornamental divider. |
