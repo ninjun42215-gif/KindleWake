@@ -57,7 +57,7 @@ func _test_data() -> void:
     check(gd.classes.size() >= 5, "classes loaded")
     check(gd.weapons.size() >= 5, "weapons loaded")
     var expected_rarities: Array = ["common", "uncommon", "rare", "epic", "legendary", "mythical"]
-    check((gd.items.get("rarities", []) as Array).size() == 6, "six equipment rarity tiers are declared")
+    check(gd.item_rarities.size() == 6, "six equipment rarity tiers are declared")
     var rarity_coverage := true
     var unique_coverage := true
     for item_id in gd.items.keys():
