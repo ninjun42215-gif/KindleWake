@@ -49,6 +49,7 @@ var db: Dictionary = {}
 var shop: Dictionary = {}
 var shop_access_allowed: bool = true
 var rune_service_access: bool = false
+var blacksmith_access: bool = false
 var selected_id: String = ""
 var tab: int = TAB_GEAR
 var focus_slot: String = ""           # Equipment tab: the slot whose choices are open
@@ -71,13 +72,14 @@ var rune_rng := RandomNumberGenerator.new()
 var builds: int = 0                   # how many times the layout was completely built (tests use it to catch half-built screens)
 
 
-func setup(p_party: PartyStateScript, p_db: Dictionary, p_shop: Dictionary, allow_shop: bool = true, p_rune_service: bool = false) -> void:
+func setup(p_party: PartyStateScript, p_db: Dictionary, p_shop: Dictionary, allow_shop: bool = true, p_rune_service: bool = false, p_blacksmith: bool = false) -> void:
     party = p_party
     db = p_db
     shop = p_shop
     rune_rng.randomize()
     shop_access_allowed = allow_shop
     rune_service_access = p_rune_service
+    blacksmith_access = p_blacksmith
     if not shop_access_allowed and tab == TAB_SHOP:
         tab = TAB_GEAR
     if not party.sheets.has(selected_id) and not party.roster.is_empty():
@@ -667,6 +669,15 @@ func _fill_gear(box: VBoxContainer) -> void:
         box.add_child(holder)
         if is_open:
             _fill_slot_choices(box, sh, slot, current)
+            if iid != "" and blacksmith_access:
+                var enhance_level := int(sh.enhancements.get(slot, 0))
+                var enhance_cost := 100 * (enhance_level + 1) * (enhance_level + 1)
+                var enhance_label := "Enhance %s  +%d → +%d  (%d gold)" % [ItemInfo.slot_name(slot), enhance_level, enhance_level + 1, enhance_cost]
+                if enhance_level >= 15:
+                    enhance_label = "%s  +15 (MAX)" % ItemInfo.slot_name(slot)
+                var enhance_button := _button(enhance_label, _on_enhance.bind(slot), Vector2(0, 48), 16)
+                enhance_button.disabled = enhance_level >= 15 or party.gold < enhance_cost
+                cbox.add_child(enhance_button)
     _fill_bag_overview(box)
 
 
@@ -1268,3 +1279,11 @@ func _on_promote(class_id: String) -> void:
         _after("%s is now a %s." % [sh.display_name, _class_title(class_id)], true)
     else:
         _after("Promotion is not possible.")
+
+
+func _on_enhance(slot: String) -> void:
+    var problem: String = party.enhance_equipment(selected_id, slot, db)
+    if problem != "":
+        _after(problem)
+        return
+    _after("%s enhanced successfully." % ItemInfo.slot_name(slot), true)
