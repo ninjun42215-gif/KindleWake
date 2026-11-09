@@ -200,6 +200,16 @@
       "battle": "battle_catacombs",
       "world_flag_on_victory": "dungeon_catacombs_cleared",
       "text": "Beneath the old Vessmoor milestone lies a royal ossuary, sealed when the kings abandoned the southern road."
+    },
+    {
+      "id": "tidebound_envoy",
+      "name": "Tidebound Envoy",
+      "kind": "charter",
+      "cell": [
+        26,
+        25
+      ],
+      "text": "A salt-stained envoy waits beside the old road marker. The Tidebound Assembly has heard that House Dunmarrow's company survived the burning estate. The envoy carries a sealed passage charter."
     }
   ],
   "roads": [
@@ -266,6 +276,10 @@
     [
       "milefort",
       "kingsroad_catacombs"
+    ],
+    [
+      "crossing",
+      "tidebound_envoy"
     ]
   ],
   "region_notes": {
