@@ -20,10 +20,13 @@ class ProjectHealthAuditTests(unittest.TestCase):
         (project / "assets" / "art" / "CREDITS.md").write_text("# Credits\n")
         return project
 
-    def run_audit(self, root):
+    def run_audit(self, root, fail_on_warnings=False):
         output = root / "out"
+        command = [sys.executable, str(SCRIPT), "--root", str(root), "--output", str(output)]
+        if fail_on_warnings:
+            command.append("--fail-on-warnings")
         result = subprocess.run(
-            [sys.executable, str(SCRIPT), "--root", str(root), "--output", str(output)],
+            command,
             capture_output=True,
             text=True,
         )
@@ -60,6 +63,8 @@ class ProjectHealthAuditTests(unittest.TestCase):
             self.assertEqual(report["summary"]["warnings"], 1)
             self.assertEqual(report["counts"]["unverified_asset_entries"], 1)
             self.assertTrue(any(item["code"] == "ASSET_LICENSE_UNVERIFIED" for item in report["findings"]))
+            strict_result, _ = self.run_audit(root, fail_on_warnings=True)
+            self.assertEqual(strict_result.returncode, 1)
 
 
     def test_used_asset_without_verified_licence_is_reported(self):
