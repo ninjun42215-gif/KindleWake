@@ -1,7 +1,7 @@
 {
  "skirmish": {
   "title": "Roadside Skirmish",
-  "briefing": "Roadwolf patrols prowl the Sallow Road. Fight them again and again: every victory pays EXP, AP and gold.",
+  "briefing": "Roadwolf patrols prowl the Sallow Road. A dangerous encounter may interrupt the company's journey; surviving earns campaign rewards.",
   "base_battle": "battle_01",
   "enemy_cells": [
    [
