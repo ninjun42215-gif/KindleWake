@@ -395,3 +395,10 @@ Next actions:
 - Most recent audit/provenance code and ledger checkpoint before this documentation refresh: `6b36e169dfcd3be6e4f4b85a867f249ce9407611`.
 - Read live PR #5 head and CI state before further work; no completed CI result has yet been confirmed for the audit/provenance hardening. Earlier green runs predate these changes.
 - The source handoff workflow is configured to run on `workflow/**` pushes, but do not claim a new downloadable artifact is ready until its run succeeds and the part manifest/checksums are verified.
+
+
+### Additional pre-release audit coverage — 2026-11-10
+- Project Health Audit now compares `project.godot` version, README headline version and Android export preset `version/name`; it also validates a positive integer `version/code`.
+- Live inspection found the old `main` baseline at project/README **0.9.0** but Android export preset **0.7.14** (version code 714). This mismatch is recorded as a warning, not silently changed on main.
+- The Rune System feature branch currently has project/README/export preset **0.10.0** with Android version code **1000**, consistent at inspection time.
+- Added an Android export-version drift regression test. Latest CI for this and the asset provenance additions is still unconfirmed.
