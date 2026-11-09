@@ -4,7 +4,7 @@ extends RefCounted
 const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
 ## Persistent character: class, level, EXP, base stats, skills and equipment.
-## A BattleUnit is a per-battle snapshot built from `to_battle_def()`; formulas stay in CombatCalcScript.
+## A BattleUnitScript is a per-battle snapshot built from `to_battle_def()`; formulas stay in CombatCalcScript.
 ## `db` arguments are the dictionaries from GameData.as_db(): they need "items", "weapons" and "classes".
 
 const SLOTS: Array[String] = ["weapon", "offhand", "armor", "helm", "accessory1", "accessory2"]
@@ -134,22 +134,22 @@ func to_battle_def(db: Dictionary) -> Dictionary:
     }
 
 
-## Numbers for the character sheet screen. Uses CombatCalc so the formulas exist in one place only.
+## Numbers for the character sheet screen. Uses CombatCalcScript so the formulas exist in one place only.
 func derived(db: Dictionary) -> Dictionary:
     var classes: Dictionary = db.get("classes", {})
     var weapons: Dictionary = db.get("weapons", {})
     var bdef: Dictionary = to_battle_def(db)
     var cdef: Dictionary = classes.get(class_id, {})
-    var u: BattleUnitScript = BattleUnit.create(0, character_id, bdef, cdef, "player", Vector2i.ZERO, 0)
+    var u: BattleUnitScript = BattleUnitScript.create(0, character_id, bdef, cdef, "player", Vector2i.ZERO, 0)
     var w: Dictionary = weapons.get(str(bdef["weapon_id"]), {})
     return {
         "max_hp": u.max_hp(), "max_mp": u.stat("mp"),
-        "attack": CombatCalc.attack_power(u, w),
-        "defense": CombatCalc.defense(u, "physical"),
-        "resistance": CombatCalc.defense(u, "magic"),
+        "attack": CombatCalcScript.attack_power(u, w),
+        "defense": CombatCalcScript.defense(u, "physical"),
+        "resistance": CombatCalcScript.defense(u, "magic"),
         "accuracy": u.stat("acc") + int(w.get("acc", 0)),
         "evasion": u.stat("eva"),
-        "crit": CombatCalc.crit_chance(u, w, "front"),
+        "crit": CombatCalcScript.crit_chance(u, w, "front"),
         "spd": u.stat("spd"), "move": u.move, "jump": u.jump,
         "range_min": int(w.get("range_min", 1)), "range_max": int(w.get("range_max", 1)),
     }
