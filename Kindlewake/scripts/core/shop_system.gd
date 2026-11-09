@@ -19,13 +19,13 @@ static func item_price(item_id: String, db: Dictionary) -> int:
 
 
 static func sigil_price(sigil_id: String, db: Dictionary) -> int:
-    var sd: Dictionary = (db.get("sigils", {}) as Dictionary).get(sigil_id, {})
+    var sd: Dictionary = (db.get("runes", db.get("sigils", {})) as Dictionary).get(sigil_id, {})
     return int(sd.get("price", 0))
 
 
 ## kind is "item" or "sigil".
 static func for_sale(shop: Dictionary, kind: String, id: String) -> bool:
-    var list: Array = shop.get("items" if kind == "item" else "sigils", [])
+    var list: Array = shop.get("items", []) if kind == "item" else shop.get("runes", shop.get("sigils", []))
     return list.has(id)
 
 
@@ -33,15 +33,15 @@ static func for_sale(shop: Dictionary, kind: String, id: String) -> bool:
 static func stock(shop: Dictionary, db: Dictionary) -> Array:
     var out: Array = []
     var items: Dictionary = db.get("items", {})
-    var sigils: Dictionary = db.get("sigils", {})
+    var runes: Dictionary = db.get("runes", db.get("sigils", {}))
     for id in (shop.get("items", []) as Array):
         var it: Dictionary = items.get(str(id), {})
         if not it.is_empty() and int(it.get("price", 0)) > 0:
             out.append({"kind": "item", "id": str(id), "name": str(it.get("name", id)), "price": int(it["price"])})
-    for id in (shop.get("sigils", []) as Array):
-        var sd: Dictionary = sigils.get(str(id), {})
-        if not sd.is_empty() and int(sd.get("price", 0)) > 0:
-            out.append({"kind": "sigil", "id": str(id), "name": str(sd.get("name", id)), "price": int(sd["price"])})
+    for id in (shop.get("runes", shop.get("sigils", [])) as Array):
+        var rd: Dictionary = runes.get(str(id), {})
+        if not rd.is_empty() and int(rd.get("price", 0)) > 0:
+            out.append({"kind": "rune", "id": str(id), "name": str(rd.get("name", id)), "price": int(rd["price"])})
     return out
 
 
@@ -56,14 +56,14 @@ static func buy_item(party: PartyState, item_id: String, db: Dictionary, shop: D
     return ""
 
 
-static func buy_sigil(party: PartyState, sigil_id: String, db: Dictionary, shop: Dictionary) -> String:
-    var price: int = sigil_price(sigil_id, db)
-    if not for_sale(shop, "sigil", sigil_id) or price <= 0:
+static func buy_rune(party: PartyState, rune_id: String, db: Dictionary, shop: Dictionary) -> String:
+    var price: int = sigil_price(rune_id, db)
+    if not for_sale(shop, "rune", rune_id) or price <= 0:
         return "Not for sale."
     if party.gold < price:
         return "Not enough gold."
     party.gold -= price
-    party.add_sigil(sigil_id)
+    party.add_rune(rune_id)
     return ""
 
 
@@ -84,7 +84,7 @@ static func sell_item(party: PartyState, item_id: String, db: Dictionary, shop: 
 
 
 ## Sells sigil number `inv_index` of the bag (flat price, whatever its level).
-static func sell_sigil(party: PartyState, inv_index: int, db: Dictionary, shop: Dictionary) -> String:
+static func sell_rune(party: PartyState, inv_index: int, db: Dictionary, shop: Dictionary) -> String:
     if inv_index < 0 or inv_index >= party.sigil_inv.size():
         return "That sigil is not in the bag."
     var inst: Dictionary = party.sigil_inv[inv_index]
@@ -94,3 +94,11 @@ static func sell_sigil(party: PartyState, inv_index: int, db: Dictionary, shop: 
     party.sigil_inv.remove_at(inv_index)
     party.gold += sell_price(price, shop)
     return ""
+
+
+## Compatibility wrappers for older scripts and v0.9.0 inventory saves.
+static func buy_sigil(party: PartyState, rune_id: String, db: Dictionary, shop: Dictionary) -> String:
+    return buy_rune(party, rune_id, db, shop)
+
+static func sell_sigil(party: PartyState, inv_index: int, db: Dictionary, shop: Dictionary) -> String:
+    return sell_rune(party, inv_index, db, shop)
