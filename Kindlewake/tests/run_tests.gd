@@ -828,7 +828,7 @@ func _test_world_atlas() -> void:
                 shapes_ok = false
         if (continent.get("regions", []) as Array).size() < 4:
             regions_ok = false
-        if cid == "eldrimar" and bool(continent.get("current", false)) and (continent.get("regions", []) as Array).has("Sethmarch Frontier"):
+        if cid == "eldrimar" and bool(continent.get("current", false)) and not (continent.get("regions", []) as Array).is_empty() and str(((continent.get("regions", []) as Array)[0] as Dictionary).get("id", "")) == "sethmarch":
             current_ok = true
     check(ids.size() == 7 and metadata_ok, "all continents have unique ids and complete worldbuilding records")
     check(shapes_ok, "every continent has a valid normalized vector-map silhouette")
