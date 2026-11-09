@@ -26,9 +26,9 @@ Artifacts: Kindlewake-APK and test-logs.
 
 File: .github/workflows/manual-source-handoff.yml
 
-Use this when you need a portable source snapshot without building an APK. It packages the exact checked-out commit, inventories tracked files, hashes each file and splits the ZIP into parts no larger than 25,000,000 bytes.
+Use this when you need a portable source snapshot without building an APK. It runs automatically on pushes to main, feature/* and workflow/* branches, and can also be launched manually from Actions. It packages the exact checked-out commit, inventories tracked files, hashes each file and splits the ZIP into parts no larger than 25,000,000 bytes.
 
-Artifacts: Kindlewake-Manual-Source-Handoff, including source_handoff.py, PARTS-MANIFEST.json, SHA256SUMS.txt, REASSEMBLE.txt and the split archive parts.
+Artifacts (30-day retention): Kindlewake-Manual-Source-Handoff, including source_handoff.py, PARTS-MANIFEST.json, SHA256SUMS.txt, REASSEMBLE.txt and the split archive parts.
 
 Download every file into one folder. Do not extract the parts individually. Run the included recovery helper to reassemble and verify the ZIP, then extract into a new empty directory.
 
