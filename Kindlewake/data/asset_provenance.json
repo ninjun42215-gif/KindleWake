@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "updated": "2026-11-10",
+  "policy": "Do not mark an asset pack verified without an authoritative licence file or source-page evidence. Used assets with unverified rights block public/commercial release.",
+  "assets": [
+    {
+      "id": "quaternius-stylized-nature-megakit",
+      "name": "Stylized Nature MegaKit (Standard)",
+      "author": "Quaternius",
+      "source_reference": "Original pack archive; exact source URL not recorded",
+      "source_url": null,
+      "license": "CC0 1.0",
+      "license_evidence": "Kindlewake/assets/art/LICENSE_Quaternius_Nature_CC0.txt",
+      "license_status": "verified",
+      "used_in_game": true,
+      "release_blocker": false,
+      "notes": "Rendered world tree, pine, dead, twisted, rock and mountain sprites."
+    },
+    {
+      "id": "voxel-building-packs",
+      "name": "Voxel building packs (Large/Small/Tall/Tiny Building)",
+      "author": null,
+      "source_reference": "Original pack archives; exact source URL not recorded",
+      "source_url": null,
+      "license": null,
+      "license_evidence": null,
+      "license_status": "unverified",
+      "used_in_game": true,
+      "release_blocker": true,
+      "notes": "Credits record says no licence file was present in the ZIPs. Obtain authoritative licence evidence before distribution."
+    },
+    {
+      "id": "tiny-rpg-character-pack-01",
+      "name": "Tiny RPG Character Asset Pack 01 v2.0 (Free Soldier and Orc)",
+      "author": null,
+      "source_reference": "Original pack archive; exact source URL not recorded",
+      "source_url": null,
+      "license": null,
+      "license_evidence": null,
+      "license_status": "unverified",
+      "used_in_game": true,
+      "release_blocker": true,
+      "notes": "Credits record says no licence file was present in the ZIP. Verify the exact source page and terms before distribution."
+    },
+    {
+      "id": "limezu-modern-interiors-free",
+      "name": "Modern_Interiors_Free_v2_2.zip",
+      "author": "LimeZu",
+      "source_reference": "Original pack archive; exact source URL not recorded",
+      "source_url": null,
+      "license": "Free version; non-commercial only; editing prohibited per current project notes",
+      "license_evidence": null,
+      "license_status": "restricted_noncommercial",
+      "used_in_game": false,
+      "release_blocker": false,
+      "notes": "Intentionally not used; do not import without separately reviewing the licence and art-direction fit."
+    },
+    {
+      "id": "mountainrocks-package",
+      "name": "Package.zip (MountainRocks)",
+      "author": null,
+      "source_reference": "Original pack archive; exact source URL not recorded",
+      "source_url": null,
+      "license": null,
+      "license_evidence": null,
+      "license_status": "unknown",
+      "used_in_game": false,
+      "release_blocker": false,
+      "notes": "Not used in game; no licence file recorded."
+    },
+    {
+      "id": "kindlewake-original-art",
+      "name": "Project-authored vector illustrations, UI ornaments and rune atlas",
+      "author": "Kindlewake project",
+      "source_reference": "Created in this repository",
+      "source_url": null,
+      "license": "Original project content",
+      "license_evidence": "Repository source history",
+      "license_status": "verified",
+      "used_in_game": true,
+      "release_blocker": false,
+      "notes": "Original vector artwork; keep this entry aligned with the actual files in use."
+    }
+  ]
+}
