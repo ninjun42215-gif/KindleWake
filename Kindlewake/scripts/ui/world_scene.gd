@@ -39,6 +39,7 @@ var info_label: Label
 var leader_status_label: Label
 var leader_exp_bar: ProgressBar
 var company_btn: Button
+var manual_save_btn: Button
 var prompt_btn: Button
 var place_panel: PanelContainer
 var place_title: Label
@@ -561,8 +562,11 @@ func _apply_safe_area() -> void:
     if leader_status_label != null:
         leader_status_label.add_theme_font_size_override("font_size", 12 if compact else 14)
     if company_btn != null:
-        company_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 58.0)
-        company_btn.add_theme_font_size_override("font_size", 17 if compact else 20)
+        company_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 56.0 if compact else 64.0)
+        company_btn.add_theme_font_size_override("font_size", 16 if compact else 20)
+    if manual_save_btn != null:
+        manual_save_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0 if compact else 52.0)
+        manual_save_btn.add_theme_font_size_override("font_size", 15 if compact else 18)
     if prompt_btn != null:
         prompt_btn.custom_minimum_size = Vector2(clampf(vw * 0.42, 230.0, 380.0), 68.0)
 
@@ -606,11 +610,11 @@ func _build_ui() -> void:
     root.add_child(company_btn)
     company_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
     company_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-    var save_btn := _btn("SAVE", _save_campaign_manual, 18)
-    save_btn.custom_minimum_size = Vector2(190, 52)
-    root.add_child(save_btn)
-    save_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 84)
-    save_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    manual_save_btn = _btn("SAVE", _save_campaign_manual, 18)
+    manual_save_btn.custom_minimum_size = Vector2(190, 52)
+    root.add_child(manual_save_btn)
+    manual_save_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 84)
+    manual_save_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 
     # Top-centre: ambush banner
     banner = _hud_panel(0.95)
