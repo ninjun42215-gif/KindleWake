@@ -61,6 +61,10 @@ var gesture_used: bool = false
 
 # UI references
 var info_label: Label
+var hp_caption: Label
+var mp_caption: Label
+var hp_bar: ProgressBar
+var mp_bar: ProgressBar
 var log_label: Label
 var timeline_box: HBoxContainer
 var btn_move: Button
@@ -1040,7 +1044,11 @@ func _apply_safe_area() -> void:
     var compact: bool = vw < 900.0
     if info_label != null:
         info_label.custom_minimum_size = Vector2(clampf(vw * 0.27, 190.0, 330.0), 0.0)
-        info_label.add_theme_font_size_override("font_size", 16 if compact else 20)
+        info_label.add_theme_font_size_override("font_size", 15 if compact else 18)
+    if hp_caption != null:
+        hp_caption.add_theme_font_size_override("font_size", 12 if compact else 13)
+    if mp_caption != null:
+        mp_caption.add_theme_font_size_override("font_size", 12 if compact else 13)
     if log_label != null:
         log_label.custom_minimum_size = Vector2(clampf(vw * 0.25, 170.0, 370.0), 0.0)
         log_label.add_theme_font_size_override("font_size", 14 if compact else 18)
@@ -1081,9 +1089,29 @@ func _build_ui() -> void:
     info_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
     info_label = Label.new()
     info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    info_label.custom_minimum_size = Vector2(330, 120)
-    info_label.add_theme_font_size_override("font_size", 20)
-    info_panel.add_child(info_label)
+    info_label.custom_minimum_size = Vector2(330, 92)
+    info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    info_label.add_theme_font_size_override("font_size", 18)
+    var status_stack := VBoxContainer.new()
+    status_stack.add_theme_constant_override("separation", 4)
+    status_stack.add_child(info_label)
+    hp_caption = Label.new()
+    hp_caption.add_theme_font_size_override("font_size", 13)
+    hp_caption.add_theme_color_override("font_color", Color("#e9a09a"))
+    status_stack.add_child(hp_caption)
+    hp_bar = ProgressBar.new()
+    hp_bar.custom_minimum_size = Vector2(0, 8)
+    hp_bar.show_percentage = false
+    status_stack.add_child(hp_bar)
+    mp_caption = Label.new()
+    mp_caption.add_theme_font_size_override("font_size", 13)
+    mp_caption.add_theme_color_override("font_color", Color("#9bbce8"))
+    status_stack.add_child(mp_caption)
+    mp_bar = ProgressBar.new()
+    mp_bar.custom_minimum_size = Vector2(0, 7)
+    mp_bar.show_percentage = false
+    status_stack.add_child(mp_bar)
+    info_panel.add_child(status_stack)
     root.add_child(info_panel)
     info_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT, Control.PRESET_MODE_MINSIZE, 12)
 
@@ -1298,6 +1326,7 @@ func _refresh_ui() -> void:
     var a: BattleUnitScript = controller.active_unit()
     var my_turn: bool = a != null and a.team == "player" and controller.result == "" and not ai_busy and not input_locked
     info_label.text = _info_text()
+    _refresh_unit_bars()
     var pv: String = _preview_text() if not prep_active else ""
     preview_label.text = pv
     preview_panel.visible = pv != ""
@@ -1330,6 +1359,24 @@ func _refresh_auto_button() -> void:
     btn_auto.set_pressed_no_signal(auto_battle)
     btn_auto.text = "Auto Battle: ON" if auto_battle else "Auto Battle: OFF"
     btn_auto.modulate = Color(1.0, 0.86, 0.3) if auto_battle else Color(1, 1, 1)
+
+
+func _refresh_unit_bars() -> void:
+    var u: BattleUnitScript = controller.unit_by_id(inspected_id)
+    if u == null:
+        hp_caption.text = "HP  —"
+        mp_caption.text = "MP  —"
+        hp_bar.value = 0.0
+        mp_bar.value = 0.0
+        return
+    var max_hp: int = maxi(1, u.max_hp())
+    var max_mp: int = maxi(1, u.stat("mp"))
+    hp_caption.text = "HP  %d / %d" % [u.hp, max_hp]
+    mp_caption.text = "MP  %d / %d" % [u.mp, max_mp]
+    hp_bar.max_value = float(max_hp)
+    hp_bar.value = float(clampi(u.hp, 0, max_hp))
+    mp_bar.max_value = float(max_mp)
+    mp_bar.value = float(clampi(u.mp, 0, max_mp))
 
 
 func _info_text() -> String:
