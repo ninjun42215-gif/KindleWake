@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Conservative Kindlewake repository organizer.
+"""Conservative Kindlewake repository inventory and organizer.
 
 Only moves standalone Markdown documents from the Godot project root into docs/.
-All source code, Godot resources, assets, data, tests, plugins and project settings
-are protected. The workflow runs this on a disposable maintenance branch and opens
-a PR; it never writes directly to the selected base branch.
+All code, Godot resources, assets, data, tests, plugins and project settings remain
+untouched. Apply mode is intended for an isolated maintenance branch and draft PR.
 """
 from __future__ import annotations
 import argparse
@@ -22,6 +21,20 @@ EXEMPT = {
 def git(*args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=ROOT, text=True)
 
+def category(path: Path) -> str:
+    parts, suffix = set(path.parts), path.suffix.lower()
+    if ".github" in parts or "tools" in parts: return "automation_and_tools"
+    if "tests" in parts: return "tests"
+    if "assets" in parts: return "assets"
+    if "data" in parts: return "game_data"
+    if "docs" in parts or suffix in {".md", ".rst"}: return "documentation"
+    if suffix == ".gd": return "game_scripts"
+    if suffix in {".tscn", ".scn"}: return "scenes"
+    if suffix in {".tres", ".res", ".import"}: return "resources"
+    if path.name in {"project.godot", "export_presets.cfg"} or suffix in {".cfg", ".toml", ".ini"}:
+        return "project_configuration"
+    return "other"
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", choices=("audit", "organize"), default="audit")
@@ -29,7 +42,12 @@ def main() -> int:
     args = parser.parse_args()
     tracked = [Path(p) for p in git("ls-files", "-z").split("\0") if p]
     moves, collisions, protected = [], [], []
+    categories = {name: [] for name in (
+        "documentation", "automation_and_tools", "tests", "game_scripts",
+        "scenes", "resources", "assets", "game_data", "project_configuration", "other"
+    )}
     for src in tracked:
+        categories[category(src)].append(src.as_posix())
         if src.parent == Path("Kindlewake") and src.suffix.lower() == ".md":
             if src.name in EXEMPT:
                 protected.append({"path": src.as_posix(), "reason": "root-level entry-point or policy document"})
@@ -57,10 +75,11 @@ def main() -> int:
         "base_commit": git("rev-parse", "HEAD").strip(),
         "mode": args.mode,
         "tracked_file_count": len(tracked),
+        "inventory_by_category": categories,
         "planned_moves": moves,
         "applied_moves": moves if args.mode == "organize" else [],
         "collisions": collisions,
-        "protected_examples": protected,
+        "protected_paths": protected,
         "safety": "No code, Godot scenes/resources, assets, data, tests, addons or project settings are moved.",
     }
     (args.report_dir / "organization-report.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
@@ -71,13 +90,15 @@ def main() -> int:
         f"- Candidate moves: {len(moves)}",
         f"- Destination collisions: {len(collisions)}",
         f"- Protected paths/examples: {len(protected)}", "",
-        "## Proposed / applied moves",
+        "## Repository inventory by category",
     ]
+    lines += [f"- {name}: {len(paths)} tracked files" for name, paths in categories.items()]
+    lines += ["", "## Proposed / applied moves"]
     lines += [f"- {m['source']} → {m['target']} — {m['reason']}" for m in moves] or ["- No safe documentation moves found."]
     lines += ["", "## Destination collisions"]
     lines += [f"- {x['source']} → {x['target']}: {x['reason']}" for x in collisions] or ["- None."]
     lines += ["", "## Safety", result["safety"], "",
-              "This tool deliberately does not reorganize game code or Godot resource paths. Extend its explicit rules only after reviewing project references."]
+              "The organizer deliberately does not relocate game code or Godot resource paths. Expand its explicit rules only after reviewing references and adding tests."]
     (args.report_dir / "organization-report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
     return 1 if collisions else 0
