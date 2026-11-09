@@ -10,7 +10,7 @@ const VARIANCE_MAX := 1.05
 
 
 static func attack_power(u: BattleUnitScript, weapon: Dictionary) -> float:
-    var power := float(weapon.get("power", 0))
+    var power := float(weapon.get("power", 0)) * (100.0 + float(u.stat("weapon_power_pct"))) / 100.0
     var str_v := float(u.stat("str"))
     var dex_v := float(u.stat("dex"))
     var int_v := float(u.stat("int"))
