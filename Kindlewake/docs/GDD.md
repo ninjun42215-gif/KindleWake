@@ -880,3 +880,10 @@ The campaign now has a seven-continent world atlas above the existing regional o
 Every continent has a capital, ruling power, climate, cultural identity, political conflict, signature locations, at least four named regional territories, campaign hook and original normalized map silhouette. The original region, town, dungeon and route-gate blueprint for Eldrimar, Thalassar, Varakhan and Nhalor is preserved. The new Veyrwood, Asterreach and Ilyr regions extend the same data-driven structure. A shared mystery about seven deliberately unbound covenant seals connects the continents without erasing their local politics or character-driven conflicts.
 
 The World Atlas is reachable from the overworld HUD. Players can inspect all seven continents and their lore; only Eldrimar is currently the active frontier. The other six routes remain explicitly story-locked until their future playable regional maps, travel systems, quests, settlements and encounter content are implemented. The atlas is a navigable campaign overview, **not a claim that all seven continents are already explorable**. No existing regional map, campaign position or save schema is replaced.
+
+
+## 17. Premium production and regional expansion milestone
+
+The creative north star, narrative architecture, companion writing standard, long-session pacing, touch UX requirements, visual identity, audio direction and definition-of-done gates are specified in [PREMIUM_PRODUCTION_BIBLE.md](PREMIUM_PRODUCTION_BIBLE.md). This is a production standard, not a claim that every proposed asset or campaign scene is already shipped.
+
+The first cross-continent playable expansion is **Thalassar — Brinegate Coast**. It must use the existing overworld, town/interior, battle, recruitment and save systems. Its first story arc centres on the Tideglass Grotto lighthouse ledger, Captain Ilyra's trust, a consequential evidence decision, and Maren Vey's recruitment. The regional slice is complete only when travel, exploration, town services, dungeon, battle, quest state, recruitment, save/load and return travel all work together.
