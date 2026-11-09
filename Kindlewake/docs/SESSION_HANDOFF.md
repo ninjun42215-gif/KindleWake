@@ -1,32 +1,35 @@
 # Current repository checkpoint — KindleWake v0.10.0
 
-**Main before this verification PR:** `10d000922f232ae4566f3ebe8dfe9ba42fdb20b8`  
+**Main before this handoff refresh:** `fa34541df7f37a7f992f10bba3b5cb8f4afd7e23`  
 **Game version:** `0.10.0` · **Android version code:** `1000`  
 **Canonical project:** `Kindlewake/` · **Repository:** `ninjun42215-gif/KindleWake`
 
-## Merged work
-- **PR #7 — Operations Toolbox:** merged; source handoff, full backup, branch hygiene, repository organizer, safe branch integration, health audit and workflow lint.
-- **PR #8 — Rune System v1:** merged; 77 runes across active magic, passive, support, stat and independent categories, unique/heirloom flags, mixed-grade three-copy fusion, mastery bonuses, passive effects, combat statuses, specialist regional vendors and original SVG artwork.
-- **PR #9 and #10 — Safe Auto Merge fixes:** merged; REST-based exact-SHA workflow-run discovery and REST-based expected-SHA squash merge, with no local Git metadata dependency.
-- **PR #11 — Handoff refresh:** automatically merged by Safe Auto Merge run `42704448460`; merge commit `444f3678b4b8738754fb6cf6e2991dde65bfd243`.
-- **PR #13 — Four-check automatic merge gate:** automatically merged by Safe Auto Merge run `42705236585`; PR head `b74b135155b54f7990e526cace41793b2f5e5bd6`; merge commit `10d000922f232ae4566f3ebe8dfe9ba42fdb20b8`.
+## Completed and merged
+- **PR #7 — Operations Toolbox:** source handoff, full backup, branch hygiene, repository organizer, safe branch integration, health audit and workflow lint.
+- **PR #8 — Rune System v1:** 77 runes across active magic, passive, support, stat and independent categories; unique/heirloom flags; mixed-grade three-copy fusion; mastery bonuses; passive effects; combat statuses; regional vendors; original SVG art.
+- **PR #9 and #10 — Safe Auto Merge:** REST-based exact-SHA workflow discovery and REST-based expected-SHA squash merge, without local Git metadata.
+- **PR #11 — Session handoff refresh:** automatically merged; run `42704448460`.
+- **PR #13 — Four-check auto-merge gate:** automatically merged; run `42705236585`.
+- **PR #14 — End-to-end four-check verification:** automatically merged; merge commit `fa34541df7f37a7f992f10bba3b5cb8f4afd7e23`; Safe Auto Merge run `42705647621` completed success.
 
-## Verified checks and handoff
-- Rune PR #8 exact head `db4f2201c60689f8c2edbf8c39a472e551c6d98b`: Godot import, strict tests, balance report, APK export/upload, version sync, YAML lint and Project Health Audit all passed. Build run: https://github.com/ninjun42215-gif/KindleWake/actions/runs/42702932178. APK artifact ID: `13711239347`.
-- Main Android build after Rune integration passed: https://github.com/ninjun42215-gif/KindleWake/actions/runs/42703185402.
-- PR #13 exact-head checks all passed: Build APK `42705037207`, Version Sync `42705037369`, Project Health Audit `42705037472`, Workflow YAML Lint `42705037042`.
-- PR #13 source handoff run `42705016493` passed. Artifact ID `13712438222`; 177 tracked files, zero excluded, 4 ZIP parts, each within 25,000,000 bytes. Archive size 75,113,225 bytes; archive SHA-256 `9ed99230c0d0b8e4a8d7859afdcc38ab440ae8433fccfe848ad761946c42c0a2`. Snapshot exact head: `b74b135155b54f7990e526cace41793b2f5e5bd6`.
-- PR #13 automatic merge workflow run `42705236585` completed success after exact-SHA discovery, required-check validation and REST merge.
+## Verified PR #14 checks and deliverables
+- Exact PR head: `3ed23761ddd6ac2a2fbede88742893b2870111b9`.
+- Build Android APK passed: run `42705446416`; APK artifact ID `13712692998` (about 40.8 MB); test-log artifact ID `13712578070`.
+- Version synchronization passed: run `42705446459`.
+- Project Health Audit passed: run `42705446873`.
+- Workflow YAML Lint passed: run `42705446519`.
+- Source handoff passed: run `42705423062`; artifact ID `13713023290`; 177 tracked files, 0 excluded, 4 ZIP parts, archive size 75,113,193 bytes, archive SHA-256 `370d8ac7ce2bebf9896bdc99f848be102f1552e54daca7a037266bff1fa9d580`. Snapshot exact head `3ed23761ddd6ac2a2fbede88742893b2870111b9`, which is the tree merged by PR #14.
+- Safe Auto Merge run `42705647621`: unique PR discovery success, all four exact-SHA checks success, REST merge success.
 
-## Current automatic merge policy
-- Trigger after successful Build Android APK workflow run for a PR.
-- Wait up to five minutes for all four exact-SHA workflows: Build Android APK, Synchronize Project Version, Workflow YAML Lint and Project Health Audit.
-- Fail immediately if any latest required workflow completes unsuccessfully; fail closed on missing checks, stale SHA, draft, conflict, wrong base or ambiguous PR.
-- Recheck the expected head SHA at merge time and squash merge through GitHub REST.
-- **PR #14 is the end-to-end verification** of this four-check gate. Confirm its checks all pass and Safe Auto Merge completes success for the same head SHA.
+## Current automatic merge guarantees
+- Trigger after a successful Build Android APK run for a PR.
+- Wait up to five minutes for all four checks on the same exact SHA: Build APK, Version Sync, Workflow YAML Lint and Project Health Audit.
+- Fail closed for failed checks, missing/ambiguous PRs, draft PRs, conflicts, stale heads or wrong base.
+- Recheck the expected SHA and merge through GitHub REST using squash.
+- Verified end-to-end by PR #14; do not weaken these safeguards.
 
 ## Remaining QA and release blockers
-- Physical Android device testing remains outstanding: install the APK and verify launch/orientation, touch HUD, rune inventory/sockets, forge/fusion, specialist shops, status effects, save/load and performance.
+- Physical Android device testing is still outstanding: install the APK and verify launch/orientation, touch HUD, rune inventory/sockets, forge/fusion, specialist shops, status effects, save/load and performance.
 - The used voxel-building pack still has unverified redistribution rights. Public/commercial release is blocked until authoritative licence evidence is recorded or those assets are replaced.
 - CI export success is not physical-device certification. Do not claim device testing without real device results.
 - Main branch protection/rulesets should be configured in GitHub Settings; this integration cannot administer those settings.
@@ -34,9 +37,9 @@
 ## Next-session instructions
 1. Read `docs/NEXT_AI_START_HERE.md`, this handoff, `docs/CONTINUATION_PROMPT.md`, `docs/GDD.md` and `docs/SAFE_AUTO_MERGE.md`.
 2. Inspect live main SHA, open PRs and exact-head workflow runs before editing.
-3. Verify PR #14's four-check wait and automatic REST merge using the Safe Auto Merge run and exact head SHA.
-4. Generate a fresh source handoff for the latest main SHA; verify embedded SHA256 manifest and part sizes.
-5. Continue physical device QA and resolve the voxel-building licence blocker before public/commercial release.
+3. Continue game development from `docs/GDD.md`; preserve offline-first design and save compatibility.
+4. Generate a fresh source handoff for the latest main SHA; verify its embedded SHA256 manifest and part sizes.
+5. Complete physical-device QA and resolve the voxel-building licence blocker before public/commercial release.
 
 ---
 
