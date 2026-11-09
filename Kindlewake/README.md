@@ -1,9 +1,9 @@
-# Kindlewake: The Sundered Vow — Milestone 1 prototype + Milestone 2 in progress (v0.7.12 four-continent world blueprint; gameplay v0.7.9)
+# Kindlewake: The Sundered Vow — Milestone 1 prototype + Milestone 2 in progress (v0.7.13 Sethmarch overworld expansion; gameplay v0.7.9)
 
 Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (GDScript, GL Compatibility).
 Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md`
 
-## Source-of-truth and GitHub workflow (v0.7.12)
+## Source-of-truth and GitHub workflow (v0.7.13)
 - The extracted `Kindlewake/` directory in `ninjun42215-gif/KindleWake` on `main` is the canonical source. Routine development edits are committed as ordinary files; do not upload or rebuild a master project ZIP.
 - After the extracted folder is present, future updates are direct file commits. Keep `docs/SESSION_HANDOFF.md`, `docs/GDD.md`, this README, and `docs/CONTINUATION_PROMPT.md` current with each meaningful change.
 - The nested sprite packs are optional source material only; they are not imported into scenes or license-cleared.
