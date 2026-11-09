@@ -386,25 +386,29 @@ func _rebuild() -> void:
     # enough horizontal space for three scaled panes, but not 700 px of height.
     var compact: bool = viewport_width < viewport_size.y * 1.15
     if compact:
-        # Portrait / narrow-screen layout: keep all three work areas in one
-        # vertical flow instead of forcing a clipped three-column desktop row.
-        var stack := VBoxContainer.new()
-        stack.add_theme_constant_override("separation", 8)
-        stack.size_flags_vertical = Control.SIZE_EXPAND_FILL
-        stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-        root_box.add_child(stack)
+        # Portrait phones cannot show three stacked work areas at once. Give
+        # each area a full-height tab so roster, hero sheet and gear/rune/shop
+        # remain reachable without relying on a clipped outer vertical stack.
+        var panes := TabContainer.new()
+        panes.size_flags_vertical = Control.SIZE_EXPAND_FILL
+        panes.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        panes.add_theme_font_size_override("font_size", 18)
+        root_box.add_child(panes)
         var roster_panel: Control = _build_roster()
-        roster_panel.custom_minimum_size = Vector2(0, 150)
-        roster_panel.size_flags_vertical = Control.SIZE_FILL
-        stack.add_child(roster_panel)
+        roster_panel.name = "Company"
+        roster_panel.custom_minimum_size = Vector2(0, 0)
+        roster_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+        panes.add_child(roster_panel)
         var sheet_panel: Control = _build_sheet()
-        sheet_panel.custom_minimum_size = Vector2(0, 250)
+        sheet_panel.name = "Hero"
+        sheet_panel.custom_minimum_size = Vector2(0, 0)
         sheet_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-        stack.add_child(sheet_panel)
+        panes.add_child(sheet_panel)
         var right_panel: Control = _build_right()
-        right_panel.custom_minimum_size = Vector2(0, 300)
+        right_panel.name = "Gear & Runes"
+        right_panel.custom_minimum_size = Vector2(0, 0)
         right_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-        stack.add_child(right_panel)
+        panes.add_child(right_panel)
     else:
         var cols := HBoxContainer.new()
         cols.add_theme_constant_override("separation", 10)
