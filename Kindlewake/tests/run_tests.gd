@@ -2,6 +2,7 @@ extends SceneTree
 
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
+const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -29,6 +30,7 @@ func _initialize() -> void:
     _test_auto_battle()
     _test_progression()
     _test_recruitment()
+    _test_prologue()
     _test_sigils()
     _test_runes()
     _test_weapon_skills()
@@ -91,6 +93,22 @@ func _test_data() -> void:
         var cdef: Dictionary = db["characters"][cid]
         check(db["classes"].has(str(cdef["class_id"])), "class exists for " + cid)
         check(db["weapons"].has(str(cdef["weapon_id"])), "weapon exists for " + cid)
+
+
+func _test_prologue() -> void:
+    print("[prologue]")
+    var prior: Dictionary = {"found_watch": true}
+    var rescue: Dictionary = PrologueSystem.apply_choice(prior, "rescue_people")
+    var record: Dictionary = PrologueSystem.apply_choice(prior, "recover_record")
+    var split: Dictionary = PrologueSystem.apply_choice(prior, "split_company")
+    check(bool(rescue.get("found_watch", false)), "prologue preserves pre-existing world flags")
+    check(bool(rescue.get("prologue_people_saved", false)) and not bool(rescue.get("prologue_record_saved", true)), "rescue choice saves people and records the lost evidence")
+    check(bool(record.get("prologue_record_saved", false)) and not bool(record.get("prologue_people_saved", true)), "record choice preserves evidence and records the human cost")
+    check(bool(split.get("prologue_people_saved", false)) and bool(split.get("prologue_record_saved", false)) and bool(split.get("prologue_company_split", false)), "split choice preserves both outcomes and its distinct consequence")
+    check(str(PrologueSystem.acknowledgement(rescue)).contains("people are alive"), "rescue choice receives a later narrative acknowledgement")
+    check(str(PrologueSystem.acknowledgement(record)).contains("kept the record"), "record choice receives a later narrative acknowledgement")
+    check(str(PrologueSystem.acknowledgement(split)).contains("both lives and truth"), "split choice receives a later narrative acknowledgement")
+    check(PrologueSystem.apply_choice(prior, "unknown").is_empty(), "unknown prologue choices are rejected")
 
 
 func _test_class_tree() -> void:
