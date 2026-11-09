@@ -62,10 +62,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          gh run list --commit "${SHA}" --limit 100 --json name,event,conclusion,headSha > runs.json
+          # workflow_run jobs have no checked-out repository, so use the REST API
+          # rather than gh run list (which depends on local git metadata).
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${SHA}&per_page=100" \
+            --jq '.workflow_runs[] | {name, event, conclusion, head_sha}' | jq -s '.' > runs.json
           for required in "Build Android APK" "Synchronize Project Version"; do
             if ! jq -e --arg name "${required}" --arg sha "${SHA}" \
-              'any(.[]; .name == $name and .event == "pull_request" and .headSha == $sha and .conclusion == "success")' runs.json >/dev/null; then
+              'any(.[]; .name == $name and .event == "pull_request" and .head_sha == $sha and .conclusion == "success")' runs.json >/dev/null; then
               echo "::notice::Required workflow not successful for ${SHA}: ${required}"
               exit 1
             fi
