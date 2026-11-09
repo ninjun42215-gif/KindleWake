@@ -29,7 +29,8 @@ var equipment: Dictionary = {}           # slot -> item id ("" = empty)
 var natural_def: int = 0                 # only for characters without an equipment block (generic enemies)
 var natural_res: int = 0
 var fallback_weapon_id: String = ""      # same: weapon of characters without an equipment block
-var sigils: Dictionary = {"weapon": [], "armor": []}   # group -> Array of sigil instances ({"id","ap"}; {} = empty socket)
+var sigils: Dictionary = {"weapon": [], "armor": []}
+var enhancements: Dictionary = {}  # equipment slot -> +0..+15   # group -> Array of sigil instances ({"id","ap"}; {} = empty socket)
 var reward: Dictionary = {}              # enemies only: {"exp","ap","gold"} paid when defeated
 
 
@@ -59,6 +60,7 @@ static func from_def(char_id: String, def: Dictionary) -> CharacterSheet:
         s.natural_def = int(def.get("armor_def", 0))
         s.natural_res = int(def.get("armor_res", 0))
         s.fallback_weapon_id = str(def.get("weapon_id", ""))
+    s.enhancements = (def.get("enhancements", {}) as Dictionary).duplicate(true)
     s.reward = (def.get("reward", {}) as Dictionary).duplicate()
     var sg: Dictionary = def.get("sigils", {})
     for group in SIGIL_GROUPS:
@@ -278,7 +280,7 @@ func to_dict() -> Dictionary:
         "character_id": character_id, "name": display_name, "house": house, "class_id": class_id,
         "level": level, "xp": xp, "base_stats": base_stats.duplicate(), "skills": skills.duplicate(),
         "equipment": equipment.duplicate(), "natural_def": natural_def, "natural_res": natural_res,
-        "fallback_weapon_id": fallback_weapon_id, "sigils": sigils.duplicate(true), "reward": reward.duplicate(),
+        "fallback_weapon_id": fallback_weapon_id, "sigils": sigils.duplicate(true), "enhancements": enhancements.duplicate(true), "reward": reward.duplicate(),
     }
 
 
@@ -307,6 +309,7 @@ static func from_dict(d: Dictionary) -> CharacterSheet:
     s.natural_res = int(d.get("natural_res", 0))
     s.fallback_weapon_id = str(d.get("fallback_weapon_id", ""))
     s.reward = (d.get("reward", {}) as Dictionary).duplicate()
+    s.enhancements = (d.get("enhancements", {}) as Dictionary).duplicate(true)
     var sg: Dictionary = d.get("sigils", {})
     for group in SIGIL_GROUPS:
         var arr: Array = []
