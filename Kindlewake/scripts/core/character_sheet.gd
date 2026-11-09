@@ -497,7 +497,7 @@ func sigil_mods(items: Dictionary, sdefs: Dictionary) -> Dictionary:
         var inst: Dictionary = e["inst"]
         var sd: Dictionary = sdefs.get(str(inst.get("id", "")), {})
         var kind: String = str(sd.get("kind", ""))
-        if kind != "stat" and kind != "independent":
+        if kind != "stat" and kind != "independent" and kind != "passive":
             continue
         var mods: Dictionary = sigil_level_data(sd, sigil_level(inst, sd)).get("mods", {})
         for k in mods.keys():
