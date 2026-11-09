@@ -103,6 +103,36 @@ jobs:
         working-directory: Kindlewake
         run: python tools/build_apk.py --strict --with-balance
 
+      - name: Verify the production signing certificate identity
+        working-directory: Kindlewake
+        env:
+          EXPECTED_CERT_SHA256: \${{ vars.ANDROID_RELEASE_CERT_SHA256 }}
+        run: |
+          set -euo pipefail
+          test -n "$EXPECTED_CERT_SHA256" || {
+            echo "::error::Missing ANDROID_RELEASE_CERT_SHA256 environment variable; refusing an unpinned production signing identity."
+            exit 1
+          }
+          python3 - <<'PY'
+          import os, re, subprocess
+          from pathlib import Path
+          candidates = sorted(Path.home().glob(".kindlewake_build/android-sdk/build-tools/*/apksigner"))
+          if not candidates:
+              raise SystemExit("apksigner was not found in the Android SDK build-tools.")
+          output = subprocess.check_output(
+              [str(candidates[-1]), "verify", "--print-certs", "dist/Kindlewake.apk"],
+              text=True, stderr=subprocess.STDOUT
+          )
+          match = re.search(r"certificate SHA-256 digest:\s*([0-9a-fA-F:]+)", output, re.I)
+          if not match:
+              raise SystemExit("Could not read the APK signer certificate fingerprint.")
+          actual = match.group(1).replace(":", "").lower()
+          expected = os.environ["EXPECTED_CERT_SHA256"].replace(":", "").strip().lower()
+          if actual != expected:
+              raise SystemExit("APK signer certificate does not match ANDROID_RELEASE_CERT_SHA256; refusing publication.")
+          print("Production signing certificate fingerprint matches the protected environment setting.")
+          PY
+
       - name: Create production release checksums and manifest
         working-directory: Kindlewake
         env:
