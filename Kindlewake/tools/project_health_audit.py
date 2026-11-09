@@ -13,6 +13,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path("."))
     parser.add_argument("--output", type=Path, default=Path("health-audit"))
+    parser.add_argument("--fail-on-warnings", action="store_true", help="Return non-zero when advisory findings exist.")
     args = parser.parse_args()
     root = args.root.resolve()
     project = root / "Kindlewake"
@@ -205,7 +206,7 @@ def main() -> int:
     ]
     (args.output / "project-health.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
-    return 1 if errors else 0
+    return 1 if errors or (args.fail_on_warnings and warnings) else 0
 
 
 if __name__ == "__main__":
