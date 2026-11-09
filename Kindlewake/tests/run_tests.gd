@@ -384,7 +384,7 @@ func _test_progression() -> void:
     # --- data integrity
     var stat_keys: Array = ["hp", "mp", "str", "dex", "int", "vit", "spd", "lck", "acc", "eva", "ldr", "mor"]
     var item_slots: Array = ["weapon", "offhand", "armor", "helm", "accessory"]
-    var rarities: Array = ["common", "fine", "masterwork", "heirloom"]
+    var rarities: Array = ["common", "uncommon", "rare", "epic", "legendary", "mythical", "unique"]
     var items_ok := items.size() >= 15
     for k in items.keys():
         var it: Dictionary = items[k]
