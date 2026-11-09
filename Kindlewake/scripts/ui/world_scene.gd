@@ -568,7 +568,17 @@ func _apply_safe_area() -> void:
         manual_save_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0 if compact else 52.0)
         manual_save_btn.add_theme_font_size_override("font_size", 15 if compact else 18)
     if prompt_btn != null:
-        prompt_btn.custom_minimum_size = Vector2(clampf(vw * 0.42, 230.0, 380.0), 68.0)
+        prompt_btn.custom_minimum_size = Vector2(clampf(vw * 0.42, 230.0, 380.0), 64.0 if compact else 68.0)
+        prompt_btn.add_theme_font_size_override("font_size", 20 if compact else 28)
+    if place_panel != null:
+        place_panel.custom_minimum_size = Vector2(maxf(260.0, minf(vw - 24.0, 720.0)), 0.0)
+    if place_title != null:
+        place_title.add_theme_font_size_override("font_size", 26 if compact else 38)
+    if place_text != null:
+        place_text.custom_minimum_size = Vector2(maxf(220.0, minf(vw - 72.0, 560.0)), 0.0)
+        place_text.add_theme_font_size_override("font_size", 17 if compact else 22)
+    if banner_label != null:
+        banner_label.add_theme_font_size_override("font_size", 20 if compact else 30)
 
 
 func _build_ui() -> void:
