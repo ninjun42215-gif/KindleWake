@@ -1,396 +1,1599 @@
 {
- "maps": {
-  "crossing": {
-   "name": "Sallow Crossing",
-   "kind": "town",
-   "entry": [
-    11,
-    16
-   ],
-   "zoom": 1.15,
-   "rows": [
-    "TTTTTTTTTTTTTTTTTTTTTTTT",
-    "T......................T",
-    "T..rrrr..........bbbb..T",
-    "T..rrrr.T........bbbb..T",
-    "T..w1ww..........w2ww..T",
-    "T...,.............,....T",
-    "T...,,,,,,,,,,,,,,,....T",
-    "T..........,,..........T",
-    "T..........,,..T.......T",
-    "T..rrrr....,,....~~~~..T",
-    "T..rrrr..T.,,....~~~~..T",
-    "T..w3ww....,,....~~~~..T",
-    "T...,......,,..........T",
-    "T...,,,,,,,,,..........T",
-    "T.T........,,.......TT.T",
-    "T.TT...T...,,..T....TT.T",
-    "T..........,,..........T",
-    "TTTTTTTTTTTEETTTTTTTTTTT"
-   ],
-   "doors": {
-    "1": {
-     "to": "crossing_inn",
-     "spawn": [
-      5,
-      7
-     ]
+  "maps": {
+    "crossing": {
+      "name": "Sallow Crossing",
+      "kind": "town",
+      "entry": [
+        11,
+        16
+      ],
+      "zoom": 1.15,
+      "rows": [
+        "TTTTTTTTTTTTTTTTTTTTTTTT",
+        "T......................T",
+        "T..rrrr..........bbbb..T",
+        "T..rrrr.T........bbbb..T",
+        "T..w1ww..........w2ww..T",
+        "T...,.............,....T",
+        "T...,,,,,,,,,,,,,,,....T",
+        "T..........,,..........T",
+        "T..........,,..T.......T",
+        "T..rrrr....,,....~~~~..T",
+        "T..rrrr..T.,,....~~~~..T",
+        "T..w3ww....,,....~~~~..T",
+        "T...,......,,..........T",
+        "T...,,,,,,,,,..........T",
+        "T.T........,,.......TT.T",
+        "T.TT...T...,,..T....TT.T",
+        "T..........,,..........T",
+        "TTTTTTTTTTTEETTTTTTTTTTT"
+      ],
+      "doors": {
+        "1": {
+          "to": "crossing_inn",
+          "spawn": [
+            5,
+            7
+          ]
+        },
+        "2": {
+          "to": "crossing_shop",
+          "spawn": [
+            4,
+            6
+          ]
+        },
+        "3": {
+          "to": "crossing_elder",
+          "spawn": [
+            4,
+            5
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            9,
+            7
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Carter Wen",
+          "tint": [
+            0.9,
+            0.8,
+            0.6
+          ],
+          "text": "Roadwolves hit the toll cart at dawn. If you go east, keep to the road. Forest is where they wait."
+        },
+        {
+          "cell": [
+            14,
+            13
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Village Guard",
+          "tint": [
+            0.7,
+            0.8,
+            1
+          ],
+          "text": "Hask Gravelteeth's camp lies far to the east, past the old watchtower road. Bring more than three blades."
+        }
+      ]
     },
-    "2": {
-     "to": "crossing_shop",
-     "spawn": [
-      4,
-      6
-     ]
+    "crossing_inn": {
+      "name": "The Ford and Flagon",
+      "kind": "interior",
+      "entry": [
+        5,
+        7
+      ],
+      "rows": [
+        "############",
+        "#=====H==BB#",
+        "#==========#",
+        "#=KKKK=====#",
+        "#=======X==#",
+        "#===+++====#",
+        "#U===+==X==#",
+        "#U===+=====#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "crossing",
+          "spawn": [
+            4,
+            5
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            3,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Innkeeper Maud",
+          "tint": [
+            1,
+            0.85,
+            0.85
+          ],
+          "text": "Rest your feet, captain. Beds are full of drovers tonight, but the stew is hot and the gossip is free."
+        },
+        {
+          "cell": [
+            7,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Drover",
+          "tint": [
+            0.75,
+            0.9,
+            0.75
+          ],
+          "text": "Heard a purse was left in the old tower, north of here. Nobody dares go. The roads are not what they were."
+        }
+      ]
     },
-    "3": {
-     "to": "crossing_elder",
-     "spawn": [
-      4,
-      5
-     ]
-    }
-   },
-   "spots": [
-    {
-     "cell": [
-      9,
-      7
-     ],
-     "kind": "text",
-     "npc": true,
-     "name": "Carter Wen",
-     "tint": [
-      0.9,
-      0.8,
-      0.6
-     ],
-     "text": "Roadwolves hit the toll cart at dawn. If you go east, keep to the road. Forest is where they wait."
+    "crossing_shop": {
+      "name": "Oswin's Goods",
+      "kind": "interior",
+      "entry": [
+        4,
+        6
+      ],
+      "rows": [
+        "##########",
+        "#SSSSSSSS#",
+        "#=======U#",
+        "#=KKKKKK=#",
+        "#========#",
+        "#C=++++=C#",
+        "#==++++==#",
+        "####2#####"
+      ],
+      "doors": {
+        "2": {
+          "to": "crossing",
+          "spawn": [
+            18,
+            5
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            4,
+            3
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Shopkeeper Oswin",
+          "tint": [
+            1,
+            0.9,
+            0.6
+          ],
+          "text": "Blades, mail, charms and sigils, all honestly priced. And your company's kit can be sorted out right here at the counter."
+        }
+      ]
     },
-    {
-     "cell": [
-      14,
-      13
-     ],
-     "kind": "text",
-     "npc": true,
-     "name": "Village Guard",
-     "tint": [
-      0.7,
-      0.8,
-      1.0
-     ],
-     "text": "Hask Gravelteeth's camp lies far to the east, past the old watchtower road. Bring more than three blades."
-    }
-   ]
-  },
-  "crossing_inn": {
-   "name": "The Ford and Flagon",
-   "kind": "interior",
-   "entry": [
-    5,
-    7
-   ],
-   "rows": [
-    "############",
-    "#=====H==BB#",
-    "#==========#",
-    "#=KKKK=====#",
-    "#=======X==#",
-    "#===+++====#",
-    "#U===+==X==#",
-    "#U===+=====#",
-    "#####1######"
-   ],
-   "doors": {
-    "1": {
-     "to": "crossing",
-     "spawn": [
-      4,
-      5
-     ]
-    }
-   },
-   "spots": [
-    {
-     "cell": [
-      3,
-      3
-     ],
-     "kind": "text",
-     "npc": true,
-     "name": "Innkeeper Maud",
-     "tint": [
-      1.0,
-      0.85,
-      0.85
-     ],
-     "text": "Rest your feet, captain. Beds are full of drovers tonight, but the stew is hot and the gossip is free."
+    "crossing_elder": {
+      "name": "Elder Hale's House",
+      "kind": "interior",
+      "entry": [
+        4,
+        5
+      ],
+      "rows": [
+        "#########",
+        "#BB===H=#",
+        "#=======#",
+        "#S==X===#",
+        "#S=+++==#",
+        "#=======#",
+        "####3####"
+      ],
+      "doors": {
+        "3": {
+          "to": "crossing",
+          "spawn": [
+            4,
+            12
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Elder Hale",
+          "tint": [
+            0.85,
+            0.85,
+            0.95
+          ],
+          "text": "House Dunmarrow held these roads for three hundred years. Torren, the keep is yours to rebuild. Start with the road to Eldrimar."
+        }
+      ]
     },
-    {
-     "cell": [
-      7,
-      5
-     ],
-     "kind": "text",
-     "npc": true,
-     "name": "Drover",
-     "tint": [
-      0.75,
-      0.9,
-      0.75
-     ],
-     "text": "Heard a purse was left in the old tower, north of here. Nobody dares go. The roads are not what they were."
-    }
-   ]
-  },
-  "crossing_shop": {
-   "name": "Oswin's Goods",
-   "kind": "interior",
-   "entry": [
-    4,
-    6
-   ],
-   "rows": [
-    "##########",
-    "#SSSSSSSS#",
-    "#=======U#",
-    "#=KKKKKK=#",
-    "#========#",
-    "#C=++++=C#",
-    "#==++++==#",
-    "####2#####"
-   ],
-   "doors": {
-    "2": {
-     "to": "crossing",
-     "spawn": [
-      18,
-      5
-     ]
-    }
-   },
-   "spots": [
-    {
-     "cell": [
-      4,
-      3
-     ],
-     "kind": "party",
-     "npc": true,
-     "name": "Shopkeeper Oswin",
-     "tint": [
-      1.0,
-      0.9,
-      0.6
-     ],
-     "text": "Blades, mail, charms and sigils, all honestly priced. And your company's kit can be sorted out right here at the counter."
-    }
-   ]
-  },
-  "crossing_elder": {
-   "name": "Elder Hale's House",
-   "kind": "interior",
-   "entry": [
-    4,
-    5
-   ],
-   "rows": [
-    "#########",
-    "#BB===H=#",
-    "#=======#",
-    "#S==X===#",
-    "#S=+++==#",
-    "#=======#",
-    "####3####"
-   ],
-   "doors": {
-    "3": {
-     "to": "crossing",
-     "spawn": [
-      4,
-      12
-     ]
-    }
-   },
-   "spots": [
-    {
-     "cell": [
-      5,
-      3
-     ],
-     "kind": "text",
-     "npc": true,
-     "name": "Elder Hale",
-     "tint": [
-      0.85,
-      0.85,
-      0.95
-     ],
-     "text": "House Dunmarrow held these roads for three hundred years. Torren, the keep is yours to rebuild. Start with the road to Eldrimar."
-    }
-   ]
-  },
-  "sethorn": {
-   "name": "Kaer Sethorn",
-   "kind": "town",
-   "entry": [
-    10,
-    14
-   ],
-   "zoom": 1.15,
-   "rows": [
-    "######################",
-    "#.....bbbbbbbbbb.....#",
-    "#.TT..bbbbbbbbbb.....#",
-    "#.T...bbbbbbbbbb.....#",
-    "#.....wwww1wwwww.....#",
-    "#.........,,.........#",
-    "#.........,,.....rrrr#",
-    "#.........,,.....rrrr#",
-    "#..~~.....,,.....w2ww#",
-    "#..~~.....,,,,,,,,,..#",
-    "#.........,,.........#",
-    "#.........,,.........#",
-    "#.T.......,,..T....T.#",
-    "#..TT.....,,...T..T..#",
-    "#.........,,.........#",
-    "##########EE##########"
-   ],
-   "doors": {
-    "1": {
-     "to": "sethorn_hall",
-     "spawn": [
-      7,
-      9
-     ]
+    "sethorn": {
+      "name": "Kaer Sethorn",
+      "kind": "town",
+      "entry": [
+        10,
+        14
+      ],
+      "zoom": 1.15,
+      "rows": [
+        "######################",
+        "#.....bbbbbbbbbb.....#",
+        "#.TT..bbbbbbbbbb.....#",
+        "#.T...bbbbbbbbbb.....#",
+        "#.....wwww1wwwww.....#",
+        "#.........,,.........#",
+        "#.........,,.....rrrr#",
+        "#.........,,.....rrrr#",
+        "#..~~.....,,.....w2ww#",
+        "#..~~.....,,,,,,,,,..#",
+        "#.........,,.........#",
+        "#.........,,.........#",
+        "#.T.......,,..T....T.#",
+        "#..TT.....,,...T..T..#",
+        "#.........,,.........#",
+        "##########EE##########"
+      ],
+      "doors": {
+        "1": {
+          "to": "sethorn_hall",
+          "spawn": [
+            7,
+            9
+          ]
+        },
+        "2": {
+          "to": "sethorn_barracks",
+          "spawn": [
+            4,
+            6
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            8,
+            10
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Gate Warden",
+          "tint": [
+            0.7,
+            0.8,
+            1
+          ],
+          "text": "The walls are cracked, but they hold. Steward Brannoch is waiting in the great hall."
+        }
+      ]
     },
-    "2": {
-     "to": "sethorn_barracks",
-     "spawn": [
-      4,
-      6
-     ]
-    }
-   },
-   "spots": [
-    {
-     "cell": [
-      8,
-      10
-     ],
-     "kind": "text",
-     "npc": true,
-     "name": "Gate Warden",
-     "tint": [
-      0.7,
-      0.8,
-      1.0
-     ],
-     "text": "The walls are cracked, but they hold. Steward Brannoch is waiting in the great hall."
-    }
-   ]
-  },
-  "sethorn_hall": {
-   "name": "Great Hall of Kaer Sethorn",
-   "kind": "interior",
-   "entry": [
-    7,
-    9
-   ],
-   "rows": [
-    "#####N####N#####",
-    "#=H====++====H=#",
-    "#======++======#",
-    "#====P=++=P====#",
-    "#======XX======#",
-    "#======++======#",
-    "#====P=++=P====#",
-    "#======++======#",
-    "#U=====++=====U#",
-    "#U=====++======#",
-    "#######1########"
-   ],
-   "doors": {
-    "1": {
-     "to": "sethorn",
-     "spawn": [
-      10,
-      6
-     ]
-    }
-   },
-   "spots": [
-    {
-     "cell": [
-      7,
-      2
-     ],
-     "kind": "text",
-     "npc": true,
-     "name": "Steward Brannoch",
-     "tint": [
-      0.95,
-      0.8,
-      0.5
-     ],
-     "text": "The road is open, my lord, but it is not safe. Train the company, forge sigils, and clear the Roadwolf Camp."
+    "sethorn_hall": {
+      "name": "Great Hall of Kaer Sethorn",
+      "kind": "interior",
+      "entry": [
+        7,
+        9
+      ],
+      "rows": [
+        "#####N####N#####",
+        "#=H====++====H=#",
+        "#======++======#",
+        "#====P=++=P====#",
+        "#======XX======#",
+        "#======++======#",
+        "#====P=++=P====#",
+        "#======++======#",
+        "#U=====++=====U#",
+        "#U=====++======#",
+        "#######1########"
+      ],
+      "doors": {
+        "1": {
+          "to": "sethorn",
+          "spawn": [
+            10,
+            6
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            7,
+            2
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Steward Brannoch",
+          "tint": [
+            0.95,
+            0.8,
+            0.5
+          ],
+          "text": "The road is open, my lord, but it is not safe. Train the company, forge sigils, and clear the Roadwolf Camp."
+        },
+        {
+          "cell": [
+            7,
+            4
+          ],
+          "kind": "party",
+          "npc": false,
+          "name": "War Table",
+          "text": "The war table: sort your company, gear, sigils and promotions here, or send for the market stock."
+        }
+      ]
     },
-    {
-     "cell": [
-      7,
-      4
-     ],
-     "kind": "party",
-     "npc": false,
-     "name": "War Table",
-     "text": "The war table: sort your company, gear, sigils and promotions here, or send for the market stock."
+    "sethorn_barracks": {
+      "name": "Barracks",
+      "kind": "interior",
+      "entry": [
+        4,
+        6
+      ],
+      "rows": [
+        "##########",
+        "#B=SSSS=B#",
+        "#B======B#",
+        "#B======B#",
+        "#===X====#",
+        "#==++++==#",
+        "#========#",
+        "####2#####"
+      ],
+      "doors": {
+        "2": {
+          "to": "sethorn",
+          "spawn": [
+            18,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Sergeant Voss",
+          "tint": [
+            0.8,
+            0.8,
+            0.8
+          ],
+          "text": "Spears sharp, boots dry. Give the word and we march. Rear attacks and flanks win fights, captain. Remember it."
+        }
+      ]
+    },
+    "thornmere": {
+      "name": "Thornmere",
+      "kind": "town",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.15,
+      "rows": [
+        "################",
+        "#..............#",
+        "#..1......2....#",
+        "#..............#",
+        "#....3.........#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#######E########"
+      ],
+      "doors": {
+        "1": {
+          "to": "thornmere_inn",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "2": {
+          "to": "thornmere_market",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "3": {
+          "to": "thornmere_recruit",
+          "spawn": [
+            5,
+            6
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            7,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Town Crier",
+          "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        }
+      ]
+    },
+    "thornmere_inn": {
+      "name": "The Thornmere Inn",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "thornmere",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "inn",
+          "npc": true,
+          "name": "Innkeeper",
+          "text": "A clean bed and a hot meal cost 20 gold. Your company can recover its nerve here."
+        }
+      ]
+    },
+    "thornmere_market": {
+      "name": "Thornmere Market",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "thornmere",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Market Factor",
+          "text": "The Weald's best bowyers and charm-sellers trade here. Use the party counter to compare and buy equipment."
+        }
+      ]
+    },
+    "thornmere_recruit": {
+      "name": "Thornmere Muster Hall",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "thornmere",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Lucan Thorne",
+          "character_id": "lucan_thorne",
+          "text": "A steady yeoman captain, once sworn to House Orrowen. He will travel with you if you can offer a place in the company."
+        }
+      ]
+    },
+    "foxglove": {
+      "name": "Foxglove",
+      "kind": "town",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.15,
+      "rows": [
+        "################",
+        "#..............#",
+        "#..1......2....#",
+        "#..............#",
+        "#....3.........#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#######E########"
+      ],
+      "doors": {
+        "1": {
+          "to": "foxglove_inn",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "2": {
+          "to": "foxglove_market",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "3": {
+          "to": "foxglove_recruit",
+          "spawn": [
+            5,
+            6
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            7,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Town Crier",
+          "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        }
+      ]
+    },
+    "foxglove_inn": {
+      "name": "The Foxglove Inn",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "foxglove",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "inn",
+          "npc": true,
+          "name": "Innkeeper",
+          "text": "The herbwives keep a quiet room for weary travellers. Rest costs 20 gold."
+        }
+      ]
+    },
+    "foxglove_market": {
+      "name": "Foxglove Market",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "foxglove",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Market Factor",
+          "text": "Foxglove trades in herbs, bows and travel gear. The quartermaster can arrange your equipment."
+        }
+      ]
+    },
+    "foxglove_recruit": {
+      "name": "Foxglove Muster Hall",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "foxglove",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Old Brisa",
+          "character_id": "old_brisa",
+          "text": "A village elder and healer. She asks no oath, only that the company protect the road folk."
+        }
+      ]
+    },
+    "elderbough": {
+      "name": "Elderbough",
+      "kind": "town",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.15,
+      "rows": [
+        "################",
+        "#..............#",
+        "#..1......2....#",
+        "#..............#",
+        "#....3.........#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#######E########"
+      ],
+      "doors": {
+        "1": {
+          "to": "elderbough_inn",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "2": {
+          "to": "elderbough_market",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "3": {
+          "to": "elderbough_recruit",
+          "spawn": [
+            5,
+            6
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            7,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Town Crier",
+          "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        }
+      ]
+    },
+    "elderbough_inn": {
+      "name": "The Elderbough Inn",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "elderbough",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "inn",
+          "npc": true,
+          "name": "Innkeeper",
+          "text": "The timber hall offers a dry bed and a warm fire for 20 gold."
+        }
+      ]
+    },
+    "elderbough_market": {
+      "name": "Elderbough Market",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "elderbough",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Market Factor",
+          "text": "Carpenters and hunters bring their wares to the square. The factor can open your company stores."
+        }
+      ]
+    },
+    "elderbough_recruit": {
+      "name": "Elderbough Muster Hall",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "elderbough",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Kestrel",
+          "character_id": "kestrel",
+          "text": "A silent scout with an old contract to settle. A place among your outriders will do."
+        }
+      ]
+    },
+    "cindermead": {
+      "name": "Cindermead",
+      "kind": "town",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.15,
+      "rows": [
+        "################",
+        "#..............#",
+        "#..1......2....#",
+        "#..............#",
+        "#....3.........#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#######E########"
+      ],
+      "doors": {
+        "1": {
+          "to": "cindermead_inn",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "2": {
+          "to": "cindermead_market",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "3": {
+          "to": "cindermead_recruit",
+          "spawn": [
+            5,
+            6
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            7,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Town Crier",
+          "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        }
+      ]
+    },
+    "cindermead_inn": {
+      "name": "The Cindermead Inn",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "cindermead",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "inn",
+          "npc": true,
+          "name": "Innkeeper",
+          "text": "The Red Mare charges 20 gold for a night's rest and a stable for your mounts."
+        }
+      ]
+    },
+    "cindermead_market": {
+      "name": "Cindermead Market",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "cindermead",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Market Factor",
+          "text": "The central market carries Vessmoor steel, tack and provisions. Visit the counter to manage your gear."
+        }
+      ]
+    },
+    "cindermead_recruit": {
+      "name": "Cindermead Muster Hall",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "cindermead",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Anselm Pike",
+          "character_id": "anselm_pike",
+          "text": "A veteran sergeant with a dry wit and a gift for keeping recruits alive. He will join a disciplined company."
+        }
+      ]
+    },
+    "redwater": {
+      "name": "Redwater",
+      "kind": "town",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.15,
+      "rows": [
+        "################",
+        "#..............#",
+        "#..1......2....#",
+        "#..............#",
+        "#....3.........#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#######E########"
+      ],
+      "doors": {
+        "1": {
+          "to": "redwater_inn",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "2": {
+          "to": "redwater_market",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "3": {
+          "to": "redwater_recruit",
+          "spawn": [
+            5,
+            6
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            7,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Town Crier",
+          "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        }
+      ]
+    },
+    "redwater_inn": {
+      "name": "The Redwater Inn",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "redwater",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "inn",
+          "npc": true,
+          "name": "Innkeeper",
+          "text": "The Ferry House offers a meal and a bed for 20 gold."
+        }
+      ]
+    },
+    "redwater_market": {
+      "name": "Redwater Market",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "redwater",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Market Factor",
+          "text": "Ferry traders sell river gear and imported goods. The factor can access your party shop."
+        }
+      ]
+    },
+    "redwater_recruit": {
+      "name": "Redwater Muster Hall",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "redwater",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Petra Quill",
+          "character_id": "petra_quill",
+          "text": "A blunt field surgeon who left a noble household after refusing to abandon wounded levies."
+        }
+      ]
+    },
+    "milefort": {
+      "name": "Milefort",
+      "kind": "town",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.15,
+      "rows": [
+        "################",
+        "#..............#",
+        "#..1......2....#",
+        "#..............#",
+        "#....3.........#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#######E########"
+      ],
+      "doors": {
+        "1": {
+          "to": "milefort_inn",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "2": {
+          "to": "milefort_market",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "3": {
+          "to": "milefort_recruit",
+          "spawn": [
+            5,
+            6
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            7,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Town Crier",
+          "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        }
+      ]
+    },
+    "milefort_inn": {
+      "name": "The Milefort Inn",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "milefort",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "inn",
+          "npc": true,
+          "name": "Innkeeper",
+          "text": "The Garrison Inn provides a guarded room for 20 gold."
+        }
+      ]
+    },
+    "milefort_market": {
+      "name": "Milefort Market",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "milefort",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Market Factor",
+          "text": "The mile market stocks practical arms and armour for the southern road."
+        }
+      ]
+    },
+    "milefort_recruit": {
+      "name": "Milefort Muster Hall",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "milefort",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Dorian Vask",
+          "character_id": "dorian_vask",
+          "text": "A pragmatic mercenary captain. He asks for a fair share and a clear chain of command."
+        }
+      ]
+    },
+    "dungeon_hollowroot": {
+      "name": "Hollowroot Warren",
+      "kind": "dungeon",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.25,
+      "rows": [
+        "##############",
+        "#............#",
+        "#............#",
+        "#..#######...#",
+        "#..#.....#...#",
+        "#..#.....#...#",
+        "#..#.....#...#",
+        "#..#######...#",
+        "#............#",
+        "#............#",
+        "#............#",
+        "#######E######"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            3,
+            2
+          ],
+          "kind": "treasure",
+          "name": "Sealed Cache",
+          "npc": false,
+          "text": "A rusted strongbox contains 120 gold and a map fragment.",
+          "reward_gold": 120
+        },
+        {
+          "cell": [
+            10,
+            6
+          ],
+          "kind": "boss",
+          "npc": true,
+          "name": "The Rootbound Warden",
+          "text": "A former road captain has become the keeper of this den. He has chained the old tunnel doors and refuses to let the dead rest.",
+          "battle_id": "battle_hollowroot",
+          "world_flag_on_victory": "dungeon_hollowroot_cleared"
+        }
+      ]
+    },
+    "dungeon_bell": {
+      "name": "The Bell Under Leaves",
+      "kind": "dungeon",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.25,
+      "rows": [
+        "##############",
+        "#............#",
+        "#............#",
+        "#..#######...#",
+        "#..#.....#...#",
+        "#..#.....#...#",
+        "#..#.....#...#",
+        "#..#######...#",
+        "#............#",
+        "#............#",
+        "#............#",
+        "#######E######"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            3,
+            2
+          ],
+          "kind": "treasure",
+          "name": "Sealed Cache",
+          "npc": false,
+          "text": "A votive coffer holds 120 gold and a silver woodland token.",
+          "reward_gold": 120
+        },
+        {
+          "cell": [
+            10,
+            6
+          ],
+          "kind": "boss",
+          "npc": true,
+          "name": "The Bell-Keeper",
+          "text": "The last keeper guards the bronze bell, convinced its toll is the only thing keeping a buried plague asleep.",
+          "battle_id": "battle_bell",
+          "world_flag_on_victory": "dungeon_bell_cleared"
+        }
+      ]
+    },
+    "dungeon_catacombs": {
+      "name": "Kingsroad Catacombs",
+      "kind": "dungeon",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.25,
+      "rows": [
+        "##############",
+        "#............#",
+        "#............#",
+        "#..#######...#",
+        "#..#.....#...#",
+        "#..#.....#...#",
+        "#..#.....#...#",
+        "#..#######...#",
+        "#............#",
+        "#............#",
+        "#............#",
+        "#######E######"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            3,
+            2
+          ],
+          "kind": "treasure",
+          "name": "Sealed Cache",
+          "npc": false,
+          "text": "A sealed royal chest contains 120 gold and a signet fragment.",
+          "reward_gold": 120
+        },
+        {
+          "cell": [
+            10,
+            6
+          ],
+          "kind": "boss",
+          "npc": true,
+          "name": "The Ashen Reeve",
+          "text": "A disgraced Vessmoor reeve commands the ossuary's looters, claiming the crown still owes his family a debt.",
+          "battle_id": "battle_catacombs",
+          "world_flag_on_victory": "dungeon_catacombs_cleared"
+        }
+      ]
     }
-   ]
-  },
-  "sethorn_barracks": {
-   "name": "Barracks",
-   "kind": "interior",
-   "entry": [
-    4,
-    6
-   ],
-   "rows": [
-    "##########",
-    "#B=SSSS=B#",
-    "#B======B#",
-    "#B======B#",
-    "#===X====#",
-    "#==++++==#",
-    "#========#",
-    "####2#####"
-   ],
-   "doors": {
-    "2": {
-     "to": "sethorn",
-     "spawn": [
-      18,
-      9
-     ]
-    }
-   },
-   "spots": [
-    {
-     "cell": [
-      5,
-      5
-     ],
-     "kind": "text",
-     "npc": true,
-     "name": "Sergeant Voss",
-     "tint": [
-      0.8,
-      0.8,
-      0.8
-     ],
-     "text": "Spears sharp, boots dry. Give the word and we march. Rear attacks and flanks win fights, captain. Remember it."
-    }
-   ]
   }
- }
 }
