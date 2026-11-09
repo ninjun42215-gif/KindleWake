@@ -30,14 +30,15 @@ The source handoff uses `git ls-files` from the triggering checkout. It does not
 Do not run production publishing until all of these are configured:
 
 1. In GitHub repository Settings → Environments, create an environment named `android-production`.
-2. Add required reviewers / deployment protection rules to that environment. The workflow references this environment; the approval rule is configured in GitHub settings, not in YAML.
-3. Add these **environment secrets** to `android-production`:
+2. The production workflow must first exist on the repository's default branch before GitHub exposes it for `workflow_dispatch`. This project keeps `main` untouched until the draft PR is explicitly approved and merged; therefore do not expect the production dispatch to be available while this workflow exists only on the feature branch.
+3. Add required reviewers / deployment protection rules to that environment. The workflow references this environment; the approval rule is configured in GitHub settings, not in YAML.
+4. Add these **environment secrets** to `android-production`:
    - `ANDROID_RELEASE_KEYSTORE_BASE64`: base64-encoded private `.keystore` or `.jks` file.
    - `ANDROID_RELEASE_KEY_ALIAS`: key alias.
    - `ANDROID_RELEASE_KEY_PASSWORD`: keystore/key password expected by the current builder.
    - `ANDROID_RELEASE_CERT_SHA256`: environment variable (not a secret) containing the expected SHA-256 fingerprint of the production signing certificate. The workflow compares the APK signer against it and refuses publication on mismatch.
-4. Keep the private keystore and passwords out of Git, source ZIPs, issues, logs and chat. Do not use the public/test sideload key for Google Play or production distribution.
-5. Keep a secure offline backup of the production keystore and its recovery information. Losing the signing identity can prevent users from installing updates signed with a different key.
+5. Keep the private keystore and passwords out of Git, source ZIPs, issues, logs and chat. Do not use the public/test sideload key for Google Play or production distribution.
+6. Keep a secure offline backup of the production keystore and its recovery information. Losing the signing identity can prevent users from installing updates signed with a different key.
 
 To encode a keystore file:
 - Linux/macOS: `base64 -w 0 release.keystore` (on macOS use `base64 < release.keystore | tr -d '\\n'`).
