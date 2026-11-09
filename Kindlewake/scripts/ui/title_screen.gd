@@ -52,15 +52,15 @@ func _build() -> void:
     add_child(center)
 
     var panel := PanelContainer.new()
-    panel.custom_minimum_size = Vector2(440, 0)
+    panel.custom_minimum_size = Vector2(maxf(300.0, minf(440.0, get_viewport_rect().size.x - 28.0)), 0)
     panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
     var style := StyleBoxFlat.new()
     style.bg_color = Color("#101820")
     style.border_color = Color("#8b7045")
     style.set_border_width_all(2)
     style.set_corner_radius_all(8)
-    style.content_margin_left = 34
-    style.content_margin_right = 34
+    style.content_margin_left = 18 if get_viewport_rect().size.x < 480.0 else 34
+    style.content_margin_right = 18 if get_viewport_rect().size.x < 480.0 else 34
     style.content_margin_top = 28
     style.content_margin_bottom = 28
     panel.add_theme_stylebox_override("panel", style)
@@ -73,7 +73,7 @@ func _build() -> void:
     var title := Label.new()
     title.text = "K I N D L E W A K E"
     title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-    title.add_theme_font_size_override("font_size", 34)
+    title.add_theme_font_size_override("font_size", 28 if get_viewport_rect().size.x < 480.0 else 34)
     title.add_theme_color_override("font_color", Color("#e4c58a"))
     root_box.add_child(title)
 
