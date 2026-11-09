@@ -686,12 +686,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         # Run the editor scan first so Godot 4.2 builds its global script-class
         # registry (class_name types) before autoloads and --script tests compile.
         code, out = run([str(godot), "--headless", "--editor", "--path", str(PROJECT), "--quit-after", "120"], env=env,
-                        log=logs / "import.txt", timeout=900)
-        if code != 0 or "Parse Error" in out:
-            say("  first editor scan reported problems, running it once more (Godot sometimes needs two passes) ...")
+                        log=logs / "import-pass-1.txt", timeout=900)
+        scan_errors = ("Parse Error" in out or "SCRIPT ERROR: Compile Error" in out or "Failed to load script" in out)
+        if code != 0 or scan_errors:
+            say("  first editor scan reported script-registration/import problems; running a clean second scan ...")
             code, out = run([str(godot), "--headless", "--editor", "--path", str(PROJECT), "--quit-after", "120"], env=env,
                             log=logs / "import.txt", timeout=900)
-        summary.append("import: exit %d, %d Parse Error line(s)" % (code, out.count("Parse Error")))
+        remaining_scan_errors = ("Parse Error" in out or "SCRIPT ERROR: Compile Error" in out or "Failed to load script" in out)
+        summary.append("import: exit %d, script errors %s" % (code, "yes" if remaining_scan_errors else "no"))
+        if code != 0 or remaining_scan_errors:
+            raise BuildError("Godot editor import still reports script errors after two scans. See dist/logs/import.txt.")
 
         if not args.skip_tests:
             say("\n[4] Running tests/run_tests.gd (output is saved; it does not block the APK unless --strict)")
