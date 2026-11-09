@@ -552,6 +552,10 @@ func _show_result() -> void:
     if not exp_awarded:
         exp_awarded = true
         battle_rewards = GameState.award_battle(controller.units, controller.result)
+        var reward_item: String = str(battle_def.get("reward_item", ""))
+        if won and reward_item != "" and GameData.items.has(reward_item):
+            GameState.party.add_item(reward_item, 1)
+            result_text.text += "\\n\\nUnique relic recovered: %s" % str(GameData.items[reward_item].get("name", reward_item))
     if not (battle_rewards.get("reports", []) as Array).is_empty():
         result_text.text += "\n\n" + _rewards_summary(battle_rewards)
     elif not won:
