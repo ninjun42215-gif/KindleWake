@@ -25,7 +25,7 @@ def main() -> int:
         "resource_files": 0,
         "rune_definitions": None,
         "rune_kinds": {},
-        "unverified_asset_entries": 0,
+        "unverified_asset_entries": 0,\n        "unverified_used_assets": 0,
     }
 
     def add(level: str, code: str, message: str, path: str = "") -> None:
@@ -85,6 +85,43 @@ def main() -> int:
                     f"{len(unverified_lines)} asset-credit row(s) still contain unverified or missing licence status; resolve before public/commercial release.",
                     "Kindlewake/assets/art/CREDITS.md",
                 )
+
+        provenance_path = project / "data" / "asset_provenance.json"
+        if not provenance_path.is_file():
+            add(
+                "warning",
+                "ASSET_PROVENANCE_MISSING",
+                "No structured data/asset_provenance.json found; record each used asset, source and licence status.",
+                "Kindlewake/data/asset_provenance.json",
+            )
+        else:
+            try:
+                provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+                add("error", "ASSET_PROVENANCE_INVALID", f"Could not parse asset provenance: {exc}", provenance_path.relative_to(root).as_posix())
+            else:
+                assets = provenance.get("assets") if isinstance(provenance, dict) else None
+                if not isinstance(assets, list):
+                    add("error", "ASSET_PROVENANCE_SCHEMA_INVALID", "Expected an object with an assets array.", provenance_path.relative_to(root).as_posix())
+                else:
+                    malformed_assets = []
+                    unverified_used = []
+                    for asset in assets:
+                        if not isinstance(asset, dict) or not asset.get("id") or not asset.get("name") or not isinstance(asset.get("used_in_game"), bool) or not asset.get("license_status"):
+                            malformed_assets.append(str(asset.get("id", "<unknown>")) if isinstance(asset, dict) else "<non-object>")
+                            continue
+                        if asset["used_in_game"] and asset["license_status"] != "verified":
+                            unverified_used.append(str(asset["id"]))
+                    counts["unverified_used_assets"] = len(unverified_used)
+                    if malformed_assets:
+                        add("error", "ASSET_PROVENANCE_ENTRY_INVALID", f"{len(malformed_assets)} asset provenance entry/entries are missing required fields.", provenance_path.relative_to(root).as_posix())
+                    if unverified_used:
+                        add(
+                            "warning",
+                            "USED_ASSET_LICENSE_UNVERIFIED",
+                            f"{len(unverified_used)} used asset pack(s) are not marked verified ({', '.join(unverified_used[:8])}); resolve before public/commercial release.",
+                            provenance_path.relative_to(root).as_posix(),
+                        )
 
         rune_path = project / "data" / "runes.json"
         if rune_path.exists():
