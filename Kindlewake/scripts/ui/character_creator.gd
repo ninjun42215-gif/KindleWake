@@ -26,6 +26,10 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
+    # The creator is designed for phones first. A narrow viewport gets one
+    # vertical column; desktop keeps the form and preview side by side.
+    var narrow: bool = get_viewport_rect().size.x < 900.0
+
     var backdrop := ColorRect.new()
     backdrop.color = Color("#080d13")
     backdrop.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -33,44 +37,50 @@ func _build_ui() -> void:
     backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
     var margin := MarginContainer.new()
-    margin.add_theme_constant_override("margin_left", 22)
-    margin.add_theme_constant_override("margin_top", 16)
-    margin.add_theme_constant_override("margin_right", 22)
-    margin.add_theme_constant_override("margin_bottom", 16)
+    margin.add_theme_constant_override("margin_left", 14 if narrow else 22)
+    margin.add_theme_constant_override("margin_top", 12 if narrow else 16)
+    margin.add_theme_constant_override("margin_right", 14 if narrow else 22)
+    margin.add_theme_constant_override("margin_bottom", 12 if narrow else 16)
     add_child(margin)
     margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
     var outer := VBoxContainer.new()
-    outer.add_theme_constant_override("separation", 10)
+    outer.add_theme_constant_override("separation", 8)
+    outer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    outer.size_flags_vertical = Control.SIZE_EXPAND_FILL
     margin.add_child(outer)
 
     var heading := Label.new()
     heading.text = "BEGIN A NEW CHRONICLE"
-    heading.add_theme_font_size_override("font_size", 30)
+    heading.add_theme_font_size_override("font_size", 25 if narrow else 30)
     heading.add_theme_color_override("font_color", Color("#e5c98d"))
+    heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     outer.add_child(heading)
 
     var subtitle := Label.new()
     subtitle.text = "Shape the heir who will reclaim Kaer Sethorn. Your choices affect starting stats and story flags."
     subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    subtitle.add_theme_font_size_override("font_size", 16)
+    subtitle.add_theme_font_size_override("font_size", 14 if narrow else 16)
     subtitle.add_theme_color_override("font_color", Color("#b8c2cc"))
     outer.add_child(subtitle)
 
-    var body := HBoxContainer.new()
-    body.add_theme_constant_override("separation", 18)
-    body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    outer.add_child(body)
-
     var scroll := ScrollContainer.new()
-    scroll.custom_minimum_size = Vector2(470, 0)
     scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    body.add_child(scroll)
+    scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    outer.add_child(scroll)
+
+    var body := VBoxContainer.new() if narrow else HBoxContainer.new()
+    body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    body.add_theme_constant_override("separation", 14 if narrow else 18)
+    scroll.add_child(body)
+
     var form := VBoxContainer.new()
     form.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    form.add_theme_constant_override("separation", 8)
-    scroll.add_child(form)
+    form.add_theme_constant_override("separation", 9)
+    if not narrow:
+        form.custom_minimum_size = Vector2(470, 0)
+    body.add_child(form)
 
     _add_name_field(form)
     _add_choice(form, "Presentation", "presentation", config.get("presentations", []))
@@ -85,10 +95,13 @@ func _build_ui() -> void:
     _refresh_weapon_options()
 
     var preview_column := VBoxContainer.new()
-    preview_column.custom_minimum_size = Vector2(280, 0)
-    preview_column.size_flags_horizontal = Control.SIZE_SHRINK_END
-    preview_column.add_theme_constant_override("separation", 10)
-    body.add_child(preview_column)
+    preview_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    preview_column.add_theme_constant_override("separation", 8)
+    if narrow:
+        preview_column.custom_minimum_size = Vector2(0, 0)
+    else:
+        preview_column.custom_minimum_size = Vector2(280, 0)
+        preview_column.size_flags_horizontal = Control.SIZE_SHRINK_END
     var preview_title := Label.new()
     preview_title.text = "PROTAGONIST PREVIEW"
     preview_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -96,29 +109,44 @@ func _build_ui() -> void:
     preview_title.add_theme_color_override("font_color", Color("#e5c98d"))
     preview_column.add_child(preview_title)
     preview = PreviewScript.new()
-    preview.custom_minimum_size = Vector2(280, 330)
+    preview.custom_minimum_size = Vector2(0, 250) if narrow else Vector2(280, 330)
+    preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
     preview_column.add_child(preview)
     preview_text = Label.new()
     preview_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    preview_text.add_theme_font_size_override("font_size", 15)
+    preview_text.add_theme_font_size_override("font_size", 14 if narrow else 15)
     preview_text.add_theme_color_override("font_color", Color("#c8d0d8"))
     preview_column.add_child(preview_text)
 
-    var footer := HBoxContainer.new()
-    footer.add_theme_constant_override("separation", 12)
+    if narrow:
+        body.add_child(preview_column)
+    else:
+        body.add_child(preview_column)
+
+    var footer := VBoxContainer.new() if narrow else HBoxContainer.new()
+    footer.add_theme_constant_override("separation", 8)
     outer.add_child(footer)
+
     status_label = Label.new()
     status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    status_label.add_theme_font_size_override("font_size", 15)
+    status_label.custom_minimum_size = Vector2(0, 34)
+    status_label.add_theme_font_size_override("font_size", 13 if narrow else 15)
     footer.add_child(status_label)
-    var back_button := _make_button("BACK", 170)
+
+    var button_row := HBoxContainer.new()
+    button_row.add_theme_constant_override("separation", 10)
+    button_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    footer.add_child(button_row)
+    var back_button := _make_button("BACK", 0 if narrow else 170)
+    back_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL if narrow else Control.SIZE_SHRINK_BEGIN
     back_button.pressed.connect(_on_back)
-    footer.add_child(back_button)
-    confirm_button = _make_button("BEGIN CHRONICLE", 250)
+    button_row.add_child(back_button)
+    confirm_button = _make_button("BEGIN CHRONICLE", 0 if narrow else 250)
+    confirm_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL if narrow else Control.SIZE_SHRINK_BEGIN
     confirm_button.pressed.connect(_on_confirm)
-    footer.add_child(confirm_button)
+    button_row.add_child(confirm_button)
 
 
 func _add_name_field(parent: VBoxContainer) -> void:
