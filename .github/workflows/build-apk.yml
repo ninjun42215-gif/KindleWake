@@ -21,6 +21,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  workflow-lint:
+    name: Lint all GitHub Actions YAML files
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Parse every workflow YAML file
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check pyyaml
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+          paths = sorted(Path(".github/workflows").glob("*.yml"))
+          if not paths:
+              raise SystemExit("No workflow YAML files found.")
+          for path in paths:
+              with path.open(encoding="utf-8") as stream:
+                  yaml.safe_load(stream)
+              print("YAML syntax PASS:", path)
+          print("Validated", len(paths), "workflow files.")
+          PY
+
   android-build:
     name: Validate and build Android APK
     runs-on: ubuntu-latest
@@ -202,12 +230,14 @@ jobs:
     name: Recommend next actions from workflow results
     if: always()
     needs:
+      - workflow-lint
       - android-build
       - source-handoff
     runs-on: ubuntu-latest
     steps:
       - name: Publish actionable result summary
         env:
+          WORKFLOW_LINT_RESULT: ${{ needs.workflow-lint.result }}
           APK_RESULT: ${{ needs.android-build.result }}
           HANDOFF_RESULT: ${{ needs.source-handoff.result }}
           SOURCE_REF: ${{ github.ref }}
@@ -226,10 +256,14 @@ jobs:
             echo ""
             echo "| Pipeline | Result | Artifact |"
             echo "|---|---|---|"
+            echo "| Workflow YAML lint | $WORKFLOW_LINT_RESULT | syntax validation for all workflow YAML files |"
             echo "| Android validation/build | $APK_RESULT | Kindlewake-APK (only on success); test-logs |"
             echo "| Source handoff | $HANDOFF_RESULT | Kindlewake-Source-Handoff-Parts (only on success) |"
             echo ""
             echo "## Recommended next action"
+            if [[ "$WORKFLOW_LINT_RESULT" != "success" ]]; then
+              echo "- Workflow YAML lint did not pass: inspect the workflow-lint job before relying on any manual workflow."
+            fi
             if [[ "$HANDOFF_RESULT" == "success" ]]; then
               echo "- Download all source handoff files, reconstruct with REASSEMBLE.txt, verify hashes and ZIP integrity, then extract into a new folder."
               echo "- Give the next AI AI_NEXT_SESSION.md and require it to inspect the live repository and this exact commit before editing."
