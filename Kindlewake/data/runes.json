@@ -26,10 +26,6 @@
           "skills": [
             "mend_iii"
           ]
-        },
-        {
-          "mods": {},
-          "skills": []
         }
       ],
       "rune_type": "vitality",
@@ -58,11 +54,7 @@
             "ember_storm"
           ]
         },
-        {},
-        {
-          "mods": {},
-          "skills": []
-        }
+        {}
       ],
       "rune_type": "flame",
       "grade": "uncommon",
@@ -90,11 +82,7 @@
             "frost_lance"
           ]
         },
-        {},
-        {
-          "mods": {},
-          "skills": []
-        }
+        {}
       ],
       "rune_type": "frost",
       "grade": "uncommon",
@@ -332,13 +320,6 @@
             "spd": 4,
             "vit": -1
           }
-        },
-        {
-          "mods": {
-            "spd": 5,
-            "vit": -1
-          },
-          "skills": []
         }
       ],
       "rune_type": "wind",
@@ -375,12 +356,6 @@
           "mods": {
             "exp_pct": 50
           }
-        },
-        {
-          "mods": {
-            "exp_pct": 63
-          },
-          "skills": []
         }
       ],
       "rune_type": "fortune",
@@ -417,12 +392,6 @@
           "mods": {
             "gold_pct": 100
           }
-        },
-        {
-          "mods": {
-            "gold_pct": 125
-          },
-          "skills": []
         }
       ],
       "rune_type": "fortune",
@@ -540,13 +509,6 @@
             "vit": 5,
             "hp_pct": 14
           }
-        },
-        {
-          "mods": {
-            "vit": 6,
-            "hp_pct": 18
-          },
-          "skills": []
         }
       ]
     },
@@ -586,13 +548,6 @@
             "spd": 5,
             "eva": 8
           }
-        },
-        {
-          "mods": {
-            "spd": 6,
-            "eva": 10
-          },
-          "skills": []
         }
       ]
     },
