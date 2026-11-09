@@ -240,11 +240,11 @@ func _on_prompt_pressed() -> void:
 func _resolve_brinegate_choice(choice: String) -> void:
     var outcome: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(GameState.world_flags, choice)
     if not bool(outcome.get("ok", false)):
-        spot_text.text += "\\n\\n" + str(outcome.get("reason", "The decision cannot be made."))
+        spot_text.text += "\n\n" + str(outcome.get("reason", "The decision cannot be made."))
         return
-    GameState.world_flags = outcome.get("world_flags", GameState.world_flags)
+    GameState.world_flags = (outcome.get("world_flags", GameState.world_flags) as Dictionary).duplicate(true)
     GameState.party.gold += int(outcome.get("gold", 0))
-    spot_text.text += "\\n\\n" + str(outcome.get("text", ""))
+    spot_text.text += "\n\n" + str(outcome.get("text", ""))
     GameState.save_campaign("auto_a")
     for child in spot_buttons.get_children():
         if child is Button and ((child as Button).text.begins_with("Present") or (child as Button).text.begins_with("Keep")):
@@ -300,6 +300,8 @@ func _claim_treasure(spot: Dictionary) -> void:
         GameState.party.add_item(reward_item, 1)
         loot_text = " You also recover %s." % str(GameData.items[reward_item].get("name", reward_item))
     GameState.world_flags[flag] = true
+    if current_map_id == "dungeon_tideglass":
+        GameState.world_flags["tideglass_ledger_found"] = true
     spot_text.text += "\n\nYou recover %d gold.%s" % [reward, loot_text]
 
 
