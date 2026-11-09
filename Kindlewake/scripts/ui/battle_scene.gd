@@ -1228,8 +1228,8 @@ func _apply_responsive_hud() -> void:
         menu.scale = Vector2(0.78, 0.78)
         actions.scale = Vector2(0.76, 0.76)
         middle.scale = Vector2(0.72, 0.72)
-        middle.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM, Control.PRESET_MODE_MINSIZE, 8)
-        middle.grow_horizontal = Control.GROW_DIRECTION_BOTH
+        middle.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT, Control.PRESET_MODE_MINSIZE, 8)
+        middle.grow_horizontal = Control.GROW_DIRECTION_END
         middle.grow_vertical = Control.GROW_DIRECTION_BEGIN
         actions.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 8)
         actions.grow_horizontal = Control.GROW_DIRECTION_BEGIN
