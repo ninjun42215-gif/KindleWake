@@ -829,6 +829,7 @@ func _test_sigils() -> void:
     # Rejected socket operations must not normalize arrays or move overflow runes as a side effect.
     var guard_party: PartyState = PartyState.new_game(gd.start, gd.characters)
     var guard_sheet: CharacterSheet = guard_party.sheet("torren")
+    guard_sheet.fit_sockets(items)
     (guard_sheet.sigils["weapon"] as Array).append({"id":"tutor","ap":0})
     var guard_bag_size: int = guard_party.sigil_inv.size()
     check(guard_party.equip_sigil("torren", "weapon", 99, 0, db, true) != "" and (guard_sheet.sigils["weapon"] as Array).size() == 3 and guard_party.sigil_inv.size() == guard_bag_size, "invalid socket selection leaves runes and inventory unchanged")
