@@ -106,3 +106,14 @@ Answer in plain English. Lead with what you did and what I should do next. Keep 
 4. Add travel modes in progression order: roads/carts, ferries and barges, charter ships, caravan routes, northern pass, then airship. Do not consume campaign weeks until the calendar is implemented.
 5. Run Godot import, the full headless test suite and balance report later as previously requested; static checks are not runtime proof. Then verify creator/touch layouts and starter weapons on a landscape phone.
 6. Add origin-tag story hooks and review sprite-pack licenses before importing original art.
+
+
+## Current feature branch — Rune System v1
+- Branch: feature/rune-system-v1.
+- Player-facing Sigils are being renamed to Runes; preserve legacy save/socket fields and API wrappers until a later explicit migration.
+- New data/runes.json: 17 runes across elemental, support, stat and fortune types; Common through Mythical grades.
+- Fusion requires three matching rune id+grade. Success rates: 70/55/40/25/12% to reach Uncommon/Rare/Epic/Legendary/Mythical. Failure consumes two and returns one same-grade rune.
+- Rune merchants have explicit regional stock. Runes are not globally available in every shop.
+- Elemental rune spells add Burn, Chill, Shock, Exposed, Regen and life-drain effects. Verify turn tick and combat UI feedback.
+- Original rune sprite atlas at assets/art/runes/rune_atlas.svg; do not import third-party itch.io art unless the exact asset page and licence permit redistribution and modification.
+- Run CI and strict tests before merge; do not claim Android-device verification without a phone test.
