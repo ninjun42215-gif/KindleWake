@@ -48,6 +48,23 @@ static func noise(x: int, y: int, scale: float, s: int) -> float:
     return lerpf(a, b, ty)
 
 
+## Periodic value noise: the sample at x=width/y=height is identical to x=0/y=0.
+static func periodic_noise(x: int, y: int, map_width: int, map_height: int, scale: float, seed: int) -> float:
+    var cells_x: int = maxi(1, roundi(float(map_width) / scale))
+    var cells_y: int = maxi(1, roundi(float(map_height) / scale))
+    var fx: float = float(x) * float(cells_x) / float(map_width)
+    var fy: float = float(y) * float(cells_y) / float(map_height)
+    var ix: int = floori(fx)
+    var iy: int = floori(fy)
+    var tx: float = fx - float(ix)
+    var ty: float = fy - float(iy)
+    tx = tx * tx * (3.0 - 2.0 * tx)
+    ty = ty * ty * (3.0 - 2.0 * ty)
+    var a: float = lerpf(hash01(posmod(ix, cells_x), posmod(iy, cells_y), seed), hash01(posmod(ix + 1, cells_x), posmod(iy, cells_y), seed), tx)
+    var b: float = lerpf(hash01(posmod(ix, cells_x), posmod(iy + 1, cells_y), seed), hash01(posmod(ix + 1, cells_x), posmod(iy + 1, cells_y), seed), tx)
+    return lerpf(a, b, ty)
+
+
 static func generate(cfg: Dictionary) -> WorldMap:
     var m := WorldMap.new()
     m.width = maxi(8, int(cfg.get("width", 64)))
@@ -58,12 +75,11 @@ static func generate(cfg: Dictionary) -> WorldMap:
     m.tiles.resize(m.width * m.height)
     for y in range(m.height):
         for x in range(m.width):
-            var e: float = noise(x, y, 10.0, m.seed_value) * 0.65 + noise(x, y, 5.0, m.seed_value + 7) * 0.35
-            var wet: float = noise(x, y, 9.0, m.seed_value + 31) * 0.7 + noise(x, y, 4.0, m.seed_value + 53) * 0.3
+            var e: float = periodic_noise(x, y, m.width, m.height, 10.0, m.seed_value) * 0.65 + periodic_noise(x, y, m.width, m.height, 5.0, m.seed_value + 7) * 0.35
+            var wet: float = periodic_noise(x, y, m.width, m.height, 9.0, m.seed_value + 31) * 0.7 + periodic_noise(x, y, m.width, m.height, 4.0, m.seed_value + 53) * 0.3
             var t: int = GRASS
-            if m.wrap_enabled and (x == 0 or y == 0 or x == m.width - 1 or y == m.height - 1):
-                t = GRASS
-            elif not m.wrap_enabled and (x == 0 or y == 0 or x == m.width - 1 or y == m.height - 1):
+            var edge: bool = x == 0 or y == 0 or x == m.width - 1 or y == m.height - 1
+            if not m.wrap_enabled and edge:
                 t = MOUNTAIN
             elif e < 0.30:
                 t = WATER
@@ -75,6 +91,8 @@ static func generate(cfg: Dictionary) -> WorldMap:
                 t = HILL
             elif wet > 0.58:
                 t = FOREST
+            if m.wrap_enabled and edge and SPEED[t] <= 0.0:
+                t = GRASS
             m.tiles[y * m.width + x] = t
     # clear a small meadow around every place, then lay the roads
     for p in m.places:
