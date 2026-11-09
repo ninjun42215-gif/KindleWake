@@ -470,12 +470,17 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheet) -> void:
     head.add_child(title)
     head.add_child(_button(">", _on_step.bind(1), Vector2(52, 52), 26))
     box.add_child(head)
-    # experience
-    box.add_child(_label("Experience  %d / %d" % [sh.xp, sh.exp_to_next()], 15, COL_DIM))
+    # Experience is deliberately visible, but the 250-level cap is a campaign milestone.
+    if sh.level >= CharacterSheet.MAX_LEVEL:
+        box.add_child(_label("EXPERIENCE  •  MAX LEVEL REACHED", 15, COL_GOLD))
+    else:
+        box.add_child(_label("EXPERIENCE  %d / %d" % [sh.xp, sh.exp_to_next()], 15, COL_DIM))
     var bar := ProgressBar.new()
     bar.min_value = 0.0
     bar.max_value = float(maxi(1, sh.exp_to_next()))
-    bar.value = float(sh.xp)
+    bar.value = float(sh.xp) if sh.level < CharacterSheet.MAX_LEVEL else 1.0
+    if sh.level >= CharacterSheet.MAX_LEVEL:
+        bar.max_value = 1.0
     bar.show_percentage = false
     bar.custom_minimum_size = Vector2(0, 14)
     bar.add_theme_stylebox_override("background", _style(COL_TILE, COL_BORDER_DIM, 1, 5, 0.0))
