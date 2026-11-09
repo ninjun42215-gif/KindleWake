@@ -540,6 +540,18 @@ func _apply_safe_area() -> void:
     hud_root.offset_top = t
     hud_root.offset_right = -r
     hud_root.offset_bottom = -b
+    var vw: float = get_viewport().get_visible_rect().size.x
+    var compact: bool = vw < 900.0
+    if info_label != null:
+        info_label.custom_minimum_size = Vector2(clampf(vw * 0.25, 175.0, 300.0), 0.0)
+        info_label.add_theme_font_size_override("font_size", 15 if compact else 19)
+    if leader_status_label != null:
+        leader_status_label.add_theme_font_size_override("font_size", 12 if compact else 14)
+    if company_btn != null:
+        company_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 58.0)
+        company_btn.add_theme_font_size_override("font_size", 17 if compact else 20)
+    if prompt_btn != null:
+        prompt_btn.custom_minimum_size = Vector2(clampf(vw * 0.42, 230.0, 380.0), 68.0)
 
 
 func _build_ui() -> void:
@@ -707,9 +719,23 @@ func _region_name_at(cell: Vector2i) -> String:
 
 func _update_hud() -> void:
     var cell: Vector2i = cell_of(player_pos)
-    var txt: String = "%s\n%s%s\nGold: %d" % [_region_name_at(cell), wmap.terrain_name(cell), "  (safe)" if _in_safe_zone(cell) else "", GameState.party.gold]
+    var txt: String = "%s  •  %s%s\nGOLD  %d" % [_region_name_at(cell), wmap.terrain_name(cell), "  •  SAFE" if _in_safe_zone(cell) else "", GameState.party.gold]
     if txt != hud_text:
         hud_text = txt
         info_label.text = txt
+    if not GameState.party.roster.is_empty():
+        var leader_id: String = GameState.party.roster[0]
+        var leader: CharacterSheet = GameState.party.sheet(leader_id)
+        if leader != null:
+            var class_def: Dictionary = GameData.class_def(leader.class_id)
+            var class_name: String = str(class_def.get("name", leader.class_id))
+            if leader.level >= CharacterSheet.MAX_LEVEL:
+                leader_status_label.text = "%s  •  Lv %d %s  •  MAX" % [leader.display_name, leader.level, class_name]
+                leader_exp_bar.max_value = 1.0
+                leader_exp_bar.value = 1.0
+            else:
+                leader_status_label.text = "%s  •  Lv %d %s  •  EXP %d/%d" % [leader.display_name, leader.level, class_name, leader.xp, leader.exp_to_next()]
+                leader_exp_bar.max_value = float(maxi(1, leader.exp_to_next()))
+                leader_exp_bar.value = float(leader.xp)
     if minimap_dot != null:
         minimap_dot.position = player_pos / TILE * float(MINIMAP_SCALE) - Vector2(3, 3)
