@@ -41,6 +41,7 @@ func _initialize() -> void:
     _test_world()
     _test_world_atlas()
     _test_thalassar_region()
+    _test_wraparound_world()
     _test_brinegate_quest()
     _test_region_save_compatibility()
     _test_locations()
@@ -882,6 +883,21 @@ func _test_thalassar_region() -> void:
     check(coast_maps_ok, "Brinegate, Saltmere, Lantern Quay and Tideglass have playable location maps")
     if maps.has("dungeon_tideglass"):
         check((maps["dungeon_tideglass"] as LocalMap).kind == "dungeon", "Tideglass is an explorable dungeon, not a static story panel")
+
+
+func _test_wraparound_world() -> void:
+    print("[continuous wraparound world]")
+    var cfg: Dictionary = gd.thalassar_world
+    var coast: WorldMap = WorldMap.generate(cfg)
+    check(coast.wrap_enabled, "campaign world is configured as a continuous wraparound surface")
+    check(coast.wrap_cell(Vector2i(-1, 7)) == Vector2i(coast.width - 1, 7), "west edge wraps to the east edge")
+    check(coast.wrap_cell(Vector2i(coast.width, 7)) == Vector2i(0, 7), "east edge wraps to the west edge")
+    check(coast.wrap_cell(Vector2i(7, -1)) == Vector2i(7, coast.height - 1), "north edge wraps to the south edge")
+    check(coast.wrap_cell(Vector2i(7, coast.height)) == Vector2i(7, 0), "south edge wraps to the north edge")
+    check(coast.walkable(Vector2i(-1, 12)) and coast.walkable(Vector2i(coast.width, 12)), "the opposite map edges are traversable rather than blocked by a boundary wall")
+    check(coast.connected(Vector2i(0, 12), Vector2i(coast.width - 1, 12)), "pathfinding connectivity crosses the horizontal world seam")
+    check(coast.wrapped_delta(Vector2i(0, 10), Vector2i(coast.width - 1, 10)) == Vector2i(-1, 0), "navigation chooses the short route across the seam")
+    check(coast.wrap_position(Vector2(-1.0, 100.0)).x >= 0.0, "world coordinates normalize safely when saved at the western edge")
 
 
 func _test_brinegate_quest() -> void:
