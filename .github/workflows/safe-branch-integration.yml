@@ -107,6 +107,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m unittest discover -s Kindlewake/tests -p 'test_source_handoff.py' -v
+          python3 -m unittest discover -s Kindlewake/tests -p 'test_repository_organizer.py' -v
           python3 Kindlewake/tools/build_apk.py --check
 
       - name: Push isolated candidate and open draft pull request
