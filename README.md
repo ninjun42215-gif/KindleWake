@@ -30,7 +30,7 @@ Do not manually edit the extracted `Kindlewake/` tree as the source of truth. Ma
 
 ## Build Android APK
 
-After a successful source synchronization, open **Actions → Build Android APK → Run workflow**. Download the `Kindlewake-APK` artifact and `test-logs` artifact from the completed run.
+After a successful source synchronization, open **Actions → Build Android APK → Run workflow**. The build imports the project, runs the full headless test suite in strict mode, runs the AI-vs-AI balance report, and only then exports the APK. A test failure blocks the APK. Download the `Kindlewake-APK` artifact and `test-logs` artifact (including the balance report) from the completed run.
 
 The build workflow checks that `Kindlewake/project.godot` and `Kindlewake/tools/build_apk.py` exist before starting. It runs the builder from inside the Godot project directory.
 
