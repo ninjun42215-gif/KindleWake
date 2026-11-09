@@ -239,3 +239,15 @@ The result-report job now uploads a separate 90-day artifact named Kindlewake-Wo
 
 
 The split artifact now also contains the exact source_handoff.py recovery helper beside the parts. PARTS-MANIFEST.json stores that helper's SHA-256, and reassembly refuses to run if the helper is missing or altered. This avoids the bootstrap problem of needing to extract the ZIP before obtaining the tool required to reassemble it. The test suite also asserts that the helper is present in the artifact.
+
+
+## 2026-11-10 — Manual maintenance, backup and safe integration workflows
+- Added .github/workflows/repository-organizer.yml with audit (read-only) and organize modes. Apply mode requires explicit confirmation, uses an isolated maintenance branch, and opens a draft PR. The organizer currently moves only standalone Markdown documents from Kindlewake/ into Kindlewake/docs/; it protects Godot source, scenes, resources, assets, data, tests, addons and project settings.
+- Added Kindlewake/tools/repository_organizer.py and tests/test_repository_organizer.py to keep file moves conservative and test the boundaries.
+- Added .github/workflows/safe-branch-integration.yml. It accepts arbitrary source/target branch names, attempts the merge on an isolated integration branch, reports and aborts conflicts, runs handoff tests plus Android offline preflight, and opens a draft PR. It never writes directly to the target branch or merges into main.
+- Added .github/workflows/branch-hygiene.yml and Kindlewake/tools/branch_hygiene.py. This is a read-only report of merged/stale/active branches; it never deletes branches.
+- Added .github/workflows/manual-full-backup.yml. It packages the exact tracked source snapshot into verified <=25,000,000-byte parts and creates a verifiable Git bundle with history/refs. Full-history bundles may contain previously committed secrets and must be kept private.
+- Added docs/MANUAL_GITHUB_WORKFLOWS.md with instructions and safety limits for each manual workflow.
+- Fixed a source-handoff workflow summary-path bug: the packaging step no longer references an undefined REPORT_PATH.
+- Validation: test_repository_organizer.py and the new workflows have been added, but the GitHub Actions run on the final branch head must still verify syntax/runtime behavior. Do not claim the new workflows passed until that run completes.
+- GitHub dispatch limitation: these new manual workflows are currently on feature/rune-system-v1. They generally become available in Actions -> Run workflow only after the workflow YAML is present on the default branch. PR #4 remains draft; no merge to main was performed.
