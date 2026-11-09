@@ -83,3 +83,11 @@
 - Godot import passed; strict automated tests: **333 checks, 0 failures**; balance report passed; signed Android APK exported and verified.
 - APK size: 41.2 MB. Actions artifact: `Kindlewake-APK` (artifact ID `13697765975`, expires 2027-02-07). Artifact ZIP SHA-256: `6547d22563f0ae1082968ece261891bd188a92246d01f797fd8eb628f9eea088`.
 - This validates the project code at `35a8e1c`; the subsequent commits only append handoff documentation. No physical Android device test has been performed.
+
+
+## 2026-11-10 — Battle sprite identity pass
+- Commit `21c1702bd012b8ca0bd0bc51e5a0b6b9dae46c2c` adds class-aware palette variation to battle sprites: knight, swordsman, archer, cleric and roadreaver player units now read with distinct color treatments while retaining the existing Soldier animation strips.
+- Enemy sprite treatment now keys off character ID/display name for boss/chieftain, bow/scout, shaman/mage, wraith/spectre, skeleton/bone and brute/ogre/troll archetypes. Each receives a matching palette and small screen-space identity marks; default enemies retain a restrained green tint.
+- Hurt tint blends over each palette, and all existing idle/walk/attack/hurt/death frame contracts remain unchanged. This is an interim renderer-level art pass, not a replacement for bespoke frame-by-frame hero/monster sprite sheets.
+- CI run `42667953445` for this commit was queued at handoff. Do not mark this pass build-validated or publish a new APK until that exact commit's workflow succeeds.
+- Next: add original dedicated enemy and hero sprite sheets plus cast/impact animations; verify on device after CI.
