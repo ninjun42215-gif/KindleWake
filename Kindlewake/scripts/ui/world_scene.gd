@@ -606,6 +606,11 @@ func _build_ui() -> void:
     root.add_child(company_btn)
     company_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
     company_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    var save_btn := _btn("SAVE", _save_campaign_manual, 18)
+    save_btn.custom_minimum_size = Vector2(190, 52)
+    root.add_child(save_btn)
+    save_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 84)
+    save_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 
     # Top-centre: ambush banner
     banner = _hud_panel(0.95)
@@ -656,6 +661,18 @@ func _build_ui() -> void:
     party_screen.visible = false
     party_screen.closed.connect(_on_party_closed)
 
+
+
+func _save_campaign_manual() -> void:
+    GameState.world_pos = player_pos
+    if GameState.save_campaign("1"):
+        GameState.campaign_slot = "1"
+        banner_label.text = "Chronicle saved."
+        banner.visible = true
+        get_tree().create_timer(2.0).timeout.connect(func(): banner.visible = false)
+    else:
+        banner_label.text = "Could not save chronicle."
+        banner.visible = true
 
 func _on_new_chronicle_pressed() -> void:
     if creator_screen != null:
