@@ -1,4 +1,6 @@
 extends Node
+
+const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 ## Read-only content database (autoload "GameData"). Loads every local JSON file in res://data.
 ## No network, no external services. Content is data-driven so new heroes/maps cost data, not code.
 
@@ -62,7 +64,7 @@ func as_db() -> Dictionary:
     for k in characters.keys():
         var cid: String = str(k)
         var cdef: Dictionary = characters[k]
-        resolved[cid] = CharacterSheet.from_def(cid, cdef).to_battle_def(db)
+        resolved[cid] = CharacterSheetScript.from_def(cid, cdef).to_battle_def(db)
     db["characters"] = resolved
     return db
 
