@@ -198,3 +198,9 @@ docs/            GDD.md, SESSION_HANDOFF.md, CONTINUATION_PROMPT.md
 - Enemy archetypes gain extra silhouette cues for commanders, shamans, wraiths, skeletons, scouts and brutes, with restrained animated glow accents.
 - Existing Soldier/Orc animation sheets and frame contracts remain unchanged. This is a readability pass; bespoke full character and species sprite sheets remain the next art milestone.
 - CI validation for the new battle renderer changes is pending.
+
+## External AI receiving and handoff packaging (2026-11-10)
+- Added `Kindlewake/receiving/README.md` as the standard intake folder for work supplied by other AI assistants. Incoming patches/assets require a HANDOFF.md and review before integration.
+- CI now emits a source ZIP split into numbered binary parts, each capped at 25 MiB (26,214,400 bytes), with a reassembly guide. Artifact name: `Kindlewake-Source-Handoff-Parts`.
+- Reassemble all parts in numeric order before unzipping. The split files are transport chunks, not independently extractable archives.
+- Latest changes are on `feature/rune-system-v1`; PR #4 remains draft and `main` remains untouched. Verify the newest Android workflow before treating the parts as available.
