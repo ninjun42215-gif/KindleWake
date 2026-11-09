@@ -1,6 +1,6 @@
 # Session handoff — Rune System v1 (CI validated)
 
-- Base checkpoint: v0.9.0, save schema 3; source repository ninjun42215-gif/KindleWake.
+- Project version: v0.9.1, save schema 3; based on v0.9.0 campaign checkpoint. source repository ninjun42215-gif/KindleWake.
 - Feature branch: feature/rune-system-v1.
 - Latest validated commit: 9a428926df84d2925012efa26e8f259ef586f1f4.
 - Scope: replace player-facing Sigils with Runes while preserving old save inventory/socket fields and script aliases; add rune types, grade ladder, fusion, specialist regional shops, rune status effects, combat popups and original atlas.
