@@ -1140,7 +1140,8 @@
         "cost": 0,
         "requirements": {
           "flags_all": [
-            "tideglass_grotto_cleared"
+            "tideglass_grotto_cleared",
+            "tideglass_ledger_found"
           ]
         }
       }
