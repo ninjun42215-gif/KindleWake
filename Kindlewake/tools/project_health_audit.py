@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-"""Read-only Kindlewake project health audit; emits JSON and Markdown reports."""
+"""Read-only Kindlewake structural and release-readiness audit."""
 from __future__ import annotations
+
 import argparse
 import json
 import re
+from collections import Counter
 from pathlib import Path
+
 
 def main() -> int:
     parser = argparse.ArgumentParser()
@@ -13,10 +16,19 @@ def main() -> int:
     args = parser.parse_args()
     root = args.root.resolve()
     project = root / "Kindlewake"
-    findings = []
-    counts = {"json_files": 0, "tracked_workflows": 0, "gdscript_files": 0,
-              "scene_files": 0, "resource_files": 0, "rune_definitions": None}
-    def add(level, code, message, path=""):
+    findings: list[dict[str, str]] = []
+    counts: dict[str, object] = {
+        "json_files": 0,
+        "tracked_workflows": 0,
+        "gdscript_files": 0,
+        "scene_files": 0,
+        "resource_files": 0,
+        "rune_definitions": None,
+        "rune_kinds": {},
+        "unverified_asset_entries": 0,
+    }
+
+    def add(level: str, code: str, message: str, path: str = "") -> None:
         findings.append({"level": level, "code": code, "path": path, "message": message})
 
     if not (project / "project.godot").is_file():
@@ -25,7 +37,7 @@ def main() -> int:
         for path in project.rglob("*.json"):
             if any(part in {".git", ".godot", "__pycache__"} for part in path.parts):
                 continue
-            counts["json_files"] += 1
+            counts["json_files"] = int(counts["json_files"]) + 1
             try:
                 json.loads(path.read_text(encoding="utf-8"))
             except (OSError, UnicodeError, json.JSONDecodeError) as exc:
@@ -33,7 +45,9 @@ def main() -> int:
 
         counts["gdscript_files"] = sum(1 for _ in project.rglob("*.gd"))
         counts["scene_files"] = sum(1 for _ in project.rglob("*.tscn"))
-        counts["resource_files"] = sum(1 for pattern in ("*.tres", "*.res") for _ in project.rglob(pattern))
+        counts["resource_files"] = sum(
+            1 for pattern in ("*.tres", "*.res") for _ in project.rglob(pattern)
+        )
 
         godot_text = (project / "project.godot").read_text(encoding="utf-8", errors="replace")
         version_match = re.search(r'^config/version="([^"]+)"', godot_text, re.M)
@@ -41,52 +55,120 @@ def main() -> int:
         readme_text = readme.read_text(encoding="utf-8", errors="replace") if readme.exists() else ""
         readme_match = re.search(r'v(\d+\.\d+\.\d+)', readme_text)
         if version_match and readme_match and version_match.group(1) != readme_match.group(1):
-            add("warning", "VERSION_DRIFT",
+            add(
+                "warning",
+                "VERSION_DRIFT",
                 f"project.godot is {version_match.group(1)} while README headline is {readme_match.group(1)}.",
-                "Kindlewake/project.godot;Kindlewake/README.md")
-        if not (project / "assets" / "art" / "CREDITS.md").exists():
-            add("warning", "ASSET_CREDITS_MISSING",
-                "No assets/art/CREDITS.md found; verify asset ownership and licenses before release.",
-                "Kindlewake/assets/art/CREDITS.md")
+                "Kindlewake/project.godot;Kindlewake/README.md",
+            )
+
+        credits = project / "assets" / "art" / "CREDITS.md"
+        if not credits.is_file():
+            add(
+                "warning",
+                "ASSET_CREDITS_MISSING",
+                "No assets/art/CREDITS.md found; document every imported or generated asset and its rights.",
+                "Kindlewake/assets/art/CREDITS.md",
+            )
+        else:
+            credits_text = credits.read_text(encoding="utf-8", errors="replace")
+            unverified_lines = [
+                line.strip()
+                for line in credits_text.splitlines()
+                if re.search(r"unverified|no licence file|no license file|confirm the licen[cs]e", line, re.I)
+            ]
+            counts["unverified_asset_entries"] = len(unverified_lines)
+            if unverified_lines:
+                add(
+                    "warning",
+                    "ASSET_LICENSE_UNVERIFIED",
+                    f"{len(unverified_lines)} asset-credit row(s) still contain unverified or missing licence status; resolve before public/commercial release.",
+                    "Kindlewake/assets/art/CREDITS.md",
+                )
+
         rune_path = project / "data" / "runes.json"
         if rune_path.exists():
             try:
                 data = json.loads(rune_path.read_text(encoding="utf-8"))
-                runes = data.get("runes", data) if isinstance(data, dict) else {}
-                counts["rune_definitions"] = len(runes) if isinstance(runes, dict) else 0
-                if counts["rune_definitions"] < 50:
-                    add("warning", "RUNE_TARGET_NOT_MET",
-                        f"Found {counts['rune_definitions']} rune definitions; design target is 50+.",
-                        rune_path.relative_to(root).as_posix())
-            except (OSError, UnicodeError, json.JSONDecodeError):
-                pass
+            except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+                add("error", "RUNE_DATA_INVALID", f"Could not parse rune data: {exc}", rune_path.relative_to(root).as_posix())
+            else:
+                runes = data.get("runes", data) if isinstance(data, dict) else None
+                if not isinstance(runes, dict):
+                    add("error", "RUNE_SCHEMA_INVALID", "Expected a JSON object keyed by rune ID.", rune_path.relative_to(root).as_posix())
+                else:
+                    counts["rune_definitions"] = len(runes)
+                    kinds: Counter[str] = Counter()
+                    malformed = []
+                    for rune_id, rune in runes.items():
+                        if not isinstance(rune, dict) or not rune.get("name") or not rune.get("kind"):
+                            malformed.append(str(rune_id))
+                        else:
+                            kinds[str(rune["kind"])] += 1
+                    counts["rune_kinds"] = dict(sorted(kinds.items()))
+                    if malformed:
+                        preview = ", ".join(malformed[:8])
+                        add(
+                            "error",
+                            "RUNE_DEFINITION_INVALID",
+                            f"{len(malformed)} rune definition(s) are missing an object, name or kind: {preview}.",
+                            rune_path.relative_to(root).as_posix(),
+                        )
+                    if len(runes) < 50:
+                        add(
+                            "warning",
+                            "RUNE_TARGET_NOT_MET",
+                            f"Found {len(runes)} rune definitions; design target is 50+.",
+                            rune_path.relative_to(root).as_posix(),
+                        )
 
     workflows = root / ".github" / "workflows"
     if workflows.exists():
         counts["tracked_workflows"] = sum(1 for p in workflows.glob("*.y*ml") if p.is_file())
     nested = project / ".github" / "workflows"
     if nested.exists() and any(nested.glob("*.y*ml")):
-        add("warning", "NESTED_WORKFLOWS",
+        add(
+            "warning",
+            "NESTED_WORKFLOWS",
             "Workflow YAML under Kindlewake/.github/workflows is not discovered by GitHub Actions; consolidate active workflows at repository root.",
-            "Kindlewake/.github/workflows")
+            "Kindlewake/.github/workflows",
+        )
 
-    add("info", "AUDIT_SCOPE",
-        "Read-only structural audit. It does not execute Godot, inspect every GDScript semantic, test scenes, validate licenses, or prove Android device compatibility.")
+    add(
+        "info",
+        "AUDIT_SCOPE",
+        "Read-only structural audit. It does not execute Godot, inspect every GDScript semantic, test scenes, validate external licence terms, or prove Android device compatibility.",
+    )
     errors = sum(f["level"] == "error" for f in findings)
     warnings = sum(f["level"] == "warning" for f in findings)
-    report = {"schema_version": 1, "project": "Kindlewake", "counts": counts,
-              "summary": {"errors": errors, "warnings": warnings}, "findings": findings}
+    report = {
+        "schema_version": 2,
+        "project": "Kindlewake",
+        "counts": counts,
+        "summary": {"errors": errors, "warnings": warnings},
+        "findings": findings,
+    }
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "project-health.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    lines = ["# Kindlewake Project Health Audit", "",
-             f"- Errors: **{errors}**", f"- Warnings: **{warnings}**", "",
-             "## Inventory", ""]
+    lines = [
+        "# Kindlewake Project Health Audit",
+        "",
+        f"- Errors: **{errors}**",
+        f"- Warnings: **{warnings}**",
+        "",
+        "## Inventory",
+        "",
+    ]
     lines += [f"- {key.replace('_', ' ').title()}: {value}" for key, value in counts.items()]
     lines += ["", "## Findings", ""]
-    lines += [f"- **{f['level'].upper()} — {f['code']}** {f['message']} ({f['path']})" for f in findings]
+    lines += [
+        f"- **{f['level'].upper()} — {f['code']}** {f['message']} ({f['path']})"
+        for f in findings
+    ]
     (args.output / "project-health.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
     return 1 if errors else 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
