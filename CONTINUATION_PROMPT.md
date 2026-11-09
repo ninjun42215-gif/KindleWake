@@ -126,3 +126,28 @@ Next steps:
 5. Review asset licenses and add a structured asset provenance manifest before importing more packs.
 6. Configure main branch protection in GitHub Settings. Keep both PRs unmerged until separately reviewed and explicitly approved for merge.
 7. Re-run Android build and perform physical-device QA before any production release.
+
+
+## Follow-up audit and provenance hardening — 2026-11-10
+
+Work continued on `workflow/manual-operations-toolbox` (PR #5 only; main remains untouched):
+
+- Expanded `Kindlewake/tools/project_health_audit.py` to validate rune definition shape, report rune kind totals, detect unverified asset-credit rows, parse a structured asset provenance ledger, and warn when an asset used in game is not marked licence-verified.
+- Added `Kindlewake/data/asset_provenance.json`. It records the Quaternius CC0 pack as verified based on the repository's licence file; voxel building packs and Tiny RPG Character Asset Pack 01 are explicitly marked unverified and release-blocking; unused restricted/unknown packs remain documented as unused.
+- Added `--fail-on-warnings` for strict pre-release auditing. Normal CI mode remains advisory for warnings; strict mode returns non-zero until warnings are resolved.
+- Expanded `test_project_health_audit.py` for licence warnings, unused-pack handling, structured provenance, strict gate behavior, rune kind counts and malformed rune records.
+- Added `docs/PROJECT_HEALTH_AUDIT.md` and updated manual workflow instructions.
+
+**Validation status:** these latest changes have been committed to the toolbox branch, but a successful GitHub Actions run for the latest head has not yet been independently confirmed. Do not describe the new tests or audit output as passing until the latest PR #5 checks are inspected.
+
+**Current known project state:** PR #4 remains a draft Rune System PR; its description reports 77 rune definitions and its branch is 309 commits ahead of main at the last comparison. PR #5 remains a separate draft operations-toolbox PR. Do not merge either PR without a separate explicit authorization. The main branch was still unprotected at the last inspection; branch protection must be configured manually in GitHub Settings. Two old branches are behind/diverged and should be reviewed with the read-only Branch Hygiene workflow, not automatically deleted or merged.
+
+**Release blockers:** two asset packs currently used in game have unverified redistribution rights (voxel building packs and Tiny RPG Character Asset Pack 01). Do not publish a public/commercial build until authoritative licence evidence is recorded or the assets are replaced. Physical Android device/gameplay QA also remains outstanding.
+
+Next actions:
+1. Inspect latest PR #5 CI for the exact latest branch head; fix any syntax/test failures before claiming validation.
+2. Run the audit against both `main` and `feature/rune-system-v1`; use strict mode to identify release blockers.
+3. Review PR #4/#5 overlap in root GitHub workflow files before any integration; preserve independent, reviewable changes.
+4. Configure main branch protection manually using `docs/MANUAL_GITHUB_WORKFLOWS.md`.
+5. Resolve asset licensing or replace unverified assets, then complete physical-device QA before release.
+6. Produce and verify a fresh split source handoff from the latest commit; compare its embedded SHA to the live branch head.
