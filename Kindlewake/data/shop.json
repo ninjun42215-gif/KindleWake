@@ -152,11 +152,28 @@
         "bulwark",
         "arcane"
       ]
+    },
+    "sethorn_hall": {
+      "items": [],
+      "runes": []
     }
   },
   "runes": [
     "mend",
     "ember",
     "vigor"
-  ]
+  ],
+  "services": {
+    "crossing_shop": [
+      "rune_socket",
+      "rune_remove",
+      "rune_forge"
+    ],
+    "sethorn_hall": [
+      "blacksmith_enhance",
+      "rune_socket",
+      "rune_remove",
+      "rune_forge"
+    ]
+  }
 }
