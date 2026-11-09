@@ -3,6 +3,7 @@ extends Control
 
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const PartyStateScript = preload("res://scripts/core/party_state.gd")
+const RuneSystem = preload("res://scripts/core/rune_system.gd")
 ## Full-screen party management in one touch UI (v0.8.0 layout): a compact top bar, a roster of cards, a character
 ## sheet made of stat tiles, and a right panel with three tabs: Equipment, Sigils and Shop.
 ## It owns no rules: every action goes through PartyStateScript / CharacterSheetScript / ShopSystem, the same code paths the
