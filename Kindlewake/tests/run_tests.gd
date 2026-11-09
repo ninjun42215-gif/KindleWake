@@ -56,6 +56,25 @@ func _test_data() -> void:
     print("[data]")
     check(gd.classes.size() >= 5, "classes loaded")
     check(gd.weapons.size() >= 5, "weapons loaded")
+    var expected_rarities: Array = ["common", "uncommon", "rare", "epic", "legendary", "mythical"]
+    check((gd.items.get("rarities", []) as Array).size() == 6, "six equipment rarity tiers are declared")
+    var rarity_coverage := true
+    var unique_coverage := true
+    for item_id in gd.items.keys():
+        var item: Dictionary = gd.items[item_id]
+        if not expected_rarities.has(str(item.get("rarity", ""))) and str(item.get("rarity", "")) != "unique":
+            rarity_coverage = false
+        if str(item.get("rarity", "")) == "unique" and not bool(item.get("unique", false)) and not item.has("bound_to"):
+            unique_coverage = false
+    check(rarity_coverage, "every equipment item uses a supported rarity tier or Unique")
+    check(unique_coverage, "Unique equipment is explicitly identified as a special grade")
+    for rarity in expected_rarities:
+        var has_tier := false
+        for item_id in gd.items.keys():
+            if str((gd.items[item_id] as Dictionary).get("rarity", "")) == str(rarity):
+                has_tier = true
+                break
+        check(has_tier, "equipment data includes " + str(rarity) + " tier")
     check(gd.characters.has("torren"), "characters loaded")
     var def: Dictionary = gd.battle_def("battle_01")
     check(not def.is_empty(), "battle_01 loaded")
@@ -132,10 +151,15 @@ func _test_character_creation() -> void:
     var base: Dictionary = gd.characters.get("torren", {}).duplicate(true)
     var valid_reason: String = CharacterCreation.validate(profile, cfg, gd.classes)
     check(valid_reason == "", "default protagonist profile is valid")
+    check(int(cfg.get("stat_points", 0)) == 8 and int(profile.get("stat_allocation", {}).get("str", 0)) + int(profile.get("stat_allocation", {}).get("dex", 0)) + int(profile.get("stat_allocation", {}).get("int", 0)) + int(profile.get("stat_allocation", {}).get("vit", 0)) + int(profile.get("stat_allocation", {}).get("spd", 0)) + int(profile.get("stat_allocation", {}).get("lck", 0)) == 8, "protagonist receives eight allocatable starting attribute points")
     var created: Dictionary = CharacterCreation.build_definition(base, profile, cfg, gd.classes)
     check(not created.is_empty() and str(created.get("name", "")) == "Torren Dunmarrow", "creator builds a protagonist definition")
     check(str(created.get("class_id", "")) == "swordsman" and created.has("creation"), "discipline and visual profile metadata are stored")
     check(int(created["stats"]["ldr"]) == int(base["stats"]["ldr"]) + 1 and int(created["stats"]["mor"]) == int(base["stats"]["mor"]) + 2, "origin and temperament bonuses are applied")
+    check(int(created["stats"]["str"]) == int(base["stats"]["str"]) + 2 and int(created["stats"]["dex"]) == int(base["stats"]["dex"]) + 2, "allocated protagonist attributes are applied to starting stats")
+    var bad_allocation: Dictionary = profile.duplicate(true)
+    bad_allocation["stat_allocation"] = {"str": 5, "dex": 5, "int": 0, "vit": 0, "spd": 0, "lck": 0}
+    check(CharacterCreation.validate(bad_allocation, cfg, gd.classes) != "", "creator rejects over-budget attribute allocation")
     check(int(base["stats"]["ldr"]) == 12 and str(base["name"]) == "Torren Dunmarrow", "building a profile does not mutate source character data")
     var archer: Dictionary = profile.duplicate(true)
     archer["name"] = "Ari Dunmarrow"
