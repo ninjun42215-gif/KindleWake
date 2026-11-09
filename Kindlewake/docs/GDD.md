@@ -850,3 +850,13 @@ Legacy sigil_* script entry points remain internal compatibility wrappers during
 
 ### 14.8 Recruitment and company-bond UI (v0.11.0)
 The character sheet includes a Company bond tile with a loyalty value and readable state (Fractured, Wary, Committed or Steadfast). Muster-hall recruit prompts show the authored gold cost or the first unmet prerequisite; successful recruitment records a one-time flag and shows the recruit's starting loyalty. This is a foundation only: there is not yet a calendar-driven desertion or event-based loyalty loop.
+
+
+## Opening prologue — Smoke on the Wind (implementation slice)
+
+- New campaigns route from the protagonist creator into `Prologue.tscn` before entering the Sallow Marches. Existing Continue/Load flows remain unchanged.
+- The east-gallery scene presents the burning estate, the archive survivors and the sealed household record through authored dialogue from Bram, Sela and Wystan.
+- The player chooses to rescue the people, recover the record, or split the company and attempt both. `PrologueSystem` records explicit campaign flags (`prologue_decision`, `prologue_people_saved`, `prologue_record_saved`, `prologue_company_split`, `chapter`) without changing the save schema.
+- First overworld arrival displays a one-time companion acknowledgement based on the selected outcome. Existing campaign serialization preserves these flags.
+- Headless regression assertions cover all three outcomes, preservation of pre-existing world flags, acknowledgement text and invalid choices.
+- Scope boundary: this is the first playable narrative decision and consequence hand-off, **not** the complete 45–60 minute vertical slice. Escape traversal/battle, persistent journal, first keep restoration decision and first investigation remain future work. No third-party art/audio is introduced.
