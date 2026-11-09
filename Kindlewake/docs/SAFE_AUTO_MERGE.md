@@ -27,3 +27,14 @@ The GitHub connection used to update files cannot administer branch protection/r
 - PRs with conflicts or stale check results never auto-merge.
 - Device/gameplay QA, asset-rights review, release signing, and other non-CI requirements remain explicit release gates. A green CI build is not proof of physical-device compatibility.
 - Never use this workflow to merge a release/tag or a PR targeting a branch other than `main`.
+
+
+## Exact-SHA automatic merge behavior
+
+After both **Build Android APK** and **Synchronize Project Version** complete successfully for the same pull-request head SHA, the Safe Auto Merge workflow:
+1. Finds exactly one open PR targeting `main` with that exact head SHA.
+2. Rejects drafts, conflicts, stale heads and wrong base branches.
+3. Queries the Actions REST API for both successful `pull_request` workflow runs on that SHA (the workflow-run job has no local Git checkout).
+4. Rechecks the expected head SHA at merge time and performs a squash merge. GitHub still enforces any branch protection/rulesets configured on `main`.
+
+This is an automatic merge only after the exact-SHA checks pass; it does not bypass configured repository rules. If any lookup is ambiguous, checks are missing/failed, or the head changes, the workflow fails closed and does not merge.
