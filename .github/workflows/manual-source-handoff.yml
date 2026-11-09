@@ -1,0 +1,56 @@
+name: Manual Source Handoff Snapshot
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kindlewake-manual-handoff-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Package and verify selected branch source
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out selected branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Test handoff and organizer safety tools
+        run: |
+          python3 -m unittest discover -s Kindlewake/tests -p 'test_source_handoff.py' -v
+          python3 -m unittest discover -s Kindlewake/tests -p 'test_repository_organizer.py' -v
+
+      - name: Package exact tracked source and split into verified parts
+        env:
+          OUTPUT_DIR: ${{ runner.temp }}/kindlewake-manual-handoff
+        run: |
+          set -euo pipefail
+          python3 Kindlewake/tools/source_handoff.py pack \
+            --repository-root . \
+            --output-dir "$OUTPUT_DIR" \
+            --part-size 25000000
+          {
+            echo "# Manual Kindlewake source handoff"
+            echo ""
+            echo "- Selected ref: $GITHUB_REF"
+            echo "- Exact commit: $GITHUB_SHA"
+            echo "- Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo ""
+            echo "## Parts manifest"
+            cat "$OUTPUT_DIR/Kindlewake-Source-Handoff-Parts/PARTS-MANIFEST.json"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload portable source handoff
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kindlewake-Manual-Source-Handoff
+          path: ${{ runner.temp }}/kindlewake-manual-handoff/Kindlewake-Source-Handoff-Parts/*
+          if-no-files-found: error
+          retention-days: 90
