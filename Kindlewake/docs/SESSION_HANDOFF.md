@@ -75,3 +75,11 @@
 - Latest build run for `35a8e1c9f546f3f1eddbafd4ea84c47a98d83528`: `42666872518` (in progress at handoff). Do not claim the APK is current or validated until this run completes successfully.
 - Next visual task: integrate the existing hero battle sprite feature pack if compatible with the current project; upgrade enemies beyond the existing Soldier/Orc idle/walk/attack/hurt/death strips, add distinct silhouettes and spell/impact effects. Preserve existing frame contracts in `scripts/ui/art.gd`; verify third-party licences before redistribution.
 - `main` remains untouched; PR #4 remains draft and unmerged.
+
+
+## Build validation update — 2026-11-10
+- Successful Android build run: `42666872518` — https://github.com/ninjun42215-gif/KindleWake/actions/runs/42666872518
+- Validated commit: `35a8e1c9f546f3f1eddbafd4ea84c47a98d83528` (the two GDScript fixes are included).
+- Godot import passed; strict automated tests: **333 checks, 0 failures**; balance report passed; signed Android APK exported and verified.
+- APK size: 41.2 MB. Actions artifact: `Kindlewake-APK` (artifact ID `13697765975`, expires 2027-02-07). Artifact ZIP SHA-256: `6547d22563f0ae1082968ece261891bd188a92246d01f797fd8eb628f9eea088`.
+- This validates the project code at `35a8e1c`; the subsequent commits only append handoff documentation. No physical Android device test has been performed.
