@@ -923,7 +923,7 @@ func _test_region_save_compatibility() -> void:
     var legacy: Dictionary = RegionSaveState.from_payload({"world_pos": [123.0, 456.0]})
     check(str(legacy.get("active_region_id", "")) == "sethmarch" and legacy.get("world_pos", Vector2.ZERO) == Vector2(123.0, 456.0), "schema-4 campaign saves restore to Sethmarch without losing their position")
     check((legacy.get("world_positions", {}) as Dictionary).get("sethmarch", []) == [123.0, 456.0], "legacy saves seed the per-region position table")
-    var coastal: Dictionary = GameStateScript.region_state_from_payload({"world_pos": [8.0, 9.0], "active_region_id": "brinegate_coast", "world_positions": {"sethmarch": [100.0, 200.0]}})
+    var coastal: Dictionary = RegionSaveState.from_payload({"world_pos": [8.0, 9.0], "active_region_id": "brinegate_coast", "world_positions": {"sethmarch": [100.0, 200.0]}})
     check(str(coastal.get("active_region_id", "")) == "brinegate_coast" and coastal.get("world_pos", Vector2.ZERO) == Vector2(8.0, 9.0), "new saves restore the active Thalassar position")
     check((coastal.get("world_positions", {}) as Dictionary).get("sethmarch", []) == [100.0, 200.0], "switching continents preserves the other region's last position")
 
