@@ -51,6 +51,39 @@
       ],
       "battle": "battle_01",
       "text": "Hask Gravelteeth's raiders hold the road to Eldrimar from this palisade."
+    },
+    {
+      "id": "tollhouse",
+      "name": "Sunken Tollhouse",
+      "kind": "ruin",
+      "cell": [
+        16,
+        20
+      ],
+      "reward_gold": 45,
+      "text": "The old kings' tollhouse sank into the marsh after the river changed course. Its stone vault is still sealed beneath the mud."
+    },
+    {
+      "id": "hollowroot",
+      "name": "Hollowroot Warren",
+      "kind": "ruin",
+      "cell": [
+        45,
+        34
+      ],
+      "reward_gold": 75,
+      "text": "A tangle of roots has swallowed a watch-post and the burrows beneath it. Something has been dragging iron into the dark."
+    },
+    {
+      "id": "barrow",
+      "name": "Warden's Barrow",
+      "kind": "ruin",
+      "cell": [
+        8,
+        8
+      ],
+      "reward_gold": 90,
+      "text": "A low mound of black stones marks the grave of a road warden. The old boundary runes are cracked, but the cairn has not been emptied."
     }
   ],
   "roads": [
@@ -65,6 +98,18 @@
     [
       "crossing",
       "watch"
+    ],
+    [
+      "sethorn",
+      "tollhouse"
+    ],
+    [
+      "crossing",
+      "hollowroot"
+    ],
+    [
+      "sethorn",
+      "barrow"
     ]
   ]
 }
