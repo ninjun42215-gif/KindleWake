@@ -9,28 +9,24 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: version-sync-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  version-sync:
-    name: Keep README and Android export version aligned
+  validate-pull-request:
+    name: Test proposed version tool and metadata
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
     steps:
       - name: Check out the triggering source
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          persist-credentials: true
-
-      - name: Check out the trusted version tool from main
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: main
-          path: .version-tool
           persist-credentials: false
 
       - name: Set up Python
@@ -38,28 +34,46 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Test version synchronizer
-        run: python .version-tool/Kindlewake/tests/test_sync_version.py
+      - name: Test proposed version synchronizer
+        run: python Kindlewake/tests/test_sync_version.py
 
-      - name: Require consistent metadata on pull requests
-        if: github.event_name == 'pull_request'
-        run: python .version-tool/Kindlewake/tools/sync_version.py --project-dir Kindlewake --check
+      - name: Require all proposed metadata to match project.godot
+        run: python Kindlewake/tools/sync_version.py --project-dir Kindlewake --check
+
+  synchronize-main:
+    name: Apply version metadata on main
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Check out main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Test main version synchronizer
+        run: python Kindlewake/tests/test_sync_version.py
 
       - name: Automatically repair metadata on main
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: python .version-tool/Kindlewake/tools/sync_version.py --project-dir Kindlewake --apply
+        run: python Kindlewake/tools/sync_version.py --project-dir Kindlewake --apply
 
       - name: Commit automatic metadata correction
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- Kindlewake/README.md Kindlewake/export_presets.cfg; then
+          if git diff --quiet -- Kindlewake/README.md Kindlewake/export_presets.cfg Kindlewake/scripts/core/save_system.gd; then
             echo "Main version metadata is already synchronized."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Kindlewake/README.md Kindlewake/export_presets.cfg
-          git commit -m "chore: synchronize README and Android version metadata"
+          git add Kindlewake/README.md Kindlewake/export_presets.cfg Kindlewake/scripts/core/save_system.gd
+          git commit -m "chore: synchronize README, Android and save metadata versions"
           git push

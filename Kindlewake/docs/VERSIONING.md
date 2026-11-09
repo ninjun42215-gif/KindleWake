@@ -30,10 +30,10 @@ Minor and patch components must each be between 0 and 99. The derived value must
 
 `.github/workflows/version-sync.yml` provides two safeguards:
 
-1. **Push to main:** the workflow applies the metadata synchronization and commits only README/export metadata when a correction is needed. This also runs after a pull request is merged into main.
-2. **Pull request targeting main:** the workflow checks the proposed project tree and fails if README or Android export metadata does not match project.godot. It does not rewrite the contributor's branch.
+1. **Pull request targeting main:** a read-only job checks out the proposed branch, runs that branch's synchronizer unit tests, and fails if README, Android export or SaveSystem game-version metadata does not match project.godot. It cannot write to the repository.
+2. **Push to main:** a separate write-enabled job tests and applies the synchronizer on main, then commits only README/export/save-version metadata if a correction is needed. This also runs after a pull request is merged into main.
 
-The workflow checks out the trusted synchronizer from main for PR validation, so older feature branches do not need to carry the tool before the guard can run. The version tool's unit tests execute on both paths.
+This split validates proposed synchronizer changes without granting untrusted pull-request code write permission. The payload schema constant `SAVE_VERSION` remains independent from `GAME_VERSION` metadata.
 
 ## Manual use
 
