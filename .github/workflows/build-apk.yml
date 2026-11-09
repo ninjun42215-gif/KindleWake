@@ -1,5 +1,5 @@
-# Repository-wide Android build and portable source handoff.
-# Every branch and tag is handled from the exact Git ref that triggered the run.
+# Repository-wide CI: strict Godot validation, Android APK and portable source handoff.
+# All work is tied to the exact triggering ref/SHA; source handoff is independent of APK success.
 name: Build Android APK and Source Handoff
 
 on:
@@ -17,13 +17,14 @@ permissions:
   contents: read
 
 concurrency:
-  group: kindlewake-build-${{ github.workflow }}-${{ github.ref }}
+  group: kindlewake-ci-\${{ github.workflow }}-\${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build-and-handoff:
+  android-build:
+    name: Validate and build Android APK
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - name: Check out the triggering ref
         uses: actions/checkout@v4
@@ -31,50 +32,147 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      - name: Verify Godot project exists
+      - name: Verify project and version configuration
         shell: bash
         run: |
           set -euo pipefail
-          test -f Kindlewake/project.godot || {
-            echo "::error::Kindlewake/project.godot is missing from this repository snapshot."
-            exit 1
-          }
+          test -f Kindlewake/project.godot
+          test -f Kindlewake/export_presets.cfg
           test -f Kindlewake/tools/build_apk.py
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          root = Path("Kindlewake")
+          project = (root / "project.godot").read_text(encoding="utf-8")
+          preset = (root / "export_presets.cfg").read_text(encoding="utf-8")
+          project_version = re.search(r'^config/version\s*=\s*"([^"]+)"', project, re.M)
+          preset_version = re.search(r'^version/name\s*=\s*"([^"]+)"', preset, re.M)
+          if not project_version or not preset_version:
+              raise SystemExit("Project or Android preset version is missing.")
+          if project_version.group(1) != preset_version.group(1):
+              raise SystemExit(
+                  "Version mismatch: project.godot=%s, Android preset=%s. "
+                  "Update both deliberately before building." %
+                  (project_version.group(1), preset_version.group(1))
+              )
+          print("Project and Android export version: " + project_version.group(1))
+          PY
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Cache JDK, Android SDK, Godot and export templates
+      - name: Cache Android build toolchain
         uses: actions/cache@v4
         with:
           path: ~/.kindlewake_build
-          key: kindlewake-build-${{ hashFiles('Kindlewake/tools/build_apk.py') }}
+          key: \${{ runner.os }}-kindlewake-\${{ hashFiles('Kindlewake/tools/build_apk.py') }}
+          restore-keys: |
+            \${{ runner.os }}-kindlewake-
 
       - name: Import, strict tests, balance report and Android export
         working-directory: Kindlewake
         run: python tools/build_apk.py --strict --with-balance
 
-      - name: Upload Android APK
+      - name: Create APK checksum and build manifest
+        if: success()
+        working-directory: Kindlewake
+        env:
+          SOURCE_REF: \${{ github.ref }}
+          SOURCE_SHA: \${{ github.sha }}
+          EVENT_NAME: \${{ github.event_name }}
+          RUN_ID: \${{ github.run_id }}
+          RUN_ATTEMPT: \${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, os, re
+          from pathlib import Path
+          root = Path(".")
+          apk = root / "dist" / "Kindlewake.apk"
+          if not apk.is_file():
+              raise SystemExit("APK is missing; refusing to create a success manifest.")
+          project = (root / "project.godot").read_text(encoding="utf-8")
+          preset = (root / "export_presets.cfg").read_text(encoding="utf-8")
+          def match(pattern, text):
+              found = re.search(pattern, text, re.M)
+              return found.group(1) if found else None
+          manifest = {
+              "artifact": apk.name,
+              "sha256": hashlib.sha256(apk.read_bytes()).hexdigest(),
+              "size_bytes": apk.stat().st_size,
+              "project": "Kindlewake",
+              "version_name": match(r'^config/version\s*=\s*"([^"]+)"', project),
+              "android_version_name": match(r'^version/name\s*=\s*"([^"]+)"', preset),
+              "android_version_code": match(r'^version/code\s*=\s*(\d+)', preset),
+              "application_id": match(r'^package/unique_name\s*=\s*"([^"]+)"', preset),
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "ref": os.environ["SOURCE_REF"],
+              "commit": os.environ["SOURCE_SHA"],
+              "event": os.environ["EVENT_NAME"],
+              "run_id": os.environ["RUN_ID"],
+              "run_attempt": os.environ["RUN_ATTEMPT"],
+          }
+          out = root / "dist"
+          (out / "Kindlewake.apk.sha256").write_text(
+              manifest["sha256"] + "  Kindlewake.apk\n", encoding="utf-8"
+          )
+          (out / "release-manifest.json").write_text(
+              json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+          )
+          print(json.dumps(manifest, indent=2))
+          PY
+
+      - name: Upload Android APK and provenance
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: Kindlewake-APK
-          path: Kindlewake/dist/Kindlewake.apk
+          path: |
+            Kindlewake/dist/Kindlewake.apk
+            Kindlewake/dist/Kindlewake.apk.sha256
+            Kindlewake/dist/release-manifest.json
           if-no-files-found: error
           retention-days: 90
 
-      - name: Package complete tracked repository snapshot and split handoff
+      - name: Upload test and build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: Kindlewake/dist/logs/
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Explain tagged build status
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          echo "This tag produced a verified build candidate artifact."
+          echo "Production publishing is a separate manually approved workflow."
+
+  source-handoff:
+    name: Package complete tracked source snapshot
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out the exact triggering ref
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Build and split portable source handoff
         shell: bash
         env:
-          HANDOFF_REF: ${{ github.ref }}
-          HANDOFF_SHA: ${{ github.sha }}
-          HANDOFF_EVENT: ${{ github.event_name }}
-          HANDOFF_REPOSITORY: ${{ github.repository }}
-          HANDOFF_RUN_ID: ${{ github.run_id }}
-          HANDOFF_RUN_ATTEMPT: ${{ github.run_attempt }}
+          HANDOFF_REF: \${{ github.ref }}
+          HANDOFF_SHA: \${{ github.sha }}
+          HANDOFF_EVENT: \${{ github.event_name }}
+          HANDOFF_REPOSITORY: \${{ github.repository }}
+          HANDOFF_RUN_ID: \${{ github.run_id }}
+          HANDOFF_RUN_ATTEMPT: \${{ github.run_attempt }}
         run: |
           set -euo pipefail
-          python - <<'PY'
+          python3 - <<'PY'
           import hashlib
           import os
           import subprocess
@@ -82,15 +180,12 @@ jobs:
           from zipfile import ZipFile, ZIP_DEFLATED
 
           root = Path.cwd()
-          project_dist = root / "Kindlewake" / "dist"
-          parts_dir = project_dist / "Kindlewake-Source-Handoff-Parts"
-          project_dist.mkdir(parents=True, exist_ok=True)
+          work = Path(os.environ["RUNNER_TEMP"]) / "kindlewake-source-handoff"
+          work.mkdir(parents=True, exist_ok=True)
+          archive_path = work / "Kindlewake-Source-Handoff.zip"
+          parts_dir = work / "Kindlewake-Source-Handoff-Parts"
           parts_dir.mkdir(parents=True, exist_ok=True)
-          archive_path = project_dist / "Kindlewake-Source-Handoff.zip"
 
-          # Use Git's tracked-file manifest rather than a hard-coded folder/file
-          # list. New features, branches, renamed files and root-level additions
-          # are automatically captured from this exact checkout.
           tracked = subprocess.check_output(["git", "ls-files", "-z"]).decode().split("\0")
           excluded_dirs = {
               ".git", ".godot", "__pycache__", "node_modules",
@@ -107,35 +202,23 @@ jobs:
 
           def safe_to_package(raw):
               path = PurePosixPath(raw)
-              parts = path.parts
-              if any(part in excluded_dirs for part in parts):
+              if any(part in excluded_dirs for part in path.parts):
                   return False
               if path.name in excluded_exact or path.name.endswith(".secret"):
                   return False
               if path.suffix.lower() in excluded_suffixes:
                   return False
-              # Generated Android exports/signing material are never portable source.
-              if parts[:2] == ("Kindlewake", "keys"):
-                  return False
-              if parts[:2] == ("Kindlewake", "dist"):
-                  return False
               return True
 
           included = []
-          skipped = []
           with ZipFile(archive_path, "w", ZIP_DEFLATED, compresslevel=6) as archive:
               for raw in tracked:
                   if not raw:
                       continue
                   path = root / raw
-                  if not path.is_file():
-                      continue
-                  if not safe_to_package(raw):
-                      skipped.append(raw)
-                      continue
-                  archive.write(path, raw)
-                  included.append(raw)
-
+                  if path.is_file() and safe_to_package(raw):
+                      archive.write(path, raw)
+                      included.append(raw)
               metadata = (
                   "KINDLEWAKE PORTABLE SOURCE HANDOFF\n"
                   f"Repository: {os.environ['HANDOFF_REPOSITORY']}\n"
@@ -145,22 +228,22 @@ jobs:
                   f"Workflow run: {os.environ['HANDOFF_RUN_ID']} "
                   f"(attempt {os.environ['HANDOFF_RUN_ATTEMPT']})\n"
                   f"Tracked files included: {len(included)}\n"
-                  "This archive is the complete tracked repository snapshot for the triggering ref, "
-                  "excluding generated caches/build outputs and signing/secret material.\n"
+                  "Complete tracked repository snapshot for the triggering checkout; "
+                  "generated caches/build outputs and signing/secret material are excluded.\n"
               )
               archive.writestr("HANDOFF-METADATA.txt", metadata)
 
-          size = archive_path.stat().st_size
-          print(f"Created {archive_path} ({size} bytes; {len(included)} tracked files)")
           if not included:
               raise SystemExit("No tracked source files were included; refusing an empty handoff.")
 
-          # Decimal 25 MB limit. Each chunk is independently checked.
           part_limit = 25_000_000
           parts = []
           with archive_path.open("rb") as source:
               index = 1
-              while chunk := source.read(part_limit):
+              while True:
+                  chunk = source.read(part_limit)
+                  if not chunk:
+                      break
                   part = parts_dir / f"Kindlewake-Source-Handoff.zip.part{index:03d}"
                   part.write_bytes(chunk)
                   if part.stat().st_size > part_limit:
@@ -168,16 +251,12 @@ jobs:
                   parts.append(part)
                   index += 1
 
-          if not parts:
-              raise SystemExit("Source handoff produced no parts.")
-
           digest = hashlib.sha256(archive_path.read_bytes()).hexdigest()
           (parts_dir / "SHA256SUMS.txt").write_text(
-              f"{digest}  Kindlewake-Source-Handoff.zip\n",
-              encoding="utf-8",
+              f"{digest}  Kindlewake-Source-Handoff.zip\n", encoding="utf-8"
           )
           instructions = """KINDLEWAKE SOURCE HANDOFF — REASSEMBLY
-          Download the complete artifact and keep every .partNNN file in this folder.
+          Download all files from this artifact and keep every .partNNN file together.
           The parts are consecutive binary chunks, not individual ZIP files.
 
           Linux / macOS / Termux:
@@ -198,35 +277,23 @@ jobs:
             (Get-FileHash 'Kindlewake-Source-Handoff.zip' -Algorithm SHA256).Hash
             7z t Kindlewake-Source-Handoff.zip
 
-          Compare the SHA-256 value with SHA256SUMS.txt before extraction.
+          Compare the reconstructed SHA-256 with SHA256SUMS.txt.
           Every part is <= 25,000,000 bytes (25 MB decimal).
-          The archive contains all tracked repository files for the triggering ref,
-          except generated caches/build output and signing/secret material.
+          The archive contains the complete tracked repository snapshot for this ref,
+          excluding generated caches/build outputs and signing/secret material.
           """
           (parts_dir / "REASSEMBLE.txt").write_text(instructions, encoding="utf-8")
+          print(f"Created source archive: {archive_path.stat().st_size} bytes")
+          print(f"Tracked files included: {len(included)}")
           print(f"SHA-256: {digest}")
           for part in parts:
               print(f"{part.name}: {part.stat().st_size} bytes")
+          PY
 
       - name: Upload split source handoff
         uses: actions/upload-artifact@v4
         with:
           name: Kindlewake-Source-Handoff-Parts
-          path: Kindlewake/dist/Kindlewake-Source-Handoff-Parts/*
+          path: \${{ runner.temp }}/kindlewake-source-handoff/Kindlewake-Source-Handoff-Parts/*
           if-no-files-found: error
           retention-days: 90
-
-      - name: Upload test and build logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-logs
-          path: Kindlewake/dist/logs/
-          if-no-files-found: ignore
-          retention-days: 30
-
-      - name: Attach APK to version release
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: Kindlewake/dist/Kindlewake.apk
