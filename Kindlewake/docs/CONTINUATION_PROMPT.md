@@ -192,3 +192,34 @@ Workflow CI also now has a dedicated workflow-lint job. It parses every YAML fil
 
 ## CI follow-up — source handoff test fixture correction
 GitHub Actions run 42681992335 (commit 142cc330012b4b279eb137b54a36c85bcb1f08ed ) failed the source-handoff test job because test_missing_part_is_rejected used a legacy parts manifest without the newly required recovery_tool metadata. The production verifier correctly rejected the incomplete fixture before checking missing parts. The test fixture has now been updated to copy source_handoff.py and include its SHA-256 in recovery_tool, so the test can exercise the intended missing-part validation. Updated fixture commits: feature branch fc250b1ae2f12aa859f63767def36ef3c36945dd; standalone manual toolbox branch 4721e40200a3b3fa339068b37074a2571ba51f99. This is a test-fixture correction, not a relaxation of archive verification. Re-run/inspect CI before claiming the source handoff or new manual workflows are validated. The APK job in run 42681992335 was cancelled after the source-handoff failure; no APK artifact was produced by that run.
+
+
+## Verified current checkpoint — 2026-11-10
+
+### Game feature branch / PR #4
+- Branch: `feature/rune-system-v1`; latest verified head: `c4a7e72313050acc35b3a85db9b53876048f437b`.
+- PR #4 is still **draft**, unmerged, 313 commits ahead and 0 behind `main`. Do not merge without explicit user authorization.
+- Rune library: 77 total definitions across 10 families. Kinds: 23 magic, 43 passive, 3 support, 6 stat, 2 independent. Flags overlap: 7 unique and 5 heirloom.
+- Fusion: three copies of the same rune ID; mixed input grades allowed. Target grade is one step above max(floor average input-grade index, starting-grade index minus one). Base chances by target grade: 70%, 55%, 40%, 25%, 12%; mastery raises chance, capped at 95%. Failure returns one rune at highest input grade. Unique/heirloom cannot be sold or fused.
+- New regression coverage verifies passive socket modifiers, grade power scaling, and unique/heirloom sale restrictions. Existing suite includes save v1→v2→v3 migration, backup/corrupt-save recovery, newer-version refusal and deterministic battle simulations.
+- Latest Android build run: `42686782251` passed Godot 4.2.2 import, strict tests (**342 checks, 0 failures**), balance report, APK export/signature verification and workflow YAML lint.
+- APK: version 0.10.0, Android version code 1000, SHA-256 `0371fe1b68ba8963df6c530fbb30217ed6d2106642b9296e11b3239830dd8ef9`. Artifact: https://github.com/ninjun42215-gif/KindleWake/actions/runs/42686782251/artifacts/13704502185
+- Source handoff: 165 files, four parts <=25,000,000 bytes, zero excluded; archive SHA-256 `26fa407eb28a671ed50abe2a1058014f754a78a266abe6967a2932cfd91b6ac1`. Artifact: https://github.com/ninjun42215-gif/KindleWake/actions/runs/42686782251/artifacts/13705496581
+- The feature-branch source handoff now includes only the explicitly allowlisted public sideload/test keystore. Other keystore/signing suffixes remain excluded; regression tests cover the narrow exception.
+
+### Separate operations toolbox / PR #5
+- Branch: `workflow/manual-operations-toolbox`; latest verified head: `a41fca59f7783f72d62dd6801f3341fb317af1f2`.
+- PR #5 is draft and unmerged, 86 commits ahead and 0 behind `main`.
+- Latest Workflow YAML Lint passed: run `42687779765`.
+- Latest Project Health Audit passed with 0 errors and 3 warnings: run `42687779889`; report artifact `13704888419`.
+- Latest source handoff passed: run `42687779971`; artifact `13705392934`. 161 tracked files, four parts <=25,000,000 bytes, zero excluded; archive SHA-256 `89691958cc59200aa8c49fad5cef4ad56bda1dcb272b8ee7cdb2ce82d982cc5f`.
+- The three audit warnings are intentional release blockers: main project 0.9.0 vs Android export preset 0.7.14/code 714; one used voxel-building pack has unverified licence status (reported in both CREDITS and provenance ledger).
+- Quaternius Stylized Nature MegaKit is documented with official CC0 evidence. Zerie's free Soldier/Orc subset is documented with the author's official game-use/modification terms; do not redistribute the original asset pack by itself.
+- Strict audit mode is available through the manual workflow input `fail_on_warnings` or CLI `--fail-on-warnings`.
+
+### Repository state and next steps
+- `main` remains untouched at SHA `5715984a2acb6bd2b19d71ce7f9fd3acec3c8ac8` and is unprotected. Available GitHub write tools cannot change branch protection; configure it manually from `docs/MANUAL_GITHUB_WORKFLOWS.md`.
+- Both PRs are still drafts. Four manual workflows overlap across PR #4 and #5; review the identical shared workflow files and documentation before integration.
+- Resolve or replace the voxel-building assets before public/commercial release. Resolve the Android version mismatch in the correct PR integration order; do not overwrite PR #4's 0.10.0/code 1000 values.
+- Physical Android device QA remains outstanding. Also outstanding: architecture/event decoupling review, mobile accessibility/safe-area/touch QA, Android App Bundle (AAB) support, Godot scene smoke tests and full external asset licence review.
+- Recheck live PR heads and create a new exact-head handoff before further work; the artifact links above are verified for the stated commits only.
