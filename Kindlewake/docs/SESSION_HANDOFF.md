@@ -1,3 +1,14 @@
+# Current integration checkpoint — v0.10.0
+
+- Main includes the Operations Toolbox integration from PR #7, merged as `d4b696938fcb22fc1e40862b11a900d435ab75b1`.
+- Rune System source checkpoint: `01cd3f67a344a964b26eb4150167a21bd3fb733c`. Its 77-rune feature set is being reconciled onto current main; this handoff will be refreshed again after the integration PR merges.
+- Project version is being advanced to 0.10.0 / Android version code 1000 with the rune feature integration.
+- PR #7 checks passed on exact head `94e4210d70007a5cdb7de6bee9762938b764a072`: Android APK build, Workflow YAML Lint, Project Health Audit and Version Synchronization. PR #7 merged to main.
+- Safe auto-merge workflow did not enable merge automatically for PR #7; after confirming mergeability and every required check on the exact head, it was merged with expected-head SHA protection.
+- The Android APK export has been CI-validated; physical Android device QA is still required. The voxel-building pack's licence remains unverified and blocks public/commercial release.
+
+---
+
 # Session handoff — current repository checkpoint
 
 ## 2026-11-09 validation follow-up (project version remains 0.9.0)

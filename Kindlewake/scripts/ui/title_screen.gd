@@ -28,6 +28,15 @@ func _build() -> void:
     backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     add_child(backdrop)
 
+    var illustration := TextureRect.new()
+    illustration.texture = load("res://assets/art/ui/title_illustration.svg")
+    illustration.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    illustration.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    illustration.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+    illustration.modulate = Color(0.72, 0.82, 0.78, 0.72)
+    illustration.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    add_child(illustration)
+
     var wash := ColorRect.new()
     wash.color = Color("#17232a")
     wash.anchor_left = 0.0
@@ -43,15 +52,15 @@ func _build() -> void:
     add_child(center)
 
     var panel := PanelContainer.new()
-    panel.custom_minimum_size = Vector2(440, 0)
+    panel.custom_minimum_size = Vector2(maxf(300.0, minf(440.0, get_viewport_rect().size.x - 28.0)), 0)
     panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
     var style := StyleBoxFlat.new()
     style.bg_color = Color("#101820")
     style.border_color = Color("#8b7045")
     style.set_border_width_all(2)
     style.set_corner_radius_all(8)
-    style.content_margin_left = 34
-    style.content_margin_right = 34
+    style.content_margin_left = 18 if get_viewport_rect().size.x < 480.0 else 34
+    style.content_margin_right = 18 if get_viewport_rect().size.x < 480.0 else 34
     style.content_margin_top = 28
     style.content_margin_bottom = 28
     panel.add_theme_stylebox_override("panel", style)
@@ -64,7 +73,7 @@ func _build() -> void:
     var title := Label.new()
     title.text = "K I N D L E W A K E"
     title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-    title.add_theme_font_size_override("font_size", 34)
+    title.add_theme_font_size_override("font_size", 28 if get_viewport_rect().size.x < 480.0 else 34)
     title.add_theme_color_override("font_color", Color("#e4c58a"))
     root_box.add_child(title)
 
@@ -74,6 +83,14 @@ func _build() -> void:
     subtitle.add_theme_font_size_override("font_size", 15)
     subtitle.add_theme_color_override("font_color", Color("#aab6bc"))
     root_box.add_child(subtitle)
+
+    var ornament := TextureRect.new()
+    ornament.texture = load("res://assets/art/ui/ornament_divider.svg")
+    ornament.custom_minimum_size = Vector2(320, 54)
+    ornament.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    ornament.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    ornament.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    root_box.add_child(ornament)
 
     var divider := HSeparator.new()
     root_box.add_child(divider)
@@ -121,6 +138,7 @@ func _show_main() -> void:
     content_box.add_child(_button("NEW GAME", _new_game))
     content_box.add_child(_button("LOAD GAME", _show_load))
     content_box.add_child(_button("SETTINGS", _show_settings))
+    content_box.add_child(_button("EXIT GAME", _confirm_exit))
     status_label.text = "A chronicle awaits." if latest == "" else "A saved chronicle is ready."
 
 
@@ -207,3 +225,14 @@ func _on_volume_changed(value: float) -> void:
     cfg.load(SETTINGS_PATH)
     cfg.set_value("audio", "master", value)
     cfg.save(SETTINGS_PATH)
+
+
+func _confirm_exit() -> void:
+    _clear_content()
+    status_label.text = "Leave KindleWake? Unsaved progress may be lost."
+    content_box.add_child(_button("QUIT TO DESKTOP", _quit_game, true))
+    content_box.add_child(_button("CANCEL", _show_main))
+
+
+func _quit_game() -> void:
+    get_tree().quit()

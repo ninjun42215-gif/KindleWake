@@ -15,7 +15,8 @@ var skills: Dictionary = {}
 var characters: Dictionary = {}
 var items: Dictionary = {}
 var item_rarities: Array = []
-var sigils: Dictionary = {}
+var runes: Dictionary = {}
+var sigils: Dictionary = {}                # legacy alias; preserve existing saves
 var encounters: Dictionary = {}
 var shop: Dictionary = {}                # shop.json: stock lists and sell ratio
 var start: Dictionary = {}               # campaign_start.json: starting party, gold, inventory
@@ -38,7 +39,10 @@ func reload() -> void:
     var item_data: Dictionary = _load_json("items.json")
     items = item_data.get("items", {})
     item_rarities = item_data.get("rarities", [])
-    sigils = _load_json("sigils.json").get("sigils", {})
+    runes = _load_json("runes.json").get("runes", {})
+    if runes.is_empty():
+        runes = _load_json("sigils.json").get("sigils", {})
+    sigils = runes
     encounters = _load_json("encounters.json")
     shop = _load_json("shop.json")
     start = _load_json("campaign_start.json")
@@ -61,7 +65,8 @@ func as_db() -> Dictionary:
         "weapons": weapons,
         "skills": skills,
         "items": items,
-        "sigils": sigils,
+        "runes": runes,
+        "sigils": runes,
     }
     var resolved: Dictionary = {}
     for k in characters.keys():
@@ -74,12 +79,12 @@ func as_db() -> Dictionary:
 
 ## The small database PartyState needs to pay rewards (classes for level-ups, items and sigils for bonuses).
 func rules_db() -> Dictionary:
-    return {"classes": classes, "items": items, "sigils": sigils}
+    return {"classes": classes, "items": items, "runes": runes, "sigils": runes}
 
 
 ## Everything the party screen needs to compute and describe gear, sigils and skills.
 func party_db() -> Dictionary:
-    return {"classes": classes, "weapons": weapons, "items": items, "sigils": sigils, "skills": skills}
+    return {"classes": classes, "weapons": weapons, "items": items, "runes": runes, "sigils": runes, "skills": skills}
 
 
 func battle_def(battle_id: String) -> Dictionary:

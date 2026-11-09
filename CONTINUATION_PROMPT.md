@@ -1,3 +1,5 @@
+> **Live repository checkpoint (2026-11-10):** PR #7 Operations Toolbox is merged into main at `d4b696938fcb22fc1e40862b11a900d435ab75b1`. Rune System source branch head is `01cd3f67a344a964b26eb4150167a21bd3fb733c`; reconcile its gameplay/data/assets onto current main, preserve main's current workflows and version-sync tooling, run exact-head CI, then update this prompt and session handoff. Project version target is 0.10.0 / Android code 1000. Do not assume branch names or CI state without checking live refs.
+
 # CONTINUATION MASTER PROMPT — KINDLEWAKE: THE SUNDERED VOW
 
 > **Latest checkpoint: v0.7.13 (2026-11-09; three new road-connected Sethmarch ruin landmarks; no save schema change).** The supplied sprite bundle is preserved as 26 nested source ZIPs in `assets/optional_sprite_packs/`. They have not been imported into scenes or license-reviewed. Continue from `docs/SESSION_HANDOFF.md`.

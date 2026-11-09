@@ -5,6 +5,8 @@ extends RefCounted
 
 const WORLD_DIR := "res://assets/art/world/"
 const UNIT_DIR := "res://assets/art/units/"
+const PROP_ATLAS_PATH := "res://assets/art/props/field_props.svg"
+const PROP_CELLS := {"arch":Vector2i(0,0), "column":Vector2i(1,0), "rune_stone":Vector2i(2,0), "torch":Vector2i(3,0), "reeds":Vector2i(0,1), "crystals":Vector2i(1,1), "grave":Vector2i(2,1), "banner":Vector2i(3,1), "mushrooms":Vector2i(0,2), "stump":Vector2i(1,2), "barrel":Vector2i(2,2), "crate":Vector2i(3,2), "campfire":Vector2i(0,3), "frost_pine":Vector2i(1,3), "statue":Vector2i(2,3), "flower":Vector2i(3,3)}
 ## Frames per animation in the 100x100 horizontal strips of the Tiny RPG Soldier / Orc sheets.
 const UNIT_FRAMES := {"idle": 6, "walk": 8, "attack": 6, "hurt": 4, "death": 4}
 const UNIT_FRAME_SIZE := 100.0
@@ -66,4 +68,18 @@ static func draw_world(canvas: CanvasItem, name: String, foot: Vector2, scale: f
         return false
     var size: Vector2 = tex.get_size() * scale
     canvas.draw_texture_rect(tex, Rect2(foot - Vector2(size.x * 0.5, size.y), size), false, tint)
+    return true
+
+
+## Draws one original 128px environmental prop from the 4x4 atlas.
+static func draw_prop(canvas: CanvasItem, name: String, center: Vector2, scale: float = 0.5, tint: Color = Color.WHITE) -> bool:
+    if not PROP_CELLS.has(name):
+        return false
+    var tex: Texture2D = _load(PROP_ATLAS_PATH)
+    if tex == null:
+        return false
+    var cell: Vector2i = PROP_CELLS[name]
+    var src := Rect2(Vector2(cell) * 128.0, Vector2(128.0, 128.0))
+    var size := Vector2(128.0, 128.0) * scale
+    canvas.draw_texture_rect_region(tex, Rect2(center - size * 0.5, size), src, tint)
     return true

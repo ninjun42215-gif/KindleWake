@@ -1,0 +1,216 @@
+# Production publishing is deliberately separate from routine CI.
+# Configure the "android-production" GitHub Environment with required reviewers
+# and the production signing secrets before using this workflow.
+name: Publish Android Production Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag to build and publish (for example v0.10.0)
+        required: true
+        type: string
+      confirmation:
+        description: Type PUBLISH to authorize production release creation
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kindlewake-production-release-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Build, verify and publish signed APK
+    if: ${{ inputs.confirmation == 'PUBLISH' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    environment: android-production
+    steps:
+      - name: Check out the requested immutable tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Refuse to overwrite an existing published release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REQUESTED_TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          if gh release view "$REQUESTED_TAG" >/dev/null 2>&1; then
+            echo "::error::A GitHub Release already exists for $REQUESTED_TAG. Published releases are immutable; create a new version tag."
+            exit 1
+          fi
+
+      - name: Verify tag, project version and release configuration
+        shell: bash
+        env:
+          REQUESTED_TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          [[ "$REQUESTED_TAG" == v* ]] || { echo "::error::Release tags must begin with v."; exit 1; }
+          ACTUAL_TAG="$(git describe --tags --exact-match HEAD)"
+          [[ "$ACTUAL_TAG" == "$REQUESTED_TAG" ]] || {
+            echo "::error::Checked-out commit does not resolve exactly to requested tag."
+            exit 1
+          }
+          python3 - <<'PY'
+          import os, re
+          from pathlib import Path
+          root = Path("Kindlewake")
+          project = (root / "project.godot").read_text(encoding="utf-8")
+          preset = (root / "export_presets.cfg").read_text(encoding="utf-8")
+          def get(pattern, text):
+              m = re.search(pattern, text, re.M)
+              return m.group(1) if m else None
+          project_version = get(r'^config/version\s*=\s*"([^"]+)"', project)
+          preset_version = get(r'^version/name\s*=\s*"([^"]+)"', preset)
+          tag_version = os.environ["REQUESTED_TAG"][1:]
+          if not project_version or project_version != preset_version or project_version != tag_version:
+              raise SystemExit(
+                  f"Version mismatch: tag={tag_version}, project={project_version}, Android preset={preset_version}"
+              )
+          print(f"Release version verified: {project_version}")
+          PY
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install protected production signing key
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_RELEASE_KEYSTORE_BASE64 }}
+          KEY_ALIAS: ${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test -n "$KEYSTORE_BASE64" || { echo "::error::Missing ANDROID_RELEASE_KEYSTORE_BASE64 environment secret."; exit 1; }
+          test -n "$KEY_ALIAS" || { echo "::error::Missing ANDROID_RELEASE_KEY_ALIAS environment secret."; exit 1; }
+          test -n "$KEY_PASSWORD" || { echo "::error::Missing ANDROID_RELEASE_KEY_PASSWORD environment secret."; exit 1; }
+          KEYSTORE_PATH="$RUNNER_TEMP/kindlewake-production-release.keystore"
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"
+          test -s "$KEYSTORE_PATH"
+          chmod 600 "$KEYSTORE_PATH"
+          echo "KINDLEWAKE_KEYSTORE=$KEYSTORE_PATH" >> "$GITHUB_ENV"
+          echo "KINDLEWAKE_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+          echo "KINDLEWAKE_KEY_PASS=$KEY_PASSWORD" >> "$GITHUB_ENV"
+
+      - name: Cache Android build toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.kindlewake_build
+          key: ${{ runner.os }}-kindlewake-release-${{ hashFiles('Kindlewake/tools/build_apk.py') }}
+          restore-keys: |
+            ${{ runner.os }}-kindlewake-
+
+      - name: Import, run strict tests and build production-signed APK
+        working-directory: Kindlewake
+        run: python tools/build_apk.py --strict --with-balance
+
+      - name: Verify the production signing certificate identity
+        working-directory: Kindlewake
+        env:
+          EXPECTED_CERT_SHA256: ${{ vars.ANDROID_RELEASE_CERT_SHA256 }}
+        run: |
+          set -euo pipefail
+          test -n "$EXPECTED_CERT_SHA256" || {
+            echo "::error::Missing ANDROID_RELEASE_CERT_SHA256 environment variable; refusing an unpinned production signing identity."
+            exit 1
+          }
+          python3 - <<'PY'
+          import os, re, subprocess
+          from pathlib import Path
+          candidates = sorted(Path.home().glob(".kindlewake_build/android-sdk/build-tools/*/apksigner"))
+          if not candidates:
+              raise SystemExit("apksigner was not found in the Android SDK build-tools.")
+          output = subprocess.check_output(
+              [str(candidates[-1]), "verify", "--print-certs", "dist/Kindlewake.apk"],
+              text=True, stderr=subprocess.STDOUT
+          )
+          match = re.search(r"certificate SHA-256 digest:\s*([0-9a-fA-F:]+)", output, re.I)
+          if not match:
+              raise SystemExit("Could not read the APK signer certificate fingerprint.")
+          actual = match.group(1).replace(":", "").lower()
+          expected = os.environ["EXPECTED_CERT_SHA256"].replace(":", "").strip().lower()
+          if actual != expected:
+              raise SystemExit("APK signer certificate does not match ANDROID_RELEASE_CERT_SHA256; refusing publication.")
+          print("Production signing certificate fingerprint matches the protected environment setting.")
+          PY
+
+      - name: Create production release checksums and manifest
+        working-directory: Kindlewake
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, os, re
+          from pathlib import Path
+          apk = Path("dist/Kindlewake.apk")
+          if not apk.is_file():
+              raise SystemExit("Production APK was not generated.")
+          project = Path("project.godot").read_text(encoding="utf-8")
+          preset = Path("export_presets.cfg").read_text(encoding="utf-8")
+          def get(pattern, text):
+              m = re.search(pattern, text, re.M)
+              return m.group(1) if m else None
+          manifest = {
+              "artifact": apk.name,
+              "version": os.environ["RELEASE_TAG"][1:],
+              "version_code": get(r'^version/code\s*=\s*(\d+)', preset),
+              "application_id": get(r'^package/unique_name\s*=\s*"([^"]+)"', preset),
+              "commit": os.environ["SOURCE_SHA"],
+              "sha256": hashlib.sha256(apk.read_bytes()).hexdigest(),
+              "size_bytes": apk.stat().st_size,
+              "channel": "production",
+              "signing": "verified by apksigner during build",
+          }
+          Path("dist/Kindlewake.apk.sha256").write_text(
+              manifest["sha256"] + "  Kindlewake.apk\n", encoding="utf-8"
+          )
+          Path("dist/release-manifest.json").write_text(
+              json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+          )
+          print(json.dumps(manifest, indent=2))
+          PY
+
+      - name: Upload immutable production build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kindlewake-Production-APK-${{ inputs.tag }}
+          path: |
+            Kindlewake/dist/Kindlewake.apk
+            Kindlewake/dist/Kindlewake.apk.sha256
+            Kindlewake/dist/release-manifest.json
+          if-no-files-found: error
+          retention-days: 365
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: Kindlewake ${{ inputs.tag }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            Kindlewake/dist/Kindlewake.apk
+            Kindlewake/dist/Kindlewake.apk.sha256
+            Kindlewake/dist/release-manifest.json
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  rejected:
+    name: Explain missing release confirmation
+    if: ${{ inputs.confirmation != 'PUBLISH' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "::error::Production release not started. Re-run manually and type PUBLISH in the confirmation field."
+          exit 1

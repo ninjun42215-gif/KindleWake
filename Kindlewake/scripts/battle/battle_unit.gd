@@ -49,6 +49,8 @@ func is_alive() -> bool:
 
 func effective_spd() -> float:
     var penalty := 0.9 if fatigue >= 50 else 1.0
+    if statuses.has("chill"):
+        penalty *= 0.8
     return maxf(1.0, float(stat("spd")) * penalty)
 
 

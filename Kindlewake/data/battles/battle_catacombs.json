@@ -1,7 +1,7 @@
 {
   "id": "battle_catacombs",
   "title": "The Ashen Reeve",
-  "briefing": "The Reeve has turned the royal ossuary into a bandit vault. Defeat him and reclaim the Kingsroad.",
+  "briefing": "The Reeve has turned the royal ossuary into a bandit vault. Defeat him and reclaim the Kingsroad. Battlefield terrain changes movement, cover and line of sight; scout the ground before committing your formation.",
   "weather": "clear",
   "legend": {
     ".": "grass",
@@ -11,31 +11,41 @@
     "w": "ford",
     "~": "deep_water",
     "b": "bridge",
-    "#": "rock"
+    "#": "rock",
+    "u": "ruins",
+    "a": "ash"
   },
   "terrain": [
-    "..ff....hh..",
-    ".fff...hhh..",
-    "..f....hh.#.",
-    ".....r......",
-    "~~~~~b~~~w~~",
-    "~~~~~b~~~w~~",
-    ".....r......",
-    ".f...r...f..",
-    ".ff..r......",
-    "..f........."
+    "....................",
+    "....................",
+    "......ff....hh......",
+    ".....fff...hhh......",
+    "....u.a...uhh.#.u...",
+    ".........r.....u....",
+    "....~~~~~b~~~w~~....",
+    "....~~~~~b~~~w~~...u",
+    "......u..r..u.....u.",
+    ".....a...r.u.a...u..",
+    "....uaa..ru.....u...",
+    "......a..u.....u....",
+    "....................",
+    "...................."
   ],
   "heights": [
-    "000000001100",
-    "000000012200",
-    "000000011000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000"
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000011000000",
+    "00000000000122000000",
+    "00000000000110000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000"
   ],
   "victory": [
     "rout_all",
@@ -46,8 +56,8 @@
       "character_id": "torren",
       "team": "player",
       "cell": [
-        5,
-        8
+        9,
+        10
       ],
       "facing": 0,
       "protagonist": true
@@ -56,8 +66,8 @@
       "character_id": "bram",
       "team": "player",
       "cell": [
-        4,
-        7
+        8,
+        9
       ],
       "facing": 0
     },
@@ -65,8 +75,8 @@
       "character_id": "sela",
       "team": "player",
       "cell": [
-        6,
-        8
+        10,
+        10
       ],
       "facing": 0
     },
@@ -74,8 +84,8 @@
       "character_id": "brother_wystan",
       "team": "player",
       "cell": [
-        3,
-        8
+        7,
+        10
       ],
       "facing": 0
     },
@@ -83,8 +93,8 @@
       "character_id": "ashen_reeve",
       "team": "enemy",
       "cell": [
-        9,
-        2
+        13,
+        4
       ],
       "facing": 2,
       "commander": true
@@ -93,8 +103,8 @@
       "character_id": "roadreaver",
       "team": "enemy",
       "cell": [
-        6,
-        1
+        10,
+        3
       ],
       "facing": 2
     },
@@ -102,8 +112,8 @@
       "character_id": "roadreaver",
       "team": "enemy",
       "cell": [
-        4,
-        2
+        8,
+        4
       ],
       "facing": 2
     },
@@ -111,13 +121,15 @@
       "character_id": "roadbowman",
       "team": "enemy",
       "cell": [
-        8,
-        1
+        12,
+        3
       ],
       "facing": 2
     }
   ],
   "world_flag_on_victory": "dungeon_catacombs_cleared",
   "victory_text": "The Ashen Reeve is routed. The Kingsroad dead can rest behind their sealed doors.",
-  "defeat_text": "The guardian holds the chamber. Your company is driven back to the road."
+  "defeat_text": "The guardian holds the chamber. Your company is driven back to the road.",
+  "battlefield": "ashen_ruins",
+  "reward_rune": "sundered"
 }

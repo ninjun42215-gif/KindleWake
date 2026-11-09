@@ -4,6 +4,7 @@ extends RefCounted
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
+const RuneSystemScript = preload("res://scripts/core/rune_system.gd")
 ## The persistent party: roster of CharacterSheets, shared inventory and gold.
 ## Pure data + rules (no nodes), so it is unit-testable headless; the GameState autoload just owns one.
 
@@ -22,7 +23,7 @@ var sigil_inv: Array = []          # unequipped sigil instances ({"id","ap"[, "s
 ## `characters` is the RAW characters.json dictionary (it carries equipment blocks), not GameData.as_db().
 ## Optional protagonist_definition replaces only the `torren` entry; every companion stays data-driven.
 static func new_game(start: Dictionary, characters: Dictionary, protagonist_definition: Dictionary = {}) -> PartyState:
-    var p := PartyState.new()
+    var p = load("res://scripts/core/party_state.gd").new()
     p.gold = int(start.get("gold", 0))
     var ids: Array = start.get("party", [])
     for cid in ids:
@@ -118,27 +119,64 @@ func _refit_sockets(sh: CharacterSheetScript, slot: String, items: Dictionary) -
 
 # ---------------------------------------------------------------- sigils (FF7 Materia)
 
+func add_rune(rune_id: String, ap: int = 0, grade: String = "") -> void:
+    var inst: Dictionary = {"id": rune_id, "ap": ap}
+    if grade != "":
+        inst["grade"] = grade
+    sigil_inv.append(inst)
+
+
 func add_sigil(sigil_id: String, ap: int = 0) -> void:
-    sigil_inv.append({"id": sigil_id, "ap": ap})
+    add_rune(sigil_id, ap)
+
+
+func fuse_runes(rune_id: String, grade: String, db: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
+    return RuneSystemScript.combine(sigil_inv, rune_id, grade, db.get("runes", db.get("sigils", {})), rng)
+
+
+func enhance_equipment(char_id: String, slot: String, db: Dictionary, service_access: bool = false) -> String:
+    if not service_access:
+        return "Equipment can only be enhanced at a blacksmith."
+    var sh: CharacterSheetScript = sheet(char_id)
+    if sh == null or not CharacterSheetScript.SLOTS.has(slot):
+        return "Unknown character or equipment slot."
+    var item_id := sh.item_in(slot)
+    if item_id == "":
+        return "Equip an item before enhancing it."
+    if not (db.get("items", {}) as Dictionary).has(item_id):
+        return "Unknown equipment."
+    var enhance_key := slot + "|" + item_id
+    var current := int(sh.enhancements.get(enhance_key, 0))
+    if current >= 15:
+        return "This equipment has reached +15."
+    var cost := 100 * (current + 1) * (current + 1)
+    if gold < cost:
+        return "Enhancement requires %d gold." % cost
+    gold -= cost
+    sh.enhancements[enhance_key] = current + 1
+    return ""
 
 
 ## Moves sigil `inv_index` of the inventory into socket `index` of the weapon/armor (the old one goes back). "" = success.
-func equip_sigil(char_id: String, group: String, index: int, inv_index: int, db: Dictionary) -> String:
+func equip_sigil(char_id: String, group: String, index: int, inv_index: int, db: Dictionary, service_access: bool = false) -> String:
     var sh: CharacterSheetScript = sheet(char_id)
     if sh == null:
         return "Unknown character."
     if not CharacterSheetScript.SIGIL_GROUPS.has(group):
-        return "Sigils go into the weapon or the armor."
+        return "Runes go into the weapon or the armor."
+    if not service_access:
+        return "Visit a blacksmith or magic-rune specialist to socket or transfer a rune."
     var items: Dictionary = db.get("items", {})
-    for inst0 in sh.fit_sockets(items):
-        sigil_inv.append(inst0)
     if index < 0 or index >= sh.socket_count(group, items):
         return "There is no such socket."
     if inv_index < 0 or inv_index >= sigil_inv.size():
-        return "That sigil is not in the inventory."
+        return "That rune is not in the inventory."
     var inst: Dictionary = sigil_inv[inv_index]
-    if not (db.get("sigils", {}) as Dictionary).has(str(inst.get("id", ""))):
-        return "Unknown sigil."
+    if not (db.get("runes", db.get("sigils", {})) as Dictionary).has(str(inst.get("id", ""))):
+        return "Unknown rune."
+    # Validate all user-controlled arguments before fit_sockets() mutates inventory or socket arrays.
+    for inst0 in sh.fit_sockets(items):
+        sigil_inv.append(inst0)
     var old: Dictionary = sh.sigil_at(group, index)
     sigil_inv.remove_at(inv_index)
     if not old.is_empty():
@@ -147,16 +185,23 @@ func equip_sigil(char_id: String, group: String, index: int, inv_index: int, db:
     return ""
 
 
-func unequip_sigil(char_id: String, group: String, index: int, db: Dictionary) -> String:
+func unequip_sigil(char_id: String, group: String, index: int, db: Dictionary, service_access: bool = false) -> String:
+    if not service_access:
+        return "Visit a blacksmith or magic-rune specialist to remove this rune."
     var sh: CharacterSheetScript = sheet(char_id)
     if sh == null:
         return "Unknown character."
+    if not CharacterSheetScript.SIGIL_GROUPS.has(group):
+        return "Runes go into the weapon or the armor."
     var items: Dictionary = db.get("items", {})
-    for inst0 in sh.fit_sockets(items):
-        sigil_inv.append(inst0)
+    if index < 0 or index >= sh.socket_count(group, items):
+        return "There is no such socket."
+    # Check occupancy before normalization too: removing from an empty socket is a no-op.
     var old: Dictionary = sh.sigil_at(group, index)
     if old.is_empty():
         return "That socket is empty."
+    for inst0 in sh.fit_sockets(items):
+        sigil_inv.append(inst0)
     sigil_inv.append(old)
     (sh.sigils[group] as Array)[index] = {}
     return ""
@@ -204,7 +249,7 @@ func battle_rewards(units: Array, result: String, db: Dictionary = {}) -> Dictio
     if survivors.is_empty():
         return out
     var items: Dictionary = db.get("items", {})
-    var sdefs: Dictionary = db.get("sigils", {})
+    var sdefs: Dictionary = db.get("runes", db.get("sigils", {}))
     var share: int = int(float(tot_exp) / float(survivors.size()))
     if tot_exp > 0:
         share = maxi(1, share)
@@ -231,7 +276,7 @@ func apply_battle_result(units: Array, result: String, rng: RandomNumberGenerato
     var rw: Dictionary = battle_rewards(units, result, db)
     var classes: Dictionary = db.get("classes", {})
     var items: Dictionary = db.get("items", {})
-    var sdefs: Dictionary = db.get("sigils", {})
+    var sdefs: Dictionary = db.get("runes", db.get("sigils", {}))
     var reports: Array = []
     var spawned: Array[String] = []
     var exp_map: Dictionary = rw["exp"]
@@ -252,6 +297,8 @@ func apply_battle_result(units: Array, result: String, rng: RandomNumberGenerato
             if bool(one["spawn"]):
                 add_sigil(str(one["id"]))
                 spawned.append(str(one["name"]))
+        rep["runes"] = srep
+        rep["runes"] = srep
         rep["sigils"] = srep
         reports.append(rep)
     gold += int(rw["gold"])
@@ -270,7 +317,7 @@ func to_dict() -> Dictionary:
 
 
 static func from_dict(d: Dictionary) -> PartyState:
-    var p := PartyState.new()
+    var p: PartyState = load("res://scripts/core/party_state.gd").new()
     p.gold = int(d.get("gold", 0))
     var sd: Dictionary = d.get("sheets", {})
     var order: Array = d.get("roster", [])

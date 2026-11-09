@@ -1,5 +1,5 @@
 # KINDLEWAKE: THE SUNDERED VOW — Game Design Document
-Version 0.8.0 Campaign-first progression and mobile HUD redesign (gameplay checkpoint v0.8.0) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
+Version 0.10.0 Rune Mastery & World Expansion (gameplay checkpoint v0.10.0) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
 
 > Inspiration only: tactical depth and mercenary management in the spirit of *Knights of Ages*, and recruitment/headquarters/platoon ideas in the spirit of *Suikoden II*. All characters, names, maps, story, art and music are original. Nothing is copied.
 
@@ -765,3 +765,51 @@ Revision log
 
 
 | 0.9.0 (validation follow-up, 2026-11-09) | Corrected the starter-shop purchase regression test to buy the stocked Sigil of Mending rather than the unstocked Sigil of Frost. No gameplay code, balance data, save schema or project version changed. The original CI failure was a test fixture mismatch; rerun status is recorded in SESSION_HANDOFF. |
+
+
+## 4.10 Rune system — grades, specialists and fusion
+
+The legacy Sigil feature is renamed in player-facing UI and content to **Runes**. Existing v0.9.0 saves retain their sigil_inv and socket fields; GameData exposes the same definitions under both runes and the compatibility key sigils, so existing inventories are not discarded. New definitions live in data/runes.json.
+
+The current library contains **77 rune definitions** across Flame, Frost, Mending/Vitality, Storm, Earth, Wind, Holy, Shadow, Arcane and Fortune families. By kind, it includes 23 magic, 43 passive, 3 support, 6 stat and 2 independent runes. Seven definitions carry the unique flag and five carry the heirloom flag; these flags overlap the kind counts. Passive runes contribute their current-level `mods` while socketed; magic runes grant cumulative skills at AP thresholds; support runes enhance linked sockets; independent runes contribute campaign/reward modifiers. Six fusion grades are supported: Common, Uncommon, Rare, Epic, Legendary and Mythical. Fusion consumes three copies of the same rune ID; input grades may be mixed. The target grade is one step above the greater of the floored average input-grade index and the rune's starting-grade index minus one. Base success chances for the target grade are 70%, 55%, 40%, 25% and 12%; each input rune's mastery level increases the chance, capped at 95%. Success returns one target-grade rune; failure returns one surviving rune at the highest input grade. Grade scaling improves magic/support power and passive modifiers (5 percentage points per grade above the rune's starting grade). Unique and heirloom runes cannot be sold or fused; heirloom-tagged runes are protected legacy items.
+
+Runes are not part of universal stock. They are sold only by named regional rune merchants through explicit runes stock lists: Oswin at Sallow Crossing, and selected specialists in Thornmere, Foxglove, Elderbough, Cindermead, Redwater and Milefort.
+
+Rune combat effects are data-driven: Flame can Burn, Frost can Chill, Storm can Shock and skip a turn, Holy can Expose armor, Shadow drains life, and Mending applies regeneration. Status effects tick on the affected unit's turn. Battle popups display the applied effect. The original rune atlas is an 10-type × 6-grade SVG sprite sheet at assets/art/runes/rune_atlas.svg, used by rune inventory/socket UI.
+
+Legacy sigil_* script entry points remain internal compatibility wrappers during this transition. New player-facing text, shop stock, data, fusion, and asset naming use Rune terminology.
+
+| 0.9.1-rune-system | Renamed sigils to runes in player-facing systems; added six rune families, six grades, chance-based three-to-one fusion, specialist-only regional rune shops, grade scaling, elemental status effects and original rune atlas. CI validation passed on 2026-11-09: Godot 4.2.2 import succeeded without script or parse errors; 312 strict checks passed with zero failures; balance report passed; signed Android APK exported for arm64-v8a and armeabi-v7a. Device playtesting remains pending. |
+
+
+### 14.3 Responsive mobile HUD pass (2026-11-10)
+- Battle HUD now uses tighter viewport-relative widths for the selected-unit card, combat log, preview panel and action stack on compact landscape screens. Confirm/Cancel retain large touch targets while their labels scale down with the viewport.
+- Overworld COMPANY and SAVE controls now resize independently for compact screens; save remains a dedicated, reachable action.
+- Company management now chooses its stacked layout from the actual viewport orientation, not width alone. Narrow landscape phones keep the three panes side-by-side with scaled minimum widths; portrait layouts stack roster, character sheet and gear/rune/shop panes vertically. The header title, gold chip and Close button also compact together.
+- These changes preserve the existing battle rules, save payloads, party APIs and rune/gear behavior. Validate actual safe-area, notch, scrolling and touch interaction on physical devices; CI cannot replace that check.
+
+| 0.10.1-mobile-ui | Responsive battle HUD, overworld save/company controls and party management layout for compact landscape/portrait viewports; physical-device validation pending. |
+
+
+### 14.4 Mobile layout refinements and validation
+- Portrait company management uses full-height tabs (Company / Hero / Gear & Runes) so all work areas remain reachable without a clipped outer stack. Narrow landscape uses proportional three-column panes; desktop retains wider proportions.
+- The company screen uses a safe 1280×720 design fallback when constructed outside the SceneTree for headless UI tests; live screens use the actual viewport. This avoids viewport-access errors in the UI smoke test.
+- Overworld and town interaction panels, prompt buttons and action buttons resize from the current viewport. Battle compact actions and preview are separated to opposite lower corners; timeline/log are hidden when the compact HUD cannot safely display them.
+- Validation on commit 99fcc28dd37652c293eaf240ec017500bbd698e6: Godot 4.2.2 build workflow 42672539871 completed successfully; strict suite 333 checks / 0 failures; balance report completed; signed Android APK exported and verified. No physical-device test has been performed.
+
+| 0.10.2-mobile-ui | Portrait company tabs, narrow-landscape proportional panes, viewport-safe party tests and responsive town/overworld interaction controls; CI validated on 2026-11-10. |
+
+### 14.5 Tactical unit identity art pass (2026-11-10)
+- Battle units retain the existing animated Soldier/Orc base sheets and frame timing, while the renderer adds original class-specific equipment overlays for Knight, Swordsman, Archer, Cleric, Roadreaver, Cavalry and magic classes.
+- Enemy identity marks now add further silhouette cues for commanders, shamans, wraiths, skeletons, ranged scouts and heavy brutes, including subtle animated aura pulses for spectral and magic archetypes.
+- The pass is presentation-only: no combat stats, turn logic, unit data, animation frame contracts or save schema changed. It is an incremental readability improvement, not a replacement for dedicated per-character/per-species sprite sheets.
+
+| 0.10.3-battle-identity-art | Added class-specific hero equipment and enemy archetype silhouette overlays on existing animated battle sprites; current-head CI validation pending. |
+
+### 14.6 External AI contribution intake and portable handoffs (2026-11-10)
+- Added `receiving/` as the dedicated intake folder for patches, source files, documentation and asset bundles supplied by other AI assistants. Its README defines a HANDOFF.md manifest, review/licensing requirements and safe integration rules.
+- Android CI now packages the source tree and project handoff documents into one ZIP, then divides that ZIP into binary chunks no larger than 25 MB each. CI uploads the numbered parts and a reassembly guide as `Kindlewake-Source-Handoff-Parts`.
+- The original project remains the canonical source; split ZIP parts are transport-only and must be reassembled before extraction or merging.
+- No save schema or runtime gameplay behavior is changed by this delivery packaging.
+
+| 0.10.4-external-intake-handoff | Added an external AI receiving folder and CI-generated source handoff parts capped at 25 MB each; branch-head Android CI pending. |

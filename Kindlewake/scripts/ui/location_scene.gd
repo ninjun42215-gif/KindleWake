@@ -187,6 +187,9 @@ func _on_prompt_pressed() -> void:
     prompt_btn.visible = false
     spot_title.text = str(near_spot.get("name", ""))
     spot_text.text = str(near_spot.get("text", ""))
+    var extra_dialogue: Array = near_spot.get("dialogue", [])
+    for line in extra_dialogue:
+        spot_text.text += "\\n\\n" + str(line)
     for c in spot_buttons.get_children():
         spot_buttons.remove_child(c)
         c.queue_free()
@@ -297,7 +300,9 @@ func _open_party() -> void:
         var stock: Dictionary = regional[current_map_id]
         shop_def["items"] = (stock.get("items", []) as Array).duplicate()
         shop_def["sigils"] = (stock.get("sigils", shop_def.get("sigils", [])) as Array).duplicate()
-    party_screen.setup(GameState.party, GameData.party_db(), shop_def)
+        shop_def["runes"] = (stock.get("runes", []) as Array).duplicate()
+    var is_rune_service := bool(near_spot.get("rune_service", false)) or bool(near_spot.get("blacksmith", false))
+    party_screen.setup(GameState.party, GameData.party_db(), shop_def, true, is_rune_service, bool(near_spot.get("blacksmith", false)))
     party_screen.open()
 
 
@@ -434,6 +439,22 @@ func _draw_tile(c: Vector2i) -> void:
         "C":
             draw_rect(Rect2(o + Vector2(6, 8), Vector2(TILE - 12, TILE - 14)), Color(0.58, 0.42, 0.22))
             draw_rect(Rect2(o + Vector2(6, 8), Vector2(TILE - 12, TILE - 14)), Color(0.28, 0.18, 0.08), false, 2.0)
+    # Small hand-painted props make settlements feel inhabited without cluttering walkable lanes.
+    var prop_center := o + Vector2(TILE * 0.5, TILE * 0.48)
+    match t:
+        "S":
+            Art.draw_prop(self, "crate", prop_center + Vector2(0, -3), 0.34)
+        "U":
+            Art.draw_prop(self, "barrel", prop_center + Vector2(0, -3), 0.34)
+        "H":
+            Art.draw_prop(self, "torch", prop_center + Vector2(0, -2), 0.34)
+        "N":
+            Art.draw_prop(self, "banner", prop_center + Vector2(0, -2), 0.34)
+        "P":
+            Art.draw_prop(self, "column", prop_center + Vector2(0, -2), 0.34)
+        _:
+            if not indoor and t == "." and WorldMap.hash01(c.x, c.y, 43) > 0.94:
+                Art.draw_prop(self, "flower", prop_center + Vector2(0, -5), 0.22)
     if indoor and t == "#" and c.y == 0:
         draw_rect(Rect2(o + Vector2(0, TILE - 6), Vector2(TILE, 6)), Color(0, 0, 0, 0.3))
 
@@ -501,8 +522,10 @@ func _hud_panel(alpha: float = 0.84) -> PanelContainer:
 func _btn(text: String, handler: Callable, font_size: int = 24) -> Button:
     var b := Button.new()
     b.text = text
-    b.custom_minimum_size = Vector2(300, 72)
-    b.add_theme_font_size_override("font_size", font_size)
+    var viewport_size: Vector2 = get_viewport().get_visible_rect().size
+    var compact: bool = viewport_size.x < 900.0 or viewport_size.y > viewport_size.x * 1.15
+    b.custom_minimum_size = Vector2(clampf(viewport_size.x * 0.42, 210.0, 300.0), 58.0 if compact else 72.0)
+    b.add_theme_font_size_override("font_size", mini(font_size, 19) if compact else font_size)
     b.pressed.connect(handler)
     return b
 
@@ -529,6 +552,21 @@ func _apply_safe_area() -> void:
     hud_root.offset_top = t
     hud_root.offset_right = -r
     hud_root.offset_bottom = -b
+    var viewport_size: Vector2 = get_viewport().get_visible_rect().size
+    var compact: bool = viewport_size.x < 900.0 or viewport_size.y > viewport_size.x * 1.15
+    if info_label != null:
+        info_label.custom_minimum_size = Vector2(clampf(viewport_size.x * 0.25, 160.0, 300.0), 0.0)
+        info_label.add_theme_font_size_override("font_size", 15 if compact else 20)
+    if prompt_btn != null:
+        prompt_btn.custom_minimum_size = Vector2(clampf(viewport_size.x * 0.48, 230.0, 420.0), clampf(viewport_size.y * 0.11, 56.0, 84.0))
+        prompt_btn.add_theme_font_size_override("font_size", 19 if compact else 28)
+    if spot_panel != null:
+        spot_panel.custom_minimum_size = Vector2(maxf(260.0, minf(viewport_size.x - 24.0, 700.0)), 0.0)
+    if spot_title != null:
+        spot_title.add_theme_font_size_override("font_size", 25 if compact else 36)
+    if spot_text != null:
+        spot_text.custom_minimum_size = Vector2(maxf(220.0, minf(viewport_size.x - 72.0, 560.0)), 0.0)
+        spot_text.add_theme_font_size_override("font_size", 17 if compact else 22)
 
 
 func _build_ui() -> void:
