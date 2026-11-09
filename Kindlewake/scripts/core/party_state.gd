@@ -4,6 +4,7 @@ extends RefCounted
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
+const RuneSystemScript = preload("res://scripts/core/rune_system.gd")
 ## The persistent party: roster of CharacterSheets, shared inventory and gold.
 ## Pure data + rules (no nodes), so it is unit-testable headless; the GameState autoload just owns one.
 
@@ -118,8 +119,19 @@ func _refit_sockets(sh: CharacterSheetScript, slot: String, items: Dictionary) -
 
 # ---------------------------------------------------------------- sigils (FF7 Materia)
 
+func add_rune(rune_id: String, ap: int = 0, grade: String = "") -> void:
+    var inst: Dictionary = {"id": rune_id, "ap": ap}
+    if grade != "":
+        inst["grade"] = grade
+    sigil_inv.append(inst)
+
+
 func add_sigil(sigil_id: String, ap: int = 0) -> void:
-    sigil_inv.append({"id": sigil_id, "ap": ap})
+    add_rune(sigil_id, ap)
+
+
+func fuse_runes(rune_id: String, grade: String, db: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
+    return RuneSystemScript.combine(sigil_inv, rune_id, grade, db.get("runes", db.get("sigils", {})), rng)
 
 
 ## Moves sigil `inv_index` of the inventory into socket `index` of the weapon/armor (the old one goes back). "" = success.
