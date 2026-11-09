@@ -169,3 +169,11 @@ docs/            GDD.md, SESSION_HANDOFF.md, CONTINUATION_PROMPT.md
 - Equipment enhancement persists by character and slot; +5% item bonus/armor scaling per level and weapon power scaling.
 - Four expanded 16×14 tactical battlefields: river crossing, deep forest marsh, highland snowfield and ashen ruins.
 - Title screen Exit Game confirmation; expanded NPC conversations and Master Smith Rurik.
+
+
+## Visual art pass — original environment and UI assets
+- Added `assets/art/props/field_props.svg`, a 4×4 atlas of 16 original props: arch, broken column, rune stone, torch, reeds, crystals, grave marker, banner, mushrooms, stump, barrel, crate, campfire, frost pine, statue and flowers.
+- Added `assets/art/ui/title_illustration.svg` as a new painted-style landscape backdrop and `ornament_divider.svg` as a reusable fantasy divider.
+- `Art.draw_prop()` now loads atlas cells. Tactical battle tiles use terrain-matched props (forest trees, marsh reeds, snow pines, ash campfires, ruin columns and cliff crystals); town tiles receive stallside crates, barrels, torches, banners, columns and sparse flowers.
+- These are original project-authored vector assets; no unverified third-party pack was imported in this pass. Existing unit sprite sheets remain in place and should receive a separate animation/character-art upgrade pass.
+- CI validation for this asset pass is still running; prior v0.10.0 CI runs had two balance/stat test failures, so do not call the latest branch build verified until a current run completes.
