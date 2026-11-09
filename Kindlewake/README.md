@@ -3,6 +3,8 @@
 Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (GDScript, GL Compatibility).
 Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md`
 
+Manual repository workflows: `docs/MANUAL_GITHUB_WORKFLOWS.md`.
+
 ## Source-of-truth and GitHub workflow
 - Version source of truth: `project.godot`; GitHub Actions automatically synchronizes the README and Android export version on main. See `docs/VERSIONING.md` and run `python tools/sync_version.py --check` locally.
 - The extracted `Kindlewake/` directory in `ninjun42215-gif/KindleWake` on `main` is the canonical source. Routine development edits are committed as ordinary files; do not upload or rebuild a master project ZIP.

@@ -99,15 +99,91 @@ Answer in plain English. Lead with what you did and what I should do next. Keep 
 6. Add origin-tag story hooks and review sprite-pack licenses before importing original art.
 
 
-## Automatic version synchronization — 2026-11-10
+## Manual GitHub workflows
+See docs/MANUAL_GITHUB_WORKFLOWS.md for standalone user-operated workflows: build APK, create source handoffs, audit/organize documentation, prepare safe branch-integration PRs, inspect branch hygiene, create full repository backups, and lint workflow YAML. These tools do not require an AI assistant. The organizer only moves approved Markdown docs; safe integration never merges directly into the destination branch.
 
-- Added `Kindlewake/tools/sync_version.py`; `project.godot` `config/version` is the only version source of truth.
-- The tool synchronizes the README's first heading and Android export `version/name` and `version/code`. Code mapping: `MAJOR*10000 + MINOR*100 + PATCH` (minor/patch each <=99).
-- Added unit tests in `Kindlewake/tests/test_sync_version.py` and `.github/workflows/version-sync.yml`.
-- On pushes to main (including PR merges), the workflow repairs stale README/export metadata and commits only those metadata files. On PRs targeting main, it checks consistency and fails rather than rewriting the contributor branch.
-- The PR check loads the trusted synchronizer from main, so older feature branches are covered too.
-- Corrected main Android export metadata to version **0.9.0**, code **900**, matching `project.godot`. Main's README was already 0.9.0.
-- Corrected the independent toolbox branch export metadata to 0.9.0/code 900. The Rune System branch remains 0.10.0/code 1000 and will only become main's version if/when that reviewed work is merged.
-- Documentation: `Kindlewake/docs/VERSIONING.md`.
 
-**Validation caveat:** the synchronizer and workflow files are committed, and live file inspection confirms main's version fields now match. The GitHub connector used here only exposes PR-triggered workflow runs, so it did not independently confirm the push-triggered `Synchronize Project Version` run. Verify its first run in Actions. Do not claim the workflow has passed until that run is green.
+## Manual operations toolbox checkpoint
+A separate workflow/manual-operations-toolbox branch is being prepared from main so these manual tools can be reviewed and merged independently of the Rune System feature PR. It adds source_handoff.py and its tests, the conservative repository organizer and tests, branch hygiene reporting, manual source handoff, full backup, safe branch integration and workflow YAML lint. No main-branch changes or merges are performed by the workflows. New workflow_dispatch entries become visible for manual launch after their files are merged to the default branch. Review PR #5 and its CI before enabling them.
+
+
+## Repository-wide improvement pass — 2026-11-10
+
+Approved improvement work was added to `workflow/manual-operations-toolbox` (PR #5), without merging to main:
+- Source handoff now includes only the explicitly allowlisted public sideload/test keystore; all other keystore and signing-certificate suffixes remain excluded. A regression test guards the narrow exception.
+- Added `Kindlewake/tools/project_health_audit.py` and manually launchable `.github/workflows/project-health-audit.yml`. It inventories the project, validates every project JSON file, detects version drift, checks asset-credit documentation, counts rune definitions against the 50+ target, and warns about nested workflow YAML.
+- Workflow YAML Lint now pins checkout/setup-python actions to immutable commit SHAs, disables persisted checkout credentials, and runs project-health audit tests and the audit itself.
+- Repaired literal escaped newline characters in `Kindlewake/README.md`.
+- Expanded manual workflow documentation with Project Health Audit, main-branch protection setup, and signing-key handling guidance.
+
+Validation status at handoff: the latest Workflow YAML Lint run was still in progress when this note was written. Do not claim the new tests/audit passed until the run for the latest PR #5 head completes. PR #5 remains draft; PR #4 remains draft. Main is still unmodified and unprotected. Branch protection could not be changed through the available GitHub write actions; configure it manually using the instructions in `Kindlewake/docs/MANUAL_GITHUB_WORKFLOWS.md`.
+
+Next steps:
+1. Inspect the latest PR #5 Actions run and fix any failing tests/YAML issues.
+2. Review the full PR #5 diff, especially the source-handoff key exception and action pins.
+3. Run Project Health Audit on main and feature/rune-system-v1; compare JSON/version/rune/asset findings.
+4. Continue gameplay work on the feature branch: expand the rune system to 50+ tested definitions, validate active/passive/unique/heirloom behaviors and fusion probabilities, and add save migration/regression coverage.
+5. Review asset licenses and add a structured asset provenance manifest before importing more packs.
+6. Configure main branch protection in GitHub Settings. Keep both PRs unmerged until separately reviewed and explicitly approved for merge.
+7. Re-run Android build and perform physical-device QA before any production release.
+
+
+## Follow-up audit and provenance hardening — 2026-11-10
+
+Work continued on `workflow/manual-operations-toolbox` (PR #5 only; main remains untouched):
+
+- Expanded `Kindlewake/tools/project_health_audit.py` to validate rune definition shape, report rune kind totals, detect unverified asset-credit rows, parse a structured asset provenance ledger, and warn when an asset used in game is not marked licence-verified.
+- Added `Kindlewake/data/asset_provenance.json`. It records the Quaternius CC0 pack as verified based on the repository's licence file; voxel building packs and Tiny RPG Character Asset Pack 01 are explicitly marked unverified and release-blocking; unused restricted/unknown packs remain documented as unused.
+- Added `--fail-on-warnings` for strict pre-release auditing. Normal CI mode remains advisory for warnings; strict mode returns non-zero until warnings are resolved.
+- Expanded `test_project_health_audit.py` for licence warnings, unused-pack handling, structured provenance, strict gate behavior, rune kind counts and malformed rune records.
+- Added `docs/PROJECT_HEALTH_AUDIT.md` and updated manual workflow instructions.
+
+**Validation status:** these latest changes have been committed to the toolbox branch, but a successful GitHub Actions run for the latest head has not yet been independently confirmed. Do not describe the new tests or audit output as passing until the latest PR #5 checks are inspected.
+
+**Current known project state:** PR #4 remains a draft Rune System PR; its description reports 77 rune definitions and its branch is 309 commits ahead of main at the last comparison. PR #5 remains a separate draft operations-toolbox PR. Do not merge either PR without a separate explicit authorization. The main branch was still unprotected at the last inspection; branch protection must be configured manually in GitHub Settings. Two old branches are behind/diverged and should be reviewed with the read-only Branch Hygiene workflow, not automatically deleted or merged.
+
+**Release blockers:** two asset packs currently used in game have unverified redistribution rights (voxel building packs and Tiny RPG Character Asset Pack 01). Do not publish a public/commercial build until authoritative licence evidence is recorded or the assets are replaced. Physical Android device/gameplay QA also remains outstanding.
+
+Next actions:
+1. Inspect latest PR #5 CI for the exact latest branch head; fix any syntax/test failures before claiming validation.
+2. Run the audit against both `main` and `feature/rune-system-v1`; use strict mode to identify release blockers.
+3. Review PR #4/#5 overlap in root GitHub workflow files before any integration; preserve independent, reviewable changes.
+4. Configure main branch protection manually using `docs/MANUAL_GITHUB_WORKFLOWS.md`.
+5. Resolve asset licensing or replace unverified assets, then complete physical-device QA before release.
+6. Produce and verify a fresh split source handoff from the latest commit; compare its embedded SHA to the live branch head.
+
+
+### Final handoff refresh — 2026-11-10
+- Structured provenance ledger is now linked from `Kindlewake/assets/art/CREDITS.md`.
+- Most recent audit/provenance code and ledger checkpoint before this documentation refresh: `6b36e169dfcd3be6e4f4b85a867f249ce9407611`.
+- Read live PR #5 head and CI state before further work; no completed CI result has yet been confirmed for the audit/provenance hardening. Earlier green runs predate these changes.
+- The source handoff workflow is configured to run on `workflow/**` pushes, but do not claim a new downloadable artifact is ready until its run succeeds and the part manifest/checksums are verified.
+
+
+### Additional pre-release audit coverage — 2026-11-10
+- Project Health Audit now compares `project.godot` version, README headline version and Android export preset `version/name`; it also validates a positive integer `version/code`.
+- Live inspection found the old `main` baseline at project/README **0.9.0** but Android export preset **0.7.14** (version code 714). This mismatch is recorded as a warning, not silently changed on main.
+- The Rune System feature branch currently has project/README/export preset **0.10.0** with Android version code **1000**, consistent at inspection time.
+- Added an Android export-version drift regression test. Latest CI for this and the asset provenance additions is still unconfirmed.
+
+
+### Verified implementation checkpoint — 2026-11-10
+
+Current operations branch checkpoint at the time of this note:
+- PR #5: `workflow/manual-operations-toolbox`, draft and unmerged. The latest verified code/documentation checkpoint was `14a8a34b0f34625c32ea727f818c1b74e0032fc6`; check the live PR head before continuing because this note itself is a documentation refresh.
+- Latest Workflow YAML Lint passes: runs `42687335517` and `42687326371`.
+- Latest Project Health Audit passed with 0 errors and 3 warnings: run `42687327011`; report artifact ID `13705327262`.
+- Latest manual source handoff passed: run `42687326282`; artifact ID `13704633339`. It contains 161 tracked files in four ZIP parts (each <=25,000,000 bytes), zero excluded files, archive SHA-256 `73ab35465650e9090c36920720d94cef75802d7c302dc11e952e2551c2c6ce10`.
+- The three health-audit warnings are: main project version 0.9.0 vs Android export preset 0.7.14/code 714; one active voxel-building pack still has unverified rights (reported by both the credits table and provenance manifest). The audit is intentionally warning rather than silently approving unknown rights.
+- Quaternius Stylized Nature MegaKit is documented with the official CC0 pack page. Zerie's free Soldier/Orc subset is documented with the author's official game-use/modification terms; standalone asset redistribution remains prohibited. Only the voxel-building pack remains an unresolved used asset.
+- PR #4: `feature/rune-system-v1`, draft and unmerged, head `c4a7e72313050acc35b3a85db9b53876048f437b`. It contains 77 runes (23 magic, 43 passive, 3 support, 6 stat, 2 independent; 7 unique and 5 heirloom flags overlap those kind counts). Latest CI run `42686782251` passed: 342 checks, 0 failures, balance report, Android 0.10.0/code 1000 APK export/signature verification, and source handoff. APK artifact ID `13704502185`; source handoff artifact ID `13705496581`.
+- Main remains untouched and unprotected. Do not merge either PR unless the user explicitly authorizes it. The available GitHub integration cannot modify branch protection; configure it manually.
+
+Next actions:
+1. Verify the original source/licence of the voxel-building pack set or replace the assets; do not mark them verified without authoritative evidence.
+2. Resolve main's Android export preset mismatch in the correct integration order; avoid overwriting PR #4's 0.10.0/code 1000 values with the older baseline.
+3. Re-run Project Health Audit with `--fail-on-warnings` only after all release warnings are resolved.
+4. Configure main branch protection manually from `Kindlewake/docs/MANUAL_GITHUB_WORKFLOWS.md`.
+5. Review the shared workflow overlap between PR #4 and #5, then merge in a deliberate order only after explicit authorization.
+6. Perform physical Android device QA and gameplay/save testing; CI export success is not device certification.
+7. Recheck the live PR heads and produce a fresh handoff artifact from the exact latest commit before handing work to another AI.
