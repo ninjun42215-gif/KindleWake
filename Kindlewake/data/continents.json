@@ -217,7 +217,8 @@
           0.37,
           0.48
         ]
-      ]
+      ],
+      "current": true
     },
     {
       "id": "thalassar",
@@ -1074,5 +1075,6 @@
     "Transport progression remains walking and carts, river barges/ferries, charter ships and a late-game airship; each route must be unlocked by authored campaign events."
   ],
   "world_age": "The Age of Fractured Oaths",
-  "central_mystery": "Seven ancient covenant seals once regulated the roads, sea-lanes and storm currents between the continents. Their failure is being blamed on rival nations, but the surviving records suggest the seals were deliberately unbound."
+  "central_mystery": "Seven ancient covenant seals once regulated the roads, sea-lanes and storm currents between the continents. Their failure is being blamed on rival nations, but the surviving records suggest the seals were deliberately unbound.",
+  "current_continent": "eldrimar"
 }
