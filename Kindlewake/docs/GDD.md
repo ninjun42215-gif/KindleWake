@@ -1,5 +1,5 @@
 # KINDLEWAKE: THE SUNDERED VOW — Game Design Document
-Version 0.7.14 Sethmarch Frontier regional network (gameplay checkpoint v0.7.14) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
+Version 0.8.0 Campaign-first progression and mobile HUD redesign (gameplay checkpoint v0.8.0) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
 
 > Inspiration only: tactical depth and mercenary management in the spirit of *Knights of Ages*, and recruitment/headquarters/platoon ideas in the spirit of *Suikoden II*. All characters, names, maps, story, art and music are original. Nothing is copied.
 
@@ -152,12 +152,12 @@ Skill type `strike` (data/skills.json): damage = weapon attack power x `mult` ag
 ## 4. Character Progression
 
 ### 4.1 Levels and experience
-- Levels 1–30. Promotion offered at level 10 (tier 2) and level 20 (tier 3) when requirements are met.
-- `EXP to next = 80 + 20·level` (flat-ish to avoid grinding). Battle EXP is shared: acting units earn full EXP; bench units earn 40% of the battle total so reserves stay relevant.
+- Levels 1–250. Promotion remains tied to class tier milestones (10 / 20 / 30) and class-specific story requirements.
+- `EXP to next = 80 + 20·level + max(0, level - 2)^2`. Early growth remains approachable; the quadratic tail makes later levels a long-term campaign achievement. Battle EXP is shared among surviving deployed heroes; reserve heroes receive 40% of a survivor's share.
 - Each level grants class-based stat growth (probability per stat, 0–100%). Luck and Leadership grow slowly.
 
 **Implemented in v0.3.0 (`CharacterSheet`, `PartyState`, `CombatCalc.kill_exp`)**
-- `EXP to next = 80 + 20 × level`, level cap 30. Leftover EXP carries over; several level-ups can happen at once; no EXP is stored at the cap.
+- `EXP to next = 80 + 20 × level + max(0, level - 2)^2`, level cap 250. Leftover EXP carries over; several level-ups can happen at once; no EXP is stored at the cap. Loaded character levels are clamped to 1–250.
 - *Growth:* on each level-up every stat in the class's `growth` table (percent) gets one roll; success = +1 (HP: +2, MP: +1). If every roll fails, the class's strongest growth stat gains one point, so a level is never empty. Rolls use a seeded `RandomNumberGenerator` (deterministic in tests). HP gain per success is a tuning constant (`HP_GAIN`) to be set by the balance report.
 - *Battle rewards (changed in v0.4.0, Final Fantasy VII rules):* see 4.6. The old participation/kill/victory EXP formula is gone; `CombatCalc.kill_exp` remains only as a per-unit statistic.
 
@@ -202,7 +202,7 @@ Blacksmith upgrades items by +1…+5 using materials; Heirlooms upgrade through 
 - Budget target: player gear power grows ~12%/chapter; enemy power ~10%/chapter plus authored spikes at set-piece battles.
 - Balance is validated with the headless battle simulator planned for Milestone 2.
 
-### 4.6 Grinding system: EXP, AP, gold and Sigils (v0.4.0, modelled on Final Fantasy VII)
+### 4.6 Campaign rewards, AP, gold and Sigils (FF7-inspired)
 
 **Rewards.** Every enemy has a fixed `reward` block in `characters.json` (`exp`, `ap`, `gold`; commanders pay more). Defaults when missing: EXP `15 + 5 × level`, AP `2 + level`, gold `5 + 3 × level`, all doubled for a commander.
 - Only **defeated** enemies pay. Winning by killing the chief while others live does not pay for the survivors.
@@ -221,7 +221,7 @@ Blacksmith upgrades items by +1…+5 using materials; Heirlooms upgrade through 
 | independent | party-wide reward bonuses | Veteran's Mark (+EXP%), Coin Eye (+gold%) |
 AP gained per sigil = battle AP x weapon/armor `ap_mult` x (100 + linked Tutor %) / 100, rounded up. Heroes no longer have innate spells: Brother Wystan's Mend comes from a Sigil of Mending in his mace.
 
-**Repeatable fights.** Roadside Skirmish (`data/encounters.json`): the story map with a weighted-random enemy group, offered on the results screen as "Skirmish (grind for EXP / AP / gold)". It is the equivalent of FF7 random encounters; later maps get their own tables.
+**World encounters, not a grind mode.** There is no separate Skirmish or Story Battle selection on the results screen. Weighted enemy patrols can ambush the company while travelling through dangerous regions; authored battles are entered through campaign locations, dungeons, gates and story events. Victory rewards support the journey, while exploration, recruitment, side quests and regional milestones carry the narrative forward.
 
 **Offensive magic (new skill type `damage`).** Never misses; damage = `base_damage((power + 1.2 x INT) x resonance, magic defense) x morale x variance`; costs MP; targets enemies in range 2-4. The AI casts damage skills when their score beats the best weapon attack. Skill preview appears in the info panel.
 
@@ -230,7 +230,7 @@ AP gained per sigil = battle AP x weapon/armor `ap_mult` x (100 + linked Tutor %
 **Not implemented yet:** Limit-Break-style special attacks, party-wide sigil bonuses outside battle, summon-type sigils, class/weapon-type restrictions, sigil sale price that scales with level.
 
 ### 4.7 Party screen, shop and pre-battle panel (v0.5.0)
-**Pre-battle panel.** Every battle now opens paused on a briefing panel (title, briefing text, gold) with two buttons: **Begin Battle** and **Party, Gear and Shop**. Closing the party screen rebuilds the battle from the party's current sheets, so gear and sigil changes apply immediately. The results screen has the same Party button. Loading a save is allowed while the panel is open.
+**Pre-battle panel.** Every battle now opens paused on a briefing panel (title, briefing text, gold) with two buttons: **Begin Battle** and **Party, Gear and Shop**. Closing the party screen rebuilds the battle from the party's current sheets, so gear and sigil changes apply immediately. The results screen offers Company management and Continue Journey; there are no separate grind or story-mode buttons. Loading a save is allowed while the panel is open.
 
 **Party screen** (`PartyScreen`, built entirely in code, touch-sized buttons, landscape 1280x720). Left column: roster. Centre: the selected hero's character sheet (HP/MP, ATK, DEF, RES, ACC, EVA, CRIT, SPD, MOV, weapon range, the ten base stats with the gear bonus shown separately, skills with power and MP cost, EXP bar, promotion buttons when available). Right panel, three tabs:
 | Tab | What it does |
