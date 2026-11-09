@@ -158,3 +158,14 @@ Answer in plain English. Lead with what you did and what I should do next. Keep 
 - Important party layout rule: stack the three company panes only when the viewport is portrait/narrow aspect. Narrow landscape phones must keep roster, sheet and equipment/rune/shop visible in a scaled horizontal layout; do not regress to a 700px vertical stack on a 720px-high landscape display.
 - Latest UI code commits: 95d5ef7, 5383461, ea6868c. CI must validate the final head commit before calling the UI pass build-ready.
 - Next work: inspect latest CI and fix all parse/import/test/balance/export failures; then complete visual QA on Android. Continue with original bespoke hero/enemy sprites, cast/impact/death VFX, and responsive location/title overlays only after the UI branch is green. Do not import optional third-party sprite archives without license verification.
+
+
+## Next continuation — UI/HUD validation and art completion
+1. Work only on `feature/rune-system-v1`; never merge PR #4 or modify `main` without explicit authorization.
+2. First inspect workflow run `42671737916` for exact head `e55242d78643bd3dde56e3bafdc623a4dfa6479e`. If queued/in progress, poll it; if failed, inspect logs and fix GDScript/import/test issues before further feature work.
+3. Validate responsive party screen at 360×800, 720×1280 and 1280×720; check tab reachability, roster selection, scroll restoration, rune sockets, forge, shop, equipment compare and blacksmith enhancement.
+4. Validate battle HUD at portrait and landscape sizes: safe areas, unit card, action controls, confirm/cancel preview, auto battle, save/load, prep/result overlays, touch map panning and pinch zoom. Fix any overlapping controls rather than hiding essential actions.
+5. Validate world HUD, place dialogs, minimap, title menu and character creator on small screens.
+6. Continue original bespoke sprite work: dedicated class silhouettes and enemy species, then cast/projectile/impact/death animations. Preserve Art.UNIT_FRAMES contracts or update importer/tests together.
+7. Add tests for the responsive layout contracts and VFX lifetime/state transitions where headless tests can cover them. Run the full Godot import, strict tests, balance report and Android APK workflow.
+8. Update this handoff with exact validated commit, run URL, test counts, APK artifact and hash. Never claim physical-device validation without doing it.
