@@ -1,4 +1,6 @@
 extends Node2D
+
+const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 ## Milestone 1 battle scene: isometric placeholder rendering, touch/mouse input and a HUD built in code.
 ## All rules live in BattleController; this script only presents state and forwards player input.
 
@@ -1336,9 +1338,9 @@ func _info_text() -> String:
     lines.append("%s  [%s]" % [u.display_name, "Ally" if u.team == "player" else "Enemy"])
     var lv_line: String = "Lv %d %s" % [u.level, str(cdef.get("name", u.class_id))]
     if u.team == "player":
-        var sh: CharacterSheet = GameState.party.sheet(u.character_id)
+        var sh: CharacterSheetScript = GameState.party.sheet(u.character_id)
         if sh != null:
-            if sh.level >= CharacterSheet.MAX_LEVEL:
+            if sh.level >= CharacterSheetScript.MAX_LEVEL:
                 lv_line += "   MAX LEVEL"
             else:
                 var need: int = sh.exp_to_next()
