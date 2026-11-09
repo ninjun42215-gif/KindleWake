@@ -1036,6 +1036,7 @@ func _draw_unit(u: BattleUnitScript, p: Vector2) -> void:
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40, 7)), Color(0.1, 0.08, 0.08))
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40.0 * ratio, 7)), Color(0.85, 0.2, 0.2).lerp(Color(0.25, 0.85, 0.38), ratio))
     draw_string(ThemeDB.fallback_font, p + Vector2(-40, -55), u.display_name, HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color.WHITE)
+    _draw_status_pips(u, p)
     if u.morale <= 0:
         draw_string(ThemeDB.fallback_font, p + Vector2(-40, -70), "ROUTED", HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color(1, 0.6, 0.3))
 
@@ -1174,6 +1175,39 @@ func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: V
     if u.morale <= 0:
         draw_string(ThemeDB.fallback_font, p + Vector2(-40, -70), "ROUTED", HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color(1, 0.6, 0.3))
     return true
+
+
+## Compact elemental/status markers remain visible without opening the unit inspector.
+func _draw_status_pips(u: BattleUnitScript, p: Vector2) -> void:
+    var keys: Array = u.statuses.keys()
+    keys.sort()
+    var shown := mini(keys.size(), 4)
+    for i in range(shown):
+        var status := str(keys[i])
+        var tint := Color(0.8, 0.8, 0.8)
+        var glyph := "?"
+        match status:
+            "burn":
+                tint = Color(1.0, 0.34, 0.12)
+                glyph = "B"
+            "chill":
+                tint = Color(0.35, 0.78, 1.0)
+                glyph = "C"
+            "shock":
+                tint = Color(1.0, 0.88, 0.25)
+                glyph = "S"
+            "regen":
+                tint = Color(0.35, 0.95, 0.48)
+                glyph = "R"
+            "exposed":
+                tint = Color(0.92, 0.48, 0.72)
+                glyph = "E"
+        var center := p + Vector2(24.0, -58.0 + float(i) * 11.0)
+        draw_circle(center, 5.0, Color(0.08, 0.08, 0.1, 0.92))
+        draw_circle(center, 4.0, tint)
+        draw_string(ThemeDB.fallback_font, center + Vector2(-3.0, 3.0), glyph, HORIZONTAL_ALIGNMENT_LEFT, 7, 8, Color(0.08, 0.08, 0.1))
+    if keys.size() > shown:
+        draw_string(ThemeDB.fallback_font, p + Vector2(29, -58.0 + float(shown) * 11.0), "+%d" % (keys.size() - shown), HORIZONTAL_ALIGNMENT_LEFT, 20, 10, Color.WHITE)
 
 
 ## Placeholder glyph for classes without their own drawing (promoted heroes): one simple shape per branch.
