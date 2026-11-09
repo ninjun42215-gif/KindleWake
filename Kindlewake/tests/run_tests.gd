@@ -643,6 +643,19 @@ func _test_runes() -> void:
     var locked: Array = [{"id":"worldtree","ap":0},{"id":"worldtree","ap":0},{"id":"worldtree","ap":0}]
     check(not bool(RuneSystem.preview(locked, "worldtree", defs).get("ok", false)), "heirloom runes cannot be fused")
     check(not bool(RuneSystem.preview([{"id":"dragon"},{"id":"dragon"},{"id":"dragon"}], "dragon", defs).get("ok", false)), "unique runes cannot be fused")
+    check(RuneSystem.grade_power_bonus({"id":"ember","grade":"rare"}, defs) == 5, "one fusion grade above a rune's starting grade adds five percent power")
+    var passive_party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    var passive_sheet: CharacterSheet = passive_party.sheet("torren")
+    var passive_before: Dictionary = passive_sheet.total_stats(gd.items, defs)
+    var passive_sockets: Array = passive_sheet.sigils["weapon"]
+    passive_sockets[0] = {"id":"thorn","ap":0}
+    passive_sheet.sigils["weapon"] = passive_sockets
+    var passive_after: Dictionary = passive_sheet.total_stats(gd.items, defs)
+    check(int(passive_after["vit"]) == int(passive_before["vit"]) + 2, "socketed passive runes apply their current-level stat modifiers")
+    var protected_party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    protected_party.sigil_inv = [{"id":"dragon","ap":0},{"id":"phoenix_heirloom","ap":0}]
+    var protected_count: int = protected_party.sigil_inv.size()
+    check(ShopSystem.sell_sigil(protected_party, 0, gd.as_db(), gd.shop) != "" and ShopSystem.sell_sigil(protected_party, 1, gd.as_db(), gd.shop) != "" and protected_party.sigil_inv.size() == protected_count, "unique and heirloom runes cannot be sold")
 
 
 func _test_weapon_skills() -> void:
