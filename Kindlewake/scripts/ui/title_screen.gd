@@ -121,6 +121,7 @@ func _show_main() -> void:
     content_box.add_child(_button("NEW GAME", _new_game))
     content_box.add_child(_button("LOAD GAME", _show_load))
     content_box.add_child(_button("SETTINGS", _show_settings))
+    content_box.add_child(_button("EXIT GAME", _confirm_exit))
     status_label.text = "A chronicle awaits." if latest == "" else "A saved chronicle is ready."
 
 
@@ -207,3 +208,14 @@ func _on_volume_changed(value: float) -> void:
     cfg.load(SETTINGS_PATH)
     cfg.set_value("audio", "master", value)
     cfg.save(SETTINGS_PATH)
+
+
+func _confirm_exit() -> void:
+    _clear_content()
+    status_label.text = "Leave KindleWake? Unsaved progress may be lost."
+    content_box.add_child(_button("QUIT TO DESKTOP", _quit_game, true))
+    content_box.add_child(_button("CANCEL", _show_main))
+
+
+func _quit_game() -> void:
+    get_tree().quit()
