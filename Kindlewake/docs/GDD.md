@@ -779,4 +779,4 @@ Rune combat effects are data-driven: Flame can Burn, Frost can Chill, Storm can 
 
 Legacy sigil_* script entry points remain internal compatibility wrappers during this transition. New player-facing text, shop stock, data, fusion, and asset naming use Rune terminology.
 
-| 0.9.1-rune-system | Renamed sigils to runes in player-facing systems; added six rune families, six grades, chance-based three-to-one fusion, specialist-only regional rune shops, grade scaling, elemental status effects and original rune atlas. Validation is pending CI and Godot test results. |
+| 0.9.1-rune-system | Renamed sigils to runes in player-facing systems; added six rune families, six grades, chance-based three-to-one fusion, specialist-only regional rune shops, grade scaling, elemental status effects and original rune atlas. CI validation passed on 2026-11-09: Godot 4.2.2 import succeeded without script or parse errors; 312 strict checks passed with zero failures; balance report passed; signed Android APK exported for arm64-v8a and armeabi-v7a. Device playtesting remains pending. |
