@@ -23,6 +23,7 @@ var house: String = ""
 var class_id: String = ""
 var level: int = 1
 var xp: int = 0
+var loyalty: int = 50             # personal bond with the company, 0-100
 var base_stats: Dictionary = {}          # stat -> int, before equipment
 var skills: Array[String] = []
 var equipment: Dictionary = {}           # slot -> item id ("" = empty)
@@ -41,6 +42,7 @@ static func from_def(char_id: String, def: Dictionary) -> CharacterSheet:
     s.house = str(def.get("house", ""))
     s.class_id = str(def.get("class_id", ""))
     s.level = clampi(int(def.get("level", 1)), 1, MAX_LEVEL)
+    s.loyalty = clampi(int(def.get("loyalty", 50)), 0, 100)
     s.xp = clampi(int(def.get("xp", 0)), 0, maxi(0, exp_to_next_for(s.level) - 1))
     if s.level >= MAX_LEVEL:
         s.xp = 0
@@ -282,7 +284,7 @@ func promote(new_class_id: String, classes: Dictionary) -> bool:
 func to_dict() -> Dictionary:
     return {
         "character_id": character_id, "name": display_name, "house": house, "class_id": class_id,
-        "level": level, "xp": xp, "base_stats": base_stats.duplicate(), "skills": skills.duplicate(),
+        "level": level, "xp": xp, "loyalty": loyalty, "base_stats": base_stats.duplicate(), "skills": skills.duplicate(),
         "equipment": equipment.duplicate(), "natural_def": natural_def, "natural_res": natural_res,
         "fallback_weapon_id": fallback_weapon_id, "sigils": sigils.duplicate(true), "enhancements": enhancements.duplicate(true), "reward": reward.duplicate(),
     }
@@ -295,6 +297,7 @@ static func from_dict(d: Dictionary) -> CharacterSheet:
     s.house = str(d.get("house", ""))
     s.class_id = str(d.get("class_id", ""))
     s.level = clampi(int(d.get("level", 1)), 1, MAX_LEVEL)
+    s.loyalty = clampi(int(d.get("loyalty", 50)), 0, 100)
     s.xp = clampi(int(d.get("xp", 0)), 0, maxi(0, exp_to_next_for(s.level) - 1))
     if s.level >= MAX_LEVEL:
         s.xp = 0
