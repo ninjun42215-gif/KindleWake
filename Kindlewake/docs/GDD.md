@@ -798,3 +798,10 @@ Legacy sigil_* script entry points remain internal compatibility wrappers during
 - Validation on commit 99fcc28dd37652c293eaf240ec017500bbd698e6: Godot 4.2.2 build workflow 42672539871 completed successfully; strict suite 333 checks / 0 failures; balance report completed; signed Android APK exported and verified. No physical-device test has been performed.
 
 | 0.10.2-mobile-ui | Portrait company tabs, narrow-landscape proportional panes, viewport-safe party tests and responsive town/overworld interaction controls; CI validated on 2026-11-10. |
+
+### 14.5 Tactical unit identity art pass (2026-11-10)
+- Battle units retain the existing animated Soldier/Orc base sheets and frame timing, while the renderer adds original class-specific equipment overlays for Knight, Swordsman, Archer, Cleric, Roadreaver, Cavalry and magic classes.
+- Enemy identity marks now add further silhouette cues for commanders, shamans, wraiths, skeletons, ranged scouts and heavy brutes, including subtle animated aura pulses for spectral and magic archetypes.
+- The pass is presentation-only: no combat stats, turn logic, unit data, animation frame contracts or save schema changed. It is an incremental readability improvement, not a replacement for dedicated per-character/per-species sprite sheets.
+
+| 0.10.3-battle-identity-art | Added class-specific hero equipment and enemy archetype silhouette overlays on existing animated battle sprites; current-head CI validation pending. |
