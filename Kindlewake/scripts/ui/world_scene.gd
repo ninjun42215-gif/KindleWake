@@ -228,6 +228,12 @@ func _open_place(p: Dictionary, extra: String = "") -> void:
             text += "\n\nYou already searched here."
         else:
             place_buttons.add_child(_btn("Search the ruins", _on_search.bind(p), 24))
+    elif kind == "dungeon":
+        var clear_flag: String = str(p.get("world_flag_on_victory", "dungeon_" + id + "_cleared"))
+        if bool(GameState.world_flags.get(clear_flag, false)):
+            text += "\n\nThe dungeon's guardian has fallen. The route is quiet."
+        else:
+            text += "\n\nThe entrance leads into an explorable dungeon. Find its cache and face the guardian below."
     elif kind == "camp":
         if bool(GameState.world_flags.get("camp_cleared", false)):
             text += "\n\nThe palisade burns. The raiders are gone."
@@ -383,11 +389,14 @@ func _draw_place(p: Dictionary) -> void:
         Art.draw_world(self, "house_c", c + Vector2(26, 12), 0.85)
         Art.draw_world(self, "house_b", c + Vector2(0, 28), 0.85)
         top = 62.0
-    elif kind == "ruin":
+    elif kind == "ruin" or kind == "dungeon":
         Art.draw_world(self, "dead_b", c + Vector2(-30, 24), 0.8)
         Art.draw_world(self, "tower_a", c + Vector2(0, 26), 0.8, Color(0.82, 0.82, 0.82))
         Art.draw_world(self, "rock_a", c + Vector2(26, 28), 0.9)
         top = 82.0
+    elif kind == "gate":
+        Art.draw_world(self, "tower_a", c + Vector2(0, 24), 0.9, Color(0.75, 0.68, 0.48))
+        top = 70.0
     elif kind == "camp":
         var cleared: bool = bool(GameState.world_flags.get("camp_cleared", false))
         var tint: Color = Color(0.55, 0.55, 0.55) if cleared else Color(1.0, 0.82, 0.78)
