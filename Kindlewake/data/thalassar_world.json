@@ -101,5 +101,6 @@
   ],
   "region_notes": {
     "brinegate_coast": "The Brinegate Coast: harbour politics, darkened beacons, tidal caves and the first evidence that the Covenant's sea-lanes were deliberately unbound."
-  }
+  },
+  "wrap_world": true
 }
