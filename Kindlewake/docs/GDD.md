@@ -813,3 +813,11 @@ Legacy sigil_* script entry points remain internal compatibility wrappers during
 - No save schema or runtime gameplay behavior is changed by this delivery packaging.
 
 | 0.10.4-external-intake-handoff | Added an external AI receiving folder and CI-generated source handoff parts capped at 25 MB each; branch-head Android CI pending. |
+
+
+## Revision audit — 2026-11-10 (documentation reconciliation; no app version bump)
+- Confirmed live `project.godot` remains `0.10.0`; Android export metadata is `0.10.0` / code `1000`; `SaveSystem.GAME_VERSION` is `0.10.0` and `SAVE_VERSION` remains `3`.
+- The existing 0.10.1–0.10.4 entries above are retained as implementation/revision notes. They are not treated as a released semantic-version change until their source files, tests and exact-head CI evidence are audited.
+- PR #16 merged the save game-version metadata synchronization fix at main commit `e108b0f32ea037ac7e338bc1e01c4ba1032de26b`.
+- Current-main post-merge APK and fresh source-handoff artifact were not verified during this audit. Do not reuse older artifact links as if they match this SHA.
+- No gameplay behavior or save schema changed in this documentation reconciliation.
