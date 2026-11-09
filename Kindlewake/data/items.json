@@ -104,7 +104,7 @@
         ]
       ],
       "ap_mult": 2,
-      "rarity": "fine",
+      "rarity": "uncommon",
       "weapon_id": "fine_arming_sword",
       "price": 160
     },
@@ -119,7 +119,7 @@
         ]
       ],
       "ap_mult": 2,
-      "rarity": "fine",
+      "rarity": "uncommon",
       "weapon_id": "hardwood_bow",
       "price": 170
     },
@@ -138,7 +138,7 @@
         ]
       ],
       "ap_mult": 2,
-      "rarity": "fine",
+      "rarity": "uncommon",
       "weapon_id": "greatsword",
       "two_handed": true,
       "price": 210
@@ -153,7 +153,7 @@
     "kite_shield": {
       "name": "Hound-Crest Shield",
       "slot": "offhand",
-      "rarity": "fine",
+      "rarity": "uncommon",
       "armor_def": 3,
       "bonus": {
         "spd": -1
@@ -214,7 +214,7 @@
         ]
       ],
       "ap_mult": 2,
-      "rarity": "fine",
+      "rarity": "uncommon",
       "armor_def": 5,
       "armor_res": 1,
       "price": 140
@@ -234,7 +234,7 @@
         ]
       ],
       "ap_mult": 3,
-      "rarity": "masterwork",
+      "rarity": "epic",
       "armor_def": 8,
       "armor_res": 2,
       "bonus": {
@@ -260,7 +260,7 @@
     "pilgrim_medal": {
       "name": "Vesper Medal",
       "slot": "accessory",
-      "rarity": "fine",
+      "rarity": "uncommon",
       "armor_res": 1,
       "bonus": {
         "mor": 3
@@ -270,7 +270,7 @@
     "hawk_feather": {
       "name": "Kestrel Feather",
       "slot": "accessory",
-      "rarity": "fine",
+      "rarity": "uncommon",
       "bonus": {
         "acc": 4
       },
@@ -279,13 +279,15 @@
     "dunmarrow_signet": {
       "name": "Dunmarrow Signet",
       "slot": "accessory",
-      "rarity": "heirloom",
+      "rarity": "unique",
       "bound_to": "torren",
       "bonus": {
         "ldr": 2,
         "mor": 5
       },
-      "price": 0
+      "price": 0,
+      "grade": "unique",
+      "rarity_rank": 7
     },
     "spear": {
       "name": "Marchwarden Spear",
