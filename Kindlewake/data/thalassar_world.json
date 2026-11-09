@@ -1,0 +1,105 @@
+{
+  "name": "The Brinegate Coast",
+  "seed": 2741,
+  "width": 64,
+  "height": 48,
+  "start": "brinegate",
+  "safe_radius": 6,
+  "encounter_min": 1050,
+  "encounter_max": 1950,
+  "places": [
+    {
+      "id": "brinegate",
+      "name": "Brinegate",
+      "kind": "keep",
+      "cell": [
+        10,
+        34
+      ],
+      "town": "brinegate",
+      "text": "The great harbour of the Tidebound Assembly. Its sea wall is scarred by old storms; the lighthouse above the port is dark."
+    },
+    {
+      "id": "saltmere",
+      "name": "Saltmere",
+      "kind": "village",
+      "cell": [
+        29,
+        28
+      ],
+      "town": "saltmere",
+      "text": "A salt-fishing settlement where the nets come back torn and the tide pools have fallen silent."
+    },
+    {
+      "id": "lantern_quay",
+      "name": "Lantern Quay",
+      "kind": "village",
+      "cell": [
+        51,
+        15
+      ],
+      "town": "lantern_quay",
+      "text": "A narrow harbour built around the beacon road. Its signal tower has been dark for three nights."
+    },
+    {
+      "id": "tideglass_grotto",
+      "name": "Tideglass Grotto",
+      "kind": "dungeon",
+      "cell": [
+        45,
+        35
+      ],
+      "town": "dungeon_tideglass",
+      "battle": "battle_tideglass",
+      "world_flag_on_victory": "tideglass_grotto_cleared",
+      "text": "A tidal cave beneath the old beacon. The missing keeper's ledger was last seen here."
+    },
+    {
+      "id": "old_beacon_vault",
+      "name": "Old Beacon Vault",
+      "kind": "ruin",
+      "cell": [
+        18,
+        9
+      ],
+      "reward_gold": 75,
+      "text": "A stone service vault beneath a ruined signal tower. Its walls bear seven empty flame niches."
+    },
+    {
+      "id": "northstar_wreck",
+      "name": "The Northstar Wreck",
+      "kind": "ruin",
+      "cell": [
+        57,
+        7
+      ],
+      "reward_gold": 55,
+      "text": "A merchant hull split against the reef. The cargo is gone, but a brass chart tube remains wedged beneath the ribs."
+    }
+  ],
+  "roads": [
+    [
+      "brinegate",
+      "saltmere"
+    ],
+    [
+      "saltmere",
+      "lantern_quay"
+    ],
+    [
+      "saltmere",
+      "tideglass_grotto"
+    ],
+    [
+      "brinegate",
+      "old_beacon_vault"
+    ],
+    [
+      "lantern_quay",
+      "northstar_wreck"
+    ]
+  ],
+  "region_notes": {
+    "brinegate_coast": "The Brinegate Coast: harbour politics, darkened beacons, tidal caves and the first evidence that the Covenant's sea-lanes were deliberately unbound."
+  }
+}
