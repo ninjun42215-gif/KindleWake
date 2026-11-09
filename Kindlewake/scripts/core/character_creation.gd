@@ -52,6 +52,15 @@ static func validate(profile: Dictionary, config: Dictionary, classes: Dictionar
         return "That weapon preference does not fit the selected discipline."
     if not (config.get("temperaments", {}) as Dictionary).has(str(profile.get("temperament", ""))):
         return "Choose a valid temperament."
+    var allocation: Dictionary = profile.get("stat_allocation", {})
+    var points := 0
+    for stat in ["str", "dex", "int", "vit", "spd", "lck"]:
+        var value := int(allocation.get(stat, 0))
+        if value < 0 or value > 5:
+            return "Starting attribute allocations must be between 0 and 5."
+        points += value
+    if points != int(config.get("stat_points", 8)):
+        return "Allocate all %d starting attribute points." % int(config.get("stat_points", 8))
     return ""
 
 
@@ -67,6 +76,9 @@ static func build_definition(base: Dictionary, profile: Dictionary, config: Dict
     var stats: Dictionary = result.get("stats", {}).duplicate(true)
     _apply_stat_bonus(stats, origin.get("stat_bonus", {}))
     _apply_stat_bonus(stats, temperament.get("stat_bonus", {}))
+    var allocation: Dictionary = profile.get("stat_allocation", {})
+    for stat in ["str", "dex", "int", "vit", "spd", "lck"]:
+        stats[stat] = int(stats.get(stat, 0)) + int(allocation.get(stat, 0))
     result["name"] = str(profile["name"]).strip_edges()
     result["class_id"] = str(discipline["class_id"])
     result["house"] = str(origin.get("house", "dunmarrow"))
@@ -93,6 +105,7 @@ static func build_definition(base: Dictionary, profile: Dictionary, config: Dict
         "weapon_preference": preference,
         "starting_weapon_item": starting_weapon,
         "temperament": str(profile["temperament"]),
+        "stat_allocation": allocation.duplicate(true),
         "origin_tags": (origin.get("tags", []) as Array).duplicate(),
     }
     return result
