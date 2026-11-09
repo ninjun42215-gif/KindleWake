@@ -835,6 +835,8 @@ func _test_sigils() -> void:
     check(guard_party.equip_sigil("torren", "weapon", 99, 0, db, true) != "" and (guard_sheet.sigils["weapon"] as Array).size() == 3 and guard_party.sigil_inv.size() == guard_bag_size, "invalid socket selection leaves runes and inventory unchanged")
     check(guard_party.equip_sigil("torren", "weapon", 0, 0, db, false) != "" and (guard_sheet.sigils["weapon"] as Array).size() == 3 and guard_party.sigil_inv.size() == guard_bag_size, "missing service access leaves rune state unchanged")
     check(guard_party.unequip_sigil("torren", "invalid", 0, db, true) != "" and (guard_sheet.sigils["weapon"] as Array).size() == 3, "invalid removal group leaves socket state unchanged")
+    var empty_bag_size: int = guard_party.sigil_inv.size()
+    check(guard_party.unequip_sigil("torren", "weapon", 1, db, true) != "" and (guard_sheet.sigils["weapon"] as Array).size() == 3 and guard_party.sigil_inv.size() == empty_bag_size, "empty socket removal leaves overflow runes and inventory unchanged")
     (guard_sheet.sigils["weapon"] as Array).pop_back()
     var amp_i := _sigil_index(ps, "amp")
     check(ps.equip_sigil("torren", "weapon", 1, amp_i, db, true) == "", "equip the rune of Resonance into the linked socket")
