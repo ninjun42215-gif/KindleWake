@@ -1,6 +1,8 @@
 # CONTINUATION MASTER PROMPT — KINDLEWAKE: THE SUNDERED VOW
 
-> **Latest checkpoint: v0.7.14 (2026-11-09; Sethmarch Frontier adds connected Orrowen/Vessmoor roads, six functional towns, three explorable boss dungeons and SaveSystem v3 regional battle-save context).** The optional sprite archives remain source-only and are not license-cleared. Continue from `docs/SESSION_HANDOFF.md`.
+> **Latest checkpoint: v0.9.0 (2026-11-09; title screen, campaign saves, economy and rarity rebalance).** Continue from `docs/SESSION_HANDOFF.md`.
+
+> Previous checkpoint: v0.7.14 (2026-11-09; Sethmarch Frontier adds connected Orrowen/Vessmoor roads, six functional towns, three explorable boss dungeons and SaveSystem v3 regional battle-save context).** The optional sprite archives remain source-only and are not license-cleared. Continue from `docs/SESSION_HANDOFF.md`.
 
 **Repository-first workflow:** the canonical project is the extracted `Kindlewake/` folder in GitHub repository `ninjun42215-gif/KindleWake`, branch `main`. Do not ask the user to attach or rebuild a master project ZIP for routine continuation. Inspect and edit the repository files directly. The one-time import is already complete; the temporary upload shards and import workflow have been removed. If the project tree is ever missing, inspect Git history and restore tracked files rather than asking the user for a master ZIP. Future development commits ordinary changed files directly to `main` (or a feature branch), not a replacement project ZIP.
 
