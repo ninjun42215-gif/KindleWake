@@ -564,11 +564,11 @@ func _show_result() -> void:
         var reward_rune: String = str(battle_def.get("reward_rune", ""))
         if won and reward_rune != "" and GameData.runes.has(reward_rune):
             GameState.party.add_rune(reward_rune)
-            result_text.text += "\\n\\nHeirloom rune recovered: %s" % str(GameData.runes[reward_rune].get("name", reward_rune))
+            result_text.text += "\n\nRare rune recovered: %s" % str(GameData.runes[reward_rune].get("name", reward_rune))
         var reward_item: String = str(battle_def.get("reward_item", ""))
         if won and reward_item != "" and GameData.items.has(reward_item):
             GameState.party.add_item(reward_item, 1)
-            result_text.text += "\\n\\nUnique relic recovered: %s" % str(GameData.items[reward_item].get("name", reward_item))
+            result_text.text += "\n\nUnique relic recovered: %s" % str(GameData.items[reward_item].get("name", reward_item))
     if not (battle_rewards.get("reports", []) as Array).is_empty():
         result_text.text += "\n\n" + _rewards_summary(battle_rewards)
     elif not won:
@@ -869,6 +869,22 @@ func _draw_tile(cell: Vector2i) -> void:
         "road":
             draw_circle(top + Vector2(-6, 2), 1.5, col.lightened(0.2))
             draw_circle(top + Vector2(7, -2), 1.5, col.lightened(0.2))
+        "marsh":
+            draw_circle(top + Vector2(-8, 2), 5.0, col.darkened(0.25))
+            draw_circle(top + Vector2(8, -3), 3.0, col.lightened(0.15))
+            draw_line(top + Vector2(-13, -5), top + Vector2(-4, -7), Color(0.75, 0.85, 0.68, 0.55), 1.5)
+        "snow":
+            draw_line(top + Vector2(-12, -4), top + Vector2(-3, -7), Color(1, 1, 1, 0.65), 2.0)
+            draw_line(top + Vector2(2, 4), top + Vector2(12, 1), Color(1, 1, 1, 0.55), 2.0)
+        "ash":
+            draw_circle(top + Vector2(-7, 2), 2.0, col.darkened(0.3))
+            draw_circle(top + Vector2(8, -3), 1.5, col.lightened(0.2))
+        "ruins":
+            draw_rect(Rect2(top + Vector2(-10, -5), Vector2(7, 5)), col.darkened(0.35))
+            draw_rect(Rect2(top + Vector2(3, 1), Vector2(8, 4)), col.darkened(0.25))
+        "cliff":
+            draw_colored_polygon(_diamond(top, 0.65), col.darkened(0.35))
+            draw_line(top + Vector2(-10, -2), top + Vector2(5, -7), col.lightened(0.2), 2.0)
 
 
 func _draw_tree(base: Vector2) -> void:
