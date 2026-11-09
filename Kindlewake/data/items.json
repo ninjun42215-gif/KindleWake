@@ -21,7 +21,7 @@
       "ap_mult": 1,
       "rarity": "common",
       "weapon_id": "arming_sword",
-      "price": 60
+      "price": 71
     },
     "longsword": {
       "name": "Kestrel Longblade",
@@ -36,7 +36,7 @@
       "ap_mult": 1,
       "rarity": "common",
       "weapon_id": "longsword",
-      "price": 80
+      "price": 71
     },
     "hunting_bow": {
       "name": "Thornwood Bow",
@@ -51,7 +51,7 @@
       "ap_mult": 1,
       "rarity": "common",
       "weapon_id": "hunting_bow",
-      "price": 70
+      "price": 71
     },
     "short_bow": {
       "name": "Reed Bow",
@@ -61,7 +61,7 @@
       "ap_mult": 1,
       "rarity": "common",
       "weapon_id": "short_bow",
-      "price": 45
+      "price": 71
     },
     "mace": {
       "name": "Vigil Mace",
@@ -71,7 +71,7 @@
       "ap_mult": 1,
       "rarity": "common",
       "weapon_id": "mace",
-      "price": 40
+      "price": 71
     },
     "hand_axe": {
       "name": "Splitter Hatchet",
@@ -81,7 +81,7 @@
       "ap_mult": 1,
       "rarity": "common",
       "weapon_id": "hand_axe",
-      "price": 40
+      "price": 71
     },
     "battle_axe": {
       "name": "Gravelcleaver",
@@ -91,7 +91,7 @@
       "ap_mult": 1,
       "rarity": "common",
       "weapon_id": "battle_axe",
-      "price": 90
+      "price": 71
     },
     "fine_arming_sword": {
       "name": "Moonforged Wayfarer",
@@ -106,7 +106,7 @@
       "ap_mult": 2,
       "rarity": "uncommon",
       "weapon_id": "fine_arming_sword",
-      "price": 160
+      "price": 301
     },
     "hardwood_bow": {
       "name": "Yewsong Bow",
@@ -121,7 +121,7 @@
       "ap_mult": 2,
       "rarity": "uncommon",
       "weapon_id": "hardwood_bow",
-      "price": 170
+      "price": 301
     },
     "greatsword": {
       "name": "Hearthbreaker",
@@ -141,14 +141,14 @@
       "rarity": "uncommon",
       "weapon_id": "greatsword",
       "two_handed": true,
-      "price": 210
+      "price": 301
     },
     "buckler": {
       "name": "Wren Buckler",
       "slot": "offhand",
       "rarity": "common",
       "armor_def": 1,
-      "price": 30
+      "price": 51
     },
     "kite_shield": {
       "name": "Hound-Crest Shield",
@@ -158,7 +158,7 @@
       "bonus": {
         "spd": -1
       },
-      "price": 90
+      "price": 221
     },
     "padded_jerkin": {
       "name": "Quilted Gambeson",
@@ -169,7 +169,7 @@
       "rarity": "common",
       "armor_def": 2,
       "armor_res": 0,
-      "price": 30
+      "price": 66
     },
     "leather_cuirass": {
       "name": "Tanner's Cuirass",
@@ -185,7 +185,7 @@
       "rarity": "common",
       "armor_def": 3,
       "armor_res": 1,
-      "price": 55
+      "price": 66
     },
     "pilgrim_robe": {
       "name": "Vesper Robe",
@@ -201,7 +201,7 @@
       "rarity": "common",
       "armor_def": 2,
       "armor_res": 3,
-      "price": 70
+      "price": 66
     },
     "mail_hauberk": {
       "name": "Ringwoven Hauberk",
@@ -217,7 +217,7 @@
       "rarity": "uncommon",
       "armor_def": 5,
       "armor_res": 1,
-      "price": 140
+      "price": 261
     },
     "plate_harness": {
       "name": "Ironbound Harness",
@@ -235,19 +235,19 @@
       ],
       "ap_mult": 3,
       "rarity": "epic",
-      "armor_def": 8,
+      "armor_def": 7,
       "armor_res": 2,
       "bonus": {
         "spd": -2
       },
-      "price": 420
+      "price": 5981
     },
     "iron_cap": {
       "name": "Crow Cap",
       "slot": "helm",
       "rarity": "common",
       "armor_def": 1,
-      "price": 25
+      "price": 41
     },
     "kettle_helm": {
       "name": "Brimmed Warhat",
@@ -255,7 +255,7 @@
       "rarity": "common",
       "armor_def": 2,
       "armor_res": 1,
-      "price": 60
+      "price": 41
     },
     "pilgrim_medal": {
       "name": "Vesper Medal",
@@ -265,7 +265,7 @@
       "bonus": {
         "mor": 3
       },
-      "price": 80
+      "price": 241
     },
     "hawk_feather": {
       "name": "Kestrel Feather",
@@ -274,7 +274,7 @@
       "bonus": {
         "acc": 4
       },
-      "price": 90
+      "price": 241
     },
     "dunmarrow_signet": {
       "name": "Dunmarrow Signet",
@@ -302,7 +302,7 @@
       "ap_mult": 1,
       "rarity": "common",
       "weapon_id": "spear",
-      "price": 65
+      "price": 71
     },
     "crossbow": {
       "name": "Latchbolt Crossbow",
@@ -317,7 +317,7 @@
       "ap_mult": 1,
       "rarity": "common",
       "weapon_id": "crossbow",
-      "price": 75
+      "price": 71
     },
     "staff": {
       "name": "Candlewood Staff",
@@ -332,7 +332,7 @@
       "ap_mult": 1,
       "rarity": "common",
       "weapon_id": "staff",
-      "price": 65
+      "price": 71
     },
     "dagger": {
       "name": "Gutterglass Dagger",
@@ -342,7 +342,7 @@
       "ap_mult": 1,
       "rarity": "common",
       "weapon_id": "dagger",
-      "price": 45
+      "price": 71
     },
     "uncommon_arming_sword": {
       "name": "Uncommon Oathsteel Sword",
@@ -358,7 +358,7 @@
         ]
       ],
       "ap_mult": 1,
-      "price": 95,
+      "price": 301,
       "tier_label": "Uncommon"
     },
     "uncommon_longsword": {
@@ -375,7 +375,7 @@
         ]
       ],
       "ap_mult": 1,
-      "price": 95,
+      "price": 301,
       "tier_label": "Uncommon"
     },
     "uncommon_hunting_bow": {
@@ -392,7 +392,7 @@
         ]
       ],
       "ap_mult": 1,
-      "price": 95,
+      "price": 301,
       "tier_label": "Uncommon"
     },
     "uncommon_short_bow": {
@@ -409,7 +409,7 @@
         ]
       ],
       "ap_mult": 1,
-      "price": 95,
+      "price": 301,
       "tier_label": "Uncommon"
     },
     "uncommon_mace": {
@@ -426,7 +426,7 @@
         ]
       ],
       "ap_mult": 1,
-      "price": 95,
+      "price": 301,
       "tier_label": "Uncommon"
     },
     "uncommon_hand_axe": {
@@ -443,7 +443,7 @@
         ]
       ],
       "ap_mult": 1,
-      "price": 95,
+      "price": 301,
       "tier_label": "Uncommon"
     },
     "uncommon_battle_axe": {
@@ -460,7 +460,7 @@
         ]
       ],
       "ap_mult": 1,
-      "price": 95,
+      "price": 301,
       "tier_label": "Uncommon"
     },
     "uncommon_spear": {
@@ -477,7 +477,7 @@
         ]
       ],
       "ap_mult": 1,
-      "price": 95,
+      "price": 301,
       "tier_label": "Uncommon"
     },
     "uncommon_crossbow": {
@@ -494,7 +494,7 @@
         ]
       ],
       "ap_mult": 1,
-      "price": 95,
+      "price": 301,
       "tier_label": "Uncommon"
     },
     "uncommon_staff": {
@@ -511,7 +511,7 @@
         ]
       ],
       "ap_mult": 1,
-      "price": 95,
+      "price": 301,
       "tier_label": "Uncommon"
     },
     "uncommon_dagger": {
@@ -528,7 +528,7 @@
         ]
       ],
       "ap_mult": 1,
-      "price": 95,
+      "price": 301,
       "tier_label": "Uncommon"
     },
     "uncommon_armor": {
@@ -539,7 +539,7 @@
       "armor_def": 2,
       "armor_res": 1,
       "bonus": {},
-      "price": 61,
+      "price": 261,
       "tier_label": "Uncommon"
     },
     "uncommon_offhand": {
@@ -550,7 +550,7 @@
       "armor_def": 1,
       "armor_res": 0,
       "bonus": {},
-      "price": 61,
+      "price": 221,
       "tier_label": "Uncommon"
     },
     "uncommon_helm": {
@@ -561,7 +561,7 @@
       "armor_def": 1,
       "armor_res": 0,
       "bonus": {},
-      "price": 61,
+      "price": 181,
       "tier_label": "Uncommon"
     },
     "uncommon_accessory": {
@@ -574,7 +574,7 @@
       "bonus": {
         "ldr": 1
       },
-      "price": 61,
+      "price": 241,
       "tier_label": "Uncommon"
     },
     "rare_arming_sword": {
@@ -591,7 +591,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 133,
+      "price": 1501,
       "tier_label": "Rare"
     },
     "rare_longsword": {
@@ -608,7 +608,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 133,
+      "price": 1501,
       "tier_label": "Rare"
     },
     "rare_hunting_bow": {
@@ -625,7 +625,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 133,
+      "price": 1501,
       "tier_label": "Rare"
     },
     "rare_short_bow": {
@@ -642,7 +642,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 133,
+      "price": 1501,
       "tier_label": "Rare"
     },
     "rare_mace": {
@@ -659,7 +659,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 133,
+      "price": 1501,
       "tier_label": "Rare"
     },
     "rare_hand_axe": {
@@ -676,7 +676,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 133,
+      "price": 1501,
       "tier_label": "Rare"
     },
     "rare_battle_axe": {
@@ -693,7 +693,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 133,
+      "price": 1501,
       "tier_label": "Rare"
     },
     "rare_spear": {
@@ -710,7 +710,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 133,
+      "price": 1501,
       "tier_label": "Rare"
     },
     "rare_crossbow": {
@@ -727,7 +727,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 133,
+      "price": 1501,
       "tier_label": "Rare"
     },
     "rare_staff": {
@@ -744,7 +744,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 133,
+      "price": 1501,
       "tier_label": "Rare"
     },
     "rare_dagger": {
@@ -761,7 +761,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 133,
+      "price": 1501,
       "tier_label": "Rare"
     },
     "rare_armor": {
@@ -772,7 +772,7 @@
       "armor_def": 4,
       "armor_res": 2,
       "bonus": {},
-      "price": 86,
+      "price": 1251,
       "tier_label": "Rare"
     },
     "rare_offhand": {
@@ -783,7 +783,7 @@
       "armor_def": 3,
       "armor_res": 1,
       "bonus": {},
-      "price": 86,
+      "price": 1001,
       "tier_label": "Rare"
     },
     "rare_helm": {
@@ -794,7 +794,7 @@
       "armor_def": 3,
       "armor_res": 1,
       "bonus": {},
-      "price": 86,
+      "price": 851,
       "tier_label": "Rare"
     },
     "rare_accessory": {
@@ -807,7 +807,7 @@
       "bonus": {
         "mor": 2
       },
-      "price": 86,
+      "price": 1101,
       "tier_label": "Rare"
     },
     "epic_arming_sword": {
@@ -824,7 +824,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 196,
+      "price": 6001,
       "tier_label": "Epic"
     },
     "epic_longsword": {
@@ -841,7 +841,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 196,
+      "price": 6001,
       "tier_label": "Epic"
     },
     "epic_hunting_bow": {
@@ -858,7 +858,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 196,
+      "price": 6001,
       "tier_label": "Epic"
     },
     "epic_short_bow": {
@@ -875,7 +875,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 196,
+      "price": 6001,
       "tier_label": "Epic"
     },
     "epic_mace": {
@@ -892,7 +892,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 196,
+      "price": 6001,
       "tier_label": "Epic"
     },
     "epic_hand_axe": {
@@ -909,7 +909,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 196,
+      "price": 6001,
       "tier_label": "Epic"
     },
     "epic_battle_axe": {
@@ -926,7 +926,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 196,
+      "price": 6001,
       "tier_label": "Epic"
     },
     "epic_spear": {
@@ -943,7 +943,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 196,
+      "price": 6001,
       "tier_label": "Epic"
     },
     "epic_crossbow": {
@@ -960,7 +960,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 196,
+      "price": 6001,
       "tier_label": "Epic"
     },
     "epic_staff": {
@@ -977,7 +977,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 196,
+      "price": 6001,
       "tier_label": "Epic"
     },
     "epic_dagger": {
@@ -994,7 +994,7 @@
         ]
       ],
       "ap_mult": 2,
-      "price": 196,
+      "price": 6001,
       "tier_label": "Epic"
     },
     "epic_armor": {
@@ -1002,12 +1002,12 @@
       "slot": "armor",
       "rarity": "epic",
       "rarity_rank": 3,
-      "armor_def": 8,
+      "armor_def": 7,
       "armor_res": 4,
       "bonus": {
         "vit": 1
       },
-      "price": 126,
+      "price": 5201,
       "tier_label": "Epic"
     },
     "epic_offhand": {
@@ -1015,10 +1015,10 @@
       "slot": "offhand",
       "rarity": "epic",
       "rarity_rank": 3,
-      "armor_def": 6,
+      "armor_def": 5,
       "armor_res": 3,
       "bonus": {},
-      "price": 126,
+      "price": 4201,
       "tier_label": "Epic"
     },
     "epic_helm": {
@@ -1026,10 +1026,10 @@
       "slot": "helm",
       "rarity": "epic",
       "rarity_rank": 3,
-      "armor_def": 6,
+      "armor_def": 5,
       "armor_res": 3,
       "bonus": {},
-      "price": 126,
+      "price": 3501,
       "tier_label": "Epic"
     },
     "epic_accessory": {
@@ -1037,12 +1037,12 @@
       "slot": "accessory",
       "rarity": "epic",
       "rarity_rank": 3,
-      "armor_def": 5,
+      "armor_def": 4,
       "armor_res": 4,
       "bonus": {
         "ldr": 3
       },
-      "price": 126,
+      "price": 4501,
       "tier_label": "Epic"
     },
     "legendary_arming_sword": {
@@ -1059,7 +1059,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 294,
+      "price": 22001,
       "tier_label": "Legendary"
     },
     "legendary_longsword": {
@@ -1076,7 +1076,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 294,
+      "price": 22001,
       "tier_label": "Legendary"
     },
     "legendary_hunting_bow": {
@@ -1093,7 +1093,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 294,
+      "price": 22001,
       "tier_label": "Legendary"
     },
     "legendary_short_bow": {
@@ -1110,7 +1110,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 294,
+      "price": 22001,
       "tier_label": "Legendary"
     },
     "legendary_mace": {
@@ -1127,7 +1127,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 294,
+      "price": 22001,
       "tier_label": "Legendary"
     },
     "legendary_hand_axe": {
@@ -1144,7 +1144,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 294,
+      "price": 22001,
       "tier_label": "Legendary"
     },
     "legendary_battle_axe": {
@@ -1161,7 +1161,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 294,
+      "price": 22001,
       "tier_label": "Legendary"
     },
     "legendary_spear": {
@@ -1178,7 +1178,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 294,
+      "price": 22001,
       "tier_label": "Legendary"
     },
     "legendary_crossbow": {
@@ -1195,7 +1195,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 294,
+      "price": 22001,
       "tier_label": "Legendary"
     },
     "legendary_staff": {
@@ -1212,7 +1212,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 294,
+      "price": 22001,
       "tier_label": "Legendary"
     },
     "legendary_dagger": {
@@ -1229,7 +1229,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 294,
+      "price": 22001,
       "tier_label": "Legendary"
     },
     "legendary_armor": {
@@ -1237,12 +1237,12 @@
       "slot": "armor",
       "rarity": "legendary",
       "rarity_rank": 4,
-      "armor_def": 14,
-      "armor_res": 7,
+      "armor_def": 9,
+      "armor_res": 5,
       "bonus": {
         "vit": 2
       },
-      "price": 189,
+      "price": 19001,
       "tier_label": "Legendary"
     },
     "legendary_offhand": {
@@ -1250,10 +1250,10 @@
       "slot": "offhand",
       "rarity": "legendary",
       "rarity_rank": 4,
-      "armor_def": 12,
-      "armor_res": 6,
+      "armor_def": 7,
+      "armor_res": 4,
       "bonus": {},
-      "price": 189,
+      "price": 15001,
       "tier_label": "Legendary"
     },
     "legendary_helm": {
@@ -1261,10 +1261,10 @@
       "slot": "helm",
       "rarity": "legendary",
       "rarity_rank": 4,
-      "armor_def": 12,
-      "armor_res": 6,
+      "armor_def": 6,
+      "armor_res": 3,
       "bonus": {},
-      "price": 189,
+      "price": 12501,
       "tier_label": "Legendary"
     },
     "legendary_accessory": {
@@ -1272,12 +1272,12 @@
       "slot": "accessory",
       "rarity": "legendary",
       "rarity_rank": 4,
-      "armor_def": 9,
-      "armor_res": 7,
+      "armor_def": 4,
+      "armor_res": 5,
       "bonus": {
         "mor": 4
       },
-      "price": 189,
+      "price": 16501,
       "tier_label": "Legendary"
     },
     "mythical_arming_sword": {
@@ -1294,7 +1294,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 455,
+      "price": 65001,
       "tier_label": "Mythical"
     },
     "mythical_longsword": {
@@ -1311,7 +1311,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 455,
+      "price": 65001,
       "tier_label": "Mythical"
     },
     "mythical_hunting_bow": {
@@ -1328,7 +1328,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 455,
+      "price": 65001,
       "tier_label": "Mythical"
     },
     "mythical_short_bow": {
@@ -1345,7 +1345,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 455,
+      "price": 65001,
       "tier_label": "Mythical"
     },
     "mythical_mace": {
@@ -1362,7 +1362,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 455,
+      "price": 65001,
       "tier_label": "Mythical"
     },
     "mythical_hand_axe": {
@@ -1379,7 +1379,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 455,
+      "price": 65001,
       "tier_label": "Mythical"
     },
     "mythical_battle_axe": {
@@ -1396,7 +1396,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 455,
+      "price": 65001,
       "tier_label": "Mythical"
     },
     "mythical_spear": {
@@ -1413,7 +1413,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 455,
+      "price": 65001,
       "tier_label": "Mythical"
     },
     "mythical_crossbow": {
@@ -1430,7 +1430,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 455,
+      "price": 65001,
       "tier_label": "Mythical"
     },
     "mythical_staff": {
@@ -1447,7 +1447,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 455,
+      "price": 65001,
       "tier_label": "Mythical"
     },
     "mythical_dagger": {
@@ -1464,7 +1464,7 @@
         ]
       ],
       "ap_mult": 3,
-      "price": 455,
+      "price": 65001,
       "tier_label": "Mythical"
     },
     "mythical_armor": {
@@ -1472,12 +1472,12 @@
       "slot": "armor",
       "rarity": "mythical",
       "rarity_rank": 5,
-      "armor_def": 25,
-      "armor_res": 14,
+      "armor_def": 11,
+      "armor_res": 7,
       "bonus": {
         "vit": 2
       },
-      "price": 293,
+      "price": 58001,
       "tier_label": "Mythical"
     },
     "mythical_offhand": {
@@ -1485,10 +1485,10 @@
       "slot": "offhand",
       "rarity": "mythical",
       "rarity_rank": 5,
-      "armor_def": 21,
-      "armor_res": 11,
+      "armor_def": 9,
+      "armor_res": 6,
       "bonus": {},
-      "price": 293,
+      "price": 46001,
       "tier_label": "Mythical"
     },
     "mythical_helm": {
@@ -1496,10 +1496,10 @@
       "slot": "helm",
       "rarity": "mythical",
       "rarity_rank": 5,
-      "armor_def": 21,
-      "armor_res": 11,
+      "armor_def": 8,
+      "armor_res": 5,
       "bonus": {},
-      "price": 293,
+      "price": 38001,
       "tier_label": "Mythical"
     },
     "mythical_accessory": {
@@ -1507,12 +1507,12 @@
       "slot": "accessory",
       "rarity": "mythical",
       "rarity_rank": 5,
-      "armor_def": 18,
-      "armor_res": 14,
+      "armor_def": 6,
+      "armor_res": 7,
       "bonus": {
         "ldr": 5
       },
-      "price": 293,
+      "price": 50001,
       "tier_label": "Mythical"
     },
     "unique_ashen_crown": {
