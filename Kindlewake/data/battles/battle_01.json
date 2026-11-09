@@ -125,5 +125,6 @@
       "facing": 2
     }
   ],
-  "battlefield": "river_crossing"
+  "battlefield": "river_crossing",
+  "reward_rune": "dragon"
 }
