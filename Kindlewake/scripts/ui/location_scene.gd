@@ -187,6 +187,9 @@ func _on_prompt_pressed() -> void:
     prompt_btn.visible = false
     spot_title.text = str(near_spot.get("name", ""))
     spot_text.text = str(near_spot.get("text", ""))
+    var extra_dialogue: Array = near_spot.get("dialogue", [])
+    for line in extra_dialogue:
+        spot_text.text += "\\n\\n" + str(line)
     for c in spot_buttons.get_children():
         spot_buttons.remove_child(c)
         c.queue_free()
@@ -297,7 +300,8 @@ func _open_party() -> void:
         var stock: Dictionary = regional[current_map_id]
         shop_def["items"] = (stock.get("items", []) as Array).duplicate()
         shop_def["sigils"] = (stock.get("sigils", shop_def.get("sigils", [])) as Array).duplicate()
-    party_screen.setup(GameState.party, GameData.party_db(), shop_def)
+    var is_rune_service := bool(near_spot.get("rune_service", false)) or bool(near_spot.get("blacksmith", false))
+    party_screen.setup(GameState.party, GameData.party_db(), shop_def, true, is_rune_service)
     party_screen.open()
 
 
