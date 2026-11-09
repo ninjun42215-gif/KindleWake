@@ -74,12 +74,14 @@ jobs:
             fi
           done
 
-      - name: Merge PR after exact-SHA checks pass
+      - name: Merge PR through GitHub API after exact-SHA checks pass
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ steps.gate.outputs.pr_number }}
           SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
-          # GitHub enforces any configured branch rules. Match the exact SHA
-          # again at merge time so a new push can never be merged accidentally.
-          gh pr merge "${PR_NUMBER}" --squash --match-head-commit "${SHA}"
+          # This job has no local Git checkout. Use the REST merge endpoint and
+          # require the exact SHA again so a concurrent push cannot be merged.
+          response="$(gh api --method PUT "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/merge" \
+            -f sha="${SHA}" -f merge_method=squash)"
+          jq -e '.merged == true' <<< "${response}" >/dev/null
