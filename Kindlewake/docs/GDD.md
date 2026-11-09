@@ -765,3 +765,18 @@ Revision log
 
 
 | 0.9.0 (validation follow-up, 2026-11-09) | Corrected the starter-shop purchase regression test to buy the stocked Sigil of Mending rather than the unstocked Sigil of Frost. No gameplay code, balance data, save schema or project version changed. The original CI failure was a test fixture mismatch; rerun status is recorded in SESSION_HANDOFF. |
+
+
+## 4.10 Rune system — grades, specialists and fusion
+
+The legacy Sigil feature is renamed in player-facing UI and content to **Runes**. Existing v0.9.0 saves retain their sigil_inv and socket fields; GameData exposes the same definitions under both runes and the compatibility key sigils, so existing inventories are not discarded. New definitions live in data/runes.json.
+
+Rune families include Flame, Frost, Mending/Vitality, Storm, Earth, Wind, Holy, Shadow, Arcane and Fortune. Each rune has a type, starting grade, AP progression, socket behavior and effects. Six grades: Common, Uncommon, Rare, Epic, Legendary and Mythical. Fusion requires three copies of the same rune and grade. Next-grade chances are 70%, 55%, 40%, 25% and 12%. Fusion consumes three; success returns one next-grade rune, failure returns one at the original grade. Grade increases magic power/support or passive stat modifiers (5 percentage points per grade above Common).
+
+Runes are not part of universal stock. They are sold only by named regional rune merchants through explicit runes stock lists: Oswin at Sallow Crossing, and selected specialists in Thornmere, Foxglove, Elderbough, Cindermead, Redwater and Milefort.
+
+Rune combat effects are data-driven: Flame can Burn, Frost can Chill, Storm can Shock and skip a turn, Holy can Expose armor, Shadow drains life, and Mending applies regeneration. Status effects tick on the affected unit's turn. Battle popups display the applied effect. The original rune atlas is an 8-type × 6-grade SVG sprite sheet at assets/art/runes/rune_atlas.svg, used by rune inventory/socket UI.
+
+Legacy sigil_* script entry points remain internal compatibility wrappers during this transition. New player-facing text, shop stock, data, fusion, and asset naming use Rune terminology.
+
+| 0.9.1-rune-system | Renamed sigils to runes in player-facing systems; added six rune families, six grades, chance-based three-to-one fusion, specialist-only regional rune shops, grade scaling, elemental status effects and original rune atlas. Validation is pending CI and Godot test results. |
