@@ -1,4 +1,6 @@
 extends SceneTree
+
+const RuneSystem = preload("res://scripts/core/rune_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
