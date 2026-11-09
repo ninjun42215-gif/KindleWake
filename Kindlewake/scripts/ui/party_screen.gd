@@ -372,13 +372,43 @@ func _rebuild() -> void:
     root_box.add_theme_constant_override("separation", 10)
     margin.add_child(root_box)
     root_box.add_child(_build_header())
-    var cols := HBoxContainer.new()
-    cols.add_theme_constant_override("separation", 10)
-    cols.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    root_box.add_child(cols)
-    cols.add_child(_build_roster())
-    cols.add_child(_build_sheet())
-    cols.add_child(_build_right())
+    var viewport_width: float = get_viewport_rect().size.x
+    var compact: bool = viewport_width < 1050.0
+    if compact:
+        # Portrait / narrow-screen layout: keep all three work areas in one
+        # vertical flow instead of forcing a clipped three-column desktop row.
+        var stack := VBoxContainer.new()
+        stack.add_theme_constant_override("separation", 8)
+        stack.size_flags_vertical = Control.SIZE_EXPAND_FILL
+        stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        root_box.add_child(stack)
+        var roster_panel: Control = _build_roster()
+        roster_panel.custom_minimum_size = Vector2(0, 150)
+        roster_panel.size_flags_vertical = Control.SIZE_FILL
+        stack.add_child(roster_panel)
+        var sheet_panel: Control = _build_sheet()
+        sheet_panel.custom_minimum_size = Vector2(0, 250)
+        sheet_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+        stack.add_child(sheet_panel)
+        var right_panel: Control = _build_right()
+        right_panel.custom_minimum_size = Vector2(0, 300)
+        right_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+        stack.add_child(right_panel)
+    else:
+        var cols := HBoxContainer.new()
+        cols.add_theme_constant_override("separation", 10)
+        cols.size_flags_vertical = Control.SIZE_EXPAND_FILL
+        cols.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        root_box.add_child(cols)
+        var roster_panel: Control = _build_roster()
+        var sheet_panel: Control = _build_sheet()
+        var right_panel: Control = _build_right()
+        roster_panel.size_flags_horizontal = Control.SIZE_FILL
+        sheet_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        right_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        cols.add_child(roster_panel)
+        cols.add_child(sheet_panel)
+        cols.add_child(right_panel)
     _relax_mouse(margin)
     builds += 1
     _restore_scroll.call_deferred()
@@ -418,7 +448,7 @@ func _build_header() -> Control:
 
 
 func _build_roster() -> Control:
-    var panel := _panel(Vector2(250, 0))
+    var panel := _panel(Vector2(0, 0))
     var parts: Array = _scroll_box(8)
     var scroll: ScrollContainer = parts[0]
     var box: VBoxContainer = parts[1]
@@ -454,7 +484,7 @@ func _build_roster() -> Control:
 
 
 func _build_sheet() -> Control:
-    var panel := _panel(Vector2(400, 0))
+    var panel := _panel(Vector2(0, 0))
     var parts: Array = _scroll_box(8)
     var scroll: ScrollContainer = parts[0]
     var box: VBoxContainer = parts[1]
@@ -532,7 +562,7 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
     # attributes: green when gear adds to them, red when gear takes away
     _add_section(box, "Attributes")
     var attrs := GridContainer.new()
-    attrs.columns = 5
+    attrs.columns = 3 if get_viewport_rect().size.x < 1050.0 else 5
     attrs.add_theme_constant_override("h_separation", 6)
     attrs.add_theme_constant_override("v_separation", 6)
     attrs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -608,7 +638,7 @@ func _build_banner() -> Control:
 
 
 func _build_right() -> Control:
-    var panel := _panel(Vector2(460, 0))
+    var panel := _panel(Vector2(0, 0))
     panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     var outer := VBoxContainer.new()
     outer.add_theme_constant_override("separation", 8)
