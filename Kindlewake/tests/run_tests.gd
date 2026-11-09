@@ -461,6 +461,8 @@ func _test_progression() -> void:
     sb.add_exp(900, rb, archer)
     check(sa.level == sb.level and sa.base_stats == sb.base_stats, "level-up rolls are deterministic for a given seed")
     check(CharacterSheet.MAX_LEVEL == 250, "campaign level cap is 250")
+    var over_cap: CharacterSheet = CharacterSheet.from_dict({"character_id": "legacy", "level": 999, "xp": 999999, "base_stats": {}})
+    check(over_cap.level == 250 and over_cap.xp == 0, "legacy saves are safely clamped to the new 250-level cap")
     check(CharacterSheet.exp_to_next_for(100) > CharacterSheet.exp_to_next_for(10) * 10, "late-game levels require substantially more EXP than early levels")
     sa.level = CharacterSheet.MAX_LEVEL
     sa.xp = 17
