@@ -52,8 +52,8 @@ func award_battle(units: Array, result: String) -> Dictionary:
     return party.apply_battle_result(units, result, rng, GameData.rules_db())
 
 
-## A repeatable random encounter for grinding (data/encounters.json): the story map with a weighted-random enemy group.
-func skirmish_def() -> Dictionary:
+## A road ambush generated during campaign travel; encounters are part of the world, not a separate mode.
+func travel_encounter_def() -> Dictionary:
     return EncounterBuilder.build_skirmish(GameData.encounters, GameData.battles, rng)
 
 
