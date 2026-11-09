@@ -18,11 +18,10 @@ Offline-first medieval tactical RPG built with Godot 4.2.2 (GDScript, GL Compati
 ## Live project checkpoint
 
 - Canonical source: tracked files under `Kindlewake/` in `ninjun42215-gif/KindleWake`.
-- Current main: `d25ac6840ab0cdcc339b6fa89ed4ef42dec917dc`; gameplay version 0.10.0; Android code 1000; save schema 3.
-- The current main tree is identical to tested PR head `769022ebee463a35af95e4cd9dfcab7a55e89cb7`.
-- Android build run [42711243963](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42711243963) passed with Godot 4.2.2, 342 strict checks and 0 failures, balance report, signed APK export and no Android permissions.
-- APK artifact ID: `13715144284`; SHA-256: `e1f303c2c9f5ef73b527988636ef5e467f6162ca043c1f443ad3fa33ea833c72`.
-- Verified source handoff run [42711223545](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42711223545) produced 177 tracked files in four parts, each no larger than 25,000,000 bytes. Reassembly, ZIP integrity, file hashes and safe extraction passed.
+- Current `main` commit: `b982f2f665ab9ecf8b3862ca676d61dac55fde96`; its Git tree is identical to the verified pre-candidate baseline `eb589c08b40b639a83b45bcc8d10718fd8223d7a`. Main remains on game version **0.11.0**, Android code **1100**, save schema **4**.
+- The consolidated **0.12.0** candidate is isolated on `docs/authoritative-live-handoff-2026-11-10` and PR **#28**. It adds the playable Brinegate Coast slice, continuous four-edge overworld, premium exploration controls/UI and additive region-save state. It is not released or merged.
+- Latest completed candidate validation is tracked on the PR head; refresh the live PR head and its exact-SHA checks before making release or merge claims. Do not reuse old APK artifact IDs or report a download percentage without a verified current artifact.
+- The single-PR delivery rule is mandatory: finish the candidate, run Godot import/strict tests/balance/Android export/YAML lint/version sync/project health on the exact final PR head, then use the exact-head safe merge guard. Physical-device QA remains a separate release gate.
 
 ## Routine development
 
