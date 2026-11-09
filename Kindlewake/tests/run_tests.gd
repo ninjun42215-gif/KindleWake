@@ -955,11 +955,12 @@ func _test_shop_and_screen() -> void:
     check(ps.gold == gold1 + ShopSystem.sell_price(arming_price, shop), "selling pays the sell ratio of the price")
     check(ShopSystem.sell_item(ps, "arming_sword", db, shop) != "", "gear that is only equipped (not in the bag) cannot be sold")
     check(ShopSystem.sell_item(ps, "dunmarrow_signet", db, shop) == "That cannot be sold.", "heirlooms cannot be sold")
-    ps.gold = ShopSystem.sigil_price("frost", db)
+    # Use a sigil that is actually stocked by the starter merchant.
+    ps.gold = ShopSystem.sigil_price("mend", db)
     var bag0: int = ps.sigil_inv.size()
-    check(ShopSystem.buy_sigil(ps, "frost", db, shop) == "" and ps.gold == 0 and ps.sigil_inv.size() == bag0 + 1, "buying a sigil puts a fresh copy into the bag")
-    check(CharacterSheet.sigil_level(ps.sigil_inv[bag0], sdefs["frost"]) == 1, "a bought sigil is level 1")
-    check(ShopSystem.sell_sigil(ps, bag0, db, shop) == "" and ps.sigil_inv.size() == bag0 and ps.gold == ShopSystem.sell_price(ShopSystem.sigil_price("frost", db), shop), "selling a sigil removes it and pays the sell ratio")
+    check(ShopSystem.buy_sigil(ps, "mend", db, shop) == "" and ps.gold == 0 and ps.sigil_inv.size() == bag0 + 1, "buying a sigil puts a fresh copy into the bag")
+    check(CharacterSheet.sigil_level(ps.sigil_inv[bag0], sdefs["mend"]) == 1, "a bought sigil is level 1")
+    check(ShopSystem.sell_sigil(ps, bag0, db, shop) == "" and ps.sigil_inv.size() == bag0 and ps.gold == ShopSystem.sell_price(ShopSystem.sigil_price("mend", db), shop), "selling a sigil removes it and pays the sell ratio")
     check(ShopSystem.sell_sigil(ps, 99, db, shop) != "" and ShopSystem.sell_sigil(ps, -1, db, shop) != "", "selling a sigil that is not in the bag is refused")
     # --- gear preview
     var torren: CharacterSheet = ps.sheet("torren")
