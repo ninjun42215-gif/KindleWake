@@ -546,8 +546,7 @@ func _test_progression() -> void:
     var s_old: CharacterSheet = party.sheet("torren")
     var s_new: CharacterSheet = p3.sheet("torren")
     check(p3.roster == party.roster and p3.gold == party.gold and p3.inventory == party.inventory, "party roster, gold and inventory survive a JSON round trip")
-    print("SIGIL ROUNDTRIP DEBUG inv=%s/%s socket=%s/%s" % [JSON.stringify(p3.sigil_inv), JSON.stringify(party.sigil_inv), JSON.stringify(p3.sheet("brother_wystan").sigils), JSON.stringify(party.sheet("brother_wystan").sigils)])
-    check(p3.sigil_inv.size() == party.sigil_inv.size() and p3.sheet("brother_wystan").sigils == party.sheet("brother_wystan").sigils, "sigil inventory and socketed sigils survive a JSON round trip")
+    check(JSON.stringify(p3.sigil_inv) == JSON.stringify(party.sigil_inv) and JSON.stringify(p3.sheet("brother_wystan").sigils) == JSON.stringify(party.sheet("brother_wystan").sigils), "sigil inventory and socketed sigils survive a JSON round trip")
     check(s_new != null and s_new.equipment == s_old.equipment and s_new.base_stats == s_old.base_stats and s_new.level == s_old.level and s_new.xp == s_old.xp, "sheet equipment, stats, level and EXP survive a JSON round trip")
 
 
