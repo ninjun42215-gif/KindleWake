@@ -1026,6 +1026,7 @@ func _test_shop_and_screen() -> void:
     # --- gear preview
     var torren: CharacterSheet = ps.sheet("torren")
     var worn: String = torren.item_in("weapon")
+    torren.enhancements.clear() # Isolate item comparison from the +15 smithing test above.
     var before: Dictionary = torren.derived(db)
     var preview: CharacterSheet = torren.with_item("weapon", "fine_arming_sword", items)
     var after: Dictionary = preview.derived(db)
