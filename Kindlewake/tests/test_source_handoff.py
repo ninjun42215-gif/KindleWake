@@ -1,4 +1,5 @@
 import hashlib
+import importlib.util
 import json
 import subprocess
 import sys
@@ -10,6 +11,22 @@ from pathlib import Path
 SCRIPT = Path(__file__).resolve().parents[1] / "tools" / "source_handoff.py"
 
 class SourceHandoffTests(unittest.TestCase):
+    def test_only_documented_public_test_keystore_is_allowed(self):
+        spec = importlib.util.spec_from_file_location('source_handoff', SCRIPT)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            public = 'Kindlewake/tools/keys/kindlewake-sideload.keystore'
+            private = 'private/release-signing.keystore'
+            public_path = root / public
+            private_path = root / private
+            public_path.parent.mkdir(parents=True)
+            private_path.parent.mkdir(parents=True)
+            public_path.write_bytes(b'public test fixture')
+            private_path.write_bytes(b'private signing fixture')
+            self.assertEqual(module.exclusion(public, public_path), '')
+            self.assertEqual(module.exclusion(private, private_path), 'private key/certificate')
     def run_tool(self, *args, cwd=None, expect=0):
         result = subprocess.run([sys.executable, str(SCRIPT), *map(str, args)],
                                 cwd=cwd, text=True, capture_output=True)
