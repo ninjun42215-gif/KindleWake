@@ -172,3 +172,13 @@
 - Latest verified build checkpoint before these documentation-only commits: branch head `09c548d92d384b64ba1422f77601cea222753e2c`, workflow #282 `42675923270`, completed successfully. Artifacts: `Kindlewake-APK` ID `13700540809`; `Kindlewake-Source-Handoff-Parts` ID `13699723324`; `test-logs` ID `13699358976`. Workflow: https://github.com/ninjun42215-gif/KindleWake/actions/runs/42675923270.
 - The above CI run predates this documentation commit chain. A fresh branch-head workflow must complete before calling the latest documentation snapshot packaged or validated. No physical Android device QA is claimed.
 - Next AI: follow `docs/NEXT_AI_START_HERE.md` and the master continuation prompt; do not ask the user to repeat documented decisions. Verify current branch head and CI before further work.
+
+
+## 2026-11-10 — Repository-wide, branch-independent source handoff
+- Reworked `.github/workflows/build-apk.yml` so CI is no longer restricted to a hard-coded branch list. It triggers on pushes to **all branches**, tag pushes, pull requests targeting any branch, and manual dispatch.
+- The source package is generated from `git ls-files` in the exact triggering checkout. New tracked files, folders, renamed paths and future feature additions are included automatically; the archive is no longer limited to `Kindlewake/`, selected root documents or a fixed `Feature_*.zip` pattern.
+- The package records repository, ref, commit SHA, event and workflow run in `HANDOFF-METADATA.txt`; parts are split at 25,000,000 bytes maximum and the artifact includes `REASSEMBLE.txt` and `SHA256SUMS.txt`.
+- Generated caches/build outputs and known signing/secret file patterns are excluded. If new secret formats or generated folders are introduced, review the workflow's exclusion rules. This is a tracked-source handoff, not a backup of untracked local files, Git history, GitHub Actions secrets or build caches.
+- Artifact name remains `Kindlewake-Source-Handoff-Parts`; APK artifact remains `Kindlewake-APK`. Each workflow run belongs to the triggering ref; verify the run's commit SHA before using its artifacts.
+- Workflow change commit: `4afdbe988833618c8698ad5b3378c57a1d4ab461`. Documentation commits follow on the current feature branch. A fresh run on the final documentation head is required before claiming this generalized workflow has passed end-to-end.
+- PR #4 remains draft; `main` was not modified. No physical Android device QA is claimed.
