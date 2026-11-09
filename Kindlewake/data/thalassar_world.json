@@ -11,7 +11,7 @@
     {
       "id": "brinegate",
       "name": "Brinegate",
-      "kind": "keep",
+      "kind": "port",
       "cell": [
         10,
         34
