@@ -1,5 +1,5 @@
 # KINDLEWAKE: THE SUNDERED VOW — Game Design Document
-Version 0.7.12 four-continent world blueprint (gameplay checkpoint v0.7.9) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
+Version 0.7.13 Sethmarch overworld expansion (gameplay checkpoint v0.7.9) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
 
 > Inspiration only: tactical depth and mercenary management in the spirit of *Knights of Ages*, and recruitment/headquarters/platoon ideas in the spirit of *Suikoden II*. All characters, names, maps, story, art and music are original. Nothing is copied.
 
@@ -491,6 +491,9 @@ The campaign spans four large continents connected through a gradually expanding
 **Save/travel rules:** future campaign persistence must store continent id, region id, local map id, player tile, discovered route nodes, unlocked transport tiers, visited landmarks, dungeon completion flags and travel-calendar state. Implement this as an explicit save-schema migration; do not overload the current battle-save schema v2 or break old saves. Fast travel is available only between discovered hubs and must preserve the party's current roster/equipment.
 
 **Originality guardrail:** use only broad genre-level conventions (regional world maps, vehicles, ports, recruitment hubs and gated exploration). All geography, routes, characters, quests, visual designs and story beats remain original.
+
+### 11.4 Sethmarch first regional expansion (v0.7.13)
+The playable Sallow Marches overworld now has three additional searchable ruin landmarks connected to the existing road graph: Sunken Tollhouse (45 gold), Hollowroot Warren (75 gold) and Warden's Barrow (90 gold). They reuse the existing `kind: ruin` interaction and persistent `found_<id>` world flags, so each reward is claimable once per new game. Their road links branch from Kaer Sethorn or Sallow Crossing; no new scene or map format is introduced. These are exploration/reward landmarks, not fully traversable dungeon interiors yet. The larger Sethmarch town network and actual dungeon maps remain future work. Runtime testing is still deferred; static JSON validation is not a Godot runtime test.
 
 ## 12. Character Roster
 
