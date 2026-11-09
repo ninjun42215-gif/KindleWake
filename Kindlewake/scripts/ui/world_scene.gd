@@ -33,6 +33,9 @@ var hud_text: String = ""
 
 var hud_root: Control
 var info_label: Label
+var leader_status_label: Label
+var leader_exp_bar: ProgressBar
+var company_btn: Button
 var prompt_btn: Button
 var place_panel: PanelContainer
 var place_title: Label
@@ -555,17 +558,29 @@ func _build_ui() -> void:
     info_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
     info_label = Label.new()
     info_label.custom_minimum_size = Vector2(300, 0)
-    info_label.add_theme_font_size_override("font_size", 20)
-    info_panel.add_child(info_label)
+    info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    info_label.add_theme_font_size_override("font_size", 19)
+    var info_box := VBoxContainer.new()
+    info_box.add_theme_constant_override("separation", 5)
+    info_box.add_child(info_label)
+    leader_status_label = Label.new()
+    leader_status_label.add_theme_font_size_override("font_size", 14)
+    leader_status_label.add_theme_color_override("font_color", Color("#e5c98d"))
+    info_box.add_child(leader_status_label)
+    leader_exp_bar = ProgressBar.new()
+    leader_exp_bar.custom_minimum_size = Vector2(0, 9)
+    leader_exp_bar.show_percentage = false
+    info_box.add_child(leader_exp_bar)
+    info_panel.add_child(info_box)
     root.add_child(info_panel)
     info_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT, Control.PRESET_MODE_MINSIZE, 12)
 
-    # Top-right: begin a fresh chronicle with a customized protagonist.
-    var new_chronicle_btn := _btn("New Chronicle", _on_new_chronicle_pressed, 20)
-    new_chronicle_btn.custom_minimum_size = Vector2(250, 68)
-    root.add_child(new_chronicle_btn)
-    new_chronicle_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
-    new_chronicle_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    # Top-right: company management is always one tap away on the road.
+    company_btn = _btn("COMPANY", _open_party, 20)
+    company_btn.custom_minimum_size = Vector2(190, 64)
+    root.add_child(company_btn)
+    company_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
+    company_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 
     # Top-centre: ambush banner
     banner = _hud_panel(0.95)
