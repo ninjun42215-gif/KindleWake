@@ -1,0 +1,36 @@
+; Kindlewake - Godot 4 project (Milestone 2 in progress + Milestone 7 first step, v0.7.1 = party screen redesign on top of v0.7.0)
+config_version=5
+
+[application]
+
+config/name="Kindlewake"
+config/version="0.7.9"
+config/icon="res://assets/icons/icon.png"
+run/main_scene="res://World.tscn"
+config/features=PackedStringArray("4.2", "GL Compatibility")
+
+[autoload]
+
+GameData="*res://scripts/core/game_data.gd"
+SaveSystem="*res://scripts/core/save_system.gd"
+GameState="*res://scripts/core/game_state.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=4
+
+[input_devices]
+
+pointing/emulate_mouse_from_touch=true
+
+[rendering]
+
+textures/vram_compression/import_etc2_astc=true
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/canvas_textures/default_texture_filter=0
+environment/defaults/default_clear_color=Color(0.055, 0.07, 0.075, 1)

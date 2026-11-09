@@ -1,0 +1,70 @@
+{
+  "name": "The Sallow Marches",
+  "seed": 1187,
+  "width": 64,
+  "height": 48,
+  "start": "sethorn",
+  "safe_radius": 5,
+  "encounter_min": 900,
+  "encounter_max": 1800,
+  "places": [
+    {
+      "id": "sethorn",
+      "name": "Kaer Sethorn",
+      "kind": "keep",
+      "cell": [
+        10,
+        36
+      ],
+      "text": "The broken keep of House Dunmarrow. Torren's company rests here, sorts its gear and counts its coin.",
+      "town": "sethorn"
+    },
+    {
+      "id": "crossing",
+      "name": "Sallow Crossing",
+      "kind": "village",
+      "cell": [
+        30,
+        28
+      ],
+      "text": "A ford village where carters, peddlers and rumours meet. The market sells gear and sigils.",
+      "town": "crossing"
+    },
+    {
+      "id": "watch",
+      "name": "Old Watchtower",
+      "kind": "ruin",
+      "cell": [
+        34,
+        8
+      ],
+      "reward_gold": 60,
+      "text": "A fallen border tower. Someone hid a purse in the cellar long ago."
+    },
+    {
+      "id": "camp",
+      "name": "Roadwolf Camp",
+      "kind": "camp",
+      "cell": [
+        52,
+        14
+      ],
+      "battle": "battle_01",
+      "text": "Hask Gravelteeth's raiders hold the road to Eldrimar from this palisade."
+    }
+  ],
+  "roads": [
+    [
+      "sethorn",
+      "crossing"
+    ],
+    [
+      "crossing",
+      "camp"
+    ],
+    [
+      "crossing",
+      "watch"
+    ]
+  ]
+}

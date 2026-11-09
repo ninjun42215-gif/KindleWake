@@ -1,0 +1,10 @@
+{
+  "name": "Sethorn Market Stall",
+  "sell_ratio": 0.5,
+  "items": [
+    "arming_sword", "longsword", "hunting_bow", "short_bow", "mace", "hand_axe", "battle_axe",
+    "buckler", "padded_jerkin", "leather_cuirass", "pilgrim_robe", "iron_cap", "kettle_helm",
+    "fine_arming_sword", "hardwood_bow", "kite_shield", "mail_hauberk", "pilgrim_medal", "hawk_feather"
+  ],
+  "sigils": ["mend", "ember", "frost", "amp", "tutor", "vigor", "might", "bulwark", "fleet", "veteran", "coin_eye"]
+}

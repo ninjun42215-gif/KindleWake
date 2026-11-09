@@ -1,0 +1,12 @@
+.godot/
+*.import
+export/
+build/
+dist/
+*.apk
+*.aab
+.build_cache/
+# a private store-release key must never be committed (the sideload test key in tools/keys is on purpose)
+tools/keys/release*
+*.jks
+__pycache__/

@@ -1,0 +1,65 @@
+{
+ "skirmish": {
+  "title": "Roadside Skirmish",
+  "briefing": "Roadwolf patrols prowl the Sallow Road. Fight them again and again: every victory pays EXP, AP and gold.",
+  "base_battle": "battle_01",
+  "enemy_cells": [
+   [
+    9,
+    2
+   ],
+   [
+    6,
+    1
+   ],
+   [
+    4,
+    2
+   ],
+   [
+    8,
+    1
+   ],
+   [
+    7,
+    2
+   ]
+  ],
+  "groups": [
+   {
+    "weight": 5,
+    "units": [
+     "roadreaver",
+     "roadreaver",
+     "roadbowman"
+    ]
+   },
+   {
+    "weight": 3,
+    "units": [
+     "roadreaver",
+     "roadbowman",
+     "roadbowman"
+    ]
+   },
+   {
+    "weight": 2,
+    "units": [
+     "roadreaver",
+     "roadreaver",
+     "roadreaver",
+     "roadbowman"
+    ]
+   },
+   {
+    "weight": 1,
+    "units": [
+     "hask_gravelteeth",
+     "roadreaver",
+     "roadbowman"
+    ],
+    "commander": "hask_gravelteeth"
+   }
+  ]
+ }
+}

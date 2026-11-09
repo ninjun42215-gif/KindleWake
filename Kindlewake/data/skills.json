@@ -1,0 +1,87 @@
+{
+  "skills": {
+    "mend": {
+      "name": "Mend",
+      "type": "heal",
+      "power": 6,
+      "mp": 4,
+      "range_min": 1,
+      "range_max": 2,
+      "target": "ally"
+    },
+    "mend_ii": {
+      "name": "Greater Mending",
+      "type": "heal",
+      "power": 12,
+      "mp": 7,
+      "range_min": 1,
+      "range_max": 3,
+      "target": "ally"
+    },
+    "mend_iii": {
+      "name": "Radiant Mending",
+      "type": "heal",
+      "power": 20,
+      "mp": 11,
+      "range_min": 1,
+      "range_max": 3,
+      "target": "ally"
+    },
+    "ember_bolt": {
+      "name": "Ember Bolt",
+      "type": "damage",
+      "power": 7,
+      "mp": 4,
+      "range_min": 2,
+      "range_max": 4,
+      "target": "enemy"
+    },
+    "ember_storm": {
+      "name": "Ember Storm",
+      "type": "damage",
+      "power": 12,
+      "mp": 8,
+      "range_min": 2,
+      "range_max": 4,
+      "target": "enemy"
+    },
+    "frost_shard": {
+      "name": "Frost Shard",
+      "type": "damage",
+      "power": 6,
+      "mp": 3,
+      "range_min": 2,
+      "range_max": 5,
+      "target": "enemy"
+    },
+    "frost_lance": {
+      "name": "Frost Lance",
+      "type": "damage",
+      "power": 11,
+      "mp": 7,
+      "range_min": 2,
+      "range_max": 5,
+      "target": "enemy"
+    },
+    "power_strike": {
+      "name": "Power Strike",
+      "type": "strike",
+      "power": 0,
+      "mult": 1.5,
+      "mp": 3,
+      "range_min": 1,
+      "range_max": 1,
+      "target": "enemy"
+    },
+    "aimed_shot": {
+      "name": "Aimed Shot",
+      "type": "strike",
+      "power": 0,
+      "mult": 1.4,
+      "mp": 3,
+      "range_min": 2,
+      "range_max": 4,
+      "target": "enemy"
+    }
+  }
+}

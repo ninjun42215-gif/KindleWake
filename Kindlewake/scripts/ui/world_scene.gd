@@ -1,0 +1,663 @@
+extends Node2D
+## Overworld (Milestone 7, first step): walk freely over the Sallow Marches, find places, get ambushed.
+## Touch: tap to walk to a spot, hold and drag to steer. Terrain changes speed; forests are more dangerous.
+## All rules live in WorldMap; battles reuse the battle scene through GameState.start_battle_from_world().
+
+const CREATOR_SCENE = preload("res://CharacterCreator.tscn")
+const TILE := 48.0
+const WALK_SPEED := 230.0
+const PLAYER_RADIUS := 12.0
+const INTERACT_RADIUS := 64.0
+const AMBUSH_DELAY := 0.9
+const MINIMAP_SCALE := 3
+const TERRAIN_COLORS: Array[Color] = [
+    Color("#41714f"), Color("#2f4a38"), Color("#6f8f5a"), Color("#5c7f94"),
+    Color("#2d4a63"), Color("#6a7380"), Color("#8a6b4a"), Color("#b78b52"),
+]
+
+var wmap: WorldMap
+var camera: Camera2D
+var rng := RandomNumberGenerator.new()
+var player_pos: Vector2 = Vector2.ZERO
+var target: Vector2 = Vector2.ZERO
+var has_target: bool = false
+var pressing: bool = false
+var facing_left: bool = false
+var walk_phase: float = 0.0
+var danger_accum: float = 0.0
+var next_threshold: float = 1200.0
+var ambush_timer: float = -1.0
+var near_place: Dictionary = {}
+var panel_open: bool = false
+var hud_text: String = ""
+
+var hud_root: Control
+var info_label: Label
+var prompt_btn: Button
+var place_panel: PanelContainer
+var place_title: Label
+var place_text: Label
+var place_buttons: VBoxContainer
+var banner: PanelContainer
+var banner_label: Label
+var party_screen: PartyScreen
+var minimap_dot: ColorRect
+var creator_screen: Control
+
+
+func _ready() -> void:
+    rng.randomize()
+    wmap = WorldMap.generate(GameData.world)
+    camera = Camera2D.new()
+    add_child(camera)
+    camera.make_current()
+    camera.zoom = Vector2(1.1, 1.1)
+    if GameState.world_pos == Vector2.ZERO:
+        player_pos = cell_center(wmap.start_cell)
+    else:
+        player_pos = GameState.world_pos
+    camera.position = player_pos
+    next_threshold = WorldMap.encounter_threshold(GameData.world, rng.randf())
+    _build_ui()
+    _build_minimap()
+    GameState.from_world = true
+
+
+func cell_center(c: Vector2i) -> Vector2:
+    return (Vector2(c) + Vector2(0.5, 0.5)) * TILE
+
+
+func cell_of(pos: Vector2) -> Vector2i:
+    return Vector2i(floori(pos.x / TILE), floori(pos.y / TILE))
+
+
+# ------------------------------------------------------------------ input and movement
+
+func _unhandled_input(event: InputEvent) -> void:
+    if panel_open or party_screen.visible or ambush_timer >= 0.0:
+        return
+    if event is InputEventMouseButton:
+        var mb := event as InputEventMouseButton
+        if mb.button_index == MOUSE_BUTTON_LEFT:
+            pressing = mb.pressed
+            if mb.pressed:
+                _set_target(mb.position)
+    elif event is InputEventMouseMotion and pressing:
+        _set_target((event as InputEventMouseMotion).position)
+
+
+func _set_target(screen_pos: Vector2) -> void:
+    target = get_canvas_transform().affine_inverse() * screen_pos
+    has_target = true
+
+
+func _free_at(p: Vector2) -> bool:
+    var r: float = PLAYER_RADIUS * 0.7
+    for off in [Vector2(-r, -r), Vector2(r, -r), Vector2(-r, r), Vector2(r, r)]:
+        if not wmap.walkable(cell_of(p + off)):
+            return false
+    return true
+
+
+func _process(delta: float) -> void:
+    if ambush_timer >= 0.0:
+        ambush_timer -= delta
+        if ambush_timer < 0.0:
+            _launch_ambush()
+        queue_redraw()
+        return
+    if not panel_open and not party_screen.visible:
+        _move(delta)
+        _update_near()
+    camera.position = camera.position.lerp(player_pos, clampf(delta * 8.0, 0.0, 1.0))
+    _update_hud()
+    queue_redraw()
+
+
+func _move(delta: float) -> void:
+    if not has_target:
+        return
+    var to: Vector2 = target - player_pos
+    var dist: float = to.length()
+    if dist < 4.0:
+        has_target = false
+        return
+    var cell: Vector2i = cell_of(player_pos)
+    var step: float = minf(dist, WALK_SPEED * wmap.speed_at(cell) * delta)
+    var dir: Vector2 = to / dist
+    var before: Vector2 = player_pos
+    var nx: Vector2 = player_pos + Vector2(dir.x * step, 0.0)
+    if _free_at(nx):
+        player_pos = nx
+    var ny: Vector2 = player_pos + Vector2(0.0, dir.y * step)
+    if _free_at(ny):
+        player_pos = ny
+    var moved: float = player_pos.distance_to(before)
+    if moved < 0.01:
+        if not pressing:
+            has_target = false
+        return
+    if absf(dir.x) > 0.2:
+        facing_left = dir.x < 0.0
+    walk_phase += moved * 0.12
+    _accumulate_danger(moved, cell)
+
+
+func _in_safe_zone(cell: Vector2i) -> bool:
+    var radius: float = float(GameData.world.get("safe_radius", 5))
+    for p in wmap.places:
+        var d: Dictionary = p
+        var kind: String = str(d.get("kind", ""))
+        if kind == "keep" or kind == "village":
+            if Vector2(cell - wmap.place_cell(str(d.get("id", "")))).length() < radius:
+                return true
+    return false
+
+
+func _accumulate_danger(dist: float, cell: Vector2i) -> void:
+    if _in_safe_zone(cell):
+        return
+    danger_accum += dist * wmap.danger_at(cell)
+    if danger_accum >= next_threshold:
+        danger_accum = 0.0
+        next_threshold = WorldMap.encounter_threshold(GameData.world, rng.randf())
+        has_target = false
+        pressing = false
+        ambush_timer = AMBUSH_DELAY
+        banner_label.text = "Ambush! Roadwolves leap from the brush!"
+        banner.visible = true
+
+
+func _launch_ambush() -> void:
+    var def: Dictionary = GameState.skirmish_def()
+    if def.is_empty():
+        banner.visible = false
+        return
+    _go_to_battle(def)
+
+
+func _go_to_battle(def: Dictionary) -> void:
+    GameState.world_pos = player_pos
+    GameState.start_battle_from_world(def)
+    get_tree().change_scene_to_file("res://Main.tscn")
+
+
+# ------------------------------------------------------------------ places
+
+func _update_near() -> void:
+    var best: Dictionary = {}
+    var best_d: float = INTERACT_RADIUS
+    for p in wmap.places:
+        var d: Dictionary = p
+        var dist: float = cell_center(wmap.place_cell(str(d.get("id", "")))).distance_to(player_pos)
+        if dist < best_d:
+            best_d = dist
+            best = d
+    near_place = best
+    prompt_btn.visible = not best.is_empty() and not panel_open
+    if not best.is_empty():
+        prompt_btn.text = "Enter %s" % str(best.get("name", "place"))
+
+
+func _on_prompt_pressed() -> void:
+    if not near_place.is_empty():
+        _open_place(near_place)
+
+
+func _clear_children(node: Node) -> void:
+    for c in node.get_children():
+        node.remove_child(c)
+        c.queue_free()
+
+
+func _open_place(p: Dictionary, extra: String = "") -> void:
+    panel_open = true
+    has_target = false
+    pressing = false
+    prompt_btn.visible = false
+    var id: String = str(p.get("id", ""))
+    var kind: String = str(p.get("kind", ""))
+    place_title.text = str(p.get("name", "Place"))
+    var text: String = str(p.get("text", ""))
+    _clear_children(place_buttons)
+    var town: String = str(p.get("town", ""))
+    if town != "" and GameData.locations.get("maps", {}).has(town):
+        place_buttons.add_child(_btn("Enter %s" % str(p.get("name", "town")), _enter_town.bind(p), 24))
+    if kind == "ruin":
+        if bool(GameState.world_flags.get("found_" + id, false)):
+            text += "\n\nYou already searched here."
+        else:
+            place_buttons.add_child(_btn("Search the ruins", _on_search.bind(p), 24))
+    elif kind == "camp":
+        if bool(GameState.world_flags.get("camp_cleared", false)):
+            text += "\n\nThe palisade burns. The raiders are gone."
+        else:
+            place_buttons.add_child(_btn("Attack the camp", _on_attack_camp.bind(p), 24))
+    if extra != "":
+        text += "\n\n" + extra
+    place_text.text = text
+    place_buttons.add_child(_btn("Leave", _close_place, 24))
+    place_panel.visible = true
+
+
+func _close_place() -> void:
+    panel_open = false
+    place_panel.visible = false
+
+
+## Walk into a town: the location scene opens the town map; leaving it puts us back just south of the place.
+func _enter_town(p: Dictionary) -> void:
+    GameState.pending_location = str(p.get("town", ""))
+    GameState.world_pos = cell_center(wmap.place_cell(str(p.get("id", "")))) + Vector2(0, 58)
+    get_tree().change_scene_to_file("res://Location.tscn")
+
+
+func _on_search(p: Dictionary) -> void:
+    var id: String = str(p.get("id", ""))
+    var gold: int = int(p.get("reward_gold", 0))
+    GameState.party.gold += gold
+    GameState.world_flags["found_" + id] = true
+    _open_place(p, "You find a purse: +%d gold." % gold)
+
+
+func _on_attack_camp(p: Dictionary) -> void:
+    var def: Dictionary = GameData.battle_def(str(p.get("battle", "battle_01")))
+    if def.is_empty():
+        return
+    _go_to_battle(def)
+
+
+func _open_party() -> void:
+    party_screen.setup(GameState.party, GameData.party_db(), GameData.shop)
+    party_screen.open()
+
+
+func _on_party_closed() -> void:
+    hud_text = ""
+
+
+# ------------------------------------------------------------------ drawing
+
+func _draw() -> void:
+    if wmap == null:
+        return
+    var inv: Transform2D = get_canvas_transform().affine_inverse()
+    var vp: Vector2 = get_viewport_rect().size
+    var tl: Vector2 = inv * Vector2.ZERO
+    var br: Vector2 = inv * vp
+    var x0: int = clampi(floori(tl.x / TILE) - 1, 0, wmap.width - 1)
+    var y0: int = clampi(floori(tl.y / TILE) - 1, 0, wmap.height - 1)
+    var x1: int = clampi(floori(br.x / TILE) + 1, 0, wmap.width - 1)
+    var y1: int = clampi(floori(br.y / TILE) + 1, 0, wmap.height - 1)
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            _draw_tile(Vector2i(x, y))
+    # props (trees, rocks, buildings) and the walker are drawn back to front so they overlap correctly
+    var props: Array = _collect_props(x0, y0, x1, y1)
+    for p in wmap.places:
+        var pc: Vector2 = cell_center(wmap.place_cell(str((p as Dictionary).get("id", ""))))
+        props.append({"y": pc.y + 26.0, "kind": "place", "place": p})
+    props.append({"y": player_pos.y + 6.0, "kind": "player"})
+    props.sort_custom(func(a, b): return float(a["y"]) < float(b["y"]))
+    for o in props:
+        var d: Dictionary = o
+        var k: String = str(d["kind"])
+        if k == "tex":
+            Art.draw_world(self, str(d["name"]), Vector2(float(d["x"]), float(d["y"])), float(d["scale"]))
+        elif k == "place":
+            _draw_place(d["place"])
+        else:
+            _draw_player()
+
+
+const FOREST_SPRITES: Array[String] = ["pine_a", "pine_b", "pine_c", "tree_a", "tree_b", "tree_c"]
+const MOUNTAIN_SPRITES: Array[String] = ["mountain_a", "mountain_b", "mountain_c"]
+
+
+## Sprite props for the visible tiles: trees on forest, rock peaks on mountains, boulders on some hills.
+func _collect_props(x0: int, y0: int, x1: int, y1: int) -> Array:
+    var out: Array = []
+    if Art.world("pine_a") == null:
+        return out
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            var c := Vector2i(x, y)
+            var t: int = wmap.terrain_at(c)
+            var h: float = WorldMap.hash01(x, y, 21)
+            var h2: float = WorldMap.hash01(x, y, 22)
+            var origin := Vector2(float(x), float(y)) * TILE
+            if t == WorldMap.FOREST:
+                var name: String = FOREST_SPRITES[int(h * 5.99)]
+                out.append({"y": origin.y + TILE * (0.78 + 0.2 * h2), "kind": "tex", "name": name, "x": origin.x + TILE * (0.25 + 0.5 * h2), "scale": 0.52 + 0.14 * h})
+            elif t == WorldMap.MOUNTAIN:
+                out.append({"y": origin.y + TILE * 0.95, "kind": "tex", "name": MOUNTAIN_SPRITES[int(h * 2.99)], "x": origin.x + TILE * 0.5, "scale": 0.72 + 0.2 * h2})
+            elif t == WorldMap.HILL and h > 0.55:
+                out.append({"y": origin.y + TILE * (0.7 + 0.2 * h2), "kind": "tex", "name": "rock_a" if h2 < 0.5 else "rock_b", "x": origin.x + TILE * (0.3 + 0.4 * h2), "scale": 0.9})
+            elif t == WorldMap.GRASS and h > 0.965:
+                out.append({"y": origin.y + TILE * 0.8, "kind": "tex", "name": "tree_a" if h2 < 0.5 else "tree_b", "x": origin.x + TILE * 0.5, "scale": 0.6})
+    return out
+
+
+func _draw_tile(c: Vector2i) -> void:
+    var art: bool = Art.world("pine_a") != null
+    var t: int = wmap.terrain_at(c)
+    var base: Color = TERRAIN_COLORS[t]
+    var f: float = 0.93 + 0.14 * WorldMap.hash01(c.x, c.y, 3)
+    var col := Color(base.r * f, base.g * f, base.b * f)
+    var origin := Vector2(float(c.x), float(c.y)) * TILE
+    draw_rect(Rect2(origin, Vector2(TILE + 0.5, TILE + 0.5)), col)
+    var h: float = WorldMap.hash01(c.x, c.y, 11)
+    if art and (t == WorldMap.FOREST or t == WorldMap.MOUNTAIN or t == WorldMap.HILL):
+        pass                                  # the sprite props are drawn after the ground
+    elif t == WorldMap.FOREST:
+        for i in range(2):
+            var o := Vector2(TILE * (0.28 + 0.44 * float(i)), TILE * (0.62 - 0.12 * h * float(i + 1)))
+            draw_colored_polygon(PackedVector2Array([origin + o + Vector2(-9, 8), origin + o + Vector2(9, 8), origin + o + Vector2(0, -14)]), Color(0.14, 0.30, 0.20))
+    elif t == WorldMap.HILL:
+        draw_arc(origin + Vector2(TILE * 0.5, TILE * 0.75), 16.0, PI, TAU, 10, Color(0.45, 0.60, 0.36), 3.0)
+    elif t == WorldMap.MOUNTAIN:
+        draw_colored_polygon(PackedVector2Array([origin + Vector2(4, TILE - 4), origin + Vector2(TILE - 4, TILE - 4), origin + Vector2(TILE * 0.5, 6)]), Color(0.46, 0.50, 0.57))
+        draw_colored_polygon(PackedVector2Array([origin + Vector2(TILE * 0.38, 18), origin + Vector2(TILE * 0.62, 18), origin + Vector2(TILE * 0.5, 6)]), Color(0.9, 0.92, 0.95))
+    elif t == WorldMap.WATER or t == WorldMap.FORD:
+        if h > 0.55:
+            draw_line(origin + Vector2(10, 20), origin + Vector2(26, 20), Color(1, 1, 1, 0.18), 2.0)
+    elif t == WorldMap.BRIDGE:
+        draw_rect(Rect2(origin + Vector2(0, 6), Vector2(TILE, TILE - 12)), Color(0.55, 0.40, 0.22))
+
+
+## Overworld buildings from the voxel packs rendered to sprites (tools/render_sprites.py); primitives without them.
+func _draw_place(p: Dictionary) -> void:
+    if Art.world("keep") == null:
+        _draw_place_fallback(p)
+        return
+    var id: String = str(p.get("id", ""))
+    var kind: String = str(p.get("kind", ""))
+    var c: Vector2 = cell_center(wmap.place_cell(id))
+    draw_circle(c + Vector2(0, 14), 26.0, Color(0, 0, 0, 0.22))
+    var top: float = 60.0
+    if kind == "keep":
+        Art.draw_world(self, "keep", c + Vector2(0, 26), 0.85)
+        top = 100.0
+    elif kind == "village":
+        Art.draw_world(self, "house_a", c + Vector2(-28, 14), 0.85)
+        Art.draw_world(self, "house_c", c + Vector2(26, 12), 0.85)
+        Art.draw_world(self, "house_b", c + Vector2(0, 28), 0.85)
+        top = 62.0
+    elif kind == "ruin":
+        Art.draw_world(self, "dead_b", c + Vector2(-30, 24), 0.8)
+        Art.draw_world(self, "tower_a", c + Vector2(0, 26), 0.8, Color(0.82, 0.82, 0.82))
+        Art.draw_world(self, "rock_a", c + Vector2(26, 28), 0.9)
+        top = 82.0
+    elif kind == "camp":
+        var cleared: bool = bool(GameState.world_flags.get("camp_cleared", false))
+        var tint: Color = Color(0.55, 0.55, 0.55) if cleared else Color(1.0, 0.82, 0.78)
+        Art.draw_world(self, "hut", c + Vector2(-28, 16), 0.9, tint)
+        Art.draw_world(self, "hut", c + Vector2(26, 14), 0.9, tint)
+        Art.draw_world(self, "hut", c + Vector2(0, 30), 0.95, tint)
+        top = 60.0
+    var font: Font = ThemeDB.fallback_font
+    var label: String = str(p.get("name", ""))
+    draw_string(font, c + Vector2(-79, -top + 15), label, HORIZONTAL_ALIGNMENT_CENTER, 160, 18, Color(0, 0, 0, 0.85))
+    draw_string(font, c + Vector2(-80, -top + 14), label, HORIZONTAL_ALIGNMENT_CENTER, 160, 18, Color(1.0, 0.95, 0.8))
+
+
+func _draw_place_fallback(p: Dictionary) -> void:
+    var id: String = str(p.get("id", ""))
+    var kind: String = str(p.get("kind", ""))
+    var c: Vector2 = cell_center(wmap.place_cell(id))
+    draw_circle(c + Vector2(0, 10), 22.0, Color(0, 0, 0, 0.25))
+    if kind == "keep":
+        draw_rect(Rect2(c + Vector2(-20, -18), Vector2(40, 32)), Color(0.55, 0.55, 0.58))
+        draw_rect(Rect2(c + Vector2(-24, -28), Vector2(12, 16)), Color(0.48, 0.48, 0.52))
+        draw_rect(Rect2(c + Vector2(12, -28), Vector2(12, 16)), Color(0.48, 0.48, 0.52))
+        draw_rect(Rect2(c + Vector2(-6, -2), Vector2(12, 16)), Color(0.15, 0.12, 0.10))
+        draw_line(c + Vector2(0, -18), c + Vector2(0, -38), Color(0.8, 0.8, 0.8), 2.0)
+        draw_rect(Rect2(c + Vector2(0, -38), Vector2(12, 8)), Color(0.75, 0.62, 0.20))
+    elif kind == "village":
+        for i in range(3):
+            var o := Vector2(-18.0 + 18.0 * float(i), 4.0 - 6.0 * float(i % 2))
+            draw_rect(Rect2(c + o + Vector2(-7, -6), Vector2(14, 12)), Color(0.62, 0.48, 0.32))
+            draw_colored_polygon(PackedVector2Array([c + o + Vector2(-9, -6), c + o + Vector2(9, -6), c + o + Vector2(0, -16)]), Color(0.65, 0.25, 0.2))
+    elif kind == "ruin":
+        for i in range(3):
+            var hgt: float = 14.0 + 8.0 * float(i % 2)
+            draw_rect(Rect2(c + Vector2(-16.0 + 14.0 * float(i), -hgt), Vector2(8, hgt + 6)), Color(0.62, 0.62, 0.60))
+    elif kind == "camp":
+        var cleared: bool = bool(GameState.world_flags.get("camp_cleared", false))
+        var tent: Color = Color(0.5, 0.5, 0.5) if cleared else Color(0.70, 0.22, 0.18)
+        draw_colored_polygon(PackedVector2Array([c + Vector2(-16, 12), c + Vector2(16, 12), c + Vector2(0, -16)]), tent)
+        for i in range(5):
+            draw_line(c + Vector2(-26.0 + 13.0 * float(i), 16), c + Vector2(-26.0 + 13.0 * float(i), 2), Color(0.45, 0.32, 0.2), 4.0)
+    var font: Font = ThemeDB.fallback_font
+    var label: String = str(p.get("name", ""))
+    draw_string(font, c + Vector2(-79, -45), label, HORIZONTAL_ALIGNMENT_CENTER, 160, 18, Color(0, 0, 0, 0.8))
+    draw_string(font, c + Vector2(-80, -46), label, HORIZONTAL_ALIGNMENT_CENTER, 160, 18, Color(1.0, 0.95, 0.8))
+
+
+func _draw_player() -> void:
+    var p: Vector2 = player_pos
+    if Art.unit_sheet("soldier", "idle") != null:
+        draw_colored_polygon(_ellipse(p + Vector2(0, 6), 14.0, 5.0), Color(0, 0, 0, 0.35))
+        var t: float = float(Time.get_ticks_msec()) / 1000.0
+        Art.draw_unit(self, "soldier", "walk" if has_target and not panel_open else "idle", t, p + Vector2(0, 8), 2.0, facing_left)
+        if has_target and not panel_open:
+            draw_arc(target, 8.0, 0.0, TAU, 16, Color(1, 1, 1, 0.5), 2.0)
+        return
+    var bob: float = absf(sin(walk_phase)) * 3.0 if has_target else 0.0
+    draw_colored_polygon(_ellipse(p + Vector2(0, 6), 13.0, 5.0), Color(0, 0, 0, 0.35))
+    var q: Vector2 = p + Vector2(0, -bob)
+    draw_rect(Rect2(q + Vector2(-8, -18), Vector2(16, 22)), Color(0.22, 0.50, 0.88))
+    draw_rect(Rect2(q + Vector2(-6, -28), Vector2(12, 11)), Color(0.72, 0.73, 0.70))
+    draw_rect(Rect2(q + Vector2(-4, -25), Vector2(8, 3)), Color(0.16, 0.18, 0.20))
+    var s: float = -1.0 if facing_left else 1.0
+    draw_line(q + Vector2(9.0 * s, -8), q + Vector2(17.0 * s, -28), Color(0.85, 0.82, 0.66), 3.0)
+    if has_target and not panel_open:
+        draw_arc(target, 8.0, 0.0, TAU, 16, Color(1, 1, 1, 0.5), 2.0)
+
+
+func _ellipse(center: Vector2, rx: float, ry: float) -> PackedVector2Array:
+    var pts := PackedVector2Array()
+    for i in range(16):
+        var a: float = TAU * float(i) / 16.0
+        pts.append(center + Vector2(cos(a) * rx, sin(a) * ry))
+    return pts
+
+
+# ------------------------------------------------------------------ HUD
+
+func _hud_panel(alpha: float = 0.84) -> PanelContainer:
+    var p := PanelContainer.new()
+    var sb := StyleBoxFlat.new()
+    sb.bg_color = Color(0.09, 0.08, 0.07, alpha)
+    sb.border_color = Color(0.62, 0.52, 0.34, 0.9)
+    sb.set_border_width_all(2)
+    sb.set_corner_radius_all(8)
+    sb.set_content_margin_all(10)
+    p.add_theme_stylebox_override("panel", sb)
+    return p
+
+
+func _btn(text: String, handler: Callable, font_size: int = 24) -> Button:
+    var b := Button.new()
+    b.text = text
+    b.custom_minimum_size = Vector2(300, 72)
+    b.add_theme_font_size_override("font_size", font_size)
+    b.pressed.connect(handler)
+    return b
+
+
+func _apply_safe_area() -> void:
+    if hud_root == null or not is_inside_tree():
+        return
+    var l: float = 0.0
+    var t: float = 0.0
+    var r: float = 0.0
+    var b: float = 0.0
+    if OS.has_feature("mobile"):
+        var win: Vector2i = DisplayServer.window_get_size()
+        var safe: Rect2i = DisplayServer.get_display_safe_area()
+        var vp: Vector2 = get_viewport().get_visible_rect().size
+        if win.x > 0 and win.y > 0 and safe.size.x > 0 and safe.size.y > 0:
+            var sx: float = vp.x / float(win.x)
+            var sy: float = vp.y / float(win.y)
+            l = clampf(float(safe.position.x) * sx, 0.0, 120.0)
+            t = clampf(float(safe.position.y) * sy, 0.0, 120.0)
+            r = clampf(float(win.x - safe.position.x - safe.size.x) * sx, 0.0, 120.0)
+            b = clampf(float(win.y - safe.position.y - safe.size.y) * sy, 0.0, 120.0)
+    hud_root.offset_left = l
+    hud_root.offset_top = t
+    hud_root.offset_right = -r
+    hud_root.offset_bottom = -b
+
+
+func _build_ui() -> void:
+    var layer := CanvasLayer.new()
+    add_child(layer)
+    var root := Control.new()
+    root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    layer.add_child(root)
+    root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    hud_root = root
+    get_viewport().size_changed.connect(_apply_safe_area)
+    call_deferred("_apply_safe_area")
+
+    # Top-left: region, terrain, gold
+    var info_panel := _hud_panel()
+    info_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    info_label = Label.new()
+    info_label.custom_minimum_size = Vector2(300, 0)
+    info_label.add_theme_font_size_override("font_size", 20)
+    info_panel.add_child(info_label)
+    root.add_child(info_panel)
+    info_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT, Control.PRESET_MODE_MINSIZE, 12)
+
+    # Top-right: begin a fresh chronicle with a customized protagonist.
+    var new_chronicle_btn := _btn("New Chronicle", _on_new_chronicle_pressed, 20)
+    new_chronicle_btn.custom_minimum_size = Vector2(250, 68)
+    root.add_child(new_chronicle_btn)
+    new_chronicle_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
+    new_chronicle_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+
+    # Top-centre: ambush banner
+    banner = _hud_panel(0.95)
+    banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    banner_label = Label.new()
+    banner_label.add_theme_font_size_override("font_size", 30)
+    banner.add_child(banner_label)
+    banner.visible = false
+    root.add_child(banner)
+    banner.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP, Control.PRESET_MODE_MINSIZE, 90)
+    banner.grow_horizontal = Control.GROW_DIRECTION_BOTH
+
+    # Bottom-centre: enter-place prompt
+    prompt_btn = _btn("Enter", _on_prompt_pressed, 28)
+    prompt_btn.custom_minimum_size = Vector2(380, 84)
+    prompt_btn.visible = false
+    root.add_child(prompt_btn)
+    prompt_btn.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM, Control.PRESET_MODE_MINSIZE, 16)
+    prompt_btn.grow_horizontal = Control.GROW_DIRECTION_BOTH
+    prompt_btn.grow_vertical = Control.GROW_DIRECTION_BEGIN
+
+    # Centre: place panel
+    place_panel = _hud_panel(0.97)
+    var box := VBoxContainer.new()
+    box.add_theme_constant_override("separation", 12)
+    place_title = Label.new()
+    place_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    place_title.add_theme_font_size_override("font_size", 38)
+    place_text = Label.new()
+    place_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    place_text.custom_minimum_size = Vector2(560, 0)
+    place_text.add_theme_font_size_override("font_size", 22)
+    place_buttons = VBoxContainer.new()
+    place_buttons.add_theme_constant_override("separation", 10)
+    box.add_child(place_title)
+    box.add_child(place_text)
+    box.add_child(place_buttons)
+    place_panel.add_child(box)
+    root.add_child(place_panel)
+    place_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
+    place_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+    place_panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+    place_panel.visible = false
+
+    party_screen = PartyScreen.new()
+    root.add_child(party_screen)
+    party_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    party_screen.visible = false
+    party_screen.closed.connect(_on_party_closed)
+
+
+func _on_new_chronicle_pressed() -> void:
+    if creator_screen != null:
+        return
+    var creator: CharacterCreator = CREATOR_SCENE.instantiate() as CharacterCreator
+    creator_screen = creator
+    creator.confirmed.connect(_on_creator_confirmed)
+    creator.cancelled.connect(_on_creator_cancelled)
+    hud_root.add_child(creator)
+    creator.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    panel_open = true
+    has_target = false
+
+
+func _on_creator_confirmed(profile: Dictionary) -> void:
+    GameState.new_game(profile)
+    GameState.from_world = true
+    GameState.world_pos = Vector2.ZERO
+    player_pos = cell_center(wmap.start_cell)
+    target = player_pos
+    has_target = false
+    danger_accum = 0.0
+    panel_open = false
+    if creator_screen != null:
+        creator_screen.queue_free()
+        creator_screen = null
+    hud_text = ""
+    _update_hud()
+    camera.position = player_pos
+
+
+func _on_creator_cancelled() -> void:
+    if creator_screen != null:
+        creator_screen.queue_free()
+        creator_screen = null
+    panel_open = false
+
+
+func _build_minimap() -> void:
+    var img: Image = Image.create(wmap.width, wmap.height, false, Image.FORMAT_RGBA8)
+    for y in range(wmap.height):
+        for x in range(wmap.width):
+            img.set_pixel(x, y, TERRAIN_COLORS[wmap.terrain_at(Vector2i(x, y))])
+    for p in wmap.places:
+        var c: Vector2i = wmap.place_cell(str((p as Dictionary).get("id", "")))
+        img.set_pixel(c.x, c.y, Color(1.0, 0.85, 0.2))
+    var rect := TextureRect.new()
+    rect.texture = ImageTexture.create_from_image(img)
+    rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    rect.stretch_mode = TextureRect.STRETCH_SCALE
+    rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+    rect.custom_minimum_size = Vector2(float(wmap.width * MINIMAP_SCALE), float(wmap.height * MINIMAP_SCALE))
+    rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    minimap_dot = ColorRect.new()
+    minimap_dot.color = Color.WHITE
+    minimap_dot.size = Vector2(6, 6)
+    minimap_dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    rect.add_child(minimap_dot)
+    var panel := _hud_panel(0.8)
+    panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    panel.add_child(rect)
+    hud_root.add_child(panel)
+    panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT, Control.PRESET_MODE_MINSIZE, 12)
+    panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
+
+
+func _update_hud() -> void:
+    var cell: Vector2i = cell_of(player_pos)
+    var txt: String = "%s\n%s%s\nGold: %d" % [str(GameData.world.get("name", "World")), wmap.terrain_name(cell), "  (safe)" if _in_safe_zone(cell) else "", GameState.party.gold]
+    if txt != hud_text:
+        hud_text = txt
+        info_label.text = txt
+    if minimap_dot != null:
+        minimap_dot.position = player_pos / TILE * float(MINIMAP_SCALE) - Vector2(3, 3)

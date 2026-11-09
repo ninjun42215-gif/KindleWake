@@ -1,0 +1,687 @@
+{
+ "classes": {
+  "swordsman": {
+   "name": "Bladesworn",
+   "branch": "warrior",
+   "tier": 1,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 70,
+    "mp": 35,
+    "str": 55,
+    "dex": 45,
+    "int": 10,
+    "vit": 45,
+    "spd": 40,
+    "lck": 20,
+    "acc": 30,
+    "eva": 30,
+    "ldr": 25,
+    "mor": 20
+   },
+   "promotes_to": [
+    "knight",
+    "duelist",
+    "berserker"
+   ],
+   "class_skills": {
+    "power_strike": 1
+   }
+  },
+  "knight": {
+   "name": "Vowguard",
+   "branch": "warrior",
+   "tier": 2,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 80,
+    "mp": 35,
+    "str": 55,
+    "dex": 30,
+    "int": 10,
+    "vit": 65,
+    "spd": 30,
+    "lck": 15,
+    "acc": 25,
+    "eva": 15,
+    "ldr": 30,
+    "mor": 30
+   },
+   "promotes_to": [
+    "heavy_knight"
+   ],
+   "class_skills": {
+    "power_strike": 1
+   }
+  },
+  "archer": {
+   "name": "Reedrunner",
+   "branch": "ranged",
+   "tier": 1,
+   "move": 5,
+   "jump": 1,
+   "growth": {
+    "hp": 55,
+    "mp": 35,
+    "str": 25,
+    "dex": 65,
+    "int": 15,
+    "vit": 30,
+    "spd": 55,
+    "lck": 30,
+    "acc": 45,
+    "eva": 40,
+    "ldr": 15,
+    "mor": 20
+   },
+   "promotes_to": [
+    "crossbowman",
+    "longbow_master"
+   ],
+   "class_skills": {
+    "aimed_shot": 1
+   }
+  },
+  "cleric": {
+   "name": "Lanternbearer",
+   "branch": "support",
+   "tier": 2,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 60,
+    "mp": 60,
+    "str": 25,
+    "dex": 30,
+    "int": 60,
+    "vit": 40,
+    "spd": 30,
+    "lck": 35,
+    "acc": 25,
+    "eva": 25,
+    "ldr": 25,
+    "mor": 35
+   },
+   "promotes_to": [
+    "battle_medic"
+   ]
+  },
+  "roadreaver": {
+   "name": "Roadreaver",
+   "branch": "roadwolf",
+   "tier": 1,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 65,
+    "str": 55,
+    "dex": 35,
+    "int": 5,
+    "vit": 40,
+    "spd": 40,
+    "lck": 15,
+    "acc": 25,
+    "eva": 25,
+    "ldr": 15,
+    "mor": 15
+   },
+   "promotes_to": []
+  },
+  "duelist": {
+   "name": "Quillon",
+   "branch": "warrior",
+   "tier": 2,
+   "move": 5,
+   "jump": 1,
+   "growth": {
+    "hp": 65,
+    "mp": 35,
+    "str": 45,
+    "dex": 60,
+    "int": 10,
+    "vit": 30,
+    "spd": 55,
+    "lck": 30,
+    "acc": 45,
+    "eva": 50,
+    "ldr": 20,
+    "mor": 25
+   },
+   "promotes_to": [],
+   "class_skills": {
+    "power_strike": 1
+   }
+  },
+  "berserker": {
+   "name": "Wrathbound",
+   "branch": "warrior",
+   "tier": 2,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 85,
+    "mp": 25,
+    "str": 70,
+    "dex": 30,
+    "int": 5,
+    "vit": 40,
+    "spd": 40,
+    "lck": 15,
+    "acc": 20,
+    "eva": 15,
+    "ldr": 15,
+    "mor": 10
+   },
+   "promotes_to": [],
+   "locked": true,
+   "requires": "Survive the Fear status 3 times (needs status effects)",
+   "class_skills": {
+    "power_strike": 1
+   }
+  },
+  "heavy_knight": {
+   "name": "Ironvow",
+   "branch": "warrior",
+   "tier": 3,
+   "move": 3,
+   "jump": 1,
+   "growth": {
+    "hp": 90,
+    "mp": 35,
+    "str": 60,
+    "dex": 25,
+    "int": 10,
+    "vit": 75,
+    "spd": 25,
+    "lck": 15,
+    "acc": 25,
+    "eva": 10,
+    "ldr": 35,
+    "mor": 35
+   },
+   "promotes_to": [],
+   "class_skills": {
+    "power_strike": 1
+   }
+  },
+  "cavalier": {
+   "name": "Outrider",
+   "branch": "cavalry",
+   "tier": 1,
+   "move": 6,
+   "jump": 1,
+   "growth": {
+    "hp": 65,
+    "mp": 30,
+    "str": 50,
+    "dex": 40,
+    "int": 10,
+    "vit": 40,
+    "spd": 50,
+    "lck": 25,
+    "acc": 35,
+    "eva": 30,
+    "ldr": 30,
+    "mor": 25
+   },
+   "promotes_to": [
+    "lancer"
+   ]
+  },
+  "lancer": {
+   "name": "Spearrider",
+   "branch": "cavalry",
+   "tier": 2,
+   "move": 6,
+   "jump": 1,
+   "growth": {
+    "hp": 75,
+    "mp": 30,
+    "str": 60,
+    "dex": 40,
+    "int": 10,
+    "vit": 45,
+    "spd": 50,
+    "lck": 20,
+    "acc": 35,
+    "eva": 25,
+    "ldr": 30,
+    "mor": 30
+   },
+   "promotes_to": [
+    "royal_cavalier"
+   ]
+  },
+  "royal_cavalier": {
+   "name": "Crownrider",
+   "branch": "cavalry",
+   "tier": 3,
+   "move": 6,
+   "jump": 1,
+   "growth": {
+    "hp": 85,
+    "mp": 35,
+    "str": 60,
+    "dex": 40,
+    "int": 15,
+    "vit": 55,
+    "spd": 50,
+    "lck": 20,
+    "acc": 35,
+    "eva": 25,
+    "ldr": 45,
+    "mor": 40
+   },
+   "promotes_to": [
+    "paladin"
+   ]
+  },
+  "paladin": {
+   "name": "Oathwarden",
+   "branch": "cavalry",
+   "tier": 4,
+   "move": 5,
+   "jump": 1,
+   "growth": {
+    "hp": 90,
+    "mp": 55,
+    "str": 60,
+    "dex": 35,
+    "int": 40,
+    "vit": 65,
+    "spd": 40,
+    "lck": 25,
+    "acc": 30,
+    "eva": 20,
+    "ldr": 50,
+    "mor": 50
+   },
+   "promotes_to": [],
+   "locked": true,
+   "requires": "Royal Cavalier with a Cleric bond and the Tarnholt relic (needs bonds and quests)"
+  },
+  "crossbowman": {
+   "name": "Quarrelman",
+   "branch": "ranged",
+   "tier": 2,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 60,
+    "mp": 30,
+    "str": 35,
+    "dex": 65,
+    "int": 10,
+    "vit": 40,
+    "spd": 40,
+    "lck": 25,
+    "acc": 50,
+    "eva": 30,
+    "ldr": 15,
+    "mor": 20
+   },
+   "promotes_to": [
+    "sniper"
+   ],
+   "class_skills": {
+    "aimed_shot": 1
+   }
+  },
+  "longbow_master": {
+   "name": "Yewmaster",
+   "branch": "ranged",
+   "tier": 2,
+   "move": 5,
+   "jump": 1,
+   "growth": {
+    "hp": 55,
+    "mp": 35,
+    "str": 30,
+    "dex": 70,
+    "int": 15,
+    "vit": 30,
+    "spd": 55,
+    "lck": 35,
+    "acc": 55,
+    "eva": 40,
+    "ldr": 20,
+    "mor": 25
+   },
+   "promotes_to": [
+    "sniper"
+   ],
+   "class_skills": {
+    "aimed_shot": 1
+   }
+  },
+  "sniper": {
+   "name": "Longsight",
+   "branch": "ranged",
+   "tier": 3,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 55,
+    "mp": 35,
+    "str": 30,
+    "dex": 80,
+    "int": 15,
+    "vit": 30,
+    "spd": 45,
+    "lck": 40,
+    "acc": 65,
+    "eva": 35,
+    "ldr": 20,
+    "mor": 25
+   },
+   "promotes_to": [],
+   "class_skills": {
+    "aimed_shot": 1
+   }
+  },
+  "apprentice_mage": {
+   "name": "Candlemage",
+   "branch": "magic",
+   "tier": 1,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 45,
+    "mp": 65,
+    "str": 10,
+    "dex": 30,
+    "int": 65,
+    "vit": 20,
+    "spd": 40,
+    "lck": 30,
+    "acc": 30,
+    "eva": 30,
+    "ldr": 10,
+    "mor": 20
+   },
+   "promotes_to": [
+    "fire_mage",
+    "ice_mage"
+   ]
+  },
+  "fire_mage": {
+   "name": "Emberist",
+   "branch": "magic",
+   "tier": 2,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 50,
+    "mp": 70,
+    "str": 10,
+    "dex": 30,
+    "int": 75,
+    "vit": 20,
+    "spd": 40,
+    "lck": 30,
+    "acc": 30,
+    "eva": 25,
+    "ldr": 15,
+    "mor": 20
+   },
+   "promotes_to": [
+    "battle_mage"
+   ]
+  },
+  "ice_mage": {
+   "name": "Frostweaver",
+   "branch": "magic",
+   "tier": 2,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 50,
+    "mp": 70,
+    "str": 10,
+    "dex": 35,
+    "int": 70,
+    "vit": 25,
+    "spd": 35,
+    "lck": 30,
+    "acc": 35,
+    "eva": 30,
+    "ldr": 15,
+    "mor": 20
+   },
+   "promotes_to": [
+    "battle_mage"
+   ]
+  },
+  "battle_mage": {
+   "name": "Spellblade",
+   "branch": "magic",
+   "tier": 3,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 65,
+    "mp": 65,
+    "str": 35,
+    "dex": 35,
+    "int": 70,
+    "vit": 35,
+    "spd": 40,
+    "lck": 25,
+    "acc": 35,
+    "eva": 30,
+    "ldr": 25,
+    "mor": 30
+   },
+   "promotes_to": [
+    "high_sorcerer"
+   ]
+  },
+  "high_sorcerer": {
+   "name": "Archsorcerer",
+   "branch": "magic",
+   "tier": 4,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 60,
+    "mp": 80,
+    "str": 15,
+    "dex": 35,
+    "int": 85,
+    "vit": 30,
+    "spd": 40,
+    "lck": 30,
+    "acc": 40,
+    "eva": 30,
+    "ldr": 30,
+    "mor": 35
+   },
+   "promotes_to": []
+  },
+  "priest": {
+   "name": "Wickkeeper",
+   "branch": "support",
+   "tier": 1,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 50,
+    "mp": 60,
+    "str": 15,
+    "dex": 30,
+    "int": 50,
+    "vit": 30,
+    "spd": 35,
+    "lck": 35,
+    "acc": 25,
+    "eva": 25,
+    "ldr": 20,
+    "mor": 30
+   },
+   "promotes_to": [
+    "cleric",
+    "bard"
+   ]
+  },
+  "bard": {
+   "name": "Songkeeper",
+   "branch": "support",
+   "tier": 2,
+   "move": 5,
+   "jump": 1,
+   "growth": {
+    "hp": 55,
+    "mp": 55,
+    "str": 20,
+    "dex": 40,
+    "int": 40,
+    "vit": 30,
+    "spd": 45,
+    "lck": 40,
+    "acc": 30,
+    "eva": 40,
+    "ldr": 40,
+    "mor": 45
+   },
+   "promotes_to": []
+  },
+  "battle_medic": {
+   "name": "Fieldmender",
+   "branch": "support",
+   "tier": 3,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 70,
+    "mp": 65,
+    "str": 30,
+    "dex": 35,
+    "int": 60,
+    "vit": 50,
+    "spd": 35,
+    "lck": 35,
+    "acc": 30,
+    "eva": 30,
+    "ldr": 30,
+    "mor": 40
+   },
+   "promotes_to": []
+  },
+  "thief": {
+   "name": "Cutpurse",
+   "branch": "specialist",
+   "tier": 1,
+   "move": 5,
+   "jump": 2,
+   "growth": {
+    "hp": 55,
+    "mp": 25,
+    "str": 35,
+    "dex": 60,
+    "int": 15,
+    "vit": 25,
+    "spd": 65,
+    "lck": 45,
+    "acc": 40,
+    "eva": 55,
+    "ldr": 10,
+    "mor": 15
+   },
+   "promotes_to": [
+    "assassin"
+   ]
+  },
+  "scout": {
+   "name": "Trailscout",
+   "branch": "specialist",
+   "tier": 1,
+   "move": 6,
+   "jump": 2,
+   "growth": {
+    "hp": 55,
+    "mp": 25,
+    "str": 30,
+    "dex": 55,
+    "int": 20,
+    "vit": 30,
+    "spd": 60,
+    "lck": 35,
+    "acc": 45,
+    "eva": 50,
+    "ldr": 20,
+    "mor": 25
+   },
+   "promotes_to": []
+  },
+  "engineer": {
+   "name": "Wallwright",
+   "branch": "specialist",
+   "tier": 1,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 60,
+    "mp": 30,
+    "str": 35,
+    "dex": 50,
+    "int": 45,
+    "vit": 40,
+    "spd": 30,
+    "lck": 25,
+    "acc": 35,
+    "eva": 25,
+    "ldr": 25,
+    "mor": 25
+   },
+   "promotes_to": []
+  },
+  "assassin": {
+   "name": "Nightknife",
+   "branch": "specialist",
+   "tier": 2,
+   "move": 5,
+   "jump": 2,
+   "growth": {
+    "hp": 60,
+    "mp": 30,
+    "str": 50,
+    "dex": 70,
+    "int": 15,
+    "vit": 25,
+    "spd": 70,
+    "lck": 45,
+    "acc": 50,
+    "eva": 60,
+    "ldr": 10,
+    "mor": 15
+   },
+   "promotes_to": []
+  },
+  "commander": {
+   "name": "Marshal",
+   "branch": "specialist",
+   "tier": 3,
+   "move": 4,
+   "jump": 1,
+   "growth": {
+    "hp": 75,
+    "mp": 40,
+    "str": 45,
+    "dex": 40,
+    "int": 30,
+    "vit": 45,
+    "spd": 35,
+    "lck": 30,
+    "acc": 35,
+    "eva": 30,
+    "ldr": 70,
+    "mor": 60
+   },
+   "promotes_to": [],
+   "story_only": true,
+   "requires": "Unique. Granted by the story to a character with LDR 20 or more"
+  }
+ }
+}

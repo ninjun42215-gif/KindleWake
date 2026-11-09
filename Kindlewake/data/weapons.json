@@ -1,0 +1,163 @@
+{
+  "weapons": {
+    "arming_sword": {
+      "name": "Wayfarer Blade",
+      "type": "sword",
+      "damage_type": "physical",
+      "power": 6,
+      "range_min": 1,
+      "range_max": 1,
+      "ranged": false,
+      "acc": 5,
+      "crit": 3
+    },
+    "longsword": {
+      "name": "Kestrel Longblade",
+      "type": "sword",
+      "damage_type": "physical",
+      "power": 7,
+      "range_min": 1,
+      "range_max": 1,
+      "ranged": false,
+      "acc": 5,
+      "crit": 3
+    },
+    "hunting_bow": {
+      "name": "Thornwood Bow",
+      "type": "bow",
+      "damage_type": "physical",
+      "power": 6,
+      "range_min": 2,
+      "range_max": 5,
+      "ranged": true,
+      "uses_dex": true,
+      "acc": 0,
+      "crit": 4
+    },
+    "short_bow": {
+      "name": "Reed Bow",
+      "type": "bow",
+      "damage_type": "physical",
+      "power": 5,
+      "range_min": 2,
+      "range_max": 4,
+      "ranged": true,
+      "uses_dex": true,
+      "acc": 0,
+      "crit": 3
+    },
+    "mace": {
+      "name": "Vigil Mace",
+      "type": "mace",
+      "damage_type": "physical",
+      "power": 4,
+      "range_min": 1,
+      "range_max": 1,
+      "ranged": false,
+      "acc": 0,
+      "crit": 0
+    },
+    "hand_axe": {
+      "name": "Splitter Hatchet",
+      "type": "axe",
+      "damage_type": "physical",
+      "power": 6,
+      "range_min": 1,
+      "range_max": 1,
+      "ranged": false,
+      "acc": 0,
+      "crit": 4
+    },
+    "battle_axe": {
+      "name": "Gravelcleaver",
+      "type": "axe",
+      "damage_type": "physical",
+      "power": 8,
+      "range_min": 1,
+      "range_max": 1,
+      "ranged": false,
+      "acc": -2,
+      "crit": 5
+    },
+    "fine_arming_sword": {
+      "name": "Moonforged Wayfarer",
+      "type": "sword",
+      "damage_type": "physical",
+      "power": 8,
+      "range_min": 1,
+      "range_max": 1,
+      "ranged": false,
+      "acc": 6,
+      "crit": 4
+    },
+    "hardwood_bow": {
+      "name": "Yewsong Bow",
+      "type": "bow",
+      "damage_type": "physical",
+      "power": 7,
+      "range_min": 2,
+      "range_max": 5,
+      "ranged": true,
+      "uses_dex": true,
+      "acc": 2,
+      "crit": 4
+    },
+    "greatsword": {
+      "name": "Hearthbreaker",
+      "type": "sword",
+      "damage_type": "physical",
+      "power": 10,
+      "range_min": 1,
+      "range_max": 1,
+      "ranged": false,
+      "acc": -3,
+      "crit": 4
+    },
+    "spear": {
+      "name": "Marchwarden Spear",
+      "type": "spear",
+      "damage_type": "physical",
+      "power": 6,
+      "range_min": 1,
+      "range_max": 2,
+      "ranged": false,
+      "acc": 2,
+      "crit": 2
+    },
+    "crossbow": {
+      "name": "Latchbolt Crossbow",
+      "type": "crossbow",
+      "damage_type": "physical",
+      "power": 6,
+      "range_min": 2,
+      "range_max": 4,
+      "ranged": true,
+      "uses_dex": true,
+      "acc": 4,
+      "crit": 2
+    },
+    "staff": {
+      "name": "Candlewood Staff",
+      "type": "staff",
+      "damage_type": "magic",
+      "power": 4,
+      "range_min": 1,
+      "range_max": 3,
+      "ranged": true,
+      "acc": 2,
+      "crit": 1
+    },
+    "dagger": {
+      "name": "Gutterglass Dagger",
+      "type": "dagger",
+      "damage_type": "physical",
+      "power": 5,
+      "range_min": 1,
+      "range_max": 1,
+      "ranged": false,
+      "uses_dex": true,
+      "acc": 6,
+      "crit": 7
+    }
+  }
+}

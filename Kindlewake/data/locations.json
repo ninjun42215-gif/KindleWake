@@ -1,0 +1,396 @@
+{
+ "maps": {
+  "crossing": {
+   "name": "Sallow Crossing",
+   "kind": "town",
+   "entry": [
+    11,
+    16
+   ],
+   "zoom": 1.15,
+   "rows": [
+    "TTTTTTTTTTTTTTTTTTTTTTTT",
+    "T......................T",
+    "T..rrrr..........bbbb..T",
+    "T..rrrr.T........bbbb..T",
+    "T..w1ww..........w2ww..T",
+    "T...,.............,....T",
+    "T...,,,,,,,,,,,,,,,....T",
+    "T..........,,..........T",
+    "T..........,,..T.......T",
+    "T..rrrr....,,....~~~~..T",
+    "T..rrrr..T.,,....~~~~..T",
+    "T..w3ww....,,....~~~~..T",
+    "T...,......,,..........T",
+    "T...,,,,,,,,,..........T",
+    "T.T........,,.......TT.T",
+    "T.TT...T...,,..T....TT.T",
+    "T..........,,..........T",
+    "TTTTTTTTTTTEETTTTTTTTTTT"
+   ],
+   "doors": {
+    "1": {
+     "to": "crossing_inn",
+     "spawn": [
+      5,
+      7
+     ]
+    },
+    "2": {
+     "to": "crossing_shop",
+     "spawn": [
+      4,
+      6
+     ]
+    },
+    "3": {
+     "to": "crossing_elder",
+     "spawn": [
+      4,
+      5
+     ]
+    }
+   },
+   "spots": [
+    {
+     "cell": [
+      9,
+      7
+     ],
+     "kind": "text",
+     "npc": true,
+     "name": "Carter Wen",
+     "tint": [
+      0.9,
+      0.8,
+      0.6
+     ],
+     "text": "Roadwolves hit the toll cart at dawn. If you go east, keep to the road. Forest is where they wait."
+    },
+    {
+     "cell": [
+      14,
+      13
+     ],
+     "kind": "text",
+     "npc": true,
+     "name": "Village Guard",
+     "tint": [
+      0.7,
+      0.8,
+      1.0
+     ],
+     "text": "Hask Gravelteeth's camp lies far to the east, past the old watchtower road. Bring more than three blades."
+    }
+   ]
+  },
+  "crossing_inn": {
+   "name": "The Ford and Flagon",
+   "kind": "interior",
+   "entry": [
+    5,
+    7
+   ],
+   "rows": [
+    "############",
+    "#=====H==BB#",
+    "#==========#",
+    "#=KKKK=====#",
+    "#=======X==#",
+    "#===+++====#",
+    "#U===+==X==#",
+    "#U===+=====#",
+    "#####1######"
+   ],
+   "doors": {
+    "1": {
+     "to": "crossing",
+     "spawn": [
+      4,
+      5
+     ]
+    }
+   },
+   "spots": [
+    {
+     "cell": [
+      3,
+      3
+     ],
+     "kind": "text",
+     "npc": true,
+     "name": "Innkeeper Maud",
+     "tint": [
+      1.0,
+      0.85,
+      0.85
+     ],
+     "text": "Rest your feet, captain. Beds are full of drovers tonight, but the stew is hot and the gossip is free."
+    },
+    {
+     "cell": [
+      7,
+      5
+     ],
+     "kind": "text",
+     "npc": true,
+     "name": "Drover",
+     "tint": [
+      0.75,
+      0.9,
+      0.75
+     ],
+     "text": "Heard a purse was left in the old tower, north of here. Nobody dares go. The roads are not what they were."
+    }
+   ]
+  },
+  "crossing_shop": {
+   "name": "Oswin's Goods",
+   "kind": "interior",
+   "entry": [
+    4,
+    6
+   ],
+   "rows": [
+    "##########",
+    "#SSSSSSSS#",
+    "#=======U#",
+    "#=KKKKKK=#",
+    "#========#",
+    "#C=++++=C#",
+    "#==++++==#",
+    "####2#####"
+   ],
+   "doors": {
+    "2": {
+     "to": "crossing",
+     "spawn": [
+      18,
+      5
+     ]
+    }
+   },
+   "spots": [
+    {
+     "cell": [
+      4,
+      3
+     ],
+     "kind": "party",
+     "npc": true,
+     "name": "Shopkeeper Oswin",
+     "tint": [
+      1.0,
+      0.9,
+      0.6
+     ],
+     "text": "Blades, mail, charms and sigils, all honestly priced. And your company's kit can be sorted out right here at the counter."
+    }
+   ]
+  },
+  "crossing_elder": {
+   "name": "Elder Hale's House",
+   "kind": "interior",
+   "entry": [
+    4,
+    5
+   ],
+   "rows": [
+    "#########",
+    "#BB===H=#",
+    "#=======#",
+    "#S==X===#",
+    "#S=+++==#",
+    "#=======#",
+    "####3####"
+   ],
+   "doors": {
+    "3": {
+     "to": "crossing",
+     "spawn": [
+      4,
+      12
+     ]
+    }
+   },
+   "spots": [
+    {
+     "cell": [
+      5,
+      3
+     ],
+     "kind": "text",
+     "npc": true,
+     "name": "Elder Hale",
+     "tint": [
+      0.85,
+      0.85,
+      0.95
+     ],
+     "text": "House Dunmarrow held these roads for three hundred years. Torren, the keep is yours to rebuild. Start with the road to Eldrimar."
+    }
+   ]
+  },
+  "sethorn": {
+   "name": "Kaer Sethorn",
+   "kind": "town",
+   "entry": [
+    10,
+    14
+   ],
+   "zoom": 1.15,
+   "rows": [
+    "######################",
+    "#.....bbbbbbbbbb.....#",
+    "#.TT..bbbbbbbbbb.....#",
+    "#.T...bbbbbbbbbb.....#",
+    "#.....wwww1wwwww.....#",
+    "#.........,,.........#",
+    "#.........,,.....rrrr#",
+    "#.........,,.....rrrr#",
+    "#..~~.....,,.....w2ww#",
+    "#..~~.....,,,,,,,,,..#",
+    "#.........,,.........#",
+    "#.........,,.........#",
+    "#.T.......,,..T....T.#",
+    "#..TT.....,,...T..T..#",
+    "#.........,,.........#",
+    "##########EE##########"
+   ],
+   "doors": {
+    "1": {
+     "to": "sethorn_hall",
+     "spawn": [
+      7,
+      9
+     ]
+    },
+    "2": {
+     "to": "sethorn_barracks",
+     "spawn": [
+      4,
+      6
+     ]
+    }
+   },
+   "spots": [
+    {
+     "cell": [
+      8,
+      10
+     ],
+     "kind": "text",
+     "npc": true,
+     "name": "Gate Warden",
+     "tint": [
+      0.7,
+      0.8,
+      1.0
+     ],
+     "text": "The walls are cracked, but they hold. Steward Brannoch is waiting in the great hall."
+    }
+   ]
+  },
+  "sethorn_hall": {
+   "name": "Great Hall of Kaer Sethorn",
+   "kind": "interior",
+   "entry": [
+    7,
+    9
+   ],
+   "rows": [
+    "#####N####N#####",
+    "#=H====++====H=#",
+    "#======++======#",
+    "#====P=++=P====#",
+    "#======XX======#",
+    "#======++======#",
+    "#====P=++=P====#",
+    "#======++======#",
+    "#U=====++=====U#",
+    "#U=====++======#",
+    "#######1########"
+   ],
+   "doors": {
+    "1": {
+     "to": "sethorn",
+     "spawn": [
+      10,
+      6
+     ]
+    }
+   },
+   "spots": [
+    {
+     "cell": [
+      7,
+      2
+     ],
+     "kind": "text",
+     "npc": true,
+     "name": "Steward Brannoch",
+     "tint": [
+      0.95,
+      0.8,
+      0.5
+     ],
+     "text": "The road is open, my lord, but it is not safe. Train the company, forge sigils, and clear the Roadwolf Camp."
+    },
+    {
+     "cell": [
+      7,
+      4
+     ],
+     "kind": "party",
+     "npc": false,
+     "name": "War Table",
+     "text": "The war table: sort your company, gear, sigils and promotions here, or send for the market stock."
+    }
+   ]
+  },
+  "sethorn_barracks": {
+   "name": "Barracks",
+   "kind": "interior",
+   "entry": [
+    4,
+    6
+   ],
+   "rows": [
+    "##########",
+    "#B=SSSS=B#",
+    "#B======B#",
+    "#B======B#",
+    "#===X====#",
+    "#==++++==#",
+    "#========#",
+    "####2#####"
+   ],
+   "doors": {
+    "2": {
+     "to": "sethorn",
+     "spawn": [
+      18,
+      9
+     ]
+    }
+   },
+   "spots": [
+    {
+     "cell": [
+      5,
+      5
+     ],
+     "kind": "text",
+     "npc": true,
+     "name": "Sergeant Voss",
+     "tint": [
+      0.8,
+      0.8,
+      0.8
+     ],
+     "text": "Spears sharp, boots dry. Give the word and we march. Rear attacks and flanks win fights, captain. Remember it."
+    }
+   ]
+  }
+ }
+}

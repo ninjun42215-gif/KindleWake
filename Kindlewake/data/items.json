@@ -1,0 +1,344 @@
+{
+  "rarities": [
+    "common",
+    "fine",
+    "masterwork",
+    "heirloom"
+  ],
+  "items": {
+    "arming_sword": {
+      "name": "Wayfarer Blade",
+      "slot": "weapon",
+      "sockets": 2,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "rarity": "common",
+      "weapon_id": "arming_sword",
+      "price": 60
+    },
+    "longsword": {
+      "name": "Kestrel Longblade",
+      "slot": "weapon",
+      "sockets": 2,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "rarity": "common",
+      "weapon_id": "longsword",
+      "price": 80
+    },
+    "hunting_bow": {
+      "name": "Thornwood Bow",
+      "slot": "weapon",
+      "sockets": 2,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "rarity": "common",
+      "weapon_id": "hunting_bow",
+      "price": 70
+    },
+    "short_bow": {
+      "name": "Reed Bow",
+      "slot": "weapon",
+      "sockets": 1,
+      "links": [],
+      "ap_mult": 1,
+      "rarity": "common",
+      "weapon_id": "short_bow",
+      "price": 45
+    },
+    "mace": {
+      "name": "Vigil Mace",
+      "slot": "weapon",
+      "sockets": 2,
+      "links": [],
+      "ap_mult": 1,
+      "rarity": "common",
+      "weapon_id": "mace",
+      "price": 40
+    },
+    "hand_axe": {
+      "name": "Splitter Hatchet",
+      "slot": "weapon",
+      "sockets": 1,
+      "links": [],
+      "ap_mult": 1,
+      "rarity": "common",
+      "weapon_id": "hand_axe",
+      "price": 40
+    },
+    "battle_axe": {
+      "name": "Gravelcleaver",
+      "slot": "weapon",
+      "sockets": 2,
+      "links": [],
+      "ap_mult": 1,
+      "rarity": "common",
+      "weapon_id": "battle_axe",
+      "price": 90
+    },
+    "fine_arming_sword": {
+      "name": "Moonforged Wayfarer",
+      "slot": "weapon",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "rarity": "fine",
+      "weapon_id": "fine_arming_sword",
+      "price": 160
+    },
+    "hardwood_bow": {
+      "name": "Yewsong Bow",
+      "slot": "weapon",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "rarity": "fine",
+      "weapon_id": "hardwood_bow",
+      "price": 170
+    },
+    "greatsword": {
+      "name": "Hearthbreaker",
+      "slot": "weapon",
+      "sockets": 4,
+      "links": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          3
+        ]
+      ],
+      "ap_mult": 2,
+      "rarity": "fine",
+      "weapon_id": "greatsword",
+      "two_handed": true,
+      "price": 210
+    },
+    "buckler": {
+      "name": "Wren Buckler",
+      "slot": "offhand",
+      "rarity": "common",
+      "armor_def": 1,
+      "price": 30
+    },
+    "kite_shield": {
+      "name": "Hound-Crest Shield",
+      "slot": "offhand",
+      "rarity": "fine",
+      "armor_def": 3,
+      "bonus": {
+        "spd": -1
+      },
+      "price": 90
+    },
+    "padded_jerkin": {
+      "name": "Quilted Gambeson",
+      "slot": "armor",
+      "sockets": 1,
+      "links": [],
+      "ap_mult": 1,
+      "rarity": "common",
+      "armor_def": 2,
+      "armor_res": 0,
+      "price": 30
+    },
+    "leather_cuirass": {
+      "name": "Tanner's Cuirass",
+      "slot": "armor",
+      "sockets": 2,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "rarity": "common",
+      "armor_def": 3,
+      "armor_res": 1,
+      "price": 55
+    },
+    "pilgrim_robe": {
+      "name": "Vesper Robe",
+      "slot": "armor",
+      "sockets": 2,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "rarity": "common",
+      "armor_def": 2,
+      "armor_res": 3,
+      "price": 70
+    },
+    "mail_hauberk": {
+      "name": "Ringwoven Hauberk",
+      "slot": "armor",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "rarity": "fine",
+      "armor_def": 5,
+      "armor_res": 1,
+      "price": 140
+    },
+    "plate_harness": {
+      "name": "Ironbound Harness",
+      "slot": "armor",
+      "sockets": 4,
+      "links": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          3
+        ]
+      ],
+      "ap_mult": 3,
+      "rarity": "masterwork",
+      "armor_def": 8,
+      "armor_res": 2,
+      "bonus": {
+        "spd": -2
+      },
+      "price": 420
+    },
+    "iron_cap": {
+      "name": "Crow Cap",
+      "slot": "helm",
+      "rarity": "common",
+      "armor_def": 1,
+      "price": 25
+    },
+    "kettle_helm": {
+      "name": "Brimmed Warhat",
+      "slot": "helm",
+      "rarity": "common",
+      "armor_def": 2,
+      "armor_res": 1,
+      "price": 60
+    },
+    "pilgrim_medal": {
+      "name": "Vesper Medal",
+      "slot": "accessory",
+      "rarity": "fine",
+      "armor_res": 1,
+      "bonus": {
+        "mor": 3
+      },
+      "price": 80
+    },
+    "hawk_feather": {
+      "name": "Kestrel Feather",
+      "slot": "accessory",
+      "rarity": "fine",
+      "bonus": {
+        "acc": 4
+      },
+      "price": 90
+    },
+    "dunmarrow_signet": {
+      "name": "Dunmarrow Signet",
+      "slot": "accessory",
+      "rarity": "heirloom",
+      "bound_to": "torren",
+      "bonus": {
+        "ldr": 2,
+        "mor": 5
+      },
+      "price": 0
+    },
+    "spear": {
+      "name": "Marchwarden Spear",
+      "slot": "weapon",
+      "sockets": 2,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "rarity": "common",
+      "weapon_id": "spear",
+      "price": 65
+    },
+    "crossbow": {
+      "name": "Latchbolt Crossbow",
+      "slot": "weapon",
+      "sockets": 2,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "rarity": "common",
+      "weapon_id": "crossbow",
+      "price": 75
+    },
+    "staff": {
+      "name": "Candlewood Staff",
+      "slot": "weapon",
+      "sockets": 2,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "rarity": "common",
+      "weapon_id": "staff",
+      "price": 65
+    },
+    "dagger": {
+      "name": "Gutterglass Dagger",
+      "slot": "weapon",
+      "sockets": 1,
+      "links": [],
+      "ap_mult": 1,
+      "rarity": "common",
+      "weapon_id": "dagger",
+      "price": 45
+    }
+  }
+}

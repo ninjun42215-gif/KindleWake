@@ -1,0 +1,27 @@
+{
+  "party": [
+    "torren",
+    "bram",
+    "sela",
+    "brother_wystan"
+  ],
+  "gold": 150,
+  "inventory": {
+    "fine_arming_sword": 1,
+    "hardwood_bow": 1,
+    "greatsword": 1,
+    "kite_shield": 1,
+    "padded_jerkin": 1,
+    "kettle_helm": 1,
+    "pilgrim_medal": 1,
+    "hawk_feather": 1,
+    "dunmarrow_signet": 1
+  },
+  "sigils": [
+    "ember",
+    "vigor",
+    "might",
+    "tutor",
+    "amp"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "characters": {
+    "torren": {"name": "Torren Dunmarrow", "class_id": "swordsman", "level": 2, "house": "dunmarrow", "equipment": {"weapon": "arming_sword", "offhand": "buckler", "armor": "leather_cuirass", "helm": "iron_cap", "accessory1": "", "accessory2": ""}, "weapon_id": "arming_sword", "armor_def": 5, "armor_res": 1, "skills": [],
+      "stats": {"hp": 30, "mp": 8, "str": 9, "dex": 9, "int": 5, "vit": 8, "spd": 8, "lck": 7, "acc": 84, "eva": 14, "ldr": 12, "mor": 65}},
+    "bram": {"name": "Sir Bram Vosk", "class_id": "knight", "level": 3, "house": "dunmarrow", "equipment": {"weapon": "longsword", "offhand": "", "armor": "mail_hauberk", "helm": "kettle_helm", "accessory1": "", "accessory2": ""}, "weapon_id": "longsword", "armor_def": 7, "armor_res": 2, "skills": [],
+      "stats": {"hp": 34, "mp": 6, "str": 11, "dex": 7, "int": 4, "vit": 10, "spd": 7, "lck": 6, "acc": 82, "eva": 10, "ldr": 10, "mor": 60}},
+    "sela": {"name": "Sela Wrenfield", "class_id": "archer", "level": 2, "house": "orrowen", "equipment": {"weapon": "hunting_bow", "offhand": "", "armor": "leather_cuirass", "helm": "", "accessory1": "", "accessory2": ""}, "weapon_id": "hunting_bow", "armor_def": 3, "armor_res": 1, "skills": [],
+      "stats": {"hp": 24, "mp": 8, "str": 5, "dex": 12, "int": 6, "vit": 6, "spd": 9, "lck": 9, "acc": 85, "eva": 20, "ldr": 5, "mor": 55}},
+    "brother_wystan": {"name": "Brother Wystan", "class_id": "cleric", "level": 2, "house": "tarnholt", "equipment": {"weapon": "mace", "offhand": "", "armor": "pilgrim_robe", "helm": "iron_cap", "accessory1": "", "accessory2": ""}, "weapon_id": "mace", "armor_def": 3, "armor_res": 3, "sigils": {"weapon": ["mend"], "armor": []}, "skills": [],
+      "stats": {"hp": 28, "mp": 14, "str": 6, "dex": 6, "int": 10, "vit": 8, "spd": 6, "lck": 8, "acc": 78, "eva": 10, "ldr": 8, "mor": 55}},
+    "hask_gravelteeth": {"name": "Hask Gravelteeth", "reward": {"exp": 120, "ap": 20, "gold": 90}, "class_id": "roadreaver", "level": 3, "house": "none", "weapon_id": "battle_axe", "armor_def": 5, "armor_res": 1, "skills": [],
+      "stats": {"hp": 40, "mp": 0, "str": 11, "dex": 6, "int": 3, "vit": 9, "spd": 6, "lck": 5, "acc": 80, "eva": 8, "ldr": 12, "mor": 70}},
+    "roadreaver": {"name": "Roadwolf Reaver", "reward": {"exp": 45, "ap": 8, "gold": 25}, "class_id": "roadreaver", "level": 2, "house": "none", "weapon_id": "hand_axe", "armor_def": 3, "armor_res": 0, "skills": [],
+      "stats": {"hp": 28, "mp": 0, "str": 9, "dex": 6, "int": 3, "vit": 6, "spd": 7, "lck": 4, "acc": 78, "eva": 10, "ldr": 4, "mor": 50}},
+    "roadbowman": {"name": "Roadwolf Bowman", "reward": {"exp": 40, "ap": 8, "gold": 22}, "class_id": "archer", "level": 2, "house": "none", "weapon_id": "short_bow", "armor_def": 2, "armor_res": 0, "skills": [],
+      "stats": {"hp": 22, "mp": 0, "str": 5, "dex": 10, "int": 3, "vit": 5, "spd": 8, "lck": 5, "acc": 80, "eva": 14, "ldr": 3, "mor": 50}}
+  }
+}
