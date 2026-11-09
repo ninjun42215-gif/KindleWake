@@ -35,3 +35,14 @@
 4. Add explicit tests for Burn/Chill/Shock/Exposed/Regeneration turn behavior and grade-scaling effects.
 5. Review regional rune merchant placement, stock and prices; verify access gates match the intended story progression.
 6. Retire internal sigil_* identifiers only after a dedicated save migration and full compatibility test.
+
+
+## v0.10.0 scope added
+- Expanded rune database to 70+ entries including active spells, passive stat runes, unique and heirloom runes.
+- Cross-grade fusion: any three copies of the same rune can be combined; average grade determines target tier and rune AP level adds up to +25 percentage points to the success chance.
+- Heirloom runes are bound and cannot be fused; unique runes are rare and marked unique.
+- Rune removal and replacement require a rune-service flag, granted by the magic-rune specialist or blacksmith service.
+- Equipment enhancement data persists per character/slot; enhancement cap +15; each level scales equipped item bonuses and armor by 5%, weapon enhancement also adds 5% weapon power per level.
+- Title screen has an Exit Game confirmation.
+- NPC dialogue pages expanded in Sallow Crossing and Kaer Sethorn; Oswin and Master Smith Rurik are rune-service locations.
+- Device playtest pending; re-run CI after this feature batch.
