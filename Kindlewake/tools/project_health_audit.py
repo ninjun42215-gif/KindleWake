@@ -23,7 +23,7 @@ def main() -> int:
         "tracked_workflows": 0,
         "gdscript_files": 0,
         "scene_files": 0,
-        "resource_files": 0,
+        "resource_files": 0,\n        "project_version": None,\n        "android_export_version": None,\n        "android_version_code": None,
         "rune_definitions": None,
         "rune_kinds": {},
 "unverified_asset_entries": 0,
@@ -63,6 +63,29 @@ def main() -> int:
                 f"project.godot is {version_match.group(1)} while README headline is {readme_match.group(1)}.",
                 "Kindlewake/project.godot;Kindlewake/README.md",
             )
+
+        if version_match:
+            counts["project_version"] = version_match.group(1)
+        export_preset = project / "export_presets.cfg"
+        if not export_preset.is_file():
+            add("warning", "ANDROID_EXPORT_PRESET_MISSING", "Android export preset file is missing.", "Kindlewake/export_presets.cfg")
+        else:
+            preset_text = export_preset.read_text(encoding="utf-8", errors="replace")
+            export_version = re.search(r'^version/name="([^"]+)"', preset_text, re.M)
+            export_code = re.search(r'^version/code=(\d+)', preset_text, re.M)
+            if export_version:
+                counts["android_export_version"] = export_version.group(1)
+            if export_code:
+                counts["android_version_code"] = int(export_code.group(1))
+            if version_match and export_version and version_match.group(1) != export_version.group(1):
+                add(
+                    "warning",
+                    "ANDROID_EXPORT_VERSION_DRIFT",
+                    f"project.godot is {version_match.group(1)} while Android export preset is {export_version.group(1)}.",
+                    "Kindlewake/project.godot;Kindlewake/export_presets.cfg",
+                )
+            if not export_code or int(export_code.group(1)) < 1:
+                add("error", "ANDROID_VERSION_CODE_INVALID", "Android export preset must define a positive integer version/code.", "Kindlewake/export_presets.cfg")
 
         credits = project / "assets" / "art" / "CREDITS.md"
         if not credits.is_file():
