@@ -174,6 +174,8 @@ func _process(delta: float) -> void:
         else:
             _move(delta)
         _update_near()
+        if Input.is_action_just_pressed("interact") and not near_place.is_empty():
+            _on_prompt_pressed()
     camera.position = camera.position.lerp(player_pos, clampf(delta * 8.0, 0.0, 1.0))
     _update_hud()
     queue_redraw()
@@ -295,7 +297,7 @@ func _update_near() -> void:
     prompt_btn.visible = not best.is_empty() and not panel_open
     if not best.is_empty():
         var verb: String = "Speak with" if str(best.get("kind", "")) == "charter" else "Enter"
-        prompt_btn.text = "%s %s" % [verb, str(best.get("name", "place"))]
+        prompt_btn.text = "A  %s %s" % [verb, str(best.get("name", "place"))]
 
 
 func _on_prompt_pressed() -> void:
