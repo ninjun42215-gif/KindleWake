@@ -117,3 +117,11 @@ Answer in plain English. Lead with what you did and what I should do next. Keep 
 - Elemental rune spells add Burn, Chill, Shock, Exposed, Regen and life-drain effects. Verify turn tick and combat UI feedback.
 - Original rune sprite atlas at assets/art/runes/rune_atlas.svg; do not import third-party itch.io art unless the exact asset page and licence permit redistribution and modification.
 - CI run 42646097605 passed on project version 0.9.1 (312 checks, 0 failures; balance report and signed Android APK). Device playtest remains pending; review the draft PR before merge.
+
+
+## Visual art pass — original environment and UI assets
+- Added `assets/art/props/field_props.svg`, a 4×4 atlas of 16 original props: arch, broken column, rune stone, torch, reeds, crystals, grave marker, banner, mushrooms, stump, barrel, crate, campfire, frost pine, statue and flowers.
+- Added `assets/art/ui/title_illustration.svg` as a new painted-style landscape backdrop and `ornament_divider.svg` as a reusable fantasy divider.
+- `Art.draw_prop()` now loads atlas cells. Tactical battle tiles use terrain-matched props (forest trees, marsh reeds, snow pines, ash campfires, ruin columns and cliff crystals); town tiles receive stallside crates, barrels, torches, banners, columns and sparse flowers.
+- These are original project-authored vector assets; no unverified third-party pack was imported in this pass. Existing unit sprite sheets remain in place and should receive a separate animation/character-art upgrade pass.
+- CI validation for this asset pass is still running; prior v0.10.0 CI runs had two balance/stat test failures, so do not call the latest branch build verified until a current run completes.
