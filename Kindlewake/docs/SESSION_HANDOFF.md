@@ -1,3 +1,7 @@
+# Development checkpoint — v0.7.13 (2026-11-09)
+
+Expanded the existing playable Sallow Marches overworld with three searchable, road-connected ruin landmarks in `data/world.json`: Sunken Tollhouse (45 gold), Hollowroot Warren (75 gold), and Warden's Barrow (90 gold). They use the current generic ruin search interaction and `found_<id>` flags, so each reward is one-time. This is a small regional exploration expansion, not yet a full dungeon interior or a new town. The original starting keep, Sallow Crossing, Old Watchtower and Roadwolf Camp remain. No save schema or scene format changed. Godot runtime tests remain deferred as requested; do not claim these locations have been executed in-engine.
+
 # Repository delivery note — v0.7.12 (2026-11-09)
 
 Gameplay remains at v0.7.9. Added `data/continents.json` as a design-only blueprint for four large continents (Eldrimar, Thalassar, Varakhan, Nhalor), 16 subregions, settlement/dungeon hooks and staged travel gates. Expanded GDD section 11.3 with regional exploration, a travel progression inspired by broad genre conventions, and campaign-save requirements. This does not add playable regions or change `data/world.json`, `data/locations.json`, project version, or save schema v2. Runtime tests are deliberately deferred per the user's earlier instruction; do not claim this design-only change was runtime-tested. Repository source remains `Kindlewake/` on `main`; future changes are direct file commits, never routine ZIP uploads.
