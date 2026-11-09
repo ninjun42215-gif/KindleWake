@@ -4,7 +4,7 @@ Implemented on main:
 - Added a dedicated title screen with New Game (opens protagonist creator), Continue, Load Game (manual slots), and Settings (master volume slider). Continue resolves the newest valid campaign save among autosaves and manual slots.
 - Added campaign-level saves containing party, protagonist profile, overworld position and regional flags. Overworld autosaves every 25 seconds while safe from modal UI, and before entering towns or battles. Save format remains SaveSystem v3; older battle-only saves are ignored by title Continue.
 - Rebalanced equipment prices by rarity: Common 25–100g, Uncommon 180–420g, Rare 850–2,400g, Epic 3,500–9,000g, Legendary 12,500–30,000g, Mythical 38,000–85,000g. Unique remains reward-only. High-tier armor defenses and accessory bonuses were moderated.
-- Sethorn market now stocks a curated Common/Uncommon selection and only five basic sigils; it no longer offers every tier at every counter. Sellback reduced to 35% to limit infinite resale profit.
+- Sethorn market now stocks a curated Common/Uncommon selection and only five basic sigils. Thornmere, Foxglove, Elderbough, Cindermead, Redwater and Milefort each have distinct regional stock, with premium tiers appearing only in later markets. Sellback reduced to 35% to limit infinite resale profit.
 - Runtime and device validation still required; confirm the next GitHub Actions APK build before distribution.
 
 
