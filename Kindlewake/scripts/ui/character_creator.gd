@@ -316,7 +316,12 @@ func _refresh_preview() -> void:
         var temperament: Dictionary = (config.get("temperaments", {}) as Dictionary).get(str(profile.get("temperament", "")), {})
         var origin_bonus: String = _format_bonuses(origin.get("stat_bonus", {}))
         var temperament_bonus: String = _format_bonuses(temperament.get("stat_bonus", {}))
-        preview_text.text = "%s\n%s presentation · %s build\n%s · %s\nWeapon: %s\nTemperament: %s\nOrigin: %s\nBonuses: %s / %s" % [
+        var allocation: Dictionary = profile.get("stat_allocation", {})
+        var allocation_text: String = "Starting stats: STR %d · DEX %d · INT %d · VIT %d · SPD %d · LCK %d" % [
+            int(allocation.get("str", 0)), int(allocation.get("dex", 0)), int(allocation.get("int", 0)),
+            int(allocation.get("vit", 0)), int(allocation.get("spd", 0)), int(allocation.get("lck", 0))
+        ]
+        preview_text.text = "%s\n%s presentation · %s build\n%s · %s\nWeapon: %s\nTemperament: %s\nOrigin: %s\nBonuses: %s / %s\n%s" % [
             str(profile.get("name", "")), str(profile.get("presentation", "")).capitalize(),
             str(profile.get("build", "")).capitalize(), str(origin.get("name", "")),
             str(discipline.get("name", "")), str(profile.get("weapon_preference", "")).capitalize(),
