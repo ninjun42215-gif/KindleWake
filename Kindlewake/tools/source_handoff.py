@@ -44,7 +44,7 @@ Windows PowerShell (Python 3):
   py -3 source_handoff.py reassemble --parts-dir . --output Kindlewake-Source-Handoff.zip
   py -3 source_handoff.py verify --archive Kindlewake-Source-Handoff.zip --extract-to .\\Kindlewake-Handoff-Extracted
 
-The helper is at Kindlewake/tools/source_handoff.py in the same repository.
+The source_handoff.py helper is included beside these parts in this artifact folder.
 It checks missing/extra parts, numeric ordering, each part's size and SHA-256,
 the reconstructed archive size/hash, ZIP CRC, and every tracked file's hash.
 Extraction rejects traversal paths and refuses to overwrite a non-empty folder.
@@ -140,10 +140,13 @@ def pack(a):
         "archive": ARCHIVE, "archive_size_bytes": archive.stat().st_size,
         "archive_sha256": archive_hash, "part_limit_bytes": a.part_size,
         "part_count": len(parts), "parts": parts,
+        "recovery_tool": {"name": "source_handoff.py", "sha256": digest(Path(__file__))},
     }
+    shutil.copy2(Path(__file__), parts_dir / "source_handoff.py")
     write_json(parts_dir / "PARTS-MANIFEST.json", manifest)
     (parts_dir / "SHA256SUMS.txt").write_text(
-        f"{archive_hash}  {ARCHIVE}\n" + "".join(f"{p['sha256']}  {p['name']}\n" for p in parts),
+        f"{archive_hash}  {ARCHIVE}\n" + "".join(f"{p['sha256']}  {p['name']}\n" for p in parts) +
+        f"{manifest['recovery_tool']['sha256']}  source_handoff.py\n",
         encoding="utf-8")
     (out / "AI_NEXT_SESSION.md").write_text(ai, encoding="utf-8")
     (parts_dir / "AI_NEXT_SESSION.md").write_text(ai, encoding="utf-8")
@@ -156,6 +159,12 @@ def reassemble(a):
     folder = a.parts_dir.resolve()
     manifest = json.loads((folder / "PARTS-MANIFEST.json").read_text(encoding="utf-8"))
     parts = manifest.get("parts", [])
+    tool = manifest.get("recovery_tool")
+    if not tool or tool.get("name") != "source_handoff.py":
+        raise SystemExit("Recovery tool entry is missing from PARTS-MANIFEST.json.")
+    tool_path = folder / tool["name"]
+    if not tool_path.is_file() or digest(tool_path) != tool["sha256"]:
+        raise SystemExit("Recovery helper is missing or its SHA-256 does not match.")
     expected = [p["name"] for p in parts]
     actual = sorted(p.name for p in folder.glob(PREFIX + "*"))
     if not parts or actual != expected:
