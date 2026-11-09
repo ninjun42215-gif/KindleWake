@@ -1,5 +1,9 @@
 class_name PartyState
 extends RefCounted
+
+const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
+const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
+const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
 ## The persistent party: roster of CharacterSheets, shared inventory and gold.
 ## Pure data + rules (no nodes), so it is unit-testable headless; the GameState autoload just owns one.
 
@@ -42,7 +46,7 @@ static func new_game(start: Dictionary, characters: Dictionary, protagonist_defi
 func add_member(char_id: String, def: Dictionary) -> void:
     if sheets.has(char_id):
         return
-    sheets[char_id] = CharacterSheet.from_def(char_id, def)
+    sheets[char_id] = CharacterSheetScript.from_def(char_id, def)
     roster.append(char_id)
 
 
@@ -73,7 +77,7 @@ func remove_item(item_id: String, n: int = 1) -> bool:
 
 ## Moves an item from the inventory into a slot (the old item goes back). Returns "" on success or a reason.
 func equip(char_id: String, slot: String, item_id: String, db: Dictionary) -> String:
-    var sh: CharacterSheet = sheet(char_id)
+    var sh: CharacterSheetScript = sheet(char_id)
     if sh == null:
         return "Unknown character."
     if item_count(item_id) <= 0:
@@ -184,9 +188,9 @@ func battle_rewards(units: Array, result: String, db: Dictionary = {}) -> Dictio
     var survivors: Array[String] = []
     var deployed: Dictionary = {}
     for o in units:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         if u.team == "enemy" and not u.is_alive():
-            var r: Dictionary = CombatCalc.enemy_reward(u)
+            var r: Dictionary = CombatCalcScript.enemy_reward(u)
             tot_exp += int(r["exp"])
             tot_ap += int(r["ap"])
             tot_gold += int(r["gold"])
