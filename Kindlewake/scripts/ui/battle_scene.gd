@@ -1252,8 +1252,7 @@ func _apply_responsive_hud() -> void:
     # Reflow key HUD elements for narrow phones without shrinking the game world.
     var vw: float = get_viewport().get_visible_rect().size.x
     var vh: float = get_viewport().get_visible_rect().size.y
-    var compact: bool = vw < 900.0
-    # Compact landscape phones need a denser HUD while keeping the battlefield clear.
+    # Reuse the orientation-aware compact flag declared above.
     if info_label != null:
         info_label.custom_minimum_size = Vector2(clampf(vw * 0.24, 155.0, 330.0), 0.0)
         info_label.add_theme_font_size_override("font_size", 14 if compact else 18)
