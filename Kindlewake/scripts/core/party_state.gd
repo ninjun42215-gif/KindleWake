@@ -140,17 +140,17 @@ func equip_sigil(char_id: String, group: String, index: int, inv_index: int, db:
     if sh == null:
         return "Unknown character."
     if not CharacterSheetScript.SIGIL_GROUPS.has(group):
-        return "Sigils go into the weapon or the armor."
+        return "Runes go into the weapon or the armor."
     var items: Dictionary = db.get("items", {})
     for inst0 in sh.fit_sockets(items):
         sigil_inv.append(inst0)
     if index < 0 or index >= sh.socket_count(group, items):
         return "There is no such socket."
     if inv_index < 0 or inv_index >= sigil_inv.size():
-        return "That sigil is not in the inventory."
+        return "That rune is not in the inventory."
     var inst: Dictionary = sigil_inv[inv_index]
     if not (db.get("sigils", {}) as Dictionary).has(str(inst.get("id", ""))):
-        return "Unknown sigil."
+        return "Unknown rune."
     var old: Dictionary = sh.sigil_at(group, index)
     sigil_inv.remove_at(inv_index)
     if not old.is_empty():
