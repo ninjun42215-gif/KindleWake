@@ -114,7 +114,7 @@ Artifact: Kindlewake-Full-Backup.
 
 File: .github/workflows/workflow-lint.yml
 
-Runs on pushes, pull requests and manual dispatch. It parses every workflow YAML file so syntax errors are caught early. This validates YAML syntax, not every GitHub Actions semantic, permission or runtime rule.
+Runs on pushes, pull requests and manual dispatch. It parses every workflow YAML file, runs the source-handoff and organizer safety tests, and smoke-tests the read-only branch hygiene report. This validates YAML syntax and those utility scripts, not every GitHub Actions semantic, permission or runtime rule.
 
 ## Recommended routine
 
