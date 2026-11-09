@@ -871,3 +871,12 @@ The character sheet includes a Company bond tile with a loyalty value and readab
 - On returning to the overworld after victory, the company receives a one-time authored acknowledgement and the campaign is saved.
 - Regression tests cover battle identity, persistent victory flag, authored text, map dimensions, unit deployment, canonical-data immutability and controller setup.
 - Scope boundary: this completes the opening prologue decision -> traversal -> tactical escape hand-off, not the entire 45–60 minute vertical slice. The persistent journal, first keep restoration decision, investigation, expanded cinematic scenes and physical Android-device QA remain future work.
+
+
+## Global world expansion — The Sevenfold World
+
+The campaign now has a seven-continent world atlas above the existing regional overworld. Eldrimar remains the current playable continent, and the 64×48 Sethmarch Frontier remains intact as its first detailed regional map. The atlas introduces six additional original continents: Veyrwood, Kharadune, Asterreach, Namaris, Drakemarch and Ilyr.
+
+Each continent has its own capital, ruling power, climate, cultural identity, political conflict, signature locations, four named macro-regions, campaign hook and original normalized map silhouette. The seven regions are connected by the central mystery of the fractured covenant seals, giving the main plot a geographic spine while preserving local political conflicts and character-driven side stories.
+
+The World Atlas is reachable from the overworld HUD. Players can inspect all seven continents and their lore; only Eldrimar is currently the active frontier. The other six routes remain explicitly story-locked until their future playable regional maps, travel systems, quests, settlements and encounter content are implemented. The atlas is a genuine navigable campaign overview, **not a claim that all seven continents are already explorable**. No existing regional map, campaign position or save schema is replaced.
