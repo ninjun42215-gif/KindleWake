@@ -8,14 +8,14 @@ const PartyStateScript = preload("res://scripts/core/party_state.gd")
 ## It owns no rules: every action goes through PartyStateScript / CharacterSheetScript / ShopSystem, the same code paths the
 ## headless tests cover. It reads no autoloads, so it can be built in tests.
 ## Usage: setup(party, db, shop) then open(); listen to `closed`.
-## db needs "classes", "weapons", "items", "sigils", "skills" (GameData.party_db()).
+## db needs "classes", "weapons", "items", "runes", "skills" (GameData.party_db()).
 
 signal closed()
 
 const TAB_GEAR := 0
 const TAB_SIGILS := 1
 const TAB_SHOP := 2
-const TAB_NAMES: Array[String] = ["Equipment", "Sigils", "Shop"]
+const TAB_NAMES: Array[String] = ["Equipment", "runes", "Shop"]
 
 const COL_BG := Color(0.106, 0.092, 0.07)
 const COL_PANEL := Color(0.19, 0.155, 0.11)
@@ -52,7 +52,7 @@ var focus_slot: String = ""           # Equipment tab: the slot whose choices ar
 var focus_group: String = ""          # Sigils tab: "weapon" or "armor"
 var focus_index: int = -1             # Sigils tab: the socket whose choices are open
 var shop_selling: bool = false
-var shop_pick: String = ""            # Shop tab: the card that is open for compare + confirm ("buy:item:<id>", "sell:item:<id>", "sell:sigil:<n>")
+var shop_pick: String = ""            # Shop tab: the card that is open for compare + confirm ("buy:item:<id>", "sell:item:<id>", "sell:rune:<n>")
 var message: String = ""
 var message_ok: bool = false          # true when `message` reports something that worked (shown green, otherwise red)
 var changed: bool = false             # true once anything was equipped, socketed, promoted, bought or sold
@@ -64,6 +64,7 @@ var keep_roster: int = 0
 var keep_sheet: int = 0
 var reset_scroll: bool = false        # right panel back to the top on the next rebuild
 var reset_sheet: bool = false         # character sheet back to the top on the next rebuild
+var rune_rng := RandomNumberGenerator.new()
 var builds: int = 0                   # how many times the layout was completely built (tests use it to catch half-built screens)
 
 
@@ -71,6 +72,7 @@ func setup(p_party: PartyStateScript, p_db: Dictionary, p_shop: Dictionary, allo
     party = p_party
     db = p_db
     shop = p_shop
+    rune_rng.randomize()
     shop_access_allowed = allow_shop
     if not shop_access_allowed and tab == TAB_SHOP:
         tab = TAB_GEAR
@@ -297,15 +299,15 @@ func _rarity_color(item_id: String) -> Color:
 
 
 func _sigil_def(sigil_id: String) -> Dictionary:
-    return (db.get("sigils", {}) as Dictionary).get(sigil_id, {})
+    return (db.get("runes", {}) as Dictionary).get(sigil_id, {})
 
 
-## Display name of bag sigil number `bag_index` ("sigil" when the index is stale).
+## Display name of bag sigil number `bag_index` ("rune" when the index is stale).
 func _bag_sigil_name(bag_index: int) -> String:
     if bag_index < 0 or bag_index >= party.sigil_inv.size():
-        return "sigil"
+        return "rune"
     var inst: Dictionary = party.sigil_inv[bag_index]
-    return str(_sigil_def(str(inst.get("id", ""))).get("name", "sigil"))
+    return str(_sigil_def(str(inst.get("id", ""))).get("name", "rune"))
 
 
 ## Green/red stat changes for an equip preview, wrapped onto several lines when needed.
@@ -462,7 +464,7 @@ func _build_sheet() -> Control:
 
 func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
     var items: Dictionary = db.get("items", {})
-    var sdefs: Dictionary = db.get("sigils", {})
+    var sdefs: Dictionary = db.get("runes", db.get("sigils", {}))
     var skills: Dictionary = db.get("skills", {})
     var classes: Dictionary = db.get("classes", {})
     var d: Dictionary = sh.derived(db)
@@ -542,7 +544,7 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
     var known: Array[String] = sh.all_skills(items, sdefs, classes)
     _add_section(box, "Skills")
     if known.is_empty():
-        box.add_child(_label("None yet. Socket a magic sigil to learn spells, or promote.", 16, COL_DIM))
+        box.add_child(_label("None yet. Socket a magic rune to learn spells, or promote.", 16, COL_DIM))
     for sid in known:
         var text: String = ItemInfo.skill_line(sid, skills)
         var pieces: PackedStringArray = text.split(": ", true, 1)
@@ -572,7 +574,9 @@ func _hint() -> String:
     if tab == TAB_GEAR:
         return "Tap a slot to compare gear. Green is better, red is worse."
     if tab == TAB_SIGILS:
-        return "Tap a socket to place or swap a sigil. Linked sockets (=) boost each other."
+        return "Tap a socket to equip a rune. Linked sockets (=) amplify support effects."
+    if tab == TAB_FORGE:
+        return "Combine three matching runes for a chance at the next grade. Failure preserves one rune."
     if shop_selling:
         return "Tap an item, then press Confirm to sell it."
     return "Tap an item to compare it with your gear, then press Confirm to buy."
@@ -617,6 +621,8 @@ func _build_right() -> Control:
         _fill_gear(box)
     elif tab == TAB_SIGILS:
         _fill_sigils(box)
+    elif tab == TAB_FORGE:
+        _fill_forge(box)
     else:
         _fill_shop(box)
     outer.add_child(scroll)
@@ -729,7 +735,7 @@ func _fill_bag_overview(box: VBoxContainer) -> void:
         v.add_child(_label("%s: %s" % [ItemInfo.slot_name(str((items.get(iid, {}) as Dictionary).get("slot", ""))), ItemInfo.item_line(iid, items, weapons, false)], 14, COL_DIM))
         p.add_child(v)
         box.add_child(p)
-    box.add_child(_label("Sigils in the bag: %d" % party.sigil_inv.size(), 15, COL_DIM))
+    box.add_child(_label("runes in the bag: %d" % party.sigil_inv.size(), 15, COL_DIM))
 
 
 # ---------------------------------------------------------------- Sigils tab
@@ -743,14 +749,14 @@ func _fill_sigils(box: VBoxContainer) -> void:
     if sh == null:
         return
     var items: Dictionary = db.get("items", {})
-    var sdefs: Dictionary = db.get("sigils", {})
+    var sdefs: Dictionary = db.get("runes", {})
     for group in CharacterSheetScript.SIGIL_GROUPS:
         var item_id: String = sh.item_in(group)
         var n: int = sh.socket_count(group, items)
         var head: String = "%s: %s" % [ItemInfo.slot_name(group), "- nothing equipped -" if item_id == "" else _item_name(item_id)]
         _add_section(box, head)
         if n > 0:
-            box.add_child(_label("%d sockets, AP x%d (a better item levels sigils faster)" % [n, sh.socket_ap_mult(group, items)], 15, COL_DIM))
+            box.add_child(_label("%d sockets, AP x%d (a better item levels runes faster)" % [n, sh.socket_ap_mult(group, items)], 15, COL_DIM))
         if n == 0:
             box.add_child(_label("This item has no sockets.", 16, COL_DIM))
             continue
@@ -788,7 +794,8 @@ func _socket_button(sh: CharacterSheetScript, group: String, index: int, sdefs: 
         cbox.add_child(_label("socket %d" % (index + 1), 14, COL_DIM))
     else:
         var sd: Dictionary = sdefs.get(str(inst.get("id", "")), {})
-        cbox.add_child(_label(ItemInfo.sigil_short(inst, sd), 17, COL_GOLD))
+        cbox.add_child(_rune_icon(inst, 40))
+        cbox.add_child(_label("%s · %s" % [ItemInfo.sigil_short(inst, sd), RuneSystem.grade_of(inst, sdefs).capitalize()], 17, COL_GOLD))
         cbox.add_child(_label(ItemInfo.sigil_ap_text(inst, sd), 14, COL_DIM))
     _seal(holder)
     return holder
@@ -796,7 +803,7 @@ func _socket_button(sh: CharacterSheetScript, group: String, index: int, sdefs: 
 
 func _fill_socket_choices(box: VBoxContainer, sh: CharacterSheetScript, group: String, index: int) -> void:
     var items: Dictionary = db.get("items", {})
-    var sdefs: Dictionary = db.get("sigils", {})
+    var sdefs: Dictionary = db.get("runes", {})
     var skills: Dictionary = db.get("skills", {})
     var inst: Dictionary = sh.sigil_at(group, index)
     var wrap := PanelContainer.new()
@@ -805,7 +812,7 @@ func _fill_socket_choices(box: VBoxContainer, sh: CharacterSheetScript, group: S
     inner.add_theme_constant_override("separation", 8)
     wrap.add_child(inner)
     if inst.is_empty():
-        inner.add_child(_label("Socket %d is empty. Choose a sigil from the bag:" % (index + 1), 17, COL_GOLD))
+        inner.add_child(_label("Socket %d is empty. Choose a rune from the bag:" % (index + 1), 17, COL_GOLD))
     else:
         var sd: Dictionary = sdefs.get(str(inst.get("id", "")), {})
         var lv: int = CharacterSheetScript.sigil_level(inst, sd)
@@ -816,9 +823,9 @@ func _fill_socket_choices(box: VBoxContainer, sh: CharacterSheetScript, group: S
         if linked_ap > 0:
             inner.add_child(_label("Linked Tutor: +%d%% AP" % linked_ap, 15, COL_GOOD))
         inner.add_child(_button("Remove (back to the bag)", _on_unsocket.bind(group, index), Vector2(0, 50), 18))
-        inner.add_child(_label("Or swap with a sigil from the bag:", 16, COL_DIM))
+        inner.add_child(_label("Or swap with a rune from the bag:", 16, COL_DIM))
     if party.sigil_inv.is_empty():
-        inner.add_child(_label("The bag holds no sigils. Buy one in the Shop tab, or master a sigil to forge a copy.", 16, COL_DIM))
+        inner.add_child(_label("The bag holds no runes. Buy one in the Shop tab, or master a rune to forge a copy.", 16, COL_DIM))
         inner.add_child(_button("Open the Shop", _on_tab.bind(TAB_SHOP), Vector2(0, 50), 18))
     for bag_i in range(party.sigil_inv.size()):
         var bi: Dictionary = party.sigil_inv[bag_i]
@@ -827,12 +834,76 @@ func _fill_socket_choices(box: VBoxContainer, sh: CharacterSheetScript, group: S
         var cp: Array = _card(_on_socket_sigil.bind(group, index, bag_i))
         var holder: PanelContainer = cp[0]
         var cbox: VBoxContainer = cp[1]
-        cbox.add_child(_label(str(bd.get("name", "?")), 18, COL_GOLD))
+        cbox.add_child(_rune_icon(bi, 40))
+        cbox.add_child(_label("%s · %s" % [str(bd.get("name", "?")), RuneSystem.grade_of(bi, sdefs).capitalize()], 18, COL_GOLD))
         cbox.add_child(_label(ItemInfo.sigil_progress(bi, bd), 15))
         cbox.add_child(_label(ItemInfo.sigil_effect(bd, blv, skills), 14, COL_DIM))
         _seal(holder)
         inner.add_child(holder)
     box.add_child(wrap)
+
+
+func _fill_forge(box: VBoxContainer) -> void:
+    var rune_defs: Dictionary = db.get("runes", db.get("sigils", {}))
+    _add_section(box, "Rune Fusion")
+    box.add_child(_label("Three identical runes of the same grade are consumed. Success creates the next grade; failure returns one rune at its original grade.", 15, COL_DIM))
+    var grouped: Dictionary = {}
+    for inst0 in party.sigil_inv:
+        var inst: Dictionary = inst0
+        var id: String = str(inst.get("id", ""))
+        var grade: String = RuneSystem.grade_of(inst, rune_defs)
+        var key := id + "|" + grade
+        grouped[key] = int(grouped.get(key, 0)) + 1
+    var keys: Array = grouped.keys()
+    keys.sort()
+    if keys.is_empty():
+        box.add_child(_label("No spare runes to combine.", 17, COL_DIM))
+    for key0 in keys:
+        var parts := str(key0).split("|")
+        var id: String = parts[0]
+        var grade: String = parts[1]
+        var count: int = int(grouped[key0])
+        var rd: Dictionary = rune_defs.get(id, {})
+        var next: String = RuneSystem.next_grade(grade)
+        var chance: int = RuneSystem.success_chance(next)
+        var cp: Array = _card(_on_fuse_rune.bind(id, grade), false, count < 3 or next == "")
+        var holder: PanelContainer = cp[0]
+        var inner: VBoxContainer = cp[1]
+        inner.add_child(_label("%s — %s" % [str(rd.get("name", id)), grade.capitalize()], 18, _rune_grade_color(grade)))
+        inner.add_child(_label("%d available · %s" % [count, "MAX GRADE" if next == "" else "%d%% chance to become %s" % [chance, next.capitalize()]], 15, COL_DIM))
+        inner.add_child(_label("Requires 3 matching runes" if count < 3 else ("Failure keeps 1 rune" if next != "" else "Already at highest grade"), 14, COL_BAD if count < 3 else COL_DIM))
+        _seal(holder)
+        box.add_child(holder)
+
+
+func _rune_grade_color(grade: String) -> Color:
+    return RARITY_COLORS.get(grade, COL_TEXT)
+
+
+func _rune_icon(inst: Dictionary, size: int = 40) -> TextureRect:
+    var rune_defs: Dictionary = db.get("runes", db.get("sigils", {}))
+    var rd: Dictionary = rune_defs.get(str(inst.get("id", "")), {})
+    var rune_type: String = str(rd.get("rune_type", "arcane"))
+    var columns := {"arcane":0,"vitality":1,"flame":2,"frost":3,"holy":4,"shadow":5,"storm":6,"earth":7,"wind":7,"fortune":1}
+    var grades: Array[String] = ["common","uncommon","rare","epic","legendary","mythical"]
+    var col: int = int(columns.get(rune_type, 0))
+    var row: int = maxi(0, grades.find(RuneSystem.grade_of(inst, rune_defs)))
+    var atlas := AtlasTexture.new()
+    atlas.atlas = load("res://assets/art/runes/rune_atlas.svg")
+    atlas.region = Rect2(col * 40, row * 40, 40, 40)
+    var icon := TextureRect.new()
+    icon.texture = atlas
+    icon.custom_minimum_size = Vector2(size, size)
+    icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    return icon
+
+
+func _on_fuse_rune(rune_id: String, grade: String) -> void:
+    var result: Dictionary = party.fuse_runes(rune_id, grade, db, rune_rng)
+    if not bool(result.get("ok", false)):
+        _after(str(result.get("error", "Fusion could not be performed.")))
+        return
+    _after(str(result.get("message", "Fusion complete.")), bool(result.get("success", false)))
 
 
 # ---------------------------------------------------------------- Shop tab
@@ -867,7 +938,7 @@ func _price_card(handler: Callable, title: String, title_color: Color, desc: Str
 
 func _fill_shop(box: VBoxContainer) -> void:
     var items: Dictionary = db.get("items", {})
-    var sdefs: Dictionary = db.get("sigils", {})
+    var sdefs: Dictionary = db.get("runes", {})
     var weapons: Dictionary = db.get("weapons", {})
     var skills: Dictionary = db.get("skills", {})
     var mode_row := HBoxContainer.new()
@@ -936,11 +1007,11 @@ func _fill_shop(box: VBoxContainer) -> void:
         var bi: Dictionary = party.sigil_inv[bag_i]
         var bd: Dictionary = sdefs.get(str(bi.get("id", "")), {})
         var sigil_for: int = ShopSystem.sell_price(int(bd.get("price", 0)), shop)
-        var gkey: String = "sell:sigil:%d" % bag_i
+        var gkey: String = "sell:rune:%d" % bag_i
         var gpicked: bool = shop_pick == gkey
         box.add_child(_price_card(_on_shop_pick.bind(gkey), str(bd.get("name", "?")), COL_GOLD, ItemInfo.sigil_progress(bi, bd), "%d g" % sigil_for, COL_GOLD, false, "", gpicked))
         if gpicked:
-            _fill_shop_detail(box, "sigil", "", _on_confirm_sell_sigil.bind(bag_i), "Confirm: sell for %d g" % sigil_for, true, true)
+            _fill_shop_detail(box, "rune", "", _on_confirm_sell_sigil.bind(bag_i), "Confirm: sell for %d g" % sigil_for, true, true)
         listed += 1
     if listed == 0:
         box.add_child(_label("Nothing to sell.", 17, COL_DIM))
@@ -958,7 +1029,7 @@ func _fill_shop_detail(box: VBoxContainer, kind: String, id: String, confirm: Ca
     elif kind == "item":
         _add_compare(inner, id)
     else:
-        inner.add_child(_label("Sigils go into the sockets of a weapon or armor (Sigils tab).", 15, COL_DIM))
+        inner.add_child(_label("runes go into the sockets of a weapon or armor (runes tab).", 15, COL_DIM))
     var row := HBoxContainer.new()
     row.add_theme_constant_override("separation", 8)
     var cancel := _button("Cancel", _on_shop_pick.bind(shop_pick), Vector2(130, 54), 19)
@@ -1120,7 +1191,7 @@ func _on_unsocket(group: String, index: int) -> void:
     if problem != "":
         _after(problem)
         return
-    _after("Sigil returned to the bag.", true)
+    _after("rune returned to the bag.", true)
 
 
 func _on_shop_mode(selling: bool) -> void:
@@ -1137,7 +1208,7 @@ func _on_buy(kind: String, id: String) -> void:
         problem = ShopSystem.buy_item(party, id, db, shop)
         shown = _item_name(id)
     else:
-        problem = ShopSystem.buy_sigil(party, id, db, shop)
+        problem = ShopSystem.buy_rune(party, id, db, shop)
         shown = str(_sigil_def(id).get("name", id))
     if problem != "":
         _after(problem)
@@ -1180,7 +1251,7 @@ func _on_sell_item(item_id: String) -> void:
 
 func _on_sell_sigil(bag_index: int) -> void:
     var shown: String = _bag_sigil_name(bag_index)
-    var problem: String = ShopSystem.sell_sigil(party, bag_index, db, shop)
+    var problem: String = ShopSystem.sell_rune(party, bag_index, db, shop)
     if problem != "":
         _after(problem)
         return
