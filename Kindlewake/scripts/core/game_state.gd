@@ -88,7 +88,6 @@ func campaign_payload() -> Dictionary:
 
 
 func save_campaign(slot_id: String = "auto_a") -> bool:
-    world_pos = world_pos if world_pos != Vector2.ZERO else world_pos
     return SaveSystem.save_slot(slot_id, campaign_payload(), "Kindlewake • %d gold • %d companions" % [party.gold, party.roster.size()])
 
 
