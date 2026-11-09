@@ -19,6 +19,7 @@ const TERRAIN_COLORS: Array[Color] = [
     Color("#2d4a63"), Color("#6a7380"), Color("#8a6b4a"), Color("#b78b52"),
 ]
 
+var active_world: Dictionary = {}
 var wmap: WorldMap
 var camera: Camera2D
 var rng := RandomNumberGenerator.new()
@@ -57,7 +58,8 @@ var creator_screen: Control
 
 func _ready() -> void:
     rng.randomize()
-    wmap = WorldMap.generate(GameData.world)
+    active_world = GameData.world_for_region(GameState.active_region_id)
+    wmap = WorldMap.generate(active_world)
     camera = Camera2D.new()
     add_child(camera)
     camera.make_current()
@@ -67,7 +69,7 @@ func _ready() -> void:
     else:
         player_pos = GameState.world_pos
     camera.position = player_pos
-    next_threshold = WorldMap.encounter_threshold(GameData.world, rng.randf())
+    next_threshold = WorldMap.encounter_threshold(active_world, rng.randf())
     _build_ui()
     _build_minimap()
     _show_prologue_acknowledgement()
@@ -194,7 +196,7 @@ func _move(delta: float) -> void:
 
 
 func _in_safe_zone(cell: Vector2i) -> bool:
-    var radius: float = float(GameData.world.get("safe_radius", 5))
+    var radius: float = float(active_world.get("safe_radius", 5))
     for p in wmap.places:
         var d: Dictionary = p
         var kind: String = str(d.get("kind", ""))
@@ -274,7 +276,14 @@ func _open_place(p: Dictionary, extra: String = "") -> void:
     var town: String = str(p.get("town", ""))
     if town != "" and GameData.locations.get("maps", {}).has(town):
         place_buttons.add_child(_btn("Enter %s" % str(p.get("name", "town")), _enter_town.bind(p), 24))
-    if kind == "gate":
+    if kind == "charter":
+        if not bool(GameState.world_flags.get("east_gallery_escaped", false)):
+            text += "\n\nThe envoy is waiting for proof that the Dunmarrow company survived the escape."
+        elif not bool(GameState.world_flags.get("chapter_2_sea_passage", false)):
+            place_buttons.add_child(_btn("Accept the Tidebound sea charter", _accept_sea_charter.bind(p), 24))
+        else:
+            text += "\n\nThe Tidebound charter is sealed. A ship is waiting at the harbour."
+    elif kind == "gate":
         var gate_flag: String = str(p.get("world_flag", ""))
         if gate_flag != "" and not bool(GameState.world_flags.get(gate_flag, false)):
             place_buttons.add_child(_btn("Pass through the regional gate", _pass_gate.bind(p), 24))
@@ -306,6 +315,13 @@ func _open_place(p: Dictionary, extra: String = "") -> void:
 func _close_place() -> void:
     panel_open = false
     place_panel.visible = false
+
+
+func _accept_sea_charter(p: Dictionary) -> void:
+    GameState.world_flags["chapter_2_sea_passage"] = true
+    GameState.world_flags["tidebound_charter_accepted"] = true
+    GameState.save_campaign("auto_a")
+    _open_place(p, "Captain Ilyra Venn accepts the seal. The Tidebound Assembly will grant your company passage to Brinegate. The route is now charted.")
 
 
 func _pass_gate(p: Dictionary) -> void:
@@ -810,6 +826,12 @@ func _build_minimap() -> void:
 
 
 func _region_name_at(cell: Vector2i) -> String:
+    if GameState.active_region_id == "brinegate_coast":
+        if cell.x >= 42 and cell.y <= 27:
+            return "Lantern Reach"
+        if cell.x >= 24 and cell.y >= 24:
+            return "Saltmere Strand"
+        return "Brinegate Coast"
     if cell.x >= 42 and cell.y <= 27:
         return "Orrowen Weald"
     if cell.x >= 35 and cell.y >= 30:
