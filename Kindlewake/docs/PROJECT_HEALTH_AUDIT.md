@@ -1,6 +1,6 @@
 # Project Health Audit — coverage and interpretation
 
-The audit is read-only. It checks JSON parseability, project inventory, project/README version drift, root workflow placement, rune-data shape/count/kind totals, and the asset-credit/provenance ledgers.
+The audit is read-only. It checks JSON parseability, project inventory, project/README/Android export version drift, positive Android version-code configuration, root workflow placement, rune-data shape/count/kind totals, and the asset-credit/provenance ledgers.
 
 ## Asset provenance and release gate
 
