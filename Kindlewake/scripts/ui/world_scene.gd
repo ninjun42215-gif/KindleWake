@@ -112,7 +112,7 @@ func _process(delta: float) -> void:
     if campaign_save_timer >= 25.0 and not panel_open and not party_screen.visible:
         campaign_save_timer = 0.0
         GameState.world_pos = player_pos
-        GameState.save_campaign("auto_a" if GameState.campaign_slot == "" else GameState.campaign_slot)
+        GameState.save_campaign("auto_a")
     if ambush_timer >= 0.0:
         ambush_timer -= delta
         if ambush_timer < 0.0:
