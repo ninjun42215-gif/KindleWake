@@ -130,5 +130,6 @@
   "victory_text": "The Rootbound Warden falls. The roots loosen their grip on the old watch-post.",
   "defeat_text": "The guardian holds the chamber. Your company is driven back to the road.",
   "reward_item": "unique_kingbreaker",
-  "battlefield": "deep_forest_marsh"
+  "battlefield": "deep_forest_marsh",
+  "reward_rune": "worldtree"
 }
