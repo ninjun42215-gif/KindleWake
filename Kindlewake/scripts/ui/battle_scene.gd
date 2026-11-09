@@ -1206,29 +1206,32 @@ func _apply_responsive_hud() -> void:
     var vw: float = get_viewport().get_visible_rect().size.x
     var vh: float = get_viewport().get_visible_rect().size.y
     var compact: bool = vw < 900.0
+    # Compact landscape phones need a denser HUD while keeping the battlefield clear.
     if info_label != null:
-        info_label.custom_minimum_size = Vector2(clampf(vw * 0.27, 190.0, 330.0), 0.0)
-        info_label.add_theme_font_size_override("font_size", 15 if compact else 18)
+        info_label.custom_minimum_size = Vector2(clampf(vw * 0.24, 155.0, 330.0), 0.0)
+        info_label.add_theme_font_size_override("font_size", 14 if compact else 18)
     if hp_caption != null:
         hp_caption.add_theme_font_size_override("font_size", 12 if compact else 13)
     if mp_caption != null:
         mp_caption.add_theme_font_size_override("font_size", 12 if compact else 13)
     if log_label != null:
-        log_label.custom_minimum_size = Vector2(clampf(vw * 0.25, 170.0, 370.0), 0.0)
-        log_label.add_theme_font_size_override("font_size", 14 if compact else 18)
+        log_label.custom_minimum_size = Vector2(clampf(vw * 0.20, 138.0, 370.0), 0.0)
+        log_label.add_theme_font_size_override("font_size", 13 if compact else 18)
     if preview_label != null:
-        preview_label.custom_minimum_size = Vector2(clampf(vw * 0.48, 250.0, 440.0), 0.0)
-        preview_label.add_theme_font_size_override("font_size", 16 if compact else 20)
-    var action_width: float = clampf(vw * 0.19, 138.0, 230.0)
-    var action_height: float = clampf(vh * 0.09, 54.0, 76.0)
+        preview_label.custom_minimum_size = Vector2(clampf(vw * 0.38, 220.0, 440.0), 0.0)
+        preview_label.add_theme_font_size_override("font_size", 15 if compact else 20)
+    var action_width: float = clampf(vw * 0.17, 124.0, 230.0)
+    var action_height: float = clampf(vh * 0.085, 48.0, 76.0)
     for action in [btn_move, btn_attack, btn_skill, btn_wait]:
         if action != null:
             action.custom_minimum_size = Vector2(action_width, action_height)
             action.add_theme_font_size_override("font_size", 18 if compact else 25)
     if btn_confirm != null:
-        btn_confirm.custom_minimum_size = Vector2(clampf(vw * 0.22, 150.0, 250.0), clampf(vh * 0.10, 58.0, 84.0))
+        btn_confirm.custom_minimum_size = Vector2(clampf(vw * 0.20, 140.0, 250.0), clampf(vh * 0.10, 54.0, 84.0))
+        btn_confirm.add_theme_font_size_override("font_size", 22 if compact else 30)
     if btn_cancel != null:
-        btn_cancel.custom_minimum_size = Vector2(clampf(vw * 0.16, 120.0, 180.0), clampf(vh * 0.10, 58.0, 84.0))
+        btn_cancel.custom_minimum_size = Vector2(clampf(vw * 0.15, 108.0, 180.0), clampf(vh * 0.10, 54.0, 84.0))
+        btn_cancel.add_theme_font_size_override("font_size", 20 if compact else 26)
     if result_scroll != null:
         result_scroll.custom_minimum_size = Vector2(clampf(vw * 0.78, 280.0, 660.0), clampf(vh * 0.28, 130.0, 190.0))
         result_text.custom_minimum_size = Vector2(clampf(vw * 0.76, 260.0, 640.0), 0.0)
