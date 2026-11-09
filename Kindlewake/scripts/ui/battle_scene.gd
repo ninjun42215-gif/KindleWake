@@ -1,6 +1,10 @@
 extends Node2D
 
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
+const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
+const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
+const PartyStateScript = preload("res://scripts/core/party_state.gd")
+const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
 ## Milestone 1 battle scene: isometric placeholder rendering, touch/mouse input and a HUD built in code.
 ## All rules live in BattleController; this script only presents state and forwards player input.
 
@@ -43,7 +47,7 @@ var suppress_autosave: bool = false
 var auto_battle: bool = false            # when true the AI also plays the player's units
 var resync_view: bool = false            # Auto was switched off while the AI loop was running
 var exp_awarded: bool = false            # EXP is paid out once per battle
-var battle_rewards: Dictionary = {}       # result of PartyState.apply_battle_result (EXP, AP, gold, sigil reports)
+var battle_rewards: Dictionary = {}       # result of PartyStateScript.apply_battle_result (EXP, AP, gold, sigil reports)
 var battle_def: Dictionary = {}           # story battle or a generated Skirmish
 
 # Gesture state (tap, drag-to-pan, pinch-to-zoom)
@@ -75,7 +79,7 @@ var prep_panel: PanelContainer          # shown before every battle: briefing, P
 var prep_title: Label
 var prep_text: Label
 var prep_active: bool = false
-var party_screen: PartyScreen
+var party_screen: PartyScreenScript
 var btn_flee: Button                     # pre-battle: leave without fighting (only when we came from the world)
 var hud_root: Control                    # everything in the HUD lives here (inset by the phone safe area)
 var preview_panel: PanelContainer        # attack / skill / move preview above Confirm and Cancel
@@ -116,7 +120,7 @@ func _start_battle() -> void:
     controller.setup(battle_def, GameState.battle_db())
     _center_camera()
     for o in controller.units:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         visual_pos[u.id] = cell_to_world(u.cell)
     _show_prep()
 
@@ -177,10 +181,10 @@ func _to_world(screen_pos: Vector2) -> Vector2:
 
 ## Units are picked first (their bodies extend above their tile), then tiles front-to-back.
 func _pick_cell(world_pos: Vector2) -> Vector2i:
-    var best_unit: BattleUnit = null
+    var best_unit: BattleUnitScript = null
     var best_y := -1.0e9
     for o in controller.units:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         if not u.is_alive():
             continue
         var p: Vector2 = visual_pos.get(u.id, cell_to_world(u.cell))
@@ -280,8 +284,8 @@ func _on_tap(world_pos: Vector2) -> void:
     var cell: Vector2i = _pick_cell(world_pos)
     if cell == NO_CELL:
         return
-    var clicked: BattleUnit = controller.unit_at(cell)
-    var a: BattleUnit = controller.active_unit()
+    var clicked: BattleUnitScript = controller.unit_at(cell)
+    var a: BattleUnitScript = controller.active_unit()
     var my_turn: bool = a != null and a.team == "player" and not ai_busy
     if clicked != null:
         inspected_id = clicked.id
@@ -303,7 +307,7 @@ func _on_tap(world_pos: Vector2) -> void:
     queue_redraw()
 
 
-func _select_move_cell(unit: BattleUnit, cell: Vector2i) -> void:
+func _select_move_cell(unit: BattleUnitScript, cell: Vector2i) -> void:
     var reach: Dictionary = controller.reach_for(unit)
     pending_cell = cell
     pending_path = controller.map.path_from(reach, unit.cell, cell)
@@ -326,7 +330,7 @@ func _enter_mode(new_mode: Mode) -> void:
 func _recompute_highlights() -> void:
     move_cells.clear()
     target_cells.clear()
-    var a: BattleUnit = controller.active_unit()
+    var a: BattleUnitScript = controller.active_unit()
     if a == null or a.team != "player" or controller.result != "":
         return
     match mode:
@@ -342,7 +346,7 @@ func _recompute_highlights() -> void:
 
 
 func _confirm() -> void:
-    var a: BattleUnit = controller.active_unit()
+    var a: BattleUnitScript = controller.active_unit()
     if input_locked or a == null or a.team != "player" or controller.result != "":
         return
     if mode == Mode.MOVE and pending_cell != NO_CELL:
@@ -353,7 +357,7 @@ func _confirm() -> void:
                 next_mode = Mode.ATTACK
             _enter_mode(next_mode)
     elif (mode == Mode.ATTACK or mode == Mode.SKILL) and pending_target_id != -1:
-        var t: BattleUnit = controller.unit_by_id(pending_target_id)
+        var t: BattleUnitScript = controller.unit_by_id(pending_target_id)
         var ok := false
         if mode == Mode.ATTACK:
             ok = controller.try_attack(a, t)
@@ -380,7 +384,7 @@ func _on_attack_pressed() -> void:
 
 
 func _on_skill_pressed() -> void:
-    var a: BattleUnit = controller.active_unit()
+    var a: BattleUnitScript = controller.active_unit()
     if a == null or a.skills.is_empty():
         return
     # Tapping Skill again while it is open cycles to the next skill; after the last one it closes.
@@ -397,7 +401,7 @@ func _on_skill_pressed() -> void:
 
 
 ## The first skill that has a target in range right now, otherwise the first skill.
-func _first_usable_skill(a: BattleUnit) -> String:
+func _first_usable_skill(a: BattleUnitScript) -> String:
     for sid in a.skills:
         if not controller.skill_targets(a, str(sid)).is_empty():
             return str(sid)
@@ -446,7 +450,7 @@ func _on_log(text: String) -> void:
 
 func _on_state_changed() -> void:
     for o in controller.units:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         if not visual_pos.has(u.id):
             visual_pos[u.id] = cell_to_world(u.cell)
     if controller.turn_count != last_turn_count:
@@ -465,7 +469,7 @@ func _begin_turn_view() -> void:
     pending_path.clear()
     pending_target_id = -1
     mode = Mode.IDLE
-    var a: BattleUnit = controller.active_unit()
+    var a: BattleUnitScript = controller.active_unit()
     if a != null and a.team == "player" and controller.result == "":
         if not auto_battle:
             if not controller.move_targets(a).is_empty():
@@ -488,7 +492,7 @@ func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
             _play_anim(tid, "hurt")
     if kind == "attack":
         var res: Dictionary = data["result"]
-        var target: BattleUnit = controller.unit_by_id(int(data["target_id"]))
+        var target: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
         if target == null:
             return
         if bool(res["hit"]):
@@ -497,11 +501,11 @@ func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
         else:
             _add_popup(target, "Miss", Color(0.75, 0.75, 0.75))
     elif kind == "skill_damage":
-        var hit_target: BattleUnit = controller.unit_by_id(int(data["target_id"]))
+        var hit_target: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
         if hit_target != null:
             _add_popup(hit_target, str(data["damage"]) + "*", Color(1.0, 0.55, 0.25))
     elif kind == "heal":
-        var healed: BattleUnit = controller.unit_by_id(int(data["target_id"]))
+        var healed: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
         if healed != null:
             _add_popup(healed, "+" + str(data["amount"]), Color(0.4, 1.0, 0.5))
 
@@ -533,7 +537,7 @@ func _show_result() -> void:
 
 
 ## True when the AI should take this unit's turn: always for enemies, and for the player's units while Auto Battle is on.
-func _ai_controls(u: BattleUnit) -> bool:
+func _ai_controls(u: BattleUnitScript) -> bool:
     if u == null:
         return false
     return u.team == "enemy" or (auto_battle and u.team == "player")
@@ -589,14 +593,14 @@ func _maybe_run_ai() -> void:
         await get_tree().create_timer(AI_DELAY).timeout
         if controller.result != "":
             break
-        var a: BattleUnit = controller.active_unit()
+        var a: BattleUnitScript = controller.active_unit()
         if not _ai_controls(a):               # Auto Battle was switched off while we waited
             break
         controller.run_ai_turn(a.team == "player")
     ai_busy = false
     if resync_view:
         resync_view = false
-        var cur: BattleUnit = controller.active_unit()
+        var cur: BattleUnitScript = controller.active_unit()
         if cur != null and cur.team == "player" and controller.result == "":
             _begin_turn_view()                # hand control back: show move/attack tiles again
     _refresh_ui()
@@ -643,7 +647,7 @@ func _save_summary() -> String:
 func _autosave() -> void:
     if suppress_autosave or controller.result != "" or controller.units.is_empty():
         return
-    var a: BattleUnit = controller.active_unit()
+    var a: BattleUnitScript = controller.active_unit()
     if a == null or a.team != "player" or ai_busy or input_locked:
         return
     SaveSystem.autosave({"battle": controller.to_dict(), "party": GameState.party.to_dict(), "battle_def": controller.def, "creation_profile": GameState.creation_profile.duplicate(true), "world_flags": GameState.world_flags.duplicate(true), "world_pos": [GameState.world_pos.x, GameState.world_pos.y], "from_world": GameState.from_world}, _save_summary())
@@ -682,7 +686,7 @@ func _on_load_pressed() -> void:
     last_turn_count = -1
     if payload.has("party"):
         var saved_party: Dictionary = payload["party"]
-        GameState.party = PartyState.from_dict(saved_party)
+        GameState.party = PartyStateScript.from_dict(saved_party)
     GameState.creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     GameState.world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
     var saved_world_pos: Array = payload.get("world_pos", [0.0, 0.0])
@@ -728,7 +732,7 @@ func _newest_slot() -> String:
 func _process(delta: float) -> void:
     var dirty := false
     for o in controller.units:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         var target: Vector2 = cell_to_world(u.cell)
         var cur: Vector2 = visual_pos.get(u.id, target)
         if cur != target:
@@ -747,7 +751,7 @@ func _process(delta: float) -> void:
         queue_redraw()
 
 
-func _add_popup(unit: BattleUnit, text: String, color: Color) -> void:
+func _add_popup(unit: BattleUnitScript, text: String, color: Color) -> void:
     var p: Vector2 = visual_pos.get(unit.id, cell_to_world(unit.cell))
     popups.append({"text": text, "pos": p, "age": 0.0, "color": color})
 
@@ -854,7 +858,7 @@ func _draw_overlays() -> void:
         var tint := Color(0.4, 0.9, 0.5, 0.45) if mode == Mode.SKILL else Color(0.95, 0.25, 0.2, 0.45)
         draw_colored_polygon(_diamond(top, 0.96), tint)
         _outline(top, Color(1, 1, 1, 0.95) if chosen else Color(1, 0.6, 0.5, 0.8), 4.0 if chosen else 1.5, 0.96)
-    var a: BattleUnit = controller.active_unit()
+    var a: BattleUnitScript = controller.active_unit()
     if a != null and a.is_alive():
         _outline(cell_to_world(a.cell), Color(1.0, 0.86, 0.3, 0.9), 2.5, 1.02)
 
@@ -870,16 +874,16 @@ func _ellipse_points(center: Vector2, rx: float, ry: float, segments: int = 20) 
 func _draw_units() -> void:
     var order: Array = []
     for o in controller.units:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         if u.is_alive():
             order.append(u)
     order.sort_custom(func(a, b): return float(visual_pos.get(a.id, Vector2.ZERO).y) < float(visual_pos.get(b.id, Vector2.ZERO).y))
     for o in order:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         _draw_unit(u, visual_pos.get(u.id, cell_to_world(u.cell)))
 
 
-func _draw_unit(u: BattleUnit, p: Vector2) -> void:
+func _draw_unit(u: BattleUnitScript, p: Vector2) -> void:
     var is_player: bool = u.team == "player"
     var body := Color(0.22, 0.50, 0.88) if is_player else Color(0.78, 0.24, 0.20)
     draw_colored_polygon(_ellipse_points(p + Vector2(0, 2), 17.0, 7.0), Color(0, 0, 0, 0.35))
@@ -928,7 +932,7 @@ func _draw_unit(u: BattleUnit, p: Vector2) -> void:
 
 ## Animated pixel sprite (Tiny RPG Soldier for the player's side, Orc for the enemy). Returns false without the art,
 ## and _draw_unit then falls back to the drawn figure.
-func _draw_unit_sprite(u: BattleUnit, p: Vector2, is_player: bool, fdir: Vector2) -> bool:
+func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: Vector2) -> bool:
     var kind: String = "soldier" if is_player else "orc"
     if Art.unit_sheet(kind, "idle") == null:
         return false
@@ -1257,7 +1261,7 @@ func _build_ui() -> void:
     menu_panel.visible = false
 
     # Full screen: party / equipment / sigils / shop (added last so it covers everything)
-    party_screen = PartyScreen.new()
+    party_screen = PartyScreenScript.new()
     root.add_child(party_screen)
     party_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     party_screen.visible = false
@@ -1291,7 +1295,7 @@ func _make_button(text: String, handler: Callable, min_size: Vector2 = Vector2(2
 func _refresh_ui() -> void:
     if info_label == null:
         return
-    var a: BattleUnit = controller.active_unit()
+    var a: BattleUnitScript = controller.active_unit()
     var my_turn: bool = a != null and a.team == "player" and controller.result == "" and not ai_busy and not input_locked
     info_label.text = _info_text()
     var pv: String = _preview_text() if not prep_active else ""
@@ -1329,7 +1333,7 @@ func _refresh_auto_button() -> void:
 
 
 func _info_text() -> String:
-    var u: BattleUnit = controller.unit_by_id(inspected_id)
+    var u: BattleUnitScript = controller.unit_by_id(inspected_id)
     if u == null:
         return "Tap a unit to inspect it."
     var w: Dictionary = controller.weapon_of(u)
@@ -1348,7 +1352,7 @@ func _info_text() -> String:
                 lv_line += "   EXP %d/%d (%d%%)" % [sh.xp, need, pct]
     lines.append(lv_line)
     lines.append("HP %d/%d   MP %d/%d" % [u.hp, u.max_hp(), u.mp, u.stat("mp")])
-    lines.append("ATK %d  DEF %d  SPD %d  MOV %d" % [roundi(CombatCalc.attack_power(u, w)), roundi(CombatCalc.defense(u, "physical")), u.stat("spd"), u.move])
+    lines.append("ATK %d  DEF %d  SPD %d  MOV %d" % [roundi(CombatCalcScript.attack_power(u, w)), roundi(CombatCalcScript.defense(u, "physical")), u.stat("spd"), u.move])
     lines.append("Morale %d   Facing %s" % [u.morale, str(BattleMap.FACING_NAMES[u.facing])])
     lines.append("%s (range %d-%d)" % [str(w.get("name", "Unarmed")), int(w.get("range_min", 1)), int(w.get("range_max", 1))])
     var tdef: Dictionary = controller.map.terrain_def(u.cell)
@@ -1359,12 +1363,12 @@ func _info_text() -> String:
 ## Move / attack / skill preview, shown in its own panel above Confirm.
 func _preview_text() -> String:
     var lines: Array[String] = []
-    var a: BattleUnit = controller.active_unit()
+    var a: BattleUnitScript = controller.active_unit()
     if a != null and a.team == "player" and controller.result == "":
         if mode == Mode.MOVE and pending_cell != NO_CELL:
             lines.append("Move to (%d,%d), cost %d. Tap again or Confirm." % [pending_cell.x, pending_cell.y, pending_cost])
         elif (mode == Mode.ATTACK or mode == Mode.SKILL) and pending_target_id != -1:
-            var t: BattleUnit = controller.unit_by_id(pending_target_id)
+            var t: BattleUnitScript = controller.unit_by_id(pending_target_id)
             if t != null:
                 if mode == Mode.ATTACK:
                     var p: Dictionary = controller.preview_attack(a, t)
@@ -1383,11 +1387,11 @@ func _preview_text() -> String:
                         lines.append(", ".join(PackedStringArray(tags)))
                 else:
                     var sk: Dictionary = controller.skills.get(active_skill, {})
-                    if CombatCalc.is_damage_skill(sk):
-                        var sp: Dictionary = CombatCalc.skill_preview(a, t, sk, active_skill, controller.weapon_of(a))
+                    if CombatCalcScript.is_damage_skill(sk):
+                        var sp: Dictionary = CombatCalcScript.skill_preview(a, t, sk, active_skill, controller.weapon_of(a))
                         lines.append("%s: %d-%d damage to %s" % [str(sk.get("name", "Skill")), int(sp["dmg_min"]), int(sp["dmg_max"]), t.display_name])
                     else:
-                        lines.append("%s: +%d HP to %s" % [str(sk.get("name", "Skill")), CombatCalc.heal_amount(a, sk, active_skill), t.display_name])
+                        lines.append("%s: +%d HP to %s" % [str(sk.get("name", "Skill")), CombatCalcScript.heal_amount(a, sk, active_skill), t.display_name])
     return "\n".join(PackedStringArray(lines)).strip_edges()
 
 
@@ -1398,7 +1402,7 @@ func _refresh_timeline() -> void:
     var order: Array = TurnQueue.timeline(controller.units, 8)
     var first := true
     for o in order:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         var panel := PanelContainer.new()
         var sb := StyleBoxFlat.new()
         sb.bg_color = Color(0.18, 0.34, 0.62) if u.team == "player" else Color(0.62, 0.20, 0.18)
