@@ -8,6 +8,11 @@ on:
         required: true
         default: main
         type: string
+      fail_on_warnings:
+        description: Fail the audit if any advisory release-readiness warning exists
+        required: false
+        default: false
+        type: boolean
   push:
     branches: ["main", "feature/**", "workflow/**"]
   pull_request:
@@ -30,7 +35,15 @@ jobs:
           ref: ${{ inputs.ref || github.sha }}
           persist-credentials: false
       - name: Run read-only project health audit
-        run: python3 Kindlewake/tools/project_health_audit.py --root . --output health-audit
+        env:
+          FAIL_ON_WARNINGS: ${{ inputs.fail_on_warnings || 'false' }}
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ "$FAIL_ON_WARNINGS" == "true" ]]; then
+            args+=(--fail-on-warnings)
+          fi
+          python3 Kindlewake/tools/project_health_audit.py --root . --output health-audit "${args[@]}"
       - name: Upload audit report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
