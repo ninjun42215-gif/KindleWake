@@ -55,7 +55,7 @@ jobs:
                       if bad:
                           raise SystemExit(f"Corrupt archive {archive_name}: {bad}")
                       for info in zf.infolist():
-                          raw = info.filename.replace("\\\\", "/")
+                          raw = info.filename.replace("\\", "/")
                           rel = PurePosixPath(raw)
                           if rel.is_absolute() or not rel.parts or any(p in ("", ".", "..") for p in rel.parts):
                               raise SystemExit(f"Unsafe path in {archive_name}: {info.filename}")
