@@ -439,6 +439,9 @@ func _on_zoom_out() -> void:
 
 
 func _on_world_pressed() -> void:
+    if str(battle_def.get("id", "")) == "east_gallery_escape" and controller.result != "victory":
+        get_tree().change_scene_to_file("res://Escape.tscn")
+        return
     if controller.result == "defeat" and _all_company_members_fallen():
         GameState.new_game()
     get_tree().change_scene_to_file("res://World.tscn")
@@ -559,7 +562,7 @@ func _show_result() -> void:
         result_continue_button.text = "Begin New Chronicle"
     else:
         result_company_button.visible = true
-        result_continue_button.text = "Continue Journey"
+        result_continue_button.text = "Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Continue Journey"
     result_text.text += "\nTurns taken: %d" % controller.turn_count
     if won:
         if str(battle_def.get("id", "")) == BATTLE_ID:
