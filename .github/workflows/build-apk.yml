@@ -84,7 +84,7 @@ jobs:
 
           # Split the completed ZIP into transport-safe chunks. Each part is
           # strictly <= 25 MiB; concatenate in lexical/numeric order to restore it.
-          part_size = 25 * 1024 * 1024
+          part_size = 25_000_000
           parts_dir = project / "dist" / "Kindlewake-Source-Handoff-Parts"
           parts_dir.mkdir(parents=True, exist_ok=True)
           with output.open("rb") as source:
@@ -112,7 +112,7 @@ jobs:
               "  copy /b Kindlewake-Source-Handoff.zip.part001+Kindlewake-Source-Handoff.zip.part002+Kindlewake-Source-Handoff.zip.part003 Kindlewake-Source-Handoff.zip\n"
               "For more than three parts, append every part in numeric order to the copy /b command.\n"
               "Verify the reconstructed archive with 7-Zip or another ZIP utility.\n"
-              "Maximum individual part size: 25 MiB (26,214,400 bytes).\n",
+              "Maximum individual part size: 25 MB (25,000,000 bytes).\n",
               encoding="utf-8",
           )
           PY
