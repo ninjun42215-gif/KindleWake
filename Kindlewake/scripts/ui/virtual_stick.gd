@@ -42,7 +42,7 @@ func _gui_input(event: InputEvent) -> void:
 
 func _update_value(point: Vector2) -> void:
     var offset := point - size * 0.5
-    _set_value(offset.limit_length(1.0) if offset.length() <= radius else offset.normalized())
+    _set_value((offset.limit_length(radius) / radius) if radius > 0.0 else Vector2.ZERO)
 
 
 func _set_value(next: Vector2) -> void:
