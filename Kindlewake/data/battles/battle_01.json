@@ -54,8 +54,8 @@
       "character_id": "torren",
       "team": "player",
       "cell": [
-        11,
-        11
+        9,
+        10
       ],
       "facing": 0,
       "protagonist": true
@@ -64,8 +64,8 @@
       "character_id": "bram",
       "team": "player",
       "cell": [
-        10,
-        10
+        8,
+        9
       ],
       "facing": 0
     },
@@ -73,8 +73,8 @@
       "character_id": "sela",
       "team": "player",
       "cell": [
-        12,
-        11
+        10,
+        10
       ],
       "facing": 0
     },
@@ -82,8 +82,8 @@
       "character_id": "brother_wystan",
       "team": "player",
       "cell": [
-        9,
-        11
+        7,
+        10
       ],
       "facing": 0
     },
@@ -91,8 +91,8 @@
       "character_id": "hask_gravelteeth",
       "team": "enemy",
       "cell": [
-        15,
-        5
+        13,
+        4
       ],
       "facing": 2,
       "commander": true
@@ -101,8 +101,8 @@
       "character_id": "roadreaver",
       "team": "enemy",
       "cell": [
-        12,
-        4
+        10,
+        3
       ],
       "facing": 2
     },
@@ -110,8 +110,8 @@
       "character_id": "roadreaver",
       "team": "enemy",
       "cell": [
-        10,
-        5
+        8,
+        4
       ],
       "facing": 2
     },
@@ -119,8 +119,8 @@
       "character_id": "roadbowman",
       "team": "enemy",
       "cell": [
-        14,
-        4
+        12,
+        3
       ],
       "facing": 2
     }
