@@ -8,6 +8,7 @@ on:
     branches:
       - "main"
       - "feature/sethmarch-regional-network"
+      - "feature/rune-system-v1"
     tags:
       - "v*"
 
