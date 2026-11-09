@@ -132,3 +132,13 @@ If 7-Zip is unavailable, use another ZIP integrity checker after reassembly.
 
 ## 10. Working style
 Be proactive and implementation-focused. The user often says “continue” to authorize the next sensible development step. Do useful repository work rather than returning status-only updates. Do not ask the user to repeat project context that is already in these files. Ask only when an essential product decision or authorization is missing. Lead with completed work and the next action; be concise but specific and honest.
+
+
+## Android build and production release workflow
+- Read `Kindlewake/docs/ANDROID_RELEASE_WORKFLOW.md` before changing Android build or release automation.
+- `.github/workflows/build-apk.yml` performs repository-wide, ref-aware CI on all branch pushes, tags, PRs and manual dispatch. Android build and source handoff are independent jobs; the source handoff must still upload if build/tests fail.
+- The APK artifact includes SHA-256 and a provenance manifest. The source handoff uses `git ls-files` from the triggering ref and preserves the <=25,000,000-byte part limit.
+- Tag builds are candidates only. Production publishing is a separate manual workflow `.github/workflows/publish-android-release.yml`, gated by the `android-production` GitHub Environment and explicit `PUBLISH` confirmation.
+- Production signing secrets belong only in that protected environment: `ANDROID_RELEASE_KEYSTORE_BASE64`, `ANDROID_RELEASE_KEY_ALIAS`, and `ANDROID_RELEASE_KEY_PASSWORD`. Never commit the private keystore.
+- Keep `project.godot` and Android preset version names aligned. Android version code is monotonically increasing; current checkpoint is version `0.10.0`, code `1000`.
+- Current builder exports APK only, not AAB. CI does not replace physical Android device QA. Verify the exact latest branch-head workflow run before claiming any new automation validated.
