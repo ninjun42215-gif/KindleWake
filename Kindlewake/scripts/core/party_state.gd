@@ -280,5 +280,8 @@ static func from_dict(d: Dictionary) -> PartyState:
     for k in inv.keys():
         p.inventory[str(k)] = int(inv[k])
     for sg in (d.get("sigil_inv", []) as Array):
-        p.sigil_inv.append((sg as Dictionary).duplicate())
+        if typeof(sg) == TYPE_DICTIONARY:
+            p.sigil_inv.append((sg as Dictionary).duplicate(true))
+        elif str(sg) != "":
+            p.sigil_inv.append({"id": str(sg), "ap": 0})
     return p
