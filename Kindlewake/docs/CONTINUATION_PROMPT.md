@@ -53,7 +53,7 @@ You are continuing development of **KINDLEWAKE: THE SUNDERED VOW**, an offline-f
 - Not implemented yet (besides Milestone 10 store builds): remaining classes as data, skills v1, status effects, fatigue, counter-attacks, forest concealment, weather, enemy tables/maps beyond the Prologue, HQ screen (the party screen is only reachable from the pre-battle panel and results screen), blacksmith upgrades, class/weapon restrictions, sprites and audio.
 
 ## This session's task — continue from v0.9.0 campaign menu and economy
-1. Title screen now launches `TitleScreen.tscn`; menu actions: New Game (CharacterCreator), Continue (newest valid campaign save), Load Game (slots 1–3 and auto A/B), Settings (master volume).
+1. Title screen now launches `TitleScreen.tscn`; menu actions: New Game (CharacterCreator), Continue (newest valid campaign save), Load Game (slots 1–3 and auto A/B), Settings (master volume); overworld HUD offers manual SAVE to slot 1.
 2. Campaign save payload stores PartyState, creation profile, world position and flags. `WorldScene` autosaves every 25 seconds and before town/battle transitions. Battle-only snapshots remain distinct and are not treated as campaign saves by Continue.
 3. Prices: Common 25–100g, Uncommon 180–420g, Rare 850–2,400g, Epic 3,500–9,000g, Legendary 12,500–30,000g, Mythical 38,000–85,000g. Unique relics remain reward-only. Each town market has a distinct `regional_stocks` entry in `data/shop.json`; `location_scene.gd` applies it by current map id.
 4. Remaining: verify Godot import/tests/APK and in-device menu/save behavior. Check if manual campaign saves need a dedicated in-game save UI; current title Load Game can load slots, but overworld currently autosaves only to `auto_a`.
