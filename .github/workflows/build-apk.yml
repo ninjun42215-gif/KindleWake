@@ -249,7 +249,7 @@ jobs:
             echo "- Do not use a stale artifact as proof for a newer commit."
             echo "- Do not publish a production release from a CI candidate; use the separately protected production workflow."
             echo "- Do not merge PRs or modify main without explicit user authorization."
-          } >> "$GITHUB_STEP_SUMMARY"
+          } | tee "$REPORT_PATH" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload portable workflow result and recommendations
         uses: actions/upload-artifact@v4
