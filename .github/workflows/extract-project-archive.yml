@@ -5,7 +5,7 @@ on:
   # the extracted project on the same branch (including main).
   push:
     branches:
-      - "**"
+      - "main"
     paths:
       - "Kindlewake_Project.zip"
   workflow_dispatch:
