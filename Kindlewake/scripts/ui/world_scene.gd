@@ -212,7 +212,7 @@ func _accumulate_danger(dist: float, cell: Vector2i) -> void:
     danger_accum += dist * wmap.danger_at(cell)
     if danger_accum >= next_threshold:
         danger_accum = 0.0
-        next_threshold = WorldMap.encounter_threshold(GameData.world, rng.randf())
+        next_threshold = WorldMap.encounter_threshold(active_world, rng.randf())
         has_target = false
         pressing = false
         ambush_timer = AMBUSH_DELAY
