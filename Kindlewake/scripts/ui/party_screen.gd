@@ -861,35 +861,34 @@ func _fill_socket_choices(box: VBoxContainer, sh: CharacterSheetScript, group: S
 func _fill_forge(box: VBoxContainer) -> void:
     var rune_defs: Dictionary = db.get("runes", db.get("sigils", {}))
     _add_section(box, "Rune Fusion")
-    box.add_child(_label("Three identical runes of the same grade are consumed. Success creates the next grade; failure returns one rune at its original grade.", 15, COL_DIM))
+    box.add_child(_label("Combine any three copies of the same rune, even when their grades differ. Rune mastery levels increase success chance; failed fusion returns one rune.", 15, COL_DIM))
     var grouped: Dictionary = {}
     for inst0 in party.sigil_inv:
         var inst: Dictionary = inst0
         var id: String = str(inst.get("id", ""))
-        var grade: String = RuneSystem.grade_of(inst, rune_defs)
-        var key := id + "|" + grade
-        grouped[key] = int(grouped.get(key, 0)) + 1
+        grouped[id] = int(grouped.get(id, 0)) + 1
     var keys: Array = grouped.keys()
     keys.sort()
     if keys.is_empty():
         box.add_child(_label("No spare runes to combine.", 17, COL_DIM))
-    for key0 in keys:
-        var parts := str(key0).split("|")
-        var id: String = parts[0]
-        var grade: String = parts[1]
-        var count: int = int(grouped[key0])
+    for id0 in keys:
+        var id := str(id0)
         var rd: Dictionary = rune_defs.get(id, {})
-        var next: String = RuneSystem.next_grade(grade)
-        var chance: int = RuneSystem.success_chance(next)
-        var cp: Array = _card(_on_fuse_rune.bind(id, grade), false, count < 3 or next == "")
+        var preview: Dictionary = RuneSystem.preview(party.sigil_inv, id, rune_defs)
+        var count: int = int(grouped[id])
+        var can_fuse: bool = bool(preview.get("ok", false))
+        var cp: Array = _card(_on_fuse_rune.bind(id, "any"), false, not can_fuse)
         var holder: PanelContainer = cp[0]
         var inner: VBoxContainer = cp[1]
-        inner.add_child(_label("%s — %s" % [str(rd.get("name", id)), grade.capitalize()], 18, _rune_grade_color(grade)))
-        inner.add_child(_label("%d available · %s" % [count, "MAX GRADE" if next == "" else "%d%% chance to become %s" % [chance, next.capitalize()]], 15, COL_DIM))
-        inner.add_child(_label("Requires 3 matching runes" if count < 3 else ("Failure keeps 1 rune" if next != "" else "Already at highest grade"), 14, COL_BAD if count < 3 else COL_DIM))
+        inner.add_child(_label(str(rd.get("name", id)), 18, COL_GOLD))
+        if can_fuse:
+            inner.add_child(_label("%d available · any grade · target %s" % [count, str(preview.grade).capitalize()], 15, COL_DIM))
+            inner.add_child(_label("%d%% success chance (+%d%% from rune mastery)" % [int(preview.chance), int(preview.level_bonus)], 15, COL_DIM))
+            inner.add_child(_label("Failure returns one %s rune" % str(preview.failure_grade).capitalize(), 14, COL_BAD))
+        else:
+            inner.add_child(_label("%d available · %s" % [count, str(preview.get("error", "Not enough matching runes."))], 15, COL_DIM))
         _seal(holder)
         box.add_child(holder)
-
 
 func _rune_grade_color(grade: String) -> Color:
     return RARITY_COLORS.get(grade, COL_TEXT)
