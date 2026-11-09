@@ -77,6 +77,8 @@ var btn_auto: Button
 var result_panel: PanelContainer
 var result_title: Label
 var result_text: Label
+var result_company_button: Button
+var result_continue_button: Button
 var result_scroll: ScrollContainer
 var prep_scroll: ScrollContainer
 var prep_panel: PanelContainer          # shown before every battle: briefing, Party / Gear / Shop, Begin
@@ -435,7 +437,17 @@ func _on_zoom_out() -> void:
 
 
 func _on_world_pressed() -> void:
+    if controller.result == "defeat" and _all_company_members_fallen():
+        GameState.new_game()
     get_tree().change_scene_to_file("res://World.tscn")
+
+
+func _all_company_members_fallen() -> bool:
+    for unit_obj in controller.units:
+        var unit: BattleUnitScript = unit_obj
+        if unit.team == "player" and unit.is_alive():
+            return false
+    return true
 
 
 func _on_restart_pressed() -> void:
@@ -520,8 +532,16 @@ func _on_battle_ended(_outcome: String) -> void:
 
 func _show_result() -> void:
     var won: bool = controller.result == "victory"
-    result_title.text = "VICTORY" if won else "DEFEAT"
+    var game_over: bool = not won and _all_company_members_fallen()
+    result_title.text = "VICTORY" if won else ("GAME OVER" if game_over else "DEFEAT")
     result_text.text = str(battle_def.get("victory_text", "The roadwolves are broken. The road to Eldrimar is open.")) if won else str(battle_def.get("defeat_text", "The Dunmarrow company has fallen."))
+    if game_over:
+        result_text.text = "The company has been wiped out. This chronicle has ended. Begin a new chronicle to continue."
+        result_company_button.visible = false
+        result_continue_button.text = "Begin New Chronicle"
+    else:
+        result_company_button.visible = true
+        result_continue_button.text = "Continue Journey"
     result_text.text += "\nTurns taken: %d" % controller.turn_count
     if won:
         if str(battle_def.get("id", "")) == BATTLE_ID:
@@ -1220,8 +1240,10 @@ func _build_ui() -> void:
     rgrid.columns = 2
     rgrid.add_theme_constant_override("h_separation", 10)
     rgrid.add_theme_constant_override("v_separation", 10)
-    rgrid.add_child(_make_button("Company • Gear • Sigils", _on_party_pressed, Vector2(320, 72), 22))
-    rgrid.add_child(_make_button("Continue Journey", _on_world_pressed, Vector2(320, 72), 22))
+    result_company_button = _make_button("Company • Gear • Sigils", _on_party_pressed, Vector2(320, 72), 22)
+    result_continue_button = _make_button("Continue Journey", _on_world_pressed, Vector2(320, 72), 22)
+    rgrid.add_child(result_company_button)
+    rgrid.add_child(result_continue_button)
     rbox.add_child(result_title)
     rbox.add_child(result_scroll)
     rbox.add_child(rgrid)
