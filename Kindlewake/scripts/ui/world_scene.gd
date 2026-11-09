@@ -848,13 +848,13 @@ func _open_world_atlas() -> void:
         return
     has_target = false
     pressing = false
-    GameState.world_pos = player_pos
+    GameState.world_pos = wmap.wrap_position(player_pos)
     GameState.save_campaign("auto_a")
     get_tree().change_scene_to_file("res://GlobalAtlas.tscn")
 
 
 func _save_campaign_manual() -> void:
-    GameState.world_pos = player_pos
+    GameState.world_pos = wmap.wrap_position(player_pos)
     if GameState.save_campaign("1"):
         GameState.campaign_slot = "1"
         banner_label.text = "Chronicle saved."
