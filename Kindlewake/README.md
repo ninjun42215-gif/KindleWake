@@ -8,7 +8,9 @@ Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Ne
 - After the extracted folder is present, future updates are direct file commits. Keep `docs/SESSION_HANDOFF.md`, `docs/GDD.md`, this README, and `docs/CONTINUATION_PROMPT.md` current with each meaningful change.
 - The nested sprite packs are optional source material only; they are not imported into scenes or license-cleared.
 
-Manual repository workflows are documented in [docs/MANUAL_GITHUB_WORKFLOWS.md](docs/MANUAL_GITHUB_WORKFLOWS.md).\n\n## v0.9.0 — Title screen, campaign saves and economy
+Manual repository workflows are documented in [docs/MANUAL_GITHUB_WORKFLOWS.md](docs/MANUAL_GITHUB_WORKFLOWS.md).
+
+## v0.9.0 — Title screen, campaign saves and economy
 - New title menu: New Game, Continue, Load Game and Settings.
 - Campaign saves preserve the party, protagonist choices, overworld position and regional flags. The overworld autosaves periodically and before travel transitions.
 - Equipment price bands now scale sharply by rarity; Unique relics remain special rewards. High-tier armor stats have been moderated.
