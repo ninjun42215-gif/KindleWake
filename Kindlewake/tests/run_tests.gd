@@ -26,6 +26,7 @@ func _initialize() -> void:
     _test_auto_battle()
     _test_progression()
     _test_sigils()
+    _test_runes()
     _test_weapon_skills()
     _test_world()
     _test_locations()
@@ -517,7 +518,7 @@ func _test_progression() -> void:
     check(knight_opts.size() == 1 and knight_opts[0] == "heavy_knight", "a level 20 knight may become a heavy knight")
 
     # --- battle rewards (FF7 rules: fixed enemy rewards, EXP split among survivors, full AP each, gold to the party)
-    var rules: Dictionary = {"classes": gd.classes, "items": gd.items, "sigils": gd.sigils}
+    var rules: Dictionary = {"classes": gd.classes, "items": gd.items, "runes": gd.sigils}
     var p2: PartyState = PartyState.new_game(gd.start, gd.characters)
     p2.add_member("roadreaver", gd.characters["roadreaver"])        # an undeployed bench member
     var bc2 := BattleController.new()
@@ -550,7 +551,7 @@ func _test_progression() -> void:
     check(p2.gold == gold0 + int(applied["gold"]) and reps.size() == 4, "gold is paid and every rewarded member gets a report")
     var wy: CharacterSheet = p2.sheet("brother_wystan")
     var wsig: Dictionary = wy.sigil_at("weapon", 0)
-    check(int(wsig.get("ap", 0)) == 20, "Brother Wystan's equipped Sigil of Mending gained the AP")
+    check(int(wsig.get("ap", 0)) == 20, "Brother Wystan's equipped rune of Mending gained the AP")
     var c3 := BattleController.new()
     c3.setup(gd.battle_def("battle_01"), gd.as_db(), 321)
     c3.begin()
@@ -574,8 +575,45 @@ func _test_progression() -> void:
     var s_old: CharacterSheet = party.sheet("torren")
     var s_new: CharacterSheet = p3.sheet("torren")
     check(p3.roster == party.roster and p3.gold == party.gold and p3.inventory == party.inventory, "party roster, gold and inventory survive a JSON round trip")
-    check(JSON.stringify(p3.sigil_inv) == JSON.stringify(party.sigil_inv) and JSON.stringify(p3.sheet("brother_wystan").sigils) == JSON.stringify(party.sheet("brother_wystan").sigils), "sigil inventory and socketed sigils survive a JSON round trip")
+    check(JSON.stringify(p3.sigil_inv) == JSON.stringify(party.sigil_inv) and JSON.stringify(p3.sheet("brother_wystan").sigils) == JSON.stringify(party.sheet("brother_wystan").sigils), "rune inventory and socketed runes survive a JSON round trip")
     check(s_new != null and s_new.equipment == s_old.equipment and s_new.base_stats == s_old.base_stats and s_new.level == s_old.level and s_new.xp == s_old.xp, "sheet equipment, stats, level and EXP survive a JSON round trip")
+
+
+func _test_runes() -> void:
+    print("[runes]")
+    var defs: Dictionary = gd.runes
+    check(defs.size() >= 16, "rune library includes multiple types and elemental families")
+    var grades_ok := true
+    for id in defs.keys():
+        var rd: Dictionary = defs[id]
+        if not RuneSystem.GRADES.has(str(rd.get("grade", ""))) or str(rd.get("rune_type", "")) == "":
+            grades_ok = false
+    check(grades_ok, "every rune defines a type and supported starting grade")
+    check(RuneSystem.next_grade("common") == "uncommon" and RuneSystem.next_grade("mythical") == "", "rune grade ladder has six tiers and a firm cap")
+    check(RuneSystem.success_chance("uncommon") == 70 and RuneSystem.success_chance("mythical") == 12, "higher-grade fusion chances decrease")
+    var saw_success := false
+    var saw_failure := false
+    for seed in range(1, 80):
+        var bag: Array = [{"id":"ember","ap":0},{"id":"ember","ap":0},{"id":"ember","ap":0}]
+        var rng := RandomNumberGenerator.new()
+        rng.seed = seed
+        var result: Dictionary = RuneSystem.combine(bag, "ember", "uncommon", defs, rng)
+        if bool(result.get("success", false)):
+            saw_success = true
+            check(bag.size() == 1 and RuneSystem.grade_of(bag[0], defs) == "rare", "successful fusion returns one higher-grade rune")
+        else:
+            saw_failure = true
+            check(bag.size() == 1 and RuneSystem.grade_of(bag[0], defs) == "uncommon", "failed fusion returns one rune at its original grade")
+        if saw_success and saw_failure:
+            break
+    check(saw_success and saw_failure, "chance-based fusion can both succeed and fail")
+    var few: Array = [{"id":"ember","ap":0},{"id":"ember","ap":0}]
+    var rng2 := RandomNumberGenerator.new()
+    rng2.seed = 4
+    var refused: Dictionary = RuneSystem.combine(few, "ember", "uncommon", defs, rng2)
+    check(not bool(refused.get("ok", false)) and few.size() == 2, "fusion refuses fewer than three runes without consuming them")
+    check(ShopSystem.for_sale(gd.shop, "rune", "ember") and not ShopSystem.for_sale({"runes":[]}, "rune", "shadow"), "only explicitly stocked rune merchants sell runes")
+    check(str(gd.skills["ember_bolt"].get("rune_effect", {}).get("status", "")) == "burn" and str(gd.skills["frost_shard"].get("rune_effect", {}).get("status", "")) == "chill", "elemental spells define special combat effects")
 
 
 func _test_weapon_skills() -> void:
@@ -603,7 +641,7 @@ func _test_weapon_skills() -> void:
     check(hero.skills.has("power_strike") and archer.skills.has("aimed_shot"), "Torren (Swordsman) knows Power Strike and Sela (Archer) knows Aimed Shot from their classes")
     check((gd.characters["torren"]["skills"] as Array).is_empty(), "the skill comes from the class, not from the character file")
     var tsheet: CharacterSheet = ps.sheet("torren")
-    check(tsheet.all_skills(db["items"], db["sigils"]).is_empty() and tsheet.all_skills(db["items"], db["sigils"], db["classes"]).has("power_strike"), "class skills need the class table; all_skills without it grants none")
+    check(tsheet.all_skills(db["items"], db["runes"]).is_empty() and tsheet.all_skills(db["items"], db["runes"], db["classes"]).has("power_strike"), "class skills need the class table; all_skills without it grants none")
     var ok_cs := true
     for k in gd.classes.keys():
         for sid in ((gd.classes[k] as Dictionary).get("class_skills", {}) as Dictionary).keys():
@@ -720,10 +758,10 @@ func _test_locations() -> void:
 
 
 func _test_sigils() -> void:
-    print("[sigils]")
+    print("[runes]")
     var db: Dictionary = gd.as_db()
     var items: Dictionary = db["items"]
-    var sdefs: Dictionary = db["sigils"]
+    var sdefs: Dictionary = db["runes"]
     # --- data integrity
     var ok := sdefs.size() >= 8
     for k in sdefs.keys():
@@ -734,7 +772,7 @@ func _test_sigils() -> void:
             for sid in ((lv as Dictionary).get("skills", []) as Array):
                 if not gd.skills.has(str(sid)):
                     ok = false
-    check(ok, "every sigil has one level per AP threshold + 1 and only grants known skills")
+    check(ok, "every rune has one level per AP threshold + 1 and only grants known skills")
     var socket_ok := true
     for k in items.keys():
         var it: Dictionary = items[k]
@@ -746,24 +784,24 @@ func _test_sigils() -> void:
     # --- levels and AP thresholds
     var mend: Dictionary = sdefs["mend"]
     check(CharacterSheet.sigil_level({"id": "mend", "ap": 59}, mend) == 1 and CharacterSheet.sigil_level({"id": "mend", "ap": 60}, mend) == 2, "Mending reaches level 2 at exactly 60 AP")
-    check(CharacterSheet.sigil_level({"id": "mend", "ap": 480}, mend) == 4 and CharacterSheet.sigil_is_mastered({"id": "mend", "ap": 480}, mend), "480 AP masters the Sigil of Mending")
+    check(CharacterSheet.sigil_level({"id": "mend", "ap": 480}, mend) == 4 and CharacterSheet.sigil_is_mastered({"id": "mend", "ap": 480}, mend), "480 AP masters the rune of Mending")
     check(CharacterSheet.sigil_ap_to_next({"id": "mend", "ap": 50}, mend) == 10, "10 AP remain to the next level")
-    check(CharacterSheet.sigil_skills_at(mend, 1).size() == 1 and CharacterSheet.sigil_skills_at(mend, 1).has("mend") and CharacterSheet.sigil_skills_at(mend, 3).has("mend_ii") and CharacterSheet.sigil_skills_at(mend, 3).has("mend"), "skills accumulate with sigil level")
+    check(CharacterSheet.sigil_skills_at(mend, 1).size() == 1 and CharacterSheet.sigil_skills_at(mend, 1).has("mend") and CharacterSheet.sigil_skills_at(mend, 3).has("mend_ii") and CharacterSheet.sigil_skills_at(mend, 3).has("mend"), "skills accumulate with rune level")
     # --- skills come from sigils
-    check((db["characters"]["brother_wystan"]["skills"] as Array).has("mend"), "Brother Wystan's Mend now comes from his socketed sigil")
+    check((db["characters"]["brother_wystan"]["skills"] as Array).has("mend"), "Brother Wystan's Mend now comes from his socketed rune")
     var ps: PartyState = PartyState.new_game(gd.start, gd.characters)
     var torren: CharacterSheet = ps.sheet("torren")
-    check(ps.sigil_inv.size() == 5, "the party starts with 5 sigils in the bag")
+    check(ps.sigil_inv.size() == 5, "the party starts with 5 runes in the bag")
     check(torren.socket_count("weapon", items) == 2 and torren.socket_count("armor", items) == 2, "Torren's sword and cuirass each have 2 linked sockets")
     var emb_i := _sigil_index(ps, "ember")
-    check(ps.equip_sigil("torren", "weapon", 0, emb_i, db) == "", "equip the Sigil of Embers into socket 0")
-    check((torren.to_battle_def(db)["skills"] as Array).has("ember_bolt"), "the sigil grants Ember Bolt")
+    check(ps.equip_sigil("torren", "weapon", 0, emb_i, db) == "", "equip the rune of Embers into socket 0")
+    check((torren.to_battle_def(db)["skills"] as Array).has("ember_bolt"), "the rune grants Ember Bolt")
     check(ps.equip_sigil("torren", "weapon", 5, 0, db) != "" and ps.equip_sigil("torren", "helm", 0, 0, db) != "", "bad socket or group is refused")
     var amp_i := _sigil_index(ps, "amp")
-    check(ps.equip_sigil("torren", "weapon", 1, amp_i, db) == "", "equip the Sigil of Resonance into the linked socket")
+    check(ps.equip_sigil("torren", "weapon", 1, amp_i, db) == "", "equip the rune of Resonance into the linked socket")
     check(int((torren.to_battle_def(db)["skill_mods"] as Dictionary).get("ember_bolt", 0)) == 10, "a linked support adds +10% power to the linked magic skill")
     var tut_i := _sigil_index(ps, "tutor")
-    check(ps.equip_sigil("torren", "weapon", 1, tut_i, db) == "" and _sigil_index(ps, "amp") >= 0, "swapping a sigil returns the old one to the bag")
+    check(ps.equip_sigil("torren", "weapon", 1, tut_i, db) == "" and _sigil_index(ps, "amp") >= 0, "swapping a rune returns the old one to the bag")
     check((torren.to_battle_def(db)["skill_mods"] as Dictionary).is_empty(), "with Resonance removed the skill bonus is gone")
     # --- AP growth: weapon multiplier and linked Tutor
     var rep: Array = torren.award_ap(40, items, sdefs)
@@ -787,13 +825,13 @@ func _test_sigils() -> void:
     ps2.equip_sigil("torren", "weapon", 1, _sigil_index(ps2, "tutor"), db)
     check(ps2.unequip("torren", "offhand", db) == "" and ps2.equip("torren", "weapon", "greatsword", db) == "", "swap to the two-handed Hearthbreaker")
     check(t2.socket_count("weapon", items) == 4 and (t2.sigils["weapon"] as Array).size() == 4, "socket array grows to 4")
-    check(not t2.sigil_at("weapon", 0).is_empty() and not t2.sigil_at("weapon", 1).is_empty(), "sigils stay socketed when the new weapon has the sockets")
+    check(not t2.sigil_at("weapon", 0).is_empty() and not t2.sigil_at("weapon", 1).is_empty(), "runes stay socketed when the new weapon has the sockets")
     t2.award_ap(10, items, sdefs)
     check(int(t2.sigil_at("weapon", 0)["ap"]) == 25, "weapon AP x2 with linked Tutor +25%: 10 AP becomes 25")
     ps2.add_item("short_bow")
     var bag_before: int = ps2.sigil_inv.size()
     check(ps2.equip("torren", "weapon", "short_bow", db) == "", "swap to the one-socket Reed Bow")
-    check(ps2.sigil_inv.size() == bag_before + 1 and (t2.sigils["weapon"] as Array).size() == 1, "the sigil that lost its socket returns to the bag")
+    check(ps2.sigil_inv.size() == bag_before + 1 and (t2.sigils["weapon"] as Array).size() == 1, "the rune that lost its socket returns to the bag")
     # --- mastery spawns a fresh copy, once
     var ps3: PartyState = PartyState.new_game(gd.start, gd.characters)
     var wy: CharacterSheet = ps3.sheet("brother_wystan")
@@ -801,7 +839,7 @@ func _test_sigils() -> void:
     var mrep: Array = wy.award_ap(20, items, sdefs)
     var m0: Dictionary = mrep[0]
     check(bool(m0["mastered"]) and bool(m0["spawn"]) and int(wy.sigil_at("weapon", 0)["ap"]) == 480, "mastery caps the AP and asks for a new copy")
-    check(wy.award_ap(50, items, sdefs).is_empty(), "a mastered sigil stops gaining AP")
+    check(wy.award_ap(50, items, sdefs).is_empty(), "a mastered rune stops gaining AP")
     (wy.sigils["weapon"] as Array)[0] = {"id": "mend", "ap": 470}
     var bag2: int = ps3.sigil_inv.size()
     var bcm := BattleController.new()
@@ -810,9 +848,9 @@ func _test_sigils() -> void:
         var um: BattleUnit = o
         if um.team == "enemy":
             um.hp = 0
-    var out: Dictionary = ps3.apply_battle_result(bcm.units, "victory", rng_for_tests(), {"classes": gd.classes, "items": items, "sigils": sdefs})
-    check((out["spawned"] as Array).size() == 1 and ps3.sigil_inv.size() == bag2 + 1, "winning a battle that masters a sigil forges a fresh level-1 copy")
-    check(bool(wy.sigil_at("weapon", 0).get("spawned", false)), "the mastered sigil is flagged so it spawns only once")
+    var out: Dictionary = ps3.apply_battle_result(bcm.units, "victory", rng_for_tests(), {"classes": gd.classes, "items": items, "runes": sdefs})
+    check((out["spawned"] as Array).size() == 1 and ps3.sigil_inv.size() == bag2 + 1, "winning a battle that masters a rune forges a fresh level-1 copy")
+    check(bool(wy.sigil_at("weapon", 0).get("spawned", false)), "the mastered rune is flagged so it spawns only once")
     # --- offensive magic in battle
     var ps4: PartyState = PartyState.new_game(gd.start, gd.characters)
     ps4.equip_sigil("torren", "weapon", 0, _sigil_index(ps4, "ember"), db)
@@ -899,17 +937,17 @@ func _test_shop_and_screen() -> void:
     var db: Dictionary = gd.party_db()
     var shop: Dictionary = gd.shop
     var items: Dictionary = db["items"]
-    var sdefs: Dictionary = db["sigils"]
+    var sdefs: Dictionary = db["runes"]
     # --- data
     var shop_ok: bool = not shop.is_empty() and ShopSystem.sell_ratio(shop) > 0.0 and ShopSystem.sell_ratio(shop) <= 1.0
     for id in (shop.get("items", []) as Array):
         if not items.has(str(id)) or int((items[str(id)] as Dictionary).get("price", 0)) <= 0:
             shop_ok = false
-    for id in (shop.get("sigils", []) as Array):
+    for id in (shop.get("runes", []) as Array):
         if not sdefs.has(str(id)) or int((sdefs[str(id)] as Dictionary).get("price", 0)) <= 0:
             shop_ok = false
-    check(shop_ok, "shop stock only lists real items and sigils that have a price")
-    check(ShopSystem.stock(shop, db).size() == (shop["items"] as Array).size() + (shop["sigils"] as Array).size(), "the stock list has one entry per shop line")
+    check(shop_ok, "shop stock only lists real items and runes that have a price")
+    check(ShopSystem.stock(shop, db).size() == (shop["items"] as Array).size() + (shop["runes"] as Array).size(), "the stock list has one entry per shop line")
     var price_order_ok := true
     var rarity_price_floor := {"common": 0, "uncommon": 150, "rare": 800, "epic": 3000, "legendary": 12000, "mythical": 35000}
     for item_id in items.keys():
@@ -921,7 +959,7 @@ func _test_shop_and_screen() -> void:
     var regional_stock: Dictionary = shop.get("regional_stocks", {})
     check(regional_stock.has("crossing_shop") and regional_stock.has("milefort_market") and not (regional_stock["crossing_shop"]["items"] as Array).has("mythical_arming_sword"), "regional merchants have distinct gated stock")
     check(gd.skills.has("frost_shard") and gd.skills.has("frost_lance") and str(gd.skills["frost_shard"]["type"]) == "damage", "Frost skills exist as damage spells")
-    check(CharacterSheet.sigil_skills_at(sdefs["frost"], 1).has("frost_shard") and CharacterSheet.sigil_skills_at(sdefs["frost"], 3).has("frost_lance"), "the Sigil of Frost teaches Frost Shard at level 1 and Frost Lance at level 3")
+    check(CharacterSheet.sigil_skills_at(sdefs["frost"], 1).has("frost_shard") and CharacterSheet.sigil_skills_at(sdefs["frost"], 3).has("frost_lance"), "the rune of Frost teaches Frost Shard at level 1 and Frost Lance at level 3")
     # --- text helpers
     check(ItemInfo.signed(3) == "+3" and ItemInfo.signed(-2) == "-2" and ItemInfo.signed(0) == "+0", "signed() formats numbers")
     check(ItemInfo.bonus_text({"ldr": 2, "mor": 5}) == "+2 LDR, +5 MOR", "bonus text is sorted and labelled")
@@ -935,11 +973,11 @@ func _test_shop_and_screen() -> void:
         for lv in range(1, CharacterSheet.sigil_max_level(sd) + 1):
             if ItemInfo.sigil_effect(sd, lv, db["skills"]) == "" or ItemInfo.sigil_short({"id": str(k), "ap": 0}, sd) == "":
                 text_ok = false
-    check(text_ok, "every item and every sigil level has a description")
+    check(text_ok, "every item and every rune level has a description")
     check(ItemInfo.skill_line("mend", db["skills"]).begins_with("Mend") and ItemInfo.skill_line("ember_bolt", db["skills"]).contains("magic damage"), "skill lines describe heals and damage spells")
     var mend_def: Dictionary = sdefs["mend"]
     check(ItemInfo.sigil_ap_text({"id": "mend", "ap": 35}, mend_def) == "35/60 AP" and ItemInfo.sigil_ap_text({"id": "mend", "ap": 480}, mend_def) == "MAX", "AP text shows progress to the next level and MAX when mastered")
-    check(ItemInfo.sigil_progress({"id": "mend", "ap": 50}, mend_def).contains("10 AP to next"), "sigil progress names the AP still needed")
+    check(ItemInfo.sigil_progress({"id": "mend", "ap": 50}, mend_def).contains("10 AP to next"), "rune progress names the AP still needed")
     # --- shop rules
     var ps: PartyState = PartyState.new_game(gd.start, gd.characters)
     var arming_price: int = ShopSystem.item_price("arming_sword", db)
@@ -958,10 +996,10 @@ func _test_shop_and_screen() -> void:
     # Use a sigil that is actually stocked by the starter merchant.
     ps.gold = ShopSystem.sigil_price("mend", db)
     var bag0: int = ps.sigil_inv.size()
-    check(ShopSystem.buy_sigil(ps, "mend", db, shop) == "" and ps.gold == 0 and ps.sigil_inv.size() == bag0 + 1, "buying a sigil puts a fresh copy into the bag")
-    check(CharacterSheet.sigil_level(ps.sigil_inv[bag0], sdefs["mend"]) == 1, "a bought sigil is level 1")
-    check(ShopSystem.sell_sigil(ps, bag0, db, shop) == "" and ps.sigil_inv.size() == bag0 and ps.gold == ShopSystem.sell_price(ShopSystem.sigil_price("mend", db), shop), "selling a sigil removes it and pays the sell ratio")
-    check(ShopSystem.sell_sigil(ps, 99, db, shop) != "" and ShopSystem.sell_sigil(ps, -1, db, shop) != "", "selling a sigil that is not in the bag is refused")
+    check(ShopSystem.buy_sigil(ps, "mend", db, shop) == "" and ps.gold == 0 and ps.sigil_inv.size() == bag0 + 1, "buying a rune puts a fresh copy into the bag")
+    check(CharacterSheet.sigil_level(ps.sigil_inv[bag0], sdefs["mend"]) == 1, "a bought rune is level 1")
+    check(ShopSystem.sell_sigil(ps, bag0, db, shop) == "" and ps.sigil_inv.size() == bag0 and ps.gold == ShopSystem.sell_price(ShopSystem.sigil_price("mend", db), shop), "selling a rune removes it and pays the sell ratio")
+    check(ShopSystem.sell_sigil(ps, 99, db, shop) != "" and ShopSystem.sell_sigil(ps, -1, db, shop) != "", "selling a rune that is not in the bag is refused")
     # --- gear preview
     var torren: CharacterSheet = ps.sheet("torren")
     var worn: String = torren.item_in("weapon")
@@ -995,10 +1033,10 @@ func _test_shop_and_screen() -> void:
     var ember_i: int = _sigil_index(ps, "ember")
     var bag_before: int = ps.sigil_inv.size()
     screen._on_socket_sigil("weapon", 0, ember_i)
-    check(str(ps.sheet("torren").sigil_at("weapon", 0).get("id", "")) == "ember" and ps.sigil_inv.size() == bag_before - 1 and screen.changed, "choosing a sigil sockets it and takes it out of the bag")
+    check(str(ps.sheet("torren").sigil_at("weapon", 0).get("id", "")) == "ember" and ps.sigil_inv.size() == bag_before - 1 and screen.changed, "choosing a rune sockets it and takes it out of the bag")
     check(screen.message.begins_with("Socketed"), "the screen confirms the socketing")
     screen._on_unsocket("weapon", 0)
-    check(ps.sheet("torren").sigil_at("weapon", 0).is_empty() and ps.sigil_inv.size() == bag_before, "Remove sends the sigil back to the bag")
+    check(ps.sheet("torren").sigil_at("weapon", 0).is_empty() and ps.sigil_inv.size() == bag_before, "Remove sends the rune back to the bag")
     screen._on_tab(PartyScreen.TAB_GEAR)
     screen._on_slot("weapon")
     check(screen.focus_slot == "weapon", "tapping a gear slot opens its choices")
@@ -1021,12 +1059,12 @@ func _test_shop_and_screen() -> void:
     # --- compare before buying, confirm before buying or selling (v0.7.1)
     screen._on_shop_mode(false)
     ps.gold = 1000
-    var picks: Array[String] = ["buy:item:mace", "buy:item:hawk_feather", "buy:item:kite_shield", "buy:sigil:ember"]
+    var picks: Array[String] = ["buy:item:mace", "buy:item:hawk_feather", "buy:item:kite_shield", "buy:rune:ember"]
     var builds_before: int = screen.builds
     for pk in picks:
         screen._on_shop_pick(pk)
-    check(screen.builds - builds_before == picks.size() and screen.get_child_count() == 2 and ps.gold == 1000, "opening shop cards (gear compare, accessory, sigil) builds completely and buys nothing")
-    screen._on_shop_pick("buy:sigil:ember")
+    check(screen.builds - builds_before == picks.size() and screen.get_child_count() == 2 and ps.gold == 1000, "opening shop cards (gear compare, accessory, rune) builds completely and buys nothing")
+    screen._on_shop_pick("buy:rune:ember")
     check(screen.shop_pick == "", "tapping an open shop card again closes it")
     screen._on_shop_pick("buy:item:mace")
     screen._on_confirm_buy("item", "mace")
