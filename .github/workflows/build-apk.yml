@@ -102,16 +102,17 @@ jobs:
 
           instructions = parts_dir / "REASSEMBLE.txt"
           instructions.write_text(
-              "KINDLEWAKE SOURCE HANDOFF — REASSEMBLY\\n"
-              "All .partNNN files are consecutive chunks of one ZIP archive.\\n"
-              "Keep every part in this folder, then run from this folder:\\n\\n"
-              "  cat Kindlewake-Source-Handoff.zip.part* > Kindlewake-Source-Handoff.zip\\n"
-              "  unzip -t Kindlewake-Source-Handoff.zip\\n"
-              "  unzip Kindlewake-Source-Handoff.zip\\n\\n"
-              "Windows PowerShell:\\n"
-              "  Get-Content -AsByteStream Kindlewake-Source-Handoff.zip.part* | Set-Content -AsByteStream Kindlewake-Source-Handoff.zip\\n"
-              "Verify the reconstructed archive with 7-Zip or another ZIP utility.\\n"
-              "Maximum individual part size: 25 MiB (26,214,400 bytes).\\n",
+              "KINDLEWAKE SOURCE HANDOFF — REASSEMBLY\n"
+              "All .partNNN files are consecutive chunks of one ZIP archive.\n"
+              "Keep every part in this folder, then run from this folder:\n\n"
+              "  cat Kindlewake-Source-Handoff.zip.part* > Kindlewake-Source-Handoff.zip\n"
+              "  unzip -t Kindlewake-Source-Handoff.zip\n"
+              "  unzip Kindlewake-Source-Handoff.zip\n\n"
+              "Windows Command Prompt:\n"
+              "  copy /b Kindlewake-Source-Handoff.zip.part001+Kindlewake-Source-Handoff.zip.part002+Kindlewake-Source-Handoff.zip.part003 Kindlewake-Source-Handoff.zip\n"
+              "For more than three parts, append every part in numeric order to the copy /b command.\n"
+              "Verify the reconstructed archive with 7-Zip or another ZIP utility.\n"
+              "Maximum individual part size: 25 MiB (26,214,400 bytes).\n",
               encoding="utf-8",
           )
           PY
