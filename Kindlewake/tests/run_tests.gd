@@ -205,28 +205,27 @@ func _test_character_creation() -> void:
 func _test_map() -> void:
     print("[map]")
     var m: BattleMap = BattleMap.from_battle_def(gd.battle_def("battle_01"), gd.terrain)
-    check(m.width == 20 and m.height == 14, "battlefield expands to 16x14")
-    check(m.terrain_id(Vector2i(9, 6)) == "bridge", "bridge at (5,4)")
+    check(m.width == 20 and m.height == 14, "battlefield expands to 20x14")
+    check(m.terrain_id(Vector2i(9, 6)) == "bridge", "bridge at expanded coordinate (9,6)")
     check(m.move_cost(Vector2i(4, 6)) == -1, "deep water blocks movement")
-    check(m.height_at(Vector2i(12, 3)) == 2, "hill height 2 at (8,1)")
+    check(m.height_at(Vector2i(12, 3)) == 2, "hill height 2 at expanded coordinate (12,3)")
     var reach: Dictionary = m.compute_reach(Vector2i(9, 9), 5, 1, {}, {})
     var cost: Dictionary = reach["cost"]
-    check(cost.has(Vector2i(7, 6)) and int(cost[Vector2i(7, 6)]) == 3, "bridge reachable at cost 3")
-    check(not cost.has(Vector2i(2, 6)), "deep water not reachable")
-    var path: Array[Vector2i] = m.path_from(reach, Vector2i(7, 9), Vector2i(7, 6))
-    check(path.size() == 3 and path[2] == Vector2i(7, 6), "path to bridge has 3 steps")
-    var blocked: Dictionary = m.compute_reach(Vector2i(7, 9), 5, 1, {Vector2i(9, 7): true}, {})
+    check(cost.has(Vector2i(9, 6)) and int(cost[Vector2i(9, 6)]) == 3, "bridge reachable at cost 3")
+    check(not cost.has(Vector2i(4, 6)), "deep water not reachable")
+    var path: Array[Vector2i] = m.path_from(reach, Vector2i(9, 9), Vector2i(9, 6))
+    check(path.size() == 3 and path[2] == Vector2i(9, 6), "path to bridge has 3 steps")
+    var blocked: Dictionary = m.compute_reach(Vector2i(9, 9), 5, 1, {Vector2i(9, 7): true}, {})
     var bcost: Dictionary = blocked["cost"]
-    check(not bcost.has(Vector2i(7, 6)), "enemy on the bridge blocks the crossing")
+    check(not bcost.has(Vector2i(9, 6)), "enemy on the bridge blocks the crossing")
     var hill: Dictionary = m.compute_reach(Vector2i(11, 5), 6, 1, {}, {})
     var hcost: Dictionary = hill["cost"]
-    check(hcost.has(Vector2i(10, 3)), "hill top reachable by climbing one step at a time")
-    var low: Dictionary = m.compute_reach(Vector2i(15, 4), 3, 1, {}, {})
+    check(hcost.has(Vector2i(12, 3)), "hill top reachable by climbing one step at a time")
+    var low: Dictionary = m.compute_reach(Vector2i(13, 4), 3, 1, {}, {})
     var lcost: Dictionary = low["cost"]
     check(not lcost.has(Vector2i(13, 3)), "jump 1 cannot climb a 2-high step")
-    check(not m.has_line_of_sight(Vector2i(13, 4), Vector2i(11, 4)), "rock wall blocks line of sight")
-    check(m.has_line_of_sight(Vector2i(9, 10), Vector2i(7, 3)), "river does not block line of sight")
-
+    check(not m.has_line_of_sight(Vector2i(15, 4), Vector2i(13, 4)), "rock wall blocks line of sight")
+    check(m.has_line_of_sight(Vector2i(9, 10), Vector2i(9, 3)), "river does not block line of sight")
 
 func _test_combat() -> void:
     print("[combat]")
