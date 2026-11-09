@@ -647,9 +647,7 @@ func _test_runes() -> void:
     var passive_party: PartyState = PartyState.new_game(gd.start, gd.characters)
     var passive_sheet: CharacterSheet = passive_party.sheet("torren")
     var passive_before: Dictionary = passive_sheet.total_stats(gd.items, defs)
-    var passive_sockets: Array = passive_sheet.sigils["weapon"]
-    passive_sockets[0] = {"id":"thorn","ap":0}
-    passive_sheet.sigils["weapon"] = passive_sockets
+    passive_sheet.sigils["weapon"] = [{"id":"thorn","ap":0}, {}]
     var passive_after: Dictionary = passive_sheet.total_stats(gd.items, defs)
     check(int(passive_after["vit"]) == int(passive_before["vit"]) + 2, "socketed passive runes apply their current-level stat modifiers")
     var protected_party: PartyState = PartyState.new_game(gd.start, gd.characters)
