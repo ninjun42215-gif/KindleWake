@@ -232,3 +232,7 @@
 - Updated .github/workflows/build-apk.yml: handoff tests and packaging run independently of APK success; added a final result-report job with outcome-aware recommendations.
 - Validation status: GitHub Actions must run against the resulting branch-head commit; do not claim the new packer/tests pass until that run succeeds. Physical Android device QA remains separate.
 - Next: inspect the new CI run and uploaded manifest/artifacts; fix any script or YAML errors; verify every part limit and round-trip; then test a handoff download/reconstruction on a second environment. Keep main untouched and PR #4 draft.
+
+
+## Workflow result artifact — 2026-11-10
+The result-report job now uploads a separate 90-day artifact named Kindlewake-Workflow-Report containing the exact source ref/SHA, APK and handoff job outcomes, expected artifacts, and conditional next-step recommendations. The Actions run summary mirrors this report. The source ZIP itself now also embeds REASSEMBLE.txt so the recovery instructions survive extraction. A receiving AI should inspect both the source ZIP metadata and the workflow report artifact; neither should be treated as proof for a different/newer commit.
