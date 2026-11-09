@@ -993,6 +993,65 @@ func _draw_unit(u: BattleUnitScript, p: Vector2) -> void:
         draw_string(ThemeDB.fallback_font, p + Vector2(-40, -70), "ROUTED", HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color(1, 0.6, 0.3))
 
 
+## Palette variants make classes and enemy archetypes readable even while the project expands its bespoke sprite sheets.
+func _battle_sprite_tint(u: BattleUnitScript, is_player: bool) -> Color:
+    if is_player:
+        match u.class_id:
+            "knight": return Color(0.78, 0.88, 1.0)
+            "swordsman": return Color(1.0, 0.83, 0.72)
+            "archer": return Color(0.72, 1.0, 0.76)
+            "cleric": return Color(1.0, 0.96, 0.72)
+            "roadreaver": return Color(0.92, 0.76, 0.58)
+            _: return Color.WHITE
+    var key: String = (u.character_id + " " + u.display_name).to_lower()
+    if key.contains("hask") or key.contains("boss") or key.contains("chieftain"):
+        return Color(1.0, 0.72, 0.52)
+    if key.contains("bow") or key.contains("archer") or key.contains("scout"):
+        return Color(0.78, 0.92, 0.62)
+    if key.contains("shaman") or key.contains("witch") or key.contains("mage"):
+        return Color(0.78, 0.68, 1.0)
+    if key.contains("wraith") or key.contains("ghost") or key.contains("spect"):
+        return Color(0.58, 0.88, 1.0)
+    if key.contains("skeleton") or key.contains("bone"):
+        return Color(0.88, 0.86, 0.72)
+    if key.contains("brute") or key.contains("ogre") or key.contains("troll"):
+        return Color(1.0, 0.70, 0.58)
+    return Color(0.88, 1.0, 0.82)
+
+
+## Small class/archetype accents sit in screen space above the shared animated base sprite.
+func _draw_sprite_identity_marks(u: BattleUnitScript, p: Vector2, is_player: bool, sprite_scale: float, time: float) -> void:
+    if is_player:
+        match u.class_id:
+            "knight":
+                draw_arc(p + Vector2(0, -48), 11.0, PI * 1.08, PI * 1.92, 12, Color(0.78, 0.88, 1.0, 0.9), 2.0)
+            "archer":
+                draw_line(p + Vector2(11, -30), p + Vector2(17, -52), Color(0.48, 0.82, 0.48, 0.9), 2.0)
+            "cleric":
+                draw_line(p + Vector2(-11, -42), p + Vector2(11, -42), Color(1.0, 0.92, 0.58, 0.95), 2.0)
+                draw_line(p + Vector2(0, -51), p + Vector2(0, -33), Color(1.0, 0.92, 0.58, 0.95), 2.0)
+        return
+    var key: String = (u.character_id + " " + u.display_name).to_lower()
+    if key.contains("hask") or key.contains("boss") or key.contains("chieftain"):
+        draw_colored_polygon(PackedVector2Array([p + Vector2(-17, -47), p + Vector2(-12, -61), p + Vector2(-5, -48), p + Vector2(0, -55), p + Vector2(6, -47), p + Vector2(14, -60), p + Vector2(17, -44)]), Color(0.42, 0.18, 0.12, 0.95))
+        draw_line(p + Vector2(-9, -25), p + Vector2(9, -25), Color(1.0, 0.72, 0.28, 0.9), 2.5)
+    elif key.contains("shaman") or key.contains("witch") or key.contains("mage"):
+        var glow: float = 0.55 + 0.25 * sin(time * 5.0)
+        draw_circle(p + Vector2(13, -37), 4.0, Color(0.72, 0.45, 1.0, glow))
+        draw_line(p + Vector2(13, -31), p + Vector2(16, -8), Color(0.58, 0.38, 0.82, 0.95), 2.0)
+    elif key.contains("wraith") or key.contains("ghost") or key.contains("spect"):
+        draw_arc(p + Vector2(0, -32), 25.0, PI * 1.05, PI * 1.95, 16, Color(0.42, 0.84, 1.0, 0.65), 2.0)
+    elif key.contains("skeleton") or key.contains("bone"):
+        draw_line(p + Vector2(-10, -30), p + Vector2(10, -30), Color(0.95, 0.91, 0.72, 0.95), 2.0)
+        draw_circle(p + Vector2(-4, -35), 1.8, Color(0.18, 0.16, 0.12))
+        draw_circle(p + Vector2(4, -35), 1.8, Color(0.18, 0.16, 0.12))
+    elif key.contains("bow") or key.contains("archer") or key.contains("scout"):
+        draw_arc(p + Vector2(16, -25), 9.0, -PI * 0.55, PI * 0.55, 10, Color(0.55, 0.82, 0.42, 0.95), 2.0)
+    elif key.contains("brute") or key.contains("ogre") or key.contains("troll"):
+        draw_rect(Rect2(p + Vector2(-19, -29), Vector2(8, 13)), Color(0.48, 0.22, 0.16, 0.95))
+        draw_rect(Rect2(p + Vector2(11, -29), Vector2(8, 13)), Color(0.48, 0.22, 0.16, 0.95))
+
+
 ## Animated pixel sprite (Tiny RPG Soldier for the player's side, Orc for the enemy). Returns false without the art,
 ## and _draw_unit then falls back to the drawn figure.
 func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: Vector2) -> bool:
@@ -1014,8 +1073,11 @@ func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: V
         anim = "walk"
     var t: float = anim_clock - start if anim != "idle" and anim != "walk" else anim_clock + float(u.id) * 0.37
     var scale: float = 2.1 if is_player else 2.4
-    var tint := Color(1, 0.75, 0.75) if (anim == "hurt") else Color.WHITE
+    var tint: Color = _battle_sprite_tint(u, is_player)
+    if anim == "hurt":
+        tint = tint.lerp(Color(1.0, 0.58, 0.52), 0.58)
     Art.draw_unit(self, kind, anim, t, p + Vector2(0, 4), scale, fdir.x < 0.0, tint)
+    _draw_sprite_identity_marks(u, p, is_player, scale, t)
     var ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40, 7)), Color(0.1, 0.08, 0.08))
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40.0 * ratio, 7)), Color(0.85, 0.2, 0.2).lerp(Color(0.25, 0.85, 0.38), ratio))
