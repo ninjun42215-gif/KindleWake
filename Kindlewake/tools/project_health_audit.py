@@ -103,7 +103,8 @@ def main() -> int:
             unverified_lines = [
                 line.strip()
                 for line in credits_text.splitlines()
-                if not re.search(r"\bnot used\b", line, re.I)
+                if line.lstrip().startswith("|")
+                and not re.search(r"\bnot used\b", line, re.I)
                 and re.search(r"unverified|no licence file|no license file|confirm the licen[cs]e", line, re.I)
             ]
             counts["unverified_asset_entries"] = len(unverified_lines)
