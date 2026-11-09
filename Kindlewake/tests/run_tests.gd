@@ -624,6 +624,16 @@ func _test_runes() -> void:
     check(not bool(refused.get("ok", false)) and few.size() == 2, "fusion refuses fewer than three runes without consuming them")
     check(ShopSystem.for_sale(gd.shop, "rune", "ember") and not ShopSystem.for_sale({"runes":[]}, "rune", "shadow"), "only explicitly stocked rune merchants sell runes")
     check(str(gd.skills["ember_bolt"].get("rune_effect", {}).get("status", "")) == "burn" and str(gd.skills["frost_shard"].get("rune_effect", {}).get("status", "")) == "chill", "elemental spells define special combat effects")
+    var status_probe := BattleUnit.new()
+    status_probe.stats = {"spd":100,"vit":10,"int":10}
+    status_probe.armor_def = 10
+    status_probe.armor_res = 5
+    status_probe.statuses["chill"] = {"turns":2}
+    check(is_equal_approx(status_probe.effective_spd(), 80.0), "Chill reduces the affected unit's effective speed by 20%")
+    status_probe.statuses.erase("chill")
+    var normal_defense: float = CombatCalc.defense(status_probe, "physical")
+    status_probe.statuses["exposed"] = {"turns":2}
+    check(is_equal_approx(CombatCalc.defense(status_probe, "physical"), normal_defense * 0.8), "Exposed reduces physical defense by 20%")
     var mixed: Array = [{"id":"ember","ap":0,"grade":"common"},{"id":"ember","ap":0,"grade":"uncommon"},{"id":"ember","ap":0,"grade":"rare"}]
     var mixed_preview: Dictionary = RuneSystem.preview(mixed, "ember", defs)
     check(bool(mixed_preview.get("ok", false)), "runes of mixed grades can be fused")
