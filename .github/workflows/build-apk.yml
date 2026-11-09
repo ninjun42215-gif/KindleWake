@@ -17,7 +17,7 @@ permissions:
 jobs:
   apk:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 76
     steps:
       - uses: actions/checkout@v4
 
