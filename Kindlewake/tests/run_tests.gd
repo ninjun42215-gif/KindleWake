@@ -890,6 +890,8 @@ func _test_wraparound_world() -> void:
     var cfg: Dictionary = gd.thalassar_world
     var coast: WorldMap = WorldMap.generate(cfg)
     check(coast.wrap_enabled, "campaign world is configured as a continuous wraparound surface")
+    check(is_equal_approx(WorldMap.periodic_noise(0, 13, coast.width, coast.height, 10.0, coast.seed_value), WorldMap.periodic_noise(coast.width, 13, coast.width, coast.height, 10.0, coast.seed_value)), "periodic terrain noise matches exactly across the east/west seam")
+    check(is_equal_approx(WorldMap.periodic_noise(13, 0, coast.width, coast.height, 10.0, coast.seed_value), WorldMap.periodic_noise(13, coast.height, coast.width, coast.height, 10.0, coast.seed_value)), "periodic terrain noise matches exactly across the north/south seam")
     check(coast.wrap_cell(Vector2i(-1, 7)) == Vector2i(coast.width - 1, 7), "west edge wraps to the east edge")
     check(coast.wrap_cell(Vector2i(coast.width, 7)) == Vector2i(0, 7), "east edge wraps to the west edge")
     check(coast.wrap_cell(Vector2i(7, -1)) == Vector2i(7, coast.height - 1), "north edge wraps to the south edge")
