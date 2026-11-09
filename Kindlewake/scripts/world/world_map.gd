@@ -156,7 +156,7 @@ func _carve_road(a: Vector2i, b: Vector2i) -> void:
             step_x = true
         c = Vector2i(c.x + dx, c.y) if step_x else Vector2i(c.x, c.y + dy)
         var t: int = terrain_at(c)
-        _set(c, BRIDGE if (t == WATER or t == FORD) else ROAD)
+        _set_tile(c, BRIDGE if (t == WATER or t == FORD) else ROAD)
 
 
 ## True when b can be reached from a over walkable tiles (4-way). Used by the tests and by place checks.
