@@ -40,3 +40,16 @@ jobs:
               print("PASS:", path)
           print("Validated", len(paths), "workflow YAML files.")
           PY
+
+      - name: Test source handoff and organizer safety tools
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s Kindlewake/tests -p 'test_source_handoff.py' -v
+          python3 -m unittest discover -s Kindlewake/tests -p 'test_repository_organizer.py' -v
+
+      - name: Smoke-test read-only branch hygiene report
+        run: |
+          set -euo pipefail
+          git fetch --prune origin
+          python3 Kindlewake/tools/branch_hygiene.py --base main --report-dir "$RUNNER_TEMP/branch-hygiene"
+          test -s "$RUNNER_TEMP/branch-hygiene/branch-hygiene.md"
