@@ -1,4 +1,4 @@
-# Kindlewake: The Sundered Vow — Campaign-first progression and HUD update (v0.8.0)
+# Kindlewake: The Sundered Vow — Campaign menu and economy rebalance (v0.9.0)
 
 Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (GDScript, GL Compatibility).
 Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md`
