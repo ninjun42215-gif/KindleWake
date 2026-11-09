@@ -14,3 +14,6 @@ The overworld sprites are generated with `tools/render_sprites.py` (software ren
 
 Reference images supplied by the project owner (screenshots and sprite sheets from other games and asset sets) were used for
 **art direction only** (style, palette, readability, ideas). No pixels from them are in the game.
+
+
+Structured machine-readable inventory: `Kindlewake/data/asset_provenance.json`. Keep this ledger synchronized with the table above; used packs marked unverified block public/commercial release.
