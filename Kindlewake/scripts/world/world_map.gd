@@ -24,6 +24,7 @@ var seed_value: int = 0
 var tiles: PackedByteArray = PackedByteArray()
 var places: Array = []                  # entries of data/world.json "places"
 var start_cell: Vector2i = Vector2i.ZERO
+var wrap_enabled: bool = true
 
 
 static func hash01(x: int, y: int, s: int) -> float:
@@ -52,6 +53,7 @@ static func generate(cfg: Dictionary) -> WorldMap:
     m.width = maxi(8, int(cfg.get("width", 64)))
     m.height = maxi(8, int(cfg.get("height", 48)))
     m.seed_value = int(cfg.get("seed", 1))
+    m.wrap_enabled = bool(cfg.get("wrap_world", true))
     m.places = (cfg.get("places", []) as Array).duplicate(true)
     m.tiles.resize(m.width * m.height)
     for y in range(m.height):
@@ -59,8 +61,8 @@ static func generate(cfg: Dictionary) -> WorldMap:
             var e: float = noise(x, y, 10.0, m.seed_value) * 0.65 + noise(x, y, 5.0, m.seed_value + 7) * 0.35
             var wet: float = noise(x, y, 9.0, m.seed_value + 31) * 0.7 + noise(x, y, 4.0, m.seed_value + 53) * 0.3
             var t: int = GRASS
-            if x == 0 or y == 0 or x == m.width - 1 or y == m.height - 1:
-                t = MOUNTAIN                         # the map edge is a wall of peaks
+            if not m.wrap_enabled and (x == 0 or y == 0 or x == m.width - 1 or y == m.height - 1):
+                t = MOUNTAIN
             elif e < 0.30:
                 t = WATER
             elif e < 0.34:
@@ -95,15 +97,41 @@ func in_bounds(c: Vector2i) -> bool:
     return c.x >= 0 and c.y >= 0 and c.x < width and c.y < height
 
 
+## Canonical tile coordinate on the continuous, wraparound campaign world.
+func wrap_cell(c: Vector2i) -> Vector2i:
+    if not wrap_enabled:
+        return c
+    return Vector2i(posmod(c.x, width), posmod(c.y, height))
+
+
+func wrap_position(p: Vector2) -> Vector2:
+    if not wrap_enabled:
+        return p
+    return Vector2(fposmod(p.x, float(width * 48)), fposmod(p.y, float(height * 48)))
+
+
+## Shortest signed displacement from one canonical cell to another across the seam.
+func wrapped_delta(from_cell: Vector2i, to_cell: Vector2i) -> Vector2i:
+    var d := to_cell - from_cell
+    if wrap_enabled:
+        if d.x > width / 2: d.x -= width
+        elif d.x < -width / 2: d.x += width
+        if d.y > height / 2: d.y -= height
+        elif d.y < -height / 2: d.y += height
+    return d
+
+
 func terrain_at(c: Vector2i) -> int:
-    if not in_bounds(c):
+    var sample := wrap_cell(c)
+    if not in_bounds(sample):
         return MOUNTAIN
-    return int(tiles[c.y * width + c.x])
+    return int(tiles[sample.y * width + sample.x])
 
 
 func _set_tile(c: Vector2i, t: int) -> void:
-    if in_bounds(c):
-        tiles[c.y * width + c.x] = t
+    var sample := wrap_cell(c)
+    if in_bounds(sample):
+        tiles[sample.y * width + sample.x] = t
 
 
 func walkable(c: Vector2i) -> bool:
@@ -141,12 +169,13 @@ func place_by_id(id: String) -> Dictionary:
 ## Winding one-tile road from a to b. Water becomes a bridge, other blocked ground becomes road.
 func _carve_road(a: Vector2i, b: Vector2i) -> void:
     var c: Vector2i = a
+    var target := a + wrapped_delta(a, b)
     var guard: int = width * height
-    while c != b and guard > 0:
+    while c != target and guard > 0:
         guard -= 1
-        var dx: int = signi(b.x - c.x)
-        var dy: int = signi(b.y - c.y)
-        var step_x: bool = absi(b.x - c.x) > absi(b.y - c.y)
+        var dx: int = signi(target.x - c.x)
+        var dy: int = signi(target.y - c.y)
+        var step_x: bool = absi(target.x - c.x) > absi(target.y - c.y)
         var wobble: float = hash01(c.x, c.y, seed_value + 99)
         if wobble < 0.22 and dx != 0 and dy != 0:
             step_x = not step_x
@@ -175,6 +204,7 @@ func connected(a: Vector2i, b: Vector2i) -> bool:
             return true
         for d in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
             var n: Vector2i = c + d
+            n = wrap_cell(n)
             if in_bounds(n) and walkable(n) and seen[n.y * width + n.x] == 0:
                 seen[n.y * width + n.x] = 1
                 queue.append(n)
