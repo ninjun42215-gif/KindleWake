@@ -17,7 +17,7 @@ func _ready() -> void:
     var volume := clampf(float(cfg.get_value("audio", "master", 0.8)), 0.0, 1.0)
     var master_bus := AudioServer.get_bus_index("Master")
     if master_bus >= 0:
-        AudioServer.set_bus_volume_linear(master_bus, volume)
+        AudioServer.set_bus_volume_db(master_bus, linear_to_db(maxf(volume, 0.0001)))
         AudioServer.set_bus_mute(master_bus, volume <= 0.001)
     _build()
 
@@ -201,7 +201,7 @@ func _show_settings() -> void:
 func _on_volume_changed(value: float) -> void:
     var bus := AudioServer.get_bus_index("Master")
     if bus >= 0:
-        AudioServer.set_bus_volume_linear(bus, value)
+        AudioServer.set_bus_volume_db(bus, linear_to_db(maxf(value, 0.0001)))
         AudioServer.set_bus_mute(bus, value <= 0.001)
     var cfg := ConfigFile.new()
     cfg.load(SETTINGS_PATH)
