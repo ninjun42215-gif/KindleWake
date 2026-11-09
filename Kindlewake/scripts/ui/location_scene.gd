@@ -301,7 +301,7 @@ func _open_party() -> void:
         shop_def["items"] = (stock.get("items", []) as Array).duplicate()
         shop_def["sigils"] = (stock.get("sigils", shop_def.get("sigils", [])) as Array).duplicate()
     var is_rune_service := bool(near_spot.get("rune_service", false)) or bool(near_spot.get("blacksmith", false))
-    party_screen.setup(GameState.party, GameData.party_db(), shop_def, true, is_rune_service)
+    party_screen.setup(GameState.party, GameData.party_db(), shop_def, true, is_rune_service, bool(near_spot.get("blacksmith", false)))
     party_screen.open()
 
 
