@@ -1,4 +1,4 @@
-# Kindlewake: The Sundered Vow — Campaign menu and economy rebalance (v0.9.1)
+# Kindlewake: The Sundered Vow — Campaign menu and economy rebalance (v0.10.0)
 
 Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (GDScript, GL Compatibility).
 Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md`
@@ -8,7 +8,7 @@ Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Ne
 - After the extracted folder is present, future updates are direct file commits. Keep `docs/SESSION_HANDOFF.md`, `docs/GDD.md`, this README, and `docs/CONTINUATION_PROMPT.md` current with each meaningful change.
 - The nested sprite packs are optional source material only; they are not imported into scenes or license-cleared.
 
-## v0.9.1 — Rune system, fusion and regional rune merchants
+## v0.10.0 — Rune mastery, equipment tempering and expanded battlefields
 
 ## Feature branch: Rune System v1 (CI validated; draft PR review pending)
 - Player-facing Sigils are renamed to Runes with 17 definitions across 10 rune families and six grades.
@@ -159,3 +159,13 @@ docs/            GDD.md, SESSION_HANDOFF.md, CONTINUATION_PROMPT.md
 - The protagonist now starts with a weapon matching the selected preference. All eight preferences use common-tier gear; the four missing weapon families (spear, crossbow, staff and dagger) now have weapon and item definitions.
 - The four-member roster, companion equipment and shared starting inventory are unchanged. Existing save schema remains v2; only game-version metadata advanced.
 - Static checker and Android offline preflight pass. Godot runtime and balance tests remain unverified because Godot is unavailable in this environment.
+
+
+## v0.10.0 — Rune Mastery & World Expansion
+- 77 rune definitions: active spells, passive stat runes, unique runes and heirloom runes.
+- Cross-grade fusion accepts any three copies of the same rune; rune AP mastery raises success chance up to +25 percentage points. Failed fusion returns one rune.
+- Unique/heirloom runes are bound against sale/fusion; boss victories award special rune drops.
+- Socketing/removal/transfers require a magic-rune specialist or blacksmith. Blacksmith enhancement UI supports every equipment slot up to +15.
+- Equipment enhancement persists by character and slot; +5% item bonus/armor scaling per level and weapon power scaling.
+- Four expanded 16×14 tactical battlefields: river crossing, deep forest marsh, highland snowfield and ashen ruins.
+- Title screen Exit Game confirmation; expanded NPC conversations and Master Smith Rurik.
