@@ -6,9 +6,10 @@ extends RefCounted
 
 const SLOTS: Array[String] = ["weapon", "offhand", "armor", "helm", "accessory1", "accessory2"]
 const SIGIL_GROUPS: Array[String] = ["weapon", "armor"]   # only these two items carry sockets (like FF7)
-const MAX_LEVEL := 30
+const MAX_LEVEL := 250
 const EXP_BASE := 80
 const EXP_PER_LEVEL := 20
+const EXP_CURVE := 2
 const PROMOTION_LEVEL_STEP := 10     # tier 1 -> 2 at level 10, tier 2 -> 3 at level 20 (GDD 4.1)
 const HP_GAIN := 2                   # HP gained when the HP growth roll succeeds (every other stat gains 1)
 
@@ -34,8 +35,10 @@ static func from_def(char_id: String, def: Dictionary) -> CharacterSheet:
     s.display_name = str(def.get("name", char_id))
     s.house = str(def.get("house", ""))
     s.class_id = str(def.get("class_id", ""))
-    s.level = int(def.get("level", 1))
-    s.xp = int(def.get("xp", 0))
+    s.level = clampi(int(def.get("level", 1)), 1, MAX_LEVEL)
+    s.xp = clampi(int(def.get("xp", 0)), 0, maxi(0, exp_to_next_for(s.level) - 1))
+    if s.level >= MAX_LEVEL:
+        s.xp = 0
     var st: Dictionary = def.get("stats", {})
     for key in st.keys():
         s.base_stats[str(key)] = int(st[key])
@@ -184,7 +187,9 @@ func equip_problem(slot: String, item_id: String, items: Dictionary) -> String:
 # ---------------------------------------------------------------- experience and levels
 
 static func exp_to_next_for(lvl: int) -> int:
-    return EXP_BASE + EXP_PER_LEVEL * lvl
+    var safe_level: int = clampi(lvl, 1, MAX_LEVEL)
+    var curve_level: int = maxi(0, safe_level - 2)
+    return EXP_BASE + EXP_PER_LEVEL * safe_level + EXP_CURVE * curve_level * curve_level
 
 
 func exp_to_next() -> int:
@@ -279,8 +284,10 @@ static func from_dict(d: Dictionary) -> CharacterSheet:
     s.display_name = str(d.get("name", s.character_id))
     s.house = str(d.get("house", ""))
     s.class_id = str(d.get("class_id", ""))
-    s.level = int(d.get("level", 1))
-    s.xp = int(d.get("xp", 0))
+    s.level = clampi(int(d.get("level", 1)), 1, MAX_LEVEL)
+    s.xp = clampi(int(d.get("xp", 0)), 0, maxi(0, exp_to_next_for(s.level) - 1))
+    if s.level >= MAX_LEVEL:
+        s.xp = 0
     var bs: Dictionary = d.get("base_stats", {})
     for key in bs.keys():
         s.base_stats[str(key)] = int(bs[key])
