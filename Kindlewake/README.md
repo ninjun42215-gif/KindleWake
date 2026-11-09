@@ -192,3 +192,9 @@ docs/            GDD.md, SESSION_HANDOFF.md, CONTINUATION_PROMPT.md
 - Company management uses full-height tabs in portrait and proportional roster/hero/detail panes in narrow landscape. Headless tests use a safe design-size fallback before the screen enters the SceneTree.
 - Added lightweight vector slash, elemental impact and healing effects with short lifetimes and no extra textures.
 - CI run 42672539871 passed on commit 99fcc28dd37652c293eaf240ec017500bbd698e: 333 checks, 0 failures; balance report passed; signed Android APK artifact ID 13699850975. Physical Android visual/touch testing remains required.
+
+## Tactical sprite identity pass (2026-11-10)
+- Battle sprites now receive original class-specific gear overlays for Knight, Swordsman, Archer, Cleric, Roadreaver, Cavalry and magic roles.
+- Enemy archetypes gain extra silhouette cues for commanders, shamans, wraiths, skeletons, scouts and brutes, with restrained animated glow accents.
+- Existing Soldier/Orc animation sheets and frame contracts remain unchanged. This is a readability pass; bespoke full character and species sprite sheets remain the next art milestone.
+- CI validation for the new battle renderer changes is pending.
