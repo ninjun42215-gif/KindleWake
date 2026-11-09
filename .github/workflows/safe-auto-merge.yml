@@ -1,17 +1,15 @@
-# Merge only after all four required workflows pass for the exact PR head SHA.
-# The REST merge endpoint enforces the expected head and any repository branch rules.
+# Evaluate every PR-triggered workflow for the exact head SHA before merging.
+# This privileged workflow never checks out or executes pull-request code.
 name: Safe Auto Merge
 
 on:
   workflow_run:
-    workflows:
-      - Build Android APK
     types:
       - completed
 
 permissions:
   actions: read
-  contents: write
+  contents: read
   pull-requests: write
 
 concurrency:
@@ -22,9 +20,9 @@ jobs:
   merge-safe-pr:
     if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 45
     steps:
-      - name: Find the unique open PR for this exact commit
+      - name: Find the unique open PR for this exact commit and current default branch
         id: gate
         env:
           GH_TOKEN: ${{ github.token }}
@@ -34,9 +32,14 @@ jobs:
         run: |
           set -euo pipefail
 
-          # workflow_run.pull_requests can be empty. Query open PRs and match
-          # the exact head SHA instead; fail closed unless exactly one matches.
-          gh pr list --state open --base main \
+          # Discover the repository's default branch at runtime. This survives
+          # default-branch renames and avoids embedding "main" in the gate.
+          default_branch="$(gh repo view "${GH_REPO}" --json defaultBranchRef --jq '.defaultBranchRef.name')"
+          test -n "${default_branch}"
+
+          # workflow_run.pull_requests can be empty. Match open PRs by exact SHA
+          # and fail closed unless exactly one PR owns that commit.
+          gh pr list --state open \
             --json number,isDraft,mergeable,headRefOid,baseRefName > prs.json
           matches="$(jq --arg sha "${SHA}" '[.[] | select(.headRefOid == $sha)]' prs.json)"
           count="$(jq 'length' <<< "${matches}")"
@@ -47,61 +50,111 @@ jobs:
 
           pr_number="$(jq -r '.[0].number' <<< "${matches}")"
           gh pr view "${pr_number}" --json isDraft,mergeable,headRefOid,baseRefName > pr.json
-          jq -e --arg sha "${SHA}" \
-            '.isDraft == false and .mergeable == "MERGEABLE" and .headRefOid == $sha and .baseRefName == "main"' pr.json >/dev/null || {
-              echo "::notice::PR is draft, conflicted, stale, or not targeting main; refusing to merge."
+          jq -e --arg sha "${SHA}" --arg base "${default_branch}" \
+            '.isDraft == false and .mergeable == "MERGEABLE" and .headRefOid == $sha and .baseRefName == $base' pr.json >/dev/null || {
+              echo "::notice::PR is draft, conflicted, stale, or does not target the current default branch (${default_branch}); refusing to merge."
               exit 1
             }
-          echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
 
-      - name: Verify every required workflow for this exact commit
+          echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
+          echo "default_branch=${default_branch}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify core checks and every discovered PR workflow on the exact SHA
         env:
           GH_TOKEN: ${{ github.token }}
           SHA: ${{ github.event.workflow_run.head_sha }}
         shell: bash
         run: |
           set -euo pipefail
-          # workflow_run jobs have no checked-out repository, so use the REST API
-          # rather than gh run list (which depends on local git metadata).
-          gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${SHA}&per_page=100" \
-            --jq '.workflow_runs[] | {name, event, conclusion, head_sha}' | jq -s '.' > runs.json
-          required_workflows=("Build Android APK" "Synchronize Project Version" "Workflow YAML Lint" "Project Health Audit")
-          for attempt in $(seq 1 20); do
+
+          # Keep the four product-safety gates mandatory. Any additional
+          # pull_request workflow discovered for this SHA is also mandatory.
+          required_workflows=(
+            "Build Android APK"
+            "Synchronize Project Version"
+            "Workflow YAML Lint"
+            "Project Health Audit"
+          )
+
+          last_signature=""
+          stable_polls=0
+          for attempt in $(seq 1 120); do
+            # workflow_run jobs have no checkout. Query Actions REST directly,
+            # filter the exact PR head, and keep the latest attempt per workflow.
             gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${SHA}&per_page=100" \
-              --jq '.workflow_runs[] | {name, event, conclusion, status, created_at}' | jq -s '.' > runs.json
-            all_passed=true
+              --jq '.workflow_runs[] | {id,workflow_id,name,event,conclusion,status,created_at,head_sha}' \
+              | jq -s --arg sha "${SHA}" \
+                '[.[] | select(.event == "pull_request" and .head_sha == $sha)]
+                 | group_by(.workflow_id)
+                 | map(sort_by(.created_at) | last)' > runs.json
+
+            all_core_passed=true
             for required in "${required_workflows[@]}"; do
-              latest="$(jq -c --arg name "${required}" --arg sha "${SHA}" \
-                '[.[] | select(.name == $name and .event == "pull_request")] | sort_by(.created_at) | last // empty' runs.json)"
-              conclusion="$(jq -r '.conclusion // empty' <<< "${latest}")"
-              status="$(jq -r '.status // empty' <<< "${latest}")"
-              if [[ "${conclusion}" == "success" ]]; then
+              latest="$(jq -c --arg name "${required}" '[.[] | select(.name == $name)] | sort_by(.created_at) | last // empty' runs.json)"
+              if [[ -z "${latest}" ]]; then
+                echo "Waiting for required workflow to appear: ${required}"
+                all_core_passed=false
                 continue
               fi
-              if [[ "${status}" == "completed" ]]; then
+
+              status="$(jq -r '.status // empty' <<< "${latest}")"
+              conclusion="$(jq -r '.conclusion // empty' <<< "${latest}")"
+              if [[ "${status}" == "completed" && "${conclusion}" != "success" ]]; then
                 echo "::error::Required workflow failed for exact head ${SHA}: ${required} (${conclusion})"
                 exit 1
               fi
-              all_passed=false
+              if [[ "${status}" != "completed" || "${conclusion}" != "success" ]]; then
+                all_core_passed=false
+              fi
             done
-            if [[ "${all_passed}" == "true" ]]; then
-              echo "All four required workflows passed for ${SHA}."
-              exit 0
+
+            # New PR workflows are included automatically; no hard-coded list
+            # update is needed when a feature adds another pull_request check.
+            all_discovered_passed="$(jq -r 'all(.[]; .status == "completed" and .conclusion == "success")' runs.json)"
+            signature="$(jq -r '[.[].id] | sort | join(",")' runs.json)"
+
+            if [[ "${all_core_passed}" == "true" && "${all_discovered_passed}" == "true" ]]; then
+              if [[ "${signature}" == "${last_signature}" ]]; then
+                stable_polls=$((stable_polls + 1))
+              else
+                stable_polls=1
+                last_signature="${signature}"
+              fi
+
+              # Require a stable run set across three polls to avoid merging
+              # while additional PR workflows are still being registered.
+              if [[ "${stable_polls}" -ge 3 ]]; then
+                echo "All four core checks and all discovered PR workflows passed for ${SHA}."
+                exit 0
+              fi
+            else
+              stable_polls=0
+              last_signature=""
             fi
-            echo "Waiting for all four exact-SHA workflows (attempt ${attempt}/20)..."
+
+            echo "Waiting for all exact-SHA PR workflows (attempt ${attempt}/120)..."
             sleep 15
           done
-          echo "::error::Timed out waiting for all required workflows on ${SHA}."
+
+          echo "::error::Timed out waiting for the complete PR workflow set on ${SHA}."
           exit 1
 
-      - name: Merge PR through GitHub API after exact-SHA checks pass
+      - name: Revalidate PR and merge using the expected head SHA
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ steps.gate.outputs.pr_number }}
+          DEFAULT_BRANCH: ${{ steps.gate.outputs.default_branch }}
           SHA: ${{ github.event.workflow_run.head_sha }}
+        shell: bash
         run: |
-          # This job has no local Git checkout. Use the REST merge endpoint and
-          # require the exact SHA again so a concurrent push cannot be merged.
+          set -euo pipefail
+
+          # Recheck immediately before merge. The REST endpoint also enforces
+          # the expected SHA, so a concurrent push cannot merge stale code.
+          gh pr view "${PR_NUMBER}" --json isDraft,mergeable,headRefOid,baseRefName > final-pr.json
+          jq -e --arg sha "${SHA}" --arg base "${DEFAULT_BRANCH}" \
+            '.isDraft == false and .mergeable == "MERGEABLE" and .headRefOid == $sha and .baseRefName == $base' final-pr.json >/dev/null
+
           response="$(gh api --method PUT "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/merge" \
             -f sha="${SHA}" -f merge_method=squash)"
           jq -e '.merged == true' <<< "${response}" >/dev/null
