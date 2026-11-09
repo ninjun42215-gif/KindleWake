@@ -61,7 +61,9 @@ static func generate(cfg: Dictionary) -> WorldMap:
             var e: float = noise(x, y, 10.0, m.seed_value) * 0.65 + noise(x, y, 5.0, m.seed_value + 7) * 0.35
             var wet: float = noise(x, y, 9.0, m.seed_value + 31) * 0.7 + noise(x, y, 4.0, m.seed_value + 53) * 0.3
             var t: int = GRASS
-            if not m.wrap_enabled and (x == 0 or y == 0 or x == m.width - 1 or y == m.height - 1):
+            if m.wrap_enabled and (x == 0 or y == 0 or x == m.width - 1 or y == m.height - 1):
+                t = GRASS
+            elif not m.wrap_enabled and (x == 0 or y == 0 or x == m.width - 1 or y == m.height - 1):
                 t = MOUNTAIN
             elif e < 0.30:
                 t = WATER
