@@ -775,7 +775,7 @@ Rune families include Flame, Frost, Mending/Vitality, Storm, Earth, Wind, Holy, 
 
 Runes are not part of universal stock. They are sold only by named regional rune merchants through explicit runes stock lists: Oswin at Sallow Crossing, and selected specialists in Thornmere, Foxglove, Elderbough, Cindermead, Redwater and Milefort.
 
-Rune combat effects are data-driven: Flame can Burn, Frost can Chill, Storm can Shock and skip a turn, Holy can Expose armor, Shadow drains life, and Mending applies regeneration. Status effects tick on the affected unit's turn. Battle popups display the applied effect. The original rune atlas is an 8-type × 6-grade SVG sprite sheet at assets/art/runes/rune_atlas.svg, used by rune inventory/socket UI.
+Rune combat effects are data-driven: Flame can Burn, Frost can Chill, Storm can Shock and skip a turn, Holy can Expose armor, Shadow drains life, and Mending applies regeneration. Status effects tick on the affected unit's turn. Battle popups display the applied effect. The original rune atlas is an 10-type × 6-grade SVG sprite sheet at assets/art/runes/rune_atlas.svg, used by rune inventory/socket UI.
 
 Legacy sigil_* script entry points remain internal compatibility wrappers during this transition. New player-facing text, shop stock, data, fusion, and asset naming use Rune terminology.
 
