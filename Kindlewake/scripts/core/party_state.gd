@@ -164,9 +164,9 @@ func equip_sigil(char_id: String, group: String, index: int, inv_index: int, db:
         return "Unknown character."
     if not CharacterSheetScript.SIGIL_GROUPS.has(group):
         return "Runes go into the weapon or the armor."
+    if not service_access:
+        return "Visit a blacksmith or magic-rune specialist to socket or transfer a rune."
     var items: Dictionary = db.get("items", {})
-    for inst0 in sh.fit_sockets(items):
-        sigil_inv.append(inst0)
     if index < 0 or index >= sh.socket_count(group, items):
         return "There is no such socket."
     if inv_index < 0 or inv_index >= sigil_inv.size():
@@ -174,9 +174,10 @@ func equip_sigil(char_id: String, group: String, index: int, inv_index: int, db:
     var inst: Dictionary = sigil_inv[inv_index]
     if not (db.get("runes", db.get("sigils", {})) as Dictionary).has(str(inst.get("id", ""))):
         return "Unknown rune."
+    # Validate all user-controlled arguments before fit_sockets() mutates inventory or socket arrays.
+    for inst0 in sh.fit_sockets(items):
+        sigil_inv.append(inst0)
     var old: Dictionary = sh.sigil_at(group, index)
-    if not service_access:
-        return "Visit a blacksmith or magic-rune specialist to socket or transfer a rune."
     sigil_inv.remove_at(inv_index)
     if not old.is_empty():
         sigil_inv.append(old)
@@ -190,7 +191,12 @@ func unequip_sigil(char_id: String, group: String, index: int, db: Dictionary, s
     var sh: CharacterSheetScript = sheet(char_id)
     if sh == null:
         return "Unknown character."
+    if not CharacterSheetScript.SIGIL_GROUPS.has(group):
+        return "Runes go into the weapon or the armor."
     var items: Dictionary = db.get("items", {})
+    if index < 0 or index >= sh.socket_count(group, items):
+        return "There is no such socket."
+    # Normalize only after validation so a rejected operation cannot eject runes.
     for inst0 in sh.fit_sockets(items):
         sigil_inv.append(inst0)
     var old: Dictionary = sh.sigil_at(group, index)
