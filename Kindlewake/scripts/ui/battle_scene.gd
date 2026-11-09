@@ -1068,35 +1068,77 @@ func _battle_sprite_tint(u: BattleUnitScript, is_player: bool) -> Color:
 
 ## Small class/archetype accents sit in screen space above the shared animated base sprite.
 func _draw_sprite_identity_marks(u: BattleUnitScript, p: Vector2, is_player: bool, sprite_scale: float, time: float) -> void:
+    # Class-specific equipment silhouettes make the shared base animation read as a
+    # distinct tactical role without changing the existing 100px sprite-sheet contract.
     if is_player:
+        var steel := Color(0.78, 0.84, 0.91, 0.96)
+        var gold := Color(0.96, 0.78, 0.34, 0.96)
+        var leather := Color(0.43, 0.27, 0.16, 0.96)
         match u.class_id:
             "knight":
                 draw_arc(p + Vector2(0, -48), 11.0, PI * 1.08, PI * 1.92, 12, Color(0.78, 0.88, 1.0, 0.9), 2.0)
+                draw_rect(Rect2(p + Vector2(-19, -31), Vector2(8, 18)), Color(0.34, 0.48, 0.68, 0.98))
+                draw_rect(Rect2(p + Vector2(-18, -30), Vector2(6, 16)), steel)
+                draw_line(p + Vector2(13, -18), p + Vector2(22, -43), steel, 3.0)
+                draw_line(p + Vector2(9, -22), p + Vector2(17, -22), gold, 2.0)
+            "swordsman":
+                draw_line(p + Vector2(12, -19), p + Vector2(23, -47), steel, 3.0)
+                draw_line(p + Vector2(9, -24), p + Vector2(17, -21), gold, 2.5)
+                draw_line(p + Vector2(11, -18), p + Vector2(17, -14), leather, 2.0)
             "archer":
                 draw_line(p + Vector2(11, -30), p + Vector2(17, -52), Color(0.48, 0.82, 0.48, 0.9), 2.0)
+                draw_arc(p + Vector2(17, -25), 13.0, -PI * 0.48, PI * 0.48, 14, leather, 2.5)
+                draw_line(p + Vector2(17, -38), p + Vector2(17, -12), steel, 1.2)
+                draw_line(p + Vector2(13, -36), p + Vector2(21, -36), gold, 2.0)
             "cleric":
                 draw_line(p + Vector2(-11, -42), p + Vector2(11, -42), Color(1.0, 0.92, 0.58, 0.95), 2.0)
                 draw_line(p + Vector2(0, -51), p + Vector2(0, -33), Color(1.0, 0.92, 0.58, 0.95), 2.0)
+                draw_line(p + Vector2(14, -8), p + Vector2(14, -48), leather, 3.0)
+                draw_circle(p + Vector2(14, -49), 4.0, gold)
+                draw_circle(p + Vector2(14, -49), 2.0, Color(1.0, 0.96, 0.76))
+            "roadreaver":
+                draw_line(p + Vector2(-12, -17), p + Vector2(-22, -37), steel, 2.5)
+                draw_line(p + Vector2(12, -17), p + Vector2(21, -36), steel, 2.5)
+                draw_line(p + Vector2(-14, -15), p + Vector2(-9, -11), gold, 2.0)
+                draw_line(p + Vector2(10, -15), p + Vector2(15, -11), gold, 2.0)
+            "cavalier", "cavalry":
+                draw_line(p + Vector2(12, -20), p + Vector2(25, -53), leather, 3.0)
+                draw_line(p + Vector2(24, -54), p + Vector2(29, -61), steel, 2.0)
+                draw_colored_polygon(PackedVector2Array([p + Vector2(24, -55), p + Vector2(33, -57), p + Vector2(27, -48)]), gold)
+            "mage", "sorcerer", "sage":
+                var pulse: float = 0.65 + 0.25 * sin(time * 4.0)
+                draw_circle(p + Vector2(15, -44), 5.0, Color(0.55, 0.36, 0.95, pulse))
+                draw_arc(p + Vector2(15, -44), 8.0, 0.0, TAU, 16, Color(0.82, 0.68, 1.0, pulse), 1.5)
+                draw_line(p + Vector2(15, -36), p + Vector2(18, -7), leather, 2.5)
         return
     var key: String = (u.character_id + " " + u.display_name).to_lower()
     if key.contains("hask") or key.contains("boss") or key.contains("chieftain"):
         draw_colored_polygon(PackedVector2Array([p + Vector2(-17, -47), p + Vector2(-12, -61), p + Vector2(-5, -48), p + Vector2(0, -55), p + Vector2(6, -47), p + Vector2(14, -60), p + Vector2(17, -44)]), Color(0.42, 0.18, 0.12, 0.95))
         draw_line(p + Vector2(-9, -25), p + Vector2(9, -25), Color(1.0, 0.72, 0.28, 0.9), 2.5)
+        draw_arc(p + Vector2(0, -34), 28.0, PI * 1.08, PI * 1.92, 16, Color(0.95, 0.28, 0.16, 0.72), 2.0)
     elif key.contains("shaman") or key.contains("witch") or key.contains("mage"):
         var glow: float = 0.55 + 0.25 * sin(time * 5.0)
         draw_circle(p + Vector2(13, -37), 4.0, Color(0.72, 0.45, 1.0, glow))
         draw_line(p + Vector2(13, -31), p + Vector2(16, -8), Color(0.58, 0.38, 0.82, 0.95), 2.0)
+        draw_arc(p + Vector2(13, -37), 8.0, 0.0, TAU, 12, Color(0.82, 0.62, 1.0, glow), 1.5)
     elif key.contains("wraith") or key.contains("ghost") or key.contains("spect"):
-        draw_arc(p + Vector2(0, -32), 25.0, PI * 1.05, PI * 1.95, 16, Color(0.42, 0.84, 1.0, 0.65), 2.0)
+        var wraith_glow: float = 0.45 + 0.2 * sin(time * 3.0)
+        draw_arc(p + Vector2(0, -32), 25.0, PI * 1.05, PI * 1.95, 16, Color(0.42, 0.84, 1.0, wraith_glow), 2.0)
+        draw_circle(p + Vector2(-5, -35), 2.0, Color(0.48, 0.9, 1.0, wraith_glow))
+        draw_circle(p + Vector2(5, -35), 2.0, Color(0.48, 0.9, 1.0, wraith_glow))
     elif key.contains("skeleton") or key.contains("bone"):
         draw_line(p + Vector2(-10, -30), p + Vector2(10, -30), Color(0.95, 0.91, 0.72, 0.95), 2.0)
         draw_circle(p + Vector2(-4, -35), 1.8, Color(0.18, 0.16, 0.12))
         draw_circle(p + Vector2(4, -35), 1.8, Color(0.18, 0.16, 0.12))
+        draw_line(p + Vector2(-8, -22), p + Vector2(8, -22), Color(0.88, 0.84, 0.68, 0.9), 1.5)
     elif key.contains("bow") or key.contains("archer") or key.contains("scout"):
         draw_arc(p + Vector2(16, -25), 9.0, -PI * 0.55, PI * 0.55, 10, Color(0.55, 0.82, 0.42, 0.95), 2.0)
+        draw_line(p + Vector2(16, -34), p + Vector2(16, -16), Color(0.82, 0.9, 0.72, 0.9), 1.2)
     elif key.contains("brute") or key.contains("ogre") or key.contains("troll"):
         draw_rect(Rect2(p + Vector2(-19, -29), Vector2(8, 13)), Color(0.48, 0.22, 0.16, 0.95))
         draw_rect(Rect2(p + Vector2(11, -29), Vector2(8, 13)), Color(0.48, 0.22, 0.16, 0.95))
+        draw_colored_polygon(PackedVector2Array([p + Vector2(-17, -29), p + Vector2(-22, -39), p + Vector2(-10, -32)]), Color(0.62, 0.29, 0.19, 0.95))
+        draw_colored_polygon(PackedVector2Array([p + Vector2(17, -29), p + Vector2(22, -39), p + Vector2(10, -32)]), Color(0.62, 0.29, 0.19, 0.95))
 
 
 ## Animated pixel sprite (Tiny RPG Soldier for the player's side, Orc for the enemy). Returns false without the art,
