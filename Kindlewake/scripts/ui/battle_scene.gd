@@ -561,6 +561,10 @@ func _show_result() -> void:
     if not exp_awarded:
         exp_awarded = true
         battle_rewards = GameState.award_battle(controller.units, controller.result)
+        var reward_rune: String = str(battle_def.get("reward_rune", ""))
+        if won and reward_rune != "" and GameData.runes.has(reward_rune):
+            GameState.party.add_rune(reward_rune)
+            result_text.text += "\\n\\nHeirloom rune recovered: %s" % str(GameData.runes[reward_rune].get("name", reward_rune))
         var reward_item: String = str(battle_def.get("reward_item", ""))
         if won and reward_item != "" and GameData.items.has(reward_item):
             GameState.party.add_item(reward_item, 1)
