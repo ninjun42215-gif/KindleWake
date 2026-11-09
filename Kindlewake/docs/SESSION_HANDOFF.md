@@ -125,3 +125,10 @@
 - Note: first editor scan emits transient class-registration errors; the build script performs a clean second scan, after which strict tests pass and the APK export succeeds. Existing non-blocking JSON-corruption test log and ObjectDB/resource cleanup warnings remain.
 - Still required: install and visually test the APK on a physical Android device at 16:9 and narrow landscape, plus portrait company tabs, notches/safe areas, scrolling, and touch hit targets. CI does not prove visual correctness on-device.
 - main remains untouched; PR #4 remains draft and unmerged.
+
+
+## 2026-11-10 continuation — tactical sprite identity pass
+- Commit `4ddbd7db598ea44520502c3c33309a1a95c38245` adds original class-specific equipment overlays for Knight, Swordsman, Archer, Cleric, Roadreaver, Cavalry and magic classes, plus stronger enemy identity marks for commanders, shamans, wraiths, skeletons, scouts and brutes.
+- Existing 100px Soldier/Orc sprite sheet frame contracts, animation timing, battle rules and save schema are unchanged. This is an incremental overlay pass, not the planned dedicated hero/enemy sprite-sheet replacement.
+- Current-head Android CI was triggered by the push; do not claim validation until the run completes successfully.
+- Next: inspect the current-head CI result; fix any parser/import/test/balance/export failures. Then implement dedicated original hero and enemy sheets, followed by cast/projectile/impact/death animations. Keep third-party packs source-only until licensing and frame layout are verified. `main` remains untouched; PR #4 remains draft.
