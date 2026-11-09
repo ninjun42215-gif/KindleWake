@@ -256,5 +256,5 @@ Changes (all in `scripts/ui/battle_scene.gd`, layout in GDD 14.1): `_build_ui` r
 Design specs, complete implementation code (never pseudocode), folder structure, required assets, scene architecture, data structures, testing instructions, expected results, known limitations.
 
 ## Session rule
-Reserve the last ~15% of capacity: update this file, README, create the zip, write `CONTINUATION_PROMPT.md`, and present both with `present_files`.
-**Always deliver (every change, however small):** updated `docs/GDD.md` (version bump + revision-log line) and updated `docs/CONTINUATION_PROMPT.md`, inside the zip and as separate downloads (`GDD_Kindlewake.md`, `CONTINUATION_PROMPT.md`).
+Reserve the last ~15% of capacity: update this file, README and `CONTINUATION_PROMPT.md`, then commit all changes directly to GitHub. Do not create a project ZIP unless the user explicitly requests one.
+**Always deliver (every change, however small):** updated `docs/GDD.md` (version bump + revision-log line) and updated `docs/CONTINUATION_PROMPT.md` as ordinary committed project files. Provide separate downloads only when explicitly requested.
