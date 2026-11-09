@@ -208,7 +208,7 @@ Blacksmith upgrades items by +1…+5 using materials; Heirlooms upgrade through 
 - Only **defeated** enemies pay. Winning by killing the chief while others live does not pay for the survivors.
 - **EXP** of all defeated enemies is added up and split equally between the player units still standing (rounded down, at least 1). **AP** is paid in full to each survivor. **Gold** goes to the party.
 - A fallen hero gets nothing; a **defeat pays nothing**. Undeployed roster members get 40% of one survivor's EXP share and no AP.
-- Test battle (Prologue map): 250 EXP, 44 AP, 162 gold in total; with four survivors that is 62 EXP and 44 AP each, so a level costs about 2 battles at level 2 and about 4-5 at level 10.
+- Test battle (Prologue map): 250 EXP, 44 AP, 162 gold in total; with four survivors that is 62 EXP and 44 AP each, so a level costs about 2 battles at level 2 and about 6 at level 10.
 
 **Sockets.** Weapons and armor carry 1-4 sockets (`sockets`), some in **linked pairs** (`links`), and an AP multiplier (`ap_mult` x1-x3; better gear levels sigils faster). Changing to a piece with fewer sockets returns the extra sigils to the bag.
 
