@@ -73,6 +73,23 @@ func _ready() -> void:
     GameState.save_campaign("auto_a")
 
 
+func _show_prologue_acknowledgement() -> void:
+    if not bool(GameState.world_flags.get("prologue_complete", false)):
+        return
+    if bool(GameState.world_flags.get("prologue_acknowledged", false)):
+        return
+    var line: String = PrologueSystem.acknowledgement(GameState.world_flags)
+    if line == "":
+        return
+    banner_label.text = line
+    banner.visible = true
+    GameState.world_flags["prologue_acknowledged"] = true
+    get_tree().create_timer(7.0).timeout.connect(func():
+        if is_instance_valid(banner):
+            banner.visible = false
+    )
+
+
 func cell_center(c: Vector2i) -> Vector2:
     return (Vector2(c) + Vector2(0.5, 0.5)) * TILE
 
