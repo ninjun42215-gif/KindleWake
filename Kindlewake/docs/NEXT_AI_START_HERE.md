@@ -103,3 +103,13 @@ Living snapshot: refresh branch SHA, workflow evidence, artifacts, implementatio
 - `project.godot` and Android export preset version names must match. Current version is `0.10.0`; Android version code is `1000` and must increase for every published update.
 - Current builder supports APK export only, not AAB. CI does not prove physical-device QA. See `docs/ANDROID_RELEASE_WORKFLOW.md` for complete operating instructions.
 - Workflow edits have been committed, but their new CI execution must be inspected on the exact latest branch-head SHA before calling this revision validated.
+
+
+### Latest APK verification hardening
+
+- Builder commit: `28d56c736af0007bd813a602a778fab38989d108`.
+- Project/export version-name mismatch is rejected locally and in CI.
+- Balance report failures now block strict builds.
+- APK permission inspection (`aapt2`) and signature verification (`apksigner`) are mandatory; missing tools or failed checks block output.
+- Production release workflow commit `86f4be7d863dd12daad65348e8cea0eb176ee775` pins the APK signer against `ANDROID_RELEASE_CERT_SHA256`.
+- Re-run/inspect branch-head CI before claiming these changes validated.
