@@ -70,7 +70,7 @@ func _build_ui() -> void:
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     outer.add_child(scroll)
 
-    var body := VBoxContainer.new() if narrow else HBoxContainer.new()
+    var body: Container = VBoxContainer.new() if narrow else HBoxContainer.new()
     body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     body.add_theme_constant_override("separation", 14 if narrow else 18)
     scroll.add_child(body)
@@ -124,7 +124,7 @@ func _build_ui() -> void:
     else:
         body.add_child(preview_column)
 
-    var footer := VBoxContainer.new() if narrow else HBoxContainer.new()
+    var footer: Container = VBoxContainer.new() if narrow else HBoxContainer.new()
     footer.add_theme_constant_override("separation", 8)
     outer.add_child(footer)
 
