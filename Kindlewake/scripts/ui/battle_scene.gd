@@ -559,7 +559,7 @@ func _show_result() -> void:
     if game_over:
         result_text.text = "The company has been wiped out. This chronicle has ended. Begin a new chronicle to continue."
         result_company_button.visible = false
-        result_continue_button.text = "Begin New Chronicle"
+        result_continue_button.text = "Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Begin New Chronicle"
     else:
         result_company_button.visible = true
         result_continue_button.text = "Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Continue Journey"
