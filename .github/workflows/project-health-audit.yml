@@ -1,0 +1,41 @@
+name: Project Health Audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch or tag to audit
+        required: true
+        default: main
+        type: string
+  push:
+    branches: ["main", "feature/**", "workflow/**"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: project-health-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout selected ref
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+          persist-credentials: false
+      - name: Run read-only project health audit
+        run: python3 Kindlewake/tools/project_health_audit.py --root . --output health-audit
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Kindlewake-Project-Health-Audit
+          path: health-audit/
+          if-no-files-found: warn
+          retention-days: 30
