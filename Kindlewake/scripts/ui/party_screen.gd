@@ -5,7 +5,7 @@ const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const PartyStateScript = preload("res://scripts/core/party_state.gd")
 ## Full-screen party management in one touch UI (v0.8.0 layout): a compact top bar, a roster of cards, a character
 ## sheet made of stat tiles, and a right panel with three tabs: Equipment, Sigils and Shop.
-## It owns no rules: every action goes through PartyState / CharacterSheet / ShopSystem, the same code paths the
+## It owns no rules: every action goes through PartyStateScript / CharacterSheetScript / ShopSystem, the same code paths the
 ## headless tests cover. It reads no autoloads, so it can be built in tests.
 ## Usage: setup(party, db, shop) then open(); listen to `closed`.
 ## db needs "classes", "weapons", "items", "sigils", "skills" (GameData.party_db()).
@@ -60,7 +60,7 @@ var reset_sheet: bool = false         # character sheet back to the top on the n
 var builds: int = 0                   # how many times the layout was completely built (tests use it to catch half-built screens)
 
 
-func setup(p_party: PartyState, p_db: Dictionary, p_shop: Dictionary) -> void:
+func setup(p_party: PartyStateScript, p_db: Dictionary, p_shop: Dictionary) -> void:
     party = p_party
     db = p_db
     shop = p_shop
@@ -441,7 +441,7 @@ func _build_sheet() -> Control:
     var scroll: ScrollContainer = parts[0]
     var box: VBoxContainer = parts[1]
     sheet_scroll = scroll
-    var sh: CharacterSheet = party.sheet(selected_id)
+    var sh: CharacterSheetScript = party.sheet(selected_id)
     if sh == null:
         box.add_child(_label("Nobody is selected."))
     else:
@@ -450,7 +450,7 @@ func _build_sheet() -> Control:
     return panel
 
 
-func _fill_sheet(box: VBoxContainer, sh: CharacterSheet) -> void:
+func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
     var items: Dictionary = db.get("items", {})
     var sdefs: Dictionary = db.get("sigils", {})
     var skills: Dictionary = db.get("skills", {})
@@ -481,8 +481,8 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheet) -> void:
     var bar := ProgressBar.new()
     bar.min_value = 0.0
     bar.max_value = float(maxi(1, sh.exp_to_next()))
-    bar.value = float(sh.xp) if sh.level < CharacterSheet.MAX_LEVEL else 1.0
-    if sh.level >= CharacterSheet.MAX_LEVEL:
+    bar.value = float(sh.xp) if sh.level < CharacterSheetScript.MAX_LEVEL else 1.0
+    if sh.level >= CharacterSheetScript.MAX_LEVEL:
         bar.max_value = 1.0
     bar.show_percentage = false
     bar.custom_minimum_size = Vector2(0, 14)
@@ -616,13 +616,13 @@ func _build_right() -> Control:
 # ---------------------------------------------------------------- Equipment tab
 
 func _fill_gear(box: VBoxContainer) -> void:
-    var sh: CharacterSheet = party.sheet(selected_id)
+    var sh: CharacterSheetScript = party.sheet(selected_id)
     if sh == null:
         return
     var items: Dictionary = db.get("items", {})
     var weapons: Dictionary = db.get("weapons", {})
     var current: Dictionary = sh.derived(db)
-    for slot in CharacterSheet.SLOTS:
+    for slot in CharacterSheetScript.SLOTS:
         var iid: String = sh.item_in(slot)
         var is_open: bool = slot == focus_slot
         var cp: Array = _card(_on_slot.bind(slot), is_open)
@@ -654,7 +654,7 @@ func _item_fits_slot(it: Dictionary, slot: String) -> bool:
     return item_slot == slot or (item_slot == "accessory" and slot.begins_with("accessory"))
 
 
-func _fill_slot_choices(box: VBoxContainer, sh: CharacterSheet, slot: String, current: Dictionary) -> void:
+func _fill_slot_choices(box: VBoxContainer, sh: CharacterSheetScript, slot: String, current: Dictionary) -> void:
     var items: Dictionary = db.get("items", {})
     var weapons: Dictionary = db.get("weapons", {})
     var wrap := PanelContainer.new()
@@ -723,17 +723,17 @@ func _fill_bag_overview(box: VBoxContainer) -> void:
 
 # ---------------------------------------------------------------- Sigils tab
 
-func _linked(sh: CharacterSheet, group: String, a: int, b: int, items: Dictionary) -> bool:
+func _linked(sh: CharacterSheetScript, group: String, a: int, b: int, items: Dictionary) -> bool:
     return sh.linked_indices(group, a, items).has(b)
 
 
 func _fill_sigils(box: VBoxContainer) -> void:
-    var sh: CharacterSheet = party.sheet(selected_id)
+    var sh: CharacterSheetScript = party.sheet(selected_id)
     if sh == null:
         return
     var items: Dictionary = db.get("items", {})
     var sdefs: Dictionary = db.get("sigils", {})
-    for group in CharacterSheet.SIGIL_GROUPS:
+    for group in CharacterSheetScript.SIGIL_GROUPS:
         var item_id: String = sh.item_in(group)
         var n: int = sh.socket_count(group, items)
         var head: String = "%s: %s" % [ItemInfo.slot_name(group), "- nothing equipped -" if item_id == "" else _item_name(item_id)]
@@ -764,7 +764,7 @@ func _fill_sigils(box: VBoxContainer) -> void:
             _fill_socket_choices(box, sh, group, focus_index)
 
 
-func _socket_button(sh: CharacterSheet, group: String, index: int, sdefs: Dictionary) -> Control:
+func _socket_button(sh: CharacterSheetScript, group: String, index: int, sdefs: Dictionary) -> Control:
     var inst: Dictionary = sh.sigil_at(group, index)
     var is_open: bool = group == focus_group and index == focus_index
     var cp: Array = _card(_on_socket.bind(group, index), is_open)
@@ -783,7 +783,7 @@ func _socket_button(sh: CharacterSheet, group: String, index: int, sdefs: Dictio
     return holder
 
 
-func _fill_socket_choices(box: VBoxContainer, sh: CharacterSheet, group: String, index: int) -> void:
+func _fill_socket_choices(box: VBoxContainer, sh: CharacterSheetScript, group: String, index: int) -> void:
     var items: Dictionary = db.get("items", {})
     var sdefs: Dictionary = db.get("sigils", {})
     var skills: Dictionary = db.get("skills", {})
@@ -797,7 +797,7 @@ func _fill_socket_choices(box: VBoxContainer, sh: CharacterSheet, group: String,
         inner.add_child(_label("Socket %d is empty. Choose a sigil from the bag:" % (index + 1), 17, COL_GOLD))
     else:
         var sd: Dictionary = sdefs.get(str(inst.get("id", "")), {})
-        var lv: int = CharacterSheet.sigil_level(inst, sd)
+        var lv: int = CharacterSheetScript.sigil_level(inst, sd)
         inner.add_child(_label(str(sd.get("name", "?")), 19, COL_GOLD))
         inner.add_child(_label(ItemInfo.sigil_progress(inst, sd), 16))
         inner.add_child(_label(ItemInfo.sigil_effect(sd, lv, skills), 15, COL_DIM))
@@ -812,7 +812,7 @@ func _fill_socket_choices(box: VBoxContainer, sh: CharacterSheet, group: String,
     for bag_i in range(party.sigil_inv.size()):
         var bi: Dictionary = party.sigil_inv[bag_i]
         var bd: Dictionary = sdefs.get(str(bi.get("id", "")), {})
-        var blv: int = CharacterSheet.sigil_level(bi, bd)
+        var blv: int = CharacterSheetScript.sigil_level(bi, bd)
         var cp: Array = _card(_on_socket_sigil.bind(group, index, bag_i))
         var holder: PanelContainer = cp[0]
         var cbox: VBoxContainer = cp[1]
@@ -961,7 +961,7 @@ func _fill_shop_detail(box: VBoxContainer, kind: String, id: String, confirm: Ca
 
 
 ## The slot an item would go into for this hero: the item's own slot, or the first free (else first) accessory slot.
-func _best_slot(sh: CharacterSheet, item_slot: String) -> String:
+func _best_slot(sh: CharacterSheetScript, item_slot: String) -> String:
     if item_slot != "accessory":
         return item_slot
     if sh.item_in("accessory1") == "" or sh.item_in("accessory2") != "":
@@ -972,7 +972,7 @@ func _best_slot(sh: CharacterSheet, item_slot: String) -> String:
 ## Stat changes if the selected hero wore `item_id` (every slot it fits), then a line per other hero.
 func _add_compare(inner: VBoxContainer, item_id: String) -> void:
     var items: Dictionary = db.get("items", {})
-    var sh: CharacterSheet = party.sheet(selected_id)
+    var sh: CharacterSheetScript = party.sheet(selected_id)
     var it: Dictionary = items.get(item_id, {})
     if sh == null or it.is_empty():
         return
@@ -998,7 +998,7 @@ func _add_compare(inner: VBoxContainer, item_id: String) -> void:
         for rid in party.roster:
             if rid == selected_id:
                 continue
-            var other: CharacterSheet = party.sheet(rid)
+            var other: CharacterSheetScript = party.sheet(rid)
             var oslot: String = _best_slot(other, item_slot)
             var line := HBoxContainer.new()
             line.add_theme_constant_override("separation", 10)
@@ -1175,7 +1175,7 @@ func _on_sell_sigil(bag_index: int) -> void:
 
 
 func _on_promote(class_id: String) -> void:
-    var sh: CharacterSheet = party.sheet(selected_id)
+    var sh: CharacterSheetScript = party.sheet(selected_id)
     if sh != null and sh.promote(class_id, db.get("classes", {})):
         _after("%s is now a %s." % [sh.display_name, _class_title(class_id)], true)
     else:
