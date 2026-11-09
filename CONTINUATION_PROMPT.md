@@ -105,3 +105,24 @@ See docs/MANUAL_GITHUB_WORKFLOWS.md for standalone user-operated workflows: buil
 
 ## Manual operations toolbox checkpoint
 A separate workflow/manual-operations-toolbox branch is being prepared from main so these manual tools can be reviewed and merged independently of the Rune System feature PR. It adds source_handoff.py and its tests, the conservative repository organizer and tests, branch hygiene reporting, manual source handoff, full backup, safe branch integration and workflow YAML lint. No main-branch changes or merges are performed by the workflows. New workflow_dispatch entries become visible for manual launch after their files are merged to the default branch. Review PR #5 and its CI before enabling them.
+
+
+## Repository-wide improvement pass — 2026-11-10
+
+Approved improvement work was added to `workflow/manual-operations-toolbox` (PR #5), without merging to main:
+- Source handoff now includes only the explicitly allowlisted public sideload/test keystore; all other keystore and signing-certificate suffixes remain excluded. A regression test guards the narrow exception.
+- Added `Kindlewake/tools/project_health_audit.py` and manually launchable `.github/workflows/project-health-audit.yml`. It inventories the project, validates every project JSON file, detects version drift, checks asset-credit documentation, counts rune definitions against the 50+ target, and warns about nested workflow YAML.
+- Workflow YAML Lint now pins checkout/setup-python actions to immutable commit SHAs, disables persisted checkout credentials, and runs project-health audit tests and the audit itself.
+- Repaired literal escaped newline characters in `Kindlewake/README.md`.
+- Expanded manual workflow documentation with Project Health Audit, main-branch protection setup, and signing-key handling guidance.
+
+Validation status at handoff: the latest Workflow YAML Lint run was still in progress when this note was written. Do not claim the new tests/audit passed until the run for the latest PR #5 head completes. PR #5 remains draft; PR #4 remains draft. Main is still unmodified and unprotected. Branch protection could not be changed through the available GitHub write actions; configure it manually using the instructions in `Kindlewake/docs/MANUAL_GITHUB_WORKFLOWS.md`.
+
+Next steps:
+1. Inspect the latest PR #5 Actions run and fix any failing tests/YAML issues.
+2. Review the full PR #5 diff, especially the source-handoff key exception and action pins.
+3. Run Project Health Audit on main and feature/rune-system-v1; compare JSON/version/rune/asset findings.
+4. Continue gameplay work on the feature branch: expand the rune system to 50+ tested definitions, validate active/passive/unique/heirloom behaviors and fusion probabilities, and add save migration/regression coverage.
+5. Review asset licenses and add a structured asset provenance manifest before importing more packs.
+6. Configure main branch protection in GitHub Settings. Keep both PRs unmerged until separately reviewed and explicitly approved for merge.
+7. Re-run Android build and perform physical-device QA before any production release.
