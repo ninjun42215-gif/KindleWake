@@ -584,7 +584,16 @@ func _test_progression() -> void:
 func _test_runes() -> void:
     print("[runes]")
     var defs: Dictionary = gd.runes
-    check(defs.size() >= 16, "rune library includes multiple types and elemental families")
+    check(defs.size() >= 70, "rune library includes 70+ active, passive, unique and heirloom types")
+    var passive_count := 0
+    var unique_count := 0
+    var heirloom_count := 0
+    for rd0 in defs.values():
+        var rd0d: Dictionary = rd0
+        if str(rd0d.get("kind", "")) == "passive": passive_count += 1
+        if bool(rd0d.get("unique", false)): unique_count += 1
+        if bool(rd0d.get("heirloom", false)): heirloom_count += 1
+    check(passive_count >= 20 and unique_count >= 5 and heirloom_count >= 3, "passive, unique and heirloom rune families are populated")
     var grades_ok := true
     for id in defs.keys():
         var rd: Dictionary = defs[id]
@@ -616,6 +625,15 @@ func _test_runes() -> void:
     check(not bool(refused.get("ok", false)) and few.size() == 2, "fusion refuses fewer than three runes without consuming them")
     check(ShopSystem.for_sale(gd.shop, "rune", "ember") and not ShopSystem.for_sale({"runes":[]}, "rune", "shadow"), "only explicitly stocked rune merchants sell runes")
     check(str(gd.skills["ember_bolt"].get("rune_effect", {}).get("status", "")) == "burn" and str(gd.skills["frost_shard"].get("rune_effect", {}).get("status", "")) == "chill", "elemental spells define special combat effects")
+    var mixed: Array = [{"id":"ember","ap":0,"grade":"common"},{"id":"ember","ap":0,"grade":"uncommon"},{"id":"ember","ap":0,"grade":"rare"}]
+    var mixed_preview: Dictionary = RuneSystem.preview(mixed, "ember", defs)
+    check(bool(mixed_preview.get("ok", false)), "runes of mixed grades can be fused")
+    var mastered: Array = [{"id":"ember","ap":520,"grade":"uncommon"},{"id":"ember","ap":520,"grade":"uncommon"},{"id":"ember","ap":520,"grade":"uncommon"}]
+    var mastered_preview: Dictionary = RuneSystem.preview(mastered, "ember", defs)
+    check(int(mastered_preview.get("chance", 0)) > int(RuneSystem.preview([{"id":"ember","ap":0,"grade":"uncommon"},{"id":"ember","ap":0,"grade":"uncommon"},{"id":"ember","ap":0,"grade":"uncommon"}], "ember", defs).get("chance", 0)), "rune mastery levels improve fusion chance")
+    var locked: Array = [{"id":"worldtree","ap":0},{"id":"worldtree","ap":0},{"id":"worldtree","ap":0}]
+    check(not bool(RuneSystem.preview(locked, "worldtree", defs).get("ok", false)), "heirloom runes cannot be fused")
+    check(not bool(RuneSystem.preview([{"id":"dragon"},{"id":"dragon"},{"id":"dragon"}], "dragon", defs).get("ok", false)), "unique runes cannot be fused")
 
 
 func _test_weapon_skills() -> void:
