@@ -149,3 +149,9 @@
 - Added direct checks for Chill's 20% effective-speed penalty and Exposed's 20% physical-defense reduction.
 - Latest source commits include status pips `83ceb66d2a992b9ed4f2659c5da11333e854bc4f` and corrected socket fixture `b4335e394ea526bd626760db9a9d14e758e6b668`.
 - Earlier CI attempts before the fixture correction reported 3 test failures in the newly added overflow checks. The corrected branch-head build must pass before this batch is considered validated.
+
+## 2026-11-10 continuation — downloadable source handoff automation
+- Updated `.github/workflows/build-apk.yml` to publish a second artifact named `Kindlewake-Source-Handoff` alongside the Android APK.
+- The archive includes the extracted Godot project, the root GDD and continuation prompt, and root `Feature_*.zip` patch packs. It excludes generated `.godot`/dist content and `Kindlewake/tools/keys` so signing material is not copied into the handoff bundle.
+- This makes each successful Android CI build produce both an installable APK and a merge-ready source snapshot for the next development session.
+- Workflow change commit: `b933d62d1771f4d9c8fc7ff0822975cf1a221cd9`. Current branch-head CI is queued; no claim of artifact creation until the workflow completes.
