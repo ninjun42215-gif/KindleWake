@@ -172,8 +172,8 @@ func equip_sigil(char_id: String, group: String, index: int, inv_index: int, db:
     if not (db.get("runes", db.get("sigils", {})) as Dictionary).has(str(inst.get("id", ""))):
         return "Unknown rune."
     var old: Dictionary = sh.sigil_at(group, index)
-    if not old.is_empty() and not service_access:
-        return "Visit a blacksmith or magic-rune specialist to replace an equipped rune."
+    if not service_access:
+        return "Visit a blacksmith or magic-rune specialist to socket or transfer a rune."
     sigil_inv.remove_at(inv_index)
     if not old.is_empty():
         sigil_inv.append(old)
