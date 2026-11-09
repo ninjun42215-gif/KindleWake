@@ -1,6 +1,6 @@
 # CONTINUATION MASTER PROMPT — KINDLEWAKE: THE SUNDERED VOW
 
-> **Latest checkpoint: v0.9.0 (2026-11-09; title screen, campaign saves, economy and rarity rebalance).** Continue from `docs/SESSION_HANDOFF.md`.
+ > **Latest checkpoint: v0.9.0 (2026-11-09; title screen, campaign saves, economy and rarity rebalance).** A test-only correction for the starter merchant sigil purchase mismatch was committed as `aadc783`; CI run #109 must be checked before claiming validation or APK success. Continue from `docs/SESSION_HANDOFF.md`.
 
 > Previous checkpoint: v0.7.14 (2026-11-09; Sethmarch Frontier adds connected Orrowen/Vessmoor roads, six functional towns, three explorable boss dungeons and SaveSystem v3 regional battle-save context).** The optional sprite archives remain source-only and are not license-cleared. Continue from `docs/SESSION_HANDOFF.md`.
 
@@ -30,7 +30,7 @@ You are continuing development of **KINDLEWAKE: THE SUNDERED VOW**, an offline-f
 ## Milestones
 1 Tactical combat prototype (written, unverified) · 2 Stats/classes/leveling/equipment · 3 Recruitment and character management · 4 Platoons · 5 Army battles · 6 Castle HQ · 7 World map and campaign · 8 Generations · 9 Complete offline save/load · 10 Polish and deployment.
 
-## Current state (v0.7.14 Sethmarch Frontier expansion; canonical source is the extracted GitHub `Kindlewake/` tree. The four-continent design remains a blueprint beyond the playable Eldrimar network. v0.7.14 = v0.7.13 + Orrowen/Vessmoor connected road network, six functional settlements, three explorable dungeon maps with boss battles and caches, recruitment/inn/market actions, and SaveSystem v3 regional battle-save context. Earlier v0.7.13 Sethmarch ruin expansion and v0.7.9 protagonist/party foundations remain intact.)
+## Current state (v0.9.0; canonical source is the extracted GitHub `Kindlewake/` tree. The four-continent design remains a blueprint beyond the playable Eldrimar network. v0.9.0 includes the Sethmarch regional network and dungeons, title screen, campaign-level save/autosave, region-limited market stock and rarity/economy rebalance. Project version is 0.9.0 and save schema is 3. CI run #109 validates a test-only correction to the starter merchant sigil purchase test; check its final status before continuing.)
 - `docs/GDD.md` is complete (17 sections + risks); section 4.7 describes the party screen and shop.
 - Architecture (keep it): data in `data/*.json`; rules in `scripts/battle/*` (BattleMap, BattleUnit, CombatCalc, TurnQueue, BattleAI, BattleController); persistent party in `scripts/core/*` (CharacterSheet, PartyState, ShopSystem, ItemInfo, EncounterBuilder); autoloads `GameData`, `SaveSystem`, `GameState` (no class_name); `scripts/ui/battle_scene.gd` (rendering, input, HUD, pre-battle panel) and `scripts/ui/party_screen.gd` (`PartyScreen`, injected dependencies via `setup(party, db, shop)`); headless tests `tests/run_tests.gd`, `tests/balance_report.gd`; linter `tools/gd_static_check.py`. One battle map (Prologue: The Sallow Road, 4 vs 4) plus Roadside Skirmish groups.
 - Done earlier: Auto Battle (v0.2.1, GDD 3.12); items, slots, sheets, EXP, promotion, persistent party (v0.3.0); full rename (never use the old names Ashvale, Valtherion, Rowan, etc.) and the FF7-style grind with Sigils, mastery copies, damage skills and Skirmish (v0.4.0, GDD 4.6).
