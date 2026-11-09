@@ -159,6 +159,7 @@
 ## 2026-11-10 continuation — external AI receiving folder and split handoff packages
 - Added `Kindlewake/receiving/README.md` as the standard drop location for patches, asset ZIPs, source files and documentation supplied by other AI assistants.
 - The receiving guide requires a HANDOFF.md, target paths, dependencies, test notes and licensing details; it warns against blindly overwriting canonical files or including secrets/build caches.
-- Changed the Android CI handoff packaging: it now creates the source ZIP, splits it into consecutive binary parts each no larger than 25 MiB (26,214,400 bytes), and uploads the parts plus a reassembly guide as `Kindlewake-Source-Handoff-Parts`.
+- Changed the Android CI handoff packaging: it now creates the source ZIP, splits it into consecutive binary parts each no larger than 25 MB (25,000,000 bytes), and uploads the parts plus a reassembly guide as `Kindlewake-Source-Handoff-Parts`.
 - Reassemble on Linux/macOS with `cat Kindlewake-Source-Handoff.zip.part* > Kindlewake-Source-Handoff.zip`, then validate using `unzip -t`. Every part must be present and kept in the same folder.
 - Receiving folder and split packaging are committed on the feature branch. Await the new workflow before claiming the split artifact is downloadable.
+- Size cap clarification: each chunk is limited to exactly 25,000,000 bytes (decimal 25 MB), not 25 MiB.
