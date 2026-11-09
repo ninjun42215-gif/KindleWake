@@ -46,3 +46,15 @@
 - Title screen has an Exit Game confirmation.
 - NPC dialogue pages expanded in Sallow Crossing and Kaer Sethorn; Oswin and Master Smith Rurik are rune-service locations.
 - Device playtest pending; re-run CI after this feature batch.
+
+
+## v0.10.0 — Rune Mastery & World Expansion
+- Rune library: 77 definitions including 23 active magic, 43 passive, legacy support/stat types, 7 unique and 5 heirloom entries.
+- Cross-grade fusion: any three copies of one rune; average grade determines next target tier; rune AP mastery adds up to +25 percentage points. Failed fusion returns one rune.
+- Unique and heirloom runes are not sellable/fusible; boss battles reward Dragon, Worldtree, Starfall and Sundered Oath runes.
+- Socket insertion, removal and transfer require a magic-rune specialist or blacksmith. Oswin and Master Smith Rurik are designated service NPCs.
+- Equipment enhancement persists per character/slot to +15; each level scales equipment bonuses/armor and weapon power by 5%; cost increases quadratically. UI is exposed at Rurik's smithy.
+- Four battle maps expanded to 16×14 and tailored to river crossing, deep forest marsh, highland snowfield and ashen ruins; new terrain costs/cover/LOS rules and visual accents.
+- Title screen Exit Game confirmation and expanded NPC dialogue for Sallow Crossing and Kaer Sethorn.
+- Project version 0.10.0; save schema remains 3. Legacy `sigil_inv` and socket fields intentionally retained.
+- CI for this batch is pending. No Android device test has been performed.
