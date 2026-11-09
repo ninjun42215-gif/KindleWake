@@ -364,6 +364,15 @@ def preflight(project: Path = PROJECT) -> Tuple[List[str], List[str]]:
         errors.append("project.godot is missing.")
     else:
         text = project_file.read_text(encoding="utf-8")
+        project_version = re.search(r'^config/version\s*=\s*"([^"]+)"', text, re.M)
+        preset_version = cfg_str(options.get("version/name"))
+        if not project_version:
+            errors.append("project.godot config/version is missing.")
+        elif not preset_version:
+            errors.append("Android export preset version/name is missing.")
+        elif project_version.group(1) != preset_version:
+            errors.append("Project version %s does not match Android export preset version/name %s." %
+                          (project_version.group(1), preset_version))
         if not re.search(r"^textures/vram_compression/import_etc2_astc\s*=\s*true", text, re.M):
             errors.append("project.godot needs rendering/textures/vram_compression/import_etc2_astc=true "
                           "(Godot refuses Android exports without it).")
@@ -595,24 +604,26 @@ def verify_apk(apk: Path, sdk: Path, jdk: Path, godot_ver: str, allow_internet: 
     bt_dir = sdk / "build-tools" / build_tools
     env = tool_env(jdk, sdk)
     aapt2 = bt_dir / exe("aapt2")
-    if aapt2.exists():
-        code, out = run([str(aapt2), "dump", "permissions", str(apk)], env=env, show=False)
-        perms = re.findall(r"uses-permission(?:-sdk-23)?: name='([^']+)'", out)
-        report.append("permissions requested: " + (", ".join(perms) if perms else "none"))
-        if code == 0 and "android.permission.INTERNET" in perms and not allow_internet:
-            raise BuildError("The APK requests the INTERNET permission, but Kindlewake must be 100% offline. "
-                             "Check export_presets.cfg (permissions/internet=false) and the build log.")
-    else:
-        report.append("warning: aapt2 not found, permissions were not checked.")
+    if not aapt2.exists():
+        raise BuildError("aapt2 is missing; refusing to skip the APK permission check.")
+    code, out = run([str(aapt2), "dump", "permissions", str(apk)], env=env, show=False)
+    if code != 0:
+        raise BuildError("aapt2 could not inspect APK permissions; refusing an unverified APK:\n" + out.strip())
+    perms = re.findall(r"uses-permission(?:-sdk-23)?: name='([^']+)'", out)
+    report.append("permissions requested: " + (", ".join(perms) if perms else "none"))
+    if "android.permission.INTERNET" in perms and not allow_internet:
+        raise BuildError("The APK requests the INTERNET permission, but Kindlewake must be 100% offline. "
+                         "Check export_presets.cfg (permissions/internet=false) and the build log.")
     signer = bt_dir / bat("apksigner")
-    if signer.exists():
-        code, out = run([str(signer), "verify", "--print-certs", str(apk)], env=env, show=False)
-        if code != 0:
-            raise BuildError("apksigner says the APK signature is not valid:\n" + out.strip())
-        digest = re.search(r"certificate SHA-256 digest: (\w+)", out)
-        report.append("signature: valid" + (" (key SHA-256 %s...)" % digest.group(1)[:16] if digest else ""))
-    else:
-        report.append("warning: apksigner not found, the signature was not checked.")
+    if not signer.exists():
+        raise BuildError("apksigner is missing; refusing to publish an APK with an unchecked signature.")
+    code, out = run([str(signer), "verify", "--print-certs", str(apk)], env=env, show=False)
+    if code != 0:
+        raise BuildError("apksigner says the APK signature is not valid:\n" + out.strip())
+    digest = re.search(r"certificate SHA-256 digest: (\w+)", out)
+    if not digest:
+        raise BuildError("apksigner did not report a signer certificate fingerprint.")
+    report.append("signature: valid (key SHA-256 %s...)" % digest.group(1)[:16])
     return report
 
 
@@ -713,7 +724,11 @@ def main(argv: Optional[List[str]] = None) -> int:
                 say("\n    Running tests/balance_report.gd")
                 code, out = run([str(godot), "--headless", "--path", str(PROJECT), "--script", "res://tests/balance_report.gd"],
                                 env=env, log=logs / "balance_report.txt", timeout=3600)
-                summary.append("balance_report: exit %d" % code)
+                balance_counts = summarize_test_output(out)
+                summary.append("balance_report: exit %d, FAIL %d, SCRIPT ERROR %d, Parse Error %d" %
+                               (code, balance_counts["FAIL"], balance_counts["SCRIPT ERROR"], balance_counts["Parse Error"]))
+                if code != 0 or any(balance_counts.values()):
+                    raise BuildError("Balance report failed and the strict build is blocked.")
 
         say("\n[5] Exporting the APK")
         apk = dist / APK_NAME
