@@ -205,27 +205,27 @@ func _test_character_creation() -> void:
 func _test_map() -> void:
     print("[map]")
     var m: BattleMap = BattleMap.from_battle_def(gd.battle_def("battle_01"), gd.terrain)
-    check(m.width == 16 and m.height == 14, "battlefield expands to 16x14")
-    check(m.terrain_id(Vector2i(7, 6)) == "bridge", "bridge at (5,4)")
-    check(m.move_cost(Vector2i(2, 6)) == -1, "deep water blocks movement")
-    check(m.height_at(Vector2i(10, 3)) == 2, "hill height 2 at (8,1)")
-    var reach: Dictionary = m.compute_reach(Vector2i(7, 9), 5, 1, {}, {})
+    check(m.width == 20 and m.height == 14, "battlefield expands to 16x14")
+    check(m.terrain_id(Vector2i(9, 6)) == "bridge", "bridge at (5,4)")
+    check(m.move_cost(Vector2i(4, 6)) == -1, "deep water blocks movement")
+    check(m.height_at(Vector2i(12, 3)) == 2, "hill height 2 at (8,1)")
+    var reach: Dictionary = m.compute_reach(Vector2i(9, 9), 5, 1, {}, {})
     var cost: Dictionary = reach["cost"]
     check(cost.has(Vector2i(7, 6)) and int(cost[Vector2i(7, 6)]) == 3, "bridge reachable at cost 3")
     check(not cost.has(Vector2i(2, 6)), "deep water not reachable")
     var path: Array[Vector2i] = m.path_from(reach, Vector2i(7, 9), Vector2i(7, 6))
     check(path.size() == 3 and path[2] == Vector2i(7, 6), "path to bridge has 3 steps")
-    var blocked: Dictionary = m.compute_reach(Vector2i(7, 9), 5, 1, {Vector2i(7, 7): true}, {})
+    var blocked: Dictionary = m.compute_reach(Vector2i(7, 9), 5, 1, {Vector2i(9, 7): true}, {})
     var bcost: Dictionary = blocked["cost"]
     check(not bcost.has(Vector2i(7, 6)), "enemy on the bridge blocks the crossing")
-    var hill: Dictionary = m.compute_reach(Vector2i(9, 5), 6, 1, {}, {})
+    var hill: Dictionary = m.compute_reach(Vector2i(11, 5), 6, 1, {}, {})
     var hcost: Dictionary = hill["cost"]
     check(hcost.has(Vector2i(10, 3)), "hill top reachable by climbing one step at a time")
-    var low: Dictionary = m.compute_reach(Vector2i(11, 4), 3, 1, {}, {})
+    var low: Dictionary = m.compute_reach(Vector2i(15, 4), 3, 1, {}, {})
     var lcost: Dictionary = low["cost"]
-    check(not lcost.has(Vector2i(11, 3)), "jump 1 cannot climb a 2-high step")
+    check(not lcost.has(Vector2i(13, 3)), "jump 1 cannot climb a 2-high step")
     check(not m.has_line_of_sight(Vector2i(13, 4), Vector2i(11, 4)), "rock wall blocks line of sight")
-    check(m.has_line_of_sight(Vector2i(7, 10), Vector2i(7, 3)), "river does not block line of sight")
+    check(m.has_line_of_sight(Vector2i(9, 10), Vector2i(7, 3)), "river does not block line of sight")
 
 
 func _test_combat() -> void:
@@ -233,8 +233,8 @@ func _test_combat() -> void:
     check(is_equal_approx(CombatCalc.base_damage(20.0, 20.0), 10.0), "defense equal to attack halves damage")
     check(is_equal_approx(CombatCalc.base_damage(10.0, 0.0), 10.0), "no defense = full damage")
     var m: BattleMap = BattleMap.from_battle_def(gd.battle_def("battle_01"), gd.terrain)
-    var a: BattleUnit = _make_unit(1, "bram", "player", Vector2i(7, 9), 0)
-    var r: BattleUnit = _make_unit(2, "roadreaver", "enemy", Vector2i(7, 8), 2)
+    var a: BattleUnit = _make_unit(1, "bram", "player", Vector2i(9, 9), 0)
+    var r: BattleUnit = _make_unit(2, "roadreaver", "enemy", Vector2i(9, 8), 2)
     var units: Array = [a, r]
     var w: Dictionary = gd.weapon_def(a.weapon_id)
     var front: Dictionary = CombatCalc.preview(a, r, w, m, units)
@@ -244,12 +244,12 @@ func _test_combat() -> void:
     check(str(rear["facing"]) == "rear", "attacker behind the defender")
     check(int(rear["dmg_max"]) > int(front["dmg_max"]), "rear attacks deal more damage")
     check(int(rear["crit"]) == int(front["crit"]) + 10, "rear attacks gain +10 crit")
-    var ally: BattleUnit = _make_unit(3, "torren", "player", Vector2i(7, 7), 0)
+    var ally: BattleUnit = _make_unit(3, "torren", "player", Vector2i(9, 7), 0)
     units.append(ally)
     var flank: Dictionary = CombatCalc.preview(a, r, w, m, units)
     check(bool(flank["flank"]) and int(flank["dmg_max"]) > int(rear["dmg_max"]), "ally on the opposite side gives a flank bonus")
-    var archer: BattleUnit = _make_unit(4, "sela", "player", Vector2i(10, 3), 2)
-    var low_target: BattleUnit = _make_unit(5, "roadreaver", "enemy", Vector2i(10, 5), 0)
+    var archer: BattleUnit = _make_unit(4, "sela", "player", Vector2i(12, 3), 2)
+    var low_target: BattleUnit = _make_unit(5, "roadreaver", "enemy", Vector2i(12, 5), 0)
     var high: Dictionary = CombatCalc.preview(archer, low_target, gd.weapon_def(archer.weapon_id), m, [archer, low_target])
     check(int(high["height_diff"]) == 2, "height advantage detected (+2)")
     check(int(high["hit"]) >= 10 and int(high["hit"]) <= 98, "hit chance stays within 10-98")
@@ -257,8 +257,8 @@ func _test_combat() -> void:
     var rng2 := RandomNumberGenerator.new()
     rng1.seed = 42
     rng2.seed = 42
-    var d1: BattleUnit = _make_unit(6, "roadreaver", "enemy", Vector2i(7, 8), 0)
-    var d2: BattleUnit = _make_unit(7, "roadreaver", "enemy", Vector2i(7, 8), 0)
+    var d1: BattleUnit = _make_unit(6, "roadreaver", "enemy", Vector2i(9, 8), 0)
+    var d2: BattleUnit = _make_unit(7, "roadreaver", "enemy", Vector2i(9, 8), 0)
     var res1: Dictionary = CombatCalc.resolve(a, d1, w, m, [a, d1], rng1)
     var res2: Dictionary = CombatCalc.resolve(a, d2, w, m, [a, d2], rng2)
     check(res1["hit"] == res2["hit"] and res1["damage"] == res2["damage"], "same RNG seed gives the same result")
