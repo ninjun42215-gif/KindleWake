@@ -184,3 +184,11 @@ docs/            GDD.md, SESSION_HANDOFF.md, CONTINUATION_PROMPT.md
 - Overworld COMPANY and SAVE controls now resize independently instead of retaining desktop-sized widths.
 - Company management now uses viewport orientation: portrait stacks the roster, character sheet and gear/rune/shop panels; compact landscape uses three proportional columns to avoid clipping the bottom of a tall vertical stack.
 - This pass changes presentation only; battle rules, inventory, runes, equipment, campaign data and save schema are unchanged. Android CI and physical-device verification are pending for these exact commits.
+
+
+## Mobile UI/HUD and combat feedback (2026-11-10)
+- Responsive battle HUD scales the unit card, preview and action buttons for compact screens; compact layout separates action and preview controls and hides timeline/log when there is insufficient space.
+- Overworld and town HUD buttons, prompts, place/NPC panels and interaction buttons resize to the viewport.
+- Company management uses full-height tabs in portrait and proportional roster/hero/detail panes in narrow landscape. Headless tests use a safe design-size fallback before the screen enters the SceneTree.
+- Added lightweight vector slash, elemental impact and healing effects with short lifetimes and no extra textures.
+- CI run 42672539871 passed on commit 99fcc28dd37652c293eaf240ec017500bbd698e: 333 checks, 0 failures; balance report passed; signed Android APK artifact ID 13699850975. Physical Android visual/touch testing remains required.
