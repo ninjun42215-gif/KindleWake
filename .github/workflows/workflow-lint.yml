@@ -1,0 +1,42 @@
+name: Workflow YAML Lint
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - "**"
+  push:
+    branches:
+      - "**"
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Parse all GitHub Actions workflow YAML files
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate workflow YAML syntax
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check pyyaml
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+          paths = sorted(Path(".github/workflows").glob("*.yml"))
+          if not paths:
+              raise SystemExit("No workflow YAML files found.")
+          for path in paths:
+              with path.open(encoding="utf-8") as stream:
+                  yaml.safe_load(stream)
+              print("PASS:", path)
+          print("Validated", len(paths), "workflow YAML files.")
+          PY
