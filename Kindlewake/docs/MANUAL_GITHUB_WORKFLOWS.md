@@ -158,3 +158,10 @@ Do not make every optional audit a required check until its baseline warnings ar
 - Backups and handoffs are tied to exact refs and commits.
 - CI success, conflict-free merge status and APK export do not prove real-device gameplay quality.
 - Human review remains required for file moves, branch diffs, licensing, gameplay and release approval.
+
+
+## Automatic project version synchronization
+
+Main contains `.github/workflows/version-sync.yml` and `Kindlewake/tools/sync_version.py`. The authoritative version is `config/version` in `Kindlewake/project.godot`; the workflow synchronizes the README first heading and Android export `version/name`/ `version/code` after pushes to main. Pull requests targeting main are checked and fail if these values drift. The tool is sourced from main during PR validation so older feature branches are covered.
+
+Android version code mapping: `MAJOR*10000 + MINOR*100 + PATCH`, with minor/patch components limited to 0–99. See `Kindlewake/docs/VERSIONING.md` on main. This workflow changes metadata only; it never merges feature branches or promotes feature code.
