@@ -1,6 +1,7 @@
 extends Node2D
 
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
+const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 ## Towns and building interiors (data/locations.json, rules in LocalMap).
 ## Walk with tap / drag like the overworld. Walking into a door loads the next map (town -> house -> town) inside this
 ## scene; walking onto the exit (E) of a town returns to the overworld. People and objects ("spots") are used with the
@@ -201,7 +202,7 @@ func _on_prompt_pressed() -> void:
     elif spot_kind == "inn":
         spot_buttons.add_child(_btn("Rest the company — 20 gold", _rest_at_inn))
     elif spot_kind == "choice":
-        if not bool(GameState.world_flags.get("tideglass_grotto_cleared", false)) or not bool(GameState.world_flags.get("tideglass_ledger_found", false)):
+        if not BrinegateQuestSystem.can_report_ledger(GameState.world_flags):
             spot_text.text += "\n\nThe missing lighthouse ledger is still in Tideglass Grotto. Ilyra will not put an incomplete account before the Assembly."
         elif bool(GameState.world_flags.get("brinegate_ledger_decision", false)):
             spot_text.text += "\n\nYour decision has been entered into the harbour chronicle."
@@ -237,24 +238,17 @@ func _on_prompt_pressed() -> void:
 
 
 func _resolve_brinegate_choice(choice: String) -> void:
-    if bool(GameState.world_flags.get("brinegate_ledger_decision", false)):
+    var outcome: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(GameState.world_flags, choice)
+    if not bool(outcome.get("ok", false)):
+        spot_text.text += "\\n\\n" + str(outcome.get("reason", "The decision cannot be made."))
         return
-    GameState.world_flags["brinegate_ledger_decision"] = true
-    if choice == "public":
-        GameState.world_flags["brinegate_ledger_shared"] = true
-        spot_text.text += "\n\nIlyra reads the scraped oath aloud before the harbour council. The room falls silent; the Assembly can no longer claim the sea-lanes failed by accident. Your company earns the trust of the beacon crews."
-    elif choice == "private":
-        GameState.world_flags["brinegate_ledger_withheld"] = true
-        GameState.party.gold += 60
-        spot_text.text += "\n\nIlyra agrees to keep the Codicil seal out of the public record for now. A discreet Assembly patron pays 60 gold for the evidence to remain private. The truth is safer—but the beacon crews have not been heard."
-    else:
-        GameState.world_flags.erase("brinegate_ledger_decision")
-        return
+    GameState.world_flags = outcome.get("world_flags", GameState.world_flags)
+    GameState.party.gold += int(outcome.get("gold", 0))
+    spot_text.text += "\\n\\n" + str(outcome.get("text", ""))
     GameState.save_campaign("auto_a")
     for child in spot_buttons.get_children():
         if child is Button and ((child as Button).text.begins_with("Present") or (child as Button).text.begins_with("Keep")):
             (child as Button).disabled = true
-
 
 func _close_panel() -> void:
     panel_open = false
