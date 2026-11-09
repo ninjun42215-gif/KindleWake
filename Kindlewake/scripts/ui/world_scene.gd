@@ -68,6 +68,7 @@ func _ready() -> void:
     next_threshold = WorldMap.encounter_threshold(GameData.world, rng.randf())
     _build_ui()
     _build_minimap()
+    _show_prologue_acknowledgement()
     GameState.from_world = true
     GameState.save_campaign("auto_a")
 
