@@ -218,7 +218,8 @@
           0.48
         ]
       ],
-      "current": true
+      "current": true,
+      "epithet": "The Sundered Crown"
     },
     {
       "id": "thalassar",
@@ -358,7 +359,8 @@
           0.73,
           0.42
         ]
-      ]
+      ],
+      "epithet": "The Shattered Isles"
     },
     {
       "id": "varakhan",
@@ -489,7 +491,8 @@
           0.16,
           0.66
         ]
-      ]
+      ],
+      "epithet": "The Red Expanse"
     },
     {
       "id": "nhalor",
@@ -621,7 +624,8 @@
           0.4,
           0.16
         ]
-      ]
+      ],
+      "epithet": "The Far North"
     },
     {
       "id": "veyrwood",
@@ -752,7 +756,8 @@
           0.05,
           0.42
         ]
-      ]
+      ],
+      "epithet": "The Verdant Expanse"
     },
     {
       "id": "asterreach",
@@ -883,7 +888,8 @@
           0.22,
           0.15
         ]
-      ]
+      ],
+      "epithet": "The Stormforged Coast"
     },
     {
       "id": "ilyr",
@@ -1014,7 +1020,8 @@
           0.41,
           0.85
         ]
-      ]
+      ],
+      "epithet": "The Far Lantern"
     }
   ],
   "route_gates": [
