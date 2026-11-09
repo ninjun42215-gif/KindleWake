@@ -15,8 +15,9 @@ signal closed()
 
 const TAB_GEAR := 0
 const TAB_SIGILS := 1
-const TAB_SHOP := 2
-const TAB_NAMES: Array[String] = ["Equipment", "runes", "Shop"]
+const TAB_FORGE := 2
+const TAB_SHOP := 3
+const TAB_NAMES: Array[String] = ["Equipment", "Runes", "Forge", "Shop"]
 
 const COL_BG := Color(0.106, 0.092, 0.07)
 const COL_PANEL := Color(0.19, 0.155, 0.11)
