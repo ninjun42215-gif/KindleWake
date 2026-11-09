@@ -16,7 +16,7 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: safe-auto-merge-${{ github.event.workflow_run.head_branch }}
+  group: safe-auto-merge-${{ github.event.workflow_run.head_sha }}
   cancel-in-progress: false
 
 jobs:
@@ -74,8 +74,12 @@ jobs:
             fi
           done
 
-      - name: Enable GitHub native auto-merge
+      - name: Merge PR after exact-SHA checks pass
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ steps.gate.outputs.pr_number }}
-        run: gh pr merge "${PR_NUMBER}" --auto --squash
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          # GitHub enforces any configured branch rules. Match the exact SHA
+          # again at merge time so a new push can never be merged accidentally.
+          gh pr merge "${PR_NUMBER}" --squash --match-head-commit "${SHA}"
