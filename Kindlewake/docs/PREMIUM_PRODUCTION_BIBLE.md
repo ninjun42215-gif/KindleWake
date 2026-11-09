@@ -229,6 +229,30 @@ Every hub should show its history through props and NPC routines:
 - Reserve silence for major revelations. Do not fill every moment with UI sounds.
 - If voice work is unavailable, use excellent portraits, expression changes, text pacing and authored music rather than low-quality placeholder voice.
 
+## 12. Continuous world and premium exploration controls
+
+### A world without a visible box
+The campaign overworld is a toroidal surface, not a bounded rectangle. Crossing the east edge continues from the west; west continues east; north continues south; south continues north. There is no invisible wall, edge cliff or forced turn-back. The player, camera, pathfinding, terrain queries, landmarks, encounter danger, minimap and saved coordinates must all use the same wrap rules. Routes and movement use the shortest valid displacement across a seam. Seam-side scenery is drawn in the nearest world copy so the transition feels continuous. Towns, interiors and dungeons remain authored, bounded spaces with doors and exits; the planetary wrap applies to the campaign overworld.
+
+### Exploration control contract
+- Primary controller: left analog stick and D-pad move; A confirms/interacts; B runs while held.
+- Keyboard fallback: arrows/WASD move; E interacts; Shift runs.
+- Android fallback: left virtual stick, large contextual interaction prompt and a one-tap run toggle. Touch targets must remain reachable around notches and system gesture areas.
+- Movement is analog-feeling, normalized diagonally, collision-safe and consistent across the overworld, settlements and dungeons. Running is faster (target 1.6× walk speed), does not bypass collision, and never triggers an unintended interaction.
+- Release all held movement when a modal opens, a map changes, a battle begins or focus is lost. Controller prompts must reflect the active input method where practical.
+- Keep tap-to-move as an accessibility/convenience option on the overworld and interiors; it must coexist with direct movement rather than compete with it.
+
+### Visual and UX quality bar
+Use a restrained premium JRPG visual system: warm parchment and brass for information, deep ink panels, clear hierarchy, consistent spacing, legible type, purposeful motion and contextual sound. Preserve readable gameplay first. Avoid tiny mobile text, decorative clutter, oversized modal walls and mismatched button styles. World, town and dungeon controls should occupy stable screen corners and not obscure the player, objective or interaction target. Character movement needs distinct idle, walk and run feedback; camera easing should remain smooth without causing motion sickness. Every map seam, door transition, save/load, interaction and run state is a QA scenario.
+
+### Acceptance tests
+- Four directional seam tests (east/west/north/south), canonical position normalization and shortest-path displacement.
+- Collision and encounter danger remain correct while crossing a seam repeatedly.
+- A landmark near a seam remains visible and interactable from the opposite side.
+- Gamepad stick/D-pad, confirm, run, keyboard and touch-stick controls all work in overworld, town and dungeon scenes.
+- Running never crosses blocked tiles or skips a door/exit event; modal opening cancels movement.
+- Existing schema-4 saves still load at Sethmarch; per-region position fields remain additive.
+
 ## 11. Quality gates — definition of done
 
 A feature is not “premium” because it has more content. It is done when:
