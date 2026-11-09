@@ -522,8 +522,10 @@ func _hud_panel(alpha: float = 0.84) -> PanelContainer:
 func _btn(text: String, handler: Callable, font_size: int = 24) -> Button:
     var b := Button.new()
     b.text = text
-    b.custom_minimum_size = Vector2(300, 72)
-    b.add_theme_font_size_override("font_size", font_size)
+    var viewport_size: Vector2 = get_viewport().get_visible_rect().size
+    var compact: bool = viewport_size.x < 900.0 or viewport_size.y > viewport_size.x * 1.15
+    b.custom_minimum_size = Vector2(clampf(viewport_size.x * 0.42, 210.0, 300.0), 58.0 if compact else 72.0)
+    b.add_theme_font_size_override("font_size", mini(font_size, 19) if compact else font_size)
     b.pressed.connect(handler)
     return b
 
