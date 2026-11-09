@@ -285,5 +285,6 @@
   "region_notes": {
     "orrowen": "Orrowen Weald: ancient forest roads, ranger settlements and the Bell Under Leaves.",
     "vessmoor": "Vessmoor Plains: open horse country, market towns and the Kingsroad Catacombs."
-  }
+  },
+  "wrap_world": true
 }
