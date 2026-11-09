@@ -1,4 +1,4 @@
-# Kindlewake: The Sundered Vow — Campaign menu and economy rebalance (v0.10.0)
+# Kindlewake: The Sundered Vow — Rune mastery and world expansion (v0.10.0)
 
 Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (GDScript, GL Compatibility).
 Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md` · Start here: `docs/NEXT_AI_START_HERE.md`
@@ -12,6 +12,8 @@ Manual repository workflows: `docs/MANUAL_GITHUB_WORKFLOWS.md`.
 - The nested sprite packs are optional source material only; they are not imported into scenes or license-cleared.
 
 ## v0.10.0 — Rune mastery and expanded battle systems
+
+**Version note:** GDD revision entries 0.10.1–0.10.4 record subsequent implementation notes, but `project.godot` remains authoritative at 0.10.0. Do not advertise a newer app version until the project, Android export, SaveSystem metadata and CI all agree.
 - Replaces player-facing Sigils with a data-driven Rune library: 77 definitions across active magic, passive, support, stat and independent effects, including unique and heirloom runes.
 - Three-copy fusion supports mixed grades; rune mastery/AP improves fusion success. Unique and heirloom runes have safeguards against accidental sale or fusion.
 - Adds rune-driven Burn, Chill, Shock, Exposed, Regeneration and Shadow life-drain effects, combat feedback, rune sockets and specialist regional rune merchants.
