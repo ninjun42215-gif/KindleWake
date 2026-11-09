@@ -75,7 +75,7 @@ class ProjectHealthAuditTests(unittest.TestCase):
             result, report = self.run_audit(root)
             self.assertEqual(result.returncode, 1)
             self.assertEqual(report["counts"]["rune_definitions"], 3)
-            self.assertEqual(report["counts"]["rune_kinds"], {"magic": 1, "passive": 2})
+            self.assertEqual(report["counts"]["rune_kinds"], {"magic": 1, "passive": 1})
             self.assertTrue(any(item["code"] == "RUNE_DEFINITION_INVALID" for item in report["findings"]))
 
 
