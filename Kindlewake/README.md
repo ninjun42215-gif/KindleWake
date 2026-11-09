@@ -13,7 +13,7 @@ Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Ne
 - Campaign saves preserve the party, protagonist choices, overworld position and regional flags. The overworld autosaves periodically and before travel transitions.
 - Equipment price bands now scale sharply by rarity; Unique relics remain special rewards. High-tier armor stats have been moderated.
 - Each market has a distinct regional stock list. Sethorn is an entry-level stall; later markets specialize in rare, epic and limited legendary/mythical wares.
-- Settings currently provide a persistent master-volume control.
+- Settings currently provide a persistent master-volume control. The overworld HUD also has a manual SAVE action to slot 1.
 
 ## Sethmarch Frontier (v0.7.14)
 - Connected Sallow Crossing to Orrowen Weald and Vessmoor Plains with continuous roads and regional gate landmarks.
