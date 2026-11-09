@@ -134,8 +134,28 @@ func fuse_runes(rune_id: String, grade: String, db: Dictionary, rng: RandomNumbe
     return RuneSystemScript.combine(sigil_inv, rune_id, grade, db.get("runes", db.get("sigils", {})), rng)
 
 
+func enhance_equipment(char_id: String, slot: String, db: Dictionary) -> String:
+    var sh: CharacterSheetScript = sheet(char_id)
+    if sh == null or not CharacterSheetScript.SLOTS.has(slot):
+        return "Unknown character or equipment slot."
+    var item_id := sh.item_in(slot)
+    if item_id == "":
+        return "Equip an item before enhancing it."
+    if not (db.get("items", {}) as Dictionary).has(item_id):
+        return "Unknown equipment."
+    var current := int(sh.enhancements.get(slot, 0))
+    if current >= 15:
+        return "This equipment has reached +15."
+    var cost := 100 * (current + 1) * (current + 1)
+    if gold < cost:
+        return "Enhancement requires %d gold." % cost
+    gold -= cost
+    sh.enhancements[slot] = current + 1
+    return ""
+
+
 ## Moves sigil `inv_index` of the inventory into socket `index` of the weapon/armor (the old one goes back). "" = success.
-func equip_sigil(char_id: String, group: String, index: int, inv_index: int, db: Dictionary) -> String:
+func equip_sigil(char_id: String, group: String, index: int, inv_index: int, db: Dictionary, service_access: bool = false) -> String:
     var sh: CharacterSheetScript = sheet(char_id)
     if sh == null:
         return "Unknown character."
@@ -149,9 +169,11 @@ func equip_sigil(char_id: String, group: String, index: int, inv_index: int, db:
     if inv_index < 0 or inv_index >= sigil_inv.size():
         return "That rune is not in the inventory."
     var inst: Dictionary = sigil_inv[inv_index]
-    if not (db.get("sigils", {}) as Dictionary).has(str(inst.get("id", ""))):
+    if not (db.get("runes", db.get("sigils", {})) as Dictionary).has(str(inst.get("id", ""))):
         return "Unknown rune."
     var old: Dictionary = sh.sigil_at(group, index)
+    if not old.is_empty() and not service_access:
+        return "Visit a blacksmith or magic-rune specialist to replace an equipped rune."
     sigil_inv.remove_at(inv_index)
     if not old.is_empty():
         sigil_inv.append(old)
@@ -159,7 +181,9 @@ func equip_sigil(char_id: String, group: String, index: int, inv_index: int, db:
     return ""
 
 
-func unequip_sigil(char_id: String, group: String, index: int, db: Dictionary) -> String:
+func unequip_sigil(char_id: String, group: String, index: int, db: Dictionary, service_access: bool = false) -> String:
+    if not service_access:
+        return "Visit a blacksmith or magic-rune specialist to remove this rune."
     var sh: CharacterSheetScript = sheet(char_id)
     if sh == null:
         return "Unknown character."
