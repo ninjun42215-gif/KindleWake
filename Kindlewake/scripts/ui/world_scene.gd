@@ -238,6 +238,7 @@ func _toggle_run() -> void:
         run_btn.text = "RUN: ON" if run_toggled else "RUN"
 
 func _in_safe_zone(cell: Vector2i) -> bool:
+    cell = wmap.wrap_cell(cell)
     var radius: float = float(active_world.get("safe_radius", 5))
     for p in wmap.places:
         var d: Dictionary = p
@@ -930,6 +931,7 @@ func _build_minimap() -> void:
 
 
 func _region_name_at(cell: Vector2i) -> String:
+    cell = wmap.wrap_cell(cell)
     if GameState.active_region_id == "brinegate_coast":
         if cell.x >= 42 and cell.y <= 27:
             return "Lantern Reach"
