@@ -188,10 +188,10 @@ func _button(text: String, handler: Callable, min_size: Vector2 = Vector2(0, 56)
 func _tab_button(text: String, handler: Callable, selected: bool) -> Button:
     var b := Button.new()
     b.text = text
-    b.custom_minimum_size = Vector2(0, 46 if get_viewport_rect().size.x < 1050.0 else 54)
+    b.custom_minimum_size = Vector2(0, 46 if _layout_viewport_size().x < 1050.0 else 54)
     b.clip_text = true
     b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    b.add_theme_font_size_override("font_size", 15 if get_viewport_rect().size.x < 1050.0 else 21)
+    b.add_theme_font_size_override("font_size", 15 if _layout_viewport_size().x < 1050.0 else 21)
     if selected:
         _skin(b, COL_CARD_SEL, COL_GOLD, COL_GOLD)
     else:
@@ -335,6 +335,14 @@ func _delta_row(before: Dictionary, after: Dictionary) -> Control:
 
 # ---------------------------------------------------------------- whole-screen layout
 
+## Headless UI smoke tests construct this Control before adding it to a SceneTree.
+## Use the game's landscape design size in that case; live screens use the real viewport.
+func _layout_viewport_size() -> Vector2:
+    if is_inside_tree():
+        return get_viewport().get_visible_rect().size
+    return Vector2(1280.0, 720.0)
+
+
 func _rebuild() -> void:
     if party == null:
         return
@@ -372,7 +380,7 @@ func _rebuild() -> void:
     root_box.add_theme_constant_override("separation", 10)
     margin.add_child(root_box)
     root_box.add_child(_build_header())
-    var viewport_size: Vector2 = get_viewport_rect().size
+    var viewport_size: Vector2 = _layout_viewport_size()
     var viewport_width: float = viewport_size.x
     # Stack vertically only in portrait. Narrow landscape phones still have
     # enough horizontal space for three scaled panes, but not 700 px of height.
@@ -442,7 +450,7 @@ func _build_header() -> Control:
     bar.add_theme_stylebox_override("panel", _style(COL_PANEL, COL_BORDER, 2, 8, 6.0))
     var row := HBoxContainer.new()
     row.add_theme_constant_override("separation", 12)
-    var compact: bool = get_viewport_rect().size.x < 900.0
+    var compact: bool = _layout_viewport_size().x < 900.0
     var title := _text("Company of Kaer Sethorn", 20 if compact else 28, COL_GOLD)
     title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     title.clip_text = true
@@ -572,7 +580,7 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
     # attributes: green when gear adds to them, red when gear takes away
     _add_section(box, "Attributes")
     var attrs := GridContainer.new()
-    attrs.columns = 3 if get_viewport_rect().size.x < 1050.0 else 5
+    attrs.columns = 3 if _layout_viewport_size().x < 1050.0 else 5
     attrs.add_theme_constant_override("h_separation", 6)
     attrs.add_theme_constant_override("v_separation", 6)
     attrs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
