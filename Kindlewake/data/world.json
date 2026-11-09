@@ -95,7 +95,8 @@
         43,
         23
       ],
-      "text": "The old boundary arch marks the road into Orrowen Weald. Its stones bear the antler seal of House Orrowen."
+      "text": "The old boundary arch marks the road into Orrowen Weald. Its stones bear the antler seal of House Orrowen.",
+      "world_flag": "orrowen_gate_passed"
     },
     {
       "id": "vessmoor_gate",
@@ -105,7 +106,8 @@
         37,
         37
       ],
-      "text": "A raised causeway leaves the marsh for the open Vessmoor grasslands. House Vessmoor toll-keepers still watch the mileposts."
+      "text": "A raised causeway leaves the marsh for the open Vessmoor grasslands. House Vessmoor toll-keepers still watch the mileposts.",
+      "world_flag": "vessmoor_gate_passed"
     },
     {
       "id": "thornmere",
