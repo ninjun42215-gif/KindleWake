@@ -1,3 +1,24 @@
+# Session handoff — current repository checkpoint
+
+## 2026-11-09 validation follow-up (project version remains 0.9.0)
+- Canonical source: GitHub `ninjun42215-gif/KindleWake`, branch `main`; Godot project is `Kindlewake/`.
+- Latest gameplay checkpoint: Godot project `config/version=0.9.0`, save schema `3`. Do not use stale v0.7.x notes below as the current version.
+- CI run #108 (commit `7e6ba34`) imported successfully on its second import, then strict tests reported 273 checks with one failure. Root cause: `tests/run_tests.gd` attempted to buy `frost` from the starter merchant, although `data/shop.json` stocks `mend`, `ember`, `vigor`, `might`, and `bulwark`. The failed purchase left the sigil bag unchanged and caused the later array-index error.
+- Fixed in commit `aadc783`: the shop regression test now buys, checks, and sells `mend`, which is actually in starter stock. This is test-only; gameplay data and rules are unchanged.
+- CI run #109 is currently validating commit `aadc783`. Check its final status and artifact logs before claiming the suite or APK passes: https://github.com/ninjun42215-gif/KindleWake/actions/runs/42641111286
+- Initial import pass showed transient class-name resolution errors; the second import was clean. Keep this distinct from persistent script/test failures.
+- Do not claim phone/device verification. CI Godot 4.2.2 headless validation is not a substitute for playing on Android.
+- Documentation was inconsistent: root README claimed v0.8.1, root continuation prompt described v0.7.x, while project.godot and SaveSystem are v0.9.0 / save schema 3. Canonical project docs are being synchronized to v0.9.0. Continue to check actual version constants before any future bump.
+
+## Immediate next steps
+1. Check run #109. If it passes strict tests and balance report, confirm APK export and retrieve the artifact; if it fails, inspect the new test log and fix the actual root cause.
+2. Run the static checker and Android offline preflight on the updated tree if the workflow does not already report them.
+3. Review and reconcile the other open branches before merging anything; do not merge a branch based only on its name/version label.
+4. Continue the playable campaign slice: save/load full world position, dungeon/quest flags, and travel progression; write migrations and regression tests before extending save payloads.
+5. Keep the optional nested sprite packs source-only until licenses/credits and visual suitability are reviewed.
+
+---
+
 # Development checkpoint — v0.9.0 (2026-11-09)
 
 Implemented on main:
