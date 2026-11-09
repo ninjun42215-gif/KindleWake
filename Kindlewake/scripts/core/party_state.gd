@@ -196,12 +196,12 @@ func unequip_sigil(char_id: String, group: String, index: int, db: Dictionary, s
     var items: Dictionary = db.get("items", {})
     if index < 0 or index >= sh.socket_count(group, items):
         return "There is no such socket."
-    # Normalize only after validation so a rejected operation cannot eject runes.
-    for inst0 in sh.fit_sockets(items):
-        sigil_inv.append(inst0)
+    # Check occupancy before normalization too: removing from an empty socket is a no-op.
     var old: Dictionary = sh.sigil_at(group, index)
     if old.is_empty():
         return "That socket is empty."
+    for inst0 in sh.fit_sockets(items):
+        sigil_inv.append(inst0)
     sigil_inv.append(old)
     (sh.sigils[group] as Array)[index] = {}
     return ""
