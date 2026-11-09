@@ -70,6 +70,7 @@ func _ready() -> void:
     _build_ui()
     _build_minimap()
     _show_prologue_acknowledgement()
+    _show_escape_acknowledgement()
     GameState.from_world = true
     GameState.save_campaign("auto_a")
 
@@ -86,6 +87,21 @@ func _show_prologue_acknowledgement() -> void:
     banner.visible = true
     GameState.world_flags["prologue_acknowledged"] = true
     get_tree().create_timer(7.0).timeout.connect(func():
+        if is_instance_valid(banner):
+            banner.visible = false
+    )
+
+
+func _show_escape_acknowledgement() -> void:
+    if not bool(GameState.world_flags.get("east_gallery_escaped", false)):
+        return
+    if bool(GameState.world_flags.get("escape_acknowledged", false)):
+        return
+    banner_label.text = "The postern is behind you. Dunmarrow is lost, but the company lives — and the truth has not yet been silenced."
+    banner.visible = true
+    GameState.world_flags["escape_acknowledged"] = true
+    GameState.save_campaign("auto_a")
+    get_tree().create_timer(8.0).timeout.connect(func():
         if is_instance_valid(banner):
             banner.visible = false
     )
