@@ -153,7 +153,7 @@ Skill type `strike` (data/skills.json): damage = weapon attack power x `mult` ag
 
 ### 4.1 Levels and experience
 - Levels 1–250. Promotion offered at level 10 (tier 2) and level 20 (tier 3) when requirements are met.
-- `EXP to next = 80 + 20·level` (flat-ish to avoid grinding). Battle EXP is shared: acting units earn full EXP; bench units earn 40% of the battle total so reserves stay relevant.
+- `EXP to next = 80 + 20·level + max(0, level - 2)^2`. Early growth is approachable; the quadratic tail makes later levels a long-term campaign achievement. Battle EXP is shared: acting units earn full EXP; bench units earn 40% of the battle total so reserves stay relevant.
 - Each level grants class-based stat growth (probability per stat, 0–100%). Luck and Leadership grow slowly.
 
 **Implemented in v0.3.0 (`CharacterSheet`, `PartyState`, `CombatCalc.kill_exp`)**
@@ -202,7 +202,7 @@ Blacksmith upgrades items by +1…+5 using materials; Heirlooms upgrade through 
 - Budget target: player gear power grows ~12%/chapter; enemy power ~10%/chapter plus authored spikes at set-piece battles.
 - Balance is validated with the headless battle simulator planned for Milestone 2.
 
-### 4.6 Campaign rewards, AP, gold and Sigils (v0.4.0, modelled on Final Fantasy VII)
+### 4.6 Campaign rewards, AP, gold and Sigils (FF7-inspired)
 
 **Rewards.** Every enemy has a fixed `reward` block in `characters.json` (`exp`, `ap`, `gold`; commanders pay more). Defaults when missing: EXP `15 + 5 × level`, AP `2 + level`, gold `5 + 3 × level`, all doubled for a commander.
 - Only **defeated** enemies pay. Winning by killing the chief while others live does not pay for the survivors.
@@ -221,7 +221,7 @@ Blacksmith upgrades items by +1…+5 using materials; Heirlooms upgrade through 
 | independent | party-wide reward bonuses | Veteran's Mark (+EXP%), Coin Eye (+gold%) |
 AP gained per sigil = battle AP x weapon/armor `ap_mult` x (100 + linked Tutor %) / 100, rounded up. Heroes no longer have innate spells: Brother Wystan's Mend comes from a Sigil of Mending in his mace.
 
-**Repeatable fights.** Roadside Skirmish (`data/encounters.json`): the story map with a weighted-random enemy group, offered on the results screen as "Skirmish (grind for EXP / AP / gold)". It is the equivalent of FF7 random encounters; later maps get their own tables.
+**World encounters, not a grind mode.** There is no separate Skirmish or Story Battle selection on the results screen. Weighted enemy patrols can ambush the company while travelling through dangerous regions; authored battles are entered through campaign locations, dungeons, gates and story events.
 
 **Offensive magic (new skill type `damage`).** Never misses; damage = `base_damage((power + 1.2 x INT) x resonance, magic defense) x morale x variance`; costs MP; targets enemies in range 2-4. The AI casts damage skills when their score beats the best weapon attack. Skill preview appears in the info panel.
 
