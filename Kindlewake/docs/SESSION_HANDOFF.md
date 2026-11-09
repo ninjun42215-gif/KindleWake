@@ -1,3 +1,5 @@
+> **GAMEPLAY IMPLEMENTATION CHECKPOINT — 2026-11-10:** Active branch: `feature/opening-prologue-vertical-slice`, based on `feature/premium-narrative-ux-art-direction`. Added `Prologue.tscn`, a touch-friendly authored east-gallery choice scene, pure `PrologueSystem` consequence data, new-game routing from the creator, and one-time companion acknowledgement on first overworld arrival. Three decisions persist as campaign world flags; save schema is unchanged. Added eight headless assertions to `tests/run_tests.gd`. This is a first narrative slice only, not the full 45–60 minute vertical slice. Exact-head CI and Godot runtime validation are pending; do not merge or distribute until all required checks pass. Main remains untouched.
+>
 # LIVE SESSION UPDATE — 2026-11-10
 
 - Canonical main at session start: `6379826a992e67a2abd92a9a795d97cb1022e4ca`; Godot project version `0.11.0`.
