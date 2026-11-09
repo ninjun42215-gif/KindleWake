@@ -195,7 +195,10 @@ func exp_to_next() -> int:
 ## {"exp_gained": int, "levels": [{"level": int, "gains": {stat: int}}]}. At MAX_LEVEL EXP is ignored.
 func add_exp(amount: int, rng: RandomNumberGenerator, class_def: Dictionary) -> Dictionary:
     var report: Dictionary = {"exp_gained": maxi(0, amount), "levels": []}
-    if level >= MAX_LEVEL or amount <= 0:
+    if level >= MAX_LEVEL:
+        xp = 0
+        return report
+    if amount <= 0:
         return report
     xp += amount
     var levels: Array = report["levels"]
@@ -297,7 +300,12 @@ static func from_dict(d: Dictionary) -> CharacterSheet:
     for group in SIGIL_GROUPS:
         var arr: Array = []
         for entry in (sg.get(group, []) as Array):
-            arr.append((entry as Dictionary).duplicate())
+            if typeof(entry) == TYPE_DICTIONARY:
+                arr.append((entry as Dictionary).duplicate(true))
+            elif str(entry) != "":
+                arr.append({"id": str(entry), "ap": 0})
+            else:
+                arr.append({})
         s.sigils[group] = arr
     return s
 
