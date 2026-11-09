@@ -1,7 +1,7 @@
 class_name ShopSystem
 extends RefCounted
-## The gold sink: buy and sell items and sigils. Pure rules on a PartyState (no nodes), so it is testable headless.
-## `db` needs "items" and "sigils"; `shop` is data/shop.json ({"sell_ratio", "items": [ids], "sigils": [ids]}).
+## The gold sink: buy and sell items and runes. Pure rules on a PartyState (no nodes), so it is testable headless.
+## `db` needs "items" and "runes"; `shop` is data/shop.json ({"sell_ratio", "items": [ids], "sigils": [ids]}).
 ## Every method returns "" on success, otherwise a short reason for the UI.
 
 
@@ -23,7 +23,7 @@ static func sigil_price(sigil_id: String, db: Dictionary) -> int:
     return int(sd.get("price", 0))
 
 
-## kind is "item" or "sigil".
+## kind is "item" or "rune".
 static func for_sale(shop: Dictionary, kind: String, id: String) -> bool:
     var list: Array = shop.get("items", []) if kind == "item" else shop.get("runes", shop.get("sigils", []))
     return list.has(id)
@@ -86,7 +86,7 @@ static func sell_item(party: PartyState, item_id: String, db: Dictionary, shop: 
 ## Sells sigil number `inv_index` of the bag (flat price, whatever its level).
 static func sell_rune(party: PartyState, inv_index: int, db: Dictionary, shop: Dictionary) -> String:
     if inv_index < 0 or inv_index >= party.sigil_inv.size():
-        return "That sigil is not in the bag."
+        return "That rune is not in the bag."
     var inst: Dictionary = party.sigil_inv[inv_index]
     var price: int = sigil_price(str(inst.get("id", "")), db)
     if price <= 0:
