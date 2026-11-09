@@ -1,5 +1,8 @@
 class_name PartyScreen
 extends Control
+
+const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
+const PartyStateScript = preload("res://scripts/core/party_state.gd")
 ## Full-screen party management in one touch UI (v0.8.0 layout): a compact top bar, a roster of cards, a character
 ## sheet made of stat tiles, and a right panel with three tabs: Equipment, Sigils and Shop.
 ## It owns no rules: every action goes through PartyState / CharacterSheet / ShopSystem, the same code paths the
@@ -33,7 +36,7 @@ const RARITY_COLORS := {
     "heirloom": Color(1.0, 0.75, 0.3),
 }
 
-var party: PartyState = null
+var party: PartyStateScript = null
 var db: Dictionary = {}
 var shop: Dictionary = {}
 var selected_id: String = ""
@@ -404,7 +407,7 @@ func _build_roster() -> Control:
     roster_scroll = scroll
     var classes: Dictionary = db.get("classes", {})
     for id in party.roster:
-        var sh: CharacterSheet = party.sheet(id)
+        var sh: CharacterSheetScript = party.sheet(id)
         var cp: Array = _card(_on_select.bind(id), id == selected_id)
         var holder: PanelContainer = cp[0]
         var cbox: VBoxContainer = cp[1]
@@ -471,7 +474,7 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheet) -> void:
     head.add_child(_button(">", _on_step.bind(1), Vector2(52, 52), 26))
     box.add_child(head)
     # Experience is deliberately visible, but the 250-level cap is a campaign milestone.
-    if sh.level >= CharacterSheet.MAX_LEVEL:
+    if sh.level >= CharacterSheetScript.MAX_LEVEL:
         box.add_child(_label("EXPERIENCE  •  MAX LEVEL REACHED", 15, COL_GOLD))
     else:
         box.add_child(_label("EXPERIENCE  %d / %d" % [sh.xp, sh.exp_to_next()], 15, COL_DIM))
