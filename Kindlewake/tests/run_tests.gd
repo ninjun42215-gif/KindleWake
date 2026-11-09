@@ -910,6 +910,16 @@ func _test_shop_and_screen() -> void:
             shop_ok = false
     check(shop_ok, "shop stock only lists real items and sigils that have a price")
     check(ShopSystem.stock(shop, db).size() == (shop["items"] as Array).size() + (shop["sigils"] as Array).size(), "the stock list has one entry per shop line")
+    var price_order_ok := true
+    var rarity_price_floor := {"common": 0, "uncommon": 150, "rare": 800, "epic": 3000, "legendary": 12000, "mythical": 35000}
+    for item_id in items.keys():
+        var item_def: Dictionary = items[item_id]
+        var rarity: String = str(item_def.get("rarity", "common"))
+        if rarity_price_floor.has(rarity) and int(item_def.get("price", 0)) < int(rarity_price_floor[rarity]):
+            price_order_ok = false
+    check(price_order_ok, "rare through mythical equipment uses premium price bands")
+    var regional_stock: Dictionary = shop.get("regional_stocks", {})
+    check(regional_stock.has("crossing_shop") and regional_stock.has("milefort_market") and not (regional_stock["crossing_shop"]["items"] as Array).has("mythical_arming_sword"), "regional merchants have distinct gated stock")
     check(gd.skills.has("frost_shard") and gd.skills.has("frost_lance") and str(gd.skills["frost_shard"]["type"]) == "damage", "Frost skills exist as damage spells")
     check(CharacterSheet.sigil_skills_at(sdefs["frost"], 1).has("frost_shard") and CharacterSheet.sigil_skills_at(sdefs["frost"], 3).has("frost_lance"), "the Sigil of Frost teaches Frost Shard at level 1 and Frost Lance at level 3")
     # --- text helpers
