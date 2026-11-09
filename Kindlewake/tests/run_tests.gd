@@ -833,8 +833,11 @@ func _test_recruitment() -> void:
     check(not bool(duplicate.get("ok", true)) and party.gold == 50, "duplicate recruitment is refused without charging twice")
 
     var verra: Dictionary = gd.character_def("verra_nightsong")
-    var locked: Dictionary = RecruitmentSystem.inspect(party, "verra_nightsong", verra, flags)
+    var fresh_party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    var locked: Dictionary = RecruitmentSystem.inspect(fresh_party, "verra_nightsong", verra, flags)
     check(not bool(locked.get("available", true)) and str(locked.get("reason", "")).contains("joss harrow"), "recruit dependencies remain locked until their companion joins")
+    var unlocked: Dictionary = RecruitmentSystem.inspect(party, "verra_nightsong", verra, flags)
+    check(bool(unlocked.get("available", false)), "joining Joss unlocks Verra's recruitment")
     var bram: Dictionary = gd.character_def("bram_cullen")
     var camp_locked: Dictionary = RecruitmentSystem.inspect(party, "bram_cullen", bram, flags)
     check(not bool(camp_locked.get("available", true)), "story-flag requirements block Bram before the camp is cleared")
