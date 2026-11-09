@@ -1011,6 +1011,10 @@ func _test_shop_and_screen() -> void:
     var gold1: int = ps.gold
     check(ShopSystem.sell_item(ps, "arming_sword", db, shop) == "" and ps.item_count("arming_sword") == count0, "selling takes the item out of the bag")
     check(ps.gold == gold1 + ShopSystem.sell_price(arming_price, shop), "selling pays the sell ratio of the price")
+    ps.gold = 500000
+    for n in range(15):
+        check(ps.enhance_equipment("torren", "weapon", db) == "", "blacksmith enhances equipment through +%d" % (n + 1))
+    check(int(ps.sheet("torren").enhancements.get("weapon", 0)) == 15 and ps.enhance_equipment("torren", "weapon", db) != "", "equipment enhancement caps at +15")
     check(ShopSystem.sell_item(ps, "arming_sword", db, shop) != "", "gear that is only equipped (not in the bag) cannot be sold")
     check(ShopSystem.sell_item(ps, "dunmarrow_signet", db, shop) == "That cannot be sold.", "heirlooms cannot be sold")
     # Use a sigil that is actually stocked by the starter merchant.
@@ -1033,7 +1037,7 @@ func _test_shop_and_screen() -> void:
     var screen := PartyScreen.new()
     root.add_child(screen)
     screen.closed.connect(_on_screen_closed)
-    screen.setup(ps, db, shop)
+    screen.setup(ps, db, shop, true, true, true)
     screen.open()
     check(screen.visible and screen.builds == 1 and screen.get_child_count() == 2, "the party screen builds its layout on open()")
     var b0: int = screen.builds
