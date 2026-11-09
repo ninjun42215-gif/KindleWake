@@ -143,6 +143,13 @@ func _refresh_selection() -> void:
         str(continent.get("conflict", "")), str(continent.get("campaign_hook", ""))
     ]
     detail_locations.text = "SIGNATURE PLACES\n" + "  •  ".join(continent.get("signature_locations", []))
+    detail_action_btn.visible = false
+    if str(continent.get("id", "")) == "thalassar" and unlocked:
+        detail_action_btn.text = "SAIL TO BRINEGATE COAST"
+        detail_action_btn.visible = true
+    elif str(continent.get("id", "")) == "eldrimar":
+        detail_action_btn.text = "RETURN TO SETHMARCH FRONTIER"
+        detail_action_btn.visible = true
     for i in range(continent_buttons.size()):
         continent_buttons[i].add_theme_color_override("font_color", SELECTED_GOLD if i == selected_index else Color("#d6ded9"))
         continent_buttons[i].add_theme_color_override("font_hover_color", Color("#fff0c8"))
