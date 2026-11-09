@@ -579,6 +579,2810 @@
           }
         }
       ]
+    },
+    "tide": {
+      "name": "Tide Rune",
+      "kind": "magic",
+      "color": "blue",
+      "rune_type": "water",
+      "grade": "common",
+      "price": 450,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "mp_pct": 5
+          },
+          "skills": [
+            "frost_shard"
+          ]
+        },
+        {
+          "mods": {
+            "mp_pct": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "mp_pct": 8
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "mp_pct": 10
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "gale": {
+      "name": "Gale Rune",
+      "kind": "magic",
+      "color": "teal",
+      "rune_type": "wind",
+      "grade": "common",
+      "price": 450,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "spd": 1
+          },
+          "skills": [
+            "storm_bolt"
+          ]
+        },
+        {
+          "mods": {
+            "spd": 1
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 2
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "quake": {
+      "name": "Quake Rune",
+      "kind": "magic",
+      "color": "ochre",
+      "rune_type": "earth",
+      "grade": "common",
+      "price": 525,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "vit": 1
+          },
+          "skills": [
+            "ember_bolt"
+          ]
+        },
+        {
+          "mods": {
+            "vit": 1
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 2
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "thorn": {
+      "name": "Thorn Rune",
+      "kind": "passive",
+      "color": "green",
+      "rune_type": "nature",
+      "grade": "common",
+      "price": 525,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "vit": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "bloom": {
+      "name": "Bloom Rune",
+      "kind": "passive",
+      "color": "green",
+      "rune_type": "nature",
+      "grade": "common",
+      "price": 600,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "hp_pct": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 8
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 10
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "barkskin": {
+      "name": "Barkskin Rune",
+      "kind": "passive",
+      "color": "green",
+      "rune_type": "nature",
+      "grade": "common",
+      "price": 600,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "armor": 1
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "armor": 1
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "armor": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "armor": 2
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "beast": {
+      "name": "Beast Rune",
+      "kind": "passive",
+      "color": "green",
+      "rune_type": "nature",
+      "grade": "common",
+      "price": 675,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "str": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "fang": {
+      "name": "Fang Rune",
+      "kind": "passive",
+      "color": "ochre",
+      "rune_type": "beast",
+      "grade": "common",
+      "price": 675,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "crit": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "crit": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "crit": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "crit": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "hawk": {
+      "name": "Hawk Rune",
+      "kind": "passive",
+      "color": "ochre",
+      "rune_type": "beast",
+      "grade": "common",
+      "price": 750,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "acc": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "acc": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "acc": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "acc": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "eagle_eye": {
+      "name": "Eagle Eye Rune",
+      "kind": "passive",
+      "color": "ochre",
+      "rune_type": "beast",
+      "grade": "common",
+      "price": 750,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "acc": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "acc": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "acc": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "acc": 6
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "wolf": {
+      "name": "Wolf Rune",
+      "kind": "passive",
+      "color": "ochre",
+      "rune_type": "beast",
+      "grade": "common",
+      "price": 825,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "spd": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "lionheart": {
+      "name": "Lionheart Rune",
+      "kind": "passive",
+      "color": "red",
+      "rune_type": "valor",
+      "grade": "common",
+      "price": 825,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "str": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 6
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "guardian": {
+      "name": "Guardian Rune",
+      "kind": "passive",
+      "color": "red",
+      "rune_type": "valor",
+      "grade": "common",
+      "price": 900,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "vit": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 6
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "duelist": {
+      "name": "Duelist Rune",
+      "kind": "passive",
+      "color": "red",
+      "rune_type": "valor",
+      "grade": "common",
+      "price": 900,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "eva": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "eva": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "eva": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "eva": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "berserker": {
+      "name": "Berserker Rune",
+      "kind": "passive",
+      "color": "red",
+      "rune_type": "valor",
+      "grade": "uncommon",
+      "price": 975,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "str": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 6
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 8
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "vanguard": {
+      "name": "Vanguard Rune",
+      "kind": "passive",
+      "color": "red",
+      "rune_type": "valor",
+      "grade": "uncommon",
+      "price": 975,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "hp_pct": 8
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 8
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 12
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 16
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "assassin": {
+      "name": "Assassin Rune",
+      "kind": "passive",
+      "color": "purple",
+      "rune_type": "shadow",
+      "grade": "uncommon",
+      "price": 1050,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "spd": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 6
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "veil": {
+      "name": "Veil Rune",
+      "kind": "passive",
+      "color": "purple",
+      "rune_type": "shadow",
+      "grade": "uncommon",
+      "price": 1050,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "eva": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "eva": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "eva": 6
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "eva": 8
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "wraith": {
+      "name": "Wraith Rune",
+      "kind": "magic",
+      "color": "purple",
+      "rune_type": "shadow",
+      "grade": "uncommon",
+      "price": 1125,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "mp_pct": 5
+          },
+          "skills": [
+            "shadow_drain"
+          ]
+        },
+        {
+          "mods": {
+            "mp_pct": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "mp_pct": 8
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "mp_pct": 10
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "soul": {
+      "name": "Soul Rune",
+      "kind": "magic",
+      "color": "gold",
+      "rune_type": "holy",
+      "grade": "uncommon",
+      "price": 1125,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "hp_pct": 4
+          },
+          "skills": [
+            "holy_smite"
+          ]
+        },
+        {
+          "mods": {
+            "hp_pct": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 6
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 8
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "sanctuary": {
+      "name": "Sanctuary Rune",
+      "kind": "passive",
+      "color": "gold",
+      "rune_type": "holy",
+      "grade": "uncommon",
+      "price": 1200,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "vit": 2,
+            "hp_pct": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 2,
+            "hp_pct": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 3,
+            "hp_pct": 6
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 4,
+            "hp_pct": 8
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "oracle": {
+      "name": "Oracle Rune",
+      "kind": "passive",
+      "color": "violet",
+      "rune_type": "arcane",
+      "grade": "uncommon",
+      "price": 1200,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "int": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 6
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "sage": {
+      "name": "Sage Rune",
+      "kind": "passive",
+      "color": "violet",
+      "rune_type": "arcane",
+      "grade": "uncommon",
+      "price": 1275,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "mp_pct": 8
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "mp_pct": 8
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "mp_pct": 12
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "mp_pct": 16
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "wisdom": {
+      "name": "Wisdom Rune",
+      "kind": "passive",
+      "color": "violet",
+      "rune_type": "arcane",
+      "grade": "uncommon",
+      "price": 1275,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "int": 2,
+            "mp_pct": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 2,
+            "mp_pct": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 3,
+            "mp_pct": 8
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 4,
+            "mp_pct": 10
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "focus": {
+      "name": "Focus Rune",
+      "kind": "passive",
+      "color": "violet",
+      "rune_type": "arcane",
+      "grade": "uncommon",
+      "price": 1350,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "acc": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "acc": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "acc": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "acc": 6
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "clarity": {
+      "name": "Clarity Rune",
+      "kind": "passive",
+      "color": "violet",
+      "rune_type": "arcane",
+      "grade": "uncommon",
+      "price": 1350,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "mp_pct": 10
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "mp_pct": 10
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "mp_pct": 15
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "mp_pct": 20
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "spark": {
+      "name": "Spark Rune",
+      "kind": "magic",
+      "color": "cyan",
+      "rune_type": "storm",
+      "grade": "uncommon",
+      "price": 1425,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "spd": 1
+          },
+          "skills": [
+            "storm_bolt"
+          ]
+        },
+        {
+          "mods": {
+            "spd": 1
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 2
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "thunderhead": {
+      "name": "Thunderhead Rune",
+      "kind": "magic",
+      "color": "cyan",
+      "rune_type": "storm",
+      "grade": "uncommon",
+      "price": 1425,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "int": 2
+          },
+          "skills": [
+            "storm_bolt_ii"
+          ]
+        },
+        {
+          "mods": {
+            "int": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "tempest": {
+      "name": "Tempest Rune",
+      "kind": "magic",
+      "color": "cyan",
+      "rune_type": "storm",
+      "grade": "rare",
+      "price": 1500,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "spd": 2
+          },
+          "skills": [
+            "storm_bolt_ii"
+          ]
+        },
+        {
+          "mods": {
+            "spd": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "glacier": {
+      "name": "Glacier Rune",
+      "kind": "magic",
+      "color": "blue",
+      "rune_type": "frost",
+      "grade": "rare",
+      "price": 1500,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "vit": 1
+          },
+          "skills": [
+            "frost_lance"
+          ]
+        },
+        {
+          "mods": {
+            "vit": 1
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 2
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "permafrost": {
+      "name": "Permafrost Rune",
+      "kind": "magic",
+      "color": "blue",
+      "rune_type": "frost",
+      "grade": "rare",
+      "price": 1575,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "vit": 2
+          },
+          "skills": [
+            "frost_lance"
+          ]
+        },
+        {
+          "mods": {
+            "vit": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "inferno": {
+      "name": "Inferno Rune",
+      "kind": "magic",
+      "color": "red",
+      "rune_type": "flame",
+      "grade": "rare",
+      "price": 1575,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "int": 2
+          },
+          "skills": [
+            "ember_storm"
+          ]
+        },
+        {
+          "mods": {
+            "int": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "cinder": {
+      "name": "Cinder Rune",
+      "kind": "magic",
+      "color": "red",
+      "rune_type": "flame",
+      "grade": "rare",
+      "price": 1650,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "int": 1
+          },
+          "skills": [
+            "ember_bolt"
+          ]
+        },
+        {
+          "mods": {
+            "int": 1
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 2
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "phoenix": {
+      "name": "Phoenix Rune",
+      "kind": "passive",
+      "color": "red",
+      "rune_type": "flame",
+      "grade": "rare",
+      "price": 1650,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "hp_pct": 6
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 6
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 9
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 12
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "magma": {
+      "name": "Magma Rune",
+      "kind": "magic",
+      "color": "ochre",
+      "rune_type": "earth",
+      "grade": "rare",
+      "price": 1725,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "str": 2
+          },
+          "skills": [
+            "ember_storm"
+          ]
+        },
+        {
+          "mods": {
+            "str": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "crystal": {
+      "name": "Crystal Rune",
+      "kind": "passive",
+      "color": "ochre",
+      "rune_type": "earth",
+      "grade": "rare",
+      "price": 1725,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "vit": 2,
+            "mp_pct": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 2,
+            "mp_pct": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 3,
+            "mp_pct": 6
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 4,
+            "mp_pct": 8
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "ironwall": {
+      "name": "Ironwall Rune",
+      "kind": "passive",
+      "color": "ochre",
+      "rune_type": "earth",
+      "grade": "rare",
+      "price": 1800,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "vit": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 6
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 8
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "fortune": {
+      "name": "Fortune Rune",
+      "kind": "passive",
+      "color": "yellow",
+      "rune_type": "fortune",
+      "grade": "rare",
+      "price": 1800,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "gold_pct": 20
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "gold_pct": 20
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "gold_pct": 30
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "gold_pct": 40
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "merchant": {
+      "name": "Merchant Rune",
+      "kind": "passive",
+      "color": "yellow",
+      "rune_type": "fortune",
+      "grade": "rare",
+      "price": 1875,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "gold_pct": 35
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "gold_pct": 35
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "gold_pct": 53
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "gold_pct": 70
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "pilgrim": {
+      "name": "Pilgrim Rune",
+      "kind": "passive",
+      "color": "yellow",
+      "rune_type": "fortune",
+      "grade": "rare",
+      "price": 1875,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "exp_pct": 20
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "exp_pct": 20
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "exp_pct": 30
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "exp_pct": 40
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "scholar": {
+      "name": "Scholar Rune",
+      "kind": "passive",
+      "color": "yellow",
+      "rune_type": "fortune",
+      "grade": "rare",
+      "price": 1950,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "exp_pct": 30
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "exp_pct": 30
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "exp_pct": 45
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "exp_pct": 60
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "miser": {
+      "name": "Miser Rune",
+      "kind": "passive",
+      "color": "yellow",
+      "rune_type": "fortune",
+      "grade": "rare",
+      "price": 1950,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "gold_pct": 50
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "gold_pct": 50
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "gold_pct": 75
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "gold_pct": 100
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "blood": {
+      "name": "Blood Rune",
+      "kind": "passive",
+      "color": "purple",
+      "rune_type": "shadow",
+      "grade": "epic",
+      "price": 2025,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "str": 2,
+            "hp_pct": -3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 2,
+            "hp_pct": -3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 3,
+            "hp_pct": -4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 4,
+            "hp_pct": -6
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "drain": {
+      "name": "Leech Rune",
+      "kind": "magic",
+      "color": "purple",
+      "rune_type": "shadow",
+      "grade": "epic",
+      "price": 2025,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "hp_pct": 3
+          },
+          "skills": [
+            "shadow_drain"
+          ]
+        },
+        {
+          "mods": {
+            "hp_pct": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 6
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "ward": {
+      "name": "Ward Rune",
+      "kind": "passive",
+      "color": "gold",
+      "rune_type": "holy",
+      "grade": "epic",
+      "price": 2100,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "armor_res": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "armor_res": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "armor_res": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "armor_res": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "purity": {
+      "name": "Purity Rune",
+      "kind": "passive",
+      "color": "gold",
+      "rune_type": "holy",
+      "grade": "epic",
+      "price": 2100,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "vit": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "resistance": {
+      "name": "Resistance Rune",
+      "kind": "passive",
+      "color": "ochre",
+      "rune_type": "earth",
+      "grade": "epic",
+      "price": 2175,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "armor_def": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "armor_def": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "armor_def": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "armor_def": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "haste": {
+      "name": "Haste Rune",
+      "kind": "passive",
+      "color": "teal",
+      "rune_type": "wind",
+      "grade": "epic",
+      "price": 2175,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "spd": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 6
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 8
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "swift": {
+      "name": "Swift Rune",
+      "kind": "passive",
+      "color": "teal",
+      "rune_type": "wind",
+      "grade": "epic",
+      "price": 2250,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "spd": 2,
+            "eva": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 2,
+            "eva": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 3,
+            "eva": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 4,
+            "eva": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "echo": {
+      "name": "Echo Rune",
+      "kind": "passive",
+      "color": "violet",
+      "rune_type": "arcane",
+      "grade": "epic",
+      "price": 2250,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "int": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 2
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 4
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "resonant": {
+      "name": "Resonant Rune",
+      "kind": "passive",
+      "color": "violet",
+      "rune_type": "arcane",
+      "grade": "epic",
+      "price": 2325,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "int": 3,
+            "mp_pct": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 3,
+            "mp_pct": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 5,
+            "mp_pct": 8
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 6,
+            "mp_pct": 10
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "anchor": {
+      "name": "Anchor Rune",
+      "kind": "passive",
+      "color": "ochre",
+      "rune_type": "earth",
+      "grade": "epic",
+      "price": 2325,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "vit": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "vit": 6
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "wayfarer": {
+      "name": "Wayfarer Rune",
+      "kind": "passive",
+      "color": "teal",
+      "rune_type": "wind",
+      "grade": "epic",
+      "price": 2400,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "spd": 1,
+            "exp_pct": 10
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 1,
+            "exp_pct": 10
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 2,
+            "exp_pct": 15
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "spd": 2,
+            "exp_pct": 20
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": false,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "dragon": {
+      "name": "Dragon Rune",
+      "kind": "magic",
+      "color": "violet",
+      "rune_type": "unique",
+      "grade": "epic",
+      "price": 6000,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "str": 3,
+            "int": 3
+          },
+          "skills": [
+            "ember_storm"
+          ]
+        },
+        {
+          "mods": {
+            "str": 3,
+            "int": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 5,
+            "int": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 6,
+            "int": 6
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": true,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "worldtree": {
+      "name": "Worldtree Rune",
+      "kind": "passive",
+      "color": "gold",
+      "rune_type": "heirloom",
+      "grade": "legendary",
+      "price": 0,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "hp_pct": 12,
+            "mp_pct": 8,
+            "vit": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 12,
+            "mp_pct": 8,
+            "vit": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 18,
+            "mp_pct": 12,
+            "vit": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 24,
+            "mp_pct": 16,
+            "vit": 6
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": true,
+      "heirloom": true,
+      "fusion_allowed": false
+    },
+    "king": {
+      "name": "King's Rune",
+      "kind": "passive",
+      "color": "gold",
+      "rune_type": "heirloom",
+      "grade": "legendary",
+      "price": 0,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "str": 4,
+            "int": 4,
+            "vit": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 4,
+            "int": 4,
+            "vit": 4
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 6,
+            "int": 6,
+            "vit": 6
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 8,
+            "int": 8,
+            "vit": 8
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": true,
+      "heirloom": true,
+      "fusion_allowed": false
+    },
+    "sundered": {
+      "name": "Sundered Oath Rune",
+      "kind": "magic",
+      "color": "gold",
+      "rune_type": "heirloom",
+      "grade": "legendary",
+      "price": 0,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "str": 3,
+            "int": 3
+          },
+          "skills": [
+            "shadow_drain",
+            "holy_smite"
+          ]
+        },
+        {
+          "mods": {
+            "str": 3,
+            "int": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 5,
+            "int": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 6,
+            "int": 6
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": true,
+      "heirloom": true,
+      "fusion_allowed": false
+    },
+    "starfall": {
+      "name": "Starfall Rune",
+      "kind": "magic",
+      "color": "violet",
+      "rune_type": "unique",
+      "grade": "epic",
+      "price": 6000,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "int": 5,
+            "mp_pct": 10
+          },
+          "skills": [
+            "storm_bolt_ii",
+            "holy_smite_ii"
+          ]
+        },
+        {
+          "mods": {
+            "int": 5,
+            "mp_pct": 10
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 8,
+            "mp_pct": 15
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "int": 10,
+            "mp_pct": 20
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": false,
+      "unique": true,
+      "heirloom": false,
+      "fusion_allowed": true
+    },
+    "phoenix_heirloom": {
+      "name": "Ashen Phoenix Rune",
+      "kind": "passive",
+      "color": "gold",
+      "rune_type": "heirloom",
+      "grade": "legendary",
+      "price": 0,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "hp_pct": 15,
+            "vit": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 15,
+            "vit": 3
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 23,
+            "vit": 5
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "hp_pct": 30,
+            "vit": 6
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": true,
+      "heirloom": true,
+      "fusion_allowed": false
+    },
+    "dunmarrow": {
+      "name": "Dunmarrow Heirloom Rune",
+      "kind": "passive",
+      "color": "gold",
+      "rune_type": "heirloom",
+      "grade": "legendary",
+      "price": 0,
+      "ap": [
+        80,
+        240,
+        520,
+        900
+      ],
+      "levels": [
+        {
+          "mods": {
+            "str": 2,
+            "vit": 3,
+            "exp_pct": 10
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 2,
+            "vit": 3,
+            "exp_pct": 10
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 3,
+            "vit": 5,
+            "exp_pct": 15
+          },
+          "skills": []
+        },
+        {
+          "mods": {
+            "str": 4,
+            "vit": 6,
+            "exp_pct": 20
+          },
+          "skills": []
+        }
+      ],
+      "rune": true,
+      "passive": true,
+      "unique": true,
+      "heirloom": true,
+      "fusion_allowed": false
     }
   }
 }
