@@ -97,3 +97,17 @@ Answer in plain English. Lead with what you did and what I should do next. Keep 
 4. Add travel modes in progression order: roads/carts, ferries and barges, charter ships, caravan routes, northern pass, then airship. Do not consume campaign weeks until the calendar is implemented.
 5. Run Godot import, the full headless test suite and balance report later as previously requested; static checks are not runtime proof. Then verify creator/touch layouts and starter weapons on a landscape phone.
 6. Add origin-tag story hooks and review sprite-pack licenses before importing original art.
+
+
+## Automatic version synchronization — 2026-11-10
+
+- Added `Kindlewake/tools/sync_version.py`; `project.godot` `config/version` is the only version source of truth.
+- The tool synchronizes the README's first heading and Android export `version/name` and `version/code`. Code mapping: `MAJOR*10000 + MINOR*100 + PATCH` (minor/patch each <=99).
+- Added unit tests in `Kindlewake/tests/test_sync_version.py` and `.github/workflows/version-sync.yml`.
+- On pushes to main (including PR merges), the workflow repairs stale README/export metadata and commits only those metadata files. On PRs targeting main, it checks consistency and fails rather than rewriting the contributor branch.
+- The PR check loads the trusted synchronizer from main, so older feature branches are covered too.
+- Corrected main Android export metadata to version **0.9.0**, code **900**, matching `project.godot`. Main's README was already 0.9.0.
+- Corrected the independent toolbox branch export metadata to 0.9.0/code 900. The Rune System branch remains 0.10.0/code 1000 and will only become main's version if/when that reviewed work is merged.
+- Documentation: `Kindlewake/docs/VERSIONING.md`.
+
+**Validation caveat:** the synchronizer and workflow files are committed, and live file inspection confirms main's version fields now match. The GitHub connector used here only exposes PR-triggered workflow runs, so it did not independently confirm the push-triggered `Synchronize Project Version` run. Verify its first run in Actions. Do not claim the workflow has passed until that run is green.
