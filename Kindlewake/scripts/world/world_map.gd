@@ -81,12 +81,12 @@ static func generate(cfg: Dictionary) -> WorldMap:
                 if not m.in_bounds(cc):
                     continue
                 if m.terrain_at(cc) != MOUNTAIN or (absi(dx) <= 1 and absi(dy) <= 1):
-                    m._set(cc, GRASS)
+                    m._set_tile(cc, GRASS)
     for r in (cfg.get("roads", []) as Array):
         var pair: Array = r
         m._carve_road(m.place_cell(str(pair[0])), m.place_cell(str(pair[1])))
     for p in m.places:
-        m._set(m.place_cell(str((p as Dictionary).get("id", ""))), ROAD)
+        m._set_tile(m.place_cell(str((p as Dictionary).get("id", ""))), ROAD)
     m.start_cell = m.place_cell(str(cfg.get("start", "")))
     return m
 
@@ -101,7 +101,7 @@ func terrain_at(c: Vector2i) -> int:
     return int(tiles[c.y * width + c.x])
 
 
-func _set(c: Vector2i, t: int) -> void:
+func _set_tile(c: Vector2i, t: int) -> void:
     if in_bounds(c):
         tiles[c.y * width + c.x] = t
 
