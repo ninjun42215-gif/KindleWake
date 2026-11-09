@@ -16,6 +16,7 @@ class ProjectHealthAuditTests(unittest.TestCase):
         (project / "project.godot").write_text('config/version="1.2.3"\n')
         (project / "README.md").write_text("# Test v1.2.3\n")
         (project / "data" / "valid.json").write_text('{"ok": true}\n')
+        (project / "data" / "asset_provenance.json").write_text('{"schema_version": 1, "assets": []}')
         (project / "assets" / "art" / "CREDITS.md").write_text("# Credits\n")
         return project
 
@@ -59,6 +60,28 @@ class ProjectHealthAuditTests(unittest.TestCase):
             self.assertEqual(report["summary"]["warnings"], 1)
             self.assertEqual(report["counts"]["unverified_asset_entries"], 1)
             self.assertTrue(any(item["code"] == "ASSET_LICENSE_UNVERIFIED" for item in report["findings"]))
+
+
+    def test_used_asset_without_verified_licence_is_reported(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            project = self.fixture(root)
+            manifest = {
+                "schema_version": 1,
+                "assets": [
+                    {
+                        "id": "unknown-pack",
+                        "name": "Unknown Pack",
+                        "used_in_game": True,
+                        "license_status": "unverified",
+                    }
+                ],
+            }
+            (project / "data" / "asset_provenance.json").write_text(json.dumps(manifest))
+            result, report = self.run_audit(root)
+            self.assertEqual(result.returncode, 0)
+            self.assertEqual(report["counts"]["unverified_used_assets"], 1)
+            self.assertTrue(any(item["code"] == "USED_ASSET_LICENSE_UNVERIFIED" for item in report["findings"]))
 
     def test_rune_inventory_counts_kinds_and_rejects_malformed_entries(self):
         with tempfile.TemporaryDirectory() as temp:
