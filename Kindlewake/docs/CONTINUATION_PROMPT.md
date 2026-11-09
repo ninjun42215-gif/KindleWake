@@ -150,3 +150,11 @@ Answer in plain English. Lead with what you did and what I should do next. Keep 
 - Hurt tint blends over each palette, and all existing idle/walk/attack/hurt/death frame contracts remain unchanged. This is an interim renderer-level art pass, not a replacement for bespoke frame-by-frame hero/monster sprite sheets.
 - CI run `42667953445` for this commit was queued at handoff. Do not mark this pass build-validated or publish a new APK until that exact commit's workflow succeeds.
 - Next: add original dedicated enemy and hero sprite sheets plus cast/impact animations; verify on device after CI.
+
+
+## Latest continuation checkpoint — 2026-11-10 responsive UI/HUD
+- Latest branch work is on feature/rune-system-v1; keep main untouched and PR #4 draft/unmerged.
+- Implemented a responsive UI pass in scripts/ui/battle_scene.gd, scripts/ui/world_scene.gd and scripts/ui/party_screen.gd. See docs/SESSION_HANDOFF.md and GDD section 14.3.
+- Important party layout rule: stack the three company panes only when the viewport is portrait/narrow aspect. Narrow landscape phones must keep roster, sheet and equipment/rune/shop visible in a scaled horizontal layout; do not regress to a 700px vertical stack on a 720px-high landscape display.
+- Latest UI code commits: 95d5ef7, 5383461, ea6868c. CI must validate the final head commit before calling the UI pass build-ready.
+- Next work: inspect latest CI and fix all parse/import/test/balance/export failures; then complete visual QA on Android. Continue with original bespoke hero/enemy sprites, cast/impact/death VFX, and responsive location/title overlays only after the UI branch is green. Do not import optional third-party sprite archives without license verification.
