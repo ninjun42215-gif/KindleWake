@@ -1,7 +1,7 @@
 class_name LocalMap
 extends RefCounted
 ## A town or a building interior (data/locations.json). Rows of characters, one per tile:
-##   .  grass        ,  dirt path     =  wood floor    +  carpet        E  exit to the overworld (towns only)
+##   .  grass        ,  dirt path     =  wood floor    +  carpet        E  exit to the overworld (towns and dungeons)
 ##   1-4 door (see "doors")           # stone wall      T  tree          F  fence         ~  pond
 ##   r  red roof     b  blue roof     w  building front
 ##   B bed  S shelf  K counter  X table  H hearth  U barrel  P pillar  N banner  C crate
@@ -12,7 +12,7 @@ const ALLOWED := ".,=+E1234#TF~rbwBSKXHUPNC"
 
 var id: String = ""
 var name: String = ""
-var kind: String = "interior"                # "town" or "interior"
+var kind: String = "interior"                # "town", "dungeon" or "interior"
 var width: int = 0
 var height: int = 0
 var rows: Array[String] = []
@@ -123,8 +123,8 @@ static func validate(maps: Dictionary) -> Array[String]:
                     errs.append("%s: unknown tile '%s' at %d,%d" % [m.id, ch, x, y])
                 if ch == "E":
                     has_exit = true
-                    if m.kind != "town":
-                        errs.append("%s: only towns have an exit" % m.id)
+                    if m.kind != "town" and m.kind != "dungeon":
+                        errs.append("%s: only towns and dungeons have an exit" % m.id)
                 if ch >= "1" and ch <= "4":
                     var d: Dictionary = m.doors.get(ch, {})
                     if d.is_empty():
@@ -138,8 +138,8 @@ static func validate(maps: Dictionary) -> Array[String]:
                             errs.append("%s: door '%s' spawns on a blocked tile" % [m.id, ch])
                     if not m.connected(m.entry, Vector2i(x, y)):
                         errs.append("%s: door '%s' cannot be reached from the entry" % [m.id, ch])
-        if m.kind == "town" and not has_exit:
-            errs.append("%s: a town needs an exit (E)" % m.id)
+        if (m.kind == "town" or m.kind == "dungeon") and not has_exit:
+            errs.append("%s: a town or dungeon needs an exit (E)" % m.id)
         if not m.walkable(m.entry):
             errs.append("%s: the entry is blocked" % m.id)
         for s in m.spots:
