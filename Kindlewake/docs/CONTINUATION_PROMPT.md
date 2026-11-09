@@ -1,8 +1,10 @@
+> **Live checkpoint (2026-11-10):** Current main is `23979c075244f1212e8313a1f4aa0471001d5fe5`, project version 0.10.0 / Android code 1000. PR #7 Operations Toolbox, PR #8 Rune System, PR #9 workflow-run API discovery and PR #10 exact-SHA REST merging are merged. The rune system is now on main. Next verify automatic REST merge on a safe PR; keep physical Android QA and the voxel-building licence blocker visible. Read `docs/NEXT_AI_START_HERE.md` and `docs/SESSION_HANDOFF.md` before work. Always inspect live refs and checks.
+
 > **Live repository checkpoint (2026-11-10):** PR #7 Operations Toolbox is merged into main at `d4b696938fcb22fc1e40862b11a900d435ab75b1`. Rune System source branch head is `01cd3f67a344a964b26eb4150167a21bd3fb733c`; reconcile its gameplay/data/assets onto current main, preserve main's current workflows and version-sync tooling, run exact-head CI, then update this prompt and session handoff. Project version target is 0.10.0 / Android code 1000. Do not assume branch names or CI state without checking live refs.
 
 # CONTINUATION MASTER PROMPT — KINDLEWAKE: THE SUNDERED VOW
 
- > **Latest checkpoint: v0.9.0 (2026-11-09; title screen, campaign saves, economy and rarity rebalance).** A test-only correction for the starter merchant sigil purchase mismatch was committed as `aadc783`; CI run #109 passed: 302 strict checks, 0 failures, balance report and signed Android APK export. See `docs/SESSION_HANDOFF.md` for artifacts and remaining warnings. Continue from `docs/SESSION_HANDOFF.md`.
+ > **Current checkpoint: v0.10.0 (2026-11-10; Rune System and Operations Toolbox integrated).** Current exact main SHA, CI, APK and handoff references are in `docs/SESSION_HANDOFF.md` and `docs/NEXT_AI_START_HERE.md`. Older version notes below are historical; do not treat them as current state.
 
 > Previous checkpoint: v0.7.14 (2026-11-09; Sethmarch Frontier adds connected Orrowen/Vessmoor roads, six functional towns, three explorable boss dungeons and SaveSystem v3 regional battle-save context).** The optional sprite archives remain source-only and are not license-cleared. Continue from `docs/SESSION_HANDOFF.md`.
 

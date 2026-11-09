@@ -1,19 +1,43 @@
-# Current integration checkpoint — v0.10.0
+# Current repository checkpoint — KindleWake v0.10.0
 
-- Main includes the Operations Toolbox integration from PR #7, merged as `d4b696938fcb22fc1e40862b11a900d435ab75b1`.
-- Rune System source checkpoint: `01cd3f67a344a964b26eb4150167a21bd3fb733c`. Its 77-rune feature set is being reconciled onto current main; this handoff will be refreshed again after the integration PR merges.
-- Project version is being advanced to 0.10.0 / Android version code 1000 with the rune feature integration.
-- PR #7 checks passed on exact head `94e4210d70007a5cdb7de6bee9762938b764a072`: Android APK build, Workflow YAML Lint, Project Health Audit and Version Synchronization. PR #7 merged to main.
-- Safe auto-merge workflow did not enable merge automatically for PR #7; after confirming mergeability and every required check on the exact head, it was merged with expected-head SHA protection.
-- The Android APK export has been CI-validated; physical Android device QA is still required. The voxel-building pack's licence remains unverified and blocks public/commercial release.
+**Current main:** `23979c075244f1212e8313a1f4aa0471001d5fe5`  
+**Android version code:** `1000`  
+**Canonical project:** `Kindlewake/`  
+**Repository:** `ninjun42215-gif/KindleWake`
+
+## Completed integrations
+- **PR #7 — Operations Toolbox:** merged. Includes source handoff snapshots, full backups, branch hygiene, repository organizer, safe branch integration, project health audit and workflow linting.
+- **PR #8 — Rune System v1:** merged. Rune source checkpoint `01cd3f67a344a964b26eb4150167a21bd3fb733c`; 77 runes across active magic, passive, support, stat and independent types, including unique/heirloom flags; mixed-grade three-copy fusion, mastery success bonuses, passive effects, combat statuses, regional rune vendors and original SVG art.
+- **PR #9 — Safe Auto Merge discovery:** merged. Required workflow runs are retrieved from the Actions REST API using the exact PR head SHA; no local Git checkout is needed for run discovery.
+- **PR #10 — Safe Auto Merge execution:** merged. After exact-head validation, the workflow merges through the GitHub REST API with the expected SHA and squash method; it no longer depends on local Git metadata or native auto-merge eligibility.
+
+## Verified CI checkpoints
+- Rune integration PR #8 exact head `db4f2201c60689f8c2edbf8c39a472e551c6d98b`: Android build, Godot import, strict test suite, balance report, APK export/upload, version sync, workflow YAML lint and Project Health Audit all passed. Build run: https://github.com/ninjun42215-gif/KindleWake/actions/runs/42702932178
+- Main after Rune integration: Android build run https://github.com/ninjun42215-gif/KindleWake/actions/runs/42703185402 completed successfully.
+- Current source handoff before the last automation-only commits: https://github.com/ninjun42215-gif/KindleWake/actions/runs/42703185474 (artifact ID `13713170432`; snapshot SHA was `2a6b31ddb38b67d97a16ad8dc47463cd9e882121`). Refresh the handoff on the latest main/branch SHA before the next session; the workflow is configured to do this on `workflow/**` pushes and main pushes.
+- PR #10 exact head `d43ef31218bbd6486cfd0aaa20a215552deeb119`: Android build, version sync, workflow lint and health audit passed before merge. Build run: https://github.com/ninjun42215-gif/KindleWake/actions/runs/42703880883
+- Auto-merge workflow verification is the next required test: create/use a safe PR after PR #10, confirm its exact-SHA checks pass, and verify the new REST merge step actually merges it.
+
+## Remaining release/QA work
+- Physical Android device testing is still outstanding: install the APK and verify launch, orientation, touch HUD, rune inventory/sockets, forge/fusion, specialist shops, status effects, save/load and performance.
+- The used voxel-building pack still has unverified redistribution rights. Public/commercial release is blocked until authoritative licence evidence is recorded or the assets are replaced.
+- CI export success is not physical-device certification. Do not claim device testing without real device results.
+- Main branch protection/rulesets have not been configured through this integration; check GitHub Settings and require PR reviews/status checks where practical.
+
+## Next-session instructions
+1. Read `docs/NEXT_AI_START_HERE.md`, this handoff, `docs/CONTINUATION_PROMPT.md` and `docs/GDD.md`.
+2. Inspect live main SHA, open PRs and exact-head workflow runs before editing.
+3. Verify PR #11 or the next safe PR exercises automatic REST merging after both Build Android APK and Synchronize Project Version pass for the exact SHA.
+4. Generate and verify a fresh split source handoff for the latest commit; keep every part at or below 25,000,000 bytes and confirm its manifest SHA matches the live branch.
+5. Continue device QA and resolve the voxel-building licence blocker before public/commercial release.
 
 ---
 
 # Session handoff — current repository checkpoint
 
-## 2026-11-09 validation follow-up (project version remains 0.9.0)
+## Historical 2026-11-09 validation follow-up (v0.9.0 baseline)
 - Canonical source: GitHub `ninjun42215-gif/KindleWake`, branch `main`; Godot project is `Kindlewake/`.
-- Latest gameplay checkpoint: Godot project `config/version=0.9.0`, save schema `3`. Do not use stale v0.7.x notes below as the current version.
+- At that historical checkpoint, Godot project `config/version=0.9.0`, save schema `3`. The current project has since advanced to v0.10.0; use the current checkpoint above and inspect live version constants.
 - CI run #108 (commit `7e6ba34`) imported successfully on its second import, then strict tests reported 273 checks with one failure. Root cause: `tests/run_tests.gd` attempted to buy `frost` from the starter merchant, although `data/shop.json` stocks `mend`, `ember`, `vigor`, `might`, and `bulwark`. The failed purchase left the sigil bag unchanged and caused the later array-index error.
 - Fixed in commit `aadc783`: the shop regression test now buys, checks, and sells `mend`, which is actually in starter stock. This is test-only; gameplay data and rules are unchanged.
 - CI run #109 completed successfully for commit `aadc783`: Godot 4.2.2 import clean on the second pass; strict suite **302 checks, 0 failures**; balance report exit 0; signed Android APK exported successfully (41.0 MB, arm64-v8a + armeabi-v7a, no permissions requested). Artifacts: `Kindlewake-APK` and `test-logs`. Run page: https://github.com/ninjun42215-gif/KindleWake/actions/runs/42641111286
