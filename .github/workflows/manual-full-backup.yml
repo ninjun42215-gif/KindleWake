@@ -1,0 +1,111 @@
+name: Manual Full Repository Backup
+
+on:
+  workflow_dispatch:
+    inputs:
+      snapshot_branch:
+        description: Branch whose checked-out files become the portable source snapshot
+        required: true
+        default: main
+        type: string
+      include_all_git_refs:
+        description: Include all fetched branches and tags in the Git history bundle
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kindlewake-backup-${{ inputs.snapshot_branch }}
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    name: Create verified source parts and Git history bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out selected branch and fetch repository history
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.snapshot_branch }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Validate branch and create backup workspace
+        env:
+          SNAPSHOT_BRANCH: ${{ inputs.snapshot_branch }}
+          BACKUP_DIR: ${{ runner.temp }}/kindlewake-backup
+        run: |
+          set -euo pipefail
+          git check-ref-format --branch "$SNAPSHOT_BRANCH"
+          mkdir -p "$BACKUP_DIR"
+          git rev-parse --verify "HEAD^{commit}"
+
+      - name: Build verified portable source handoff
+        env:
+          BACKUP_DIR: ${{ runner.temp }}/kindlewake-backup
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s Kindlewake/tests -p 'test_source_handoff.py' -v
+          python3 Kindlewake/tools/source_handoff.py pack \
+            --repository-root . \
+            --output-dir "$BACKUP_DIR/source" \
+            --part-size 25000000
+
+      - name: Create and verify Git history bundle
+        env:
+          INCLUDE_ALL: ${{ inputs.include_all_git_refs }}
+          SNAPSHOT_BRANCH: ${{ inputs.snapshot_branch }}
+          BACKUP_DIR: ${{ runner.temp }}/kindlewake-backup
+        run: |
+          set -euo pipefail
+          if [[ "$INCLUDE_ALL" == "true" ]]; then
+            git bundle create "$BACKUP_DIR/Kindlewake-All-Branches.bundle" --all
+          else
+            git bundle create "$BACKUP_DIR/Kindlewake-Selected-Branch.bundle" "refs/remotes/origin/$SNAPSHOT_BRANCH" --tags
+          fi
+          git bundle verify "$BACKUP_DIR"/*.bundle
+          python3 - <<'PY'
+          import hashlib, json, os, subprocess
+          from pathlib import Path
+          out=Path(os.environ["BACKUP_DIR"])
+          bundle=next(out.glob("*.bundle"))
+          refs=subprocess.check_output(["git","show-ref"],text=True).splitlines()
+          data={
+            "repository":os.environ["GITHUB_REPOSITORY"],
+            "snapshot_branch":os.environ["SNAPSHOT_BRANCH"],
+            "snapshot_commit":subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip(),
+            "workflow_run":os.environ["GITHUB_RUN_ID"],
+            "bundle":bundle.name,
+            "bundle_size_bytes":bundle.stat().st_size,
+            "bundle_sha256":hashlib.sha256(bundle.read_bytes()).hexdigest(),
+            "refs_in_checkout":refs,
+            "contains_all_git_refs":os.environ["INCLUDE_ALL"]=="true"
+          }
+          (out/"BACKUP-MANIFEST.json").write_text(json.dumps(data,indent=2)+"\n")
+          (out/"SHA256SUMS.txt").write_text(data["bundle_sha256"]+"  "+bundle.name+"\n")
+          print(json.dumps(data,indent=2))
+          PY
+
+      - name: Upload full backup set
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kindlewake-Full-Backup
+          path: |
+            ${{ runner.temp }}/kindlewake-backup/
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Explain backup handling
+        if: always()
+        run: |
+          {
+            echo "## Backup safety"
+            echo "- Verify BACKUP-MANIFEST.json and SHA256SUMS.txt before use."
+            echo "- The Git bundle contains commit history and may contain previously committed sensitive material; store it privately and never publish it publicly."
+            echo "- The split source ZIP is a clean tracked-file snapshot; use its bundled source_handoff.py and REASSEMBLE.txt to reconstruct and verify."
+            echo "- Restore a Git bundle into a new repository or temporary clone first. Never overwrite the working copy as the first recovery attempt."
+          } >> "$GITHUB_STEP_SUMMARY"
