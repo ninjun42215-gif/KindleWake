@@ -101,3 +101,14 @@
 - No combat, economy, rune, equipment, save schema or progression rules were changed. This is a layout-focused pass.
 - Validation: prior sprite identity commit 21c1702bd012b8ca0bd0bc51e5a0b6b9dae46c2c passed Android workflow 42667953445. The new UI commits require their own workflow run; do not claim them validated or distribute a new APK until the exact latest branch commit passes import, strict tests, balance report and APK verification.
 - Physical Android touch/safe-area testing remains outstanding. Check 16:9 and narrow landscape, portrait party management, gesture/map input behind HUD panels, save confirmation, and scroll restoration.
+
+
+## 2026-11-10 — UI/HUD responsive pass and combat feedback
+- Party management now switches from the desktop three-column roster/sheet/tabs layout to a vertical, scrollable mobile layout below 1050px; panel minimum widths no longer force horizontal clipping. Attribute tiles reduce to three columns and the header/tabs use compact sizing.
+- Battle HUD now reflows for narrow and portrait viewports: turn timeline and battle log are hidden when space is constrained, unit info/menu/action/preview controls scale down and reposition, and result/pre-battle panels are bounded to the viewport. Safe-area insets remain applied.
+- Title menu panel and heading now fit narrow phone widths without forcing a 440px panel off-screen.
+- Added lightweight vector combat VFX for melee hit slashes, elemental/status impact bursts and healing rings/particles. Effects are time-limited and use draw primitives rather than extra textures to keep mobile rendering inexpensive.
+- Commits: party responsive layout `c50bea8`, battle HUD reflow `ab0e668`, title fit `d5b07d6`, compact party header/tabs `079510f`, combat VFX `e55242d`.
+- Latest branch head: `e55242d78643bd3dde56e3bafdc623a4dfa6479e`. Android workflow run `42671737916` was queued at handoff; do not claim this combined UI/VFX batch passed until this exact head is validated.
+- Remaining art work: bespoke per-class hero sprite sheets and per-species enemy sprite sheets are still not present; current battle sprites use the existing Soldier/Orc animation strips with tint/identity accents. Device visual testing remains required.
+- `main` untouched; PR #4 remains open and draft.
