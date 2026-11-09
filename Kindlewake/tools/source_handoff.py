@@ -10,6 +10,8 @@ PREFIX = ARCHIVE + ".part"
 SKIP_DIRS = {".git", ".godot", "__pycache__", "node_modules", ".venv", "venv", "dist", "build", "target"}
 SKIP_NAMES = {".env", ".env.local", ".env.production", ".env.development", "credentials.json", "secrets.json", "id_rsa", "id_ed25519"}
 SKIP_SUFFIXES = {".keystore", ".jks", ".p12", ".pfx", ".pem", ".key", ".mobileprovision", ".asc"}
+# Explicitly public repository test key; never include arbitrary signing material.
+PUBLIC_TEST_KEY = "Kindlewake/tools/keys/kindlewake-sideload.keystore"
 
 def digest(path):
     h = hashlib.sha256()
@@ -26,7 +28,8 @@ def exclusion(name, path):
     if p.is_absolute() or ".." in p.parts: return "unsafe path"
     if any(x in SKIP_DIRS for x in p.parts): return "generated/cache directory"
     if p.name.lower() in SKIP_NAMES or p.name.lower().endswith(".secret"): return "sensitive filename"
-    if p.suffix.lower() in SKIP_SUFFIXES: return "private key/certificate"
+    if p.suffix.lower() in SKIP_SUFFIXES and name != PUBLIC_TEST_KEY:
+        return "private key/certificate"
     if path.is_symlink(): return "symlink omitted"
     return ""
 
