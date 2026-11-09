@@ -188,10 +188,10 @@ func _button(text: String, handler: Callable, min_size: Vector2 = Vector2(0, 56)
 func _tab_button(text: String, handler: Callable, selected: bool) -> Button:
     var b := Button.new()
     b.text = text
-    b.custom_minimum_size = Vector2(0, 54)
+    b.custom_minimum_size = Vector2(0, 46 if get_viewport_rect().size.x < 1050.0 else 54)
     b.clip_text = true
     b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    b.add_theme_font_size_override("font_size", 21)
+    b.add_theme_font_size_override("font_size", 15 if get_viewport_rect().size.x < 1050.0 else 21)
     if selected:
         _skin(b, COL_CARD_SEL, COL_GOLD, COL_GOLD)
     else:
