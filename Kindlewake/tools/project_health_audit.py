@@ -23,11 +23,14 @@ def main() -> int:
         "tracked_workflows": 0,
         "gdscript_files": 0,
         "scene_files": 0,
-        "resource_files": 0,\n        "project_version": None,\n        "android_export_version": None,\n        "android_version_code": None,
+        "resource_files": 0,
+        "project_version": None,
+        "android_export_version": None,
+        "android_version_code": None,
         "rune_definitions": None,
         "rune_kinds": {},
-"unverified_asset_entries": 0,
-"unverified_used_assets": 0,
+        "unverified_asset_entries": 0,
+        "unverified_used_assets": 0,
     }
 
     def add(level: str, code: str, message: str, path: str = "") -> None:
