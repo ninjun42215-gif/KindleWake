@@ -38,6 +38,7 @@ func _initialize() -> void:
     _test_weapon_skills()
     _test_world()
     _test_world_atlas()
+    _test_thalassar_region()
     _test_locations()
     _test_shop_and_screen()
     _test_save_system()
@@ -835,6 +836,40 @@ func _test_world_atlas() -> void:
     check(regions_ok, "each continent has at least four named regional territories")
     check(current_ok and str(gd.continents.get("current_continent", "")) == "eldrimar", "existing Sethmarch Frontier remains anchored to current continent Eldrimar")
     check(str(gd.continents.get("world_age", "")) != "" and str(gd.continents.get("central_mystery", "")) != "", "global atlas establishes a shared campaign-age mystery")
+
+func _test_thalassar_region() -> void:
+    print("[Thalassar / Brinegate Coast]")
+    var cfg: Dictionary = gd.thalassar_world
+    check(not cfg.is_empty() and str(cfg.get("name", "")) == "The Brinegate Coast", "Brinegate Coast is loaded as a separate regional world")
+    var coast: WorldMap = WorldMap.generate(cfg)
+    check(coast.width == 64 and coast.height == 48 and coast.tiles.size() == 64 * 48, "Brinegate Coast generates a deterministic 64x48 overworld")
+    var routes_ok := true
+    for raw in cfg.get("roads", []):
+        var pair: Array = raw
+        if not coast.connected(coast.place_cell(str(pair[0])), coast.place_cell(str(pair[1]))):
+            routes_ok = false
+    check(routes_ok, "all Brinegate coastal roads connect their authored destinations")
+    var places_ok := true
+    for raw in cfg.get("places", []):
+        var place: Dictionary = raw
+        if not coast.walkable(coast.place_cell(str(place.get("id", "")))):
+            places_ok = false
+    check(places_ok and coast.connected(coast.start_cell, coast.place_cell("tideglass_grotto")), "the harbour, settlements, ruins and Tideglass Grotto are reachable")
+    check(gd.battle_def("battle_tideglass").size() > 0, "Tideglass Grotto resolves to its own tactical battle")
+    check(gd.characters.has("maren_vey"), "Maren Vey has a complete recruit character definition")
+    var recruit_party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    var maren: Dictionary = gd.character_def("maren_vey")
+    var locked: Dictionary = RecruitmentSystem.inspect(recruit_party, "maren_vey", maren, {})
+    check(not bool(locked.get("available", true)), "Maren remains unavailable until the Tideglass ledger is recovered")
+    var flags: Dictionary = {"tideglass_grotto_cleared": true}
+    var unlocked: Dictionary = RecruitmentSystem.inspect(recruit_party, "maren_vey", maren, flags)
+    check(bool(unlocked.get("available", false)), "recovering the Tideglass ledger unlocks Maren's recruitment")
+    var maps: Dictionary = LocalMap.load_all(gd.locations)
+    var coast_maps_ok := maps.has("brinegate") and maps.has("saltmere") and maps.has("lantern_quay") and maps.has("dungeon_tideglass")
+    check(coast_maps_ok, "Brinegate, Saltmere, Lantern Quay and Tideglass have playable location maps")
+    if maps.has("dungeon_tideglass"):
+        check((maps["dungeon_tideglass"] as LocalMap).kind == "dungeon", "Tideglass is an explorable dungeon, not a static story panel")
+
 
 func _test_locations() -> void:
     print("[towns and interiors]")
