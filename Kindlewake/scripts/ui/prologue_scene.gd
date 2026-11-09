@@ -159,4 +159,5 @@ func _enter_world() -> void:
     GameState.world_pos = Vector2.ZERO
     GameState.from_world = true
     GameState.save_campaign("auto_a")
-    get_tree().change_scene_to_file("res://World.tscn")
+    GameState.from_world = true
+    get_tree().change_scene_to_file("res://Escape.tscn")
