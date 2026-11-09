@@ -113,3 +113,10 @@ Living snapshot: refresh branch SHA, workflow evidence, artifacts, implementatio
 - APK permission inspection (`aapt2`) and signature verification (`apksigner`) are mandatory; missing tools or failed checks block output.
 - Production release workflow commit `86f4be7d863dd12daad65348e8cea0eb176ee775` pins the APK signer against `ANDROID_RELEASE_CERT_SHA256`.
 - Re-run/inspect branch-head CI before claiming these changes validated.
+
+
+### Production publishing safeguards and availability
+
+- The publisher refuses to overwrite an existing GitHub Release for the same tag; create a new version tag for each release.
+- GitHub only exposes `workflow_dispatch` workflows after their file exists on the default branch. This workflow currently exists on `feature/rune-system-v1` only and becomes manually runnable after reviewed merge to the default branch. Do not merge PR #4 or modify `main` without explicit user authorization.
+- Configure the `android-production` environment, required reviewers, signing secrets and expected certificate fingerprint before production use.
