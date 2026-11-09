@@ -204,3 +204,8 @@ docs/            GDD.md, SESSION_HANDOFF.md, CONTINUATION_PROMPT.md
 - Repository-wide CI now runs for pushes to every branch, tag pushes, pull requests targeting any branch and manual dispatch. It packages every tracked repository file from the exact triggering ref (not a hard-coded branch or file list), then splits the ZIP into numbered binary parts capped at 25 MB (25,000,000 bytes). Artifact: `Kindlewake-Source-Handoff-Parts`, with `REASSEMBLE.txt` and `SHA256SUMS.txt`.
 - Reassemble all parts in numeric order before unzipping. The split files are transport chunks, not independently extractable archives.
 - Current project work is on `feature/rune-system-v1`; PR #4 remains draft and `main` remains untouched. These are project workflow constraints, not CI branch filters. Verify the exact triggering ref and workflow result before treating the parts as available.
+
+
+## Android build and release workflow
+
+The generalized Android CI and production release process is documented in `docs/ANDROID_RELEASE_WORKFLOW.md`. Pushes to any branch, pull requests, tags and manual runs build a strict-test APK candidate and independently create the complete split source handoff. Tag builds do not publish production releases. Production publishing is a separate manual workflow requiring the protected `android-production` environment and private signing secrets. The current project/export version is 0.10.0 (Android version code 1000). AAB export and physical-device QA are not yet claimed as supported/complete.
