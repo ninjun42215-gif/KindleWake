@@ -1,0 +1,121 @@
+{
+  "id": "battle_hollowroot",
+  "title": "The Rootbound Warden",
+  "briefing": "The old watch-post has become a warren. Break the Warden's guard and clear the tunnels.",
+  "weather": "clear",
+  "legend": {
+    ".": "grass",
+    "f": "forest",
+    "r": "road",
+    "h": "hill",
+    "w": "ford",
+    "~": "deep_water",
+    "b": "bridge",
+    "#": "rock"
+  },
+  "terrain": [
+    "..ff....hh..",
+    ".fff...hhh..",
+    "..f....hh.#.",
+    ".....r......",
+    "~~~~~b~~~w~~",
+    "~~~~~b~~~w~~",
+    ".....r......",
+    ".f...r...f..",
+    ".ff..r......",
+    "..f........."
+  ],
+  "heights": [
+    "000000001100",
+    "000000012200",
+    "000000011000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000"
+  ],
+  "victory": [
+    "rout_all",
+    "defeat_commander"
+  ],
+  "units": [
+    {
+      "character_id": "torren",
+      "team": "player",
+      "cell": [
+        5,
+        8
+      ],
+      "facing": 0,
+      "protagonist": true
+    },
+    {
+      "character_id": "bram",
+      "team": "player",
+      "cell": [
+        4,
+        7
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "sela",
+      "team": "player",
+      "cell": [
+        6,
+        8
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "brother_wystan",
+      "team": "player",
+      "cell": [
+        3,
+        8
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "rootbound_warden",
+      "team": "enemy",
+      "cell": [
+        9,
+        2
+      ],
+      "facing": 2,
+      "commander": true
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        6,
+        1
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        4,
+        2
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadbowman",
+      "team": "enemy",
+      "cell": [
+        8,
+        1
+      ],
+      "facing": 2
+    }
+  ],
+  "world_flag_on_victory": "dungeon_hollowroot_cleared"
+}
