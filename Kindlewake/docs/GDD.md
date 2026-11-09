@@ -850,3 +850,9 @@ Legacy sigil_* script entry points remain internal compatibility wrappers during
 
 ### 14.8 Recruitment and company-bond UI (v0.11.0)
 The character sheet includes a Company bond tile with a loyalty value and readable state (Fractured, Wary, Committed or Steadfast). Muster-hall recruit prompts show the authored gold cost or the first unmet prerequisite; successful recruitment records a one-time flag and shows the recruit's starting loyalty. This is a foundation only: there is not yet a calendar-driven desertion or event-based loyalty loop.
+
+
+## 16. Premium narrative, UX and art direction (2026-11-10)
+The production direction, story reframe, opening-hour structure, character dossier standard, consequence rules, long-session pacing, mobile UX quality bar, visual identity, asset specifications and vertical-slice acceptance criteria are defined in [PREMIUM_PRODUCTION_BIBLE.md](PREMIUM_PRODUCTION_BIBLE.md). This is the creative north star for subsequent implementation; it does not mean the described scenes, journal, dialogue presentation, portrait sets, environment kits or audio systems are already implemented.
+
+The immediate priority is a coherent 45–60 minute first-region vertical slice, not indiscriminate world expansion. Build and validate the prologue, first keep decision, journal/recap/save loop and first investigation before scaling the full five-act campaign. Retain offline operation, touch-first accessibility, save migration safety and asset provenance.
