@@ -169,3 +169,11 @@ Answer in plain English. Lead with what you did and what I should do next. Keep 
 6. Continue original bespoke sprite work: dedicated class silhouettes and enemy species, then cast/projectile/impact/death animations. Preserve Art.UNIT_FRAMES contracts or update importer/tests together.
 7. Add tests for the responsive layout contracts and VFX lifetime/state transitions where headless tests can cover them. Run the full Godot import, strict tests, balance report and Android APK workflow.
 8. Update this handoff with exact validated commit, run URL, test counts, APK artifact and hash. Never claim physical-device validation without doing it.
+
+
+## Latest checkpoint — responsive UI/HUD and combat feedback (2026-11-10)
+- Continue from feature/rune-system-v1, current validated UI head 99fcc28dd37652c293eaf240ec017500bbd698e6. Do not merge PR #4 or modify main without explicit authorization.
+- Responsive battle HUD, overworld and town controls, party management orientation layouts, and original vector combat impact/healing feedback are implemented. Details and APK artifact are in docs/SESSION_HANDOFF.md and GDD section 14.4.
+- Validation: workflow 42672539871 passed; Godot 4.2.2, 333 strict checks / 0 failures, balance report completed, signed Android APK exported. Artifact ID 13699850975. Physical-device QA is still outstanding.
+- Known non-blocking output: the first editor import scan may report class registration errors and the build script runs a clean second scan; test suite then passes. Existing JSON parse line is part of the corrupt-save fallback test. ObjectDB/resource cleanup warnings remain at process exit.
+- Next: device QA first. Then continue with dedicated original per-class hero/per-species enemy sprite sheets, full cast/impact/death animations, and accessibility options (text scale, haptics, reduced motion) without changing the stable save schema.
