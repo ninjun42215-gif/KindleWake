@@ -1,0 +1,68 @@
+name: Branch Hygiene and Cleanup Recommendations
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_branch:
+        description: Branch used to determine whether work is already integrated
+        required: true
+        default: main
+        type: string
+      stale_days:
+        description: Age threshold for review recommendations (does not delete branches)
+        required: true
+        default: "60"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kindlewake-branch-hygiene-${{ inputs.base_branch }}
+  cancel-in-progress: false
+
+jobs:
+  report:
+    name: Inspect branches without deleting anything
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out base branch and fetch remote branch metadata
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.base_branch }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Generate branch status and cleanup recommendations
+        env:
+          BASE_BRANCH: ${{ inputs.base_branch }}
+          STALE_DAYS: ${{ inputs.stale_days }}
+          REPORT_DIR: ${{ runner.temp }}/kindlewake-branch-hygiene
+        run: |
+          set -euo pipefail
+          [[ "$STALE_DAYS" =~ ^[0-9]+$ ]]
+          git check-ref-format --branch "$BASE_BRANCH"
+          git fetch --prune origin
+          python3 Kindlewake/tools/branch_hygiene.py \
+            --base "$BASE_BRANCH" \
+            --stale-days "$STALE_DAYS" \
+            --report-dir "$REPORT_DIR"
+
+      - name: Add branch report to summary
+        if: always()
+        run: |
+          if [[ -f "${{ runner.temp }}/kindlewake-branch-hygiene/branch-hygiene.md" ]]; then
+            cat "${{ runner.temp }}/kindlewake-branch-hygiene/branch-hygiene.md" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Branch report was not generated. Inspect the job logs." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload branch hygiene report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kindlewake-Branch-Hygiene-Report
+          path: ${{ runner.temp }}/kindlewake-branch-hygiene/
+          if-no-files-found: warn
+          retention-days: 90
