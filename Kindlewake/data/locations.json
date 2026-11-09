@@ -614,6 +614,39 @@
           "name": "Lucan Thorne",
           "character_id": "lucan_thorne",
           "text": "A steady yeoman captain, once sworn to House Orrowen. He will travel with you if you can offer a place in the company."
+        },
+        {
+          "cell": [
+            3,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Joss Harrow",
+          "character_id": "joss_harrow",
+          "text": "A quick-handed smuggler who knows every back room between the coast and the March. He asks for 50 gold and a chance to choose his own risks."
+        },
+        {
+          "cell": [
+            7,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Tomas Wren",
+          "character_id": "tomas_wren",
+          "text": "A fearless young messenger who has outrun three patrols. He wants a company that will let him prove himself."
+        },
+        {
+          "cell": [
+            5,
+            5
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Verra Nightsong",
+          "character_id": "verra_nightsong",
+          "text": "A singer with a spy's memory and a diplomat's smile. She will only trust a company that has already earned Joss Harrow's confidence."
         }
       ]
     },
@@ -790,6 +823,28 @@
           "name": "Old Brisa",
           "character_id": "old_brisa",
           "text": "A village elder and healer. She asks no oath, only that the company protect the road folk."
+        },
+        {
+          "cell": [
+            3,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Edda Stonehand",
+          "character_id": "edda_stonehand",
+          "text": "A blunt siege-wright from Brennhallow. She is searching for proof that the old tollhouse stores can supply a rebuilt workshop."
+        },
+        {
+          "cell": [
+            7,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Bram Cullen",
+          "character_id": "bram_cullen",
+          "text": "A gentle giant with a pit-fighter's scars. The camp must be cleared before he will risk joining another armed company."
         }
       ]
     },
@@ -966,6 +1021,28 @@
           "name": "Kestrel",
           "character_id": "kestrel",
           "text": "A silent scout with an old contract to settle. A place among your outriders will do."
+        },
+        {
+          "cell": [
+            3,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Lady Isaure Vessmoor",
+          "character_id": "isaure_vessmoor",
+          "text": "A proud heir stripped of her lands. She will speak after the Vessmoor gate is opened and the road is safe."
+        },
+        {
+          "cell": [
+            7,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Ser Willem Roake",
+          "character_id": "willem_roake",
+          "text": "A disciplined duelist who accepts no commander lightly. He follows only after Lady Isaure has joined."
         }
       ]
     },
@@ -1142,6 +1219,28 @@
           "name": "Anselm Pike",
           "character_id": "anselm_pike",
           "text": "A veteran sergeant with a dry wit and a gift for keeping recruits alive. He will join a disciplined company."
+        },
+        {
+          "cell": [
+            3,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Garrick Holt",
+          "character_id": "garrick_holt",
+          "text": "A defeated heavy-knight commander. Spare the Catacombs' guardian and prove that honour can outlive defeat."
+        },
+        {
+          "cell": [
+            7,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Lord Corwin Brennhallow",
+          "character_id": "corwin_brennhallow",
+          "text": "The Regent's conflicted son. He will not leave the capital before the fourth act begins."
         }
       ]
     },
@@ -1318,6 +1417,28 @@
           "name": "Petra Quill",
           "character_id": "petra_quill",
           "text": "A blunt field surgeon who left a noble household after refusing to abandon wounded levies."
+        },
+        {
+          "cell": [
+            3,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Sister Odalys",
+          "character_id": "sister_odaly",
+          "text": "A former inquisitor seeking atonement. She asks that the Kingsroad Catacombs be cleansed before she takes up arms again."
+        },
+        {
+          "cell": [
+            7,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Seraphine Tarnholt",
+          "character_id": "seraphine_tarnholt",
+          "text": "A healer-knight whose faith has survived too many failures. Her story begins in the fourth act."
         }
       ]
     },
@@ -1494,6 +1615,39 @@
           "name": "Dorian Vask",
           "character_id": "dorian_vask",
           "text": "A pragmatic mercenary captain. He asks for a fair share and a clear chain of command."
+        },
+        {
+          "cell": [
+            3,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Orlan Pike",
+          "character_id": "orlan_pike",
+          "text": "An exiled fire scholar who waits for the Bell Under Leaves to fall silent before returning to the field."
+        },
+        {
+          "cell": [
+            7,
+            3
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Ysolde Marrow",
+          "character_id": "ysolde_marrow",
+          "text": "A strategic ice mage and merchant's daughter. She joins after Verra's negotiations open the Ysmark route."
+        },
+        {
+          "cell": [
+            5,
+            5
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Ilyan Voss",
+          "character_id": "ilyan_voss",
+          "text": "A former tower guard turned battle mage. His loyalty is pledged to the later campaign, not a passing contract."
         }
       ]
     },
