@@ -1,0 +1,116 @@
+name: Repository Organizer and Structure Audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_branch:
+        description: Branch snapshot to inspect (usually main or your working branch)
+        required: true
+        default: main
+        type: string
+      mode:
+        description: Audit only, or apply safe documentation moves on a new branch
+        required: true
+        default: audit
+        type: choice
+        options:
+          - audit
+          - organize
+      confirmation:
+        description: For organize mode, enter CREATE ORGANIZATION PR
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: kindlewake-organizer-${{ github.workflow }}-${{ inputs.base_branch }}
+  cancel-in-progress: false
+
+jobs:
+  organize:
+    name: Audit and safely organize repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out selected branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.base_branch }}
+          fetch-depth: 0
+
+      - name: Validate requested operation
+        env:
+          MODE: ${{ inputs.mode }}
+          CONFIRMATION: ${{ inputs.confirmation }}
+          BASE_BRANCH: ${{ inputs.base_branch }}
+        run: |
+          set -euo pipefail
+          git check-ref-format --branch "$BASE_BRANCH"
+          if [[ "$MODE" == "organize" && "$CONFIRMATION" != "CREATE ORGANIZATION PR" ]]; then
+            echo "Organize mode requires the exact confirmation: CREATE ORGANIZATION PR"
+            exit 1
+          fi
+
+      - name: Create isolated maintenance branch
+        if: inputs.mode == 'organize'
+        env:
+          BASE_BRANCH: ${{ inputs.base_branch }}
+          MAINTENANCE_BRANCH: maintenance/organize-${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          git switch -c "$MAINTENANCE_BRANCH" "origin/$BASE_BRANCH"
+
+      - name: Run structure audit or safe organization
+        env:
+          MODE: ${{ inputs.mode }}
+          REPORT_DIR: ${{ runner.temp }}/kindlewake-organization
+        run: |
+          set -euo pipefail
+          python3 Kindlewake/tools/repository_organizer.py \
+            --mode "$MODE" \
+            --report-dir "$REPORT_DIR"
+
+      - name: Commit safe moves and open draft PR
+        if: inputs.mode == 'organize' && success()
+        env:
+          BASE_BRANCH: ${{ inputs.base_branch }}
+          MAINTENANCE_BRANCH: maintenance/organize-${{ github.run_id }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if git diff --cached --quiet; then
+            echo "No approved file moves were necessary; no PR was created."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: organize standalone project documentation"
+          git push origin "$MAINTENANCE_BRANCH"
+          gh pr create \
+            --repo "$GITHUB_REPOSITORY" \
+            --base "$BASE_BRANCH" \
+            --head "$MAINTENANCE_BRANCH" \
+            --draft \
+            --title "chore: safely organize repository documentation" \
+            --body "Automated by the manual Repository Organizer workflow. Only standalone Markdown documents at the Kindlewake project root are moved into Kindlewake/docs/. Game code, scenes, resources, assets, data, tests, addons and project settings are protected. Review the uploaded organization report and CI before merging."
+
+      - name: Add report to workflow summary
+        if: always()
+        run: |
+          if [[ -f "${{ runner.temp }}/kindlewake-organization/organization-report.md" ]]; then
+            cat "${{ runner.temp }}/kindlewake-organization/organization-report.md" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Organizer did not produce a report. Inspect the failed step logs." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload organization report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kindlewake-Organization-Report
+          path: ${{ runner.temp }}/kindlewake-organization/
+          if-no-files-found: warn
+          retention-days: 90
