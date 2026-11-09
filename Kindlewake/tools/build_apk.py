@@ -683,11 +683,13 @@ def main(argv: Optional[List[str]] = None) -> int:
         env = godot_env(jdk, sdk)
 
         say("\n[3] Importing the project")
-        code, out = run([str(godot), "--headless", "--path", str(PROJECT), "--import"], env=env,
+        # Run the editor scan first so Godot 4.2 builds its global script-class
+        # registry (class_name types) before autoloads and --script tests compile.
+        code, out = run([str(godot), "--headless", "--editor", "--path", str(PROJECT), "--quit"], env=env,
                         log=logs / "import.txt", timeout=900)
         if code != 0 or "Parse Error" in out:
-            say("  first import reported problems, running it once more (Godot sometimes needs two passes) ...")
-            code, out = run([str(godot), "--headless", "--path", str(PROJECT), "--import"], env=env,
+            say("  first editor scan reported problems, running it once more (Godot sometimes needs two passes) ...")
+            code, out = run([str(godot), "--headless", "--editor", "--path", str(PROJECT), "--quit"], env=env,
                             log=logs / "import.txt", timeout=900)
         summary.append("import: exit %d, %d Parse Error line(s)" % (code, out.count("Parse Error")))
 
