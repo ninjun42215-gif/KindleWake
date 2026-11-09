@@ -31,10 +31,10 @@ The GitHub connection used to update files cannot administer branch protection/r
 
 ## Exact-SHA automatic merge behavior
 
-After both **Build Android APK** and **Synchronize Project Version** complete successfully for the same pull-request head SHA, the Safe Auto Merge workflow:
+After **Build Android APK** succeeds for a pull-request head SHA, the Safe Auto Merge workflow waits for all four required checks to complete successfully on that exact SHA: **Build Android APK**, **Synchronize Project Version**, **Workflow YAML Lint**, and **Project Health Audit**.
 1. Finds exactly one open PR targeting `main` with that exact head SHA.
 2. Rejects drafts, conflicts, stale heads and wrong base branches.
-3. Queries the Actions REST API for both successful `pull_request` workflow runs on that SHA (the workflow-run job has no local Git checkout).
+3. Queries the Actions REST API for the latest `pull_request` run of each of the four required workflows on that SHA. It waits up to five minutes for checks still in progress and fails immediately if a required check completes unsuccessfully (the workflow-run job has no local Git checkout).
 4. Rechecks the expected head SHA at merge time and performs a squash merge. GitHub still enforces any branch protection/rulesets configured on `main`.
 
 This is an automatic merge only after the exact-SHA checks pass; it does not bypass configured repository rules. If any lookup is ambiguous, checks are missing/failed, or the head changes, the workflow fails closed and does not merge.
