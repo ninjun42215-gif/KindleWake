@@ -17,7 +17,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: kindlewake-ci-\${{ github.workflow }}-\${{ github.ref }}
+  group: kindlewake-ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -66,9 +66,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.kindlewake_build
-          key: \${{ runner.os }}-kindlewake-\${{ hashFiles('Kindlewake/tools/build_apk.py') }}
+          key: ${{ runner.os }}-kindlewake-${{ hashFiles('Kindlewake/tools/build_apk.py') }}
           restore-keys: |
-            \${{ runner.os }}-kindlewake-
+            ${{ runner.os }}-kindlewake-
 
       - name: Import, strict tests, balance report and Android export
         working-directory: Kindlewake
@@ -78,11 +78,11 @@ jobs:
         if: success()
         working-directory: Kindlewake
         env:
-          SOURCE_REF: \${{ github.ref }}
-          SOURCE_SHA: \${{ github.sha }}
-          EVENT_NAME: \${{ github.event_name }}
-          RUN_ID: \${{ github.run_id }}
-          RUN_ATTEMPT: \${{ github.run_attempt }}
+          SOURCE_REF: ${{ github.ref }}
+          SOURCE_SHA: ${{ github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -164,12 +164,12 @@ jobs:
       - name: Build and split portable source handoff
         shell: bash
         env:
-          HANDOFF_REF: \${{ github.ref }}
-          HANDOFF_SHA: \${{ github.sha }}
-          HANDOFF_EVENT: \${{ github.event_name }}
-          HANDOFF_REPOSITORY: \${{ github.repository }}
-          HANDOFF_RUN_ID: \${{ github.run_id }}
-          HANDOFF_RUN_ATTEMPT: \${{ github.run_attempt }}
+          HANDOFF_REF: ${{ github.ref }}
+          HANDOFF_SHA: ${{ github.sha }}
+          HANDOFF_EVENT: ${{ github.event_name }}
+          HANDOFF_REPOSITORY: ${{ github.repository }}
+          HANDOFF_RUN_ID: ${{ github.run_id }}
+          HANDOFF_RUN_ATTEMPT: ${{ github.run_attempt }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -294,6 +294,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Kindlewake-Source-Handoff-Parts
-          path: \${{ runner.temp }}/kindlewake-source-handoff/Kindlewake-Source-Handoff-Parts/*
+          path: ${{ runner.temp }}/kindlewake-source-handoff/Kindlewake-Source-Handoff-Parts/*
           if-no-files-found: error
           retention-days: 90
