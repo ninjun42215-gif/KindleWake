@@ -1,5 +1,7 @@
 class_name BattleUnit
 extends RefCounted
+
+const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
 ## One combatant. Plain data + tiny helpers; all rules live in BattleController / CombatCalc.
 
 var id: int = 0
@@ -9,7 +11,7 @@ var team: String = "player"          # "player" | "enemy"
 var class_id: String = ""
 var level: int = 1
 var cell: Vector2i = Vector2i.ZERO
-var facing: int = 0                  # index into BattleMap.DIRS
+var facing: int = 0                  # index into BattleMapScript.DIRS
 var stats: Dictionary = {}           # int values: hp (max), mp (max), str, dex, int, vit, spd, lck, acc, eva, ldr, mor
 var hp: int = 1
 var mp: int = 0
