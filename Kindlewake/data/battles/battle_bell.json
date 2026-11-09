@@ -1,7 +1,7 @@
 {
   "id": "battle_bell",
   "title": "The Bell-Keeper",
-  "briefing": "The bell shrine's guardian will not yield. Defeat the keeper and silence the buried bell.",
+  "briefing": "The bell shrine's guardian will not yield. Defeat the keeper and silence the buried bell. Battlefield terrain changes movement, cover and line of sight; scout the ground before committing your formation.",
   "weather": "clear",
   "legend": {
     ".": "grass",
@@ -11,31 +11,41 @@
     "w": "ford",
     "~": "deep_water",
     "b": "bridge",
-    "#": "rock"
+    "#": "rock",
+    "s": "snow",
+    "c": "cliff"
   },
   "terrain": [
-    "..ff....hh..",
-    ".fff...hhh..",
-    "..f....hh.#.",
-    ".....r......",
-    "~~~~~b~~~w~~",
-    "~~~~~b~~~w~~",
-    ".....r......",
-    ".f...r...f..",
-    ".ff..r......",
-    "..f........."
+    "................",
+    "................",
+    ".....sff..s.ch.s....",
+    "....sfff.s.hchs....s",
+    "......f.s..hcs#...s.",
+    ".......s.r..s....s..",
+    "....~~~~~b~~~w~~....",
+    "....~~~~~b~~~w~~....",
+    ".........r..........",
+    ".....f...r...f......",
+    ".....ff..r..........",
+    "......f.............",
+    "................",
+    "................"
   ],
   "heights": [
-    "000000001100",
-    "000000012200",
-    "000000011000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000",
-    "000000000000"
+    "0000000000000000",
+    "0000000000000000",
+    "00000000000011000000",
+    "00000000000122000000",
+    "00000000000110000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "0000000000000000",
+    "0000000000000000"
   ],
   "victory": [
     "rout_all",
@@ -46,8 +56,8 @@
       "character_id": "torren",
       "team": "player",
       "cell": [
-        5,
-        8
+        7,
+        10
       ],
       "facing": 0,
       "protagonist": true
@@ -56,8 +66,8 @@
       "character_id": "bram",
       "team": "player",
       "cell": [
-        4,
-        7
+        6,
+        9
       ],
       "facing": 0
     },
@@ -65,8 +75,8 @@
       "character_id": "sela",
       "team": "player",
       "cell": [
-        6,
-        8
+        8,
+        10
       ],
       "facing": 0
     },
@@ -74,8 +84,8 @@
       "character_id": "brother_wystan",
       "team": "player",
       "cell": [
-        3,
-        8
+        5,
+        10
       ],
       "facing": 0
     },
@@ -83,8 +93,8 @@
       "character_id": "bell_keeper",
       "team": "enemy",
       "cell": [
-        9,
-        2
+        11,
+        4
       ],
       "facing": 2,
       "commander": true
@@ -93,8 +103,8 @@
       "character_id": "roadreaver",
       "team": "enemy",
       "cell": [
-        6,
-        1
+        8,
+        3
       ],
       "facing": 2
     },
@@ -102,8 +112,8 @@
       "character_id": "roadreaver",
       "team": "enemy",
       "cell": [
-        4,
-        2
+        6,
+        4
       ],
       "facing": 2
     },
@@ -111,8 +121,8 @@
       "character_id": "roadbowman",
       "team": "enemy",
       "cell": [
-        8,
-        1
+        10,
+        3
       ],
       "facing": 2
     }
@@ -120,5 +130,6 @@
   "world_flag_on_victory": "dungeon_bell_cleared",
   "victory_text": "The Bell-Keeper is defeated. For the first time in generations, the buried bell falls silent.",
   "defeat_text": "The guardian holds the chamber. Your company is driven back to the road.",
-  "reward_item": "unique_sundered_vow"
+  "reward_item": "unique_sundered_vow",
+  "battlefield": "highland_snowfield"
 }
