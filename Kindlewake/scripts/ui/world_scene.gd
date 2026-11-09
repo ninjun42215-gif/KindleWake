@@ -628,7 +628,10 @@ func _draw_player() -> void:
     if Art.unit_sheet("soldier", "idle") != null:
         draw_colored_polygon(_ellipse(p + Vector2(0, 6), 14.0, 5.0), Color(0, 0, 0, 0.35))
         var t: float = float(Time.get_ticks_msec()) / 1000.0
-        Art.draw_unit(self, "soldier", "walk" if (has_target or moving_vector.length() > 0.12) and not panel_open else "idle", t, p + Vector2(0, 8), 2.0, facing_left)
+        var moving: bool = (has_target or moving_vector.length() > 0.12) and not panel_open
+        var sprinting: bool = moving and (run_toggled or ExplorationControls.running())
+        var motion_state: String = "run" if sprinting and Art.unit_sheet("soldier", "run") != null else ("walk" if moving else "idle")
+        Art.draw_unit(self, "soldier", motion_state, t, p + Vector2(0, 8), 2.0, facing_left)
         if has_target and not panel_open:
             draw_arc(target, 8.0, 0.0, TAU, 16, Color(1, 1, 1, 0.5), 2.0)
         return
