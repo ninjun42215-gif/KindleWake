@@ -13,83 +13,95 @@ concurrency:
 jobs:
   extract:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
-      - name: Check out the selected branch
+      - name: Check out selected branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
           fetch-depth: 0
 
-      - name: Extract source files safely
+      - name: Validate and extract archive transactionally
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path, PurePosixPath
           from zipfile import ZipFile
+          import os
+          import shutil
           import stat
+          import tempfile
 
           archive = Path("Kindlewake_Project.zip")
-          target_root = Path("Kindlewake")
-
+          target = Path("Kindlewake")
           if not archive.is_file():
-              raise SystemExit(f"Required archive not found: {archive}")
+              raise SystemExit("Kindlewake_Project.zip is missing from the repository root.")
 
-          with ZipFile(archive) as zf:
-              entries = zf.infolist()
-              if not entries:
-                  raise SystemExit("Archive is empty.")
-
+          with tempfile.TemporaryDirectory(prefix="kindlewake-extract-") as temp:
+              staging = Path(temp) / "staging"
+              staging.mkdir()
               extracted = 0
               skipped = 0
-              for info in entries:
-                  raw = info.filename.replace("\\\\", "/")
-                  rel = PurePosixPath(raw)
 
-                  if rel.is_absolute() or not rel.parts or any(p in ("", ".", "..") for p in rel.parts):
-                      raise SystemExit(f"Unsafe archive path rejected: {info.filename}")
+              with ZipFile(archive) as zf:
+                  entries = zf.infolist()
+                  if not entries:
+                      raise SystemExit("The project archive is empty.")
 
-                  # This project archive is expected to contain a Kindlewake/ root.
-                  if rel.parts[0] != "Kindlewake":
-                      raise SystemExit(f"Unexpected top-level archive path: {info.filename}")
+                  for info in entries:
+                      raw = info.filename.replace("\\\\", "/")
+                      rel = PurePosixPath(raw)
+                      if rel.is_absolute() or not rel.parts or any(p in ("", ".", "..") for p in rel.parts):
+                          raise SystemExit(f"Unsafe archive path: {info.filename}")
+                      if rel.parts[0] != "Kindlewake":
+                          raise SystemExit(f"Unexpected archive root: {info.filename}")
+                      if ".godot" in rel.parts or "__MACOSX" in rel.parts or rel.name == ".DS_Store":
+                          skipped += 1
+                          continue
+                      mode = (info.external_attr >> 16) & 0xFFFF
+                      if stat.S_ISLNK(mode):
+                          raise SystemExit(f"Symbolic link rejected: {info.filename}")
 
-                  # Never import generated caches or operating-system metadata.
-                  if ".godot" in rel.parts or "__MACOSX" in rel.parts or rel.name == ".DS_Store":
-                      skipped += 1
-                      continue
+                      destination = staging.joinpath(*rel.parts)
+                      if info.is_dir():
+                          destination.mkdir(parents=True, exist_ok=True)
+                          continue
+                      destination.parent.mkdir(parents=True, exist_ok=True)
+                      destination.write_bytes(zf.read(info))
+                      extracted += 1
 
-                  mode = (info.external_attr >> 16) & 0xFFFF
-                  if stat.S_ISLNK(mode):
-                      raise SystemExit(f"Symbolic link rejected: {info.filename}")
+              staged_project = staging / "Kindlewake"
+              if not (staged_project / "project.godot").is_file():
+                  raise SystemExit("Archive did not contain Kindlewake/project.godot.")
+              if not (staged_project / "tools/gd_static_check.py").is_file():
+                  raise SystemExit("Archive is missing tools/gd_static_check.py.")
 
-                  destination = Path(*rel.parts)
-                  if info.is_dir():
-                      destination.mkdir(parents=True, exist_ok=True)
-                      continue
+              backup = Path(temp) / "previous-Kindlewake"
+              if target.exists():
+                  os.replace(target, backup)
+              try:
+                  os.replace(staged_project, target)
+              except Exception:
+                  if backup.exists() and not target.exists():
+                      os.replace(backup, target)
+                  raise
+              if backup.exists():
+                  shutil.rmtree(backup)
 
-                  destination.parent.mkdir(parents=True, exist_ok=True)
-                  data = zf.read(info)
-                  if destination.exists():
-                      if not destination.is_file() or destination.read_bytes() != data:
-                          raise SystemExit(
-                              f"Conflict: {destination} already exists with different content. "
-                              "Nothing was overwritten; resolve this conflict before rerunning."
-                          )
-                      skipped += 1
-                      continue
-
-                  destination.write_bytes(data)
-                  extracted += 1
-
-          if not (target_root / "project.godot").is_file():
-              raise SystemExit("Extraction did not produce Kindlewake/project.godot")
-
-          print(f"Extracted files: {extracted}")
-          print(f"Skipped identical/cache/metadata entries: {skipped}")
+          print(f"Extracted project files: {extracted}")
+          print(f"Skipped cache/OS metadata entries: {skipped}")
           PY
 
-      - name: Commit extracted project files
+      - name: Run static GDScript checks
+        working-directory: Kindlewake
+        run: python3 -I tools/gd_static_check.py
+
+      - name: Run Android build preflight
+        working-directory: Kindlewake
+        run: python3 tools/build_apk.py --check
+
+      - name: Commit extracted project
         shell: bash
         run: |
           set -euo pipefail
@@ -97,43 +109,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- Kindlewake/
           if git diff --cached --quiet; then
-            echo "No new project files to commit."
+            echo "Extracted project is already up to date."
             exit 0
           fi
-          git commit -m "Extract Godot project source from archive"
-          git push origin "HEAD:${{ github.ref_name }}"# This is a basic workflow to help you get started with Actions
-
-name: CI
-
-# Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          git commit -m "Extract and validate Kindlewake Godot project"
+          git push origin "HEAD:${{ github.ref_name }}"
