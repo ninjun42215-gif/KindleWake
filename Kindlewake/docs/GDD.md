@@ -808,8 +808,8 @@ Legacy sigil_* script entry points remain internal compatibility wrappers during
 
 ### 14.6 External AI contribution intake and portable handoffs (2026-11-10)
 - Added `receiving/` as the dedicated intake folder for patches, source files, documentation and asset bundles supplied by other AI assistants. Its README defines a HANDOFF.md manifest, review/licensing requirements and safe integration rules.
-- Android CI now packages the source tree and project handoff documents into one ZIP, then divides that ZIP into binary chunks no larger than 25 MiB each. CI uploads the numbered parts and a reassembly guide as `Kindlewake-Source-Handoff-Parts`.
+- Android CI now packages the source tree and project handoff documents into one ZIP, then divides that ZIP into binary chunks no larger than 25 MB each. CI uploads the numbered parts and a reassembly guide as `Kindlewake-Source-Handoff-Parts`.
 - The original project remains the canonical source; split ZIP parts are transport-only and must be reassembled before extraction or merging.
 - No save schema or runtime gameplay behavior is changed by this delivery packaging.
 
-| 0.10.4-external-intake-handoff | Added an external AI receiving folder and CI-generated source handoff parts capped at 25 MiB each; branch-head Android CI pending. |
+| 0.10.4-external-intake-handoff | Added an external AI receiving folder and CI-generated source handoff parts capped at 25 MB each; branch-head Android CI pending. |
