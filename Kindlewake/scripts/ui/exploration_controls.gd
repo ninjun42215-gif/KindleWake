@@ -5,6 +5,15 @@ extends RefCounted
 static func configure() -> void:
     if not InputMap.has_action("sprint"):
         InputMap.add_action("sprint")
+    if not InputMap.has_action("interact"):
+        InputMap.add_action("interact")
+    if InputMap.action_get_events("interact").is_empty():
+        var key_e := InputEventKey.new()
+        key_e.physical_keycode = KEY_E
+        InputMap.action_add_event("interact", key_e)
+        var pad_a := InputEventJoypadButton.new()
+        pad_a.button_index = JOY_BUTTON_A
+        InputMap.action_add_event("interact", pad_a)
     if InputMap.action_get_events("sprint").is_empty():
         var shift := InputEventKey.new()
         shift.physical_keycode = KEY_SHIFT
