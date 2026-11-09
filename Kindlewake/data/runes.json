@@ -1,0 +1,584 @@
+{
+  "runes": {
+    "mend": {
+      "name": "Sigil of Mending",
+      "kind": "magic",
+      "color": "green",
+      "ap": [
+        60,
+        200,
+        480
+      ],
+      "price": 300,
+      "levels": [
+        {
+          "skills": [
+            "mend"
+          ]
+        },
+        {},
+        {
+          "skills": [
+            "mend_ii"
+          ]
+        },
+        {
+          "skills": [
+            "mend_iii"
+          ]
+        }
+      ],
+      "rune_type": "vitality",
+      "grade": "common",
+      "rune": true
+    },
+    "ember": {
+      "name": "Sigil of Embers",
+      "kind": "magic",
+      "color": "red",
+      "ap": [
+        70,
+        220,
+        520
+      ],
+      "price": 350,
+      "levels": [
+        {
+          "skills": [
+            "ember_bolt"
+          ]
+        },
+        {},
+        {
+          "skills": [
+            "ember_storm"
+          ]
+        },
+        {}
+      ],
+      "rune_type": "flame",
+      "grade": "uncommon",
+      "rune": true
+    },
+    "frost": {
+      "name": "Sigil of Frost",
+      "kind": "magic",
+      "color": "blue",
+      "ap": [
+        70,
+        220,
+        520
+      ],
+      "price": 350,
+      "levels": [
+        {
+          "skills": [
+            "frost_shard"
+          ]
+        },
+        {},
+        {
+          "skills": [
+            "frost_lance"
+          ]
+        },
+        {}
+      ],
+      "rune_type": "frost",
+      "grade": "uncommon",
+      "rune": true
+    },
+    "amp": {
+      "name": "Sigil of Resonance",
+      "kind": "support",
+      "color": "yellow",
+      "ap": [
+        80,
+        260
+      ],
+      "price": 400,
+      "levels": [
+        {
+          "support": {
+            "skill_power_pct": 10
+          }
+        },
+        {
+          "support": {
+            "skill_power_pct": 20
+          }
+        },
+        {
+          "support": {
+            "skill_power_pct": 35
+          }
+        }
+      ],
+      "rune_type": "arcane",
+      "grade": "rare",
+      "rune": true
+    },
+    "tutor": {
+      "name": "Sigil of the Tutor",
+      "kind": "support",
+      "color": "yellow",
+      "ap": [
+        100,
+        300
+      ],
+      "price": 500,
+      "levels": [
+        {
+          "support": {
+            "ap_pct": 25
+          }
+        },
+        {
+          "support": {
+            "ap_pct": 50
+          }
+        },
+        {
+          "support": {
+            "ap_pct": 100
+          }
+        }
+      ],
+      "rune_type": "arcane",
+      "grade": "uncommon",
+      "rune": true
+    },
+    "vigor": {
+      "name": "Sigil of Vigor",
+      "kind": "stat",
+      "color": "blue",
+      "ap": [
+        50,
+        150,
+        350,
+        700
+      ],
+      "price": 250,
+      "levels": [
+        {
+          "mods": {
+            "hp_pct": 5,
+            "mp_pct": -2
+          }
+        },
+        {
+          "mods": {
+            "hp_pct": 10,
+            "mp_pct": -4
+          }
+        },
+        {
+          "mods": {
+            "hp_pct": 15,
+            "mp_pct": -6
+          }
+        },
+        {
+          "mods": {
+            "hp_pct": 20,
+            "mp_pct": -8
+          }
+        },
+        {
+          "mods": {
+            "hp_pct": 30,
+            "mp_pct": -10
+          }
+        }
+      ],
+      "rune_type": "vitality",
+      "grade": "common",
+      "rune": true
+    },
+    "might": {
+      "name": "Sigil of Might",
+      "kind": "stat",
+      "color": "blue",
+      "ap": [
+        60,
+        180,
+        420,
+        800
+      ],
+      "price": 250,
+      "levels": [
+        {
+          "mods": {
+            "str": 1,
+            "int": -1
+          }
+        },
+        {
+          "mods": {
+            "str": 2,
+            "int": -1
+          }
+        },
+        {
+          "mods": {
+            "str": 3,
+            "int": -2
+          }
+        },
+        {
+          "mods": {
+            "str": 4,
+            "int": -2
+          }
+        },
+        {
+          "mods": {
+            "str": 5,
+            "int": -3
+          }
+        }
+      ],
+      "rune_type": "earth",
+      "grade": "common",
+      "rune": true
+    },
+    "bulwark": {
+      "name": "Sigil of the Bulwark",
+      "kind": "stat",
+      "color": "blue",
+      "ap": [
+        60,
+        180,
+        420,
+        800
+      ],
+      "price": 250,
+      "levels": [
+        {
+          "mods": {
+            "vit": 1,
+            "spd": 0
+          }
+        },
+        {
+          "mods": {
+            "vit": 2,
+            "spd": -1
+          }
+        },
+        {
+          "mods": {
+            "vit": 3,
+            "spd": -1
+          }
+        },
+        {
+          "mods": {
+            "vit": 4,
+            "spd": -2
+          }
+        },
+        {
+          "mods": {
+            "vit": 5,
+            "spd": -2
+          }
+        }
+      ],
+      "rune_type": "earth",
+      "grade": "uncommon",
+      "rune": true
+    },
+    "fleet": {
+      "name": "Sigil of Fleetness",
+      "kind": "stat",
+      "color": "blue",
+      "ap": [
+        80,
+        240,
+        560
+      ],
+      "price": 300,
+      "levels": [
+        {
+          "mods": {
+            "spd": 1
+          }
+        },
+        {
+          "mods": {
+            "spd": 2
+          }
+        },
+        {
+          "mods": {
+            "spd": 3
+          }
+        },
+        {
+          "mods": {
+            "spd": 4,
+            "vit": -1
+          }
+        }
+      ],
+      "rune_type": "wind",
+      "grade": "uncommon",
+      "rune": true
+    },
+    "veteran": {
+      "name": "Veteran's Mark",
+      "kind": "independent",
+      "color": "purple",
+      "ap": [
+        120,
+        360,
+        800
+      ],
+      "price": 600,
+      "levels": [
+        {
+          "mods": {
+            "exp_pct": 10
+          }
+        },
+        {
+          "mods": {
+            "exp_pct": 20
+          }
+        },
+        {
+          "mods": {
+            "exp_pct": 30
+          }
+        },
+        {
+          "mods": {
+            "exp_pct": 50
+          }
+        }
+      ],
+      "rune_type": "fortune",
+      "grade": "rare",
+      "rune": true
+    },
+    "coin_eye": {
+      "name": "Coin Eye",
+      "kind": "independent",
+      "color": "purple",
+      "ap": [
+        100,
+        300,
+        700
+      ],
+      "price": 500,
+      "levels": [
+        {
+          "mods": {
+            "gold_pct": 15
+          }
+        },
+        {
+          "mods": {
+            "gold_pct": 30
+          }
+        },
+        {
+          "mods": {
+            "gold_pct": 50
+          }
+        },
+        {
+          "mods": {
+            "gold_pct": 100
+          }
+        }
+      ],
+      "rune_type": "fortune",
+      "grade": "rare",
+      "rune": true
+    },
+    "storm": {
+      "name": "Storm Rune",
+      "kind": "magic",
+      "rune_type": "storm",
+      "grade": "rare",
+      "color": "cyan",
+      "ap": [
+        100,
+        300
+      ],
+      "price": 850,
+      "levels": [
+        {
+          "skills": [
+            "storm_bolt"
+          ]
+        },
+        {},
+        {
+          "skills": [
+            "storm_bolt_ii"
+          ]
+        }
+      ]
+    },
+    "holy": {
+      "name": "Holy Rune",
+      "kind": "magic",
+      "rune_type": "holy",
+      "grade": "rare",
+      "color": "gold",
+      "ap": [
+        120,
+        360
+      ],
+      "price": 950,
+      "levels": [
+        {
+          "skills": [
+            "holy_smite"
+          ]
+        },
+        {},
+        {
+          "skills": [
+            "holy_smite_ii"
+          ]
+        }
+      ]
+    },
+    "shadow": {
+      "name": "Shadow Rune",
+      "kind": "magic",
+      "rune_type": "shadow",
+      "grade": "epic",
+      "color": "purple",
+      "ap": [
+        150,
+        450
+      ],
+      "price": 1400,
+      "levels": [
+        {
+          "skills": [
+            "shadow_drain"
+          ]
+        },
+        {},
+        {
+          "skills": [
+            "shadow_drain_ii"
+          ]
+        }
+      ]
+    },
+    "earth": {
+      "name": "Earth Rune",
+      "kind": "stat",
+      "rune_type": "earth",
+      "grade": "uncommon",
+      "color": "ochre",
+      "ap": [
+        90,
+        270,
+        540
+      ],
+      "price": 650,
+      "levels": [
+        {
+          "mods": {
+            "vit": 2,
+            "hp_pct": 4
+          }
+        },
+        {
+          "mods": {
+            "vit": 3,
+            "hp_pct": 7
+          }
+        },
+        {
+          "mods": {
+            "vit": 4,
+            "hp_pct": 10
+          }
+        },
+        {
+          "mods": {
+            "vit": 5,
+            "hp_pct": 14
+          }
+        }
+      ]
+    },
+    "wind": {
+      "name": "Wind Rune",
+      "kind": "stat",
+      "rune_type": "wind",
+      "grade": "uncommon",
+      "color": "teal",
+      "ap": [
+        90,
+        270,
+        540
+      ],
+      "price": 650,
+      "levels": [
+        {
+          "mods": {
+            "spd": 2,
+            "eva": 2
+          }
+        },
+        {
+          "mods": {
+            "spd": 3,
+            "eva": 4
+          }
+        },
+        {
+          "mods": {
+            "spd": 4,
+            "eva": 6
+          }
+        },
+        {
+          "mods": {
+            "spd": 5,
+            "eva": 8
+          }
+        }
+      ]
+    },
+    "arcane": {
+      "name": "Arcane Rune",
+      "kind": "support",
+      "rune_type": "arcane",
+      "grade": "rare",
+      "color": "violet",
+      "ap": [
+        120,
+        360
+      ],
+      "price": 1000,
+      "levels": [
+        {
+          "support": {
+            "skill_power_pct": 15
+          }
+        },
+        {
+          "support": {
+            "skill_power_pct": 25
+          }
+        },
+        {
+          "support": {
+            "skill_power_pct": 40
+          }
+        }
+      ]
+    }
+  }
+}
