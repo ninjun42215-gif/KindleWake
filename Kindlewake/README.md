@@ -50,7 +50,7 @@ godot --headless --path . --script res://tests/balance_report.gd
 ```
 1. `--import` runs ONCE on a fresh unzip. It lets Godot register the `class_name` scripts; without it the tests fail with "Could not find type ..." errors. (Opening the project in the editor once does the same.)
 2. `run_tests.gd` prints `ok` / `FAIL` per check, then an AI-vs-AI battle simulation summary. Exit code 0 = all checks passed. **Any `SCRIPT ERROR` or `Parse Error` line matters even if the checks say ok.**
-3. `balance_report.gd` prints how hard each enemy group is and how fast the grind pays off (add `-- 100` for 100 battles per scenario).
+3. `balance_report.gd` prints how hard each enemy group is and how the campaign reward curve scales (add `-- 100` for 100 battles per scenario).
 4. Open `project.godot`, press Play, and follow the campaign: travel, enter story locations, manage the Company, fight, then Continue Journey from the results screen.
 5. Paste ALL the output (including errors) into the next chat.
 
@@ -91,7 +91,7 @@ Optional, needs only Python 3 (no Godot): `python3 -I tools/gd_static_check.py` 
 - Pre-battle panel and a full **Party screen** (roster, character sheet, Equipment / Sigils / Shop tabs); stat-change preview for every item; sigil sockets, links, levels and AP shown. Code: `scripts/ui/party_screen.gd`. Details: `docs/GDD.md` section 4.7.
 - **Shop** (`data/shop.json`, `ShopSystem`): 19 items and 11 sigils; sell price 50%; heirlooms and equipped items cannot be sold.
 - New **Sigil of Frost** (Frost Shard, Frost Lance).
-- `tests/balance_report.gd` (balance numbers per enemy group and a 60-battle grind curve) and `tools/gd_static_check.py` (Python linter).
+- `tests/balance_report.gd` (balance numbers per enemy group and a 60-battle progression curve) and `tools/gd_static_check.py` (Python linter).
 
 ## Milestone 2, step 1 (v0.3.0; written, NOT yet run in Godot)
 - `data/items.json`: weapons, off-hands, armor, helms, accessories with rarity, bonuses, two-handed and heirloom rules. `data/campaign_start.json`: starting party, gold, inventory.
