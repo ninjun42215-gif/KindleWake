@@ -1158,6 +1158,49 @@ func _apply_safe_area() -> void:
     hud_root.offset_top = t
     hud_root.offset_right = -r
     hud_root.offset_bottom = -b
+    _apply_responsive_hud()
+
+
+## Reflow the battle overlay for narrow portrait screens. The tactical map remains
+## fully touchable; only the HUD controls move and shrink.
+func _apply_responsive_hud() -> void:
+    if hud_root == null or hud_root.get_child_count() < 6:
+        return
+    var size: Vector2 = get_viewport().get_visible_rect().size
+    var compact: bool = size.x < 900.0 or size.y > size.x * 1.15
+    var info_panel: Control = hud_root.get_child(0) as Control
+    var timeline: Control = hud_root.get_child(1) as Control
+    var menu: Control = hud_root.get_child(2) as Control
+    var actions: Control = hud_root.get_child(3) as Control
+    var middle: Control = hud_root.get_child(4) as Control
+    var log_panel: Control = hud_root.get_child(5) as Control
+    timeline.visible = not compact
+    log_panel.visible = not compact
+    if compact:
+        info_panel.custom_minimum_size = Vector2(minf(size.x * 0.56, 270.0), 0)
+        menu.scale = Vector2(0.78, 0.78)
+        actions.scale = Vector2(0.76, 0.76)
+        middle.scale = Vector2(0.72, 0.72)
+        middle.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM, Control.PRESET_MODE_MINSIZE, 8)
+        middle.grow_horizontal = Control.GROW_DIRECTION_BOTH
+        middle.grow_vertical = Control.GROW_DIRECTION_BEGIN
+        actions.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 8)
+        actions.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+        actions.grow_vertical = Control.GROW_DIRECTION_BEGIN
+        menu.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 8)
+        menu.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    else:
+        info_panel.custom_minimum_size = Vector2(330, 0)
+        menu.scale = Vector2.ONE
+        actions.scale = Vector2.ONE
+        middle.scale = Vector2.ONE
+        middle.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM, Control.PRESET_MODE_MINSIZE, 12)
+        actions.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
+        menu.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
+    if result_panel != null and is_instance_valid(result_panel):
+        result_panel.custom_minimum_size = Vector2(minf(size.x - 24.0, 700.0), 0)
+    if prep_panel != null and is_instance_valid(prep_panel):
+        prep_panel.custom_minimum_size = Vector2(minf(size.x - 24.0, 700.0), 0)
 
     # Reflow key HUD elements for narrow phones without shrinking the game world.
     var vw: float = get_viewport().get_visible_rect().size.x
