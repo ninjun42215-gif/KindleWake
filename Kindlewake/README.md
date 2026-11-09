@@ -177,3 +177,10 @@ docs/            GDD.md, SESSION_HANDOFF.md, CONTINUATION_PROMPT.md
 - `Art.draw_prop()` now loads atlas cells. Tactical battle tiles use terrain-matched props (forest trees, marsh reeds, snow pines, ash campfires, ruin columns and cliff crystals); town tiles receive stallside crates, barrels, torches, banners, columns and sparse flowers.
 - These are original project-authored vector assets; no unverified third-party pack was imported in this pass. Existing unit sprite sheets remain in place and should receive a separate animation/character-art upgrade pass.
 - CI validation for this asset pass is still running; prior v0.10.0 CI runs had two balance/stat test failures, so do not call the latest branch build verified until a current run completes.
+
+
+## Responsive mobile UI/HUD pass (2026-11-10)
+- Battle HUD now reduces selected-unit, combat-log and action-preview widths on compact landscape screens; action buttons and Confirm/Cancel scale to the viewport while remaining touchable.
+- Overworld COMPANY and SAVE controls now resize independently instead of retaining desktop-sized widths.
+- Company management now uses viewport orientation: portrait stacks the roster, character sheet and gear/rune/shop panels; compact landscape uses three proportional columns to avoid clipping the bottom of a tall vertical stack.
+- This pass changes presentation only; battle rules, inventory, runes, equipment, campaign data and save schema are unchanged. Android CI and physical-device verification are pending for these exact commits.
