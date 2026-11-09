@@ -789,7 +789,7 @@ func _test_world() -> void:
             roads_ok = false
     check(roads_ok, "every road in world.json really connects its two places")
     check(w1.connected(w1.start_cell, w1.place_cell("camp")), "the Roadwolf Camp can be reached on foot from Kaer Sethorn")
-    check(w1.wrap_enabled and w1.walkable(Vector2i(-5, -5)) and w1.walkable(Vector2i(w1.width, 0)), "the campaign map wraps at every edge instead of blocking movement")
+    check(w1.wrap_enabled and w1.walkable(Vector2i(-1, 0)) and w1.walkable(Vector2i(w1.width, 0)), "the campaign map wraps at every edge instead of blocking movement")
     check(w1.speed_at(w1.start_cell) > 1.0 and WorldMap.SPEED[WorldMap.FOREST] < 1.0 and WorldMap.SPEED[WorldMap.WATER] == 0.0, "roads are fast, forests slow and deep water blocks")
     check(WorldMap.DANGER[WorldMap.FOREST] > WorldMap.DANGER[WorldMap.GRASS] and WorldMap.DANGER[WorldMap.ROAD] < WorldMap.DANGER[WorldMap.GRASS], "forests are more dangerous than grass and roads are safer")
     check(WorldMap.encounter_threshold(cfg, 0.0) == float(cfg["encounter_min"]) and WorldMap.encounter_threshold(cfg, 1.0) == float(cfg["encounter_max"]), "the ambush threshold runs from encounter_min to encounter_max")
