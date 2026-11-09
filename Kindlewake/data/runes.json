@@ -1,7 +1,7 @@
 {
   "runes": {
     "mend": {
-      "name": "Sigil of Mending",
+      "name": "Mending Rune",
       "kind": "magic",
       "color": "green",
       "ap": [
@@ -33,7 +33,7 @@
       "rune": true
     },
     "ember": {
-      "name": "Sigil of Embers",
+      "name": "Flame Rune",
       "kind": "magic",
       "color": "red",
       "ap": [
@@ -61,7 +61,7 @@
       "rune": true
     },
     "frost": {
-      "name": "Sigil of Frost",
+      "name": "Frost Rune",
       "kind": "magic",
       "color": "blue",
       "ap": [
@@ -89,7 +89,7 @@
       "rune": true
     },
     "amp": {
-      "name": "Sigil of Resonance",
+      "name": "Resonance Rune",
       "kind": "support",
       "color": "yellow",
       "ap": [
@@ -119,7 +119,7 @@
       "rune": true
     },
     "tutor": {
-      "name": "Sigil of the Tutor",
+      "name": "Tutor Rune",
       "kind": "support",
       "color": "yellow",
       "ap": [
@@ -149,7 +149,7 @@
       "rune": true
     },
     "vigor": {
-      "name": "Sigil of Vigor",
+      "name": "Vitality Rune",
       "kind": "stat",
       "color": "blue",
       "ap": [
@@ -196,7 +196,7 @@
       "rune": true
     },
     "might": {
-      "name": "Sigil of Might",
+      "name": "Might Rune",
       "kind": "stat",
       "color": "blue",
       "ap": [
@@ -243,7 +243,7 @@
       "rune": true
     },
     "bulwark": {
-      "name": "Sigil of the Bulwark",
+      "name": "Bulwark Rune",
       "kind": "stat",
       "color": "blue",
       "ap": [
@@ -290,7 +290,7 @@
       "rune": true
     },
     "fleet": {
-      "name": "Sigil of Fleetness",
+      "name": "Fleet Rune",
       "kind": "stat",
       "color": "blue",
       "ap": [
@@ -327,7 +327,7 @@
       "rune": true
     },
     "veteran": {
-      "name": "Veteran's Mark",
+      "name": "Veteran Rune",
       "kind": "independent",
       "color": "purple",
       "ap": [
@@ -363,7 +363,7 @@
       "rune": true
     },
     "coin_eye": {
-      "name": "Coin Eye",
+      "name": "Coin Eye Rune",
       "kind": "independent",
       "color": "purple",
       "ap": [
