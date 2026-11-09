@@ -119,5 +119,6 @@
   ],
   "world_flag_on_victory": "dungeon_bell_cleared",
   "victory_text": "The Bell-Keeper is defeated. For the first time in generations, the buried bell falls silent.",
-  "defeat_text": "The guardian holds the chamber. Your company is driven back to the road."
+  "defeat_text": "The guardian holds the chamber. Your company is driven back to the road.",
+  "reward_item": "unique_sundered_vow"
 }
