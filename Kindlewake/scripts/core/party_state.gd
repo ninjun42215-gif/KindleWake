@@ -311,7 +311,7 @@ func to_dict() -> Dictionary:
 
 
 static func from_dict(d: Dictionary) -> PartyState:
-    var p := PartyStateScript.new()
+    var p: PartyState = load("res://scripts/core/party_state.gd").new()
     p.gold = int(d.get("gold", 0))
     var sd: Dictionary = d.get("sheets", {})
     var order: Array = d.get("roster", [])
