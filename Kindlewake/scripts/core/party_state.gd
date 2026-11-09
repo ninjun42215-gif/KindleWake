@@ -13,7 +13,7 @@ const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
 const BENCH_EXP_SHARE := 0.4     # undeployed roster members get 40% of one survivor's EXP share, never AP
 
 var roster: Array[String] = []     # display order
-var sheets: Dictionary = {}        # character id -> CharacterSheet
+var sheets: Dictionary = {}        # character id -> CharacterSheetScript
 var inventory: Dictionary = {}     # item id -> count
 var gold: int = 0
 var sigil_inv: Array = []          # unequipped sigil instances ({"id","ap"[, "spawned"]})
@@ -50,7 +50,7 @@ func add_member(char_id: String, def: Dictionary) -> void:
     roster.append(char_id)
 
 
-func sheet(char_id: String) -> CharacterSheet:
+func sheet(char_id: String) -> CharacterSheetScript:
     return sheets.get(char_id)
 
 
@@ -96,7 +96,7 @@ func equip(char_id: String, slot: String, item_id: String, db: Dictionary) -> St
 
 
 func unequip(char_id: String, slot: String, db: Dictionary = {}) -> String:
-    var sh: CharacterSheet = sheet(char_id)
+    var sh: CharacterSheetScript = sheet(char_id)
     if sh == null:
         return "Unknown character."
     var old: String = sh.item_in(slot)
@@ -109,7 +109,7 @@ func unequip(char_id: String, slot: String, db: Dictionary = {}) -> String:
 
 
 ## Weapon/armor changes can remove sockets; sigils that lose their socket go back to the sigil inventory.
-func _refit_sockets(sh: CharacterSheet, slot: String, items: Dictionary) -> void:
+func _refit_sockets(sh: CharacterSheetScript, slot: String, items: Dictionary) -> void:
     if (slot != "weapon" and slot != "armor") or items.is_empty():
         return
     for inst in sh.fit_sockets(items):
@@ -124,10 +124,10 @@ func add_sigil(sigil_id: String, ap: int = 0) -> void:
 
 ## Moves sigil `inv_index` of the inventory into socket `index` of the weapon/armor (the old one goes back). "" = success.
 func equip_sigil(char_id: String, group: String, index: int, inv_index: int, db: Dictionary) -> String:
-    var sh: CharacterSheet = sheet(char_id)
+    var sh: CharacterSheetScript = sheet(char_id)
     if sh == null:
         return "Unknown character."
-    if not CharacterSheet.SIGIL_GROUPS.has(group):
+    if not CharacterSheetScript.SIGIL_GROUPS.has(group):
         return "Sigils go into the weapon or the armor."
     var items: Dictionary = db.get("items", {})
     for inst0 in sh.fit_sockets(items):
@@ -148,7 +148,7 @@ func equip_sigil(char_id: String, group: String, index: int, inv_index: int, db:
 
 
 func unequip_sigil(char_id: String, group: String, index: int, db: Dictionary) -> String:
-    var sh: CharacterSheet = sheet(char_id)
+    var sh: CharacterSheetScript = sheet(char_id)
     if sh == null:
         return "Unknown character."
     var items: Dictionary = db.get("items", {})
@@ -170,7 +170,7 @@ func battle_db(base_db: Dictionary) -> Dictionary:
     var out: Dictionary = base_db.duplicate()
     var chars: Dictionary = (base_db.get("characters", {}) as Dictionary).duplicate()
     for id in roster:
-        var sh: CharacterSheet = sheets[id]
+        var sh: CharacterSheetScript = sheets[id]
         chars[id] = sh.to_battle_def(base_db)
     out["characters"] = chars
     return out
@@ -212,7 +212,7 @@ func battle_rewards(units: Array, result: String, db: Dictionary = {}) -> Dictio
     var exp_map: Dictionary = out["exp"]
     var ap_map: Dictionary = out["ap"]
     for id in survivors:
-        var sh: CharacterSheet = sheets[id]
+        var sh: CharacterSheetScript = sheets[id]
         var pct: int = sh.reward_pct("exp_pct", items, sdefs)
         exp_map[id] = int(float(share) * float(100 + pct) / 100.0)
         ap_map[id] = tot_ap
@@ -239,7 +239,7 @@ func apply_battle_result(units: Array, result: String, rng: RandomNumberGenerato
     for id in roster:
         if not exp_map.has(id) and not ap_map.has(id):
             continue
-        var sh: CharacterSheet = sheets[id]
+        var sh: CharacterSheetScript = sheets[id]
         var cdef: Dictionary = classes.get(sh.class_id, {})
         var rep: Dictionary = sh.add_exp(int(exp_map.get(id, 0)), rng, cdef)
         rep["character_id"] = id
@@ -264,7 +264,7 @@ func apply_battle_result(units: Array, result: String, rng: RandomNumberGenerato
 func to_dict() -> Dictionary:
     var sd: Dictionary = {}
     for id in roster:
-        var sh: CharacterSheet = sheets[id]
+        var sh: CharacterSheetScript = sheets[id]
         sd[id] = sh.to_dict()
     return {"roster": roster.duplicate(), "sheets": sd, "inventory": inventory.duplicate(), "gold": gold, "sigil_inv": sigil_inv.duplicate(true)}
 
@@ -278,7 +278,7 @@ static func from_dict(d: Dictionary) -> PartyState:
         var key: String = str(id)
         if sd.has(key):
             var one: Dictionary = sd[key]
-            p.sheets[key] = CharacterSheet.from_dict(one)
+            p.sheets[key] = CharacterSheetScript.from_dict(one)
             p.roster.append(key)
     var inv: Dictionary = d.get("inventory", {})
     for k in inv.keys():
