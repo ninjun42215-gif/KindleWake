@@ -177,3 +177,9 @@ Answer in plain English. Lead with what you did and what I should do next. Keep 
 - Validation: workflow 42672539871 passed; Godot 4.2.2, 333 strict checks / 0 failures, balance report completed, signed Android APK exported. Artifact ID 13699850975. Physical-device QA is still outstanding.
 - Known non-blocking output: the first editor import scan may report class registration errors and the build script runs a clean second scan; test suite then passes. Existing JSON parse line is part of the corrupt-save fallback test. ObjectDB/resource cleanup warnings remain at process exit.
 - Next: device QA first. Then continue with dedicated original per-class hero/per-species enemy sprite sheets, full cast/impact/death animations, and accessibility options (text scale, haptics, reduced motion) without changing the stable save schema.
+
+
+## Latest continuation — battle sprite identity pass (2026-11-10)
+- Commit `4ddbd7db598ea44520502c3c33309a1a95c38245` adds class-specific gear silhouettes and enemy archetype accents to the existing battle sprites. No combat rules, save fields or `Art.UNIT_FRAMES` contracts were changed.
+- CI is triggered for this commit and must be checked before treating it as build-ready.
+- Next: dedicated original per-class hero/per-species enemy sprite sheets, then cast/projectile/impact/death animation integration; keep existing frame contracts stable unless tests/importer are updated together. Device QA remains outstanding.
