@@ -110,11 +110,21 @@ Verify checksums before restoring. Restore a Git bundle into a new repository or
 
 Artifact: Kindlewake-Full-Backup.
 
+### 8. Project Health Audit
+
+File: .github/workflows/project-health-audit.yml
+
+Run this on demand from Actions or allow it to run on pushes and pull requests. It creates JSON and Markdown reports containing JSON parse failures, project inventory, version drift, missing asset-credit documentation, rune-count progress toward the 50+ design target, and nested workflow-directory warnings. Invalid JSON fails the workflow; advisory findings remain warnings.
+
+The audit is read-only and deliberately does not claim to validate GDScript semantics, import/render scenes, test saves in Godot, clear asset licenses, or certify Android device compatibility.
+
+Artifact: Kindlewake-Project-Health-Audit.
+
 ### 7. Workflow YAML Lint
 
 File: .github/workflows/workflow-lint.yml
 
-Runs on pushes, pull requests and manual dispatch. It parses every workflow YAML file, runs the source-handoff and organizer safety tests, and smoke-tests the read-only branch hygiene report. This validates YAML syntax and those utility scripts, not every GitHub Actions semantic, permission or runtime rule.
+Runs on pushes, pull requests and manual dispatch. It parses every workflow YAML file, runs the source-handoff, organizer and project-health audit tests, executes the read-only health audit, and smoke-tests the read-only branch hygiene report. This validates YAML syntax and those utility scripts, not every GitHub Actions semantic, permission or runtime rule.
 
 ## Recommended routine
 
@@ -123,7 +133,7 @@ Runs on pushes, pull requests and manual dispatch. It parses every workflow YAML
 - Before cleaning branches: run Branch Hygiene and inspect the report. Delete branches manually only after checking open PRs and backup needs.
 - Before integrating a feature: run Safe Branch Integration with the feature branch as source and main as target. Review the draft PR and require CI/review before merging.
 - Before distributing an APK: run Build Android APK, verify the artifact, then install and test on a physical device.
-- When handing work to another person or AI: run Manual Source Handoff Snapshot and give them the exact commit and recovery instructions.
+- Before a broad maintenance pass: run Project Health Audit and resolve errors before interpreting warnings.\n- When handing work to another person or AI: run Manual Source Handoff Snapshot and give them the exact commit and recovery instructions.
 
 ## Safety guarantees and limits
 
