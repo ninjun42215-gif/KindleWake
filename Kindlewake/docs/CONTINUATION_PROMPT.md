@@ -178,3 +178,25 @@ Next actions:
 - Live inspection found the old `main` baseline at project/README **0.9.0** but Android export preset **0.7.14** (version code 714). This mismatch is recorded as a warning, not silently changed on main.
 - The Rune System feature branch currently has project/README/export preset **0.10.0** with Android version code **1000**, consistent at inspection time.
 - Added an Android export-version drift regression test. Latest CI for this and the asset provenance additions is still unconfirmed.
+
+
+### Verified implementation checkpoint — 2026-11-10
+
+Current operations branch checkpoint at the time of this note:
+- PR #5: `workflow/manual-operations-toolbox`, draft and unmerged. The latest verified code/documentation checkpoint was `14a8a34b0f34625c32ea727f818c1b74e0032fc6`; check the live PR head before continuing because this note itself is a documentation refresh.
+- Latest Workflow YAML Lint passes: runs `42687335517` and `42687326371`.
+- Latest Project Health Audit passed with 0 errors and 3 warnings: run `42687327011`; report artifact ID `13705327262`.
+- Latest manual source handoff passed: run `42687326282`; artifact ID `13704633339`. It contains 161 tracked files in four ZIP parts (each <=25,000,000 bytes), zero excluded files, archive SHA-256 `73ab35465650e9090c36920720d94cef75802d7c302dc11e952e2551c2c6ce10`.
+- The three health-audit warnings are: main project version 0.9.0 vs Android export preset 0.7.14/code 714; one active voxel-building pack still has unverified rights (reported by both the credits table and provenance manifest). The audit is intentionally warning rather than silently approving unknown rights.
+- Quaternius Stylized Nature MegaKit is documented with the official CC0 pack page. Zerie's free Soldier/Orc subset is documented with the author's official game-use/modification terms; standalone asset redistribution remains prohibited. Only the voxel-building pack remains an unresolved used asset.
+- PR #4: `feature/rune-system-v1`, draft and unmerged, head `c4a7e72313050acc35b3a85db9b53876048f437b`. It contains 77 runes (23 magic, 43 passive, 3 support, 6 stat, 2 independent; 7 unique and 5 heirloom flags overlap those kind counts). Latest CI run `42686782251` passed: 342 checks, 0 failures, balance report, Android 0.10.0/code 1000 APK export/signature verification, and source handoff. APK artifact ID `13704502185`; source handoff artifact ID `13705496581`.
+- Main remains untouched and unprotected. Do not merge either PR unless the user explicitly authorizes it. The available GitHub integration cannot modify branch protection; configure it manually.
+
+Next actions:
+1. Verify the original source/licence of the voxel-building pack set or replace the assets; do not mark them verified without authoritative evidence.
+2. Resolve main's Android export preset mismatch in the correct integration order; avoid overwriting PR #4's 0.10.0/code 1000 values with the older baseline.
+3. Re-run Project Health Audit with `--fail-on-warnings` only after all release warnings are resolved.
+4. Configure main branch protection manually from `Kindlewake/docs/MANUAL_GITHUB_WORKFLOWS.md`.
+5. Review the shared workflow overlap between PR #4 and #5, then merge in a deliberate order only after explicit authorization.
+6. Perform physical Android device QA and gameplay/save testing; CI export success is not device certification.
+7. Recheck the live PR heads and produce a fresh handoff artifact from the exact latest commit before handing work to another AI.
