@@ -1,8 +1,12 @@
 extends Node
+
+const PartyStateScript = preload("res://scripts/core/party_state.gd")
+const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
+const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
 
-var party: PartyState = PartyState.new()
+var party: PartyStateScript = PartyStateScript.new()
 var rng := RandomNumberGenerator.new()
 
 # Overworld state (Milestone 7). The world scene and the battle scene hand over through these fields.
@@ -22,7 +26,7 @@ func _ready() -> void:
 func new_game(profile: Dictionary = {}) -> void:
     var selected: Dictionary = profile.duplicate(true)
     if selected.is_empty():
-        selected = CharacterCreation.default_profile(GameData.character_creation)
+        selected = CharacterCreationScript.default_profile(GameData.character_creation)
     var protagonist: Dictionary = CharacterCreation.build_definition(
         GameData.characters.get("torren", {}), selected, GameData.character_creation, GameData.classes
     )
@@ -33,7 +37,7 @@ func new_game(profile: Dictionary = {}) -> void:
             GameData.characters.get("torren", {}), selected, GameData.character_creation, GameData.classes
         )
     creation_profile = selected.duplicate(true)
-    party = PartyState.new_game(GameData.start, GameData.characters, protagonist)
+    party = PartyStateScript.new_game(GameData.start, GameData.characters, protagonist)
     pending_battle = {}
     from_world = false
     world_pos = Vector2.ZERO
@@ -54,7 +58,7 @@ func award_battle(units: Array, result: String) -> Dictionary:
 
 ## A road ambush generated during campaign travel; encounters are part of the world, not a separate mode.
 func travel_encounter_def() -> Dictionary:
-    return EncounterBuilder.build_skirmish(GameData.encounters, GameData.battles, rng)
+    return EncounterBuilderScript.build_skirmish(GameData.encounters, GameData.battles, rng)
 
 
 ## Called by the overworld: the battle scene picks `def` up when it loads.
