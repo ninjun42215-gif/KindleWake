@@ -33,8 +33,8 @@ Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Ne
 - The overworld HUD now opens a touch-first **New Chronicle** creator overlay with name, appearance, origin, discipline, weapon preference and temperament choices.
 - A live geometric bust preview and stat-bonus summary update as choices change. The preview now varies the head silhouette by presentation and uses distinct facial details for weathered, soft, scarred and sharp presets; invalid profiles cannot be confirmed.
 - Confirm initializes a new campaign while preserving the stable `torren` id and four-member starting party. Back leaves the current in-memory party untouched.
-- Battle saves/autosaves now preserve the creator profile. Save version 2 migrates v1 saves without discarding their battle or party data.
-- Each compatible weapon preference now equips its matching common-tier starter: sword, axe, spear, bow, crossbow, staff, mace or dagger. The creator records the selected item. Origin story hooks and world-state saves remain future work.
+- Battle saves/autosaves preserve the creator profile. SaveSystem v3 also stores regional world flags, overworld position and the from-world hand-off; v1→v2→v3 migrations preserve existing battle and party data.
+- Each compatible weapon preference now equips its matching common-tier starter: sword, axe, spear, bow, crossbow, staff, mace or dagger. The creator records the selected item. Origin story hooks and full free-roam campaign saves remain future work; regional flags persist only when a battle save is written.
 - Static checker: 0 errors / 0 warnings. Android offline preflight passes. A headless test now guards the presentation-to-silhouette mapping, but Godot import, the GDScript test suite, scene rendering and gameplay have not been run in this environment.
 
 ## Run
