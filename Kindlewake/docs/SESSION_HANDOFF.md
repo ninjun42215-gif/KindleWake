@@ -1,3 +1,16 @@
+# Development checkpoint — v0.8.1 (2026-11-09)
+
+Implemented on main from the extracted v0.7.14 Sethmarch Frontier source:
+- Equipment data now defines six ordinary rarity tiers (Common, Uncommon, Rare, Epic, Legendary, Mythical) and a separate Unique grade. Added 80 equipment definitions across weapons, armor, off-hand shields, helms and accessories; weapon definitions now cover the expanded tier variants. Legacy Fine/Masterwork/Heirloom rarity labels were normalized while stable item IDs were preserved.
+- Merchant stock includes the new priced tiered equipment. Unique relics are earned from the Hollowroot, Bell shrine and Catacombs caches, and two dungeon guardian victories.
+- Protagonist creation now offers eight allocatable starting attribute points across STR/DEX/INT/VIT/SPD/LCK, validates the budget, and applies the chosen values to the new protagonist. The existing masculine/feminine/androgynous presentation choices remain.
+- Creator ScrollContainer explicitly uses vertical scrolling and follows focused controls; its content container now expands correctly. Portrait preview is redrawn with layered facial planes, smaller features, restrained shading and more mature clothing details. It remains procedural vector artwork, not finished hand-painted portrait assets.
+- Company inventory/equipment/sigils remain accessible from the overworld COMPANY button. The Shop tab is hidden while travelling and during battle preparation/results; town market screens expose merchant services only while the player is interacting with a market/shopkeeper NPC. Shop spots can explicitly be marked inactive with npc_active=false or a matching npc_active_<shopkeeper_id> world flag.
+- Battle result now displays GAME OVER when the entire deployed player side is wiped out. The continuation action begins a fresh chronicle instead of allowing a defeated party to continue. The result panel contains only Company/Gear and Continue Journey (or New Chronicle on a full wipe); no Story Battle, Skirmish or Restart Battle shortcuts.
+- Project version bumped to 0.8.1. Regression assertions were added for rarity tiers, Unique grade and protagonist stat allocation. The Android build workflow now runs on pushes to main.
+
+Validation status: JSON files were parsed while generating the new item data and repository file writes succeeded. GitHub Actions has been configured to run the strict Godot import/test/balance/APK workflow on main pushes. No successful workflow result or Godot runtime test is claimed yet; confirm the latest Build Android APK run before distributing a build. Portrait rendering, phone scrolling, shop NPC behavior and battle defeat flow still need in-engine/device verification.
+
 # Development checkpoint — v0.7.14 (2026-11-09)
 
 Expanded the playable Eldrimar starting slice into the Sethmarch Frontier. The Sallow Crossing road network now reaches Orrowen Weald through the interactive Greenward Gate and Vessmoor Plains through the interactive Vessmoor Causeway. Each gate records a one-time passage flag, and the overworld HUD identifies the current subregion. Added Thornmere, Foxglove, Elderbough, Cindermead, Redwater and Milefort as distinct town maps with inn, market and recruitment-hall interiors.
