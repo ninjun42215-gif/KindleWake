@@ -2,7 +2,7 @@
 
 - Project version: v0.9.1, save schema 3; based on v0.9.0 campaign checkpoint. source repository ninjun42215-gif/KindleWake.
 - Feature branch: feature/rune-system-v1.
-- Latest validated commit: 9a428926df84d2925012efa26e8f259ef586f1f4.
+- Latest validated commit: c643c8fc20b1f96ebaa8aadb2f54d7330fa8b59e (project version 0.9.1).
 - Scope: replace player-facing Sigils with Runes while preserving old save inventory/socket fields and script aliases; add rune types, grade ladder, fusion, specialist regional shops, rune status effects, combat popups and original atlas.
 - New data: data/runes.json (17 runes) and additional storm/holy/shadow spells in data/skills.json.
 - Fusion: 3 identical id+grade; success chances 70/55/40/25/12% for Uncommon through Mythical; consumes 3 and returns 1 higher-grade rune on success or 1 original-grade rune on failure.
@@ -13,13 +13,13 @@
 - Internal grade bonuses apply only above each rune's configured starting grade, preserving the original v0.9.0 stat/AP/support balance.
 
 ## CI validation — passed
-- Workflow run #? — https://github.com/ninjun42215-gif/KindleWake/actions/runs/42645483859
+- Workflow run #42646097605 — https://github.com/ninjun42215-gif/KindleWake/actions/runs/42646097605
 - Godot 4.2.2 import: exit 0; no script errors or parse errors.
 - Strict automated suite: 312 checks, 0 failures.
 - Balance report: exit 0.
 - Android APK: signed successfully, 41.1 MB, arm64-v8a + armeabi-v7a.
 - Requested Android permissions: none.
-- APK SHA-256: 8a179904ef1234ba30b37387b0dd7d45abd4b978e8f4cb63877cb7423b679c07
+- APK SHA-256: 2d538df60d8c8f762923b838a020228b3b046f09cd176701a880740bcd15489e
 - Build artifact is attached to the workflow run above.
 - Remaining non-failing warnings: ObjectDB instances leaked / Resources still in use at headless process exit. Investigate separately.
 - No physical Android device test has been performed.
