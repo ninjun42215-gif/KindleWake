@@ -201,6 +201,6 @@ docs/            GDD.md, SESSION_HANDOFF.md, CONTINUATION_PROMPT.md
 
 ## External AI receiving and handoff packaging (2026-11-10)
 - Added `Kindlewake/receiving/README.md` as the standard intake folder for work supplied by other AI assistants. Incoming patches/assets require a HANDOFF.md and review before integration.
-- CI now emits a source ZIP split into numbered binary parts, each capped at 25 MiB (26,214,400 bytes), with a reassembly guide. Artifact name: `Kindlewake-Source-Handoff-Parts`.
+- CI now emits a source ZIP split into numbered binary parts, each capped at 25 MB (25,000,000 bytes), with a reassembly guide. Artifact name: `Kindlewake-Source-Handoff-Parts`.
 - Reassemble all parts in numeric order before unzipping. The split files are transport chunks, not independently extractable archives.
 - Latest changes are on `feature/rune-system-v1`; PR #4 remains draft and `main` remains untouched. Verify the newest Android workflow before treating the parts as available.
