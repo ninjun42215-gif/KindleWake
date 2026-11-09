@@ -1,5 +1,5 @@
 # KINDLEWAKE: THE SUNDERED VOW — Game Design Document
-Version 0.7.11 repository import completed (gameplay checkpoint v0.7.9) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
+Version 0.7.12 four-continent world blueprint (gameplay checkpoint v0.7.9) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
 
 > Inspiration only: tactical depth and mercenary management in the spirit of *Knights of Ages*, and recruitment/headquarters/platoon ideas in the spirit of *Suikoden II*. All characters, names, maps, story, art and music are original. Nothing is copied.
 
@@ -471,6 +471,26 @@ Entering a place with a `town` on the overworld opens its own map (`Location.tsc
 - **Controls and look:** same tap and drag walking as the overworld, collision on tiles, camera clamped to the map (interiors are zoomed to fit), NPCs are the Soldier sprite tinted per person, a gold marker floats over every spot, the prompt button says Talk to / Use plus the name.
 - **Adding a map:** add rows, doors and spots to `locations.json`, give the overworld place a `town` id. `LocalMap.validate()` (run by the tests) checks size, tiles, doors, spawns, reachability and return doors.
 - **Not yet:** saving the current town and house, day/night, shops per town (one stock for all), quests from NPCs, inn healing and recruiting, more towns and a bigger Kaer Sethorn.
+
+### 11.3 Four-continent campaign and travel progression (v0.7.12 design foundation)
+The campaign spans four large continents connected through a gradually expanding travel network. This is a regional world-map structure rather than one enormous seamless map: each region is a free-roam field map with its own towns, dungeons, roads, encounter tables and exits. The player sees a compact route map when choosing a known destination, then explores the region on foot when arriving. This keeps the FFVII-style sense of crossing a vast world while preserving Suikoden-II-like town, recruitment and story hubs.
+
+| Continent | Campaign role | First access | Core identity |
+|---|---|---|---|
+| Eldrimar | Crown Continent; starting homeland and main political conflict | Act I | Sethmarch, Orrowen Weald, Vessmoor Plains, Quillon Heights, Tarnholt Cloisters, Brennhallow Highlands and Aurelmont |
+| Thalassar | Shattered Isles; naval routes, ports and wreck-dives | Act II, after securing passage | Brinegate Coast, Isles of Vey and Kelpward Reach |
+| Varakhan | Red Expanse; caravan routes, steppe clans and buried empires | Act III, after a charter | Serekh Desert, Kharad Steppe and Obsidian Crown |
+| Nhalor | Far North; frozen roads, giant ruins and the late-game revelation | Act IV, after opening the northern pass | Skeld Tundra, Aurora Reach and Old Nhal |
+
+**Travel ladder:** (1) walking and roads inside the starting region; (2) carts and guarded road convoys between nearby regions; (3) river barges and ferries for controlled crossings; (4) charter ships for Thalassar and coastal optional landfalls; (5) caravan charters for Varakhan; (6) mountain pass opening for Nhalor; (7) a late-game airship linking discovered sky docks. New transport expands the map but never skips undiscovered destinations, story gates or required character/quest flags. Travel consumes campaign time only after the calendar and world-save systems are implemented; until then it must not silently advance weeks.
+
+**Region content targets:** each major region should have one primary hub town, two or more secondary settlements, at least two authored dungeons, one optional landmark, one recruit or companion quest, one regional conflict and one route-gate quest. Towns are functional hubs (inn/rest, market, recruitment/dialogue, local quest board) rather than decorative stops. Dungeons need a distinct traversal gimmick, a meaningful reward, a boss or climax, and a return/exit path.
+
+**Data blueprint:** `data/continents.json` records the four continents, 16 subregions, 40+ named settlement/dungeon hooks, travel modes and route gates. It is content planning data only: current runtime still uses `data/world.json` and `data/locations.json`. Do not present a listed destination as playable until its map, encounter set, quest flags, entry/exit links and regression tests exist. Keep the Sallow Marches as the playable starting slice.
+
+**Save/travel rules:** future campaign persistence must store continent id, region id, local map id, player tile, discovered route nodes, unlocked transport tiers, visited landmarks, dungeon completion flags and travel-calendar state. Implement this as an explicit save-schema migration; do not overload the current battle-save schema v2 or break old saves. Fast travel is available only between discovered hubs and must preserve the party's current roster/equipment.
+
+**Originality guardrail:** use only broad genre-level conventions (regional world maps, vehicles, ports, recruitment hubs and gated exploration). All geography, routes, characters, quests, visual designs and story beats remain original.
 
 ## 12. Character Roster
 
