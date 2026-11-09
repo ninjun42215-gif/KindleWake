@@ -427,10 +427,15 @@ func _draw_place_fallback(p: Dictionary) -> void:
             var o := Vector2(-18.0 + 18.0 * float(i), 4.0 - 6.0 * float(i % 2))
             draw_rect(Rect2(c + o + Vector2(-7, -6), Vector2(14, 12)), Color(0.62, 0.48, 0.32))
             draw_colored_polygon(PackedVector2Array([c + o + Vector2(-9, -6), c + o + Vector2(9, -6), c + o + Vector2(0, -16)]), Color(0.65, 0.25, 0.2))
-    elif kind == "ruin":
+    elif kind == "ruin" or kind == "dungeon":
         for i in range(3):
             var hgt: float = 14.0 + 8.0 * float(i % 2)
             draw_rect(Rect2(c + Vector2(-16.0 + 14.0 * float(i), -hgt), Vector2(8, hgt + 6)), Color(0.62, 0.62, 0.60))
+    elif kind == "gate":
+        draw_rect(Rect2(c + Vector2(-23, -25), Vector2(9, 38)), Color(0.56, 0.55, 0.48))
+        draw_rect(Rect2(c + Vector2(14, -25), Vector2(9, 38)), Color(0.56, 0.55, 0.48))
+        draw_rect(Rect2(c + Vector2(-23, -31), Vector2(46, 10)), Color(0.64, 0.58, 0.40))
+        draw_rect(Rect2(c + Vector2(-6, -13), Vector2(12, 26)), Color(0.14, 0.16, 0.14))
     elif kind == "camp":
         var cleared: bool = bool(GameState.world_flags.get("camp_cleared", false))
         var tent: Color = Color(0.5, 0.5, 0.5) if cleared else Color(0.70, 0.22, 0.18)
