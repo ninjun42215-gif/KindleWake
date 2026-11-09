@@ -25,6 +25,7 @@ class RepositoryOrganizerTests(unittest.TestCase):
         (root / "Kindlewake" / "assets" / "art.svg").write_text("<svg/>")
         (root / "Kindlewake" / "scenes" / "main.tscn").write_text("[gd_scene]\n")
         subprocess.run(["git", "add", "."], cwd=root, check=True)
+        subprocess.run(["git", "commit", "-qm", "fixture"], cwd=root, check=True)
 
     def invoke(self, root, report, mode):
         with patch.object(organizer, "ROOT", root), patch.object(
