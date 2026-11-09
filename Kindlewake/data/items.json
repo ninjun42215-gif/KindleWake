@@ -1,9 +1,11 @@
 {
   "rarities": [
     "common",
-    "fine",
-    "masterwork",
-    "heirloom"
+    "uncommon",
+    "rare",
+    "epic",
+    "legendary",
+    "mythical"
   ],
   "items": {
     "arming_sword": {
@@ -339,6 +341,1272 @@
       "rarity": "common",
       "weapon_id": "dagger",
       "price": 45
+    },
+    "uncommon_arming_sword": {
+      "name": "Uncommon Oathsteel Sword",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "weapon_id": "uncommon_arming_sword",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "price": 95,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_longsword": {
+      "name": "Uncommon Longblade",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "weapon_id": "uncommon_longsword",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "price": 95,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_hunting_bow": {
+      "name": "Uncommon War Bow",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "weapon_id": "uncommon_hunting_bow",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "price": 95,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_short_bow": {
+      "name": "Uncommon Scout Bow",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "weapon_id": "uncommon_short_bow",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "price": 95,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_mace": {
+      "name": "Uncommon War Mace",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "weapon_id": "uncommon_mace",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "price": 95,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_hand_axe": {
+      "name": "Uncommon Fighting Axe",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "weapon_id": "uncommon_hand_axe",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "price": 95,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_battle_axe": {
+      "name": "Uncommon Great Axe",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "weapon_id": "uncommon_battle_axe",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "price": 95,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_spear": {
+      "name": "Uncommon War Spear",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "weapon_id": "uncommon_spear",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "price": 95,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_crossbow": {
+      "name": "Uncommon Arbalest",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "weapon_id": "uncommon_crossbow",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "price": 95,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_staff": {
+      "name": "Uncommon Runed Staff",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "weapon_id": "uncommon_staff",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "price": 95,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_dagger": {
+      "name": "Uncommon Stiletto",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "weapon_id": "uncommon_dagger",
+      "sockets": 3,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 1,
+      "price": 95,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_armor": {
+      "name": "Uncommon Gambeson",
+      "slot": "armor",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "armor_def": 2,
+      "armor_res": 1,
+      "bonus": {},
+      "price": 61,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_offhand": {
+      "name": "Uncommon Buckler",
+      "slot": "offhand",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "armor_def": 1,
+      "armor_res": 0,
+      "bonus": {},
+      "price": 61,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_helm": {
+      "name": "Uncommon Cap",
+      "slot": "helm",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "armor_def": 1,
+      "armor_res": 0,
+      "bonus": {},
+      "price": 61,
+      "tier_label": "Uncommon"
+    },
+    "uncommon_accessory": {
+      "name": "Uncommon Charm",
+      "slot": "accessory",
+      "rarity": "uncommon",
+      "rarity_rank": 1,
+      "armor_def": 1,
+      "armor_res": 1,
+      "bonus": {
+        "ldr": 1
+      },
+      "price": 61,
+      "tier_label": "Uncommon"
+    },
+    "rare_arming_sword": {
+      "name": "Rare Oathsteel Sword",
+      "slot": "weapon",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "weapon_id": "rare_arming_sword",
+      "sockets": 4,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 133,
+      "tier_label": "Rare"
+    },
+    "rare_longsword": {
+      "name": "Rare Longblade",
+      "slot": "weapon",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "weapon_id": "rare_longsword",
+      "sockets": 4,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 133,
+      "tier_label": "Rare"
+    },
+    "rare_hunting_bow": {
+      "name": "Rare War Bow",
+      "slot": "weapon",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "weapon_id": "rare_hunting_bow",
+      "sockets": 4,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 133,
+      "tier_label": "Rare"
+    },
+    "rare_short_bow": {
+      "name": "Rare Scout Bow",
+      "slot": "weapon",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "weapon_id": "rare_short_bow",
+      "sockets": 4,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 133,
+      "tier_label": "Rare"
+    },
+    "rare_mace": {
+      "name": "Rare War Mace",
+      "slot": "weapon",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "weapon_id": "rare_mace",
+      "sockets": 4,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 133,
+      "tier_label": "Rare"
+    },
+    "rare_hand_axe": {
+      "name": "Rare Fighting Axe",
+      "slot": "weapon",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "weapon_id": "rare_hand_axe",
+      "sockets": 4,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 133,
+      "tier_label": "Rare"
+    },
+    "rare_battle_axe": {
+      "name": "Rare Great Axe",
+      "slot": "weapon",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "weapon_id": "rare_battle_axe",
+      "sockets": 4,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 133,
+      "tier_label": "Rare"
+    },
+    "rare_spear": {
+      "name": "Rare War Spear",
+      "slot": "weapon",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "weapon_id": "rare_spear",
+      "sockets": 4,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 133,
+      "tier_label": "Rare"
+    },
+    "rare_crossbow": {
+      "name": "Rare Arbalest",
+      "slot": "weapon",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "weapon_id": "rare_crossbow",
+      "sockets": 4,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 133,
+      "tier_label": "Rare"
+    },
+    "rare_staff": {
+      "name": "Rare Runed Staff",
+      "slot": "weapon",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "weapon_id": "rare_staff",
+      "sockets": 4,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 133,
+      "tier_label": "Rare"
+    },
+    "rare_dagger": {
+      "name": "Rare Stiletto",
+      "slot": "weapon",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "weapon_id": "rare_dagger",
+      "sockets": 4,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 133,
+      "tier_label": "Rare"
+    },
+    "rare_armor": {
+      "name": "Rare Cuirass",
+      "slot": "armor",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "armor_def": 4,
+      "armor_res": 2,
+      "bonus": {},
+      "price": 86,
+      "tier_label": "Rare"
+    },
+    "rare_offhand": {
+      "name": "Rare Shield",
+      "slot": "offhand",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "armor_def": 3,
+      "armor_res": 1,
+      "bonus": {},
+      "price": 86,
+      "tier_label": "Rare"
+    },
+    "rare_helm": {
+      "name": "Rare Coif",
+      "slot": "helm",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "armor_def": 3,
+      "armor_res": 1,
+      "bonus": {},
+      "price": 86,
+      "tier_label": "Rare"
+    },
+    "rare_accessory": {
+      "name": "Rare Medallion",
+      "slot": "accessory",
+      "rarity": "rare",
+      "rarity_rank": 2,
+      "armor_def": 2,
+      "armor_res": 2,
+      "bonus": {
+        "mor": 2
+      },
+      "price": 86,
+      "tier_label": "Rare"
+    },
+    "epic_arming_sword": {
+      "name": "Epic Oathsteel Sword",
+      "slot": "weapon",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "weapon_id": "epic_arming_sword",
+      "sockets": 5,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 196,
+      "tier_label": "Epic"
+    },
+    "epic_longsword": {
+      "name": "Epic Longblade",
+      "slot": "weapon",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "weapon_id": "epic_longsword",
+      "sockets": 5,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 196,
+      "tier_label": "Epic"
+    },
+    "epic_hunting_bow": {
+      "name": "Epic War Bow",
+      "slot": "weapon",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "weapon_id": "epic_hunting_bow",
+      "sockets": 5,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 196,
+      "tier_label": "Epic"
+    },
+    "epic_short_bow": {
+      "name": "Epic Scout Bow",
+      "slot": "weapon",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "weapon_id": "epic_short_bow",
+      "sockets": 5,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 196,
+      "tier_label": "Epic"
+    },
+    "epic_mace": {
+      "name": "Epic War Mace",
+      "slot": "weapon",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "weapon_id": "epic_mace",
+      "sockets": 5,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 196,
+      "tier_label": "Epic"
+    },
+    "epic_hand_axe": {
+      "name": "Epic Fighting Axe",
+      "slot": "weapon",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "weapon_id": "epic_hand_axe",
+      "sockets": 5,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 196,
+      "tier_label": "Epic"
+    },
+    "epic_battle_axe": {
+      "name": "Epic Great Axe",
+      "slot": "weapon",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "weapon_id": "epic_battle_axe",
+      "sockets": 5,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 196,
+      "tier_label": "Epic"
+    },
+    "epic_spear": {
+      "name": "Epic War Spear",
+      "slot": "weapon",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "weapon_id": "epic_spear",
+      "sockets": 5,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 196,
+      "tier_label": "Epic"
+    },
+    "epic_crossbow": {
+      "name": "Epic Arbalest",
+      "slot": "weapon",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "weapon_id": "epic_crossbow",
+      "sockets": 5,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 196,
+      "tier_label": "Epic"
+    },
+    "epic_staff": {
+      "name": "Epic Runed Staff",
+      "slot": "weapon",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "weapon_id": "epic_staff",
+      "sockets": 5,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 196,
+      "tier_label": "Epic"
+    },
+    "epic_dagger": {
+      "name": "Epic Stiletto",
+      "slot": "weapon",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "weapon_id": "epic_dagger",
+      "sockets": 5,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 2,
+      "price": 196,
+      "tier_label": "Epic"
+    },
+    "epic_armor": {
+      "name": "Epic Mail",
+      "slot": "armor",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "armor_def": 8,
+      "armor_res": 4,
+      "bonus": {
+        "vit": 1
+      },
+      "price": 126,
+      "tier_label": "Epic"
+    },
+    "epic_offhand": {
+      "name": "Epic Kite Shield",
+      "slot": "offhand",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "armor_def": 6,
+      "armor_res": 3,
+      "bonus": {},
+      "price": 126,
+      "tier_label": "Epic"
+    },
+    "epic_helm": {
+      "name": "Epic Helm",
+      "slot": "helm",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "armor_def": 6,
+      "armor_res": 3,
+      "bonus": {},
+      "price": 126,
+      "tier_label": "Epic"
+    },
+    "epic_accessory": {
+      "name": "Epic Signet",
+      "slot": "accessory",
+      "rarity": "epic",
+      "rarity_rank": 3,
+      "armor_def": 5,
+      "armor_res": 4,
+      "bonus": {
+        "ldr": 3
+      },
+      "price": 126,
+      "tier_label": "Epic"
+    },
+    "legendary_arming_sword": {
+      "name": "Legendary Oathsteel Sword",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "weapon_id": "legendary_arming_sword",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 294,
+      "tier_label": "Legendary"
+    },
+    "legendary_longsword": {
+      "name": "Legendary Longblade",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "weapon_id": "legendary_longsword",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 294,
+      "tier_label": "Legendary"
+    },
+    "legendary_hunting_bow": {
+      "name": "Legendary War Bow",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "weapon_id": "legendary_hunting_bow",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 294,
+      "tier_label": "Legendary"
+    },
+    "legendary_short_bow": {
+      "name": "Legendary Scout Bow",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "weapon_id": "legendary_short_bow",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 294,
+      "tier_label": "Legendary"
+    },
+    "legendary_mace": {
+      "name": "Legendary War Mace",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "weapon_id": "legendary_mace",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 294,
+      "tier_label": "Legendary"
+    },
+    "legendary_hand_axe": {
+      "name": "Legendary Fighting Axe",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "weapon_id": "legendary_hand_axe",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 294,
+      "tier_label": "Legendary"
+    },
+    "legendary_battle_axe": {
+      "name": "Legendary Great Axe",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "weapon_id": "legendary_battle_axe",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 294,
+      "tier_label": "Legendary"
+    },
+    "legendary_spear": {
+      "name": "Legendary War Spear",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "weapon_id": "legendary_spear",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 294,
+      "tier_label": "Legendary"
+    },
+    "legendary_crossbow": {
+      "name": "Legendary Arbalest",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "weapon_id": "legendary_crossbow",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 294,
+      "tier_label": "Legendary"
+    },
+    "legendary_staff": {
+      "name": "Legendary Runed Staff",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "weapon_id": "legendary_staff",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 294,
+      "tier_label": "Legendary"
+    },
+    "legendary_dagger": {
+      "name": "Legendary Stiletto",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "weapon_id": "legendary_dagger",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 294,
+      "tier_label": "Legendary"
+    },
+    "legendary_armor": {
+      "name": "Legendary Harness",
+      "slot": "armor",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "armor_def": 14,
+      "armor_res": 7,
+      "bonus": {
+        "vit": 2
+      },
+      "price": 189,
+      "tier_label": "Legendary"
+    },
+    "legendary_offhand": {
+      "name": "Legendary Tower Shield",
+      "slot": "offhand",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "armor_def": 12,
+      "armor_res": 6,
+      "bonus": {},
+      "price": 189,
+      "tier_label": "Legendary"
+    },
+    "legendary_helm": {
+      "name": "Legendary Greathelm",
+      "slot": "helm",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "armor_def": 12,
+      "armor_res": 6,
+      "bonus": {},
+      "price": 189,
+      "tier_label": "Legendary"
+    },
+    "legendary_accessory": {
+      "name": "Legendary Relic",
+      "slot": "accessory",
+      "rarity": "legendary",
+      "rarity_rank": 4,
+      "armor_def": 9,
+      "armor_res": 7,
+      "bonus": {
+        "mor": 4
+      },
+      "price": 189,
+      "tier_label": "Legendary"
+    },
+    "mythical_arming_sword": {
+      "name": "Mythical Oathsteel Sword",
+      "slot": "weapon",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "weapon_id": "mythical_arming_sword",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 455,
+      "tier_label": "Mythical"
+    },
+    "mythical_longsword": {
+      "name": "Mythical Longblade",
+      "slot": "weapon",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "weapon_id": "mythical_longsword",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 455,
+      "tier_label": "Mythical"
+    },
+    "mythical_hunting_bow": {
+      "name": "Mythical War Bow",
+      "slot": "weapon",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "weapon_id": "mythical_hunting_bow",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 455,
+      "tier_label": "Mythical"
+    },
+    "mythical_short_bow": {
+      "name": "Mythical Scout Bow",
+      "slot": "weapon",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "weapon_id": "mythical_short_bow",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 455,
+      "tier_label": "Mythical"
+    },
+    "mythical_mace": {
+      "name": "Mythical War Mace",
+      "slot": "weapon",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "weapon_id": "mythical_mace",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 455,
+      "tier_label": "Mythical"
+    },
+    "mythical_hand_axe": {
+      "name": "Mythical Fighting Axe",
+      "slot": "weapon",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "weapon_id": "mythical_hand_axe",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 455,
+      "tier_label": "Mythical"
+    },
+    "mythical_battle_axe": {
+      "name": "Mythical Great Axe",
+      "slot": "weapon",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "weapon_id": "mythical_battle_axe",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 455,
+      "tier_label": "Mythical"
+    },
+    "mythical_spear": {
+      "name": "Mythical War Spear",
+      "slot": "weapon",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "weapon_id": "mythical_spear",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 455,
+      "tier_label": "Mythical"
+    },
+    "mythical_crossbow": {
+      "name": "Mythical Arbalest",
+      "slot": "weapon",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "weapon_id": "mythical_crossbow",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 455,
+      "tier_label": "Mythical"
+    },
+    "mythical_staff": {
+      "name": "Mythical Runed Staff",
+      "slot": "weapon",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "weapon_id": "mythical_staff",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 455,
+      "tier_label": "Mythical"
+    },
+    "mythical_dagger": {
+      "name": "Mythical Stiletto",
+      "slot": "weapon",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "weapon_id": "mythical_dagger",
+      "sockets": 6,
+      "links": [
+        [
+          0,
+          1
+        ]
+      ],
+      "ap_mult": 3,
+      "price": 455,
+      "tier_label": "Mythical"
+    },
+    "mythical_armor": {
+      "name": "Mythical Warcoat",
+      "slot": "armor",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "armor_def": 25,
+      "armor_res": 14,
+      "bonus": {
+        "vit": 2
+      },
+      "price": 293,
+      "tier_label": "Mythical"
+    },
+    "mythical_offhand": {
+      "name": "Mythical Ward",
+      "slot": "offhand",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "armor_def": 21,
+      "armor_res": 11,
+      "bonus": {},
+      "price": 293,
+      "tier_label": "Mythical"
+    },
+    "mythical_helm": {
+      "name": "Mythical Crownhelm",
+      "slot": "helm",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "armor_def": 21,
+      "armor_res": 11,
+      "bonus": {},
+      "price": 293,
+      "tier_label": "Mythical"
+    },
+    "mythical_accessory": {
+      "name": "Mythical Talisman",
+      "slot": "accessory",
+      "rarity": "mythical",
+      "rarity_rank": 5,
+      "armor_def": 18,
+      "armor_res": 14,
+      "bonus": {
+        "ldr": 5
+      },
+      "price": 293,
+      "tier_label": "Mythical"
+    },
+    "unique_ashen_crown": {
+      "name": "Ashen Crown",
+      "slot": "helm",
+      "rarity": "unique",
+      "grade": "unique",
+      "rarity_rank": 7,
+      "armor_def": 5,
+      "armor_res": 4,
+      "bonus": {
+        "ldr": 3,
+        "mor": 8
+      },
+      "price": 0,
+      "unique": true,
+      "lore": "A singular relic whose history is bound to the fate of Sethmarch."
+    },
+    "unique_kingbreaker": {
+      "name": "Kingbreaker",
+      "slot": "weapon",
+      "rarity": "unique",
+      "grade": "unique",
+      "rarity_rank": 7,
+      "armor_def": 0,
+      "armor_res": 0,
+      "bonus": {},
+      "price": 0,
+      "unique": true,
+      "lore": "A singular relic whose history is bound to the fate of Sethmarch.",
+      "weapon_id": "unique_kingbreaker",
+      "sockets": 6,
+      "ap_mult": 3,
+      "two_handed": true
+    },
+    "unique_oathwall": {
+      "name": "Oathwall",
+      "slot": "offhand",
+      "rarity": "unique",
+      "grade": "unique",
+      "rarity_rank": 7,
+      "armor_def": 7,
+      "armor_res": 3,
+      "bonus": {
+        "vit": 2
+      },
+      "price": 0,
+      "unique": true,
+      "lore": "A singular relic whose history is bound to the fate of Sethmarch."
+    },
+    "unique_sundered_vow": {
+      "name": "The Sundered Vow",
+      "slot": "armor",
+      "rarity": "unique",
+      "grade": "unique",
+      "rarity_rank": 7,
+      "armor_def": 8,
+      "armor_res": 5,
+      "bonus": {
+        "vit": 3,
+        "mor": 3
+      },
+      "price": 0,
+      "unique": true,
+      "lore": "A singular relic whose history is bound to the fate of Sethmarch."
+    },
+    "unique_starfall_charm": {
+      "name": "Starfall Reliquary",
+      "slot": "accessory",
+      "rarity": "unique",
+      "grade": "unique",
+      "rarity_rank": 7,
+      "armor_def": 1,
+      "armor_res": 6,
+      "bonus": {
+        "int": 3,
+        "lck": 3,
+        "mp": 8
+      },
+      "price": 0,
+      "unique": true,
+      "lore": "A singular relic whose history is bound to the fate of Sethmarch."
     }
+  },
+  "grades": {
+    "common": 1,
+    "uncommon": 2,
+    "rare": 3,
+    "epic": 4,
+    "legendary": 5,
+    "mythical": 6,
+    "unique": "special"
+  },
+  "rarity_aliases": {
+    "fine": "uncommon",
+    "masterwork": "epic",
+    "heirloom": "unique"
   }
 }
