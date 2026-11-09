@@ -9,7 +9,7 @@ const SIGIL_GROUPS: Array[String] = ["weapon", "armor"]   # only these two items
 const MAX_LEVEL := 250
 const EXP_BASE := 80
 const EXP_PER_LEVEL := 20
-const EXP_CURVE := 2
+const EXP_CURVE := 1
 const PROMOTION_LEVEL_STEP := 10     # tier 1 -> 2 at level 10, tier 2 -> 3 at level 20 (GDD 4.1)
 const HP_GAIN := 2                   # HP gained when the HP growth roll succeeds (every other stat gains 1)
 
