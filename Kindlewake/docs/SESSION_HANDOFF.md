@@ -191,3 +191,13 @@
 - Aligned `export_presets.cfg` to project version `0.10.0` and Android version code `1000` (commit `ee9033d00cc8ec6f5c8f5d37d0fc221580c2ea0a`). The code is a deliberate monotonic bump from the previous preset value; increment it for each later published build.
 - Added `docs/ANDROID_RELEASE_WORKFLOW.md` (commit `48be6216af5d6fa7336ff1ac19997d6a6beebeeb`) covering routine CI, production environment setup, secrets, release steps, versioning, security, limitations and troubleshooting.
 - Important: these workflow changes have not yet been validated by a new GitHub Actions run in this handoff. Verify the newest branch-head run and its `Kindlewake-APK`, `Kindlewake-Source-Handoff-Parts`, and `test-logs` artifacts. Do not claim AAB support or physical-device QA; neither is provided by this workflow revision.
+
+
+## 2026-11-10 — APK verification hardening
+
+- Updated `Kindlewake/tools/build_apk.py` in commit `28d56c736af0007bd813a602a778fab38989d108`.
+- Local preflight now checks that `project.godot` `config/version` matches Android preset `version/name`.
+- Balance report failures and reported `FAIL`, script errors or parse errors now block the strict build rather than being recorded as non-fatal output.
+- APK verification now fails closed if `aapt2` cannot inspect permissions or `apksigner` cannot verify the APK. A missing verification tool is no longer downgraded to a warning.
+- Production publishing pins the signer fingerprint through `ANDROID_RELEASE_CERT_SHA256`; workflow commit `86f4be7d863dd12daad65348e8cea0eb176ee775` refuses to publish if the APK certificate does not match.
+- These changes still require a new branch-head GitHub Actions run. Do not claim the modified builder/workflows passed until that run completes and its artifacts are inspected.
