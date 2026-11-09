@@ -59,7 +59,7 @@ You are continuing development of **KINDLEWAKE: THE SUNDERED VOW**, an offline-f
 6. Add origin-tag story hooks in small, testable steps. Tags are stored but do not yet trigger branches. Review the 26 nested optional sprite-pack licenses before importing art; no production portrait/body layers are approved yet.
 7. Extend saves when world/local-map persistence is designed. Current v2 battle saves preserve party and creation profile; world position, interior state and full campaign state are not independently persisted.
 8. After every code edit run `python3 -I tools/gd_static_check.py`; run `python3 tools/build_apk.py --check` before each checkpoint. Treat Godot/runtime behavior as unverified until actually executed.
-9. After every finished subtask update `docs/GDD.md`, `docs/SESSION_HANDOFF.md`, `README.md` and this prompt; rebuild and deliver the fixed-name project ZIP and both standalone documents.
+9. After every finished subtask update `docs/GDD.md`, `docs/SESSION_HANDOFF.md`, `README.md` and this prompt, then commit changed text/source/assets directly to GitHub. Do not rebuild or deliver a project ZIP unless the user explicitly requests an offline archive.
 
 ## Style
 Answer in plain English. Lead with what you did and what I should do next. Keep chat messages short; put code, documents and reports in downloadable files. Tell me honestly what is tested and what is not.
