@@ -832,6 +832,7 @@ func _test_recruitment() -> void:
     var duplicate: Dictionary = RecruitmentSystem.recruit(party, "joss_harrow", joss, flags)
     check(not bool(duplicate.get("ok", true)) and party.gold == 50, "duplicate recruitment is refused without charging twice")
 
+    party.gold = 500 # keep prerequisite tests independent from recruit affordability
     var verra: Dictionary = gd.character_def("verra_nightsong")
     var fresh_party: PartyState = PartyState.new_game(gd.start, gd.characters)
     var locked: Dictionary = RecruitmentSystem.inspect(fresh_party, "verra_nightsong", verra, flags)
