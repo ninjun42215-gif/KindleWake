@@ -126,6 +126,21 @@ File: .github/workflows/workflow-lint.yml
 
 Runs on pushes, pull requests and manual dispatch. It parses every workflow YAML file, runs the source-handoff, organizer and project-health audit tests, executes the read-only health audit, and smoke-tests the read-only branch hygiene report. This validates YAML syntax and those utility scripts, not every GitHub Actions semantic, permission or runtime rule.
 
+## Repository protection — configure once in GitHub settings
+
+The main branch was observed as unprotected during the repository review. The GitHub connector available to this workflow can inspect repository state but does not expose a branch-protection write operation, so protection has not been enabled automatically.
+
+In GitHub, open Settings → Branches (or Rules → Rulesets) and create a rule targeting `main`:
+- Require a pull request before merging; require at least one approval if a second reviewer is available.
+- Require status checks: Workflow YAML Lint and the required Build Android APK validation checks after confirming their exact check names from a successful run.
+- Require branches to be up to date before merging.
+- Block force pushes and branch deletion.
+- Require conversation resolution.
+- Do not require signed commits unless signing is configured for every contributor.
+- Keep administrators subject to the rule where practical; use an explicit emergency bypass only if needed.
+
+Do not make every optional audit a required check until its baseline warnings are resolved. Require deterministic correctness checks, not advisory reports.
+
 ## Recommended routine
 
 - Before risky work: run Manual Full Repository Backup.
