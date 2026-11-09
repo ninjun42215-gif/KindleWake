@@ -21,4 +21,4 @@ After `Kindlewake/` is present, open **Actions → Build Android APK → Run wor
 
 ## Current gameplay checkpoint
 
-Gameplay remains at **v0.7.9**. The v0.7.10 documentation update changes only the repository delivery workflow; it does not change game code, data, save schema, or project version.
+Gameplay checkpoint: **v0.8.1**. This update adds six equipment rarity tiers plus Unique grade, expanded gear stock, allocated protagonist starting attributes, staffed-shop access rules, road inventory access, creator scroll improvements and a company-wipe Game Over flow. Godot runtime validation is pending.
