@@ -5,6 +5,8 @@ name: Build Android APK
 on:
   workflow_dispatch:
   push:
+    branches:
+      - "feature/sethmarch-regional-network"
     tags:
       - "v*"
 
