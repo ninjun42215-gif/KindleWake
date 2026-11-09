@@ -15,3 +15,7 @@ The prototype currently uses procedural placeholder geometry so it runs without 
 - Use 2D sprites with normal maps and carefully layered lights for an HD-2D look.
 - Keep gameplay readability above visual effects.
 - Use original designs; do not extract assets from commercial games.
+
+
+## Reviewed candidates (not yet imported)
+- Foozle — Pixel Magic Effects: https://foozlecc.itch.io/pixel-magic-sprite-effects. 10 animated 32×32 spell effects with icons; page states CC0 1.0 and permits commercial use and modification. Candidate only; archive/frame layout has not yet been imported or verified in this project.
