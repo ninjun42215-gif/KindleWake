@@ -33,6 +33,7 @@ class SourceHandoffTests(unittest.TestCase):
                           "--ref", "refs/heads/test", "--sha", "abc123", cwd=root)
             parts = out / "Kindlewake-Source-Handoff-Parts"
             manifest = json.loads((parts / "PARTS-MANIFEST.json").read_text())
+            self.assertTrue((parts / "source_handoff.py").is_file())
             self.assertGreater(manifest["part_count"], 1)
             self.assertTrue(all(p["size_bytes"] <= 128 for p in manifest["parts"]))
             archive = Path(temp) / "restored.zip"
