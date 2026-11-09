@@ -25,20 +25,43 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Verify every required workflow for this exact commit
+      - name: Find the unique open PR for this exact commit
         id: gate
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           SHA: ${{ github.event.workflow_run.head_sha }}
-          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -z "${PR_NUMBER}" || "${PR_NUMBER}" == "null" ]]; then
-            echo "No associated pull request; refusing to merge."
+
+          # workflow_run.pull_requests can be empty. Query open PRs and match
+          # the exact head SHA instead; fail closed unless exactly one matches.
+          gh pr list --state open --base main \
+            --json number,isDraft,mergeable,headRefOid,baseRefName > prs.json
+          matches="$(jq --arg sha "${SHA}" '[.[] | select(.headRefOid == $sha)]' prs.json)"
+          count="$(jq 'length' <<< "${matches}")"
+          if [[ "${count}" != "1" ]]; then
+            echo "::notice::Expected exactly one open PR for ${SHA}; found ${count}. Refusing auto-merge."
             exit 1
           fi
+
+          pr_number="$(jq -r '.[0].number' <<< "${matches}")"
+          gh pr view "${pr_number}" --json isDraft,mergeable,headRefOid,baseRefName > pr.json
+          jq -e --arg sha "${SHA}" \
+            '.isDraft == false and .mergeable == "MERGEABLE" and .headRefOid == $sha and .baseRefName == "main"' pr.json >/dev/null || {
+              echo "::notice::PR is draft, conflicted, stale, or not targeting main; refusing to merge."
+              exit 1
+            }
+          echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify every required workflow for this exact commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
           gh run list --commit "${SHA}" --limit 100 --json name,event,conclusion,headSha > runs.json
           for required in "Build Android APK" "Synchronize Project Version"; do
             if ! jq -e --arg name "${required}" --arg sha "${SHA}" \
@@ -47,13 +70,6 @@ jobs:
               exit 1
             fi
           done
-          gh pr view "${PR_NUMBER}" --json isDraft,mergeable,headRefOid,baseRefName > pr.json
-          jq -e --arg sha "${SHA}" \
-            '.isDraft == false and .mergeable == "MERGEABLE" and .headRefOid == $sha and .baseRefName == "main"' pr.json >/dev/null || {
-              echo "::notice::PR is draft, conflicted, stale, or not targeting main; refusing to merge."
-              exit 1
-            }
-          echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
 
       - name: Enable GitHub native auto-merge
         env:
