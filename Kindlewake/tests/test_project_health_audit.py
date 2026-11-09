@@ -15,6 +15,7 @@ class ProjectHealthAuditTests(unittest.TestCase):
         (project / "assets" / "art").mkdir(parents=True)
         (project / "project.godot").write_text('config/version="1.2.3"\n')
         (project / "README.md").write_text("# Test v1.2.3\n")
+        (project / "export_presets.cfg").write_text('version/name="1.2.3"\nversion/code=123\n')
         (project / "data" / "valid.json").write_text('{"ok": true}\n')
         (project / "data" / "asset_provenance.json").write_text('{"schema_version": 1, "assets": []}')
         (project / "assets" / "art" / "CREDITS.md").write_text("# Credits\n")
@@ -50,6 +51,16 @@ class ProjectHealthAuditTests(unittest.TestCase):
             result, report = self.run_audit(root)
             self.assertEqual(result.returncode, 1)
             self.assertTrue(any(item["code"] == "INVALID_JSON" for item in report["findings"]))
+
+
+    def test_android_export_version_drift_is_reported(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            project = self.fixture(root)
+            (project / "export_presets.cfg").write_text('version/name="1.2.2"\\nversion/code=123\\n')
+            result, report = self.run_audit(root)
+            self.assertEqual(result.returncode, 0)
+            self.assertTrue(any(item["code"] == "ANDROID_EXPORT_VERSION_DRIFT" for item in report["findings"]))
 
     def test_unverified_asset_licence_is_reported_as_warning(self):
         with tempfile.TemporaryDirectory() as temp:
