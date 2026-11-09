@@ -64,5 +64,15 @@ class SourceHandoffTests(unittest.TestCase):
             result = self.run_tool("verify", "--archive", archive, expect=1)
             self.assertIn("Unsafe ZIP path", result.stdout + result.stderr)
 
+
+    def test_windows_style_zip_traversal_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            archive = Path(temp) / "bad-windows.zip"
+            with zipfile.ZipFile(archive, "w") as z:
+                z.writestr("..\\\\escape.txt", "bad")
+                z.writestr("FILE-MANIFEST.json", json.dumps({"files": []}))
+            result = self.run_tool("verify", "--archive", archive, expect=1)
+            self.assertIn("Unsafe ZIP path", result.stdout + result.stderr)
+
 if __name__ == "__main__":
     unittest.main()
