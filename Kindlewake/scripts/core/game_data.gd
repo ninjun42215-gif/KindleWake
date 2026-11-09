@@ -4,7 +4,7 @@ extends Node
 
 const DATA_DIR := "res://data/"
 ## Listed explicitly (instead of scanning the folder) so it also works inside exported builds.
-const BATTLE_FILES := ["battle_01"]
+const BATTLE_FILES := ["battle_01", "battle_hollowroot", "battle_bell", "battle_catacombs"]
 
 var classes: Dictionary = {}
 var terrain: Dictionary = {}
