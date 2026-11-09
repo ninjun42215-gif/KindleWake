@@ -31,6 +31,12 @@ const COL_GOOD := Color(0.55, 0.92, 0.55)
 const COL_BAD := Color(1.0, 0.55, 0.45)
 const RARITY_COLORS := {
     "common": Color(0.94, 0.89, 0.74),
+    "uncommon": Color(0.55, 0.8, 1.0),
+    "rare": Color(0.55, 0.78, 0.95),
+    "epic": Color(0.72, 0.56, 0.92),
+    "legendary": Color(0.95, 0.68, 0.28),
+    "mythical": Color(0.95, 0.45, 0.68),
+    "unique": Color(0.95, 0.82, 0.35),
     "fine": Color(0.55, 0.8, 1.0),
     "masterwork": Color(0.82, 0.62, 1.0),
     "heirloom": Color(1.0, 0.75, 0.3),
@@ -39,6 +45,7 @@ const RARITY_COLORS := {
 var party: PartyStateScript = null
 var db: Dictionary = {}
 var shop: Dictionary = {}
+var shop_access_allowed: bool = true
 var selected_id: String = ""
 var tab: int = TAB_GEAR
 var focus_slot: String = ""           # Equipment tab: the slot whose choices are open
@@ -60,10 +67,13 @@ var reset_sheet: bool = false         # character sheet back to the top on the n
 var builds: int = 0                   # how many times the layout was completely built (tests use it to catch half-built screens)
 
 
-func setup(p_party: PartyStateScript, p_db: Dictionary, p_shop: Dictionary) -> void:
+func setup(p_party: PartyStateScript, p_db: Dictionary, p_shop: Dictionary, allow_shop: bool = true) -> void:
     party = p_party
     db = p_db
     shop = p_shop
+    shop_access_allowed = allow_shop
+    if not shop_access_allowed and tab == TAB_SHOP:
+        tab = TAB_GEAR
     if not party.sheets.has(selected_id) and not party.roster.is_empty():
         selected_id = party.roster[0]
     visible = false
@@ -594,7 +604,8 @@ func _build_right() -> Control:
     outer.add_theme_constant_override("separation", 8)
     var tabs := HBoxContainer.new()
     tabs.add_theme_constant_override("separation", 8)
-    for t in range(TAB_NAMES.size()):
+    var tab_count: int = TAB_NAMES.size() if shop_access_allowed else TAB_SHOP
+    for t in range(tab_count):
         tabs.add_child(_tab_button(TAB_NAMES[t], _on_tab.bind(t), t == tab))
     outer.add_child(tabs)
     outer.add_child(_build_banner())
@@ -1046,6 +1057,8 @@ func _on_step(direction: int) -> void:
 
 
 func _on_tab(t: int) -> void:
+    if t == TAB_SHOP and not shop_access_allowed:
+        return
     tab = t
     focus_slot = ""
     focus_group = ""
