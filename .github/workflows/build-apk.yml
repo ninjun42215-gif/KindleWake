@@ -38,9 +38,9 @@ jobs:
           path: ~/.kindlewake_build
           key: kindlewake-build-${{ hashFiles('Kindlewake/tools/build_apk.py') }}
 
-      - name: Build the APK (tests are logged but do not block the build)
+      - name: Import project, run strict tests and balance report, then build APK
         working-directory: Kindlewake
-        run: python tools/build_apk.py
+        run: python tools/build_apk.py --strict --with-balance
 
       - name: Upload the APK
         uses: actions/upload-artifact@v4
