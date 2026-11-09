@@ -116,4 +116,4 @@ Answer in plain English. Lead with what you did and what I should do next. Keep 
 - Rune merchants have explicit regional stock. Runes are not globally available in every shop.
 - Elemental rune spells add Burn, Chill, Shock, Exposed, Regen and life-drain effects. Verify turn tick and combat UI feedback.
 - Original rune sprite atlas at assets/art/runes/rune_atlas.svg; do not import third-party itch.io art unless the exact asset page and licence permit redistribution and modification.
-- CI run 42645483859 passed (312 checks, 0 failures; signed Android APK). Device playtest remains pending; review the draft PR before merge.
+- CI run 42646097605 passed on project version 0.9.1 (312 checks, 0 failures; balance report and signed Android APK). Device playtest remains pending; review the draft PR before merge.
