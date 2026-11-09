@@ -223,6 +223,12 @@ func _open_place(p: Dictionary, extra: String = "") -> void:
     var town: String = str(p.get("town", ""))
     if town != "" and GameData.locations.get("maps", {}).has(town):
         place_buttons.add_child(_btn("Enter %s" % str(p.get("name", "town")), _enter_town.bind(p), 24))
+    if kind == "gate":
+        var gate_flag: String = str(p.get("world_flag", ""))
+        if gate_flag != "" and not bool(GameState.world_flags.get(gate_flag, false)):
+            place_buttons.add_child(_btn("Pass through the regional gate", _pass_gate.bind(p), 24))
+        elif gate_flag != "":
+            text += "\n\nYour company has passed through this gate."
     if kind == "ruin":
         if bool(GameState.world_flags.get("found_" + id, false)):
             text += "\n\nYou already searched here."
@@ -249,6 +255,15 @@ func _open_place(p: Dictionary, extra: String = "") -> void:
 func _close_place() -> void:
     panel_open = false
     place_panel.visible = false
+
+
+func _pass_gate(p: Dictionary) -> void:
+    var flag: String = str(p.get("world_flag", ""))
+    if flag == "":
+        return
+    GameState.world_flags[flag] = true
+    var region: String = "Orrowen Weald" if str(p.get("id", "")) == "orrowen_gate" else "Vessmoor Plains"
+    _open_place(p, "The company passes into %s. The road remains open behind you." % region)
 
 
 ## Walk into a town: the location scene opens the town map; leaving it puts us back just south of the place.
