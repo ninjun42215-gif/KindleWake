@@ -3,6 +3,7 @@ extends RefCounted
 
 const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
+const RuneSystemScript = preload("res://scripts/core/rune_system.gd")
 ## Persistent character: class, level, EXP, base stats, skills and equipment.
 ## A BattleUnitScript is a per-battle snapshot built from `to_battle_def()`; formulas stay in CombatCalcScript.
 ## `db` arguments are the dictionaries from GameData.as_db(): they need "items", "weapons" and "classes".
@@ -472,7 +473,7 @@ func skill_mods(items: Dictionary, sdefs: Dictionary) -> Dictionary:
         var sd: Dictionary = sdefs.get(str(inst.get("id", "")), {})
         if str(sd.get("kind", "")) != "magic":
             continue
-        var pct: int = linked_support(str(e["group"]), int(e["index"]), items, sdefs, "skill_power_pct")
+        var pct: int = linked_support(str(e["group"]), int(e["index"]), items, sdefs, "skill_power_pct") + RuneSystemScript.grade_power_bonus(inst, sdefs)
         if pct == 0:
             continue
         for sid in sigil_skills_at(sd, sigil_level(inst, sd)):
@@ -491,7 +492,9 @@ func sigil_mods(items: Dictionary, sdefs: Dictionary) -> Dictionary:
             continue
         var mods: Dictionary = sigil_level_data(sd, sigil_level(inst, sd)).get("mods", {})
         for k in mods.keys():
-            out[str(k)] = int(out.get(str(k), 0)) + int(mods[k])
+            var bonus_pct: int = RuneSystemScript.grade_power_bonus(inst, sdefs)
+            var scaled: int = int(round(float(mods[k]) * (100.0 + float(bonus_pct)) / 100.0))
+            out[str(k)] = int(out.get(str(k), 0)) + scaled
     return out
 
 
