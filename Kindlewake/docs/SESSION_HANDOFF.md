@@ -91,3 +91,13 @@
 - Hurt tint blends over each palette, and all existing idle/walk/attack/hurt/death frame contracts remain unchanged. This is an interim renderer-level art pass, not a replacement for bespoke frame-by-frame hero/monster sprite sheets.
 - CI run `42667953445` for this commit was queued at handoff. Do not mark this pass build-validated or publish a new APK until that exact commit's workflow succeeds.
 - Next: add original dedicated enemy and hero sprite sheets plus cast/impact animations; verify on device after CI.
+
+
+## 2026-11-10 — Responsive UI/HUD implementation
+- feature/rune-system-v1 commits: battle HUD 95d5ef7, overworld HUD 5383461, party layout ea6868c.
+- Battle HUD: reduced viewport-relative unit card/log/preview widths on compact landscape screens; scaled action button widths/heights and Confirm/Cancel text while preserving large touch targets and existing anchors/safe-area handling.
+- Overworld HUD: COMPANY and SAVE now have independent responsive sizing; SAVE is a persistent member reference so its dimensions/font can be updated after viewport changes.
+- Party screen: compact mode now depends on orientation (stack only when portrait/narrow aspect); compact landscape retains three visible columns with proportional minimum widths. Header title, gold chip and Close button scale down together.
+- No combat, economy, rune, equipment, save schema or progression rules were changed. This is a layout-focused pass.
+- Validation: prior sprite identity commit 21c1702bd012b8ca0bd0bc51e5a0b6b9dae46c2c passed Android workflow 42667953445. The new UI commits require their own workflow run; do not claim them validated or distribute a new APK until the exact latest branch commit passes import, strict tests, balance report and APK verification.
+- Physical Android touch/safe-area testing remains outstanding. Check 16:9 and narrow landscape, portrait party management, gesture/map input behind HUD panels, save confirmation, and scroll restoration.
