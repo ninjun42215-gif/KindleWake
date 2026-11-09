@@ -139,7 +139,7 @@ Be proactive and implementation-focused. The user often says “continue” to a
 - Read `docs/ANDROID_RELEASE_WORKFLOW.md` before changing APK/Android release automation.
 - Routine CI lives in `.github/workflows/build-apk.yml`; it validates/builds APK and packages the tracked source handoff in independent jobs. The handoff must remain available even when APK build/tests fail.
 - CI must remain ref-aware for all branches, tags, pull requests and manual dispatch; never hardcode the active branch or feature-file list.
-- Tag builds are candidates only. Production publishing is separate in `.github/workflows/publish-android-release.yml` and must remain manual/protected by the `android-production` environment.
+- Tag builds are candidates only. Production publishing is separate in `.github/workflows/publish-android-release.yml` and must remain manual/protected by the `android-production` environment. GitHub exposes its manual dispatch only after that workflow exists on the default branch; do not merge PR #4 or modify `main` without authorization. The publisher must refuse to overwrite an existing release tag.
 - Never put a private production signing key or password in Git. Production secrets are `ANDROID_RELEASE_KEYSTORE_BASE64`, `ANDROID_RELEASE_KEY_ALIAS`, and `ANDROID_RELEASE_KEY_PASSWORD` in the protected GitHub Environment.
 - Pin the expected production signer with the `ANDROID_RELEASE_CERT_SHA256` environment variable; the publisher rejects a different APK certificate.
 - Keep `project.godot` version and Android preset `version/name` synchronized. Android `version/code` must increase monotonically. Current checkpoint: project version `0.10.0`, Android version code `1000`.
