@@ -1,3 +1,19 @@
+# Development checkpoint — v0.7.14 (2026-11-09)
+
+Expanded the playable Eldrimar starting slice into the Sethmarch Frontier. The Sallow Crossing road network now reaches Orrowen Weald through the Greenward Gate and Vessmoor Plains through the Vessmoor Causeway. Added Thornmere, Foxglove, Elderbough, Cindermead, Redwater and Milefort as distinct town maps with inn, market and recruitment-hall interiors.
+
+Implemented town services in scripts/ui/location_scene.gd: inns charge 20 gold and restore roster morale to 70; markets open the existing Party, Gear and Shop screen; recruitment halls add one of six named characters to the live PartyState roster and mark one-time flags. Added three explorable dungeon maps (Hollowroot Warren, The Bell Under Leaves, Kingsroad Catacombs), each with a 120-gold one-time cache and a dedicated boss battle. Dungeon boss victory flags are applied by the battle result screen.
+
+Added three boss character definitions and dedicated battle JSON files. GameData.BATTLE_FILES now explicitly loads these battles. SaveSystem schema v3 adds regional world flags, overworld position and the from-world hand-off to battle manual/autosave payloads; sequential v1→v2→v3 migration preserves old saves.
+
+Regression assertions were added for regional road connectivity, dungeon map/battle references and dungeon map presence. The user previously asked to defer Godot tests; do not run Godot import, the GDScript test suite, balance simulation or phone tests until explicitly asked. No runtime validation is claimed. The static checker and Android offline preflight have not yet been run on this feature branch.
+
+Known limitation: this is not a full campaign save system. Recruit and dungeon flags are in memory until a battle save is written. Saving directly from overworld/town/dungeon, restoring the exact local map/tile, campaign calendar, quests and travel unlocks remain future work.
+
+Next: design a dedicated campaign save/load model and UI that works in the overworld, towns and dungeons; include party roster/equipment/inventory/gold, world position, local map, regional flags and encounter pressure, with a deliberate migration plan.
+
+---
+
 # Development checkpoint — v0.7.13 (2026-11-09)
 
 Expanded the existing playable Sallow Marches overworld with three searchable, road-connected ruin landmarks in `data/world.json`: Sunken Tollhouse (45 gold), Hollowroot Warren (75 gold), and Warden's Barrow (90 gold). They use the current generic ruin search interaction and `found_<id>` flags, so each reward is one-time. This is a small regional exploration expansion, not yet a full dungeon interior or a new town. The original starting keep, Sallow Crossing, Old Watchtower and Roadwolf Camp remain. No save schema or scene format changed. Godot runtime tests remain deferred as requested; do not claim these locations have been executed in-engine.
