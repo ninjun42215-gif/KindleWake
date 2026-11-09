@@ -162,7 +162,9 @@ jobs:
           persist-credentials: false
 
       - name: Test handoff packer and recovery utility
-        run: python3 -m unittest discover -s Kindlewake/tests -p 'test_source_handoff.py' -v
+        run: |
+          python3 -m unittest discover -s Kindlewake/tests -p 'test_source_handoff.py' -v
+          python3 -m unittest discover -s Kindlewake/tests -p 'test_repository_organizer.py' -v
 
       - name: Package, inventory, hash and partition tracked source
         shell: bash
