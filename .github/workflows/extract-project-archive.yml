@@ -1,20 +1,18 @@
-name: Extract Godot Project into Repository
+name: Extract KindleWake Upload Parts
 
 on:
-  # Any committed replacement of the source archive automatically refreshes
-  # the extracted project on the same branch (including main).
   push:
     branches:
-      - "main"
+      - main
     paths:
-      - "Kindlewake_Project.zip"
+      - "KindleWake_Project_part*.zip"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: extract-project-${{ github.ref }}
+  group: extract-kindlewake-parts-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -22,73 +20,92 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Check out selected branch
+      - name: Check out uploaded parts
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
           fetch-depth: 0
 
-      - name: Validate and extract archive transactionally
+      - name: Validate, merge and extract the four upload shards
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
+          python3 - <<'PY'
           from pathlib import Path, PurePosixPath
           from zipfile import ZipFile
-          import os
-          import shutil
-          import stat
-          import tempfile
+          import os, shutil, stat, tempfile
 
-          archive = Path("Kindlewake_Project.zip")
-          target = Path("Kindlewake")
-          if not archive.is_file():
-              raise SystemExit("Kindlewake_Project.zip is missing from the repository root.")
+          names = [f"KindleWake_Project_part{i}.zip" for i in range(1, 5)]
+          missing = [name for name in names if not Path(name).is_file()]
+          if missing:
+              raise SystemExit("Missing upload shard(s): " + ", ".join(missing))
 
-          with tempfile.TemporaryDirectory(prefix="kindlewake-extract-") as temp:
-              staging = Path(temp) / "staging"
+          with tempfile.TemporaryDirectory(prefix="kindlewake-parts-") as tmp:
+              root = Path(tmp)
+              staging = root / "staging"
               staging.mkdir()
+              seen = set()
+              chunks = {}
               extracted = 0
               skipped = 0
 
-              with ZipFile(archive) as zf:
-                  entries = zf.infolist()
-                  if not entries:
-                      raise SystemExit("The project archive is empty.")
+              for archive_name in names:
+                  with ZipFile(archive_name) as zf:
+                      bad = zf.testzip()
+                      if bad:
+                          raise SystemExit(f"Corrupt archive {archive_name}: {bad}")
+                      for info in zf.infolist():
+                          raw = info.filename.replace("\\\\", "/")
+                          rel = PurePosixPath(raw)
+                          if rel.is_absolute() or not rel.parts or any(p in ("", ".", "..") for p in rel.parts):
+                              raise SystemExit(f"Unsafe path in {archive_name}: {info.filename}")
+                          mode = (info.external_attr >> 16) & 0xFFFF
+                          if stat.S_ISLNK(mode):
+                              raise SystemExit(f"Symbolic link rejected: {info.filename}")
+                          if raw.startswith("__chunks__/"):
+                              if raw in chunks:
+                                  raise SystemExit(f"Duplicate chunk: {raw}")
+                              chunks[raw] = zf.read(info)
+                              continue
+                          if rel.parts[0] != "Kindlewake":
+                              raise SystemExit(f"Unexpected archive root: {info.filename}")
+                          if ".godot" in rel.parts or "__MACOSX" in rel.parts or rel.name == ".DS_Store":
+                              skipped += 1
+                              continue
+                          if raw in seen:
+                              raise SystemExit(f"Duplicate project file across shards: {raw}")
+                          seen.add(raw)
+                          destination = staging.joinpath(*rel.parts)
+                          if info.is_dir():
+                              destination.mkdir(parents=True, exist_ok=True)
+                              continue
+                          destination.parent.mkdir(parents=True, exist_ok=True)
+                          destination.write_bytes(zf.read(info))
+                          extracted += 1
 
-                  for info in entries:
-                      raw = info.filename.replace("\\\\", "/")
-                      rel = PurePosixPath(raw)
-                      if rel.is_absolute() or not rel.parts or any(p in ("", ".", "..") for p in rel.parts):
-                          raise SystemExit(f"Unsafe archive path: {info.filename}")
-                      if rel.parts[0] != "Kindlewake":
-                          raise SystemExit(f"Unexpected archive root: {info.filename}")
-                      if ".godot" in rel.parts or "__MACOSX" in rel.parts or rel.name == ".DS_Store":
-                          skipped += 1
-                          continue
-                      mode = (info.external_attr >> 16) & 0xFFFF
-                      if stat.S_ISLNK(mode):
-                          raise SystemExit(f"Symbolic link rejected: {info.filename}")
+              required_chunks = [f"__chunks__/zxf.zip.{i:03d}" for i in range(1, 4)]
+              if any(name not in chunks for name in required_chunks):
+                  raise SystemExit("The three zxf.zip chunks are incomplete.")
+              if any(name.startswith("__chunks__/") and name not in required_chunks for name in chunks):
+                  raise SystemExit("Unexpected extra binary chunk found.")
+              pack = staging / "Kindlewake/assets/optional_sprite_packs/zxf.zip"
+              pack.parent.mkdir(parents=True, exist_ok=True)
+              pack.write_bytes(b"".join(chunks[name] for name in required_chunks))
 
-                      destination = staging.joinpath(*rel.parts)
-                      if info.is_dir():
-                          destination.mkdir(parents=True, exist_ok=True)
-                          continue
-                      destination.parent.mkdir(parents=True, exist_ok=True)
-                      destination.write_bytes(zf.read(info))
-                      extracted += 1
+              project = staging / "Kindlewake"
+              if not (project / "project.godot").is_file():
+                  raise SystemExit("Upload parts did not contain Kindlewake/project.godot")
+              if not (project / "tools/gd_static_check.py").is_file():
+                  raise SystemExit("Upload parts are missing tools/gd_static_check.py")
+              if not (project / "docs/CONTINUATION_PROMPT.md").is_file():
+                  raise SystemExit("Upload parts are missing docs/CONTINUATION_PROMPT.md")
 
-              staged_project = staging / "Kindlewake"
-              if not (staged_project / "project.godot").is_file():
-                  raise SystemExit("Archive did not contain Kindlewake/project.godot.")
-              if not (staged_project / "tools/gd_static_check.py").is_file():
-                  raise SystemExit("Archive is missing tools/gd_static_check.py.")
-
-              backup = Path(temp) / "previous-Kindlewake"
+              target = Path("Kindlewake")
+              backup = root / "previous-Kindlewake"
               if target.exists():
                   os.replace(target, backup)
               try:
-                  os.replace(staged_project, target)
+                  os.replace(project, target)
               except Exception:
                   if backup.exists() and not target.exists():
                       os.replace(backup, target)
@@ -96,8 +113,9 @@ jobs:
               if backup.exists():
                   shutil.rmtree(backup)
 
-          print(f"Extracted project files: {extracted}")
+          print(f"Extracted project files: {extracted + 1}")
           print(f"Skipped cache/OS metadata entries: {skipped}")
+          print("Reconstructed assets/optional_sprite_packs/zxf.zip from 3 chunks.")
           PY
 
       - name: Run static GDScript checks
@@ -108,16 +126,17 @@ jobs:
         working-directory: Kindlewake
         run: python3 tools/build_apk.py --check
 
-      - name: Commit extracted project
+      - name: Commit extracted project and remove temporary shards
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- Kindlewake/
+          git rm --ignore-unmatch Kindlewake_Project.zip
+          git add -A -- Kindlewake/ KindleWake_Project_part1.zip KindleWake_Project_part2.zip KindleWake_Project_part3.zip KindleWake_Project_part4.zip
           if git diff --cached --quiet; then
             echo "Extracted project is already up to date."
             exit 0
           fi
-          git commit -m "Sync Kindlewake source from updated project archive"
-          git push origin "HEAD:${{ github.ref_name }}"
+          git commit -m "Import extracted KindleWake project source"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
