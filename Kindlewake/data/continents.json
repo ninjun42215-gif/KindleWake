@@ -1,0 +1,383 @@
+{
+  "schema_version": 1,
+  "status": "design_data_not_yet_consumed_by_runtime",
+  "travel_model": {
+    "overland": "Free-roam regional maps with roads, terrain costs, settlements, field encounters and hidden paths.",
+    "regional_links": "Named exits connect regional maps at gates, ferries, ports, mountain passes and story chokepoints.",
+    "sea": "Ports unlock scheduled ferry routes between coastal hubs; early crossings are fixed routes, later ships allow a small set of optional landfalls.",
+    "late_game": "A story-unlocked airship provides fast travel between discovered sky docks; it does not bypass story locks or undiscovered locations.",
+    "progression": "Start with walking and carts; unlock river barges, ferries, charter ships, then airship. Each transport tier opens new routes and side areas.",
+    "inspiration_guardrail": "Use broad genre conventions only; all maps, names, stories, art and mechanics remain original."
+  },
+  "continents": [
+    {
+      "id": "eldrimar",
+      "name": "Eldrimar",
+      "role": "The Crown Continent",
+      "unlock": "starting_continent",
+      "regions": [
+        {
+          "id": "sethmarch",
+          "name": "Sethmarch",
+          "biome": "sallow marches and broken keeps",
+          "hub": "Kaer Sethorn",
+          "towns": [
+            "Kaer Sethorn",
+            "Sallow Crossing",
+            "Dunmarrow Ferry"
+          ],
+          "dungeons": [
+            "Old Watchtower Cellars",
+            "Roadwolf Stockade",
+            "The Sunken Tollhouse"
+          ],
+          "links": [
+            "orrowen_weald",
+            "vessmoor_plains"
+          ]
+        },
+        {
+          "id": "orrowen_weald",
+          "name": "Orrowen Weald",
+          "biome": "ancient forest and mist valleys",
+          "hub": "Thornmere",
+          "towns": [
+            "Thornmere",
+            "Foxglove",
+            "Elderbough"
+          ],
+          "dungeons": [
+            "Hollowroot Warren",
+            "The Bell Under Leaves",
+            "Warden's Barrow"
+          ],
+          "links": [
+            "sethmarch",
+            "quillon_heights"
+          ]
+        },
+        {
+          "id": "vessmoor_plains",
+          "name": "Vessmoor Plains",
+          "biome": "grass sea, rivers and horse country",
+          "hub": "Cindermead",
+          "towns": [
+            "Cindermead",
+            "Redwater",
+            "Milefort"
+          ],
+          "dungeons": [
+            "Kingsroad Catacombs",
+            "The Ashen Granary",
+            "Windscar Downs"
+          ],
+          "links": [
+            "sethmarch",
+            "brennhallow_highlands"
+          ]
+        },
+        {
+          "id": "quillon_heights",
+          "name": "Quillon Heights",
+          "biome": "high plateaus, observatories and old roads",
+          "hub": "Quillon",
+          "towns": [
+            "Quillon",
+            "Glassmere",
+            "Northstar Abbey"
+          ],
+          "dungeons": [
+            "The Sevenfold Archive",
+            "Starfall Observatory",
+            "The Silent Lift"
+          ],
+          "links": [
+            "orrowen_weald",
+            "aurelmont"
+          ]
+        },
+        {
+          "id": "tarnholt_cloisters",
+          "name": "Tarnholt Cloisters",
+          "biome": "monastic valleys and relic roads",
+          "hub": "Tarnholt",
+          "towns": [
+            "Tarnholt",
+            "Pilgrim's Rest",
+            "Saint Orra"
+          ],
+          "dungeons": [
+            "Reliquary of Dust",
+            "The Unlit Choir",
+            "Martyr's Steps"
+          ],
+          "links": [
+            "aurelmont"
+          ]
+        },
+        {
+          "id": "brennhallow_highlands",
+          "name": "Brennhallow Highlands",
+          "biome": "cold ridges, mines and fortress marches",
+          "hub": "Brennhold",
+          "towns": [
+            "Brennhold",
+            "Ironvein",
+            "Frostbarrow"
+          ],
+          "dungeons": [
+            "Deepforge Descent",
+            "The Red Throat",
+            "Cairn of the First Thane"
+          ],
+          "links": [
+            "vessmoor_plains"
+          ]
+        },
+        {
+          "id": "aurelmont",
+          "name": "Aurelmont",
+          "biome": "royal heartland and dense city roads",
+          "hub": "Aurelmont",
+          "towns": [
+            "Aurelmont",
+            "Crownmarket",
+            "Low Lantern"
+          ],
+          "dungeons": [
+            "The King's Underkeep",
+            "The Drowned Mint",
+            "Black Seal Prison"
+          ],
+          "links": [
+            "quillon_heights",
+            "tarnholt_cloisters"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thalassar",
+      "name": "Thalassar",
+      "role": "The Shattered Isles",
+      "unlock": "chapter_2_sea_passage",
+      "regions": [
+        {
+          "id": "brinegate_coast",
+          "name": "Brinegate Coast",
+          "biome": "salt ports, cliffs and tidal caves",
+          "hub": "Brinegate",
+          "towns": [
+            "Brinegate",
+            "Saltmere",
+            "Lantern Quay"
+          ],
+          "dungeons": [
+            "Tideglass Grotto",
+            "The Wreck-King's Hold",
+            "Old Beacon Vault"
+          ],
+          "links": [
+            "eldrimar_by_ship"
+          ]
+        },
+        {
+          "id": "isles_of_vey",
+          "name": "Isles of Vey",
+          "biome": "storm islands and fishing villages",
+          "hub": "Veyhaven",
+          "towns": [
+            "Veyhaven",
+            "Netter's Reach",
+            "Candlehook"
+          ],
+          "dungeons": [
+            "Stormwell",
+            "The Drowned Chapel",
+            "Gullbone Caves"
+          ],
+          "links": [
+            "brinegate_coast"
+          ]
+        },
+        {
+          "id": "kelpward",
+          "name": "Kelpward Reach",
+          "biome": "kelp forests and fog banks",
+          "hub": "Morrowtide",
+          "towns": [
+            "Morrowtide",
+            "Pearlwatch"
+          ],
+          "dungeons": [
+            "The Green Maw",
+            "Siren's Ledger"
+          ],
+          "links": [
+            "isles_of_vey"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "varakhan",
+      "name": "Varakhan",
+      "role": "The Red Expanse",
+      "unlock": "chapter_3_caravan_charter",
+      "regions": [
+        {
+          "id": "serekh_desert",
+          "name": "Serekh Desert",
+          "biome": "red dunes, salt flats and buried roads",
+          "hub": "Serekh",
+          "towns": [
+            "Serekh",
+            "Glasswell",
+            "Dunebreak"
+          ],
+          "dungeons": [
+            "The Buried Choir",
+            "Sun-Eater Vault",
+            "The Brass Labyrinth"
+          ],
+          "links": [
+            "eldrimar_by_caravan"
+          ]
+        },
+        {
+          "id": "kharad_steppe",
+          "name": "Kharad Steppe",
+          "biome": "wide grasslands and nomad trails",
+          "hub": "Kharad",
+          "towns": [
+            "Kharad",
+            "Horsefall",
+            "White Antler"
+          ],
+          "dungeons": [
+            "The Hollow Khan's Tomb",
+            "Skybone Gorge"
+          ],
+          "links": [
+            "serekh_desert"
+          ]
+        },
+        {
+          "id": "obsidian_crown",
+          "name": "Obsidian Crown",
+          "biome": "volcanic highlands and black glass ridges",
+          "hub": "Basalt Gate",
+          "towns": [
+            "Basalt Gate",
+            "Emberwake"
+          ],
+          "dungeons": [
+            "Cinderheart Caldera",
+            "The Glass King's Road"
+          ],
+          "links": [
+            "kharad_steppe"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nhalor",
+      "name": "Nhalor",
+      "role": "The Far North",
+      "unlock": "chapter_4_northern_pass",
+      "regions": [
+        {
+          "id": "skeld_tundra",
+          "name": "Skeld Tundra",
+          "biome": "snowfields, pine taiga and frozen rivers",
+          "hub": "Skeld",
+          "towns": [
+            "Skeld",
+            "Pinewatch",
+            "Hearthfjord"
+          ],
+          "dungeons": [
+            "The White Maw",
+            "Frostbound Hall",
+            "Wolf-Mother's Cairn"
+          ],
+          "links": [
+            "eldrimar_by_northern_pass"
+          ]
+        },
+        {
+          "id": "aurora_reach",
+          "name": "Aurora Reach",
+          "biome": "glacier shelves and aurora-lit ruins",
+          "hub": "Aurora Spire",
+          "towns": [
+            "Aurora Spire",
+            "Blueglass",
+            "Last Hearth"
+          ],
+          "dungeons": [
+            "The Sleeping Observatory",
+            "Mirror Ice Vault",
+            "The Starless Gate"
+          ],
+          "links": [
+            "skeld_tundra"
+          ]
+        },
+        {
+          "id": "old_nhal",
+          "name": "Old Nhal",
+          "biome": "ruined giant roads and wind-cut plateaus",
+          "hub": "Nhal's Rest",
+          "towns": [
+            "Nhal's Rest",
+            "Giant's Wake"
+          ],
+          "dungeons": [
+            "The Colossus Stair",
+            "Vault of Winter Names"
+          ],
+          "links": [
+            "aurora_reach"
+          ]
+        }
+      ]
+    }
+  ],
+  "route_gates": [
+    {
+      "id": "dunmarrow_ferry",
+      "from": "sethmarch",
+      "to": "brinegate_coast",
+      "mode": "river_and_sea_ferry",
+      "unlock": "chapter_2"
+    },
+    {
+      "id": "west_caravan_road",
+      "from": "eldrimar",
+      "to": "serekh_desert",
+      "mode": "chartered_caravan",
+      "unlock": "chapter_3"
+    },
+    {
+      "id": "northwatch_pass",
+      "from": "eldrimar",
+      "to": "skeld_tundra",
+      "mode": "mountain_pass",
+      "unlock": "chapter_4"
+    },
+    {
+      "id": "sky_dock_network",
+      "from": "discovered_sky_docks",
+      "to": "discovered_sky_docks",
+      "mode": "airship",
+      "unlock": "late_game"
+    }
+  ],
+  "implementation_notes": [
+    "This file is a content blueprint only. Existing runtime still loads data/world.json and data/locations.json.",
+    "Do not mark any listed town, dungeon or route as playable until it has a connected map, entry/exit contract, quest flags and tests.",
+    "Keep the initial Sallow Marches playable and preserve save schema v2 until a deliberate campaign-save migration is designed."
+  ]
+}
