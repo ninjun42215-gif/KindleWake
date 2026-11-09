@@ -154,7 +154,7 @@ func _on_begin_pressed() -> void:
 
 
 func _on_party_pressed() -> void:
-    party_screen.setup(GameState.party, GameData.party_db(), GameData.shop)
+    party_screen.setup(GameState.party, GameData.party_db(), {}, false)
     party_screen.open()
 
 
