@@ -6,7 +6,6 @@ on:
   workflow_run:
     workflows:
       - Build Android APK
-      - Synchronize Project Version
     types:
       - completed
 
@@ -23,7 +22,7 @@ jobs:
   enable-auto-merge:
     if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Find the unique open PR for this exact commit
         id: gate
@@ -66,13 +65,34 @@ jobs:
           # rather than gh run list (which depends on local git metadata).
           gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${SHA}&per_page=100" \
             --jq '.workflow_runs[] | {name, event, conclusion, head_sha}' | jq -s '.' > runs.json
-          for required in "Build Android APK" "Synchronize Project Version"; do
-            if ! jq -e --arg name "${required}" --arg sha "${SHA}" \
-              'any(.[]; .name == $name and .event == "pull_request" and .head_sha == $sha and .conclusion == "success")' runs.json >/dev/null; then
-              echo "::notice::Required workflow not successful for ${SHA}: ${required}"
-              exit 1
+          required_workflows=("Build Android APK" "Synchronize Project Version" "Workflow YAML Lint" "Project Health Audit")
+          for attempt in $(seq 1 20); do
+            gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${SHA}&per_page=100" \
+              --jq '.workflow_runs[] | {name, event, conclusion, status, created_at}' | jq -s '.' > runs.json
+            all_passed=true
+            for required in "${required_workflows[@]}"; do
+              latest="$(jq -c --arg name "${required}" --arg sha "${SHA}" \
+                '[.[] | select(.name == $name and .event == "pull_request")] | sort_by(.created_at) | last // empty' runs.json)"
+              conclusion="$(jq -r '.conclusion // empty' <<< "${latest}")"
+              status="$(jq -r '.status // empty' <<< "${latest}")"
+              if [[ "${conclusion}" == "success" ]]; then
+                continue
+              fi
+              if [[ "${status}" == "completed" ]]; then
+                echo "::error::Required workflow failed for exact head ${SHA}: ${required} (${conclusion})"
+                exit 1
+              fi
+              all_passed=false
+            done
+            if [[ "${all_passed}" == "true" ]]; then
+              echo "All four required workflows passed for ${SHA}."
+              exit 0
             fi
+            echo "Waiting for all four exact-SHA workflows (attempt ${attempt}/20)..."
+            sleep 15
           done
+          echo "::error::Timed out waiting for all required workflows on ${SHA}."
+          exit 1
 
       - name: Merge PR through GitHub API after exact-SHA checks pass
         env:
