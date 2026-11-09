@@ -5,7 +5,7 @@ const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
-const GameStateScript = preload("res://scripts/core/game_state.gd")
+const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -789,7 +789,7 @@ func _test_world() -> void:
             roads_ok = false
     check(roads_ok, "every road in world.json really connects its two places")
     check(w1.connected(w1.start_cell, w1.place_cell("camp")), "the Roadwolf Camp can be reached on foot from Kaer Sethorn")
-    check(w1.terrain_at(Vector2i(0, 0)) == WorldMap.MOUNTAIN and not w1.walkable(Vector2i(-5, -5)), "the map edge and anything outside it is blocked")
+    check(w1.wrap_enabled and w1.walkable(Vector2i(-5, -5)) and w1.walkable(Vector2i(w1.width, 0)), "the campaign map wraps at every edge instead of blocking movement")
     check(w1.speed_at(w1.start_cell) > 1.0 and WorldMap.SPEED[WorldMap.FOREST] < 1.0 and WorldMap.SPEED[WorldMap.WATER] == 0.0, "roads are fast, forests slow and deep water blocks")
     check(WorldMap.DANGER[WorldMap.FOREST] > WorldMap.DANGER[WorldMap.GRASS] and WorldMap.DANGER[WorldMap.ROAD] < WorldMap.DANGER[WorldMap.GRASS], "forests are more dangerous than grass and roads are safer")
     check(WorldMap.encounter_threshold(cfg, 0.0) == float(cfg["encounter_min"]) and WorldMap.encounter_threshold(cfg, 1.0) == float(cfg["encounter_max"]), "the ambush threshold runs from encounter_min to encounter_max")
@@ -918,7 +918,7 @@ func _test_brinegate_quest() -> void:
 
 func _test_region_save_compatibility() -> void:
     print("[region save compatibility]")
-    var legacy: Dictionary = GameStateScript.region_state_from_payload({"world_pos": [123.0, 456.0]})
+    var legacy: Dictionary = RegionSaveState.from_payload({"world_pos": [123.0, 456.0]})
     check(str(legacy.get("active_region_id", "")) == "sethmarch" and legacy.get("world_pos", Vector2.ZERO) == Vector2(123.0, 456.0), "schema-4 campaign saves restore to Sethmarch without losing their position")
     check((legacy.get("world_positions", {}) as Dictionary).get("sethmarch", []) == [123.0, 456.0], "legacy saves seed the per-region position table")
     var coastal: Dictionary = GameStateScript.region_state_from_payload({"world_pos": [8.0, 9.0], "active_region_id": "brinegate_coast", "world_positions": {"sethmarch": [100.0, 200.0]}})
