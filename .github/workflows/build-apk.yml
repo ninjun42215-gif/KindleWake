@@ -52,6 +52,44 @@ jobs:
           name: Kindlewake-APK
           path: Kindlewake/dist/Kindlewake.apk
           if-no-files-found: error
+      - name: Package merge-ready source handoff
+        working-directory: .
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile, ZIP_DEFLATED
+
+          project = Path("Kindlewake")
+          output = project / "dist" / "Kindlewake-Source-Handoff.zip"
+          output.parent.mkdir(parents=True, exist_ok=True)
+          excluded = {".godot", "dist", "keys"}
+          with ZipFile(output, "w", ZIP_DEFLATED, compresslevel=6) as archive:
+              for path in project.rglob("*"):
+                  if not path.is_file():
+                      continue
+                  relative = path.relative_to(project)
+                  if any(part in excluded for part in relative.parts):
+                      continue
+                  archive.write(path, (Path("Kindlewake") / relative).as_posix())
+              handoff_files = [
+                  Path("GDD_Kindlewake.md"),
+                  Path("CONTINUATION_PROMPT.md"),
+              ]
+              handoff_files.extend(sorted(Path(".").glob("Feature_*.zip")))
+              for path in handoff_files:
+                  if path.is_file():
+                      archive.write(path, path.as_posix())
+          print(f"Created {output} ({output.stat().st_size} bytes)")
+          PY
+
+      - name: Upload source handoff archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kindlewake-Source-Handoff
+          path: Kindlewake/dist/Kindlewake-Source-Handoff.zip
+          if-no-files-found: error
+
 
       - name: Upload test and build logs
         if: always()
