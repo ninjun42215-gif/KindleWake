@@ -48,6 +48,7 @@ var party: PartyStateScript = null
 var db: Dictionary = {}
 var shop: Dictionary = {}
 var shop_access_allowed: bool = true
+var rune_service_access: bool = false
 var selected_id: String = ""
 var tab: int = TAB_GEAR
 var focus_slot: String = ""           # Equipment tab: the slot whose choices are open
@@ -70,12 +71,13 @@ var rune_rng := RandomNumberGenerator.new()
 var builds: int = 0                   # how many times the layout was completely built (tests use it to catch half-built screens)
 
 
-func setup(p_party: PartyStateScript, p_db: Dictionary, p_shop: Dictionary, allow_shop: bool = true) -> void:
+func setup(p_party: PartyStateScript, p_db: Dictionary, p_shop: Dictionary, allow_shop: bool = true, p_rune_service: bool = false) -> void:
     party = p_party
     db = p_db
     shop = p_shop
     rune_rng.randomize()
     shop_access_allowed = allow_shop
+    rune_service_access = p_rune_service
     if not shop_access_allowed and tab == TAB_SHOP:
         tab = TAB_GEAR
     if not party.sheets.has(selected_id) and not party.roster.is_empty():
@@ -1181,7 +1183,7 @@ func _on_socket(group: String, index: int) -> void:
 
 func _on_socket_sigil(group: String, index: int, bag_index: int) -> void:
     var sigil_name: String = _bag_sigil_name(bag_index)
-    var problem: String = party.equip_sigil(selected_id, group, index, bag_index, db)
+    var problem: String = party.equip_sigil(selected_id, group, index, bag_index, db, rune_service_access)
     if problem != "":
         _after(problem)
         return
@@ -1189,7 +1191,7 @@ func _on_socket_sigil(group: String, index: int, bag_index: int) -> void:
 
 
 func _on_unsocket(group: String, index: int) -> void:
-    var problem: String = party.unequip_sigil(selected_id, group, index, db)
+    var problem: String = party.unequip_sigil(selected_id, group, index, db, rune_service_access)
     if problem != "":
         _after(problem)
         return
