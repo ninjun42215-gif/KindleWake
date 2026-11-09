@@ -27,13 +27,13 @@ func new_game(profile: Dictionary = {}) -> void:
     var selected: Dictionary = profile.duplicate(true)
     if selected.is_empty():
         selected = CharacterCreationScript.default_profile(GameData.character_creation)
-    var protagonist: Dictionary = CharacterCreation.build_definition(
+    var protagonist: Dictionary = CharacterCreationScript.build_definition(
         GameData.characters.get("torren", {}), selected, GameData.character_creation, GameData.classes
     )
     if protagonist.is_empty():
         push_error("GameState: invalid protagonist profile; using the default profile.")
-        selected = CharacterCreation.default_profile(GameData.character_creation)
-        protagonist = CharacterCreation.build_definition(
+        selected = CharacterCreationScript.default_profile(GameData.character_creation)
+        protagonist = CharacterCreationScript.build_definition(
             GameData.characters.get("torren", {}), selected, GameData.character_creation, GameData.classes
         )
     creation_profile = selected.duplicate(true)
