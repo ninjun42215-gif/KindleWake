@@ -142,3 +142,5 @@ Be proactive and implementation-focused. The user often says “continue” to a
 - Production signing secrets belong only in that protected environment: `ANDROID_RELEASE_KEYSTORE_BASE64`, `ANDROID_RELEASE_KEY_ALIAS`, and `ANDROID_RELEASE_KEY_PASSWORD`. Pin the expected signer using environment variable `ANDROID_RELEASE_CERT_SHA256`. Never commit the private keystore.
 - Keep `project.godot` and Android preset version names aligned. Android version code is monotonically increasing; current checkpoint is version `0.10.0`, code `1000`.
 - Current builder exports APK only, not AAB. CI does not replace physical Android device QA. Verify the exact latest branch-head workflow run before claiming any new automation validated.
+
+- Builder and CI fail closed when the balance report fails, APK permissions cannot be inspected, the signature cannot be verified, or project/export version names differ. Production publishing additionally pins the expected certificate using `ANDROID_RELEASE_CERT_SHA256`.
