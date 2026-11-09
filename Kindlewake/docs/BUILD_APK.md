@@ -69,3 +69,8 @@ Put two things in a GitHub repo: `Kindlewake_Project.zip` at the root, and the w
 ## Updated CI and production release workflow
 
 For the current repository-wide process, see [`ANDROID_RELEASE_WORKFLOW.md`](ANDROID_RELEASE_WORKFLOW.md). The CI workflow creates a development/test APK artifact and an independent split source handoff on every branch push, pull request, tag push and manual run. It does not publish a production release. Production publishing is a separate manual workflow protected by the `android-production` GitHub Environment and a private keystore supplied through environment secrets. Do not use the sideload/test key for production or Google Play. The current builder exports APK only; AAB/Gradle publishing is not implemented yet. CI success is not a substitute for physical Android device testing.
+
+
+### Strict verification behavior
+
+The builder now fails closed if APK permissions cannot be inspected (`aapt2` missing/failing), if the APK signature cannot be verified (`apksigner` missing/failing), if the balance report exits unsuccessfully or reports failures, or if `project.godot` and Android export preset version names differ. Do not bypass these checks to force a release.
