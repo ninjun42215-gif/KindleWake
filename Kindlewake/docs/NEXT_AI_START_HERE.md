@@ -15,9 +15,10 @@
 
 **Repository:** `ninjun42215-gif/KindleWake`  
 **Project directory:** `Kindlewake/`  
-**Branch:** `main`  
-**Latest inspected main SHA:** `d25ac6840ab0cdcc339b6fa89ed4ef42dec917dc`  
-**Godot version:** `0.10.0` · **Android code:** `1000` · **Save schema:** `3`  
+**Live main:** `b982f2f665ab9ecf8b3862ca676d61dac55fde96` (tree identical to baseline `eb589c08b40b639a83b45bcc8d10718fd8223d7a`)  
+**Active candidate:** PR [#28](https://github.com/ninjun42215-gif/KindleWake/pull/28), branch `docs/authoritative-live-handoff-2026-11-10`; refresh its head SHA and checks before acting.  
+**Main version:** `0.11.0` · **Android code:** `1100` · **Save schema:** `4`  
+**Candidate version:** `0.12.0` · **Android code:** `1200` · **Save schema:** `4`  
 **Timezone:** Asia/Manila (UTC+08:00)
 
 ## Start here — no user re-explanation required
@@ -30,15 +31,14 @@
 
 ## Current facts
 
-- PR #16 is merged; main was `843d21be5b201b95736e98a38f0485274e5dcc03` when inspected.
-- `project.godot` says `0.10.0`; Android export name/code and `SaveSystem.GAME_VERSION` say `0.10.0` / `1000`; `SAVE_VERSION=3`.
-- GDD notes extend to `0.10.4`, but the project version was not bumped. Audit those notes against actual scenes/scripts/tests before calling them shipped or validated.
-- No open PRs were found at inspection time.
-- The available PR-run lookup returned no PR-triggered runs for current main and combined status had no entries. Post-merge main APK status is therefore unverified.
-- Historical successful automation: PR #14 four-check exact-SHA gate; PR #16 was merged by the bot after its checks. Check live Actions for current evidence.
-- No fresh source-handoff artifact for `843d21be5b201b95736e98a38f0485274e5dcc03` has yet been verified. Older artifacts are stale.
-- Physical Android QA is still outstanding.
-- Voxel-building pack redistribution rights remain unresolved; public/commercial release is blocked until verified or assets are replaced.
+- PR #28 is the single consolidated candidate. Continue on its existing branch; do not create another feature PR for this delivery.
+- The candidate contains the Brinegate Coast vertical slice, world-wrap logic, controller/touch exploration controls, premium shared exploration theme and refreshed production/handoff documentation.
+- The campaign overworld is toroidal; towns and dungeons remain bounded authored maps.
+- Candidate validation must be checked against the exact latest PR head. A successful older head does not validate a newer commit.
+- Do not merge a draft or a failing/incomplete head. Mark PR #28 ready only after final tests and checks pass, then merge with the exact-head SHA guard.
+- Physical Android QA remains outstanding. CI success is not evidence of testing on a physical controller or phone.
+- Asset redistribution/licence review remains a release gate for any third-party pack.
+
 
 ## Latest verified CI and handoff
 
