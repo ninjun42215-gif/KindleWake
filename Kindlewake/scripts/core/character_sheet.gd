@@ -439,7 +439,9 @@ func linked_support(group: String, index: int, items: Dictionary, sdefs: Diction
         if str(od.get("kind", "")) != "support":
             continue
         var ld: Dictionary = sigil_level_data(od, sigil_level(other, od))
-        total += int((ld.get("support", {}) as Dictionary).get(key, 0))
+        var base_value: int = int((ld.get("support", {}) as Dictionary).get(key, 0))
+        var grade_bonus: int = RuneSystemScript.grade_power_bonus(other, sdefs)
+        total += int(round(float(base_value) * (100.0 + float(grade_bonus)) / 100.0))
     return total
 
 
