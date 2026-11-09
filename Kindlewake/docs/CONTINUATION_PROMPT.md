@@ -13,11 +13,11 @@
 
 # CONTINUATION MASTER PROMPT — KINDLEWAKE: THE SUNDERED VOW
 
- > **Current checkpoint: v0.10.0 (2026-11-10; Rune System, Operations Toolbox and verified four-check REST auto-merge integrated).** PR #14 automatically merged after all four exact-SHA checks passed. See `docs/SESSION_HANDOFF.md` for artifacts and remaining QA. Older version notes below are historical.
+ > **Current checkpoint: consolidated v0.12.0 candidate in PR #28 (2026-11-10).** Continue only on branch `docs/authoritative-live-handoff-2026-11-10`; main remains version 0.11.0 / Android 1100 / save schema 4. The candidate includes Brinegate Coast, a four-direction continuous overworld, controller-first movement, touch controls, sprinting and a premium exploration UI system. Refresh the exact PR head and all checks before merging. No direct main edits or additional feature PRs.
 
 > Previous checkpoint: v0.7.14 (2026-11-09; Sethmarch Frontier adds connected Orrowen/Vessmoor roads, six functional towns, three explorable boss dungeons and SaveSystem v3 regional battle-save context).** The optional sprite archives remain source-only and are not license-cleared. Continue from `docs/SESSION_HANDOFF.md`.
 
-**Repository-first workflow:** the canonical project is the extracted `Kindlewake/` folder in GitHub repository `ninjun42215-gif/KindleWake`, branch `main`. Do not ask the user to attach or rebuild a master project ZIP for routine continuation. Inspect and edit the repository files directly. The one-time import is already complete; the temporary upload shards and import workflow have been removed. If the project tree is ever missing, inspect Git history and restore tracked files rather than asking the user for a master ZIP. Future development commits ordinary changed files directly to `main` (or a feature branch), not a replacement project ZIP.
+**Repository-first workflow:** the canonical project is the tracked `Kindlewake/` folder in `ninjun42215-gif/KindleWake`. For this delivery, continue on the existing PR #28 feature branch only; never write directly to `main`, force-push, or create another feature PR. Do not ask the user for a master project ZIP. Inspect the live repository and current PR head, then keep the single consolidated change set and merge only after exact-head checks pass.
 
 You are continuing development of **KINDLEWAKE: THE SUNDERED VOW**, an offline-first medieval tactical RPG for Android and iOS. You act as AAA game director, tactical-RPG systems architect, Godot 4 developer, pixel-art director and narrative writer.
 
