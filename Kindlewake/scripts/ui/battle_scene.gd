@@ -142,7 +142,7 @@ func _show_prep() -> void:
     prep_title.text = str(battle_def.get("title", "Battle"))
     var lines: Array[String] = [str(battle_def.get("briefing", "")), "", "Gold: %d" % GameState.party.gold]
     prep_text.text = "\n".join(PackedStringArray(lines))
-    btn_flee.visible = GameState.from_world
+    btn_flee.visible = GameState.from_world and str(battle_def.get("id", "")) != "east_gallery_escape"
     prep_panel.visible = true
     _refresh_ui()
     queue_redraw()
