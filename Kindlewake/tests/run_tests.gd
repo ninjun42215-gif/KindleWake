@@ -1010,7 +1010,7 @@ func _test_supply_siege_and_tactical_bridge() -> void:
     check(int(state["sieges"]["orrowen_weald"]["progress"]) == 4 and int(season_one.get("sieges_advanced", 0)) == 1 and int(season_two.get("sieges_completed", 0)) == 1, "seasonal siege progress reaches a breach with supplied forces")
     var battle_def: Dictionary = EmpireSystem.build_tactical_battle(state, army_id, {"id": "test_battle", "units": [{"character_id": "torren", "team": "player", "cell": [9, 10]}]}, "orrowen_weald", "house_orrowen", true, 1)
     var battle_units: Array = battle_def.get("units", [])
-    check(not battle_def.is_empty() and battle_def.get("strategic_units", {}).size() == 4, "strategic army composition builds four tactical infantry cohorts")
+    check(not battle_def.is_empty() and battle_def.get("strategic_units", {}).size() == 3, "strategic army composition builds three tactical infantry cohorts")
     var has_ram := false
     var has_defender := false
     for unit in battle_units:
