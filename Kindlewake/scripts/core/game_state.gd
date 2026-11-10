@@ -223,7 +223,7 @@ func start_field_army_battle(army_id: String, siege_assault: bool = false) -> bo
 		fort_level = clampi(int(siege.get("defence", 20)) / 20, 1, 3)
 	elif region_id.contains("highland") or region_id.contains("height") or region_id == "aurelmont" or region_id.contains("thorncrown") or region_id == "ironvale":
 		fort_level = 1
-	var battle := EmpireSystem.build_tactical_battle(empire_state, army_id, GameData.battle_def("battle_01"), region_id, str(territory.get("owner", "")), siege_assault, fort_level)
+	var battle := EmpireSystem.build_tactical_battle(empire_state, army_id, GameData.battle_def("battle_01"), region_id, str(territory.get("owner", "")), siege_assault, fort_level, GameData.strategic_warfare)
 	if battle.is_empty():
 		return false
 	pending_battle = battle
