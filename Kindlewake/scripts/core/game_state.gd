@@ -9,6 +9,7 @@ const EmpireEconomySystem = preload("res://scripts/core/empire_economy_system.gd
 const EmpireDevelopmentSystem = preload("res://scripts/core/empire_development_system.gd")
 const RelationshipSystem = preload("res://scripts/core/relationship_system.gd")
 const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
+const ChronicleSystem = preload("res://scripts/core/chronicle_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
 
@@ -28,6 +29,7 @@ var campaign_slot: String = ""
 var faction_state: Dictionary = {}
 var companion_relationships: Dictionary = {}
 var companion_quests: Dictionary = {}
+var chronicle_state: Dictionary = ChronicleSystem.new_state()
 
 
 
@@ -62,6 +64,7 @@ func new_game(profile: Dictionary = {}) -> void:
     faction_state = FactionSystem.new_campaign_state(GameData.factions)
     companion_relationships = {}
     companion_quests = {}
+    chronicle_state = ChronicleSystem.new_state()
 
 
 
@@ -273,6 +276,15 @@ func progress_character_ambition(character_id: String, amount: int) -> Dictionar
     return member.advance_ambition(amount)
 
 
+
+## Record a post-campaign founder milestone in strict canonical order.
+func record_chronicle_milestone(milestone: String, details: Dictionary = {}) -> bool:
+    return ChronicleSystem.record_milestone(chronicle_state, milestone, details)
+
+
+func chronicle_unlocked() -> bool:
+    return ChronicleSystem.is_unlocked(chronicle_state)
+
 ## Battle database with the party's current sheets (level, stats, equipment) substituted in.
 func battle_db() -> Dictionary:
     var out: Dictionary = party.battle_db(GameData.as_db())
@@ -338,9 +350,11 @@ func campaign_payload() -> Dictionary:
         "active_region_id": active_region_id,
         "world_positions": world_positions.duplicate(true),
         "world_flags": world_flags.duplicate(true),
+        "pending_location": pending_location,
         "faction_state": faction_state.duplicate(true),
         "companion_relationships": companion_relationships.duplicate(true),
         "companion_quests": companion_quests.duplicate(true),
+        "chronicle_state": chronicle_state.duplicate(true),
         "from_world": true
     }
 
@@ -369,12 +383,13 @@ func load_campaign(slot_id: String) -> bool:
     faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
     companion_relationships = RelationshipSystem.normalize_state(payload.get("companion_relationships", {}))
     companion_quests = CompanionQuestSystem.normalize_state(payload.get("companion_quests", {}), {"quests": GameData.companion_quests})
+    chronicle_state = ChronicleSystem.normalize_state(payload.get("chronicle_state", {}))
     world_pos = region_state["world_pos"]
     active_region_id = str(region_state["active_region_id"])
     world_positions = region_state["world_positions"]
     from_world = true
     pending_battle = {}
-    pending_location = ""
+    pending_location = str(payload.get("pending_location", ""))
     campaign_slot = slot_id
     return true
 

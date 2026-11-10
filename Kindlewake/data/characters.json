@@ -1553,6 +1553,163 @@
         "ldr": 18,
         "mor": 90
       }
+    },
+    "hask_convoy_champion": {
+      "name": "Hask Gravelteeth, Roadwolf Captain",
+      "reward": {
+        "exp": 220,
+        "ap": 32,
+        "gold": 120
+      },
+      "class_id": "roadreaver",
+      "level": 6,
+      "house": "none",
+      "weapon_id": "battle_axe",
+      "armor_def": 8,
+      "armor_res": 1,
+      "skills": [
+        "power_strike"
+      ],
+      "stats": {
+        "hp": 92,
+        "mp": 12,
+        "str": 18,
+        "dex": 6,
+        "int": 3,
+        "vit": 16,
+        "spd": 6,
+        "lck": 5,
+        "acc": 84,
+        "eva": 8,
+        "ldr": 12,
+        "mor": 90
+      }
+    },
+    "ash_bailiff": {
+      "name": "The Ash Bailiff",
+      "class_id": "roadreaver",
+      "level": 7,
+      "house": "none",
+      "weapon_id": "battle_axe",
+      "armor_def": 9,
+      "armor_res": 1,
+      "skills": [
+        "holy_smite_ii",
+        "mend_ii"
+      ],
+      "reward": {
+        "exp": 260,
+        "ap": 38,
+        "gold": 150
+      },
+      "stats": {
+        "hp": 108,
+        "mp": 20,
+        "str": 19,
+        "dex": 6,
+        "int": 3,
+        "vit": 18,
+        "spd": 6,
+        "lck": 6,
+        "acc": 84,
+        "eva": 12,
+        "ldr": 15,
+        "mor": 90
+      }
+    },
+    "checkpoint_sergeant": {
+      "name": "Writ-Captain Odran Vale",
+      "reward": {
+        "exp": 180,
+        "ap": 28,
+        "gold": 85
+      },
+      "class_id": "roadreaver",
+      "level": 4,
+      "house": "none",
+      "weapon_id": "arming_sword",
+      "armor_def": 6,
+      "armor_res": 0,
+      "skills": [
+        "power_strike"
+      ],
+      "stats": {
+        "hp": 76,
+        "mp": 8,
+        "str": 14,
+        "dex": 9,
+        "int": 7,
+        "vit": 13,
+        "spd": 8,
+        "lck": 6,
+        "acc": 84,
+        "eva": 12,
+        "ldr": 11,
+        "mor": 75
+      }
+    },
+    "river_marshal": {
+      "name": "River Marshal Edrik Vane",
+      "reward": {
+        "exp": 180,
+        "ap": 28,
+        "gold": 85
+      },
+      "class_id": "roadreaver",
+      "level": 7,
+      "house": "none",
+      "weapon_id": "arming_sword",
+      "armor_def": 6,
+      "armor_res": 0,
+      "skills": [
+        "power_strike"
+      ],
+      "stats": {
+        "hp": 126,
+        "mp": 18,
+        "str": 20,
+        "dex": 13,
+        "int": 7,
+        "vit": 19,
+        "spd": 9,
+        "lck": 6,
+        "acc": 84,
+        "eva": 12,
+        "ldr": 11,
+        "mor": 82
+      },
+      "loyalty": 0
+    },
+    "quillon_warden": {
+      "name": "Quillon Warden",
+      "reward": {
+        "exp": 300,
+        "ap": 45,
+        "gold": 180
+      },
+      "class_id": "roadreaver",
+      "level": 7,
+      "house": "none",
+      "weapon_id": "arming_sword",
+      "armor_def": 6,
+      "armor_res": 0,
+      "skills": [
+        "power_strike"
+      ],
+      "stats": {
+        "hp": 132,
+        "mp": 18,
+        "str": 21,
+        "dex": 13,
+        "int": 7,
+        "vit": 20,
+        "spd": 9,
+        "lck": 8,
+        "acc": 88,
+        "eva": 14,
+        "ldr": 15,
+        "mor": 90
+      }
     }
   }
 }

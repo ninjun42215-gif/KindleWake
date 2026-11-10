@@ -1,0 +1,139 @@
+{
+  "id": "act4_quillon_warden",
+  "title": "Winter of Knives — The Quillon Warden",
+  "briefing": "The archive's inner stacks are sealed. Defeat the Warden and retainers only if the company has chosen to force the breach; the lawful custodian routes remain open to those who withdraw.",
+  "weather": "snow",
+  "legend": {
+    ".": "stone",
+    "f": "shelves",
+    "r": "aisle",
+    "#": "wall",
+    "c": "cover"
+  },
+  "terrain": [
+    "####################",
+    "#..f....r....f.....#",
+    "#..f....r....f.....#",
+    "#......rrr.........#",
+    "#.fff..rrr..fff....#",
+    "#......rrr.........#",
+    "#..f....r....f.....#",
+    "#..f....r....f.....#",
+    "#......rrr.........#",
+    "#.fff..rrr..fff....#",
+    "#......rrr.........#",
+    "#..f....r....f.....#",
+    "#..f....r....f.....#",
+    "####################"
+  ],
+  "heights": [
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000"
+  ],
+  "victory": [
+    "defeat_commander"
+  ],
+  "units": [
+    {
+      "character_id": "torren",
+      "team": "player",
+      "cell": [
+        9,
+        11
+      ],
+      "facing": 0,
+      "protagonist": true
+    },
+    {
+      "character_id": "bram",
+      "team": "player",
+      "cell": [
+        8,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "sela",
+      "team": "player",
+      "cell": [
+        10,
+        11
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "brother_wystan",
+      "team": "player",
+      "cell": [
+        7,
+        11
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "quillon_warden",
+      "team": "enemy",
+      "cell": [
+        10,
+        2
+      ],
+      "facing": 2,
+      "commander": true
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        7,
+        3
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        13,
+        3
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadbowman",
+      "team": "enemy",
+      "cell": [
+        5,
+        2
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadbowman",
+      "team": "enemy",
+      "cell": [
+        15,
+        2
+      ],
+      "facing": 2
+    }
+  ],
+  "battlefield": "stone_hall",
+  "reward_rune": "",
+  "world_flag_on_victory": "act4_archive_warden_defeated",
+  "victory_text": "The Quillon Warden yields. The stacks are secured, though the broken seal will remain part of the archive's memory.",
+  "defeat_text": "The company is driven from the stacks. The breach can be attempted again, or the company may withdraw and seek lawful custody.",
+  "return_scene": "res://ActFourQuestChallenge.tscn"
+}

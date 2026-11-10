@@ -144,6 +144,47 @@
             1,
             1
           ]
+        },
+        {
+          "cell": [
+            11,
+            8
+          ],
+          "kind": "story",
+          "story_id": "last_convoy",
+          "npc": true,
+          "name": "Carter Wen, Convoy Master",
+          "tint": [
+            0.9,
+            0.76,
+            0.54
+          ],
+          "text": "Carter Wen has returned to Sallow Crossing with mud to his knees and a torn convoy ribbon in his hand. “The last wagons are still out there. We cannot save everything. We can decide who gets home.”",
+          "dialogue": [
+            "“The manifest lists flour, lamp oil, and twelve families. The ridge has been watched by men who wear no house colours.”"
+          ]
+        },
+        {
+          "cell": [
+            15,
+            14
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "The Changed Escort",
+          "story_id": "changed_escort",
+          "text": "A diplomatic escort has been ordered to turn a marked supply train back at the narrow crossing. The wagons carry displaced families."
+        },
+        {
+          "cell": [
+            13,
+            8
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "The Price of a Crossing",
+          "story_id": "price_crossing",
+          "text": "The river road is open, but only one priority convoy can cross before the weather turns."
         }
       ]
     },
@@ -342,7 +383,11 @@
             0.85,
             0.95
           ],
-          "text": "House Dunmarrow held these roads for three hundred years. Torren, the keep is yours to rebuild. Start with the road to Eldrimar."
+          "text": "House Dunmarrow held these roads for three hundred years. Torren, the keep is yours to rebuild. Start with the road to Eldrimar.",
+          "story_id": "toll_book",
+          "dialogue": [
+            "“I kept this because the names mattered. The convoy manifest may show which entries were false — and who was made to vanish from the road.”"
+          ]
         },
         {
           "cell": [
@@ -463,6 +508,44 @@
           "companion_quest_id": "q_companion_garrick_spared_enemy",
           "companion_quest_milestone": "prisoner_request_received",
           "companion_quest_text": "The former commander has been accused of ordering reprisals after his release. He asks Garrick to hear him before the hearing. Garrick insists that the request be recorded, but that the witnesses must be heard independently."
+        },
+        {
+          "cell": [
+            8,
+            5
+          ],
+          "kind": "story",
+          "story_id": "blocked_well",
+          "npc": true,
+          "name": "Mira, the Wellkeeper",
+          "tint": [
+            0.55,
+            0.78,
+            0.9
+          ],
+          "text": "Mira keeps a strip of clean linen tied around her wrist. “I can make a bucket last three days. I cannot make a well out of rubble.”",
+          "dialogue": [
+            "“The old shaft was built before the keep's western wall. If we clear it, test it, and keep the first water for the sick, we can stay.”"
+          ]
+        },
+        {
+          "cell": [
+            13,
+            6
+          ],
+          "kind": "story",
+          "story_id": "roof_before_banner",
+          "npc": true,
+          "name": "Hobb, the Carpenter",
+          "tint": [
+            0.72,
+            0.58,
+            0.38
+          ],
+          "text": "Hobb studies the torn rafters and the folded house banner. “A banner is cloth. A roof keeps people alive.”",
+          "dialogue": [
+            "“The stable collapsed in the last winter. Some of its beams are sound. We can salvage them before the next storm.”"
+          ]
         }
       ]
     },
@@ -514,7 +597,8 @@
             "'Your house held this valley by oath, not by walls. Walls can be raised again; trust takes longer.'",
             "'The quartermaster has sent word of a smith at the lower gate. He can temper any weapon or piece of armor to +15, though the price rises with every strike.'",
             "'The old families kept heirloom runes apart from common stock. They are not merchandise. They choose their bearer.'"
-          ]
+          ],
+          "story_id": "first_oath"
         },
         {
           "cell": [
@@ -797,6 +881,28 @@
             1,
             1
           ]
+        },
+        {
+          "cell": [
+            7,
+            7
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "The Boundary Tree",
+          "story_id": "boundary_tree",
+          "text": "A felled boundary tree has reopened a dispute over woodland rights, tenant fields and old coppice paths."
+        },
+        {
+          "cell": [
+            9,
+            5
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "Three Bridges",
+          "story_id": "three_bridges",
+          "text": "The river road has become a military lifeline. Three crossings and a downstream storehouse must be secured before the evacuation can continue."
         }
       ]
     },
@@ -1451,7 +1557,7 @@
         "#..............#",
         "#..............#",
         "#..............#",
-        "#..............#",
+        "#...........4..#",
         "#..............#",
         "#######E########"
       ],
@@ -1475,6 +1581,13 @@
           "spawn": [
             5,
             6
+          ]
+        },
+        "4": {
+          "to": "quillon_archive",
+          "spawn": [
+            7,
+            9
           ]
         }
       },
@@ -1524,6 +1637,39 @@
             1,
             1
           ]
+        },
+        {
+          "cell": [
+            8,
+            7
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "The Orrowen Hearing",
+          "story_id": "orrowen_hearing",
+          "text": "Four witnesses have gathered to speak about the disputed levy and boundary order."
+        },
+        {
+          "cell": [
+            10,
+            7
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "The Banner in the Reeds",
+          "story_id": "banner_reeds",
+          "text": "A hostile banner moves through the reed beds, but Sela has seen civilians beneath it."
+        },
+        {
+          "cell": [
+            12,
+            7
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "The Witness Who Recanted",
+          "story_id": "witness_recanted",
+          "text": "The Orrowen witness has withdrawn their account. Their family has been threatened, and they refuse to be used as proof without their consent."
         }
       ]
     },
@@ -4516,6 +4662,131 @@
           "text": "A narrow seam runs through the stone. A draft carries the smell of old paper from the other side.",
           "world_flag_on_reveal": "dungeon_stormwell_secret_passage",
           "secret_reward_gold": 55
+        }
+      ]
+    },
+    "quillon_archive": {
+      "name": "Quillon Archive",
+      "kind": "interior",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.15,
+      "rows": [
+        "##############",
+        "#............#",
+        "#..####..##..#",
+        "#..#......#..#",
+        "#..#......#..#",
+        "#..####..##..#",
+        "#............#",
+        "#.####..####.#",
+        "#............#",
+        "#............#",
+        "#............#",
+        "######1#######"
+      ],
+      "doors": {
+        "1": {
+          "to": "elderbough",
+          "spawn": [
+            12,
+            3
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            7,
+            4
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "Archive Registrar",
+          "story_id": "quillon_archive",
+          "text": "The custodians of the Quillon Archive will hear a petition, but the sealed stacks are not open to force without consequence."
+        },
+        {
+          "cell": [
+            3,
+            8
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Index Keeper",
+          "text": "The index records who consulted each volume. Several names were struck out by Edmer's own hand."
+        },
+        {
+          "cell": [
+            10,
+            8
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Custodian of Seals",
+          "text": "An original can survive a generation in a locked room. A copy can survive a fire. Neither choice is neutral."
+        }
+      ]
+    },
+    "aurelmont": {
+      "name": "Aurelmont",
+      "kind": "town",
+      "entry": [
+        9,
+        12
+      ],
+      "zoom": 1.1,
+      "rows": [
+        "TTTTTTTTTTTTTTTTTTTT",
+        "T..................T",
+        "T..bbbb......rrrr..T",
+        "T..bbbb......rrrr..T",
+        "T..wwww......wwww..T",
+        "T..................T",
+        "T....,,,,,,,,,,....T",
+        "T....,........,....T",
+        "T....,........,....T",
+        "T....,,,,,,,,,,....T",
+        "T..................T",
+        "T..rrrr............T",
+        "T..wwww............T",
+        "T..................T",
+        "TTTTTTTEEEEEETTTTTTT"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            9,
+            7
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "The Last Audience",
+          "story_id": "last_audience",
+          "tint": [
+            0.9,
+            0.78,
+            0.55
+          ],
+          "text": "The city council has gathered beneath the old imperial dome. Maelor waits beside the empty throne, with the Seven Witnesses' evidence laid out where everyone can see it."
+        },
+        {
+          "cell": [
+            14,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Aurelmont Gate Warden",
+          "tint": [
+            0.7,
+            0.8,
+            0.9
+          ],
+          "text": "The capital has not closed its gates, but neither has it agreed to welcome an army. Every banner outside is being counted."
         }
       ]
     }

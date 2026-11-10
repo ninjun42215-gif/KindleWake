@@ -1,0 +1,141 @@
+{
+  "id": "act3_three_bridges",
+  "title": "Three Bridges — The River Road",
+  "briefing": "Secure the ford, keep the old bridge approach open for evacuation, and prevent the downstream storehouse from being burned. Defeat River Marshal Edrik Vane; the enemy host includes paid retainers and frightened conscripts.",
+  "weather": "rain",
+  "legend": {
+    ".": "grass",
+    "f": "forest",
+    "r": "road",
+    "w": "ford",
+    "b": "bridge",
+    "#": "rock",
+    "~": "water"
+  },
+  "terrain": [
+    "....................",
+    "...ff...............",
+    "..fff......ff.......",
+    "...f........f.......",
+    "......r.............",
+    "....~~~~b~~~~.......",
+    "....~~~~b~~~~.......",
+    "......r.............",
+    ".....f..r..f........",
+    "....ff..r...........",
+    "........r...........",
+    "........r...........",
+    "....................",
+    "...................."
+  ],
+  "heights": [
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000"
+  ],
+  "victory": [
+    "defeat_commander"
+  ],
+  "units": [
+    {
+      "character_id": "torren",
+      "team": "player",
+      "cell": [
+        9,
+        11
+      ],
+      "facing": 0,
+      "protagonist": true
+    },
+    {
+      "character_id": "bram",
+      "team": "player",
+      "cell": [
+        8,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "sela",
+      "team": "player",
+      "cell": [
+        10,
+        11
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "brother_wystan",
+      "team": "player",
+      "cell": [
+        7,
+        11
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "river_marshal",
+      "team": "enemy",
+      "cell": [
+        13,
+        3
+      ],
+      "facing": 2,
+      "commander": true
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        10,
+        3
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        8,
+        4
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadbowman",
+      "team": "enemy",
+      "cell": [
+        12,
+        2
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadbowman",
+      "team": "enemy",
+      "cell": [
+        15,
+        3
+      ],
+      "facing": 2
+    }
+  ],
+  "battlefield": "river_crossing",
+  "reward_rune": "",
+  "world_flag_on_victory": "act3_three_bridges_victory",
+  "victory_text": "The River Marshal falls. Bram holds the old bridge while Sela's report guides the company across the ford. The downstream storehouse is secured before the fire reaches its roof.",
+  "defeat_text": "The river line is lost for now. The company withdraws with the evacuation bridge still under threat and may regroup to try again.",
+  "return_scene": "res://ActThreeQuestChallenge.tscn"
+}

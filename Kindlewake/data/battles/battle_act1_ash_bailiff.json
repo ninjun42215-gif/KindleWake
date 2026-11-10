@@ -1,0 +1,140 @@
+{
+  "id": "act1_ash_bailiff_boss",
+  "title": "The First Oath: The Ash Bailiff",
+  "briefing": "BOSS BATTLE — Hall of Ash. The Ash Bailiff fights beneath the authority of a forged warrant. Defeat him and his retainers to protect the household and expose the obsolete seal. Pillars provide cover; keep the company together and deny the Bailiff a clear charge.",
+  "weather": "clear",
+  "legend": {
+    ".": "grass",
+    "f": "forest",
+    "r": "road",
+    "h": "hill",
+    "w": "ford",
+    "~": "deep_water",
+    "b": "bridge",
+    "#": "rock"
+  },
+  "terrain": [
+    "####################",
+    "#..................#",
+    "#..................#",
+    "#..................#",
+    "#...f..........f...#",
+    "#...f..........f...#",
+    "#.......f..f.......#",
+    "#..................#",
+    "#...f..........f...#",
+    "#...f..........f...#",
+    "#..................#",
+    "#..................#",
+    "#..................#",
+    "####################"
+  ],
+  "heights": [
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000"
+  ],
+  "victory": [
+    "rout_all",
+    "defeat_commander"
+  ],
+  "units": [
+    {
+      "character_id": "torren",
+      "team": "player",
+      "cell": [
+        9,
+        10
+      ],
+      "facing": 0,
+      "protagonist": true
+    },
+    {
+      "character_id": "bram",
+      "team": "player",
+      "cell": [
+        8,
+        9
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "sela",
+      "team": "player",
+      "cell": [
+        10,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "brother_wystan",
+      "team": "player",
+      "cell": [
+        7,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "ash_bailiff",
+      "team": "enemy",
+      "cell": [
+        13,
+        4
+      ],
+      "facing": 2,
+      "commander": true
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        10,
+        3
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadbowman",
+      "team": "enemy",
+      "cell": [
+        12,
+        3
+      ],
+      "facing": 2
+    }
+  ],
+  "battlefield": "hall_of_ash",
+  "reward_rune": "",
+  "world_flag_on_victory": "act1_ash_bailiff_defeated",
+  "victory_text": "The Bailiff's weapon falls. Elder Hale reads the retired-seal record aloud, and the household rejects the warrant. The First Oath can now be sworn.",
+  "defeat_text": "The Bailiff forces the household back. The oath has not been broken; regroup and defend the hall again.",
+  "return_scene": "res://ActOneQuestChallenge.tscn",
+  "boss_phases": [
+    {
+      "trigger_below_pct": 55,
+      "name": "The Final Edict",
+      "message": "The Ash Bailiff tears away his outer mantle. The retired seal burns white; every strike becomes an act of judgment.",
+      "strength_bonus": 3,
+      "speed_bonus": 1,
+      "armor_def_bonus": 3,
+      "heal": 16,
+      "add_skills": [
+        "final_edict"
+      ],
+      "vfx": "judgement"
+    }
+  ]
+}

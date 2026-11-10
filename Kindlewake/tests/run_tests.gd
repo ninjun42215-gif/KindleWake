@@ -6,6 +6,11 @@ const RelationshipSystemScript = preload("res://scripts/core/relationship_system
 const CompanionBehaviorScript = preload("res://scripts/core/companion_behavior_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
+const OpeningChapterSystem = preload("res://scripts/core/opening_chapter_system.gd")
+const OpeningActOneQuestSystem = preload("res://scripts/core/opening_act_one_quest_system.gd")
+const ActTwoQuestSystem = preload("res://scripts/core/act_two_quest_system.gd")
+const ActThreeQuestSystem = preload("res://scripts/core/act_three_quest_system.gd")
+const ActFourQuestSystem = preload("res://scripts/core/act_four_quest_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const MarenQuestSystem = preload("res://scripts/core/maren_quest_system.gd")
@@ -56,6 +61,14 @@ func _initialize() -> void:
     _test_recruitment()
     _test_companion_quests()
     _test_prologue()
+    _test_opening_chapter()
+    _test_opening_act_one_quests()
+    _test_act_one_challenge_content()
+    _test_act_one_tactical_bosses()
+    _test_boss_phase_transitions()
+    _test_act_two_broken_seals()
+    _test_act_three_river_campaign()
+    _test_act_four_winter_of_knives()
     _test_escape_mission()
     _test_escape_ui_layout()
     _test_sigils()
@@ -567,6 +580,291 @@ func _test_prologue() -> void:
     check(str(PrologueSystem.acknowledgement(record)).contains("kept the record"), "record choice receives a later narrative acknowledgement")
     check(str(PrologueSystem.acknowledgement(split)).contains("both lives and truth"), "split choice receives a later narrative acknowledgement")
     check(PrologueSystem.apply_choice(prior, "unknown").is_empty(), "unknown prologue choices are rejected")
+
+
+func _test_opening_act_one_quests() -> void:
+    print("[opening Act I quests]")
+    var flags: Dictionary = {}
+    check(not bool(OpeningActOneQuestSystem.inspect("blocked_well", flags).get("actions", []).is_empty()), "blocked well begins with a clearable obstruction")
+    check(not bool(OpeningActOneQuestSystem.inspect("first_oath", flags).get("actions", []).size() > 0), "first oath is gated until the keep and road are prepared")
+    var result: Dictionary = OpeningActOneQuestSystem.resolve("blocked_well", "clear_well", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("kaer_well_blockage_cleared", false)), "well obstruction can be cleared and persisted")
+    result = OpeningActOneQuestSystem.resolve("blocked_well", "test_well", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("kaer_well_water_safe", false)), "well water is tested before it is declared safe")
+    result = OpeningActOneQuestSystem.resolve("roof_before_banner", "salvage_roof_timber", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("kaer_roof_timber_salvaged", false)), "roof quest requires timber salvage")
+    result = OpeningActOneQuestSystem.resolve("roof_before_banner", "secure_roof", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("kaer_roof_secured", false)), "roof is secured after salvage")
+    result = OpeningActOneQuestSystem.resolve("last_convoy", "shelter_families", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("last_convoy_families_sheltered", false)), "convoy choice records family shelter outcome")
+    check(not bool(OpeningActOneQuestSystem.resolve("toll_book", "read_names", {}).get("ok", true)), "toll book cannot be reviewed without the convoy manifest")
+    result = OpeningActOneQuestSystem.resolve("toll_book", "read_names", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("toll_book_public", false)), "public toll-book choice records disclosure")
+    check(not bool(OpeningActOneQuestSystem.inspect("first_oath", flags).get("actions", []).is_empty()), "first oath unlocks after well, roof, convoy and toll-book quests")
+    result = OpeningActOneQuestSystem.resolve("first_oath", "oath_people", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("chapter_1_complete", false)) and bool(flags.get("sethmarch_people_first", false)), "people-first oath completes Act I with a persistent outcome")
+    check(not bool(OpeningActOneQuestSystem.resolve("first_oath", "oath_law", flags).get("ok", true)), "first oath cannot be changed after it is witnessed")
+    check(not bool(OpeningActOneQuestSystem.resolve("blocked_well", "unknown", {}).get("ok", true)), "unknown story actions are rejected")
+
+
+func _test_act_one_challenge_content() -> void:
+    print("[Act I playable challenge content]")
+    var expected := ["blocked_well", "roof_before_banner", "last_convoy", "toll_book", "first_oath"]
+    var distinct_stage_counts := {}
+    for quest_id in expected:
+        check(OpeningActOneQuestSystem.CHALLENGES.has(quest_id), "playable challenge exists: " + quest_id)
+        var challenge: Dictionary = OpeningActOneQuestSystem.CHALLENGES.get(quest_id, {})
+        var stages: Array = challenge.get("steps", [])
+        check(stages.size() >= 2, quest_id + " has multiple interactive stages")
+        distinct_stage_counts[stages.size()] = true
+        var meaningful_choice_stages := 0
+        for stage in stages:
+            var options: Array = stage.get("options", [])
+            if stage.has("battle_id"):
+                check(str(stage.get("battle_id", "")) != "", quest_id + " cinematic stage links a tactical encounter")
+            else:
+                check(options.size() >= 2, quest_id + " stage offers meaningful choices")
+                meaningful_choice_stages += 1
+        check(meaningful_choice_stages >= 2, quest_id + " offers meaningful decisions around tactical scenes")
+    check(distinct_stage_counts.size() >= 2, "Act I quests use different challenge lengths and pacing")
+    check(str(OpeningActOneQuestSystem.CHALLENGES["last_convoy"].steps[2].scene).contains("boss"), "Last Convoy includes a cinematic boss confrontation")
+    check(str(OpeningActOneQuestSystem.CHALLENGES["first_oath"].steps[1].scene).contains("boss"), "First Oath includes a cinematic boss confrontation")
+    var toll_options: Array = OpeningActOneQuestSystem.CHALLENGES["toll_book"].steps[2].options
+    check(toll_options.has(["Publish the names after protecting the families", "public"]) or toll_options.any(func(option): return str(option[1]) == "public"), "Toll Book preserves the public disclosure branch")
+    check(toll_options.any(func(option): return str(option[1]) == "seal"), "Toll Book preserves the sealed evidence branch")
+    var oath_options: Array = OpeningActOneQuestSystem.CHALLENGES["first_oath"].steps[2].options
+    check(oath_options.any(func(option): return str(option[1]) == "people") and oath_options.any(func(option): return str(option[1]) == "law"), "First Oath preserves both political promise branches")
+
+
+func _test_act_one_tactical_bosses() -> void:
+    print("[Act I tactical boss encounters]")
+    var cases := [
+        {"id":"act1_hask_boss","boss":"hask_convoy_champion","flag":"act1_hask_defeated"},
+        {"id":"act1_ash_bailiff_boss","boss":"ash_bailiff","flag":"act1_ash_bailiff_defeated"}
+    ]
+    for entry in cases:
+        var battle_id := str(entry.id)
+        var boss_id := str(entry.boss)
+        var def: Dictionary = gd.battles.get(battle_id, {})
+        check(not def.is_empty(), battle_id + " battle data loads")
+        check(gd.characters.has(boss_id), boss_id + " boss character exists")
+        check(str(def.get("world_flag_on_victory", "")) == str(entry.flag), battle_id + " sets its story victory flag")
+        check(str(def.get("return_scene", "")) == "res://ActOneQuestChallenge.tscn", battle_id + " returns to the active story challenge")
+        check((def.get("boss_phases", []) as Array).size() == 1, battle_id + " defines one authored phase transition")
+        var commander_found := false
+        var all_units_valid := true
+        for spawn in def.get("units", []):
+            var cid := str((spawn as Dictionary).get("character_id", ""))
+            if cid == boss_id and bool((spawn as Dictionary).get("commander", false)):
+                commander_found = true
+            if not gd.characters.has(cid):
+                all_units_valid = false
+        check(commander_found, battle_id + " has its boss as the commander objective")
+        var boss_skills: Array = gd.characters[boss_id].get("skills", [])
+        check(not boss_skills.is_empty(), battle_id + " boss has signature combat skills")
+        check(all_units_valid, battle_id + " references only existing character data")
+        check((def.get("units", []) as Array).size() >= 7, battle_id + " includes a full tactical encounter roster")
+    check(int(gd.characters["hask_convoy_champion"].stats.hp) >= 90, "Hask has dedicated boss-grade health")
+    check(int(gd.characters["ash_bailiff"].stats.hp) >= 100, "Ash Bailiff has dedicated boss-grade health")
+    check(str(gd.battles["act1_ash_bailiff_boss"].get("battlefield", "")) == "hall_of_ash", "Ash Bailiff uses a distinct indoor battlefield")
+
+
+func _test_boss_phase_transitions() -> void:
+    print("[boss phase transitions]")
+    var cases := [
+        {"battle":"act1_hask_boss","boss":"hask_convoy_champion","threshold":50,"skill":"fordbreaker_cleave","str_bonus":5,"def_bonus":0},
+        {"battle":"act1_ash_bailiff_boss","boss":"ash_bailiff","threshold":55,"skill":"final_edict","str_bonus":3,"def_bonus":3}
+    ]
+    for entry in cases:
+        var battle_def: Dictionary = gd.battle_def(str(entry.battle))
+        var ctl := BattleController.new()
+        ctl.setup(battle_def, gd.as_db(), 812)
+        var boss: BattleUnit = null
+        for candidate in ctl.units:
+            if candidate.character_id == str(entry.boss):
+                boss = candidate
+                break
+        check(boss != null, str(entry.boss) + " commander loads for phase test")
+        if boss == null:
+            continue
+        var base_str: int = boss.stat("str")
+        var base_def: int = boss.armor_def
+        boss.hp = int(floor(float(boss.max_hp()) * float(entry.threshold) / 100.0))
+        var triggered: bool = ctl.evaluate_boss_phase(boss)
+        check(triggered and boss.boss_phase_index == 1, str(entry.boss) + " enters phase two at its HP threshold")
+        check(boss.stat("str") == base_str + int(entry.str_bonus), str(entry.boss) + " gains its phase strength bonus")
+        check(boss.armor_def == base_def + int(entry.def_bonus), str(entry.boss) + " gains its authored defence bonus")
+        check(boss.skills.has(str(entry.skill)), str(entry.boss) + " unlocks its phase signature attack")
+        check(boss.hp > int(floor(float(boss.max_hp()) * float(entry.threshold) / 100.0)), str(entry.boss) + " receives its phase recovery")
+        check(not ctl.evaluate_boss_phase(boss) and boss.boss_phase_index == 1, str(entry.boss) + " phase transition cannot trigger twice")
+        var restored: BattleUnit = BattleUnit.from_dict(boss.to_dict())
+        check(restored.boss_phase_index == 1 and restored.skills.has(str(entry.skill)), str(entry.boss) + " phase and signature skill persist in battle saves")
+        boss.hp = 1
+        check(not ctl.evaluate_boss_phase(boss), str(entry.boss) + " has no duplicate phase at critical HP")
+
+
+func _test_act_two_broken_seals() -> void:
+    print("[Act II: Broken Seals]")
+    var flags: Dictionary = {}
+    check(not bool(ActTwoQuestSystem.inspect("boundary_tree", flags).get("available", false)), "Act II remains locked before the Sethmarch oath")
+    check(not bool(ActTwoQuestSystem.apply_boundary(flags, "shared_stewardship").get("ok", true)), "boundary settlement API independently enforces the Act I gate")
+    flags["chapter_1_complete"] = true
+    check(bool(ActTwoQuestSystem.inspect("boundary_tree", flags).get("available", false)), "Boundary Tree opens after Act I")
+    check(not bool(ActTwoQuestSystem.inspect("orrowen_hearing", flags).get("available", true)), "Orrowen hearing waits for boundary evidence")
+    var result: Dictionary = ActTwoQuestSystem.apply_boundary(flags, "shared_stewardship")
+    check(bool(result.get("ok", false)), "shared stewardship settlement is accepted")
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(flags.get("act2_boundary_resolved", false)) and bool(flags.get("orrowen_shared_stewardship", false)), "boundary evidence and settlement persist")
+    check(not bool(ActTwoQuestSystem.apply_boundary(flags, "temporary_survey").get("ok", true)), "boundary settlement cannot be silently overwritten")
+    check(bool(ActTwoQuestSystem.inspect("orrowen_hearing", flags).get("available", false)), "hearing opens after boundary settlement")
+    result = ActTwoQuestSystem.apply_hearing(flags, "protect_witness")
+    check(bool(result.get("ok", false)), "hearing can protect a vulnerable witness")
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(flags.get("act2_witness_protected", false)) and bool(flags.get("act2_orrowen_testimony_verified", false)), "witness protection and verified testimony are recorded separately")
+    check(bool(ActTwoQuestSystem.inspect("changed_escort", flags).get("available", false)), "escort opens after the hearing")
+    check(not bool(ActTwoQuestSystem.apply_escort(flags, "grant_sanctuary").get("ok", true)), "escort outcome is blocked until the crossing is secured")
+    flags["act2_escort_captain_defeated"] = true
+    result = ActTwoQuestSystem.apply_escort(flags, "negotiate_passage")
+    check(bool(result.get("ok", false)), "negotiated passage can be recorded after tactical victory")
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(flags.get("chapter_2_complete", false)) and bool(flags.get("act2_political_debt_orrowen", false)), "Act II completion and political debt persist")
+    check(not bool(ActTwoQuestSystem.apply_escort(flags, "grant_sanctuary").get("ok", true)), "escort resolution is immutable after chronicle entry")
+    var alternate: Dictionary = {"chapter_1_complete":true}
+    result = ActTwoQuestSystem.apply_boundary(alternate, "temporary_survey")
+    alternate = result.get("world_flags", {}) as Dictionary
+    check(bool(alternate.get("orrowen_temporary_survey", false)), "temporary survey alternative is preserved")
+    result = ActTwoQuestSystem.apply_hearing(alternate, "publish_verified_record")
+    alternate = result.get("world_flags", {}) as Dictionary
+    check(bool(alternate.get("act2_record_published", false)) and not bool(alternate.get("act2_witness_protected", true)), "publication alternative is distinct from witness protection")
+    alternate["act2_escort_captain_defeated"] = true
+    result = ActTwoQuestSystem.apply_escort(alternate, "grant_sanctuary")
+    alternate = result.get("world_flags", {}) as Dictionary
+    check(bool(alternate.get("act2_refugees_sheltered", false)) and not bool(alternate.get("act2_political_debt_orrowen", true)), "sanctuary alternative does not create the negotiated political debt")
+    check(not bool(ActTwoQuestSystem.apply_escort(alternate, "invalid").get("ok", true)), "unknown Act II decisions are rejected")
+    var expected := ["boundary_tree", "orrowen_hearing", "changed_escort"]
+    for quest_id in expected:
+        check(ActTwoQuestSystem.CHALLENGES.has(quest_id), "playable Act II challenge exists: " + quest_id)
+        var stages: Array = ActTwoQuestSystem.CHALLENGES[quest_id].steps
+        check(stages.size() >= 3, quest_id + " has multiple distinct interactive stages")
+    var escort: Dictionary = gd.battle_def("act2_changed_escort")
+    check(not escort.is_empty(), "Act II escort battle is registered in GameData")
+    check(str(escort.get("world_flag_on_victory", "")) == "act2_escort_captain_defeated", "escort tactical victory sets its campaign gate")
+    check(str(escort.get("return_scene", "")) == "res://ActTwoQuestChallenge.tscn", "escort battle returns to the Act II challenge")
+    check((escort.get("terrain", []) as Array).size() == 14 and str((escort.get("terrain", []) as Array)[0]).length() == 20, "escort battlefield is a valid 20x14 grid")
+    var has_commander := false
+    for spawn in escort.get("units", []):
+        if str((spawn as Dictionary).get("character_id", "")) == "checkpoint_sergeant":
+            has_commander = bool((spawn as Dictionary).get("commander", false))
+    check(has_commander and gd.characters.has("checkpoint_sergeant"), "Odran Vale is an authored commander encounter")
+    var location_maps: Dictionary = gd.locations.get("maps", {})
+    check(location_maps.has("thornmere") and location_maps.has("elderbough") and location_maps.has("crossing"), "Act II scenario locations use existing walkable regional maps")
+    check(location_maps["thornmere"].spots.any(func(s): return str(s.get("story_id", "")) == "boundary_tree"), "Boundary Tree is placed in Thornmere")
+    check(location_maps["elderbough"].spots.any(func(s): return str(s.get("story_id", "")) == "orrowen_hearing"), "Orrowen hearing is placed in Elderbough")
+    check(location_maps["crossing"].spots.any(func(s): return str(s.get("story_id", "")) == "changed_escort"), "Changed Escort is placed at Sallow Crossing")
+
+func _test_act_three_river_campaign() -> void:
+    print("[Act III: River Campaign]")
+    var flags: Dictionary = {}
+    check(not bool(ActThreeQuestSystem.inspect("three_bridges", flags).get("available", false)), "Act III remains locked before Act II completion")
+    flags["chapter_2_complete"] = true
+    check(bool(ActThreeQuestSystem.inspect("three_bridges", flags).get("available", false)), "Three Bridges opens after Act II")
+    check(not bool(ActThreeQuestSystem.apply_bridges(flags).get("ok", true)), "river operation requires tactical victory")
+    flags["act3_three_bridges_victory"] = true
+    var result: Dictionary = ActThreeQuestSystem.apply_bridges(flags)
+    check(bool(result.get("ok", false)), "river operation records after battle")
+    flags = result.world_flags
+    check(bool(flags.get("act3_ford_secured", false)) and bool(flags.get("act3_evacuation_bridge_held", false)), "ford and evacuation bridge outcomes persist")
+    check(bool(ActThreeQuestSystem.inspect("banner_reeds", flags).get("available", false)), "Banner in the Reeds follows the bridge operation")
+    result = ActThreeQuestSystem.apply_banner(flags, "protect_deserters")
+    check(bool(result.get("ok", false)), "deserter protection is a valid outcome")
+    flags = result.world_flags
+    check(bool(flags.get("act3_civilians_sheltered", false)) and bool(flags.get("act3_deserter_testimony", false)), "shelter and testimony consequences persist")
+    check(bool(ActThreeQuestSystem.inspect("price_crossing", flags).get("available", false)), "Price of a Crossing follows the reed-bank decision")
+    result = ActThreeQuestSystem.apply_crossing(flags, "prioritise_wounded")
+    check(bool(result.get("ok", false)), "wounded-first allocation is valid")
+    flags = result.world_flags
+    check(bool(flags.get("chapter_3_complete", false)) and bool(flags.get("act3_wounded_evacuated", false)), "Act III completion and evacuation choice persist")
+    check(not bool(ActThreeQuestSystem.apply_crossing(flags, "protect_stores").get("ok", true)), "crossing allocation cannot be overwritten")
+    var alt: Dictionary = {"chapter_2_complete":true,"act3_three_bridges_victory":true}
+    result = ActThreeQuestSystem.apply_bridges(alt)
+    alt = result.world_flags
+    result = ActThreeQuestSystem.apply_banner(alt, "use_as_leverage")
+    alt = result.world_flags
+    result = ActThreeQuestSystem.apply_crossing(alt, "protect_stores")
+    check(bool(result.get("world_flags", {}).get("act3_stores_protected", false)), "stores-first alternative is preserved")
+    var battle: Dictionary = gd.battle_def("act3_three_bridges")
+    check(not battle.is_empty(), "Three Bridges battle is registered")
+    check(str(battle.get("world_flag_on_victory", "")) == "act3_three_bridges_victory", "Three Bridges victory flag is correct")
+    check(gd.characters.has("river_marshal"), "River Marshal character exists")
+    var river_marshal_spawned := false
+    for unit in battle.get("units", []):
+        if str(unit.get("character_id", "")) == "river_marshal" and bool(unit.get("commander", false)):
+            river_marshal_spawned = true
+    check(river_marshal_spawned, "River Marshal is the Three Bridges commander")
+    check(bool(ActThreeQuestSystem.inspect("banner_reeds", {"chapter_2_complete":true}).get("available", false)) == false, "Banner in the Reeds cannot skip the bridge operation")
+    var map_spots := true
+    for pair in [["thornmere","three_bridges"],["elderbough","banner_reeds"],["crossing","price_crossing"]]:
+        var found := false
+        for spot in gd.locations.maps[str(pair[0])].get("spots", []):
+            if str(spot.get("story_id","")) == str(pair[1]):
+                found = true
+        map_spots = map_spots and found
+    check(map_spots, "all three Act III story spots are present in local maps")
+
+
+func _test_act_four_winter_of_knives() -> void:
+    print("[Act IV: Winter of Knives]")
+    var flags: Dictionary = {}
+    check(not bool(ActFourQuestSystem.inspect("quillon_archive", flags).get("available", false)), "Act IV remains locked before Act III completion")
+    flags["chapter_3_complete"] = true
+    check(bool(ActFourQuestSystem.inspect("quillon_archive", flags).get("available", false)), "Quillon Archive opens after Act III")
+    check(not bool(ActFourQuestSystem.inspect("witness_recanted", flags).get("available", true)), "recanted witness follows archive resolution")
+    var result: Dictionary = ActFourQuestSystem.apply_archive_access(flags, "coalition_mediation")
+    check(bool(result.get("ok", false)), "coalition mediation grants archive access")
+    flags = result.world_flags
+    check(str(flags.get("act4_custodian_trust", "")) == "coalition", "coalition access records custodian trust")
+    result = ActFourQuestSystem.apply_archive_record(flags, "publish_verified_copy")
+    check(bool(result.get("ok", false)), "verified-copy publication is a valid archive outcome")
+    flags = result.world_flags
+    check(bool(flags.get("act4_original_preserved", false)) and bool(flags.get("act4_verified_copy_published", false)), "original preservation and verified copy are recorded")
+    check(bool(flags.get("act4_edmer_clause_understood", false)), "Edmer clause context is recorded")
+    check(bool(ActFourQuestSystem.inspect("witness_recanted", flags).get("available", false)), "witness scenario unlocks after archive")
+    result = ActFourQuestSystem.apply_witness(flags, "offer_safe_haven")
+    check(bool(result.get("ok", false)), "consent-based safe haven is a valid witness outcome")
+    flags = result.world_flags
+    check(bool(flags.get("act4_witness_agency_respected", false)) and bool(flags.get("act4_witness_relocation_requires_consent", false)), "witness agency and relocation consent are recorded")
+    check(not bool(flags.get("act4_witness_testimony_usable", true)), "withdrawn testimony is not silently restored")
+    check(bool(flags.get("chapter_4_complete", false)), "Act IV completes after witness resolution")
+    check(not bool(ActFourQuestSystem.apply_witness(flags, "investigate_threat").get("ok", true)), "witness outcome cannot be overwritten")
+    var alt: Dictionary = {"chapter_3_complete":true}
+    result = ActFourQuestSystem.apply_archive_access(alt, "forced_entry")
+    alt = result.world_flags
+    check(bool(alt.get("act4_archive_breach", false)) and str(alt.get("act4_custodian_trust", "")) == "damaged", "forced entry records archive damage")
+    result = ActFourQuestSystem.apply_archive_record(alt, "entrust_custodians")
+    check(bool(result.get("world_flags", {}).get("act4_custodian_compact", false)), "custodian compact alternative is preserved")
+    check(not bool(ActFourQuestSystem.apply_archive_access({"chapter_3_complete":true}, "invalid").get("ok", true)), "invalid archive route is rejected")
+    var battle: Dictionary = gd.battle_def("act4_quillon_warden")
+    check(not battle.is_empty(), "Quillon Warden battle is registered")
+    check(gd.characters.has("quillon_warden"), "Quillon Warden character exists")
+    var boss_spawned := false
+    for unit in battle.get("units", []):
+        if str(unit.get("character_id", "")) == "quillon_warden" and bool(unit.get("commander", false)):
+            boss_spawned = true
+    check(boss_spawned, "Quillon Warden is the optional battle commander")
+    check(gd.locations.maps.has("quillon_archive"), "Quillon Archive interior map exists")
+    check(gd.locations.maps.elderbough.doors.has("4"), "Elderbough has a door to the Quillon Archive")
+    var witness_spot_found := false
+    for spot in gd.locations.maps.elderbough.spots:
+        if str(spot.get("story_id", "")) == "witness_recanted":
+            witness_spot_found = true
+    check(witness_spot_found, "recanted witness story spot exists")
 
 
 func _test_escape_mission() -> void:
@@ -2168,6 +2466,9 @@ func _test_campaign_restore_validation() -> void:
     var malformed_companion_quests: Dictionary = payload.duplicate(true)
     malformed_companion_quests["companion_quests"] = []
     check(not RegionSaveState.is_valid_campaign_payload(malformed_companion_quests), "campaign restore rejects malformed companion quest state")
+    var malformed_chronicle: Dictionary = payload.duplicate(true)
+    malformed_chronicle["chronicle_state"] = []
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_chronicle), "campaign restore rejects malformed chronicle milestone state")
     var missing_party: Dictionary = payload.duplicate(true)
     missing_party.erase("party")
     check(not RegionSaveState.is_valid_campaign_payload(missing_party), "campaign restore rejects a missing party")
@@ -2503,3 +2804,18 @@ func _test_campaign_save_semantic_backup_fallback() -> void:
     var future_result: Dictionary = ss.load_slot(future_slot)
     check(not bool(future_result.get("ok", false)) and str(future_result.get("error", "")).contains("newer version"), "future-version primary is never silently downgraded to an older backup")
     ss.delete_slot(future_slot)
+
+
+func _test_opening_chapter() -> void:
+    print("[opening chapter]")
+    var prior := {"east_gallery_escaped": true, "prologue_people_saved": true, "prologue_record_saved": false}
+    check(OpeningChapterSystem.arrival_unlocked(prior), "Kaer Sethorn arrival is gated behind escape victory")
+    check(not OpeningChapterSystem.arrival_unlocked({"prologue_complete": true}), "arrival cannot be entered before the postern escape")
+    var well: Dictionary = OpeningChapterSystem.apply_arrival_choice(prior, "repair_well")
+    var roof: Dictionary = OpeningChapterSystem.apply_arrival_choice(prior, "secure_roof")
+    var ledger: Dictionary = OpeningChapterSystem.apply_arrival_choice(prior, "organize_ledger")
+    check(bool(well.get("chapter_1_arrival_complete", false)) and str(well.get("kaer_sethorn_priority", "")) == "repair_well" and bool(well.get("kaer_well_water_safe", false)), "well priority completes arrival and records safe water")
+    check(bool(roof.get("kaer_roof_secured", false)) and not bool(roof.get("kaer_well_repaired", true)), "roof priority is mutually exclusive and persistent")
+    check(bool(ledger.get("kaer_ledger_organized", false)) and bool(ledger.get("prologue_people_saved", false)), "ledger priority preserves earlier prologue consequences")
+    check(OpeningChapterSystem.apply_arrival_choice(prior, "unknown").is_empty(), "unknown keep priorities are rejected")
+    check(OpeningChapterSystem.priority_acknowledgement("repair_well").contains("Clean water"), "keep priority has an authored narrative acknowledgement")
