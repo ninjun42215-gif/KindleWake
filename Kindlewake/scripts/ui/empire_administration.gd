@@ -36,6 +36,7 @@ const C_RED := Color("#d98d7f")
 
 var active_tab := "realm"
 var selected_province := ""
+var selected_commander := ""
 var message := ""
 var message_good := true
 var body: VBoxContainer
@@ -319,6 +320,20 @@ func _build_military() -> void:
             child.disabled = not controlled or (child.text.begins_with("Disband") and int(garrison.get(troop_type, 0)) < 5)
         body.add_child(actions)
     if controlled and int(garrison.get("infantry", 0)) >= 5:
+        var commander_picker := OptionButton.new()
+        commander_picker.custom_minimum_size.y = 44
+        commander_picker.add_item("No Commander")
+        commander_picker.set_item_metadata(0, "")
+        var commander_index := 0
+        for character_id in GameState.party.roster:
+            commander_picker.add_item(_character_name(str(character_id)))
+            commander_picker.set_item_metadata(commander_picker.item_count - 1, str(character_id))
+            if str(character_id) == selected_commander:
+                commander_index = commander_picker.item_count - 1
+        commander_picker.select(commander_index)
+        commander_picker.item_selected.connect(_select_field_commander)
+        body.add_child(_label("Appoint a party character to command the new field army:", 14, C_DIM))
+        body.add_child(commander_picker)
         body.add_child(_button("Mobilize 5 Infantry into Field Army", _mobilize_field_army.bind(selected_province, {"infantry": 5}), true))
     body.add_child(_label("Garrisons defend their province. Mobilized field armies travel one atlas region-link per strategic move. Armies outside controlled territory are unsupplied.", 14, C_DIM))
     _section("FIELD ARMIES")
@@ -338,8 +353,13 @@ func _build_military() -> void:
             body.add_child(_button("March to " + str(destination).replace("_", " ").capitalize(), _move_field_army.bind(str(army_id), str(destination)), true))
 
 
+func _select_field_commander(index: int) -> void:
+    var picker := body.get_child(body.get_child_count() - 1) as OptionButton
+    selected_commander = str(picker.get_item_metadata(index))
+
+
 func _mobilize_field_army(province: String, composition: Dictionary) -> void:
-    var army_id := GameState.mobilize_field_army(province, composition)
+    var army_id := GameState.mobilize_field_army(province, composition, selected_commander)
     _set_message("Mobilized %s from %s." % [army_id, province] if army_id != "" else "Mobilization rejected: check garrison strength and province control.", army_id != "")
     GameState.save_campaign("auto_a")
 
