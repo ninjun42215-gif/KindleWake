@@ -121,5 +121,29 @@
   "world_flag_on_victory": "act1_ash_bailiff_defeated",
   "victory_text": "The Bailiff's weapon falls. Elder Hale reads the retired-seal record aloud, and the household rejects the warrant. The First Oath can now be sworn.",
   "defeat_text": "The Bailiff forces the household back. The oath has not been broken; regroup and defend the hall again.",
-  "return_scene": "res://ActOneQuestChallenge.tscn"
+  "return_scene": "res://ActOneQuestChallenge.tscn",
+  "boss_phases": [
+    {
+      "character_id": "ash_bailiff",
+      "threshold_percent": 60,
+      "message": "The Ash Bailiff tears away the broken seal and attacks with renewed conviction!",
+      "stat_bonuses": {
+        "int": 4,
+        "vit": 3
+      },
+      "heal_percent": 10,
+      "morale_restore": 20
+    },
+    {
+      "character_id": "ash_bailiff",
+      "threshold_percent": 25,
+      "message": "The Bailiff invokes the final clause. His final assault is precise and merciless.",
+      "stat_bonuses": {
+        "str": 3,
+        "acc": 10
+      },
+      "heal_percent": 0,
+      "morale_restore": 15
+    }
+  ]
 }
