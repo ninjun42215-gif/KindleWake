@@ -722,6 +722,479 @@
         "rare_mentor"
       ],
       "permanent": false
+    },
+    "empathetic": {
+      "name": "Empathetic",
+      "category": "social",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Reads the feelings of others and responds with care.",
+      "effects": {
+        "ldr": 1,
+        "mor": 1
+      },
+      "sources": [
+        "helped_companion",
+        "resolved_conflict"
+      ],
+      "permanent": false
+    },
+    "forgiving": {
+      "name": "Forgiving",
+      "category": "personality",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Can move beyond a wrong when genuine repair has been made.",
+      "effects": {
+        "mor": 1
+      },
+      "conflicts": [
+        "vengeful"
+      ],
+      "sources": [
+        "forgave_betrayer",
+        "reconciliation"
+      ],
+      "permanent": false
+    },
+    "vengeful": {
+      "name": "Vengeful",
+      "category": "personality",
+      "rarity": "uncommon",
+      "alignment": "negative",
+      "description": "Carries a strong desire to answer serious wrongs with retaliation.",
+      "effects": {
+        "str": 1,
+        "mor": -1
+      },
+      "conflicts": [
+        "forgiving"
+      ],
+      "sources": [
+        "revenge_choice"
+      ],
+      "permanent": false
+    },
+    "stoic": {
+      "name": "Stoic",
+      "category": "personality",
+      "rarity": "uncommon",
+      "alignment": "neutral",
+      "description": "Keeps outward composure during hardship, even when privately affected.",
+      "effects": {
+        "vit": 1,
+        "mor": 1
+      },
+      "sources": [
+        "endured_hardship",
+        "story_history"
+      ],
+      "permanent": false
+    },
+    "independent": {
+      "name": "Independent",
+      "category": "personality",
+      "rarity": "common",
+      "alignment": "neutral",
+      "description": "Prefers to reach conclusions and act without relying on approval.",
+      "effects": {
+        "lck": 1,
+        "ldr": -1
+      },
+      "sources": [
+        "independent_choice",
+        "solo_trial"
+      ],
+      "permanent": false
+    },
+    "manipulative": {
+      "name": "Manipulative",
+      "category": "personality",
+      "rarity": "rare",
+      "alignment": "negative",
+      "description": "Uses pressure and selective truths to steer other people toward a desired outcome.",
+      "effects": {
+        "ldr": 1,
+        "mor": -1
+      },
+      "sources": [
+        "manipulation_choice"
+      ],
+      "permanent": false
+    },
+    "quick_learner": {
+      "name": "Quick Learner",
+      "category": "intelligence",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Learns unfamiliar techniques faster through practice and observation.",
+      "effects": {
+        "int": 1,
+        "dex": 1
+      },
+      "sources": [
+        "training_streak",
+        "mentorship"
+      ],
+      "permanent": false
+    },
+    "linguist": {
+      "name": "Linguist",
+      "category": "intelligence",
+      "rarity": "rare",
+      "alignment": "positive",
+      "description": "Recognises language patterns and can work with unfamiliar scripts and dialects.",
+      "effects": {
+        "int": 2
+      },
+      "sources": [
+        "translated_inscription",
+        "language_research"
+      ],
+      "permanent": false
+    },
+    "tactician": {
+      "name": "Tactician",
+      "category": "intelligence",
+      "rarity": "rare",
+      "alignment": "positive",
+      "description": "Understands positioning, timing, and the practical use of battlefield terrain.",
+      "effects": {
+        "int": 1,
+        "acc": 1
+      },
+      "sources": [
+        "tactical_victory",
+        "battlefield_study"
+      ],
+      "permanent": false
+    },
+    "unyielding_defender": {
+      "name": "Unyielding Defender",
+      "category": "combat",
+      "rarity": "rare",
+      "alignment": "positive",
+      "description": "Excels at holding a position and protecting those behind the line.",
+      "effects": {
+        "vit": 2,
+        "eva": 1
+      },
+      "sources": [
+        "defended_position",
+        "protected_party"
+      ],
+      "permanent": false
+    },
+    "monster_slayer": {
+      "name": "Monster Slayer",
+      "category": "combat",
+      "rarity": "rare",
+      "alignment": "positive",
+      "description": "Has studied dangerous creatures and defeated a major monster threat.",
+      "effects": {
+        "str": 1,
+        "acc": 1
+      },
+      "sources": [
+        "boss_victory",
+        "monster_research"
+      ],
+      "permanent": false
+    },
+    "inspiring": {
+      "name": "Inspiring",
+      "category": "leadership",
+      "rarity": "rare",
+      "alignment": "positive",
+      "description": "Raises the resolve of others through example and clear purpose.",
+      "effects": {
+        "ldr": 2,
+        "mor": 1
+      },
+      "sources": [
+        "inspired_allies",
+        "command_victory"
+      ],
+      "permanent": false
+    },
+    "trustworthy": {
+      "name": "Trustworthy",
+      "category": "social",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Earns confidence by keeping confidences and following through on commitments.",
+      "effects": {
+        "ldr": 1
+      },
+      "sources": [
+        "kept_secret",
+        "kept_promise"
+      ],
+      "permanent": false
+    },
+    "enduring": {
+      "name": "Enduring",
+      "category": "physical",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Maintains effort over long journeys and demanding encounters.",
+      "effects": {
+        "vit": 2,
+        "hp": 1
+      },
+      "sources": [
+        "long_expedition",
+        "endurance_training"
+      ],
+      "permanent": false
+    },
+    "scarred": {
+      "name": "Scarred",
+      "category": "physical",
+      "rarity": "uncommon",
+      "alignment": "neutral",
+      "description": "Bears a lasting physical mark from a consequential injury. The scar is part of their history, not a penalty to their worth.",
+      "effects": {
+        "mor": 1
+      },
+      "sources": [
+        "survived_major_injury"
+      ],
+      "permanent": true
+    },
+    "inspiring_commander": {
+      "name": "Inspiring Commander",
+      "category": "leadership",
+      "rarity": "epic",
+      "alignment": "positive",
+      "description": "Has led companions through a defining campaign victory and earned their confidence.",
+      "effects": {
+        "ldr": 3,
+        "mor": 1
+      },
+      "sources": [
+        "command_milestone",
+        "campaign_victory"
+      ],
+      "permanent": false
+    },
+    "administrator": {
+      "name": "Administrator",
+      "category": "leadership",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Organises people and supplies with care and consistency.",
+      "effects": {
+        "int": 1,
+        "ldr": 1
+      },
+      "sources": [
+        "organised_expedition",
+        "settlement_project"
+      ],
+      "permanent": false
+    },
+    "military_genius": {
+      "name": "Military Genius",
+      "category": "leadership",
+      "rarity": "legendary",
+      "alignment": "positive",
+      "description": "A rare commander whose strategic judgement has changed the course of a major campaign.",
+      "effects": {
+        "int": 2,
+        "ldr": 3
+      },
+      "sources": [
+        "campaign_masterstroke"
+      ],
+      "permanent": false
+    },
+    "benevolent_ruler": {
+      "name": "Benevolent Ruler",
+      "category": "leadership",
+      "rarity": "epic",
+      "alignment": "positive",
+      "description": "Uses authority to protect people and improve their circumstances.",
+      "effects": {
+        "ldr": 2,
+        "mor": 2
+      },
+      "sources": [
+        "benevolent_governance"
+      ],
+      "permanent": false
+    },
+    "blacksmith": {
+      "name": "Blacksmith",
+      "category": "lifestyle",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Has practical skill in repairing and shaping metal equipment.",
+      "effects": {
+        "str": 1,
+        "int": 1
+      },
+      "sources": [
+        "forging_milestone",
+        "blacksmith_training"
+      ],
+      "permanent": false
+    },
+    "hunter": {
+      "name": "Hunter",
+      "category": "lifestyle",
+      "rarity": "common",
+      "alignment": "positive",
+      "description": "Can track game and read signs left by animals and people in the wild.",
+      "effects": {
+        "dex": 1,
+        "lck": 1
+      },
+      "sources": [
+        "successful_hunt",
+        "tracking"
+      ],
+      "permanent": false
+    },
+    "merchant": {
+      "name": "Merchant",
+      "category": "lifestyle",
+      "rarity": "uncommon",
+      "alignment": "neutral",
+      "description": "Understands trade, value, and the movement of scarce goods.",
+      "effects": {
+        "int": 1,
+        "lck": 1
+      },
+      "sources": [
+        "trade_milestone",
+        "fair_bargain"
+      ],
+      "permanent": false
+    },
+    "merciful": {
+      "name": "Merciful",
+      "category": "morality",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Shows restraint toward defeated foes when doing so is safe and meaningful.",
+      "effects": {
+        "mor": 2
+      },
+      "sources": [
+        "spared_enemy",
+        "mercy_choice"
+      ],
+      "permanent": false
+    },
+    "corrupt": {
+      "name": "Corrupt",
+      "category": "morality",
+      "rarity": "rare",
+      "alignment": "negative",
+      "description": "Has abused entrusted authority or resources for personal benefit.",
+      "effects": {
+        "ldr": -2,
+        "lck": 1
+      },
+      "sources": [
+        "abused_authority",
+        "embezzlement"
+      ],
+      "permanent": false
+    },
+    "arcane_prodigy": {
+      "name": "Arcane Prodigy",
+      "category": "magical",
+      "rarity": "epic",
+      "alignment": "positive",
+      "description": "Shows extraordinary aptitude for the rare magical arts after a consequential awakening.",
+      "effects": {
+        "mp": 3,
+        "int": 2
+      },
+      "sources": [
+        "arcane_trial",
+        "magical_awakening"
+      ],
+      "permanent": false
+    },
+    "mana_instability": {
+      "name": "Mana Instability",
+      "category": "magical",
+      "rarity": "rare",
+      "alignment": "negative",
+      "description": "A magical disturbance makes the character's power difficult to control. It is a condition requiring story treatment, not a moral failing.",
+      "effects": {
+        "mp": -2,
+        "int": 1
+      },
+      "sources": [
+        "magical_catastrophe",
+        "void_exposure"
+      ],
+      "permanent": false
     }
-  }
+  },
+  "synergies": [
+    {
+      "id": "fearless_warrior",
+      "name": "Fearless Warrior",
+      "requires": [
+        "brave",
+        "battle_hardened"
+      ],
+      "effects": {
+        "mor": 1,
+        "vit": 1
+      }
+    },
+    {
+      "id": "guardian_companion",
+      "name": "Guardian Companion",
+      "requires": [
+        "protective",
+        "loyal"
+      ],
+      "effects": {
+        "ldr": 1,
+        "vit": 1
+      }
+    },
+    {
+      "id": "arcane_savant",
+      "name": "Arcane Savant",
+      "requires": [
+        "scholar",
+        "magical_affinity"
+      ],
+      "effects": {
+        "int": 1,
+        "mp": 1
+      }
+    },
+    {
+      "id": "inspiring_presence",
+      "name": "Inspiring Presence",
+      "requires": [
+        "charismatic",
+        "inspiring"
+      ],
+      "effects": {
+        "ldr": 1
+      }
+    },
+    {
+      "id": "master_of_the_blade",
+      "name": "Master of the Blade",
+      "requires": [
+        "master_swordsman",
+        "focused"
+      ],
+      "effects": {
+        "acc": 1,
+        "str": 1
+      }
+    }
+  ]
 }
