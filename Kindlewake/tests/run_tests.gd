@@ -1055,6 +1055,8 @@ func _test_strategic_battle_integration() -> void:
     var strategic_unit_id := "strategic_%s_infantry_0" % army_id
     check(db.get("characters", {}).has(strategic_unit_id) and db.get("characters", {}).has("strategic_defender_infantry_0"), "authored troop profiles populate the tactical battle database")
     check(db.get("classes", {}).has("swordsman") and db.get("classes", {}).has("archer"), "tactical cohort profiles resolve through existing combat classes")
+    var fortified_defender: Dictionary = db["characters"]["strategic_defender_infantry_0"]
+    check(int(fortified_defender.get("armor_def", 0)) == 4 and int(fortified_defender.get("stats", {}).get("hp", 0)) == 34, "fortification level increases garrison armour and durability")
     var controller := BattleController.new()
     controller.setup(battle_def, db, 9191)
     controller.begin()
