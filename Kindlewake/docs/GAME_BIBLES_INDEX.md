@@ -6,7 +6,8 @@ This index gathers the separate bibles needed to understand and develop the game
 ## Read these first
 
 1. **[Base44 Start Here](BASE44_START_HERE.md)** — repository rules, architecture constraints, safe workflow and reading order.
-2. **[In-Depth Lore Bible](LORE_BIBLE.md)** — canon, story, history, characters, continents, factions, territories and regional bestiary direction.\n3. **[Scenario and Narrative Production Bible](SCENARIO_BIBLE.md)** — polished campaign scenario spine, regional scenario cards, companion arcs, choice/consequence ledger and scenario acceptance criteria.
+2. **[In-Depth Lore Bible](LORE_BIBLE.md)** — canon, story, history, characters, continents, factions, territories and regional bestiary direction.
+3. **[Scenario and Narrative Production Bible](SCENARIO_BIBLE.md)** — polished campaign scenario spine, regional scenario cards, companion arcs, choice/consequence ledger and scenario acceptance criteria.
 4. **[Game Mechanics Bible](MECHANICS_BIBLE.md)** — campaign loop, combat formulas, CTB, terrain, progression, classes, skills, runes, traits, recruitment, platoons, kingdom/empire systems and mini-games.
 5. **[Game Vision and Requirements](GAME_VISION_AND_REQUIREMENTS.md)** — what the owner wants the finished game to become and acceptance criteria.
 6. **[Current Game State and Gap Analysis](CURRENT_GAME_STATE_AND_GAP_ANALYSIS.md)** — what is documented as current, what is unverified, limitations and next implementation priorities.
