@@ -393,6 +393,10 @@ static func _inherit_titles(state: Dictionary, deceased_id: String) -> void:
   if str(title.get("holder","")) != deceased_id:
    continue
   var heir := _select_heir(state,deceased_id)
+  var former: Dictionary = state.people[deceased_id]
+  if str(former.get("title_id","")) == title_id:
+   former["title_id"] = ""
+   state.people[deceased_id] = former
   title["holder"] = heir
   titles[title_id] = title
   if heir != "":
