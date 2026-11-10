@@ -207,8 +207,7 @@ func _test_companion_quests() -> void:
         "q_companion_joss_debt_of_silence": {"thornmere": "purse_recognised", "thornmere_inn": "smuggling_ledger_found", "thornmere_market": "debtors_rescued"},
         "q_companion_isaure_two_oaths": {"elderbough": "summons_received", "elderbough_inn": "household_muster_examined", "elderbough_market": "mentor_challenge_resolved"},
         "q_companion_verra_song_without_seal": {"brinegate": "borrowed_verse_heard", "saltmere": "singers_copy_recovered", "lantern_quay": "public_performance_resolved"},
-        "q_companion_tomas_far_marker": {"crossing": "fen_marker_recognised", "crossing_inn": "scout_trail_reconstructed", "crossing_elder": "homeward_choice_made"}
-,
+        "q_companion_tomas_far_marker": {"crossing": "fen_marker_recognised", "crossing_inn": "scout_trail_reconstructed", "crossing_elder": "homeward_choice_made"},
         "q_companion_orlan_margin_of_truth": {"milefort": "misbound_volume_found", "milefort_inn": "source_provenance_verified", "milefort_market": "archive_access_resolved"},
         "q_companion_odaly_open_door": {"redwater": "sanctuary_bell_answered", "redwater_inn": "shelter_rules_agreed", "redwater_market": "threshold_defended"}
     }
