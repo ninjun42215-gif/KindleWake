@@ -43,6 +43,7 @@ func _initialize() -> void:
     _test_act_one_challenge_content()
     _test_act_one_tactical_bosses()
     _test_act_one_boss_ai()
+    _simulate_act_one_bosses(8)
     _test_escape_mission()
     _test_escape_ui_layout()
     _test_sigils()
@@ -298,6 +299,69 @@ func _test_act_one_boss_ai() -> void:
         check(str(smite_plan.get("action", "")) == "skill" and str(smite_plan.get("skill_id", "")) == "holy_smite_ii", "Ash Bailiff uses Judgement when no ally needs urgent healing")
     else:
         check(false, "Ash Bailiff AI test locates commander and retainer")
+
+
+func _simulate_act_one_bosses(samples_per_encounter: int) -> void:
+    print("[Act I boss balance simulations]")
+    for battle_id in ["act1_hask_boss", "act1_ash_bailiff_boss"]:
+        var completed := 0
+        var player_wins := 0
+        var total_turns := 0
+        var boss_damage_skills := 0
+        var boss_heals := 0
+        var boss_weapon_attacks := 0
+        var boss_moves := 0
+        var timed_out := 0
+        for sample in range(samples_per_encounter):
+            var ctl := BattleController.new()
+            ctl.setup(gd.battle_def(battle_id), gd.as_db(), 81000 + sample + (1000 if battle_id == "act1_ash_bailiff_boss" else 0))
+            var boss_id := -1
+            for unit_obj in ctl.units:
+                var unit: BattleUnit = unit_obj
+                if unit.is_commander:
+                    boss_id = unit.id
+                    break
+            var events := {"damage_skills": 0, "heals": 0, "weapon_attacks": 0, "moves": 0}
+            ctl.unit_acted.connect(func(actor_id: int, kind: String, _data: Dictionary) -> void:
+                if actor_id != boss_id:
+                    return
+                match kind:
+                    "skill_damage":
+                        events["damage_skills"] += 1
+                    "heal":
+                        events["heals"] += 1
+                    "attack":
+                        events["weapon_attacks"] += 1
+                    "move":
+                        events["moves"] += 1
+            )
+            ctl.begin()
+            var guard := 0
+            while ctl.result == "" and guard < 1600:
+                ctl.run_ai_turn(true)
+                guard += 1
+            if ctl.result == "":
+                timed_out += 1
+            else:
+                completed += 1
+                if ctl.result == "victory":
+                    player_wins += 1
+            total_turns += ctl.turn_count
+            boss_damage_skills += int(events["damage_skills"])
+            boss_heals += int(events["heals"])
+            boss_weapon_attacks += int(events["weapon_attacks"])
+            boss_moves += int(events["moves"])
+        var avg_turns := float(total_turns) / float(samples_per_encounter)
+        check(timed_out == 0, battle_id + " AI-vs-AI simulations all reach a battle result")
+        check(completed == samples_per_encounter, battle_id + " simulation sample count is complete")
+        print("  info  %s: player wins %d/%d; avg turns %.1f; boss attacks %d; boss damage skills %d; boss heals %d; boss moves %d; timeouts %d" % [
+            battle_id, player_wins, samples_per_encounter, avg_turns, boss_weapon_attacks, boss_damage_skills, boss_heals, boss_moves, timed_out
+        ])
+        if battle_id == "act1_hask_boss":
+            check(boss_damage_skills > 0, "Hask uses his signature damage skill in full battle simulations")
+        else:
+            check(boss_heals > 0, "Ash Bailiff heals at least once across full battle simulations")
+            check(boss_damage_skills > 0, "Ash Bailiff uses his signature damage skill in full battle simulations")
 
 
 func bailiff_ctl_prepare(ctl: BattleController, bailiff: BattleUnit, retainer: BattleUnit) -> void:
