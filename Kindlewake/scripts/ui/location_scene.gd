@@ -6,6 +6,7 @@ const OpeningActOneQuestSystem = preload("res://scripts/core/opening_act_one_que
 const ActTwoQuestSystem = preload("res://scripts/core/act_two_quest_system.gd")
 const ActThreeQuestSystem = preload("res://scripts/core/act_three_quest_system.gd")
 const ActFourQuestSystem = preload("res://scripts/core/act_four_quest_system.gd")
+const ActFiveQuestSystem = preload("res://scripts/core/act_five_quest_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
@@ -265,6 +266,8 @@ func _on_prompt_pressed() -> void:
             _render_act_three_story(near_spot)
         elif story_id in ["quillon_archive", "witness_recanted"]:
             _render_act_four_story(near_spot)
+        elif story_id == "last_audience":
+            _render_act_five_story(near_spot)
         else:
             _render_opening_story(near_spot)
     elif spot_kind == "recruit":
@@ -393,6 +396,34 @@ func _launch_act_four_challenge(story_id: String) -> void:
         GameState.world_flags["_pending_act_four_challenge"] = story_id
         GameState.world_flags["_pending_act_four_challenge_step"] = 0
     get_tree().change_scene_to_file("res://ActFourQuestChallenge.tscn")
+
+
+
+func _render_act_five_story(spot: Dictionary) -> void:
+    var view: Dictionary = ActFiveQuestSystem.inspect(GameState.world_flags)
+    spot_title.text = str(view.get("title", spot.get("name", "The Kindling")))
+    spot_text.text = str(view.get("body", ""))
+    for child in spot_buttons.get_children():
+        spot_buttons.remove_child(child)
+        child.queue_free()
+    if bool(GameState.world_flags.get("chapter_5_complete", false)):
+        spot_text.text += "\n\nEnding recorded: " + str(GameState.world_flags.get("act5_ending_profile", ""))
+        spot_buttons.add_child(_btn("Review the final audience", _launch_act_five_challenge))
+    elif bool(view.get("available", false)):
+        spot_buttons.add_child(_btn("Continue the final campaign", _launch_act_five_challenge))
+    else:
+        spot_text.text += "\n\nThe road to Aurelmont is not yet open."
+    spot_buttons.add_child(_btn("Close", _close_panel))
+
+
+func _launch_act_five_challenge() -> void:
+    if not bool(GameState.world_flags.get("chapter_4_complete", false)):
+        spot_text.text += "\n\nThe Quillon witness decision must be completed first."
+        return
+    GameState.pending_location = current_map_id
+    GameState.world_flags["_pending_act_five_stage"] = 0
+    GameState.save_campaign("auto_a")
+    get_tree().change_scene_to_file("res://ActFiveQuestChallenge.tscn")
 
 
 func _launch_opening_challenge(story_id: String) -> void:
