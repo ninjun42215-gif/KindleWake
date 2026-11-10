@@ -152,7 +152,7 @@ static func is_valid_campaign_payload(payload: Dictionary) -> bool:
     if typeof(payload.get("world_pos", [0.0, 0.0])) != TYPE_ARRAY:
         return false
     var pos: Array = payload.get("world_pos", [0.0, 0.0])
-    if pos.size() < 2 or not (pos[0] is float or pos[0] is int) or not (pos[1] is float or pos[1] is int):
+    if pos.size() < 2 or typeof(pos[0]) not in [TYPE_FLOAT, TYPE_INT] or typeof(pos[1]) not in [TYPE_FLOAT, TYPE_INT]:
         return false
     if typeof(payload.get("world_positions", {})) != TYPE_DICTIONARY:
         return false
