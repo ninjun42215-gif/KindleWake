@@ -227,3 +227,10 @@ A feature is done only when:
 - balance is checked when relevant;
 - no placeholder or fake success path remains;
 - documentation records exact implementation status and limitations.
+
+
+## Additional game-bible requirements
+
+The mechanics are documented across [MECHANICS_BIBLE.md](MECHANICS_BIBLE.md), [GDD.md](GDD.md) and [GAME_BIBLES_INDEX.md](GAME_BIBLES_INDEX.md). Base44 must preserve and build on the documented tactical grid/CTB combat, shared CombatCalc rules, terrain/weather/status/morale/fatigue, character levels/classes/skills/equipment, EXP/AP/Sigil/rune systems, recruitment, platoons, army-battle design, Kaer Sethorn facilities, campaign calendar/economy and offline save architecture. The requested CK-style traits, broader human/monster bestiary, full kingdom/empire management, council appointments, strategic wars/sieges and named mini-games remain targets until confirmed in live code.
+
+The [Premium Production Bible](PREMIUM_PRODUCTION_BIBLE.md) is part of the required design package, not optional inspiration. It governs emotional quality, story delivery, art direction, audio, mobile UX, asset licensing and release guardrails. The [Master Game Bibles Index](GAME_BIBLES_INDEX.md) defines reading order and status labels.
