@@ -47,6 +47,7 @@ func _initialize() -> void:
     _test_world_atlas()
     _test_world_expansion()
     _test_holding_system()
+    _test_dungeon_mechanisms()
     _test_faction_politics()
     _test_thalassar_region()
     _test_wraparound_world()
