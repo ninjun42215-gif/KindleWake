@@ -191,3 +191,8 @@ docs/            GDD.md, SESSION_HANDOFF.md, CONTINUATION_PROMPT.md
 - Added eight original KindleWake SVG settlement illustrations for the houses, frontier hut, keep and towers. `Art.world()` now loads these vector assets in place of the legacy voxel-building PNGs.
 - Updated the asset provenance ledger and art credits. The unverified voxel building pack is no longer used by the game; its old files remain in the repository only as historical material.
 - This is the first asset tranche, not a claim that the full game art is production-complete. Character portraits, player/companion sprites, enemy variety, dungeon set dressing, battle effects, UI iconography, and audio still need dedicated premium passes.
+
+
+## Campaign politics foundation (implementation in review)
+
+The current feature branch adds data-driven factions across the seven-continent atlas, regional political affiliations, bounded diplomatic relations, non-aggression/trade/alliance/war states, alliance trust gating, validated territory transfers and campaign history. Political state is stored as an optional campaign payload field; legacy schema-4 saves receive safe defaults. This is the rules/data foundation only: no player-facing kingdom UI, autonomous faction turns or complete strategic-war system is claimed yet. See `docs/GDD.md` section 19 and `docs/SESSION_HANDOFF.md`.
