@@ -264,7 +264,7 @@ Implemented in this branch:
 - Supply depots seed a connected network through controlled atlas links; hostile frontier regions adjacent to the network can be supplied. Isolation causes morale loss and deterministic attrition after a one-season grace period.
 - Seasonal siege progression, breached defences, deterministic assault casualties and explicit post-assault faction transfer are implemented.
 - Field armies launch actual BattleController encounters against region-specific garrisons. Troop cohorts use infantry/archer/cavalry profiles; assigned party commanders deploy, and tactical damage/deaths convert into individual strategic casualties.
-- Fortified regions have stronger garrisons. Breached sieges launch tactical battles with a battering-ram support unit; victory marks the siege captured and defeat reduces progress. Occupation remains an explicit faction transfer.
+- Fortified regions have stronger garrisons. `data/strategic_warfare.json` authors infantry/archer/cavalry profiles, faction garrison doctrines, fort bonuses and the battering-ram unit. Breached sieges launch tactical battles; victory marks the siege captured and defeat reduces progress. Occupation remains an explicit faction transfer.
 - War exhaustion rises after tactical losses and siege assaults, penalizes stability/order at 70+, and can be reduced through the military-tab armistice action.
 - Governors/buildings/seasons validate against provinces controlled by House Dunmarrow or the Crownlands; do not allow management of foreign territories.
 - Strict regression tests added in `tests/run_tests.gd`, not yet executed.
