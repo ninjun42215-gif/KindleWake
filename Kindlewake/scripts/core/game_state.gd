@@ -123,6 +123,18 @@ func construct_province_building(province_id: String, building_id: String) -> bo
 func advance_empire_season() -> Dictionary:
     return EmpireSystem.advance_season(empire_state, player_controlled_provinces())
 
+func recruit_provincial_troops(province_id: String, troop_type: String, amount: int) -> bool:
+	return EmpireSystem.recruit_troops(empire_state, province_id, troop_type, amount, player_controlled_provinces())
+
+
+func disband_provincial_troops(province_id: String, troop_type: String, amount: int) -> bool:
+	return EmpireSystem.disband_troops(empire_state, province_id, troop_type, amount, player_controlled_provinces())
+
+
+func empire_army_summary() -> Dictionary:
+	return EmpireSystem.army_summary(empire_state)
+
+
 ## Battle database with the party's current sheets (level, stats, equipment) substituted in.
 func battle_db() -> Dictionary:
     return party.battle_db(GameData.as_db())
