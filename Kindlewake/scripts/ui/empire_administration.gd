@@ -438,7 +438,7 @@ func _disband_troops(province: String, troop_type: String, amount: int) -> void:
 
 func _build_economy() -> void:
     var s: Dictionary = GameState.empire_state
-    var unrest: Dictionary = EmpireSystem.rebellion_assessment(s, GameState.player_controlled_provinces())
+    var unrest: Dictionary = {"risk": int(s.get("rebellion_risk", 0)), "alerts": s.get("rebellion_alerts", [])}
     _section("REALM STABILITY")
     _metric("Rebellion pressure", "%d / 100" % int(unrest.get("risk", 0)), "Warnings appear before unrest can become an uprising")
     for alert in unrest.get("alerts", []):
