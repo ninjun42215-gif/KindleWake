@@ -23,6 +23,9 @@ Implemented as `scripts/core/empire_management_system.gd`, integrated with `Game
 - Province governors reference known atlas regions and existing party characters.
 - Province construction: farms/granaries, markets, barracks, roads, forts and aqueducts. Costs are paid immediately; duplicate building types per province are rejected.
 - Explicit seasonal advancement. The caller/story clock controls when a season advances; there is no hidden real-time simulation.
+- Provincial standing forces with levy infantry, march archers and household cavalry; recruitment spends manpower and treasury, and disbanding returns 75% of the manpower cost.
+- Controlled-province garrison limits (50 baseline, +100 with barracks), validation against foreign/unknown provinces, and an aggregate army summary.
+- Standing armies add seasonal treasury upkeep and food/ration demand. Seasonal reports expose troop count, military upkeep and military food consumption so army size has a visible economic cost.
 - Seasonal tax income, upkeep, food production/consumption, manpower replenishment, public-order and stability effects, fort defence contribution and bounded event history.
 - Safe normalization for legacy saves with no empire payload. The system is additive and does not require a save schema bump.
 
@@ -37,8 +40,9 @@ Each known province contributes a modest baseline tax and food yield, while popu
 3. **Provinces:** atlas ownership, governor appointment/recall and construction. Actions are disabled outside player-controlled House Dunmarrow/Crownlands territory; local order and resource specialization remain future work.
 4. **Economy:** tax policy, edicts and seasonal ledger. A forecast/confirmation preview remains future work.
 5. **Military:** manpower is visible in the realm overview and forts contribute a defence value in the seasonal report; garrisons, recruitment levies, supply and campaign readiness are not yet implemented.
-6. **Diplomacy:** faction relations and territorial transfers remain available through the separate faction backend; a player-facing diplomacy screen, treaties, trade and war declarations are future work.
-7. **Chronicle:** current realm decisions, construction, appointments, policy changes and seasonal reports. Rebellion and territorial events will join when authored.
+6. **Military:** recruit and disband provincial infantry, archers and cavalry; view total troops, garrisoned provinces, upkeep and food demand. Barracks increase local garrison capacity. Seasonal ledgers charge troop upkeep and rations. Field armies, movement, tactical deployment, supply lines, sieges and war declarations remain future work.
+7. **Diplomacy:** faction relations and territorial transfers remain available through the separate faction backend; a player-facing diplomacy screen, treaties, trade and war declarations are future work.
+8. **Chronicle:** current realm decisions, construction, appointments, policy changes and seasonal reports. Rebellion and territorial events will join when authored.
 
 ## Future gameplay systems
 
