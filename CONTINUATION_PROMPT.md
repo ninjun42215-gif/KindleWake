@@ -1,6 +1,13 @@
-> **ACTIVE MAINTENANCE CANDIDATE — 2026-11-10:** Branch `fix/headless-resource-cleanup-current-main`, based on current main `0785d76c86f6a4b1eafcec54ccb54ca3b5299acc`. This maintenance slice changes no gameplay rules, save data/schema, game version or Android permissions. It synchronously frees the temporary PartyScreen used by the headless UI test, drains deferred child-node deletions, releases the balance report's GameData Node before shutdown, and disables Blender import because the tracked project contains no `.blend` source files. Exact-head Godot import, scene smoke, strict tests, balance report and Android export are pending; do not call the cleanup verified until this rebased PR's workflows finish.
+> **AUTHORITATIVE LIVE CHECKPOINT — 2026-11-10 12:33 UTC:** Canonical repository `ninjun42215-gif/KindleWake`; project directory `Kindlewake/`; default branch `main`; current main commit `84da6e400b7991d753bcc2cddeb02d854702b547`. PR #118 (Maren sequel), #119 (production audit/handoff), #121 (Chronicle inter-house diplomacy) and #122 (headless resource cleanup) are merged. Game/Android version `0.12.0 / 1200`; save schema `4`; Godot `4.2.2`; offline-first, no accounts, servers, multiplayer or INTERNET permission. The requested level cap of 250 is implemented and covered by strict tests.
+
+> **Post-merge verification:** Current main CI passed 18/18 scene loads, 929 strict checks / 0 failures, campaign lifecycle and continuity tests, Chronicle dynasty/family checks, balance report, signed Android APK export, Project Health Audit, Version Sync, Workflow YAML Lint and source handoff. APK artifact `13764651354` (41,194,872-byte artifact archive); build run [#42816530381](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42816530381). The previous ObjectDB/resource-shutdown and Blender-import warnings are no longer present. Remaining non-blocking diagnostics: transient first-pass global-class registration errors followed by a clean import retry, a headless custom-cursor warning, and GitHub Actions Node.js deprecation notices.
+
+> **Release gates:** Physical Android-device QA remains outstanding. Third-party sprite/voxel asset redistribution rights remain a public/commercial release blocker until verified or replaced. See [PRODUCTION_AUDIT_2026-11-10.md](PRODUCTION_AUDIT_2026-11-10.md) for branch triage and the production roadmap. The current main source is authoritative; historical candidate notes below must not override it.
 
 ---
+
+> **HISTORICAL CHECKPOINTS:** Notes below this marker describe earlier candidates and development sessions. Use the live main commit and exact-head CI above as the current source of truth.
+
 
 > **ARCHIVED PRIOR CHECKPOINTS:** The notes below predate this rebased maintenance candidate. Verify live refs and CI before treating any branch, SHA or validation result as current.
 
