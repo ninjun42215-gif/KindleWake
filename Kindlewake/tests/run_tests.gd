@@ -51,6 +51,7 @@ func _initialize() -> void:
     _test_locations()
     _test_shop_and_screen()
     _test_trading()
+    _test_merchant_expansion()
     _test_save_system()
     _test_campaign_restore_validation()
     _simulate_battles(30)
@@ -1623,3 +1624,43 @@ func _test_trading() -> void:
     var quote := TradeSystem.quote("cindermead", "iron_ore", goods, state)
     check(int(quote.get("price", 0)) > 0 and str(quote.get("name", "")) != "", "market quotes include names and live prices")
     check(TradeSystem.new_state().has("markets"), "new trade state has safe defaults for legacy campaigns")
+
+
+func _test_merchant_expansion() -> void:
+    print("[merchant profession and caravan economy]")
+    var goods: Dictionary = gd.trade_economy
+    var state: Dictionary = TradeSystem.new_state()
+    var party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    party.gold = 20000
+    check(TradeSystem.purchase_caravan(party, state, goods) == "", "merchant can purchase a caravan")
+    check(bool(state["caravan"]["owned"]), "caravan ownership is stored")
+    check(TradeSystem.hire_caravan_guard(party, state, goods) == "", "merchant can hire caravan guards")
+    check(int(state["caravan"]["guards"]) == 1, "guard detail increases by one")
+    check(TradeSystem.upgrade_caravan(party, state, goods) == "", "caravan can be upgraded")
+    check(TradeSystem.cargo_capacity(goods, state) > int(goods["cargo_capacity"]), "caravan upgrade increases cargo capacity")
+    check(TradeSystem.merchant_profile(state)["rank"]["id"] == "novice", "merchant rank remains progression-gated")
+    state["merchant_reputation"] = 100
+    check(TradeSystem.join_guild(state, "coastal_merchants", goods) == "", "reputable merchant can join a guild")
+    check(TradeSystem._guild_access(state, goods["goods"]["pearls"]), "guild membership unlocks exclusive commodities")
+    check(TradeSystem.accept_contract(state, "thornmere_grain_run", goods) == "", "merchant can accept a delivery contract")
+    party.add_item("grain", 12)
+    check(TradeSystem.sell(party, "thornmere", "grain", 12, goods, state) == "", "selling contract goods records delivery")
+    check(TradeSystem.complete_contract(party, state, "thornmere_grain_run", goods) == "", "completed contract pays its reward")
+    check(state["completed_contracts"].has("thornmere_grain_run"), "completed contract is recorded")
+    check(TradeSystem.set_tariff(state, "sethmarch", 0.2, false) != "", "unauthorized tariff changes are rejected")
+    check(TradeSystem.set_tariff(state, "sethmarch", 0.2, true) == "", "authorized government can set tariffs")
+    check(TradeSystem.set_route_policy(state, "sethmarch_brinegate", {"open":false}, true) == "", "government can close a trade route")
+    check(TradeSystem.travel_route(party, state, "sethmarch_brinegate", goods) != "", "closed trade routes cannot be travelled")
+    var legacy := TradeSystem.normalize_state({"markets":{}}, goods)
+    check(legacy.has("merchant_xp") and legacy.has("caravan") and legacy.has("guilds"), "legacy saves normalize merchant progression and ownership")
+    var rng := RandomNumberGenerator.new()
+    rng.seed = 91
+    party.add_item("grain", 8)
+    var before := party.item_count("grain")
+    var ambush := TradeSystem.resolve_caravan_ambush(party, state, goods, rng, "thornmere_sethmarch")
+    check(["defended","raided","escaped"].has(str(ambush.get("status",""))), "caravan ambush resolves to a defined outcome")
+    check(party.item_count("grain") <= before, "ambush cannot create cargo")
+    var smuggle_rng := RandomNumberGenerator.new()
+    smuggle_rng.seed = 7
+    var smuggle := TradeSystem.smuggle_sell(party, state, "sethmarch", "grain", 1, goods, smuggle_rng)
+    check(smuggle.has("ok") and (bool(smuggle["ok"]) or bool(smuggle.get("caught", false))), "smuggling resolves to success or customs seizure")
