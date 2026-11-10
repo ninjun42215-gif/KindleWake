@@ -1,0 +1,239 @@
+{
+  "events": {
+    "overcame_fear": {
+      "name": "Overcame Fear",
+      "category": "psychological",
+      "description": "A companion faced a serious threat without abandoning their responsibilities.",
+      "stress_delta": -4,
+      "memory_type": "achievement",
+      "memory": "Found the resolve to face a feared danger.",
+      "requirements": {
+        "brave_actions": 3
+      },
+      "trait_awards": [
+        "fearless"
+      ],
+      "cooldown_days": 0
+    },
+    "protected_companion": {
+      "name": "Shielded a Companion",
+      "category": "combat",
+      "description": "A companion deliberately placed themselves in danger to protect an ally.",
+      "stress_delta": -2,
+      "memory_type": "relationship",
+      "memory": "Protected a companion when it mattered.",
+      "requirements": {
+        "ally_protection": 1
+      },
+      "trait_awards": [
+        "protective"
+      ],
+      "cooldown_days": 0
+    },
+    "ancient_study": {
+      "name": "Studied an Ancient Text",
+      "category": "intelligence",
+      "description": "A companion completed a meaningful study of a difficult historical or scholarly text.",
+      "stress_delta": -2,
+      "memory_type": "achievement",
+      "memory": "Made progress understanding an ancient text.",
+      "requirements": {
+        "research_sessions": 3
+      },
+      "trait_awards": [
+        "scholar"
+      ],
+      "cooldown_days": 0
+    },
+    "kept_oath": {
+      "name": "Kept a Consequential Oath",
+      "category": "morality",
+      "description": "A companion honoured a promise despite a meaningful personal cost.",
+      "stress_delta": -3,
+      "memory_type": "achievement",
+      "memory": "Kept a difficult promise.",
+      "requirements": {
+        "kept_oaths": 1
+      },
+      "trait_awards": [
+        "honorable",
+        "vowkeeper"
+      ],
+      "cooldown_days": 0
+    },
+    "broken_oath": {
+      "name": "Broke a Consequential Oath",
+      "category": "morality",
+      "description": "A companion knowingly broke a solemn promise. Context and player choice must establish responsibility.",
+      "stress_delta": 8,
+      "memory_type": "personal",
+      "memory": "Broke a solemn promise and must live with the consequences.",
+      "requirements": {
+        "broken_oaths": 1
+      },
+      "trait_awards": [
+        "oathbreaker"
+      ],
+      "cooldown_days": 0
+    },
+    "shared_bounty": {
+      "name": "Shared the Spoils",
+      "category": "social",
+      "description": "A companion willingly shared a meaningful reward with the company.",
+      "stress_delta": -2,
+      "memory_type": "relationship",
+      "memory": "Shared a hard-earned reward with companions.",
+      "requirements": {
+        "shared_rewards": 2
+      },
+      "trait_awards": [
+        "generous"
+      ],
+      "cooldown_days": 0
+    },
+    "hoarded_bounty": {
+      "name": "Kept the Greater Share",
+      "category": "social",
+      "description": "A companion repeatedly chose personal gain over an agreed fair share.",
+      "stress_delta": 4,
+      "memory_type": "personal",
+      "memory": "Chose personal gain over the company's agreed share.",
+      "requirements": {
+        "hoarded_rewards": 2
+      },
+      "trait_awards": [
+        "greedy"
+      ],
+      "cooldown_days": 0
+    },
+    "field_medicine": {
+      "name": "Field Medicine Milestone",
+      "category": "lifestyle",
+      "description": "A companion repeatedly treated allies in dangerous field conditions.",
+      "stress_delta": -3,
+      "memory_type": "achievement",
+      "memory": "Helped keep the company alive through field medicine.",
+      "requirements": {
+        "allies_healed": 10
+      },
+      "trait_awards": [
+        "healer"
+      ],
+      "cooldown_days": 0
+    },
+    "survived_expedition": {
+      "name": "Survived a Harsh Expedition",
+      "category": "survival",
+      "description": "A companion completed a difficult expedition with scarce supplies or severe conditions.",
+      "stress_delta": -4,
+      "memory_type": "achievement",
+      "memory": "Survived a harsh expedition.",
+      "requirements": {
+        "harsh_expeditions": 1
+      },
+      "trait_awards": [
+        "survivalist",
+        "robust"
+      ],
+      "cooldown_days": 0
+    },
+    "battle_veteran": {
+      "name": "Battle Veteran",
+      "category": "combat",
+      "description": "A companion has survived a meaningful series of dangerous battles.",
+      "stress_delta": -2,
+      "memory_type": "achievement",
+      "memory": "Survived another demanding campaign milestone.",
+      "requirements": {
+        "major_battles_survived": 8
+      },
+      "trait_awards": [
+        "battle_hardened"
+      ],
+      "cooldown_days": 0
+    },
+    "precision_shooting": {
+      "name": "Precision Shooting",
+      "category": "combat",
+      "description": "A ranged fighter repeatedly demonstrated careful, accurate marksmanship.",
+      "stress_delta": -1,
+      "memory_type": "achievement",
+      "memory": "Improved aim through repeated disciplined practice.",
+      "requirements": {
+        "ranged_hits": 30
+      },
+      "trait_awards": [
+        "marksman"
+      ],
+      "cooldown_days": 0
+    },
+    "sword_mastery": {
+      "name": "Sword Mastery",
+      "category": "combat",
+      "description": "A sword user completed sustained practice and demonstrated skill in a meaningful duel.",
+      "stress_delta": -1,
+      "memory_type": "achievement",
+      "memory": "Advanced their swordsmanship through practice and a difficult duel.",
+      "requirements": {
+        "sword_training": 10,
+        "duel_victories": 1
+      },
+      "trait_awards": [
+        "skilled_swordsman"
+      ],
+      "cooldown_days": 0
+    },
+    "repeated_betrayal": {
+      "name": "Betrayed by a Trusted Ally",
+      "category": "social",
+      "description": "A companion experienced a confirmed betrayal by someone they trusted.",
+      "stress_delta": 12,
+      "memory_type": "betrayal",
+      "memory": "Was betrayed by a trusted ally.",
+      "requirements": {
+        "betrayals_suffered": 1
+      },
+      "trait_awards": [],
+      "cooldown_days": 0
+    },
+    "personal_failure": {
+      "name": "Personal Failure",
+      "category": "psychological",
+      "description": "A companion suffered a consequential personal setback.",
+      "stress_delta": 7,
+      "memory_type": "negative",
+      "memory": "Experienced a consequential personal failure.",
+      "requirements": {
+        "personal_failures": 1
+      },
+      "trait_awards": [],
+      "cooldown_days": 0
+    },
+    "reconciliation": {
+      "name": "Reconciliation",
+      "category": "social",
+      "description": "A meaningful conflict was addressed through apology, repair, and renewed trust.",
+      "stress_delta": -10,
+      "memory_type": "relationship",
+      "memory": "A difficult relationship began to heal through reconciliation.",
+      "requirements": {
+        "reconciliations": 1
+      },
+      "trait_awards": [],
+      "cooldown_days": 0
+    },
+    "lost_companion": {
+      "name": "Loss of a Companion",
+      "category": "psychological",
+      "description": "A companion suffered a major personal loss. This event should be authored carefully and never triggered repeatedly.",
+      "stress_delta": 20,
+      "memory_type": "traumatic",
+      "memory": "Suffered the loss of a close companion.",
+      "requirements": {
+        "close_companion_losses": 1
+      },
+      "trait_awards": [],
+      "cooldown_days": 0
+    }
+  }
+}
