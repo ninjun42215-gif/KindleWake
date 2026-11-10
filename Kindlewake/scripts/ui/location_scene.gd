@@ -554,13 +554,18 @@ func _open_party() -> void:
     if not bool(near_spot.get("npc_active", true)) or (keeper_id != "" and not bool(GameState.world_flags.get("npc_active_" + keeper_id, true))):
         spot_text.text += "\n\nThe shopkeeper is away. The market is closed."
         return
+    if not ShopSystem.market_available(GameData.shop, current_map_id, GameState.world_flags):
+        spot_text.text += "\n\nThe Saltmere reef market is closed until a safe passage is charted."
+        return
     var shop_def: Dictionary = GameData.shop.duplicate(true)
-    var regional: Dictionary = shop_def.get("regional_stocks", {})
-    if regional.has(current_map_id):
-        var stock: Dictionary = regional[current_map_id]
+    var stock: Dictionary = ShopSystem.regional_stock(shop_def, current_map_id, GameState.world_flags)
+    if not stock.is_empty():
         shop_def["items"] = (stock.get("items", []) as Array).duplicate()
         shop_def["sigils"] = (stock.get("sigils", shop_def.get("sigils", [])) as Array).duplicate()
         shop_def["runes"] = (stock.get("runes", []) as Array).duplicate()
+    if current_map_id == "saltmere":
+        shop_def["name"] = "Saltmere Reef Market"
+        shop_def["sell_ratio"] = 0.45
     var is_rune_service := bool(near_spot.get("rune_service", false)) or bool(near_spot.get("blacksmith", false))
     party_screen.setup(GameState.party, GameData.party_db(), shop_def, true, is_rune_service, bool(near_spot.get("blacksmith", false)), GameState.companion_relationships)
     party_screen.open()
