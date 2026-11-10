@@ -715,6 +715,9 @@ func _apply_safe_area() -> void:
     if manual_save_btn != null:
         manual_save_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0 if compact else 52.0)
         manual_save_btn.add_theme_font_size_override("font_size", 15 if compact else 18)
+    if empire_btn != null:
+        empire_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0)
+        empire_btn.add_theme_font_size_override("font_size", 14 if compact else 17)
     if global_atlas_btn != null:
         global_atlas_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0)
         global_atlas_btn.add_theme_font_size_override("font_size", 14 if compact else 17)
@@ -781,6 +784,12 @@ func _build_ui() -> void:
     root.add_child(global_atlas_btn)
     global_atlas_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 144)
     global_atlas_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    empire_btn = _btn("ROYAL COURT", _open_empire, 17)
+    empire_btn.custom_minimum_size = Vector2(190, 48)
+    empire_btn.visible = bool(GameState.empire_state.get("unlocked", false))
+    root.add_child(empire_btn)
+    empire_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 198)
+    empire_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 
     # Top-centre: ambush banner
     banner = _hud_panel(0.95)
@@ -844,7 +853,27 @@ func _build_ui() -> void:
     party_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     party_screen.visible = false
     party_screen.closed.connect(_on_party_closed)
+    empire_screen = EmpireAdministrationScript.new()
+    root.add_child(empire_screen)
+    empire_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    empire_screen.visible = false
+    empire_screen.closed.connect(_on_empire_closed)
 
+
+func _open_empire() -> void:
+    if panel_open or party_screen.visible or ambush_timer >= 0.0 or not bool(GameState.empire_state.get("unlocked", false)):
+        return
+    has_target = false
+    pressing = false
+    GameState.world_pos = wmap.wrap_position(player_pos)
+    GameState.save_campaign("auto_a")
+    empire_screen.open()
+    if empire_screen.get_parent() != null:
+        empire_screen.get_parent().move_child(empire_screen, empire_screen.get_parent().get_child_count() - 1)
+
+
+func _on_empire_closed() -> void:
+    GameState.save_campaign("auto_a")
 
 
 func _open_world_atlas() -> void:
