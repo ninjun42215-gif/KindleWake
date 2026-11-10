@@ -931,7 +931,7 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 The empire-management foundation adds an unlock-gated administration layer without changing the core campaign's identity or prematurely opening hereditary dynasty play.
 
 - `scripts/core/empire_management_system.gd`: deterministic, offline realm rules for treasury, food, manpower, stability, legitimacy, public order, taxation, edicts, council offices, governors, province buildings, seasonal ledgers and bounded chronicle history.
-- `scripts/ui/empire_administration.gd`: touch-first Royal Administration overlay with Realm, Council, Provinces, Economy and Chronicle tabs. It is mounted over the existing overworld and uses the existing parchment/gold visual language.
+- `scripts/ui/empire_administration.gd`: touch-first Royal Administration overlay with Realm, Council, Provinces, Military, Economy and Chronicle tabs. It is mounted over the existing overworld and uses the existing parchment/gold visual language.
 - `world_scene.gd`: Royal Court entry appears only after the authored story layer calls `GameState.unlock_empire_management()`; it pauses exploration while open and saves campaign state after administration actions.
 - Council offices: Steward, Marshal, Spymaster, Chancellor and High Priest. Officeholders are selected from the existing party roster.
 - Province governors and construction are restricted to provinces currently controlled by House Dunmarrow or the Crownlands. The UI displays the current faction owner and disables actions in foreign provinces. Seasonal income/food simulation counts only player-controlled provinces.
