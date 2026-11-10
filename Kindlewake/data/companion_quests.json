@@ -36,7 +36,24 @@
         "private_restitution": "lucan_outcome_restitution",
         "protected_archive": "lucan_outcome_protected_archive"
       },
-      "journal_summary": "Follow an abandoned Orrowen signal pattern, reconstruct a deserter patrol route, and protect the witness caught between truth and fear."
+      "journal_summary": "Follow an abandoned Orrowen signal pattern, reconstruct a deserter patrol route, and protect the witness caught between truth and fear.",
+      "relationship_effects": {
+        "publish_record": {
+          "trust": 1,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "private_restitution": {
+          "trust": 2,
+          "respect": 1,
+          "stress_delta": -1
+        },
+        "protected_archive": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": -1
+        }
+      }
     },
     "q_companion_brisa_hearth_of_names": {
       "companion_id": "old_brisa",
@@ -72,7 +89,24 @@
         "village_service": "brisa_outcome_village_service",
         "community_network": "brisa_outcome_shared_care"
       },
-      "journal_summary": "Help Brisa recover the names of families erased from Foxglove's infirmary ledger, then decide how the village should care for them."
+      "journal_summary": "Help Brisa recover the names of families erased from Foxglove's infirmary ledger, then decide how the village should care for them.",
+      "relationship_effects": {
+        "keep_infirmary": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": -1
+        },
+        "village_service": {
+          "trust": 2,
+          "respect": 1,
+          "stress_delta": -1
+        },
+        "community_network": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -2
+        }
+      }
     },
     "q_companion_kestrel_no_master": {
       "companion_id": "kestrel",
@@ -108,7 +142,24 @@
         "submit_evidence": "kestrel_outcome_magistrate",
         "kestrel_decides": "kestrel_outcome_self_determined"
       },
-      "journal_summary": "Decode the marks of Kestrel's former handlers, uncover a safehouse ledger, and decide who controls the names it contains."
+      "journal_summary": "Decode the marks of Kestrel's former handlers, uncover a safehouse ledger, and decide who controls the names it contains.",
+      "relationship_effects": {
+        "destroy_records": {
+          "trust": 2,
+          "respect": 1,
+          "stress_delta": -1
+        },
+        "submit_evidence": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "kestrel_decides": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -2
+        }
+      }
     },
     "q_companion_anselm_line_to_hold": {
       "companion_id": "anselm_pike",
@@ -145,6 +196,23 @@
         "testify": "anselm_outcome_testimony",
         "lawful_service": "anselm_outcome_lawful_compact",
         "refuse_unit": "anselm_outcome_refused_unit"
+      },
+      "relationship_effects": {
+        "testify": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "lawful_service": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -1
+        },
+        "refuse_unit": {
+          "trust": 2,
+          "respect": 1,
+          "stress_delta": -1
+        }
       }
     },
     "q_companion_petra_bitter_draught": {
@@ -182,6 +250,23 @@
         "publish_error": "petra_outcome_public_record",
         "restorative_agreement": "petra_outcome_restoration",
         "protect_identity": "petra_outcome_identity_protected"
+      },
+      "relationship_effects": {
+        "publish_error": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "restorative_agreement": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -2
+        },
+        "protect_identity": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": -1
+        }
       }
     },
     "q_companion_dorian_unspent_bolt": {
@@ -219,6 +304,23 @@
         "give_testimony": "dorian_outcome_testimony",
         "make_restitution": "dorian_outcome_restitution",
         "decline_absolution": "dorian_outcome_no_absolution"
+      },
+      "relationship_effects": {
+        "give_testimony": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "make_restitution": {
+          "trust": 3,
+          "respect": 1,
+          "stress_delta": -2
+        },
+        "decline_absolution": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": -1
+        }
       }
     },
     "q_companion_edda_iron_and_ash": {
@@ -256,6 +358,23 @@
         "shared_workshop": "edda_outcome_shared_workshop",
         "protected_ownership": "edda_outcome_protected_ownership",
         "independent_guild": "edda_outcome_independent_guild"
+      },
+      "relationship_effects": {
+        "shared_workshop": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -1
+        },
+        "protected_ownership": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": -1
+        },
+        "independent_guild": {
+          "trust": 2,
+          "respect": 1,
+          "stress_delta": 1
+        }
       }
     },
     "q_companion_joss_debt_of_silence": {
@@ -293,6 +412,23 @@
         "return_money": "joss_outcome_restitution",
         "trade_ledger": "joss_outcome_safe_passage",
         "expose_network": "joss_outcome_network_exposed"
+      },
+      "relationship_effects": {
+        "return_money": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -2
+        },
+        "trade_ledger": {
+          "trust": 2,
+          "respect": 1,
+          "stress_delta": 1
+        },
+        "expose_network": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        }
       }
     },
     "q_companion_isaure_two_oaths": {
@@ -330,6 +466,23 @@
         "renew_limited_oath": "isaure_outcome_limited_oath",
         "renounce_command": "isaure_outcome_renounced_command",
         "service_compact": "isaure_outcome_service_compact"
+      },
+      "relationship_effects": {
+        "renew_limited_oath": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -1
+        },
+        "renounce_command": {
+          "trust": 2,
+          "respect": 1,
+          "stress_delta": -1
+        },
+        "service_compact": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -1
+        }
       }
     },
     "q_companion_bram_cullen_broken_chain": {
@@ -367,6 +520,23 @@
         "destroy_false_records": "bram_cullen_outcome_records_destroyed",
         "public_tribunal": "bram_cullen_outcome_public_tribunal",
         "negotiate_release": "bram_cullen_outcome_negotiated_release"
+      },
+      "relationship_effects": {
+        "destroy_false_records": {
+          "trust": 2,
+          "respect": 1,
+          "stress_delta": -1
+        },
+        "public_tribunal": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "negotiate_release": {
+          "trust": 3,
+          "respect": 1,
+          "stress_delta": -1
+        }
       }
     },
     "q_companion_verra_song_without_seal": {
@@ -404,6 +574,23 @@
         "publish_original": "verra_outcome_original_published",
         "protect_performers": "verra_outcome_performers_protected",
         "write_new_song": "verra_outcome_new_song"
+      },
+      "relationship_effects": {
+        "publish_original": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "protect_performers": {
+          "trust": 3,
+          "respect": 1,
+          "stress_delta": -1
+        },
+        "write_new_song": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -2
+        }
       }
     },
     "q_companion_tomas_far_marker": {
@@ -441,6 +628,23 @@
         "return_openly": "tomas_outcome_homecoming",
         "relocate_family": "tomas_outcome_relocated",
         "send_aid": "tomas_outcome_aid"
+      },
+      "relationship_effects": {
+        "return_openly": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "relocate_family": {
+          "trust": 3,
+          "respect": 1,
+          "stress_delta": -1
+        },
+        "send_aid": {
+          "trust": 3,
+          "respect": 1,
+          "stress_delta": -1
+        }
       }
     },
     "q_companion_orlan_margin_of_truth": {
@@ -478,6 +682,23 @@
         "publish_source": "orlan_outcome_source_published",
         "independent_custody": "orlan_outcome_independent_archive",
         "redact_names": "orlan_outcome_names_redacted"
+      },
+      "relationship_effects": {
+        "publish_source": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "independent_custody": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -1
+        },
+        "redact_names": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -1
+        }
       }
     },
     "q_companion_odaly_open_door": {
@@ -515,6 +736,23 @@
         "conditional_sanctuary": "odaly_outcome_conditional_sanctuary",
         "refuge_network": "odaly_outcome_refuge_network",
         "order_reform": "odaly_outcome_order_reform"
+      },
+      "relationship_effects": {
+        "conditional_sanctuary": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": -1
+        },
+        "refuge_network": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -2
+        },
+        "order_reform": {
+          "trust": 2,
+          "respect": 1,
+          "stress_delta": 1
+        }
       }
     },
     "q_companion_willem_last_challenge": {
@@ -552,6 +790,23 @@
         "admit_technicality": "willem_outcome_technicality_admitted",
         "make_restitution": "willem_outcome_restitution",
         "acknowledge_cost": "willem_outcome_cost_acknowledged"
+      },
+      "relationship_effects": {
+        "admit_technicality": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "make_restitution": {
+          "trust": 3,
+          "respect": 1,
+          "stress_delta": -1
+        },
+        "acknowledge_cost": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": -1
+        }
       }
     },
     "q_companion_ysolde_names_in_salt": {
@@ -589,6 +844,23 @@
         "publish_names": "ysolde_outcome_names_published",
         "sealed_testimony": "ysolde_outcome_sealed_testimony",
         "family_choice": "ysolde_outcome_family_choice"
+      },
+      "relationship_effects": {
+        "publish_names": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "sealed_testimony": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -1
+        },
+        "family_choice": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -2
+        }
       }
     },
     "q_companion_garrick_spared_enemy": {
@@ -626,6 +898,23 @@
         "testify": "garrick_outcome_testified",
         "acknowledge_harm": "garrick_outcome_harm_acknowledged",
         "support_trial": "garrick_outcome_trial_supported"
+      },
+      "relationship_effects": {
+        "testify": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "acknowledge_harm": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -2
+        },
+        "support_trial": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": -1
+        }
       }
     },
     "q_companion_corwin_heirless_seal": {
@@ -663,6 +952,23 @@
         "submit_claim": "corwin_outcome_claim_submitted",
         "renounce_claim": "corwin_outcome_claim_renounced",
         "temporary_custody": "corwin_outcome_temporary_custody"
+      },
+      "relationship_effects": {
+        "submit_claim": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "renounce_claim": {
+          "trust": 3,
+          "respect": 1,
+          "stress_delta": -1
+        },
+        "temporary_custody": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": -1
+        }
       }
     },
     "q_companion_seraphine_measure_of_oaths": {
@@ -700,6 +1006,23 @@
         "revise_oath": "seraphine_outcome_oath_revised",
         "refuse_authority": "seraphine_outcome_authority_refused",
         "demand_oversight": "seraphine_outcome_oversight_demanded"
+      },
+      "relationship_effects": {
+        "revise_oath": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -1
+        },
+        "refuse_authority": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "demand_oversight": {
+          "trust": 2,
+          "respect": 1,
+          "stress_delta": 1
+        }
       }
     },
     "q_companion_ilyan_silent_tower": {
@@ -737,6 +1060,23 @@
         "destroy_research": "ilyan_outcome_research_destroyed",
         "shared_oversight": "ilyan_outcome_shared_oversight",
         "publish_safe_procedure": "ilyan_outcome_safe_procedure_published"
+      },
+      "relationship_effects": {
+        "destroy_research": {
+          "trust": 2,
+          "respect": 1,
+          "stress_delta": -1
+        },
+        "shared_oversight": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -1
+        },
+        "publish_safe_procedure": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -1
+        }
       }
     },
     "q_companion_maren_tideglass_wake": {
@@ -778,7 +1118,24 @@
       "required_flags_all": [
         "maren_signal_completed"
       ],
-      "unlock_hint": "Complete Maren's Northstar signal quest first. This personal story follows the restored signal and recovered logbook."
+      "unlock_hint": "Complete Maren's Northstar signal quest first. This personal story follows the restored signal and recovered logbook.",
+      "relationship_effects": {
+        "publish_manifest": {
+          "trust": 2,
+          "respect": 2,
+          "stress_delta": 1
+        },
+        "protect_crew": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -1
+        },
+        "negotiate_reparations": {
+          "trust": 3,
+          "respect": 2,
+          "stress_delta": -1
+        }
+      }
     }
   }
 }
