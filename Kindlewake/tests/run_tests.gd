@@ -1902,6 +1902,13 @@ func _test_trait_system() -> void:
     for category_id in ["personality", "intelligence", "combat", "social", "physical", "psychological", "leadership", "lifestyle", "morality", "magical"]:
         check(categories.has(category_id), "trait catalogue includes " + category_id + " category")
     check(valid_trait_links, "all opposing and evolution links resolve to defined traits")
+    check(gd.trait_events.size() >= 40, "personality event catalogue includes the expanded authored event library")
+    var valid_event_schema := true
+    for event_id in gd.trait_events:
+        var event_def: Dictionary = gd.trait_events[event_id]
+        if str(event_id).strip_edges() == "" or str(event_def.get("name", "")).strip_edges() == "" or str(event_def.get("description", "")).strip_edges() == "" or typeof(event_def.get("requirements", {})) != TYPE_DICTIONARY or typeof(event_def.get("trait_awards", [])) != TYPE_ARRAY:
+            valid_event_schema = false
+    check(valid_event_schema, "all personality events have stable IDs and complete reusable template fields")
     var valid_event_awards := true
     for event_id in gd.trait_events:
         var event_def: Dictionary = gd.trait_events[event_id]
