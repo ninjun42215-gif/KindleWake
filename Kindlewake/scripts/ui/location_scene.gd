@@ -396,7 +396,7 @@ func _open_merchant() -> void:
         return
     has_target = false
     pressing = false
-    merchant_screen.open_exchange()
+    merchant_screen.call("open_exchange")
 
 
 func _on_merchant_closed() -> void:
@@ -736,7 +736,7 @@ func _build_ui() -> void:
     root.add_child(merchant_screen)
     merchant_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     merchant_screen.visible = false
-    merchant_screen.closed.connect(_on_merchant_closed)
+    merchant_screen.connect("closed", Callable(self, "_on_merchant_closed"))
 
 
 func _update_hud() -> void:
