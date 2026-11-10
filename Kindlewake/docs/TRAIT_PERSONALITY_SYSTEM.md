@@ -65,3 +65,11 @@ Do not seed traits onto the existing named cast merely from class or combat stat
 - Maren Vey's Tideglass recruitment records a modest trust (+6) and respect (+8) bond with the company lead because the party completed the ledger expedition required for her to sail with them.
 - Stable evidence IDs prevent repeated recruitment UI interactions from farming the same relationship reward. This remains separate from starting loyalty and does not imply romance.
 - The shared recruitment helper is covered by regression tests; recruits without authored relationship metadata receive no automatic relationship bonus.
+
+
+## Companion bond journal
+
+- The Party Screen now shows a per-character companion bond journal alongside traits, memories, ambition and loyalty.
+- Pair metrics (friendship, trust, respect, rivalry and affection), derived relationship stage, and latest authored event are displayed separately from company loyalty.
+- Both regional and settlement Party Screen entry points pass campaign relationship state explicitly. The screen remains testable and does not read global autoloads.
+- The journal is read-only: it never invents relationship gains, infers romance, or changes saved data.
