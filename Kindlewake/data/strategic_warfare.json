@@ -112,6 +112,35 @@
       "cavalry": 5
     },
     "faction_bonus": {
+      "crownlands": {
+        "infantry": 10,
+        "cavalry": 5
+      },
+      "house_brennhallow": {
+        "infantry": 10,
+        "cavalry": 5
+      },
+      "house_ysmark": {
+        "archers": 5
+      },
+      "house_quillon": {
+        "infantry": 5,
+        "archers": 10
+      },
+      "house_vessmoor": {
+        "archers": 5,
+        "cavalry": 10
+      },
+      "house_tarnholt": {
+        "infantry": 5,
+        "archers": 5
+      },
+      "house_orrowen": {
+        "archers": 10
+      },
+      "house_dunmarrow": {
+        "infantry": 5
+      },
       "tidebound_assembly": {
         "archers": 5
       },
@@ -123,6 +152,24 @@
         "cavalry": 5
       },
       "lantern_synod": {
+        "archers": 5
+      },
+      "thorn_courts": {
+        "archers": 5,
+        "cavalry": 5
+      },
+      "free_ranger_lodges": {
+        "archers": 10
+      },
+      "meridian_league": {
+        "infantry": 5,
+        "archers": 5
+      },
+      "sky_monasteries": {
+        "archers": 5
+      },
+      "covenant_seven_flames": {
+        "infantry": 5,
         "archers": 5
       }
     },
