@@ -53,6 +53,22 @@ func new_game(profile: Dictionary = {}) -> void:
     world_positions = {}
     world_flags = {}
     pending_location = ""
+    faction_state = FactionSystem.new_campaign_state(GameData.factions)
+
+
+## Change diplomatic standing after an authored campaign event.
+func adjust_faction_relation(faction_a: String, faction_b: String, amount: int, reason: String = "") -> bool:
+    return FactionSystem.adjust_relation(faction_state, faction_a, faction_b, amount, reason)
+
+
+## Set a treaty or war state after story conditions have been resolved.
+func set_faction_diplomacy(faction_a: String, faction_b: String, next_state: String) -> bool:
+    return FactionSystem.set_diplomatic_state(faction_state, faction_a, faction_b, next_state)
+
+
+## Transfer a known atlas region after a battle, treaty or authored story outcome.
+func transfer_faction_region(region_id: String, new_owner: String, cause: String) -> bool:
+    return FactionSystem.transfer_region(faction_state, region_id, new_owner, cause)
 
 
 ## Battle database with the party's current sheets (level, stats, equipment) substituted in.
@@ -104,6 +120,7 @@ func campaign_payload() -> Dictionary:
         "active_region_id": active_region_id,
         "world_positions": world_positions.duplicate(true),
         "world_flags": world_flags.duplicate(true),
+        "faction_state": faction_state.duplicate(true),
         "from_world": true
     }
 
