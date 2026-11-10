@@ -902,8 +902,8 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 
 ## 18. Chapter I input and chronicle creator reliability pass (0.12.0 maintenance)
 
-**Working branch:** `fix/ch1-and-creator-ux`  
-**Status:** implementation merged; Godot/Android CI passed on runtime-code commit `b2598c3c8620a701d1fabd84394ec5cbb7449451`; physical-device verification remains pending. No game-version or save-schema change.
+**Merged PR:** [#30](https://github.com/ninjun42215-gif/KindleWake/pull/30)  
+**Status:** implementation merged in PR #30; Godot/Android CI passed on runtime-code commit `b2598c3c8620a701d1fabd84394ec5cbb7449451`; physical-device verification remains pending. No game-version or save-schema change.
 
 - Chapter I courtyard movement is handled in the root Control's `_gui_input`, so the full-rect Control no longer prevents taps from reaching `_unhandled_input` (which is not dispatched after GUI handling consumes the event). Mouse drag and touch drag also update the movement target.
 - Movement destinations are constrained to a responsive playable rectangle that excludes the objective and instruction panels. The postern is positioned below the objective panel and the party reaches it within a 120px radius.
