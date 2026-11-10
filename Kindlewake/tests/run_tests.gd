@@ -8,6 +8,7 @@ const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -45,6 +46,7 @@ func _initialize() -> void:
     _test_world()
     _test_world_atlas()
     _test_world_expansion()
+    _test_holding_system()
     _test_faction_politics()
     _test_thalassar_region()
     _test_wraparound_world()
@@ -143,6 +145,27 @@ func _test_world_expansion() -> void:
         if not dungeon.has("boss") or not dungeon.has("world_effect") or not dungeon.has("rewards"):
             dungeons_valid = false
     check(dungeons_valid and dungeon_ids.size() >= 15, "dungeons have unique IDs, canonical regions, mechanics, bosses, rewards and consequences")
+
+
+func _test_holding_system() -> void:
+    print("[holding sovereignty]")
+    var flags := {}
+    var keep: Dictionary = {}
+    for p in gd.world.get("places", []):
+        if str(p.get("id", "")) == "sallow_ford_keep":
+            keep = p
+            break
+    check(not keep.is_empty(), "Sallow Ford Keep is authored as a capturable holding")
+    var locked: Dictionary = HoldingSystem.inspect(keep, flags)
+    check(not bool(locked.get("available", true)), "a holding cannot be claimed before its prerequisite is resolved")
+    flags["camp_cleared"] = true
+    var ready: Dictionary = HoldingSystem.inspect(keep, flags)
+    check(bool(ready.get("available", false)) and str(ready.get("owner", "")) == "crownlands", "the keep becomes claimable only after its garrison objective")
+    var claimed: Dictionary = HoldingSystem.claim(keep, flags)
+    check(bool(claimed.get("ok", false)) and str(flags.get("holding_owner_sallow_ford_keep", "")) == "house_dunmarrow", "claim records location-level ownership without transferring the atlas region")
+    check(str(flags.get("holding_status_sallow_ford_keep", "")) == "provisional" and int(flags.get("holding_stability_sallow_ford_keep", 0)) == 35, "new occupation starts provisional and requires stabilisation")
+    check(not bool(HoldingSystem.claim(keep, flags).get("ok", true)), "a holding cannot be claimed twice")
+    check((flags.get("holding_history", []) as Array).size() == 1, "holding ownership changes are recorded in campaign history")
 
 
 func _test_prologue() -> void:
@@ -823,7 +846,7 @@ func _test_weapon_skills() -> void:
 func _test_world() -> void:
     print("[overworld]")
     var cfg: Dictionary = gd.world
-    check(int(cfg.get("width", 0)) >= 32 and (cfg.get("places", []) as Array).size() >= 4, "world.json defines a map and at least four places")
+    check(int(cfg.get("width", 0)) >= 32 and (cfg.get("places", []) as Array).size() >= 24, "world.json defines an expanded map with at least 24 named places")
     var w1: WorldMap = WorldMap.generate(cfg)
     var w2: WorldMap = WorldMap.generate(cfg)
     check(w1.width == int(cfg["width"]) and w1.height == int(cfg["height"]) and w1.tiles.size() == w1.width * w1.height, "the generated map has the configured size")
@@ -1048,7 +1071,7 @@ func _test_locations() -> void:
     for p in (gd.world.get("places", []) as Array):
         var pd: Dictionary = p
         var kind: String = str(pd.get("kind", ""))
-        if kind == "keep" or kind == "village":
+        if kind == "keep" or kind == "village" or kind == "stronghold":
             var tid: String = str(pd.get("town", ""))
             if not maps.has(tid) or (maps[tid] as LocalMap).kind != "town":
                 towns_ok = false
