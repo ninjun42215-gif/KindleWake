@@ -417,6 +417,18 @@ static func advance_year(raw: Dictionary) -> Dictionary:
     deaths.append(str(id))
   people[id] = person
  state.people = people
+ var domains: Dictionary = state.domains
+ for domain_id in domains.keys():
+  var domain: Dictionary = domains[domain_id]
+  if int(domain.get("food",0)) > 20 and int(domain.get("security",0)) > 20:
+   domain["prosperity"] = clampi(int(domain.get("prosperity",0))+1,0,100)
+   domain["legitimacy"] = clampi(int(domain.get("legitimacy",0))+1,0,100)
+  else:
+   domain["prosperity"] = clampi(int(domain.get("prosperity",0))-2,0,100)
+   domain["legitimacy"] = clampi(int(domain.get("legitimacy",0))-2,0,100)
+  domain["food"] = clampi(int(domain.get("food",0))-1,0,100)
+  domains[domain_id] = domain
+ state.domains = domains
  for dead_id in deaths:
   _inherit_titles(state,dead_id)
  _log(state,"year_advanced",{"year":state.year,"deaths":deaths})
