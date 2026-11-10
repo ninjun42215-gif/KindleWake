@@ -1,5 +1,7 @@
 class_name EmpireAdministration
 extends Control
+
+const CharacterPortraitScript = preload("res://scripts/ui/character_portrait.gd")
 ## Touch-first royal administration overlay. All economy mutations route through EmpireSystem/GameState.
 signal closed
 
@@ -226,12 +228,24 @@ func _build_council() -> void:
         var box := VBoxContainer.new()
         panel.add_child(box)
         box.add_child(_label(str(ROLES[role]), 18, C_GOLD))
-        box.add_child(_label("Current officeholder: " + name, 15))
         if assigned != "":
+            var office_row := HBoxContainer.new()
+            office_row.add_theme_constant_override("separation", 12)
+            var portrait := CharacterPortraitScript.new()
+            portrait.set_character(assigned)
+            office_row.add_child(portrait)
+            var details := VBoxContainer.new()
+            details.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+            details.add_child(_label("Current officeholder: " + name, 15))
             var profile: Dictionary = GameData.characters.get(assigned, {})
             var traits: Array = profile.get("traits", [])
             if not traits.is_empty():
-                box.add_child(_label("Traits: " + ", ".join(PackedStringArray(traits)), 14, C_GOLD))
+                details.add_child(_label("Traits: " + ", ".join(PackedStringArray(traits)), 14, C_GOLD))
+            details.add_child(_label("Loyalty: %d / 100" % int(profile.get("loyalty", 0)), 13, C_DIM))
+            office_row.add_child(details)
+            box.add_child(office_row)
+        else:
+            box.add_child(_label("Current officeholder: Vacant", 15, C_DIM))
         var picker := OptionButton.new()
         picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         picker.add_item("Select a companion")
