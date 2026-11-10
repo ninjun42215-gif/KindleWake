@@ -30,6 +30,12 @@ func _initialize() -> void:
     gd = load("res://scripts/core/game_data.gd").new()
     gd.reload()
     ss = load("res://scripts/core/save_system.gd").new()
+    var isolated_test_dir := "user://kindlewake_tests_%d/" % OS.get_process_id()
+    if not ss.set_test_save_directory(isolated_test_dir):
+        push_error("Could not isolate SaveSystem tests from player save data.")
+        quit(1)
+        return
+    check(ss.slot_path("auto_a").begins_with(isolated_test_dir), "save-system tests use an isolated per-process directory")
     _test_data()
     _test_art_assets()
     _test_class_tree()
