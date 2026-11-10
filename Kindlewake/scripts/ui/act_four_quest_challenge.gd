@@ -193,6 +193,11 @@ func _finish(success: bool, message: String) -> void:
   GameState.world_flags.erase("_pending_act_four_challenge")
   GameState.world_flags.erase("_pending_act_four_challenge_step")
   GameState.save_campaign("auto_a")
+ if quest_id == "witness_recanted" and bool(GameState.world_flags.get("chapter_4_complete", false)):
+  GameState.world_flags["_pending_act_five_stage"] = 0
+  GameState.save_campaign("auto_a")
+  get_tree().change_scene_to_file("res://ActFiveQuestChallenge.tscn")
+  return
  var back := Button.new()
  back.text = "Return to the region"
  back.custom_minimum_size.y = 64
