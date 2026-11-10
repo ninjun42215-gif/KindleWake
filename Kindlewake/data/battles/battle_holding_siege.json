@@ -1,0 +1,130 @@
+{
+  "id": "battle_holding_siege",
+  "title": "The Breach at the March Hold",
+  "briefing": "A hostile holding blocks the road. Break through the barricaded approach, defeat the commander and secure the objective. Victory records the siege result; territorial ownership still requires an authored claim or treaty.",
+  "weather": "overcast",
+  "legend": {
+    ".": "grass",
+    "r": "road",
+    "#": "rock",
+    "f": "forest",
+    "h": "hill",
+    "b": "bridge"
+  },
+  "terrain": [
+    "....................",
+    "....ffff............",
+    "...fffff...hhh......",
+    "....fff....hhh......",
+    ".........r..........",
+    "..#..#...r...#..#...",
+    ".........r..........",
+    "...#.....r.....#....",
+    ".........r..........",
+    "....f....r....f.....",
+    ".........r..........",
+    ".........r..........",
+    "....................",
+    "...................."
+  ],
+  "heights": [
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000"
+  ],
+  "victory": [
+    "rout_all",
+    "defeat_commander"
+  ],
+  "units": [
+    {
+      "character_id": "torren",
+      "team": "player",
+      "cell": [
+        8,
+        10
+      ],
+      "facing": 0,
+      "protagonist": true
+    },
+    {
+      "character_id": "bram",
+      "team": "player",
+      "cell": [
+        7,
+        9
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "sela",
+      "team": "player",
+      "cell": [
+        9,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "brother_wystan",
+      "team": "player",
+      "cell": [
+        6,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "hask_gravelteeth",
+      "team": "enemy",
+      "cell": [
+        14,
+        4
+      ],
+      "facing": 2,
+      "commander": true
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        12,
+        3
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        15,
+        6
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadbowman",
+      "team": "enemy",
+      "cell": [
+        16,
+        3
+      ],
+      "facing": 2
+    }
+  ],
+  "battlefield": "holding_siege",
+  "world_flag_on_victory": "holding_siege_battle_won",
+  "victory_text": "The defenders break. The holding can now be resolved through its campaign objective.",
+  "defeat_text": "The assault is repelled. The holding remains under hostile control."
+}
