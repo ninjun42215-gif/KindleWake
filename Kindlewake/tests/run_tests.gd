@@ -950,7 +950,7 @@ func _test_empire_management() -> void:
     state["buildings"] = {}
     state["food"] = 0
     var before_order: int = int(state["public_order"])
-    var report: Dictionary = EmpireSystem.advance_season(state, [])
+    var report: Dictionary = EmpireSystem.advance_season(state, known_regions)
     check(bool(report.get("ok", false)) and int(report.get("season", 0)) == 1, "season advancement produces a dated report")
     check(bool(report.get("food_shortage", false)) and int(state["public_order"]) < before_order, "food shortage causes a public-order penalty")
     check(int(report.get("troops", 0)) == 13 and int(report.get("military_upkeep", 0)) == 13 and int(report.get("military_food", 0)) == 13, "seasonal ledger includes standing-army upkeep and ration consumption")
