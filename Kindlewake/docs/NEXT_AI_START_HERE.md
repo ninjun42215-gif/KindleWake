@@ -1,78 +1,68 @@
-> **LIVE PROJECT CHECKPOINT — 2026-11-10 (authoritative):** Canonical repository `ninjun42215-gif/KindleWake`; default branch `main`; verified main commit `496f6c6a8130c920e0d9ed96f5e323c016d67c01`. PR [#28](https://github.com/ninjun42215-gif/KindleWake/pull/28) is **merged**. Do not describe it as a candidate or continue work on its old branch.
->
-> **Released source/build state:** game and Android version `0.12.0`, Android version code `1200`, save schema `4`. The merged update includes the toroidal campaign overworld, controller/keyboard/touch exploration and sprint, Brinegate Coast vertical slice, regional save positions, and additive schema-4 compatibility. The seven-continent atlas is inspectable, but the other six continents are not all playable.
->
-> **CI evidence:** the exact merged main commit passed Android APK build, Project Health Audit, source-handoff snapshot, version synchronization and workflow YAML lint. Current main APK artifact: `Kindlewake-APK`, artifact ID `13720944780`, about 40.8 MB; build run [42724834624](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42724834624). CI success is not physical-device QA.
->
-> **Next work:** perform real Android QA for all four world edges and corner crossings, movement/sprint/touch/controller paths, screen scaling, Brinegate quest and travel flow, save/load, performance and battery. Physical-device testing has not yet been confirmed. Record actual findings before claiming it passed.
->
-> **Hard constraints/release gates:** fully offline; no accounts, servers, multiplayer or INTERNET permission. Preserve existing saves and schema compatibility. Third-party sprite-pack redistribution licensing remains unresolved and blocks public/commercial release until verified or replaced. Keep work on a short-lived branch and one consolidated PR; merge only after every required check passes on the exact PR head SHA. Never edit `main` directly.
+# Next AI Start Here — KindleWake
 
----
+**Current repository:** `ninjun42215-gif/KindleWake`  
+**Default branch:** `main`  
+**Current main commit:** `036a17da88ab1b1037b224334dbfbbdcb392e195`  
+**Engine:** Godot 4.2.2 / GDScript / GL Compatibility  
+**Game version:** 0.12.0 · **Android version code:** 1200 · **Save schema:** 4  
+**Architecture:** offline-first; no accounts, servers, multiplayer or INTERNET permission.
 
+## Read first
 
+1. [Production Audit and Roadmap](PRODUCTION_AUDIT_AND_ROADMAP.md) — authoritative inventory, implementation gaps, branch risks and integration order.
+2. [Session Handoff](SESSION_HANDOFF.md) — current repository state, verified CI, open issues and next steps.
+3. [Game Design Document](GDD.md) — authored canon and design intent.
+4. [Versioning](VERSIONING.md) and [Android Release Workflow](ANDROID_RELEASE_WORKFLOW.md) — do not change version or signing policy casually.
 
-# KindleWake — Next AI Start Here
+Older checkpoint notes in other documents are historical. Always verify the live main SHA, open PRs and CI before editing.
 
-**Repository:** `ninjun42215-gif/KindleWake`  
-**Project directory:** `Kindlewake/`  
-**Live main:** `b982f2f665ab9ecf8b3862ca676d61dac55fde96` (tree identical to baseline `eb589c08b40b639a83b45bcc8d10718fd8223d7a`)  
-**Active candidate:** PR [#28](https://github.com/ninjun42215-gif/KindleWake/pull/28), branch `docs/authoritative-live-handoff-2026-11-10`; refresh its head SHA and checks before acting.  
-**Main version:** `0.11.0` · **Android code:** `1100` · **Save schema:** `4`  
-**Candidate version:** `0.12.0` · **Android code:** `1200` · **Save schema:** `4`  
-**Timezone:** Asia/Manila (UTC+08:00)
+## What is actually on main
 
-## Start here — no user re-explanation required
+- Tactical grid combat, turn control, AI, status effects, six battle definitions and balance simulation.
+- Character creation, party/XP progression, 28 classes, 15 combat skills, equipment, 77 runes, 69 traits, five trait synergies, 40 personality event templates and 12 curated ambitions.
+- 36 character definitions, 39 town/interior maps, two distinct overworld datasets, seven-continent atlas blueprint, faction foundations and several authored quest chains.
+- Checksummed saves, schema migrations, semantic campaign validation, backup recovery, malformed-write rejection, future-version protection, battle snapshot validation and isolated save tests.
+- Android build pipeline for ARM64/ARMv7, campaign restore-to-World lifecycle test, offline permission checks and protected production publishing workflow.
 
-1. Read `Kindlewake/docs/SESSION_HANDOFF.md`, `Kindlewake/docs/GDD.md`, `Kindlewake/docs/CONTINUATION_PROMPT.md`, `Kindlewake/docs/VERSIONING.md` and `Kindlewake/docs/SAFE_AUTO_MERGE.md`.
-2. Inspect the live `main` SHA, branches, open PRs and exact-head CI before editing. The SHA above is the inspected checkpoint, not a substitute for a live check.
-3. The canonical source is the ordinary tracked files under `Kindlewake/`. Do not ask the user for a master project ZIP.
-4. Use a feature/workflow branch and PR. Never write directly to main or force-push. Allow automatic merge only after all required exact-SHA checks pass and GitHub reports the PR is mergeable.
-5. Always preserve offline-only behavior, save compatibility, asset provenance and the current version source of truth.
+Counts describe catalogues. They do not prove every item is balanced, exposed in UI, triggered by gameplay or fully playable.
 
-## Current facts
+## Known gaps
 
-- PR #28 is the single consolidated candidate. Continue on its existing branch; do not create another feature PR for this delivery.
-- The candidate contains the Brinegate Coast vertical slice, world-wrap logic, controller/touch exploration controls, premium shared exploration theme and refreshed production/handoff documentation.
-- The campaign overworld is toroidal; towns and dungeons remain bounded authored maps.
-- Candidate validation must be checked against the exact latest PR head. A successful older head does not validate a newer commit.
-- Do not merge a draft or a failing/incomplete head. Mark PR #28 ready only after final tests and checks pass, then merge with the exact-head SHA guard.
-- Physical Android QA remains outstanding. CI success is not evidence of testing on a physical controller or phone.
-- Asset redistribution/licence review remains a release gate for any third-party pack.
+- Issue #36 Android crash after character creation / Continue remains unresolved. The headless lifecycle test passes, but physical Android process-restart QA and logcat/Godot stack trace are still required.
+- The seven-continent atlas is not seven playable overworlds. Only two distinct regional overworld datasets are wired into `GameData.world_for_region()`.
+- The 28-class promotion graph is not a full node-based skill tree; there is no persistent talent-point budget.
+- Trait and ambition data/APIs exist, but many behavior-evidence triggers and a complete ambition assignment UI remain incomplete.
+- The generic 21-companion quest framework, regional trade/economy, five-act campaign continuity, Chronicle founder epilogue, and unified realm/territory management are not integrated on main.
+- No bundled fonts, music or sound effects; most classes lack complete original portraits and animation sets.
+- Android is configured; iOS export/device QA is not.
+- Used third-party art has verified recorded terms (Quaternius CC0 nature art and Zerie's permitted Free Soldier/Orc subset). Unverified legacy voxel-building PNGs and optional sprite-pack archives are marked unused; do not import them until licences are verified.
 
+## Latest mainline verification
 
-## Latest verified CI and handoff
+Exact-main CI run [#42804577127](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42804577127) passed on commit `036a17da88ab1b1037b224334dbfbbdcb392e195`:
+- 671 strict checks / 0 failures.
+- 9/9 scene resources loaded.
+- Campaign save → reset → restore → World startup lifecycle test: 0 failures.
+- Balance report, Android APK export/signature, Project Health Audit, Version Sync and Workflow YAML Lint passed.
 
-- PR #17 merged by `github-actions[bot]` at `843d21be5b201b95736e98a38f0485274e5dcc03` after all four exact-SHA checks passed on `91660c021144b53719e5cca43de6b3d946f2880b`.
-- Build Android APK run `42708085011`: 342 strict checks, 0 failures; balance report passed; signed 41.2 MB APK, arm64-v8a + armeabi-v7a, no permissions. APK artifact `13715145936`; logs artifact `13715305665`.
-- Version Sync `42708084633`, Workflow YAML Lint `42708084644`, Project Health Audit `42708084771`: all passed.
-- Safe Auto Merge run `42708329157` succeeded.
-- Source handoff run `42708064822`, artifact `13714701100`: 177 tracked files, four verified parts, reconstructed archive SHA-256 `aba0eea9f02f0ca1c96be8ac91259cef50ba6c71145cca41c349ec5f4d76d976`. The PR head source tree was merged unchanged into main.
-- The first Godot import produced transient global-class registration errors; the build script's clean second scan succeeded, then all 342 checks passed and APK export succeeded. Investigate this import warning separately.
+The first Godot editor scan still logs transient global-class registration errors; the clean second scan completes without unresolved script errors. Headless ObjectDB/resource cleanup warnings remain on the cleanup backlog. CI is not device QA.
 
-## Next work — execute, do not merely propose
+## Integration priorities
 
-1. Audit GDD `0.10.1`–`0.10.4`: responsive UI, battle identity overlays, receiving intake and portable handoff packaging. Inspect actual files and tests; report exact evidence and gaps.
-2. Verify or trigger a strict Godot import/test/balance/APK build on current main.
-3. Locate the source handoff workflow, generate an artifact for the exact current source SHA and verify its SHA-256 manifest and each part is at most 25 MB.
-4. Choose the next highest-value campaign feature from the GDD based on the audit; implement a complete, tested vertical slice rather than adding disconnected systems.
-5. Update GDD, README, session handoff and continuation prompts in the same PR.
+1. Reproduce issue #36 on Android; capture logcat and Godot stack trace.
+2. Finish one complete companion-quest vertical slice before importing all 21 routes.
+3. Integrate regional trading and faction diplomacy.
+4. Build real regional maps, route graph, encounter tables and local-map coverage for each unlocked continent.
+5. Consolidate holdings, taxation, economy and governance into one canonical simulation.
+6. Integrate five-act continuity, then founder epilogue/Chronicle gates in dependency order.
+7. Design and balance actual class talent trees.
+8. Add original character art, typography, audio, accessibility and mobile polish.
 
-## Fixed product constraints
+## Engineering rules
 
-- Godot 4.2+, GDScript, GL Compatibility, touch-first landscape/mobile support.
-- Fully offline: no accounts, servers, multiplayer or INTERNET permission.
-- Original KindleWake IP only. Preserve existing lore, systems and save migrations.
-- Do not claim runtime/device testing without evidence.
-- Keep restricted/uncertain assets out of release builds until licence provenance is clear.
-
-## Automation and merge safety
-
-Required checks for a merge: Build Android APK, Version Sync, Workflow YAML Lint and Project Health Audit on the **same exact PR head SHA**. The merge must reject stale heads, missing/failed checks, drafts, conflicts, wrong base branches and ambiguous PR discovery. Use expected-head-SHA REST merge; never bypass the gate for convenience.
-
-## Links
-
-- Main: https://github.com/ninjun42215-gif/KindleWake/tree/main
-- Actions: https://github.com/ninjun42215-gif/KindleWake/actions
-- PR #16: https://github.com/ninjun42215-gif/KindleWake/pull/16
-- PR #14: https://github.com/ninjun42215-gif/KindleWake/pull/14
+- Do not commit directly to main; use focused pull requests.
+- Do not merge stale or stacked branches wholesale. Rebase/port against live main and run exact-head CI.
+- Preserve offline-first behavior and save schema 4 unless a reviewed migration is necessary.
+- A catalogue or data-only feature is not a completed playable system.
+- Require Godot import, strict tests, scene smoke, campaign lifecycle, balance, Android export/signature and project audits.
+- Physical-device QA is a separate release gate.
