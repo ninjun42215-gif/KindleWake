@@ -98,7 +98,7 @@ func player_controlled_provinces() -> Array:
     var territories: Dictionary = faction_state.get("territories", {})
     for province_id in territories.keys():
         var territory: Dictionary = territories[province_id]
-        if str(territory.get("owner", "")) in ["house_dunmarrow", "crownlands"]:
+        if str(territory.get("owner", "")) in ["house_dunmarrow", "crownlands"] and str(territory.get("status", "held")) == "held":
             owned.append(str(province_id))
     owned.sort()
     return owned
