@@ -116,7 +116,7 @@ func _test_regional_bestiary() -> void:
     for species_id in species.keys():
         var record: Dictionary = species[species_id]
         var cid := str(record.get("battle_character_id", ""))
-        if not enemy_db.has(cid) or str(enemy_db[cid].get("house", "")) != "none":
+        if not enemy_db.has(cid) or str(enemy_db[cid].get("house", "")) != "none" or not gd.classes.has(str(enemy_db[cid].get("class_id", ""))) or not gd.weapons.has(str(enemy_db[cid].get("weapon_id", ""))):
             all_refs_valid = false
     check(all_refs_valid, "every bestiary species resolves to a battle-ready enemy character")
     var regional_rng := RandomNumberGenerator.new()
@@ -125,6 +125,7 @@ func _test_regional_bestiary() -> void:
     for region_id in ["sethmarch", "brinegate_coast"]:
         var def: Dictionary = EncounterBuilder.build_regional_skirmish(gd.bestiary, region_id, gd.battles, regional_rng)
         check(not def.is_empty(), "regional encounter builds for " + region_id)
+        check(str(def.get("id", "")) == "regional_skirmish_" + region_id, "regional encounter identity is unique to " + region_id)
         var enemy_count := 0
         var valid_spawns := true
         for spawn in (def.get("units", []) as Array):
