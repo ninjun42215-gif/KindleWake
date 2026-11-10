@@ -1295,6 +1295,37 @@
         "ldr": 15,
         "mor": 90
       }
+    },
+    "checkpoint_sergeant": {
+      "name": "Writ-Captain Odran Vale",
+      "reward": {
+        "exp": 180,
+        "ap": 28,
+        "gold": 85
+      },
+      "class_id": "roadreaver",
+      "level": 4,
+      "house": "none",
+      "weapon_id": "arming_sword",
+      "armor_def": 6,
+      "armor_res": 0,
+      "skills": [
+        "power_strike"
+      ],
+      "stats": {
+        "hp": 76,
+        "mp": 8,
+        "str": 14,
+        "dex": 9,
+        "int": 7,
+        "vit": 13,
+        "spd": 8,
+        "lck": 6,
+        "acc": 84,
+        "eva": 12,
+        "ldr": 11,
+        "mor": 75
+      }
     }
   }
 }
