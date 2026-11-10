@@ -340,7 +340,7 @@ func _advance_companion_quest(quest_id: String, milestone_id: String) -> void:
     GameState.save_campaign("auto_a")
     spot_text.text += "\\n\\nObjective recorded in the Companion Chronicle."
     for child in spot_buttons.get_children():
-        if child is Button and (child as Button).text == "Record this objective":
+        if child is Button and (child as Button).text != "Close":
             (child as Button).disabled = true
 
 
