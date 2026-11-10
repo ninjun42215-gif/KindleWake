@@ -2268,6 +2268,50 @@
           "text": "An original can survive a generation in a locked room. A copy can survive a fire. Neither choice is neutral."
         }
       ]
+    }    ,
+    "aurelmont": {
+      "name": "Aurelmont",
+      "kind": "town",
+      "entry": [9, 12],
+      "zoom": 1.1,
+      "rows": [
+        "TTTTTTTTTTTTTTTTTTTT",
+        "T..................T",
+        "T..bbbb......rrrr..T",
+        "T..bbbb......rrrr..T",
+        "T..wwww......wwww..T",
+        "T..................T",
+        "T....,,,,,,,,,,....T",
+        "T....,........,....T",
+        "T....,........,....T",
+        "T....,,,,,,,,,,....T",
+        "T..................T",
+        "T..rrrr............T",
+        "T..wwww............T",
+        "T..................T",
+        "TTTTTTTEEEEEETTTTTTT"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [9, 7],
+          "kind": "story",
+          "npc": true,
+          "name": "The Last Audience",
+          "story_id": "last_audience",
+          "tint": [0.9, 0.78, 0.55],
+          "text": "The city council has gathered beneath the old imperial dome. Maelor waits beside the empty throne, with the Seven Witnesses' evidence laid out where everyone can see it."
+        },
+        {
+          "cell": [14, 5],
+          "kind": "text",
+          "npc": true,
+          "name": "Aurelmont Gate Warden",
+          "tint": [0.7, 0.8, 0.9],
+          "text": "The capital has not closed its gates, but neither has it agreed to welcome an army. Every banner outside is being counted."
+        }
+      ]
     }
+
   }
 }
