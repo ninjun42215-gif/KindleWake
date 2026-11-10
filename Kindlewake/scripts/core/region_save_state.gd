@@ -48,6 +48,22 @@ static func is_valid_campaign_payload(payload: Dictionary) -> bool:
             return false
         if typeof(member.get("sigils", {})) != TYPE_DICTIONARY:
             return false
+        if typeof(member.get("traits", [])) != TYPE_ARRAY or typeof(member.get("trait_history", [])) != TYPE_ARRAY:
+            return false
+        if typeof(member.get("enhancements", {})) != TYPE_DICTIONARY or typeof(member.get("reward", {})) != TYPE_DICTIONARY:
+            return false
+        var sigils: Dictionary = member.get("sigils", {})
+        for group in ["weapon", "armor"]:
+            if typeof(sigils.get(group, [])) != TYPE_ARRAY:
+                return false
+        var personality_value: Variant = member.get("personality", {})
+        if typeof(personality_value) != TYPE_DICTIONARY:
+            return false
+        var personality: Dictionary = personality_value
+        if typeof(personality.get("memories", [])) != TYPE_ARRAY:
+            return false
+        if typeof(personality.get("behavior", {})) != TYPE_DICTIONARY or typeof(personality.get("ambition", {})) != TYPE_DICTIONARY:
+            return false
     if typeof(payload.get("creation_profile", {})) != TYPE_DICTIONARY:
         return false
     if typeof(payload.get("world_flags", {})) != TYPE_DICTIONARY:
