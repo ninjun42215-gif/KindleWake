@@ -697,8 +697,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         if code != 0 or remaining_scan_errors:
             raise BuildError("Godot editor import still reports script errors after two scans. See dist/logs/import.txt.")
 
+        say("\n[4] Loading every authored scene in headless mode")
+        code, out = run([str(godot), "--headless", "--path", str(PROJECT), "--script", "res://tests/scene_smoke_test.gd"],
+                        env=env, log=logs / "scene_smoke_test.txt", timeout=300)
+        summary.append("scene_smoke: exit %d, loaded %s" %
+                       (code, re.search(r"Scene smoke: (.*)", out).group(1) if re.search(r"Scene smoke: (.*)", out) else "unknown"))
+        if code != 0 or "SCRIPT ERROR" in out or "Parse Error" in out:
+            raise BuildError("Headless scene smoke test failed. See dist/logs/scene_smoke_test.txt.")
+
         if not args.skip_tests:
-            say("\n[4] Running tests/run_tests.gd (output is saved; it does not block the APK unless --strict)")
+            say("\n[5] Running tests/run_tests.gd (output is saved; it does not block the APK unless --strict)")
             code, out = run([str(godot), "--headless", "--path", str(PROJECT), "--script", "res://tests/run_tests.gd"],
                             env=env, log=logs / "run_tests.txt", timeout=1800)
             counts = summarize_test_output(out)
@@ -715,7 +723,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                                 env=env, log=logs / "balance_report.txt", timeout=3600)
                 summary.append("balance_report: exit %d" % code)
 
-        say("\n[5] Exporting the APK")
+        say("\n[6] Exporting the APK")
         apk = dist / APK_NAME
         if apk.exists():
             apk.unlink()
@@ -796,6 +804,11 @@ def write_ci_summary(logs: Path) -> None:
     out: List[str] = ["## Kindlewake build report"]
     build = read("BUILD_SUMMARY.txt")
     out += block("Build summary", build)
+    smoke = read("scene_smoke_test.txt")
+    if smoke:
+        hits = problems(smoke)
+        out += block("Scene smoke problems (%d line(s); first 80 shown)" % len(hits), hits[:80] or ["none"])
+        out += block("Scene smoke summary", smoke[-25:])
     tests = read("run_tests.txt")
     if tests:
         hits = problems(tests)

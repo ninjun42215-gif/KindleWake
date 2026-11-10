@@ -19,6 +19,7 @@ var weapon_option: OptionButton
 var allocation_labels: Dictionary = {}
 var allocation_sliders: Dictionary = {}
 var allocation_total_label: Label
+var compact_preview_summary := false
 
 
 func _ready() -> void:
@@ -31,7 +32,10 @@ func _ready() -> void:
 func _build_ui() -> void:
     # The creator is designed for phones first. A narrow viewport gets one
     # vertical column; desktop keeps the form and preview side by side.
-    var narrow: bool = get_viewport_rect().size.x < 900.0
+    var viewport_size: Vector2 = get_viewport_rect().size
+    var narrow: bool = viewport_size.x < 900.0
+    var pin_preview: bool = narrow and viewport_size.y > viewport_size.x
+    compact_preview_summary = pin_preview
 
     var backdrop := ColorRect.new()
     backdrop.color = Color("#080d13")
@@ -104,8 +108,11 @@ func _build_ui() -> void:
 
     var preview_column := VBoxContainer.new()
     preview_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    preview_column.add_theme_constant_override("separation", 8)
-    if narrow:
+    preview_column.add_theme_constant_override("separation", 4 if pin_preview else 8)
+    if pin_preview:
+        preview_column.custom_minimum_size = Vector2(0, 0)
+        preview_column.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+    elif narrow:
         preview_column.custom_minimum_size = Vector2(0, 0)
     else:
         preview_column.custom_minimum_size = Vector2(280, 0)
@@ -117,18 +124,22 @@ func _build_ui() -> void:
     preview_title.add_theme_color_override("font_color", Color("#e5c98d"))
     preview_column.add_child(preview_title)
     preview = PreviewScript.new()
-    preview.custom_minimum_size = Vector2(0, 250) if narrow else Vector2(280, 330)
+    preview.custom_minimum_size = Vector2(0, 132) if pin_preview else Vector2(0, 250) if narrow else Vector2(280, 330)
     preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    preview.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if pin_preview else Control.SIZE_EXPAND_FILL
     preview_column.add_child(preview)
     preview_text = Label.new()
     preview_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     preview_text.add_theme_font_size_override("font_size", 14 if narrow else 15)
     preview_text.add_theme_color_override("font_color", Color("#c8d0d8"))
+    if pin_preview:
+        preview_text.custom_minimum_size = Vector2(0, 30)
+        preview_text.max_lines_visible = 2
     preview_column.add_child(preview_text)
 
-    if narrow:
-        body.add_child(preview_column)
+    if pin_preview:
+        outer.add_child(preview_column)
+        outer.move_child(preview_column, 2)
     else:
         body.add_child(preview_column)
 
@@ -321,12 +332,21 @@ func _refresh_preview() -> void:
             int(allocation.get("str", 0)), int(allocation.get("dex", 0)), int(allocation.get("int", 0)),
             int(allocation.get("vit", 0)), int(allocation.get("spd", 0)), int(allocation.get("lck", 0))
         ]
-        preview_text.text = "%s\n%s presentation · %s build\n%s · %s\nWeapon: %s\nTemperament: %s\nOrigin: %s\nBonuses: %s / %s\n%s" % [
-            str(profile.get("name", "")), str(profile.get("presentation", "")).capitalize(),
-            str(profile.get("build", "")).capitalize(), str(origin.get("name", "")),
-            str(discipline.get("name", "")), str(profile.get("weapon_preference", "")).capitalize(),
-            str(temperament.get("name", "")), str(origin.get("description", "")), origin_bonus, temperament_bonus, allocation_text
-        ]
+        if compact_preview_summary:
+            preview_text.text = "%s · %s · %s\n%s / %s · %s · %s" % [
+                str(profile.get("name", "")), str(origin.get("name", "")),
+                str(discipline.get("name", "")), str(profile.get("presentation", "")).capitalize(),
+                str(profile.get("build", "")).capitalize(),
+                str(profile.get("weapon_preference", "")).capitalize(),
+                str(temperament.get("name", ""))
+            ]
+        else:
+            preview_text.text = "%s\n%s presentation · %s build\n%s · %s\nWeapon: %s\nTemperament: %s\nOrigin: %s\nBonuses: %s / %s\n%s" % [
+                str(profile.get("name", "")), str(profile.get("presentation", "")).capitalize(),
+                str(profile.get("build", "")).capitalize(), str(origin.get("name", "")),
+                str(discipline.get("name", "")), str(profile.get("weapon_preference", "")).capitalize(),
+                str(temperament.get("name", "")), str(origin.get("description", "")), origin_bonus, temperament_bonus, allocation_text
+            ]
     var reason: String = CharacterCreation.validate(profile, config, GameData.classes)
     if status_label != null:
         if reason == "":

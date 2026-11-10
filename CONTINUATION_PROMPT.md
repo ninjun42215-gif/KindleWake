@@ -1,3 +1,21 @@
+# KINDLEWAKE — CURRENT LIVE HANDOFF (2026-11-10)
+
+> **Authoritative state:** Repository `ninjun42215-gif/KindleWake`; current `main` base `2374319062a6d06be298b390779018c56721e6ee`; active branch `fix/ch1-and-creator-ux`; PR [#30](https://github.com/ninjun42215-gif/KindleWake/pull/30) is open. The earlier checkpoints below are historical only and must not override this block.
+>
+> **Project baseline:** Godot 4.2 / GL Compatibility; game and Android version 0.12.0; Android version code 1200; save schema 4. Keep the game offline. Preserve all existing systems, data and save compatibility; no version/schema change is part of this fix.
+>
+> **Current implementation:** courtyard movement now uses `Control._gui_input()` for tap and drag events, responsive playable bounds, gate placement below the objective card, and a 120px interaction radius. Character creator is a full-screen overlay, with a live portrait and compact summary pinned above the form on narrow portrait phones. Added viewport-bound regression assertions and a headless scan of every authored `.tscn` resource before gameplay tests and APK export.
+>
+> **Repository hygiene:** canonical extracted Godot source remains in `Kindlewake/`; the old root-level `Feature_*.zip` snapshots have been removed from this branch; root and project-level ignore rules cover generated Godot/build output and signing credentials. No old `Kindlewake_Project.zip` was present at repository root to archive.
+>
+> **CI/device status:** PR checks have started. Do not claim Godot import, scene smoke, strict tests, balance or APK export passed until the exact current PR head has completed successfully. No physical-device screenshots or QA have been supplied; 20:9 portrait/landscape, notch/safe-area, creator navigation and Chapter I → battle → World flow remain manual gates.
+>
+> **Next step:** inspect all checks for the exact PR head, fix any failure, and update this block with actual evidence. Stop after Phase 0/1 and report before Phase 2. Do not merge until the required checks pass and the owner explicitly approves.
+>
+> **Current architecture & next step:** data remains JSON-driven under `Kindlewake/data/`; autoloads remain `GameData`, `SaveSystem`, and `GameState`; core rules remain under `Kindlewake/scripts/core/`; tactical rules remain under `Kindlewake/scripts/battle/`; UI remains code-built under `Kindlewake/scripts/ui/` with one-node scene shells. The courtyard mission logic remains in `EscapeMission`; this fix only repairs its traversal UI. The creator continues to emit the same validated profile contract. The smoke test is `Kindlewake/tests/scene_smoke_test.gd`; strict game tests remain `Kindlewake/tests/run_tests.gd`; Android build orchestration remains `Kindlewake/tools/build_apk.py`. Next approved milestone after this QA report is Phase 2: shared Theme, bundled OFL fonts, safe-area helper, SceneRouter, UIFX and AudioManager.
+
+---
+
 > **ACTIVE IMPLEMENTATION CHECKPOINT — 2026-11-10:** Main is `b322c86fbb44696dfc85382f49478dcb5bce2cd9` (v0.10.0, Android code 1000, save schema 3). The active candidate is branch `feature/recruitment-system-v1-2026-11-10`; do not describe it as merged until its PR is merged. The candidate bumps the game to v0.11.0, Android code 1100 and save schema 4.
 >
 > **Recruitment v1 scope:** the data now defines all 24 Wave-1 named characters (4 starting members + 20 recruitable profiles). Fourteen recruit profiles were added; the six existing recruit definitions were aligned to their intended class/weapon identities. Six muster halls now expose the recruit roster. Recruitment validates duplicate flags, gold costs, story flags and companion prerequisites before atomically adding the member and recording the one-time world flag.

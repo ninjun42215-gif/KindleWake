@@ -9,6 +9,7 @@ var content_box: VBoxContainer
 var status_label: Label
 var master_slider: HSlider
 var menu_buttons: Array[Button] = []
+var creator_overlay: CharacterCreator
 
 
 func _ready() -> void:
@@ -151,22 +152,35 @@ func _continue_game() -> void:
 
 
 func _new_game() -> void:
+    if is_instance_valid(creator_overlay):
+        creator_overlay.queue_free()
     _clear_content()
     status_label.text = "Create the heir who will reclaim Kaer Sethorn."
-    var creator: CharacterCreator = CREATOR_SCENE.instantiate() as CharacterCreator
-    content_box.add_child(creator)
-    creator.custom_minimum_size = Vector2(0, 430)
-    creator.confirmed.connect(_on_creator_confirmed)
-    creator.cancelled.connect(_on_creator_cancelled)
+    creator_overlay = CREATOR_SCENE.instantiate() as CharacterCreator
+    creator_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    creator_overlay.offset_left = 0
+    creator_overlay.offset_top = 0
+    creator_overlay.offset_right = 0
+    creator_overlay.offset_bottom = 0
+    add_child(creator_overlay)
+    move_child(creator_overlay, get_child_count() - 1)
+    creator_overlay.confirmed.connect(_on_creator_confirmed)
+    creator_overlay.cancelled.connect(_on_creator_cancelled)
 
 
 func _on_creator_confirmed(profile: Dictionary) -> void:
+    if is_instance_valid(creator_overlay):
+        creator_overlay.queue_free()
+        creator_overlay = null
     GameState.new_game(profile)
     GameState.campaign_slot = "auto_a"
     get_tree().change_scene_to_file("res://Prologue.tscn")
 
 
 func _on_creator_cancelled() -> void:
+    if is_instance_valid(creator_overlay):
+        creator_overlay.queue_free()
+        creator_overlay = null
     _show_main()
 
 
