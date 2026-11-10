@@ -68,13 +68,16 @@
     {
       "id": "northstar_wreck",
       "name": "The Northstar Wreck",
-      "kind": "ruin",
+      "kind": "dungeon",
       "cell": [
         57,
         7
       ],
       "reward_gold": 55,
-      "text": "A merchant hull split against the reef. The cargo is gone, but a brass chart tube remains wedged beneath the ribs."
+      "text": "A merchant hull split against the reef. The cargo is gone, but a brass chart tube remains wedged beneath the ribs.",
+      "town": "dungeon_northstar_wreck",
+      "battle": "battle_northstar_wreck",
+      "world_flag_on_victory": "northstar_wreck_cleared"
     }
   ],
   "roads": [
