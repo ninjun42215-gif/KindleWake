@@ -95,4 +95,29 @@ The atlas is the global layer; each playable region still needs a bounded author
 4. Brinegate: Saltmere harbour approaches and the outer reef route.
 5. Then unlock one playable region at a time on Varakhan, Nhalor, Veyrwood, Asterreach and Ilyr.
 
-This file is a data and narrative foundation, not a claim that all 18 dungeons, 17 holdings or all seven continents are currently playable. Each site still needs a real map, encounter pool, interaction hooks, battle definitions and tests before it can be marked playable.
+
+## First playable regional slice — implementation status
+
+The first connected implementation slice is now authored in the actual Godot data files:
+
+- **24 overworld landmarks** in the Sethmarch world map, with new roads branching to Sallow Ford Keep, Elderbough Watch, Redwater Granary, the Sunken Tollhouse, Warden's Barrow and the Ashen Granary.
+- **48 local maps** in `locations.json`, including three new settlement maps, the Sallow Ford Keep hall and barracks, the Elderbough signal hall, the Redwater seed store and three separate dungeon maps.
+- **Three location-level holdings** are claimable after their authored prerequisites: clear the Roadwolf Camp before securing Sallow Ford Keep; recover the Bell Under Leaves victory flag before negotiating at Elderbough Watch; recover the Kingsroad Catacombs victory flag before signing Redwater's grain charter.
+- Holding ownership is saved in campaign world flags as a location-level record. It does not transfer the entire atlas region. New claims begin as provisional with 35/100 stability and a governance appointment; a short history records the transfer.
+- Dungeon maps contain separate treasure and guardian interaction spots and return to the overworld through their exit tile. The guardian interactions currently reuse existing battle definitions; bespoke boss units and puzzle-specific dungeon mechanics remain a content pass.
+
+### Regional descriptions and playable functions
+
+**Sallow Ford Keep** is a river crossing fortress with a flood-prone lower bailey. The castellan explains the toll road and garrison's unpaid wages; the hall contains the steward's charter advice, while the barracks exposes the practical needs of a functioning watch. Its first occupation is military and remains provisional.
+
+**Elderbough Watch** is a frontier post built around the roots of a fallen elder tree. Its signal hall explains the three bell calls — fire, strangers and flood — and the wardens accept a stewardship compact only after the Bell Under Leaves evidence has been recovered. The surrounding old-growth grove is protected by the terms of the compact.
+
+**Redwater Granary** is a walled food reserve whose seed store is governed separately from ordinary trade stock. The freeholder explains the winter reserve rule; the Seed Warden warns that breaking the vault seal without a vote destroys the town's trust. The Kingsroad Catacombs evidence unlocks a grain charter rather than a simple military occupation.
+
+**The Sunken Tollhouse**, **Warden's Barrow** and **The Ashen Granary** each have their own explorable local map, a cache interaction, a guardian battle interaction and a persistent victory flag. Their authored descriptions tie each site to the river toll authority, the Orrowen boundary compact and the Vessmoor levy dispute respectively.
+
+### Validation and remaining work
+
+Static validation confirms all 24 overworld place IDs are unique, all road endpoints exist, every dungeon has a local map and battle reference, and all 48 local maps have rectangular rows, valid tile symbols, walkable entries, reachable doors/spots and valid door destinations. The Godot CI workflow has been triggered for import, headless scene smoke tests, strict tests and Android export; its final result is still pending.
+
+The map layouts and interactions are playable foundations, not finished bespoke dungeon minigames. Puzzle systems (sluice sequencing, ancestral inscription trials, grain/firebreak salvage), unique boss battle rosters, interior art variation, siege battle maps, settlement economy ticks, garrison upkeep and stability recovery are explicitly still outstanding. The wider 18-holding / 18-dungeon catalogue remains authored content awaiting the same regional implementation pass.
