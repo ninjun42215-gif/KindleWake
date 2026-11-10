@@ -18,6 +18,7 @@ var policy_picker: OptionButton
 var title_rank_picker: OptionButton
 var title_name: LineEdit
 var domain_name: LineEdit
+var domain_picker: OptionButton
 var status: Label
 
 func _ready() -> void:
