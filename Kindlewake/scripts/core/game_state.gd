@@ -86,8 +86,8 @@ func set_territory_policy(region_id: String, policy: Dictionary, faction_id: Str
 
 
 ## Advance one authored governance period and pay its deterministic tax income to the party.
-func advance_territory_governance() -> Dictionary:
-    var result: Dictionary = TerritoryGovernance.advance_turn(territory_state)
+func advance_territory_governance(faction_id: String = "house_dunmarrow") -> Dictionary:
+    var result: Dictionary = TerritoryGovernance.advance_turn(territory_state, faction_id)
     party.gold += int(result.get("tax_income", 0))
     return result
 
