@@ -5,6 +5,7 @@ const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const EmpireSystem = preload("res://scripts/core/empire_management_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
 
@@ -22,6 +23,7 @@ var pending_location: String = ""        # town map the location scene opens nex
 var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored with battle saves
 var campaign_slot: String = ""
 var faction_state: Dictionary = {}
+var empire_state: Dictionary = EmpireSystem.new_state()
 
 
 
@@ -54,6 +56,7 @@ func new_game(profile: Dictionary = {}) -> void:
     world_flags = {}
     pending_location = ""
     faction_state = FactionSystem.new_campaign_state(GameData.factions)
+    empire_state = EmpireSystem.new_state()
 
 
 ## Change diplomatic standing after an authored campaign event.
@@ -70,6 +73,32 @@ func set_faction_diplomacy(faction_a: String, faction_b: String, next_state: Str
 func transfer_faction_region(region_id: String, new_owner: String, cause: String) -> bool:
     return FactionSystem.transfer_region(faction_state, region_id, new_owner, cause)
 
+
+## Unlock realm administration only when an authored story outcome grants governing authority.
+func unlock_empire_management(realm_name: String = "The Crownlands") -> bool:
+    return EmpireSystem.unlock(empire_state, realm_name)
+
+func set_empire_tax_rate(rate: String) -> bool:
+    return EmpireSystem.set_tax_rate(empire_state, rate)
+
+func toggle_empire_policy(policy: String) -> bool:
+    return EmpireSystem.toggle_policy(empire_state, policy)
+
+func appoint_empire_councillor(role: String, character_id: String) -> bool:
+    if not party.has_character(character_id):
+        return false
+    return EmpireSystem.appoint_councillor(empire_state, role, character_id)
+
+func appoint_province_governor(province_id: String, character_id: String) -> bool:
+    if not party.has_character(character_id):
+        return false
+    return EmpireSystem.appoint_governor(empire_state, province_id, character_id, GameData.factions.get("regions", {}).keys())
+
+func construct_province_building(province_id: String, building_id: String) -> bool:
+    return EmpireSystem.construct(empire_state, province_id, building_id, GameData.factions.get("regions", {}).keys())
+
+func advance_empire_season() -> Dictionary:
+    return EmpireSystem.advance_season(empire_state, GameData.factions.get("regions", {}).keys())
 
 ## Battle database with the party's current sheets (level, stats, equipment) substituted in.
 func battle_db() -> Dictionary:
@@ -121,6 +150,7 @@ func campaign_payload() -> Dictionary:
         "world_positions": world_positions.duplicate(true),
         "world_flags": world_flags.duplicate(true),
         "faction_state": faction_state.duplicate(true),
+        "empire_state": empire_state.duplicate(true),
         "from_world": true
     }
 
@@ -147,6 +177,7 @@ func load_campaign(slot_id: String) -> bool:
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
     faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
+    empire_state = EmpireSystem.normalize_state(payload.get("empire_state", {}))
     world_pos = region_state["world_pos"]
     active_region_id = str(region_state["active_region_id"])
     world_positions = region_state["world_positions"]
