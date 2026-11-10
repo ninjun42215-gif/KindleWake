@@ -932,4 +932,4 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - Current-main CI passed 18 scene loads, 912 strict checks with 0 failures, the balance report and signed Android export. Physical-device QA and asset redistribution verification remain release gates.
 
 
-- **Headless cleanup candidate (2026-11-10, PR pending):** the PartyScreen smoke test now frees its temporary Control synchronously before the test tree exits; Blender source import is disabled because the repository contains no `.blend` files. No gameplay, version or save-schema change. Exact-head validation is pending.
+- **Headless cleanup candidate (2026-11-10, PR pending):** the PartyScreen smoke test now frees its temporary Control synchronously and drains deferred child nodes before the test tree exits; the standalone balance report frees its GameData Node; Blender source import is disabled because the repository contains no `.blend` files. No gameplay, version or save-schema change. Exact-head validation is pending.
