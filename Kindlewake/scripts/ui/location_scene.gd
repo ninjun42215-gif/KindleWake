@@ -273,10 +273,22 @@ func _on_prompt_pressed() -> void:
             spot_text.text += "\n\nThe cache is empty."
     elif spot_kind == "boss":
         var boss_flag: String = str(near_spot.get("world_flag_on_victory", ""))
-        if not bool(GameState.world_flags.get(boss_flag, false)):
+        var required_flag: String = str(near_spot.get("requires_flag", ""))
+        if required_flag != "" and not bool(GameState.world_flags.get(required_flag, false)):
+            spot_text.text += "\n\nThe guardian's seal remains closed. Resolve the mechanism in this chamber first."
+        elif not bool(GameState.world_flags.get(boss_flag, false)):
             spot_buttons.add_child(_btn("Challenge the guardian", _challenge_boss.bind(near_spot)))
         else:
             spot_text.text += "\n\nThe guardian has been defeated."
+    elif spot_kind == "mechanism":
+        var mechanism_id: String = str(near_spot.get("mechanism_id", ""))
+        var solved_flag: String = str(near_spot.get("world_flag_on_solved", ""))
+        if bool(GameState.world_flags.get(solved_flag, false)):
+            spot_text.text += "\n\nThe mechanism is aligned. Its seal remains open."
+        else:
+            var options: Array = near_spot.get("options", [])
+            for option in options:
+                spot_buttons.add_child(_btn("Set: " + str(option).capitalize(), _resolve_mechanism.bind(near_spot, str(option))))
     spot_buttons.add_child(_btn("Close", _close_panel))
     spot_panel.visible = true
 
@@ -347,6 +359,35 @@ func _claim_treasure(spot: Dictionary) -> void:
     if current_map_id == "dungeon_tideglass":
         GameState.world_flags["tideglass_ledger_found"] = true
     spot_text.text += "\n\nYou recover %d gold.%s" % [reward, loot_text]
+
+
+func _resolve_mechanism(spot: Dictionary, choice: String) -> void:
+    var mechanism_id := str(spot.get("mechanism_id", ""))
+    var sequence: Array = spot.get("sequence", [])
+    var solved_flag := str(spot.get("world_flag_on_solved", ""))
+    if mechanism_id == "" or sequence.is_empty() or solved_flag == "":
+        spot_text.text += "\n\nThe mechanism is damaged beyond use."
+        return
+    if bool(GameState.world_flags.get(solved_flag, false)):
+        return
+    var progress_key := "mechanism_progress_" + mechanism_id
+    var progress := clampi(int(GameState.world_flags.get(progress_key, 0)), 0, sequence.size())
+    if choice == str(sequence[progress]):
+        progress += 1
+        GameState.world_flags[progress_key] = progress
+        if progress >= sequence.size():
+            GameState.world_flags[solved_flag] = true
+            GameState.world_flags.erase(progress_key)
+            spot_text.text += "\n\nThe sequence locks into place. A deep mechanism turns, and the guardian seal releases."
+            GameState.save_campaign("auto_a")
+            for child in spot_buttons.get_children():
+                if child is Button:
+                    (child as Button).disabled = true
+        else:
+            spot_text.text += "\n\nThe mechanism accepts the setting. %d of %d stages are aligned." % [progress, sequence.size()]
+    else:
+        GameState.world_flags[progress_key] = 1 if choice == str(sequence[0]) else 0
+        spot_text.text += "\n\nThe mechanism shudders and resets. The sequence must begin again."
 
 
 func _challenge_boss(spot: Dictionary) -> void:
