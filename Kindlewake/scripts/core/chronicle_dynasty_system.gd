@@ -4,6 +4,8 @@ const VERSION := 1
 const ADULT_AGE := 18
 const NATURAL_OLD_AGE := 85
 const SUCCESSION_POLICIES := ["primogeniture", "equal_partition", "seniority", "elective", "designated_heir"]
+const EDUCATION_FOCUSES := ["martial","stewardship","diplomacy","learning","arts"]
+const COUNCIL_ROLES := ["steward","marshal","chancellor","spymaster","concord_legate"]
 const TRAITS := {
  "brave":{"polarity":"positive","description":"Stands firm when danger closes in."},
  "kind":{"polarity":"positive","description":"Treats dependants as people, not assets."},
@@ -91,12 +93,12 @@ static func new_house(founder_record: Dictionary, founder_name: String, house_na
   "version":VERSION,"house_name":house_name,"year":1,"next_person_number":1,
   "founder_id":founder_id,"people":people,"titles":titles,"domains":domains,
   "succession_policy":"primogeniture","designated_heir":"heir_1",
-  "chronicle":[],"last_succession":{}
+  "council":{},"chronicle":[],"last_succession":{}
  }
 
 
 static func _person(id: String, name: String, age: int, relation: String, parents: Array, traits: Array, alive: bool) -> Dictionary:
- return {"id":id,"name":name,"age":age,"relation":relation,"parents":parents.duplicate(),"children":[],"siblings":[],"spouse":"","traits":traits.duplicate(),"alive":alive,"death_cause":"","title_id":"","title_ids":[],"domain_ids":[],"designated_heir":false,"born_year":1}
+ return {"id":id,"name":name,"age":age,"relation":relation,"parents":parents.duplicate(),"children":[],"siblings":[],"spouse":"","traits":traits.duplicate(),"alive":alive,"death_cause":"","title_id":"","title_ids":[],"domain_ids":[],"designated_heir":false,"born_year":1,"birth_parents":parents.duplicate(),"adoptive_parent_id":"","guardian_id":"","education":{"focus":"","guardian_id":"","started_year":0,"completed":false},"claims":[]}
 
 
 static func normalize_state(raw: Dictionary) -> Dictionary:
@@ -276,6 +278,156 @@ static func _ancestor_ids(state: Dictionary, person_id: String, visited: Array =
  for parent_id in person.get("parents",[]):
   _ancestor_ids(state,str(parent_id),visited)
  return visited
+
+
+static func record_adoption(raw: Dictionary, child_id: String, adoptive_parent_id: String) -> Dictionary:
+ var state := normalize_state(raw)
+ if not state.people.has(child_id) or not state.people.has(adoptive_parent_id) or child_id == adoptive_parent_id:
+  return {"ok":false,"reason":"Choose a child and a different adoptive parent."}
+ var child: Dictionary = state.people[child_id]
+ var parent: Dictionary = state.people[adoptive_parent_id]
+ if not child.alive or int(child.age) > 16 or not parent.alive or int(parent.age) < ADULT_AGE:
+  return {"ok":false,"reason":"Adoption requires a living child aged 16 or younger and a living adult."}
+ if str(child.get("adoptive_parent_id","")) != "":
+  return {"ok":false,"reason":"This child already has a recorded adoptive parent."}
+ if _related(state,child_id,adoptive_parent_id):
+  return {"ok":false,"reason":"A close relative cannot be entered as an adoptive parent in this record."}
+ child["adoptive_parent_id"] = adoptive_parent_id
+ child["relation"] = "adopted_child"
+ var parents: Array = child.get("parents",[])
+ if not parents.has(adoptive_parent_id):
+  parents.append(adoptive_parent_id)
+ child["parents"] = parents
+ state.people[child_id] = child
+ if not parent.children.has(child_id):
+  parent.children.append(child_id)
+ state.people[adoptive_parent_id] = parent
+ _log(state,"adoption_recorded",{"child":child_id,"adoptive_parent":adoptive_parent_id,"birth_parents":child.get("birth_parents",[])})
+ return {"ok":true,"state":state}
+
+
+static func assign_guardian(raw: Dictionary, child_id: String, guardian_id: String) -> Dictionary:
+ var state := normalize_state(raw)
+ if not state.people.has(child_id) or not state.people.has(guardian_id) or child_id == guardian_id:
+  return {"ok":false,"reason":"Choose a child and a different guardian."}
+ var child: Dictionary = state.people[child_id]
+ var guardian: Dictionary = state.people[guardian_id]
+ if not child.alive or int(child.age) > 16 or not guardian.alive or int(guardian.age) < ADULT_AGE:
+  return {"ok":false,"reason":"Guardianship requires a living child aged 16 or younger and a living adult."}
+ child["guardian_id"] = guardian_id
+ state.people[child_id] = child
+ _log(state,"guardian_appointed",{"child":child_id,"guardian":guardian_id})
+ return {"ok":true,"state":state}
+
+
+static func assign_education(raw: Dictionary, child_id: String, focus: String) -> Dictionary:
+ var state := normalize_state(raw)
+ if not state.people.has(child_id) or not EDUCATION_FOCUSES.has(focus):
+  return {"ok":false,"reason":"Choose a recorded child and a valid education focus."}
+ var child: Dictionary = state.people[child_id]
+ if not child.alive or int(child.age) < 6 or int(child.age) > 15 or str(child.get("guardian_id","")) == "":
+  return {"ok":false,"reason":"A living child aged 6 to 15 needs an appointed guardian before education begins."}
+ child["education"] = {"focus":focus,"guardian_id":str(child.guardian_id),"started_year":int(state.year),"completed":false}
+ state.people[child_id] = child
+ _log(state,"education_started",{"child":child_id,"focus":focus,"guardian":child.guardian_id})
+ return {"ok":true,"state":state}
+
+
+static func complete_education(raw: Dictionary, child_id: String) -> Dictionary:
+ var state := normalize_state(raw)
+ if not state.people.has(child_id):
+  return {"ok":false,"reason":"Unknown student."}
+ var child: Dictionary = state.people[child_id]
+ var education: Dictionary = child.get("education",{})
+ if not child.alive or int(child.age) < 16 or str(education.get("focus","")) == "" or bool(education.get("completed",false)):
+  return {"ok":false,"reason":"Education completes once, after age 16, for a living student with an assigned focus."}
+ var trait_by_focus := {"martial":"brave","stewardship":"diligent","diplomacy":"diplomatic","learning":"scholarly","arts":"witty"}
+ var earned_trait := str(trait_by_focus[str(education.focus)])
+ if not child.traits.has(earned_trait):
+  child.traits.append(earned_trait)
+ education["completed"] = true
+ education["completed_year"] = int(state.year)
+ education["earned_trait"] = earned_trait
+ child["education"] = education
+ state.people[child_id] = child
+ _log(state,"education_completed",{"student":child_id,"focus":education.focus,"trait":earned_trait})
+ return {"ok":true,"state":state,"earned_trait":earned_trait}
+
+
+static func assign_council_role(raw: Dictionary, role: String, person_id: String) -> Dictionary:
+ var state := normalize_state(raw)
+ if not COUNCIL_ROLES.has(role) or not state.people.has(person_id):
+  return {"ok":false,"reason":"Choose a valid council office and a recorded person."}
+ var person: Dictionary = state.people[person_id]
+ if not person.alive or int(person.age) < ADULT_AGE:
+  return {"ok":false,"reason":"Council members must be living adults."}
+ var council: Dictionary = state.get("council",{})
+ for existing_role in council.keys():
+  if str(council[existing_role]) == person_id and str(existing_role) != role:
+   return {"ok":false,"reason":"One person cannot occupy two council offices in this first council model."}
+ council[role] = person_id
+ state["council"] = council
+ _log(state,"council_appointed",{"role":role,"person":person_id})
+ return {"ok":true,"state":state}
+
+
+static func record_title_claim(raw: Dictionary, claimant_id: String, title_id: String, basis: String) -> Dictionary:
+ var state := normalize_state(raw)
+ if not state.people.has(claimant_id) or not state.titles.has(title_id) or not ["inheritance","grant","service"].has(basis):
+  return {"ok":false,"reason":"A living claimant, existing title and valid claim basis are required."}
+ var claimant: Dictionary = state.people[claimant_id]
+ if not claimant.alive:
+  return {"ok":false,"reason":"A deceased person cannot raise a new claim."}
+ var claims: Array = claimant.get("claims",[])
+ for claim in claims:
+  if str(claim.get("title_id","")) == title_id and str(claim.get("status","")) == "pending":
+   return {"ok":false,"reason":"This person already has a pending claim to that title."}
+ claims.append({"title_id":title_id,"basis":basis,"status":"pending","recorded_year":int(state.year)})
+ claimant["claims"] = claims
+ state.people[claimant_id] = claimant
+ _log(state,"title_claim_recorded",{"claimant":claimant_id,"title":title_id,"basis":basis})
+ return {"ok":true,"state":state}
+
+
+static func resolve_title_claim(raw: Dictionary, claimant_id: String, title_id: String, outcome: String) -> Dictionary:
+ var state := normalize_state(raw)
+ if not state.people.has(claimant_id) or not state.titles.has(title_id) or not ["recognize","reject"].has(outcome):
+  return {"ok":false,"reason":"Choose a valid pending claim and a lawful outcome."}
+ var claimant: Dictionary = state.people[claimant_id]
+ var claims: Array = claimant.get("claims",[])
+ var found := false
+ for index in range(claims.size()):
+  var claim: Dictionary = claims[index]
+  if str(claim.get("title_id","")) == title_id and str(claim.get("status","")) == "pending":
+   claim["status"] = "recognized" if outcome == "recognize" else "rejected"
+   claim["resolved_year"] = int(state.year)
+   claims[index] = claim
+   found = true
+   break
+ if not found:
+  return {"ok":false,"reason":"No pending claim exists for that title."}
+ claimant["claims"] = claims
+ state.people[claimant_id] = claimant
+ if outcome == "recognize":
+  var title: Dictionary = state.titles[title_id]
+  var former_id := str(title.get("holder",""))
+  if state.people.has(former_id):
+   var former: Dictionary = state.people[former_id]
+   var former_titles: Array = former.get("title_ids",[])
+   former_titles.erase(title_id)
+   former["title_ids"] = former_titles
+   former["title_id"] = str(former_titles.back()) if not former_titles.is_empty() else ""
+   state.people[former_id] = former
+  title["holder"] = claimant_id
+  state.titles[title_id] = title
+  var claimant_titles: Array = claimant.get("title_ids",[])
+  if not claimant_titles.has(title_id):
+   claimant_titles.append(title_id)
+  claimant["title_ids"] = claimant_titles
+  claimant["title_id"] = title_id
+  state.people[claimant_id] = claimant
+ _log(state,"title_claim_resolved",{"claimant":claimant_id,"title":title_id,"outcome":outcome})
+ return {"ok":true,"state":state}
 
 
 static func add_trait(raw: Dictionary, person_id: String, trait_id: String) -> Dictionary:
