@@ -167,6 +167,15 @@ func _test_holding_system() -> void:
     check(str(flags.get("holding_status_sallow_ford_keep", "")) == "provisional" and int(flags.get("holding_stability_sallow_ford_keep", 0)) == 35, "new occupation starts provisional and requires stabilisation")
     check(not bool(HoldingSystem.claim(keep, flags).get("ok", true)), "a holding cannot be claimed twice")
     check((flags.get("holding_history", []) as Array).size() == 1, "holding ownership changes are recorded in campaign history")
+    var beacon: Dictionary = {}
+    for p in gd.thalassar_world.get("places", []):
+        if str(p.get("id", "")) == "veyhaven_beacon":
+            beacon = p
+            break
+    var beacon_locked: Dictionary = HoldingSystem.inspect(beacon, flags)
+    check(not bool(beacon_locked.get("available", true)), "Veyhaven Beacon remains unclaimable until Stormwell is restored")
+    flags["stormwell_grounding_solved"] = true
+    check(bool(HoldingSystem.inspect(beacon, flags).get("available", false)), "restoring Stormwell unlocks the beacon stewardship claim")
 
 
 func _test_dungeon_mechanisms() -> void:
@@ -175,7 +184,9 @@ func _test_dungeon_mechanisms() -> void:
     var expected := {
         "dungeon_sunken_tollhouse": "tollhouse_sluice_solved",
         "dungeon_wardens_barrow": "wardens_oath_trial_solved",
-        "dungeon_ashen_granary": "ashen_firebreak_solved"
+        "dungeon_ashen_granary": "ashen_firebreak_solved",
+        "dungeon_wreck_kings_hold": "wreck_signal_solved",
+        "dungeon_stormwell": "stormwell_grounding_solved"
     }
     var valid := true
     for map_id in expected.keys():
@@ -196,7 +207,7 @@ func _test_dungeon_mechanisms() -> void:
             valid = false
         if str(mechanism.get("world_flag_on_solved", "")) != str(expected[map_id]) or str(boss.get("requires_flag", "")) != str(expected[map_id]):
             valid = false
-    check(valid, "three dungeons have unique multi-step mechanisms that gate their guardian encounters")
+    check(valid, "five dungeons have unique multi-step mechanisms that gate their guardian encounters")
 
 
 func _test_prologue() -> void:
@@ -1028,8 +1039,8 @@ func _test_thalassar_region() -> void:
     var unlocked: Dictionary = RecruitmentSystem.inspect(recruit_party, "maren_vey", maren, flags)
     check(bool(unlocked.get("available", false)), "recovering the Tideglass ledger unlocks Maren's recruitment")
     var maps: Dictionary = LocalMap.load_all(gd.locations)
-    var coast_maps_ok := maps.has("brinegate") and maps.has("saltmere") and maps.has("lantern_quay") and maps.has("dungeon_tideglass")
-    check(coast_maps_ok, "Brinegate, Saltmere, Lantern Quay and Tideglass have playable location maps")
+    var coast_maps_ok := maps.has("brinegate") and maps.has("saltmere") and maps.has("lantern_quay") and maps.has("dungeon_tideglass") and maps.has("morrowtide_exchange") and maps.has("veyhaven_beacon") and maps.has("dungeon_wreck_kings_hold") and maps.has("dungeon_stormwell")
+    check(coast_maps_ok and cfg.get("places", []).size() >= 10, "Brinegate, outer-island settlements, Veyhaven and three reef dungeons have playable location maps")
     if maps.has("dungeon_tideglass"):
         check((maps["dungeon_tideglass"] as LocalMap).kind == "dungeon", "Tideglass is an explorable dungeon, not a static story panel")
 
