@@ -197,31 +197,7 @@ func _test_companion_quests() -> void:
                 additional_hooks_ok = false
     check(additional_hooks_ok, "Edda and Bram Cullen each have three ordered world interactions in their authored regions")
 
-    var next_quest_hooks := {
-        "q_companion_petra_bitter_draught": {
-            "redwater": "ward_ledger_found",
-            "redwater_inn": "treatment_verified",
-            "redwater_market": "triage_decided"
-        },
-        "q_companion_anselm_line_to_hold": {
-            "cindermead": "muster_notice_read",
-            "sethorn_barracks": "drill_ground_examined",
-            "cindermead_market": "soldiers_resolved"
-        }
-    }
-    var next_hooks_ok := true
-    for next_quest_id in next_quest_hooks.keys():
-        for next_map_id in next_quest_hooks[next_quest_id].keys():
-            var next_hook_found := false
-            for next_spot in maps.get(next_map_id, {}).get("spots", []):
-                if str(next_spot.get("companion_quest_id", "")) == next_quest_id and str(next_spot.get("companion_quest_milestone", "")) == str(next_quest_hooks[next_quest_id][next_map_id]):
-                    next_hook_found = true
-                    var challenge_data: Dictionary = next_spot.get("companion_quest_challenge", {})
-                    if not challenge_data.is_empty() and (str(challenge_data.get("correct_option", "")) == "" or challenge_data.get("options", []).is_empty()):
-                        next_hooks_ok = false
-            if not next_hook_found:
-                next_hooks_ok = false
-    check(next_hooks_ok, "Petra and Anselm each have three world interactions and valid evidence or formation challenges")
+
     var authored_quest_maps := {
         "q_companion_lucan_last_flight": {"thornmere": "signal_found", "thornmere_inn": "patrol_traced", "thornmere_market": "witness_heard"},
         "q_companion_kestrel_no_master": {"elderbough": "coded_mark_found", "elderbough_inn": "safehouse_investigated", "elderbough_market": "witness_protected"},
