@@ -154,10 +154,18 @@ func _add_quest_card(quest_id: String, definition: Dictionary, quest_state: Dict
 	progress_text.add_theme_color_override("font_color", GOLD if state == "ready" else TEXT_DIM)
 	body.add_child(progress_text)
 	if state == "not_started":
-		var start_button := Button.new()
-		start_button.text = "Begin personal quest"
-		start_button.pressed.connect(_start_quest.bind(quest_id))
-		body.add_child(start_button)
+		var prerequisites_met := true
+		for raw_flag in definition.get("required_flags_all", []):
+			if not bool(GameState.world_flags.get(str(raw_flag), false)):
+				prerequisites_met = false
+				break
+		if not prerequisites_met:
+			progress_text.text = str(definition.get("unlock_hint", "A campaign story requirement must be completed first."))
+		else:
+			var start_button := Button.new()
+			start_button.text = "Begin personal quest"
+			start_button.pressed.connect(_start_quest.bind(quest_id))
+			body.add_child(start_button)
 
 
 func _start_quest(quest_id: String) -> void:
