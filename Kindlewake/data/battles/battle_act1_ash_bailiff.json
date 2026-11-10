@@ -1,7 +1,7 @@
 {
   "id": "act1_ash_bailiff_boss",
   "title": "The First Oath: The Ash Bailiff",
-  "briefing": "BOSS BATTLE — Hall of Ash. The Ash Bailiff fights beneath the authority of a forged warrant. Defeat him and his retainers to protect the household and expose the obsolete seal.",
+  "briefing": "BOSS BATTLE — Hall of Ash. The Ash Bailiff fights beneath the authority of a forged warrant. Defeat him and his retainers to protect the household and expose the obsolete seal. Pillars provide cover; keep the company together and deny the Bailiff a clear charge.",
   "weather": "clear",
   "legend": {
     ".": "grass",
@@ -14,27 +14,27 @@
     "#": "rock"
   },
   "terrain": [
-    "....................",
-    "....................",
-    "......ff....hh......",
-    ".....fff...hhh......",
-    "......f....hh.#.....",
-    ".........r..........",
-    "....~~~~~b~~~w~~....",
-    "....~~~~~b~~~w~~....",
-    ".........r..........",
-    ".....f...r...f......",
-    ".....ff..r..........",
-    "......f.............",
-    "....................",
-    "...................."
+    "####################",
+    "#..................#",
+    "#..................#",
+    "#..................#",
+    "#...f..........f...#",
+    "#...f..........f...#",
+    "#.......f..f.......#",
+    "#..................#",
+    "#...f..........f...#",
+    "#...f..........f...#",
+    "#..................#",
+    "#..................#",
+    "#..................#",
+    "####################"
   ],
   "heights": [
     "00000000000000000000",
     "00000000000000000000",
-    "00000000000011000000",
-    "00000000000122000000",
-    "00000000000110000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
     "00000000000000000000",
     "00000000000000000000",
     "00000000000000000000",
@@ -116,7 +116,7 @@
       "facing": 2
     }
   ],
-  "battlefield": "river_crossing",
+  "battlefield": "hall_of_ash",
   "reward_rune": "",
   "world_flag_on_victory": "act1_ash_bailiff_defeated",
   "victory_text": "The Bailiff's weapon falls. Elder Hale reads the retired-seal record aloud, and the household rejects the warrant. The First Oath can now be sworn.",
