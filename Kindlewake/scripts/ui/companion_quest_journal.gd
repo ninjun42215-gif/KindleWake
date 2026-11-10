@@ -132,6 +132,11 @@ func _add_quest_card(quest_id: String, definition: Dictionary, quest_state: Dict
 	chapter.text = "Chapter %s • %s" % [str(definition.get("chapter", "?")), str(definition.get("required_region", "unknown region")).replace("_", " ").capitalize()]
 	chapter.add_theme_color_override("font_color", TEXT_DIM)
 	body.add_child(chapter)
+	var summary := Label.new()
+	summary.text = str(definition.get("journal_summary", "A personal story waiting to be uncovered."))
+	summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	summary.add_theme_color_override("font_color", TEXT_MAIN.darkened(0.12))
+	body.add_child(summary)
 	var milestones: Array = definition.get("milestones", [])
 	var progress := int(quest_state.get("progress", 0))
 	var progress_text := Label.new()
