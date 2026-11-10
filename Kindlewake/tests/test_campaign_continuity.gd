@@ -95,7 +95,7 @@ func _initialize() -> void:
  _check(not Chronicle.record_milestone(state,"natural_old_age_death",{"cause":"old_age","protagonist_id":"torren","age_at_death":69}),"Chronicle rejects death below the natural old-age threshold")
  _check(Chronicle.record_milestone(state,"natural_old_age_death",{"cause":"old_age","protagonist_id":"torren","age_at_death":87,"ending_id":"open_concord"}),"Chronicle accepts verified natural old-age death")
  _check(Chronicle.is_unlocked(state),"Chronicle unlocks only after all founder milestones")
- var serialized := JSON.parse_string(JSON.stringify(state))
+ var serialized: Variant = JSON.parse_string(JSON.stringify(state))
  _check(Chronicle.is_unlocked(Chronicle.normalize_state(serialized)),"Chronicle gate survives JSON save/load normalization")
  var forged := {"milestones":{},"unlocked":true,"founder_record":{"cause":"old_age","protagonist_id":"torren"}}
  _check(not Chronicle.is_unlocked(Chronicle.normalize_state(forged)),"Chronicle ignores forged unlocked flag")
@@ -123,7 +123,7 @@ func _initialize() -> void:
   if bool(aged.ok):
    late = aged.state
  _check(int(late.current_age) == Epilogue.MINIMUM_NATURAL_DEATH_AGE,"Founder reaches the natural-life threshold without skipping years")
- var late_serialized := JSON.parse_string(JSON.stringify(late))
+ var late_serialized: Variant = JSON.parse_string(JSON.stringify(late))
  late = Epilogue.normalize_state(late_serialized)
  var natural_end := Epilogue.record_natural_death(late,founder_gate,"founder-epilogue-test-date")
  _check(bool(natural_end.ok) and str(natural_end.founder_details.cause) == "old_age","Founder death record carries explicit natural old-age provenance")
