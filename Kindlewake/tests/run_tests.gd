@@ -7,6 +7,7 @@ const OpeningChapterSystem = preload("res://scripts/core/opening_chapter_system.
 const OpeningActOneQuestSystem = preload("res://scripts/core/opening_act_one_quest_system.gd")
 const ActTwoQuestSystem = preload("res://scripts/core/act_two_quest_system.gd")
 const ActThreeQuestSystem = preload("res://scripts/core/act_three_quest_system.gd")
+const ActFourQuestSystem = preload("res://scripts/core/act_four_quest_system.gd")
 const ActTwoQuestChallenge = preload("res://scripts/ui/act_two_quest_challenge.gd")
 const ActOneQuestChallenge = preload("res://scripts/ui/act_one_quest_challenge.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
@@ -48,6 +49,7 @@ func _initialize() -> void:
     _test_boss_phase_transitions()
     _test_act_two_broken_seals()
     _test_act_three_river_campaign()
+    _test_act_four_winter_of_knives()
     _test_escape_mission()
     _test_escape_ui_layout()
     _test_sigils()
@@ -366,6 +368,50 @@ func _test_act_three_river_campaign() -> void:
                 found = true
         map_spots = map_spots and found
     check(map_spots, "all three Act III story spots are present in local maps")
+
+
+func _test_act_four_winter_of_knives() -> void:
+    print("[Act IV: Winter of Knives]")
+    var flags: Dictionary = {}
+    check(not bool(ActFourQuestSystem.inspect("quillon_archive", flags).get("available", false)), "Act IV remains locked before Act III completion")
+    flags["chapter_3_complete"] = true
+    check(bool(ActFourQuestSystem.inspect("quillon_archive", flags).get("available", false)), "Quillon Archive opens after Act III")
+    check(not bool(ActFourQuestSystem.inspect("witness_recanted", flags).get("available", true)), "recanted witness follows archive resolution")
+    var result: Dictionary = ActFourQuestSystem.apply_archive_access(flags, "coalition_mediation")
+    check(bool(result.get("ok", false)), "coalition mediation grants archive access")
+    flags = result.world_flags
+    check(str(flags.get("act4_custodian_trust", "")) == "coalition", "coalition access records custodian trust")
+    result = ActFourQuestSystem.apply_archive_record(flags, "publish_verified_copy")
+    check(bool(result.get("ok", false)), "verified-copy publication is a valid archive outcome")
+    flags = result.world_flags
+    check(bool(flags.get("act4_original_preserved", false)) and bool(flags.get("act4_verified_copy_published", false)), "original preservation and verified copy are recorded")
+    check(bool(flags.get("act4_edmer_clause_understood", false)), "Edmer clause context is recorded")
+    check(bool(ActFourQuestSystem.inspect("witness_recanted", flags).get("available", false)), "witness scenario unlocks after archive")
+    result = ActFourQuestSystem.apply_witness(flags, "offer_safe_haven")
+    check(bool(result.get("ok", false)), "consent-based safe haven is a valid witness outcome")
+    flags = result.world_flags
+    check(bool(flags.get("act4_witness_agency_respected", false)) and bool(flags.get("act4_witness_relocation_requires_consent", false)), "witness agency and relocation consent are recorded")
+    check(not bool(flags.get("act4_witness_testimony_usable", true)), "withdrawn testimony is not silently restored")
+    check(bool(flags.get("chapter_4_complete", false)), "Act IV completes after witness resolution")
+    check(not bool(ActFourQuestSystem.apply_witness(flags, "investigate_threat").get("ok", true)), "witness outcome cannot be overwritten")
+    var alt: Dictionary = {"chapter_3_complete":true}
+    result = ActFourQuestSystem.apply_archive_access(alt, "forced_entry")
+    alt = result.world_flags
+    check(bool(alt.get("act4_archive_breach", false)) and str(alt.get("act4_custodian_trust", "")) == "damaged", "forced entry records archive damage")
+    result = ActFourQuestSystem.apply_archive_record(alt, "entrust_custodians")
+    check(bool(result.get("world_flags", {}).get("act4_custodian_compact", false)), "custodian compact alternative is preserved")
+    check(not bool(ActFourQuestSystem.apply_archive_access({"chapter_3_complete":true}, "invalid").get("ok", true)), "invalid archive route is rejected")
+    var battle: Dictionary = gd.battle_def("act4_quillon_warden")
+    check(not battle.is_empty(), "Quillon Warden battle is registered")
+    check(gd.characters.has("quillon_warden"), "Quillon Warden character exists")
+    var boss_spawned := false
+    for unit in battle.get("units", []):
+        if str(unit.get("character_id", "")) == "quillon_warden" and bool(unit.get("commander", false)):
+            boss_spawned = true
+    check(boss_spawned, "Quillon Warden is the optional battle commander")
+    check(gd.locations.maps.has("quillon_archive"), "Quillon Archive interior map exists")
+    check(gd.locations.maps.elderbough.doors.has("4"), "Elderbough has a door to the Quillon Archive")
+    check(gd.locations.maps.elderbough.spots.any(func(spot): return str(spot.get("story_id", "")) == "witness_recanted"), "recanted witness story spot exists")
 
 
 func _test_escape_mission() -> void:
