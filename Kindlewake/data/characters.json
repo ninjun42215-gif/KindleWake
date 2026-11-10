@@ -1946,6 +1946,354 @@
       "enemy_role": "spectral caster",
       "threat_tier": 4,
       "lore": "A pale keeper-light that appears on abandoned roads where the covenant lamps were extinguished."
+    },
+    "dunmarrow_deserter": {
+      "name": "Dunmarrow Levy Deserter",
+      "class_id": "knight",
+      "level": 4,
+      "house": "none",
+      "weapon_id": "longsword",
+      "armor_def": 4,
+      "armor_res": 2,
+      "skills": [],
+      "reward": {
+        "exp": 78,
+        "ap": 16,
+        "gold": 46
+      },
+      "stats": {
+        "hp": 38,
+        "mp": 0,
+        "str": 11,
+        "dex": 7,
+        "int": 3,
+        "vit": 10,
+        "spd": 6,
+        "lck": 5,
+        "acc": 82,
+        "eva": 9,
+        "ldr": 5,
+        "mor": 38
+      }
+    },
+    "fenroad_poacher": {
+      "name": "Fenroad Poacher",
+      "class_id": "scout",
+      "level": 3,
+      "house": "none",
+      "weapon_id": "short_bow",
+      "armor_def": 2,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 69,
+        "ap": 14,
+        "gold": 39
+      },
+      "stats": {
+        "hp": 27,
+        "mp": 0,
+        "str": 6,
+        "dex": 12,
+        "int": 4,
+        "vit": 6,
+        "spd": 10,
+        "lck": 8,
+        "acc": 84,
+        "eva": 19,
+        "ldr": 3,
+        "mor": 42
+      }
+    },
+    "tollhouse_extortionist": {
+      "name": "Tollhouse Extortionist",
+      "class_id": "roadreaver",
+      "level": 3,
+      "house": "none",
+      "weapon_id": "hand_axe",
+      "armor_def": 3,
+      "armor_res": 0,
+      "skills": [],
+      "reward": {
+        "exp": 69,
+        "ap": 14,
+        "gold": 39
+      },
+      "stats": {
+        "hp": 34,
+        "mp": 0,
+        "str": 10,
+        "dex": 6,
+        "int": 3,
+        "vit": 8,
+        "spd": 6,
+        "lck": 4,
+        "acc": 79,
+        "eva": 8,
+        "ldr": 4,
+        "mor": 46
+      }
+    },
+    "blackfen_zealot": {
+      "name": "Blackfen Oath Zealot",
+      "class_id": "apprentice_mage",
+      "level": 4,
+      "house": "none",
+      "weapon_id": "staff",
+      "armor_def": 2,
+      "armor_res": 4,
+      "skills": [],
+      "reward": {
+        "exp": 78,
+        "ap": 16,
+        "gold": 46
+      },
+      "stats": {
+        "hp": 26,
+        "mp": 19,
+        "str": 4,
+        "dex": 7,
+        "int": 13,
+        "vit": 5,
+        "spd": 7,
+        "lck": 8,
+        "acc": 81,
+        "eva": 10,
+        "ldr": 7,
+        "mor": 64
+      }
+    },
+    "reedbank_sellsword": {
+      "name": "Reedbank Sellsword",
+      "class_id": "duelist",
+      "level": 4,
+      "house": "none",
+      "weapon_id": "arming_sword",
+      "armor_def": 4,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 78,
+        "ap": 16,
+        "gold": 46
+      },
+      "stats": {
+        "hp": 36,
+        "mp": 0,
+        "str": 9,
+        "dex": 11,
+        "int": 4,
+        "vit": 8,
+        "spd": 10,
+        "lck": 7,
+        "acc": 85,
+        "eva": 17,
+        "ldr": 4,
+        "mor": 55
+      }
+    },
+    "redwater_veteran": {
+      "name": "Redwater Company Veteran",
+      "class_id": "heavy_knight",
+      "level": 5,
+      "house": "none",
+      "weapon_id": "greatsword",
+      "armor_def": 7,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 87,
+        "ap": 18,
+        "gold": 53
+      },
+      "stats": {
+        "hp": 52,
+        "mp": 0,
+        "str": 13,
+        "dex": 7,
+        "int": 4,
+        "vit": 13,
+        "spd": 5,
+        "lck": 6,
+        "acc": 85,
+        "eva": 8,
+        "ldr": 9,
+        "mor": 72
+      }
+    },
+    "saltreef_corsair": {
+      "name": "Salt-Reef Corsair",
+      "class_id": "duelist",
+      "level": 3,
+      "house": "none",
+      "weapon_id": "dagger",
+      "armor_def": 3,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 69,
+        "ap": 14,
+        "gold": 39
+      },
+      "stats": {
+        "hp": 32,
+        "mp": 0,
+        "str": 8,
+        "dex": 12,
+        "int": 3,
+        "vit": 6,
+        "spd": 11,
+        "lck": 8,
+        "acc": 84,
+        "eva": 19,
+        "ldr": 3,
+        "mor": 50
+      }
+    },
+    "brinegate_crossbowman": {
+      "name": "Brinegate Crossbowman",
+      "class_id": "crossbowman",
+      "level": 4,
+      "house": "none",
+      "weapon_id": "crossbow",
+      "armor_def": 5,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 78,
+        "ap": 16,
+        "gold": 46
+      },
+      "stats": {
+        "hp": 35,
+        "mp": 0,
+        "str": 9,
+        "dex": 10,
+        "int": 4,
+        "vit": 8,
+        "spd": 7,
+        "lck": 6,
+        "acc": 86,
+        "eva": 12,
+        "ldr": 5,
+        "mor": 62
+      }
+    },
+    "sevenflames_adept": {
+      "name": "Seven Flames Apostate",
+      "class_id": "ice_mage",
+      "level": 5,
+      "house": "none",
+      "weapon_id": "staff",
+      "armor_def": 3,
+      "armor_res": 5,
+      "skills": [],
+      "reward": {
+        "exp": 87,
+        "ap": 18,
+        "gold": 53
+      },
+      "stats": {
+        "hp": 30,
+        "mp": 24,
+        "str": 4,
+        "dex": 8,
+        "int": 15,
+        "vit": 6,
+        "spd": 8,
+        "lck": 9,
+        "acc": 85,
+        "eva": 13,
+        "ldr": 8,
+        "mor": 76
+      }
+    },
+    "tidebound_smuggler": {
+      "name": "Tidebound Smuggler",
+      "class_id": "thief",
+      "level": 3,
+      "house": "none",
+      "weapon_id": "dagger",
+      "armor_def": 2,
+      "armor_res": 2,
+      "skills": [],
+      "reward": {
+        "exp": 69,
+        "ap": 14,
+        "gold": 39
+      },
+      "stats": {
+        "hp": 28,
+        "mp": 0,
+        "str": 6,
+        "dex": 12,
+        "int": 6,
+        "vit": 5,
+        "spd": 12,
+        "lck": 11,
+        "acc": 85,
+        "eva": 23,
+        "ldr": 4,
+        "mor": 43
+      }
+    },
+    "harbor_enforcer": {
+      "name": "Harbour Enforcer",
+      "class_id": "knight",
+      "level": 4,
+      "house": "none",
+      "weapon_id": "arming_sword",
+      "armor_def": 6,
+      "armor_res": 2,
+      "skills": [],
+      "reward": {
+        "exp": 78,
+        "ap": 16,
+        "gold": 46
+      },
+      "stats": {
+        "hp": 42,
+        "mp": 0,
+        "str": 12,
+        "dex": 8,
+        "int": 4,
+        "vit": 11,
+        "spd": 7,
+        "lck": 6,
+        "acc": 84,
+        "eva": 11,
+        "ldr": 7,
+        "mor": 68
+      }
+    },
+    "exiled_marine": {
+      "name": "Exiled Marine",
+      "class_id": "lancer",
+      "level": 4,
+      "house": "none",
+      "weapon_id": "spear",
+      "armor_def": 5,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 78,
+        "ap": 16,
+        "gold": 46
+      },
+      "stats": {
+        "hp": 39,
+        "mp": 0,
+        "str": 11,
+        "dex": 9,
+        "int": 3,
+        "vit": 10,
+        "spd": 8,
+        "lck": 7,
+        "acc": 84,
+        "eva": 14,
+        "ldr": 5,
+        "mor": 58
+      }
     }
   }
 }
