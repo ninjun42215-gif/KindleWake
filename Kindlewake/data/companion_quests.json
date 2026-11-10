@@ -460,6 +460,24 @@
       ],
       "completion_reward": {
         "gold": 50
+      },
+      "synopsis": "Orlan discovers that a catalogue entry was altered to conceal a record limiting unlawful conscription. He traces the annotation through binding marks and duplicate copies, then must decide how dangerous evidence can survive without exposing vulnerable people.",
+      "journal_summary": "Trace the altered catalogue entry, verify the disputed annotation's provenance and decide who should safeguard the conscription record.",
+      "resolution_prompt": "The annotation is authentic, but its names could endanger living families. How should Orlan preserve the truth?",
+      "outcome_labels": {
+        "publish_source": "Publish the verified source",
+        "independent_custody": "Deposit it with independent custodians",
+        "redact_names": "Redact vulnerable names"
+      },
+      "outcome_descriptions": {
+        "publish_source": "Orlan publishes the verified clause with its provenance and accepts the political consequences of making the record public.",
+        "independent_custody": "Orlan places authenticated copies with independent custodians, preserving access while preventing one authority from controlling the evidence.",
+        "redact_names": "Orlan removes identifying details while retaining the clause, chain of custody and evidence needed for future verification."
+      },
+      "outcome_flags": {
+        "publish_source": "orlan_outcome_source_published",
+        "independent_custody": "orlan_outcome_independent_archive",
+        "redact_names": "orlan_outcome_names_redacted"
       }
     },
     "q_companion_odaly_open_door": {
@@ -479,6 +497,24 @@
       ],
       "completion_reward": {
         "gold": 50
+      },
+      "synopsis": "Sister Odalys is called to a sanctuary that has barred families after armed fugitives abused its protection. She hears residents and keepers separately, then helps establish safety rules that protect the vulnerable without granting immunity for violence.",
+      "journal_summary": "Hear the sanctuary's residents and keepers, agree on fair rules for shelter and decide how Odalys should protect those at the threshold.",
+      "resolution_prompt": "The sanctuary can reopen only with safeguards. Which path should Odalys help establish?",
+      "outcome_labels": {
+        "conditional_sanctuary": "Reopen with conditional sanctuary",
+        "refuge_network": "Build a neutral refuge network",
+        "order_reform": "Seek reform within the order"
+      },
+      "outcome_descriptions": {
+        "conditional_sanctuary": "Odalys establishes clear admission, safeguarding and due-process rules so families can seek shelter while credible threats are handled lawfully.",
+        "refuge_network": "Odalys helps several communities share refuge duties, preventing one sanctuary from becoming the only point of failure.",
+        "order_reform": "Odalys returns to her order with testimony and a practical safeguarding charter, pressing it to protect people without shielding violent acts."
+      },
+      "outcome_flags": {
+        "conditional_sanctuary": "odaly_outcome_conditional_sanctuary",
+        "refuge_network": "odaly_outcome_refuge_network",
+        "order_reform": "odaly_outcome_order_reform"
       }
     },
     "q_companion_willem_last_challenge": {
