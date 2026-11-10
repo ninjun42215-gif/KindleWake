@@ -173,6 +173,29 @@ func _test_companion_quests() -> void:
         if not found:
             world_hooks_ok = false
     check(world_hooks_ok, "Brisa's three ordered quest milestones are connected to Foxglove town, inn and market interactions")
+
+    var additional_quest_hooks := {
+        "q_companion_edda_iron_and_ash": {
+            "foxglove_recruit": "tools_accounted",
+            "foxglove_inn": "worker_claims_verified",
+            "sethorn_hall": "furnace_bargain_resolved"
+        },
+        "q_companion_bram_cullen_broken_chain": {
+            "foxglove_recruit": "debt_transfer_found",
+            "crossing": "contracts_audited",
+            "crossing_inn": "debtors_freed"
+        }
+    }
+    var additional_hooks_ok := true
+    for quest_key in additional_quest_hooks.keys():
+        for map_key in additional_quest_hooks[quest_key].keys():
+            var found_hook := false
+            for hook_spot in maps.get(map_key, {}).get("spots", []):
+                if str(hook_spot.get("companion_quest_id", "")) == quest_key and str(hook_spot.get("companion_quest_milestone", "")) == str(additional_quest_hooks[quest_key][map_key]):
+                    found_hook = true
+            if not found_hook:
+                additional_hooks_ok = false
+    check(additional_hooks_ok, "Edda and Bram Cullen each have three ordered world interactions in their authored regions")
     var authored_quest_maps := {
         "q_companion_lucan_last_flight": {"thornmere": "signal_found", "thornmere_inn": "patrol_traced", "thornmere_market": "witness_heard"},
         "q_companion_kestrel_no_master": {"elderbough": "coded_mark_found", "elderbough_inn": "safehouse_investigated", "elderbough_market": "witness_protected"}
