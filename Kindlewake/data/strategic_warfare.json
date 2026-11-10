@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "troops": {
+    "infantry": {
+      "name": "Levy Infantry",
+      "class_id": "swordsman",
+      "weapon_id": "arming_sword",
+      "armor_def": 2,
+      "armor_res": 1,
+      "stats": {
+        "hp": 30,
+        "mp": 0,
+        "str": 8,
+        "dex": 7,
+        "int": 2,
+        "vit": 8,
+        "spd": 6,
+        "lck": 3,
+        "acc": 78,
+        "eva": 10,
+        "ldr": 2,
+        "mor": 75
+      }
+    },
+    "archers": {
+      "name": "March Archer",
+      "class_id": "archer",
+      "weapon_id": "short_bow",
+      "armor_def": 1,
+      "armor_res": 1,
+      "stats": {
+        "hp": 24,
+        "mp": 0,
+        "str": 5,
+        "dex": 10,
+        "int": 2,
+        "vit": 5,
+        "spd": 8,
+        "lck": 4,
+        "acc": 88,
+        "eva": 16,
+        "ldr": 2,
+        "mor": 75
+      }
+    },
+    "cavalry": {
+      "name": "Household Cavalry",
+      "class_id": "knight",
+      "weapon_id": "spear",
+      "armor_def": 3,
+      "armor_res": 1,
+      "stats": {
+        "hp": 36,
+        "mp": 0,
+        "str": 10,
+        "dex": 7,
+        "int": 2,
+        "vit": 9,
+        "spd": 8,
+        "lck": 3,
+        "acc": 80,
+        "eva": 13,
+        "ldr": 3,
+        "mor": 75
+      }
+    }
+  },
+  "siege_engines": {
+    "battering_ram": {
+      "name": "Battering Ram",
+      "class_id": "siege_engine",
+      "weapon_id": "battle_axe",
+      "armor_def": 8,
+      "armor_res": 2,
+      "class_def": {
+        "name": "Battering Ram",
+        "move": 2,
+        "jump": 0
+      },
+      "stats": {
+        "hp": 70,
+        "mp": 0,
+        "str": 12,
+        "dex": 3,
+        "int": 1,
+        "vit": 14,
+        "spd": 2,
+        "lck": 1,
+        "acc": 70,
+        "eva": 0,
+        "ldr": 0,
+        "mor": 100
+      }
+    }
+  },
+  "garrisons": {
+    "default": {
+      "infantry": 10,
+      "archers": 5,
+      "cavalry": 0
+    },
+    "fortified_regions": [
+      "brennhallow_highlands",
+      "quillon_heights",
+      "aurelmont",
+      "thorncrown",
+      "ironvale"
+    ],
+    "fortified_bonus": {
+      "infantry": 10,
+      "archers": 5,
+      "cavalry": 5
+    },
+    "faction_bonus": {
+      "tidebound_assembly": {
+        "archers": 5
+      },
+      "nine_wells_compact": {
+        "cavalry": 5
+      },
+      "hearthfjord_jarldoms": {
+        "infantry": 5,
+        "cavalry": 5
+      },
+      "lantern_synod": {
+        "archers": 5
+      }
+    },
+    "fort_level_bonus": {
+      "infantry": 5,
+      "archers": 0,
+      "cavalry": 0
+    },
+    "fort_level_armor": 2,
+    "fort_level_hp": 2
+  }
+}
