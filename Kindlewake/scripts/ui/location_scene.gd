@@ -3,6 +3,7 @@ extends Node2D
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const OpeningActOneQuestSystem = preload("res://scripts/core/opening_act_one_quest_system.gd")
+const ActTwoQuestSystem = preload("res://scripts/core/act_two_quest_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
@@ -255,7 +256,11 @@ func _on_prompt_pressed() -> void:
             spot_buttons.add_child(_btn("Present the ledger publicly", _resolve_brinegate_choice.bind("public")))
             spot_buttons.add_child(_btn("Keep the Codicil seal private", _resolve_brinegate_choice.bind("private")))
     elif spot_kind == "story":
-        _render_opening_story(near_spot)
+        var story_id: String = str(near_spot.get("story_id", ""))
+        if story_id in ["boundary_tree", "orrowen_hearing", "changed_escort"]:
+            _render_act_two_story(near_spot)
+        else:
+            _render_opening_story(near_spot)
     elif spot_kind == "recruit":
         var cid: String = str(near_spot.get("character_id", ""))
         var definition: Dictionary = GameData.characters.get(cid, {})
@@ -297,6 +302,33 @@ func _render_opening_story(spot: Dictionary) -> void:
     else:
         spot_text.text += "\\n\\nThis quest has been completed or is waiting for another campaign milestone."
 
+
+func _render_act_two_story(spot: Dictionary) -> void:
+    var story_id := str(spot.get("story_id", ""))
+    var view: Dictionary = ActTwoQuestSystem.inspect(story_id, GameState.world_flags)
+    spot_title.text = str(view.get("title", spot.get("name", "Story")))
+    spot_text.text = str(view.get("body", ""))
+    for child in spot_buttons.get_children():
+        spot_buttons.remove_child(child)
+        child.queue_free()
+    if bool(view.get("available", false)) and not bool(view.get("complete", false)):
+        spot_buttons.add_child(_btn("Begin playable Act II scenario", _launch_act_two_challenge.bind(story_id)))
+    elif bool(view.get("complete", false)):
+        spot_text.text += "\n\nThis scenario is recorded in the campaign chronicle."
+    else:
+        spot_text.text += "\n\nThis scenario is waiting for an earlier Act II decision."
+    spot_buttons.add_child(_btn("Close", _close_panel))
+
+
+func _launch_act_two_challenge(story_id: String) -> void:
+    var view: Dictionary = ActTwoQuestSystem.inspect(story_id, GameState.world_flags)
+    if not bool(view.get("available", false)) or bool(view.get("complete", false)):
+        spot_text.text += "\n\nThis scenario is not currently available."
+        return
+    GameState.pending_location = current_map_id
+    GameState.world_flags["_pending_act_two_challenge"] = story_id
+    GameState.world_flags["_pending_act_two_challenge_step"] = 0
+    get_tree().change_scene_to_file("res://ActTwoQuestChallenge.tscn")
 
 func _launch_opening_challenge(story_id: String) -> void:
     if not ["blocked_well", "roof_before_banner", "last_convoy", "toll_book", "first_oath"].has(story_id):
