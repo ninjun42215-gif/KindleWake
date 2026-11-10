@@ -168,6 +168,36 @@ func _test_holding_system() -> void:
     check((flags.get("holding_history", []) as Array).size() == 1, "holding ownership changes are recorded in campaign history")
 
 
+func _test_dungeon_mechanisms() -> void:
+    print("[dungeon mechanisms]")
+    var maps: Dictionary = gd.locations.get("maps", {})
+    var expected := {
+        "dungeon_sunken_tollhouse": "tollhouse_sluice_solved",
+        "dungeon_wardens_barrow": "wardens_oath_trial_solved",
+        "dungeon_ashen_granary": "ashen_firebreak_solved"
+    }
+    var valid := true
+    for map_id in expected.keys():
+        if not maps.has(map_id):
+            valid = false
+            continue
+        var mechanism: Dictionary = {}
+        var boss: Dictionary = {}
+        for spot in maps[map_id].get("spots", []):
+            if str(spot.get("kind", "")) == "mechanism":
+                mechanism = spot
+            elif str(spot.get("kind", "")) == "boss":
+                boss = spot
+        if mechanism.is_empty() or boss.is_empty():
+            valid = false
+            continue
+        if mechanism.get("sequence", []).size() < 3 or mechanism.get("options", []).size() < 3:
+            valid = false
+        if str(mechanism.get("world_flag_on_solved", "")) != str(expected[map_id]) or str(boss.get("requires_flag", "")) != str(expected[map_id]):
+            valid = false
+    check(valid, "three dungeons have unique multi-step mechanisms that gate their guardian encounters")
+
+
 func _test_prologue() -> void:
     print("[prologue]")
     var prior: Dictionary = {"found_watch": true}
