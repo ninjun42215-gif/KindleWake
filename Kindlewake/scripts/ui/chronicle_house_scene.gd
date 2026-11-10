@@ -19,6 +19,12 @@ var title_rank_picker: OptionButton
 var title_name: LineEdit
 var domain_name: LineEdit
 var domain_picker: OptionButton
+var guardian_picker: OptionButton
+var adoptive_parent_picker: OptionButton
+var education_picker: OptionButton
+var council_role_picker: OptionButton
+var claim_title_picker: OptionButton
+var claim_basis_picker: OptionButton
 var status: Label
 
 func _ready() -> void:
@@ -130,6 +136,42 @@ func _build() -> void:
   policy_picker.select(0)
  col.add_child(policy_picker)
  col.add_child(_button("Set succession law",_set_policy))
+ _section(col,"EDUCATION AND GUARDIANSHIP")
+ guardian_picker = OptionButton.new()
+ col.add_child(guardian_picker)
+ col.add_child(_button("Appoint guardian to selected child",_assign_guardian))
+ education_picker = OptionButton.new()
+ for focus in Dynasty.EDUCATION_FOCUSES:
+  education_picker.add_item(str(focus).capitalize())
+ if education_picker.item_count > 0:
+  education_picker.select(0)
+ col.add_child(education_picker)
+ col.add_child(_button("Begin selected education focus",_assign_education))
+ col.add_child(_button("Complete education at age 16+",_complete_education))
+ _section(col,"ADOPTION")
+ adoptive_parent_picker = OptionButton.new()
+ col.add_child(adoptive_parent_picker)
+ col.add_child(_button("Record adoption for selected child",_adopt))
+ _section(col,"HOUSEHOLD COUNCIL")
+ council_role_picker = OptionButton.new()
+ for role in Dynasty.COUNCIL_ROLES:
+  council_role_picker.add_item(str(role).replace("_"," ").capitalize())
+ if council_role_picker.item_count > 0:
+  council_role_picker.select(0)
+ col.add_child(council_role_picker)
+ col.add_child(_button("Appoint selected person to council",_appoint_council))
+ _section(col,"TITLE CLAIMS")
+ claim_title_picker = OptionButton.new()
+ col.add_child(claim_title_picker)
+ claim_basis_picker = OptionButton.new()
+ for basis in ["inheritance","grant","service"]:
+  claim_basis_picker.add_item(str(basis).capitalize())
+ if claim_basis_picker.item_count > 0:
+  claim_basis_picker.select(0)
+ col.add_child(claim_basis_picker)
+ col.add_child(_button("Record title claim for selected person",_record_claim))
+ col.add_child(_button("Recognize claim",_recognize_claim))
+ col.add_child(_button("Reject claim",_reject_claim))
  _section(col,"DOMAIN STEWARDSHIP")
  col.add_child(_button("Improve food stores (+5)",_domain_food))
  col.add_child(_button("Improve security (+5)",_domain_security))
@@ -186,12 +228,20 @@ func _refresh() -> void:
  _fill_people_picker(parent_picker,true)
  _fill_people_picker(spouse_a,false)
  _fill_people_picker(spouse_b,false)
+ _fill_people_picker(guardian_picker,true)
+ _fill_people_picker(adoptive_parent_picker,true)
  title_picker.clear()
  for title_id in state.titles.keys():
   title_picker.add_item(str(state.titles[title_id].get("name",title_id)))
   title_picker.set_item_metadata(title_picker.item_count-1,str(title_id))
  if title_picker.item_count > 0:
   title_picker.select(0)
+ claim_title_picker.clear()
+ for claim_title_id in state.titles.keys():
+  claim_title_picker.add_item(str(state.titles[claim_title_id].get("name",claim_title_id)))
+  claim_title_picker.set_item_metadata(claim_title_picker.item_count-1,str(claim_title_id))
+ if claim_title_picker.item_count > 0:
+  claim_title_picker.select(0)
  domain_picker.clear()
  for domain_id in state.domains.keys():
   domain_picker.add_item(str(state.domains[domain_id].get("name",domain_id)))
@@ -255,6 +305,42 @@ func _marry() -> void:
  state = result.state
  _save()
  _refresh()
+
+func _assign_guardian() -> void:
+ _apply_result(Dynasty.assign_guardian(state,selected_person,_selected_id(guardian_picker)))
+
+func _assign_education() -> void:
+ var focus := str(Dynasty.EDUCATION_FOCUSES[education_picker.selected])
+ _apply_result(Dynasty.assign_education(state,selected_person,focus))
+
+func _complete_education() -> void:
+ _apply_result(Dynasty.complete_education(state,selected_person))
+
+func _adopt() -> void:
+ _apply_result(Dynasty.record_adoption(state,selected_person,_selected_id(adoptive_parent_picker)))
+
+func _appoint_council() -> void:
+ var role := str(Dynasty.COUNCIL_ROLES[council_role_picker.selected])
+ _apply_result(Dynasty.assign_council_role(state,role,selected_person))
+
+func _record_claim() -> void:
+ if claim_title_picker.item_count == 0:
+  status.text = "No title is available to claim."
+  return
+ var basis := ["inheritance","grant","service"][claim_basis_picker.selected]
+ _apply_result(Dynasty.record_title_claim(state,selected_person,str(claim_title_picker.get_item_metadata(claim_title_picker.selected)),basis))
+
+func _recognize_claim() -> void:
+ _resolve_claim("recognize")
+
+func _reject_claim() -> void:
+ _resolve_claim("reject")
+
+func _resolve_claim(outcome: String) -> void:
+ if claim_title_picker.item_count == 0:
+  status.text = "No title is available to resolve."
+  return
+ _apply_result(Dynasty.resolve_title_claim(state,selected_person,str(claim_title_picker.get_item_metadata(claim_title_picker.selected)),outcome))
 
 func _add_trait() -> void:
  var keys: Array = Dynasty.TRAITS.keys()
