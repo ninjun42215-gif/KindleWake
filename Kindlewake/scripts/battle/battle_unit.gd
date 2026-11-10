@@ -97,7 +97,7 @@ func to_dict() -> Dictionary:
 
 
 static func from_dict(d: Dictionary) -> Variant:
-    var u := BattleUnit.new()
+    var u = load("res://scripts/battle/battle_unit.gd").new()
     u.id = int(d.get("id", 0))
     u.character_id = str(d.get("character_id", ""))
     u.display_name = str(d.get("name", ""))
