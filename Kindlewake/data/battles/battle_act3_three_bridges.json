@@ -9,7 +9,8 @@
     "r": "road",
     "w": "ford",
     "b": "bridge",
-    "#": "rock"
+    "#": "rock",
+    "~": "water"
   },
   "terrain": [
     "....................",
