@@ -930,7 +930,7 @@ static func preview_season(state: Dictionary, province_ids: Array, adjacency: Di
 	return report
 
 static func suppress_rebellion(state: Dictionary, cost: int = 80) -> bool:
-	if not bool(state.get("unlocked", false)) or int(state.get("rebellion_risk", 0)) < 20 or int(state.get("treasury", 0)) < cost:
+	if not bool(state.get("unlocked", false)) or cost <= 0 or int(state.get("rebellion_risk", 0)) < 20 or int(state.get("treasury", 0)) < cost:
 		return false
 	state["treasury"] = int(state["treasury"]) - cost
 	state["rebellion_risk"] = maxi(0, int(state.get("rebellion_risk", 0)) - 25)
@@ -946,7 +946,7 @@ static func negotiate_peace(faction_state: Dictionary, empire_state: Dictionary,
 	if str(faction_state.get("diplomacy", {}).get(key, "neutral")) != "war":
 		return false
 	var relation_value := FactionSystem.relation(faction_state, faction_a, faction_b)
-	var acceptance := relation_value + int(empire_state.get("war_exhaustion", 0)) / 2 + gold_offer / 10
+	var acceptance := relation_value + floori(float(empire_state.get("war_exhaustion", 0)) / 2.0) + floori(float(gold_offer) / 10.0)
 	if acceptance < 25:
 		return false
 	if not FactionSystem.set_diplomatic_state(faction_state, faction_a, faction_b, "neutral"):
