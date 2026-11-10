@@ -712,7 +712,7 @@ func _autosave() -> void:
     var a: BattleUnitScript = controller.active_unit()
     if a == null or a.team != "player" or ai_busy or input_locked:
         return
-    SaveSystem.autosave({"battle": controller.to_dict(), "party": GameState.party.to_dict(), "battle_def": controller.def, "creation_profile": GameState.creation_profile.duplicate(true), "world_flags": GameState.world_flags.duplicate(true), "world_pos": [GameState.world_pos.x, GameState.world_pos.y], "from_world": GameState.from_world}, _save_summary())
+    SaveSystem.autosave({"battle": controller.to_dict(), "party": GameState.party.to_dict(), "battle_def": controller.def, "creation_profile": GameState.creation_profile.duplicate(true), "world_flags": GameState.world_flags.duplicate(true), "world_pos": [GameState.world_pos.x, GameState.world_pos.y], "from_world": GameState.from_world, "empire_state": GameState.empire_state.duplicate(true), "faction_state": GameState.faction_state.duplicate(true)}, _save_summary())
 
 
 func _on_save_pressed() -> void:
@@ -722,7 +722,7 @@ func _on_save_pressed() -> void:
         else:
             _on_log("You can only save during your own turn.")
         return
-    if SaveSystem.save_slot("1", {"battle": controller.to_dict(), "party": GameState.party.to_dict(), "battle_def": controller.def, "creation_profile": GameState.creation_profile.duplicate(true), "world_flags": GameState.world_flags.duplicate(true), "world_pos": [GameState.world_pos.x, GameState.world_pos.y], "from_world": GameState.from_world}, _save_summary()):
+    if SaveSystem.save_slot("1", {"battle": controller.to_dict(), "party": GameState.party.to_dict(), "battle_def": controller.def, "creation_profile": GameState.creation_profile.duplicate(true), "world_flags": GameState.world_flags.duplicate(true), "world_pos": [GameState.world_pos.x, GameState.world_pos.y], "from_world": GameState.from_world, "empire_state": GameState.empire_state.duplicate(true), "faction_state": GameState.faction_state.duplicate(true)}, _save_summary()):
         _on_log("Game saved to slot 1.")
     else:
         _on_log("Save failed.")
@@ -755,9 +755,13 @@ func _on_load_pressed() -> void:
     if saved_world_pos.size() >= 2:
         GameState.world_pos = Vector2(float(saved_world_pos[0]), float(saved_world_pos[1]))
     GameState.from_world = bool(payload.get("from_world", false))
+    if payload.has("empire_state") and typeof(payload["empire_state"]) == TYPE_DICTIONARY:
+        GameState.empire_state = (payload["empire_state"] as Dictionary).duplicate(true)
+    if payload.has("faction_state") and typeof(payload["faction_state"]) == TYPE_DICTIONARY:
+        GameState.faction_state = (payload["faction_state"] as Dictionary).duplicate(true)
     suppress_autosave = true
     var saved_def: Dictionary = payload.get("battle_def", GameData.battle_def(BATTLE_ID))
-    var ok: bool = controller.restore(saved_def, GameState.battle_db(), saved)
+    var ok: bool = controller.restore(saved_def, GameState.battle_db_for_battle(saved_def), saved)
     suppress_autosave = false
     if not ok:
         _on_log("That save does not match this battle.")
