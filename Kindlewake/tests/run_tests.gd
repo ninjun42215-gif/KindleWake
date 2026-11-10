@@ -258,6 +258,24 @@ func _test_companion_quests() -> void:
     var malformed := CompanionQuestSystem.normalize_state({"unknown_quest": {"status": "complete"}, quest_id: {"status": "invalid"}}, catalog)
     check(malformed.is_empty(), "unknown and malformed companion quest states are discarded safely")
     var maps: Dictionary = gd.locations.get("maps", {})
+    var maren_hooks := {
+        "brinegate": "ledger_page_found",
+        "saltmere": "safe_route_plotted",
+        "dungeon_northstar_wreck": "wreck_manifest_recovered"
+    }
+    var maren_route_ok := true
+    for map_id in maren_hooks:
+        var hook_found := false
+        for spot in maps.get(str(map_id), {}).get("spots", []):
+            if str(spot.get("companion_quest_id", "")) == "q_companion_maren_tideglass_wake" and str(spot.get("companion_quest_milestone", "")) == str(maren_hooks[map_id]):
+                hook_found = true
+        if not hook_found:
+            maren_route_ok = false
+    var tideglass_has_sequel_hook := false
+    for spot in maps.get("dungeon_tideglass", {}).get("spots", []):
+        if str(spot.get("companion_quest_id", "")) == "q_companion_maren_tideglass_wake":
+            tideglass_has_sequel_hook = true
+    check(maren_route_ok and not tideglass_has_sequel_hook, "Maren's sequel progresses from Brinegate to Saltmere and ends at the Northstar Wreck, not Tideglass Grotto")
     var brisa_spots := {
         "foxglove": "ledger_recovered",
         "foxglove_inn": "families_contacted",
@@ -318,7 +336,7 @@ func _test_companion_quests() -> void:
         "q_companion_garrick_spared_enemy": {"sethorn": "prisoner_request_received", "sethorn_hall": "witnesses_escorted", "sethorn_barracks": "commander_captured_or_surrendered"},
         "q_companion_corwin_heirless_seal": {"cindermead": "seal_forgery_found", "cindermead_inn": "charter_authority_audited", "cindermead_market": "retainers_heard"},
         "q_companion_ilyan_silent_tower": {"dungeon_bell": "missing_page_found", "dungeon_hollowroot": "rune_experiment_contained", "dungeon_catacombs": "apprentice_reached"},
-        "q_companion_maren_tideglass_wake": {"brinegate": "ledger_page_found", "saltmere": "safe_route_plotted", "dungeon_tideglass": "wreck_manifest_recovered"},
+        "q_companion_maren_tideglass_wake": {"brinegate": "ledger_page_found", "saltmere": "safe_route_plotted", "dungeon_northstar_wreck": "wreck_manifest_recovered"},
         "q_companion_seraphine_measure_of_oaths": {"tarnholt": "unread_oath_found", "tarnholt_inn": "order_records_examined", "tarnholt_chapter_house": "chapter_house_heard"}
     }
     var authored_hooks_ok := true
