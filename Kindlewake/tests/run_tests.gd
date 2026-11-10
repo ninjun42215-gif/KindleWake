@@ -7,6 +7,7 @@ const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const EmpireSystem = preload("res://scripts/core/empire_management_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -43,6 +44,7 @@ func _initialize() -> void:
     _test_world()
     _test_world_atlas()
     _test_faction_politics()
+    _test_empire_management()
     _test_thalassar_region()
     _test_wraparound_world()
     _test_brinegate_quest()
@@ -899,6 +901,39 @@ func _test_faction_politics() -> void:
     var legacy: Dictionary = FactionSystem.normalize_state({}, definitions)
     check(legacy.get("territories", {}).size() == atlas_region_ids.size(), "legacy saves receive safe default political state for all atlas regions")
 
+
+
+func _test_empire_management() -> void:
+    print("[empire management]")
+    var state: Dictionary = EmpireSystem.new_state()
+    check(not bool(state.get("unlocked", false)), "realm administration starts locked")
+    check(not EmpireSystem.set_tax_rate(state, "high"), "locked realm rejects tax changes")
+    check(EmpireSystem.unlock(state, "The Crownlands"), "authored story outcome can unlock realm administration")
+    check(not EmpireSystem.unlock(state, "Another Crown"), "realm unlock cannot be repeated")
+    check(EmpireSystem.set_tax_rate(state, "high") and str(state["tax_rate"]) == "high", "valid tax policy can be selected")
+    check(not EmpireSystem.set_tax_rate(state, "confiscatory"), "unknown tax rates are rejected")
+    check(EmpireSystem.toggle_policy(state, "relief") and (state["policies"] as Array).has("relief"), "relief edict can be enacted")
+    check(EmpireSystem.toggle_policy(state, "relief") and not (state["policies"] as Array).has("relief"), "edict can be repealed")
+    check(EmpireSystem.appoint_councillor(state, "steward", "torren"), "known council office accepts a character id")
+    check(not EmpireSystem.appoint_councillor(state, "emperor", "torren"), "unknown council offices are rejected")
+    check(EmpireSystem.dismiss_councillor(state, "steward") and not state["council"].has("steward"), "councillor can be dismissed")
+    var known_regions: Array = ["sethmarch", "orrowen_weald"]
+    check(EmpireSystem.appoint_governor(state, "sethmarch", "torren", known_regions), "governor can be appointed to a known province")
+    check(not EmpireSystem.appoint_governor(state, "unknown", "torren", known_regions), "unknown provinces reject governors")
+    check(EmpireSystem.dismiss_governor(state, "sethmarch"), "governor can be recalled")
+    state["treasury"] = 500
+    check(EmpireSystem.construct(state, "sethmarch", "farms", known_regions), "construction spends treasury on a valid building")
+    check(int(state["treasury"]) == 380, "construction deducts the exact building cost")
+    check(not EmpireSystem.construct(state, "sethmarch", "farms", known_regions), "duplicate building construction is rejected")
+    check(not EmpireSystem.construct(state, "orrowen_weald", "fort", known_regions) == false, "known province accepts a valid fort construction")
+    state["food"] = 0
+    var before_order: int = int(state["public_order"])
+    var report: Dictionary = EmpireSystem.advance_season(state, ["sethmarch"])
+    check(bool(report.get("ok", false)) and int(report.get("season", 0)) == 1, "season advancement produces a dated report")
+    check(bool(report.get("food_shortage", false)) and int(state["public_order"]) < before_order, "food shortage causes a public-order penalty")
+    var restored: Dictionary = EmpireSystem.normalize_state(state)
+    check(bool(restored.get("unlocked", false)) and int(restored.get("turn", 0)) == 1, "empire state survives normalization")
+    check(not bool(EmpireSystem.normalize_state({}).get("unlocked", false)), "legacy saves without empire state remain locked and loadable")
 
 func _test_thalassar_region() -> void:
     print("[Thalassar / Brinegate Coast]")
