@@ -75,3 +75,5 @@ Each known province contributes a modest baseline tax and food yield, while popu
 ## Current feature-branch UI status
 
 The Realm, Council, Provinces, Military, Diplomacy, Economy and Chronicle tabs are implemented in `scripts/ui/empire_administration.gd` and mounted from the overworld through an unlock-gated Royal Court button. Economy includes an immutable next-season forecast, trade-route charters and unrest relief; council cards display companion trait tags. The approved story scene still needs to call the explicit `crown_authority_granted` milestone after the narrative establishes governing authority. Story integration is intentionally not guessed: the approved narrative event must call `GameState.complete_story_milestone("crown_authority_granted")`. The feature branch has added strict regression tests, but no Godot/Android validation is yet confirmed.
+
+- Strategic battle instances now receive unique persisted IDs; resolved battle IDs are retained in campaign state and duplicate result submissions are rejected, preventing repeated casualties/war-exhaustion awards after reloads.
