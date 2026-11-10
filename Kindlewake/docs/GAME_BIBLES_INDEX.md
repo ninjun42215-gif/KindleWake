@@ -17,7 +17,7 @@ This index gathers the separate bibles needed to understand and develop the game
 |---|---|---|
 | [Game Design Document](GDD.md) | Detailed rules and historical design: core loop, combat, damage, turn order, classes, progression, recruitment, platoons, army battles, Kaer Sethorn, legacy mode, story, world, characters, sprites, mobile UI and offline architecture | Treat as the deep mechanical reference; inspect the relevant sections before changing a system. It contains historical notes, so verify current implementation. |
 | [Premium Production Bible](PREMIUM_PRODUCTION_BIBLE.md) | Creative direction, emotional experience, narrative quality, premium visual/audio standards, mobile UX, chapter production and release guardrails | Treat as the quality bar for all content and presentation. |
-| [Lore Bible](LORE_BIBLE.md) | World and narrative canon | Do not introduce contradictions or unapproved retcons. |
+| [Lore Bible](LORE_BIBLE.md) | World and narrative canon, expanded prologue/five-act chapter treatment, companion arcs, branching choices, ending matrix and Chronicle of Houses themes | Use §15 as the campaign story blueprint; do not introduce contradictions or unapproved retcons. |
 | [Mechanics Bible](MECHANICS_BIBLE.md) | Consolidated mechanics contracts and system interactions | Use for cross-system consistency; GDD remains the detailed formula/history reference. |
 | [Vision and Requirements](GAME_VISION_AND_REQUIREMENTS.md) | Owner-requested features and intended final scope | Treat planned features as targets, not shipped claims. |
 | [Current State and Gap Analysis](CURRENT_GAME_STATE_AND_GAP_ANALYSIS.md) | Implementation status and known gaps | Update after every meaningful code PR with exact evidence. |
