@@ -83,15 +83,15 @@ func _render() -> void:
   var fire := System.FIRES[resolved]
   title_label.text = "THREE FIRES — %d / 3" % [resolved+1]
   if fire == "granary_fire":
-   body_label.text = "The granaries burn. Open them to feed the city and risk disorder, or save the grain stores and accept hunger through the night."
+   body_label.text = "Evidence corroboration: %d / 7 strands.\\n\\nThe granaries burn. Open them to feed the city and risk disorder, or save the grain stores and accept hunger through the night." % int(f.get("act5_evidence_count",0))
    _add("Open the granaries; feed the city", _resolve_fire.bind(fire,"open_granaries"))
    _add("Save the grain stores", _resolve_fire.bind(fire,"save_grain"))
   elif fire == "archive_fire":
-   body_label.text = "Fire reaches the record hall. Save the archive and its proof, or turn every hand toward the people trapped inside."
+   body_label.text = "Evidence corroboration: %d / 7 strands.\\n\\nFire reaches the record hall. Save the archive and its proof, or turn every hand toward the people trapped inside." % int(f.get("act5_evidence_count",0))
    _add("Carry the records to safety", _resolve_fire.bind(fire,"save_records"))
    _add("Rescue the people first", _resolve_fire.bind(fire,"save_people"))
   else:
-   body_label.text = "The river rises against the quays. Hold the bridge for the defenders or evacuate the waterfront before the flood takes it."
+   body_label.text = "Evidence corroboration: %d / 7 strands.\\n\\nThe river rises against the quays. Hold the bridge for the defenders or evacuate the waterfront before the flood takes it." % int(f.get("act5_evidence_count",0))
    _add("Hold the bridge", _resolve_fire.bind(fire,"hold_bridge"))
    _add("Evacuate the quays", _resolve_fire.bind(fire,"evacuate_quays"))
   return
@@ -131,8 +131,6 @@ func _route_action(action: String) -> void:
   _render()
 func _convene() -> void:
  if _apply(System.evidence_board(GameState.world_flags)):
-  var evidence: Dictionary = GameState.world_flags.get("act5_evidence_board",{})
-  status_label.text += " Verified strands: %d of 7." % int(GameState.world_flags.get("act5_evidence_count",0))
   _render()
 func _resolve_fire(fire: String, response: String) -> void:
  if _apply(System.resolve_fire(GameState.world_flags,fire,response)):
