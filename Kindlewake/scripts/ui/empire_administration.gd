@@ -508,8 +508,18 @@ func _build_economy() -> void:
         var on: bool = enabled.has(policy)
         body.add_child(_button(("[ACTIVE]  " if on else "[INACTIVE]  ") + str(POLICIES[policy]), _toggle_policy.bind(policy), on))
     body.add_child(_label("Edicts are strategic trade-offs. Relief costs treasury; conscription and commerce change the seasonal balance.", 14, C_DIM))
+    _section("TRADE LEVIES")
+    body.add_child(_label("Current tariff policy: " + str(s.get("tariff_rate", "standard")).capitalize(), 15))
+    for rate in ["low", "standard", "high"]:
+        var tariff_note := "5% · lighter tolls" if rate == "low" else ("10% · balanced revenue" if rate == "standard" else "20% · higher revenue, −2 public order each season")
+        body.add_child(_button(rate.capitalize() + " Tariffs · " + tariff_note, _set_tariff_rate.bind(rate), str(s.get("tariff_rate", "standard")) == rate))
     _section("TRADE NETWORK")
     var controlled: Array = GameState.player_controlled_provinces()
+    var resource_effects: Dictionary = EmpireSystem.regional_resource_effects(controlled, GameData.strategic_warfare)
+    _section("REGIONAL SPECIALTIES")
+    for resource in resource_effects.get("resources", []):
+        body.add_child(_label("%s · %s" % [str(resource.get("province", "")).replace("_", " ").capitalize(), str(resource.get("name", "Local specialty"))], 14, C_GOLD))
+    _metric("Seasonal resource yield", "+%d gold · +%d food · +%d manpower" % [int(resource_effects.get("income", 0)), int(resource_effects.get("food", 0)), int(resource_effects.get("manpower", 0))], "Each controlled region contributes its authored specialty")
     var adjacency: Dictionary = GameState.atlas_region_adjacency()
     var routes: Dictionary = s.get("trade_routes", {})
     var route_ids: Array = routes.keys()
@@ -636,6 +646,12 @@ func _construct(province: String, building: String) -> void:
     var ok := GameState.construct_province_building(province, building)
     _set_message("Construction commissioned." if ok else "Not enough treasury or this building already exists.", ok)
     GameState.save_campaign("auto_a")
+
+
+func _set_tariff_rate(rate: String) -> void:
+    var ok: bool = GameState.set_empire_tariff_rate(rate)
+    _set_message("Trade tariff policy updated." if ok else "The tariff policy could not be changed.", ok)
+    _rebuild()
 
 
 func _set_tax(rate: String) -> void:
