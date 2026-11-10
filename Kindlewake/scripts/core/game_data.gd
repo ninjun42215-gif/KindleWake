@@ -26,6 +26,7 @@ var world: Dictionary = {}               # world.json: the Eldrimar regional ove
 var thalassar_world: Dictionary = {}     # thalassar_world.json: Brinegate Coast
 var continents: Dictionary = {}          # continents.json: the seven-continent campaign atlas
 var battles: Dictionary = {}
+var bestiary: Dictionary = {}           # regional enemy species, lore and weighted encounter pools
 
 
 func _ready() -> void:
@@ -51,6 +52,7 @@ func reload() -> void:
     world = _load_json("world.json")
     thalassar_world = _load_json("thalassar_world.json")
     continents = _load_json("continents.json")
+    bestiary = _load_json("bestiary.json")
     locations = _load_json("locations.json")
     character_creation = _load_json("character_creation.json")
     battles.clear()
