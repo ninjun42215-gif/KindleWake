@@ -100,3 +100,13 @@ The PR portfolio should be re-compared against the live main SHA before any acti
 ## Follow-up maintenance candidate — rebased on current main
 
 Branch `fix/headless-resource-cleanup-current-main` is based on main `0785d76c86f6a4b1eafcec54ccb54ca3b5299acc`. It frees the temporary PartyScreen synchronously in the headless UI test, drains deferred child-node deletion over two SceneTree frames, releases the GameData Node in the standalone balance report before quitting, and disables Blender import because the tracked tree contains no `.blend` files. This candidate must pass exact-head CI on the rebased source before merge; it changes no gameplay, save schema, game version or permissions.
+
+
+## Post-audit developments — 2026-11-10 12:33 UTC
+
+- [PR #121](https://github.com/ninjun42215-gif/KindleWake/pull/121) merged the mainline Chronicle inter-house diplomacy system and decision UI. Earlier stacked PR #112 was closed without merging; use the mainline implementation, not its old branch.
+- [PR #122](https://github.com/ninjun42215-gif/KindleWake/pull/122) merged the headless resource cleanup and unused Blender-import disablement. Superseded PR #120 was closed without merging.
+- [PR #123](https://github.com/ninjun42215-gif/KindleWake/pull/123) is under review. The current patch passes initial automated gates but appears behaviorally redundant: `BattleMap.compute_reach()` intentionally ignores its `_ally_cells` argument and documents ally pass-through. The added test checks only reachable/unoccupied destinations, not the path. Do not merge until the author clarifies the intended rule and adds a regression test that proves a behavior change.
+- [PR #81](https://github.com/ninjun42215-gif/KindleWake/pull/81) contains a substantial regional merchant/caravan economy and reported passing tests on an older baseline. It remains stale/non-mergeable; rebase onto the current main and rerun exact-head CI before considering integration.
+- The current main checkpoint is `84da6e400b7991d753bcc2cddeb02d854702b547`. Post-merge Android build [#42816530381](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42816530381) passed 18 scene loads, 929 strict checks / 0 failures, balance report and signed APK export. Project Health Audit, Version Sync, Workflow YAML Lint and source handoff also passed. APK artifact: `13764651354`.
+- The ObjectDB/resource-shutdown and Blender-import warnings are absent after PR #122. The transient first import scan still logs class-registration errors before a clean retry; the headless custom-cursor warning is expected and non-fatal.
