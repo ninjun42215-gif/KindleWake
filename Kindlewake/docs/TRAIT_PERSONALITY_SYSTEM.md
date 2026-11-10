@@ -20,7 +20,7 @@ This is the first runtime implementation slice of the KindleWake trait/personali
 - Temporary conditions such as Poisoned, Exhausted, and Injured are not added to the enduring trait list; they remain in the existing battle/status-effect domain.
 - A tactical retreat does not award Cowardly. Trauma is distinct from cowardice. Mental-health-related descriptions avoid treating distress as a moral failing.
 - Permanent traits cannot be removed through the ordinary removal API; a story-resolution override is required.
-- Trait acquisition is deterministic and evidence-driven. Duplicate evidence IDs are ignored; no per-frame or random permanent-trait rolls occur.
+- Trait acquisition is deterministic and evidence-driven. Duplicate evidence IDs are ignored; event instances can carry unique IDs; evolution requires configured behavior thresholds; no per-frame or random permanent-trait rolls occur.
 - Synergies are derived from compatible trait combinations and do not consume another trait slot or permanently duplicate a trait.
 
 ## Integration API
