@@ -150,6 +150,22 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
   if not people.has(str(domain.get("steward",""))):
    domain["steward"] = ""
   state["domains"][domain_id] = domain
+ for person_id in people.keys():
+  var person: Dictionary = people[person_id]
+  person["title_ids"] = []
+  person["title_id"] = ""
+  people[person_id] = person
+ for title_id in state["titles"].keys():
+  var title: Dictionary = state["titles"][title_id]
+  var holder_id := str(title.get("holder",""))
+  if holder_id != "" and people.has(holder_id):
+   var holder: Dictionary = people[holder_id]
+   var title_ids: Array = holder.get("title_ids",[])
+   title_ids.append(str(title_id))
+   holder["title_ids"] = title_ids
+   holder["title_id"] = str(title_id)
+   people[holder_id] = holder
+ state["people"] = people
  if typeof(state.get("chronicle",[])) != TYPE_ARRAY:
   state["chronicle"] = []
  return state
@@ -510,5 +526,6 @@ static func person_summary(person: Dictionary) -> String:
   trait_names.append(str(trait_id).replace("_"," ").capitalize())
  var spouse := str(person.get("spouse",""))
  var children: Array = person.get("children",[])
- var title_id := str(person.get("title_id",""))
- return "%s, age %d • %s • %s • spouse: %s • children: %d • title: %s" % [str(person.get("name","Unnamed")),int(person.get("age",0)),"living" if bool(person.get("alive",false)) else "deceased",", ".join(trait_names) if not trait_names.is_empty() else "no recorded traits",spouse if spouse != "" else "none",children.size(),title_id if title_id != "" else "none"]
+ var title_ids: Array = person.get("title_ids",[])
+ var title_label := ", ".join(title_ids) if not title_ids.is_empty() else "none"
+ return "%s, age %d • %s • %s • spouse: %s • children: %d • titles: %s" % [str(person.get("name","Unnamed")),int(person.get("age",0)),"living" if bool(person.get("alive",false)) else "deceased",", ".join(trait_names) if not trait_names.is_empty() else "no recorded traits",spouse if spouse != "" else "none",children.size(),title_label]
