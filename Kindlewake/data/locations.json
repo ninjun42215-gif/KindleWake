@@ -1981,6 +1981,18 @@
             0.77
           ],
           "text": "Three old stone marks rise from the tide pools. Their positions form a route through the reef teeth, but only in the right order."
+        },
+        {
+          "cell": [
+            12,
+            9
+          ],
+          "kind": "party",
+          "npc": true,
+          "npc_active": true,
+          "shopkeeper_id": "saltmere_factor",
+          "name": "Saltmere Reef Market",
+          "text": "A sheltered market where coastal traders exchange supplies and reef goods. Its stock depends on which route the company has opened."
         }
       ]
     },
