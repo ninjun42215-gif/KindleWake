@@ -288,3 +288,5 @@ The field army layer now includes depot-based connected supply, forward supply c
 ## STRATEGIC EXPANSION UPDATE
 
 Trade charters, pure seasonal forecasts, 23 companion trait profiles, role/trait council modifiers, rebellion risk warnings and funded relief, deterministic NPC diplomacy, a player Diplomacy tab, negotiated peace offers and tactical siege artillery/wall/engineer support are implemented on the feature branch. The narrative unlock API is GameState.complete_story_milestone("crown_authority_granted"); do not substitute the sea charter or any other unrelated milestone. The approved story event still needs to call it. Tests are authored but not run; Godot is unavailable. Reconcile the branch before merge and require exact-head CI and Android QA.
+
+- Strategic battle instances now receive unique persisted IDs; resolved battle IDs are retained in campaign state and duplicate result submissions are rejected, preventing repeated casualties/war-exhaustion awards after reloads.
