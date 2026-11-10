@@ -946,6 +946,7 @@ func _test_empire_management() -> void:
     check(int(report.get("troops", 0)) == 13 and int(report.get("military_upkeep", 0)) == 13 and int(report.get("military_food", 0)) == 13, "seasonal ledger includes standing-army upkeep and ration consumption")
     var restored: Dictionary = EmpireSystem.normalize_state(state)
     check(bool(restored.get("unlocked", false)) and int(restored.get("turn", 0)) == 1, "empire state survives normalization")
+    check(int(EmpireSystem.army_summary(restored).get("troops", 0)) == 13, "provincial garrisons survive campaign normalization and save restoration")
     check(not bool(EmpireSystem.normalize_state({}).get("unlocked", false)), "legacy saves without empire state remain locked and loadable")
 
 func _test_thalassar_region() -> void:
