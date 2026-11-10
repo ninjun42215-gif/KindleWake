@@ -117,3 +117,17 @@
 
 ---
 
+
+
+---
+
+# CURRENT IMPLEMENTATION HANDOFF — CAMPAIGN FACTIONS (2026-11-10)
+
+- Working branch: `feature/campaign-factions-diplomacy`, created from the verified `main` ref `c1069d116e234a17437bd93af9b0282ca255f31b`. Do not edit `main` directly.
+- Added `data/factions.json` with the major political powers already established by `data/continents.json`, plus a starting affiliation for every atlas region. No new continent or region has been invented.
+- Added `scripts/core/faction_system.gd` for bounded relation values, treaty/war states, alliance trust gating, validated region transfers, history and safe normalization.
+- `GameData` loads faction definitions. `GameState` initializes faction state for new campaigns, exposes APIs for authored story outcomes and includes the optional state in campaign payloads. Existing schema-4 saves remain compatible through defaults.
+- Added strict regression assertions in `tests/run_tests.gd` for atlas-region coverage, diplomacy thresholds, territory validation, history and legacy defaults.
+- Current scope is backend foundation only. No diplomacy screen, automatic war simulation, AI faction turns or strategic battle layer is claimed complete.
+- CI has not yet run for this branch. Wait for exact-head Godot import, scene smoke, strict tests, balance report, Android export, version sync, workflow lint and health audit. Physical Android QA remains outstanding.
+- Next implementation slice after this foundation: connect authored quests/choices to relation changes, then add a compact faction dossier UI before enabling player-initiated treaty/war actions. Preserve offline-only architecture, existing saves and schema 4.
