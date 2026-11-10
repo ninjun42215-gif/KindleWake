@@ -132,3 +132,10 @@ The Holdings screen also launches a siege battlefield from a player-administered
 ## Current tactical scope
 
 The guardian fights are playable with their own commander units, enemy escorts, maps, and health-threshold phase transitions. Phase-specific hazard and objective text is surfaced to the battle log. The next combat pass should turn those announced objectives into distinct interactive battlefield mechanics (for example, destructible signal drums, ward pylons, root anchors, lens controls and safe-tile rotations) rather than treating every phase as a commander-health encounter.
+
+
+## Tactical deployment and settlement presentation
+
+Holding recruitment now creates deployable Frontier Levy, March Archer and Household Knight combatants. When a regional guardian or holding siege is launched from a player-held settlement, up to four reserve troops are added to the tactical deployment. They are deducted from the holding reserve at launch; survivors return to that holding after battle, while fallen troops are recorded as campaign casualties. The deployment and recovery rules are covered by source-level tests.
+
+Settlement development now has a visible local-map presentation for supported holdings: farms add crop plots, workshops add workbenches, trade posts add cargo crates and fortifications add defensive posts. The visuals are derived from saved building tiers and do not alter navigation or collision.
