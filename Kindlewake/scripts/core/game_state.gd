@@ -191,9 +191,9 @@ func start_campaign_siege(target_holding_id: String) -> bool:
             break
     if source_id == "":
         for definition in GameData.world_expansion.get("capturable_locations", []):
-            var id := str(definition.get("id", ""))
-            if bool(world_flags.get("holding_claimed_" + id, false)) and str(world_flags.get("holding_owner_" + id, "")) == "house_dunmarrow":
-                source_id = id
+            var fallback_id := str(definition.get("id", ""))
+            if bool(world_flags.get("holding_claimed_" + fallback_id, false)) and str(world_flags.get("holding_owner_" + fallback_id, "")) == "house_dunmarrow":
+                source_id = fallback_id
                 source = definition
                 break
     if source_id == "":
