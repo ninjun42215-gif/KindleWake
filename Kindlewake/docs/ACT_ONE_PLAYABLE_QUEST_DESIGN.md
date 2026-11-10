@@ -65,3 +65,5 @@ Both Act I commanders now have two authored health-threshold transitions. They a
 - Phase effects are drawn with the existing lightweight vector renderer; no external textures, shaders or high-cost particle nodes are required.
 - Internal boss-phase persistence markers are hidden from ordinary ailment/status pips.
 - These are implemented presentation effects using the current placeholder/sprite-sheet rendering path. They are not bespoke frame-by-frame boss sprite sheets, voice acting or cinematic camera sequences.
+
+- Hask's successful weapon hits use a heavy double-sweep impact effect; the Ash Bailiff's damaging skills use a gold seal-and-verdict strike rather than the generic elemental burst.
