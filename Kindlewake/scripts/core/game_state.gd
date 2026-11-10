@@ -456,7 +456,7 @@ func load_campaign(slot_id: String) -> bool:
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
     faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
-    empire_state = EmpireSystemScript.normalize_state(payload.get("empire_state", {}), _faction_ids())
+    empire_state = EmpireSystemScript.normalize_state(payload.get("empire_state", {}), _faction_ids(), faction_state, party.roster)
     companion_relationships = RelationshipSystem.normalize_state(payload.get("companion_relationships", {}))
     companion_quests = CompanionQuestSystem.normalize_state(payload.get("companion_quests", {}), {"quests": GameData.companion_quests})
     chronicle_state = ChronicleSystem.normalize_state(payload.get("chronicle_state", {}))
