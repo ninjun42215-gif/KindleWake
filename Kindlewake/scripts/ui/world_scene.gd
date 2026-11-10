@@ -260,7 +260,9 @@ func _accumulate_danger(dist: float, cell: Vector2i) -> void:
         has_target = false
         pressing = false
         ambush_timer = AMBUSH_DELAY
-        banner_label.text = "Ambush! Roadwolves leap from the brush!"
+        var regional_pools: Dictionary = GameData.bestiary.get("regions", {})
+        var regional_text: Dictionary = regional_pools.get(GameState.active_region_id, {})
+        banner_label.text = str(regional_text.get("ambush_text", "Ambush! Hostile shapes move against the company."))
         banner.visible = true
 
 
