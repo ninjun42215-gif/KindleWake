@@ -202,7 +202,7 @@ func refresh(reset_status: bool = true) -> void:
         var label := Label.new()
         label.text = "%s  •  %s → %s  •  Toll %d" % [
             str(route.get("name", route_id)), str(route.get("from", "")),
-            str(route.get("to", "")), int(route_definition.get("base_toll", 0))
+            str(route.get("to", "")), int(route.get("base_toll", 0))
         ]
         label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         row.add_child(label)
@@ -247,7 +247,7 @@ func refresh(reset_status: bool = true) -> void:
             toll.min_value = 0
             toll.max_value = 10000
             toll.step = 5
-            toll.value = int(state.get("route_policies", {}).get(route_id, {}).get("toll", route.get("base_toll", 0)))
+            toll.value = int(state.get("route_policies", {}).get(route_id, {}).get("toll", route_definition.get("base_toll", 0)))
             row.add_child(toll)
             row.add_child(_action_button("OPEN", func():
                 _notify_result(GameState.merchant_set_route_policy(str(route_id), {"open":true,"toll":int(toll.value)}))
