@@ -1388,9 +1388,13 @@ func _test_shop_and_screen() -> void:
     var screen := PartyScreen.new()
     root.add_child(screen)
     screen.closed.connect(_on_screen_closed)
-    screen.setup(ps, db, shop, true, true, true)
+    var test_bonds: Dictionary = {}
+    RelationshipSystemScript.adjust(test_bonds, "torren", "wystan", "trust", 25, "quest:screen-test")
+    screen.setup(ps, db, shop, true, true, true, test_bonds)
     screen.open()
     check(screen.visible and screen.builds == 1 and screen.get_child_count() == 2, "the party screen builds its layout on open()")
+    check(screen.relationship_state == test_bonds, "party screen receives campaign bond state explicitly")
+    check(screen._relationship_event_label("quest:shared-watch") == "Shared quest" and screen._relationship_event_label("recruit:maren_vey:trust") == "Joined the company", "bond journal translates authored evidence into readable event labels")
     var b0: int = screen.builds
     var n_calls := 0
     for id in ps.roster:

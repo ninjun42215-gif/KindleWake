@@ -6,6 +6,7 @@ const PartyStateScript = preload("res://scripts/core/party_state.gd")
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const PersonalitySystemScript = preload("res://scripts/core/personality_system.gd")
 const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
+const RelationshipSystemScript = preload("res://scripts/core/relationship_system.gd")
 ## Full-screen party management in one touch UI (v0.8.0 layout): a compact top bar, a roster of cards, a character
 ## sheet made of stat tiles, and a right panel with three tabs: Equipment, Sigils and Shop.
 ## It owns no rules: every action goes through PartyStateScript / CharacterSheetScript / ShopSystem, the same code paths the
@@ -49,6 +50,7 @@ const RARITY_COLORS := {
 var party: PartyStateScript = null
 var db: Dictionary = {}
 var shop: Dictionary = {}
+var relationship_state: Dictionary = {}
 var shop_access_allowed: bool = true
 var rune_service_access: bool = false
 var blacksmith_access: bool = false
@@ -74,10 +76,11 @@ var rune_rng := RandomNumberGenerator.new()
 var builds: int = 0                   # how many times the layout was completely built (tests use it to catch half-built screens)
 
 
-func setup(p_party: PartyStateScript, p_db: Dictionary, p_shop: Dictionary, allow_shop: bool = true, p_rune_service: bool = false, p_blacksmith: bool = false) -> void:
+func setup(p_party: PartyStateScript, p_db: Dictionary, p_shop: Dictionary, allow_shop: bool = true, p_rune_service: bool = false, p_blacksmith: bool = false, p_relationships: Dictionary = {}) -> void:
     party = p_party
     db = p_db
     shop = p_shop
+    relationship_state = p_relationships
     rune_rng.randomize()
     shop_access_allowed = allow_shop
     rune_service_access = p_rune_service
@@ -651,6 +654,44 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
         for memory_index in range(sh.memories.size() - 1, first_memory - 1, -1):
             var memory: Dictionary = sh.memories[memory_index]
             box.add_child(_label("• " + str(memory.get("summary", "A remembered event")), 14, COL_DIM))
+    # Pair bonds are shown independently from loyalty and remain authored-event driven.
+    _add_section(box, "Companion bonds")
+    var bond_count := 0
+    for other_id in party.roster:
+        var companion_id := str(other_id)
+        if companion_id == selected_id:
+            continue
+        var companion_sheet: CharacterSheetScript = party.sheet(companion_id)
+        if companion_sheet == null:
+            continue
+        var bond: Dictionary = RelationshipSystemScript.get_relationship(relationship_state, selected_id, companion_id)
+        var bond_card := PanelContainer.new()
+        bond_card.add_theme_stylebox_override("panel", _style(COL_TILE, COL_BORDER_DIM, 1, 6, 8.0))
+        var bond_box := VBoxContainer.new()
+        bond_box.add_theme_constant_override("separation", 3)
+        var bond_head := HBoxContainer.new()
+        var companion_name := _label(companion_sheet.display_name, 17, COL_GOLD)
+        companion_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        bond_head.add_child(companion_name)
+        bond_head.add_child(_text(str(bond.get("stage", "Acquaintances")), 13, COL_DIM))
+        bond_box.add_child(bond_head)
+        var metric_parts: PackedStringArray = []
+        for dimension in ["friendship", "trust", "respect", "rivalry", "affection"]:
+            metric_parts.append("%s %d" % [dimension.capitalize(), int(bond.get(dimension, 0))])
+        bond_box.add_child(_label("  ·  ".join(metric_parts), 13, COL_DIM))
+        var bond_history: Array = bond.get("history", [])
+        if not bond_history.is_empty():
+            var latest: Dictionary = bond_history[bond_history.size() - 1]
+            bond_box.add_child(_label("Latest: %s (%s %s)" % [
+                _relationship_event_label(str(latest.get("evidence_id", ""))),
+                str(latest.get("dimension", "bond")).capitalize(),
+                ItemInfo.signed(int(latest.get("delta", 0)))
+            ], 12, COL_DIM))
+        bond_card.add_child(bond_box)
+        box.add_child(bond_card)
+        bond_count += 1
+    if bond_count == 0:
+        box.add_child(_label("No companion bonds have been recorded. Shared choices and meaningful events can shape these relationships over time.", 14, COL_DIM))
     # skills
     var mods: Dictionary = sh.skill_mods(items, sdefs)
     var known: Array[String] = sh.all_skills(items, sdefs, classes)
@@ -680,6 +721,20 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
         _add_section(box, "Promotion available")
         for cid in options:
             box.add_child(_button("Promote to %s" % _class_title(cid), _on_promote.bind(cid), Vector2(0, 56), 20, true))
+
+
+func _relationship_event_label(evidence_id: String) -> String:
+    if evidence_id.begins_with("recruit:"):
+        return "Joined the company"
+    if evidence_id.begins_with("quest:"):
+        return "Shared quest"
+    if evidence_id.begins_with("dialogue:"):
+        return "A conversation"
+    if evidence_id.begins_with("battle:"):
+        return "Battlefield experience"
+    if evidence_id.begins_with("duel:"):
+        return "A friendly or bitter contest"
+    return "A shared experience"
 
 
 func _hint() -> String:
