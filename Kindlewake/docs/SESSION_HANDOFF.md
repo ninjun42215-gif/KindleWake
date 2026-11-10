@@ -139,7 +139,7 @@
 Working branch: `feature/empire-management-system`.
 
 - Added the deterministic realm rules and optional campaign-save persistence.
-- Added the touch-first Royal Administration overlay with Realm, Council, Provinces, Economy and Chronicle tabs, mounted from the overworld's Royal Court button.
+- Added the touch-first Royal Administration overlay with Realm, Council, Provinces, Military, Economy and Chronicle tabs, mounted from the overworld's Royal Court button.
 - The entry button is unlock-gated. Story/quest code must call `GameState.unlock_empire_management()` only when the protagonist is legitimately granted governing authority; the feature intentionally does not unlock at the start of the campaign.
 - Council appointments use the current party roster. Governors and construction are limited to territories currently held by House Dunmarrow or the Crownlands; economy seasons use only those controlled provinces.
 - Added dismissal/recall, construction, tax, edict and seasonal report interactions. Every action persists through the existing campaign save.
