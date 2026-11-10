@@ -923,3 +923,10 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - Exposes GameState methods for story, quest and battle systems to adjust relations, set diplomatic states and transfer known atlas regions. No automatic wars, random coups, fabricated quest consequences or player-facing diplomacy screen are introduced in this foundation.
 
 **Validation:** code head `f7b31035e4651a4a6854cc5ad644beff88c2148b` passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 447 strict checks / 0 failures, balance report and signed Android APK export (arm64-v8a + armeabi-v7a; no requested permissions). Version Sync #188, Workflow YAML Lint #666 and Project Health Audit #458 passed. APK artifact `13733346417`; test logs `13732869336`. Any later documentation-only head still requires the repository's exact-head gate. Physical Android QA remains separate and unperformed. Future work: player-facing diplomacy UI, faction missions, treaties with authored costs, war campaigns, recruitment consequences and strategic territory operations.
+
+
+## Revision log — 2026-11-10 live-source verification
+
+- Confirmed the campaign level cap is 250 in `CharacterSheet.MAX_LEVEL`, load normalization, cap-overflow handling and strict regression tests. The authoritative curve and progression rules remain in section 4.
+- Updated the production checkpoint after PR #118 merged as main commit `830bc0273d45140a11a4038f092a4d5ee347a243`; current project version remains 0.12.0 and save schema 4. No version or save-schema change is introduced by this documentation update.
+- Current-main CI passed 18 scene loads, 912 strict checks with 0 failures, the balance report and signed Android export. Physical-device QA and asset redistribution verification remain release gates.

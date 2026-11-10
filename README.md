@@ -1,14 +1,7 @@
-> **LIVE PROJECT CHECKPOINT — 2026-11-10 (authoritative):** Canonical repository `ninjun42215-gif/KindleWake`; default branch `main`; verified main commit `496f6c6a8130c920e0d9ed96f5e323c016d67c01`. PR [#28](https://github.com/ninjun42215-gif/KindleWake/pull/28) is **merged**. Do not describe it as a candidate or continue work on its old branch.
->
-> **Released source/build state:** game and Android version `0.12.0`, Android version code `1200`, save schema `4`. The merged update includes the toroidal campaign overworld, controller/keyboard/touch exploration and sprint, Brinegate Coast vertical slice, regional save positions, and additive schema-4 compatibility. The seven-continent atlas is inspectable, but the other six continents are not all playable.
->
-> **CI evidence:** the exact merged main commit passed Android APK build, Project Health Audit, source-handoff snapshot, version synchronization and workflow YAML lint. Current main APK artifact: `Kindlewake-APK`, artifact ID `13720944780`, about 40.8 MB; build run [42724834624](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42724834624). CI success is not physical-device QA.
->
-> **Next work:** perform real Android QA for all four world edges and corner crossings, movement/sprint/touch/controller paths, screen scaling, Brinegate quest and travel flow, save/load, performance and battery. Physical-device testing has not yet been confirmed. Record actual findings before claiming it passed.
->
-> **Hard constraints/release gates:** fully offline; no accounts, servers, multiplayer or INTERNET permission. Preserve existing saves and schema compatibility. Third-party sprite-pack redistribution licensing remains unresolved and blocks public/commercial release until verified or replaced. Keep work on a short-lived branch and one consolidated PR; merge only after every required check passes on the exact PR head SHA. Never edit `main` directly.
+> **AUTHORITATIVE LIVE CHECKPOINT — 2026-11-10 12:16 UTC:** Canonical repository `ninjun42215-gif/KindleWake`; project directory `Kindlewake/`; default branch `main`; current main commit `830bc0273d45140a11a4038f092a4d5ee347a243` (PR #118 merged). Game/Android version `0.12.0 / 1200`; save schema `4`; Godot `4.2.2`; offline-first, no accounts, servers, multiplayer or INTERNET permission. The requested level cap of 250 is implemented and asserted in strict tests. Main CI on this exact commit passed: 18/18 scenes loaded, 912 strict checks / 0 failures, balance report, signed Android APK export, Project Health Audit, Version Sync, Workflow YAML Lint and source handoff. APK artifact `13763523117` (41,190,380-byte artifact archive); build run [#42814167185](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42814167185). Physical Android QA remains outstanding; third-party sprite/voxel asset redistribution rights remain a release blocker until verified or replaced. See [PRODUCTION_AUDIT_2026-11-10.md](PRODUCTION_AUDIT_2026-11-10.md) for the live branch/PR triage and production roadmap. Earlier checkpoint notes below are historical and must not override the live GitHub state.
 
 ---
+
 
 
 
