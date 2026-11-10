@@ -278,4 +278,7 @@ func _open_founder_epilogue() -> void:
     if not bool(GameState.world_flags.get("chapter_5_complete", false)) or not bool(GameState.chronicle_state.get("milestones", {}).get("empire_dissolved", false)):
         status_label.text = "Complete the five-act campaign and dissolve the Empire before the founder's epilogue."
         return
-    get_tree().change_scene_to_file("res://ChronicleEpilogue.tscn")
+    if GameState.chronicle_unlocked():
+        get_tree().change_scene_to_file("res://ChronicleHouse.tscn")
+    else:
+        get_tree().change_scene_to_file("res://ChronicleEpilogue.tscn")
