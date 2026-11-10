@@ -118,6 +118,20 @@ func _valid_saved_unit(value: Variant, candidate_map: BattleMap, seen_ids: Dicti
     for key in ["skills", "traits"]:
         if typeof(data.get(key, [])) != TYPE_ARRAY:
             return false
+    var saved_statuses: Dictionary = data.get("statuses", {})
+    for status_key in saved_statuses:
+        var status_value: Variant = saved_statuses[status_key]
+        if typeof(status_value) != TYPE_DICTIONARY:
+            return false
+        var status_data: Dictionary = status_value
+        for numeric_key in ["turns", "damage", "heal"]:
+            if not status_data.has(numeric_key):
+                continue
+            var numeric_value: Variant = status_data[numeric_key]
+            if typeof(numeric_value) != TYPE_INT and typeof(numeric_value) != TYPE_FLOAT:
+                return false
+            if float(numeric_value) < 0.0:
+                return false
     seen_ids[uid] = true
     return true
 
