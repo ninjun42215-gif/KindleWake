@@ -79,7 +79,7 @@ static func start_siege(holding_id: String, objective_id: String, required_progr
     if objective_id == "" or required_progress < 1:
         return {"ok":false,"reason":"A valid siege objective is required."}
     var key := "siege_" + objective_id
-    if flags.has(key) and str(flags[key].get("status", "")) != "resolved":
+    if flags.has(key) and not ["resolved", "repelled"].has(str(flags[key].get("status", ""))):
         return {"ok":false,"reason":"This siege is already in progress."}
     flags[key] = {"origin":holding_id,"progress":0,"required":clampi(required_progress,1,20),"status":"in_progress","history":[]}
     return {"ok":true,"siege":flags[key].duplicate(true)}
@@ -104,8 +104,10 @@ static func resolve_siege(objective_id: String, won: bool, flags: Dictionary) ->
     if not flags.has(key):
         return {"ok":false,"reason":"Unknown siege objective."}
     var state: Dictionary = flags[key].duplicate(true)
-    if str(state.get("status","")) != "objective_complete":
-        return {"ok":false,"reason":"Complete the siege objective before resolving the encounter."}
+    if won and str(state.get("status","")) != "objective_complete":
+        return {"ok":false,"reason":"Complete the siege objective before recording a victory."}
+    if not won and str(state.get("status","")) != "in_progress":
+        return {"ok":false,"reason":"Only an active siege can be recorded as repelled."}
     state["status"] = "resolved" if won else "repelled"
     flags[key] = state
     return {"ok":true,"status":str(state.status),"origin":str(state.get("origin",""))}
