@@ -54,6 +54,31 @@ func _initialize() -> void:
  check(str(year.state.last_succession.get("to","")) == "heir_1","title succession resolves to eligible heir under configured law")
  check(int(year.state.year) == 2,"house chronicle advances its calendar")
  check(year.state.chronicle.size() > 0,"yearly and family events enter the house chronicle")
+ var partition_state := Dynasty.new_house(founder,"Torren Vale","House Vale")
+ var first_child := Dynasty.add_child(partition_state,"heir_1","First Child",20)
+ partition_state = first_child.state
+ var second_child := Dynasty.add_child(partition_state,"heir_1","Second Child",18)
+ partition_state = second_child.state
+ var holding_a := Dynasty.create_domain(partition_state,"North Holding","heir_1")
+ partition_state = holding_a.state
+ var holding_b := Dynasty.create_domain(partition_state,"South Holding","heir_1")
+ partition_state = holding_b.state
+ var equal_law := Dynasty.set_succession_policy(partition_state,"equal_partition")
+ partition_state = equal_law.state
+ partition_state.people["heir_1"].age = Dynasty.NATURAL_OLD_AGE-1
+ var divided := Dynasty.advance_year(partition_state)
+ check(str(divided.state.domains[holding_a.domain_id].steward) != str(divided.state.domains[holding_b.domain_id].steward),"equal partition distributes separate holdings between eligible children")
+ var elective_state := Dynasty.new_house(founder,"Torren Vale","House Vale")
+ var elect_child_a := Dynasty.add_child(elective_state,"heir_1","Aster Vale",20)
+ elective_state = elect_child_a.state
+ var elect_child_b := Dynasty.add_child(elective_state,"heir_1","Briar Vale",19)
+ elective_state = elect_child_b.state
+ var elective_law := Dynasty.set_succession_policy(elective_state,"elective",str(elect_child_b.person_id))
+ check(bool(elective_law.ok),"elective succession records the house's chosen candidate")
+ elective_state = elective_law.state
+ elective_state.people["heir_1"].age = Dynasty.NATURAL_OLD_AGE-1
+ var elected := Dynasty.advance_year(elective_state)
+ check(str(elected.state.titles["founder_barony"].holder) == str(elect_child_b.person_id),"elective succession honours the chosen eligible heir")
  print("Chronicle dynasty checks: %d   Failures: %d" % [checks,failures])
  quit(1 if failures > 0 else 0)
 
