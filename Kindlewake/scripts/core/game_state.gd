@@ -71,6 +71,31 @@ func transfer_faction_region(region_id: String, new_owner: String, cause: String
     return FactionSystem.transfer_region(faction_state, region_id, new_owner, cause)
 
 
+
+
+## Campaign/story systems call these methods with authored, consequential evidence; no random trait rolls occur.
+func record_character_behavior(character_id: String, behavior_id: String, amount: int, evidence_id: String) -> bool:
+    var member = party.sheet(character_id)
+    if member == null:
+        return false
+    member.record_behavior(behavior_id, amount, evidence_id)
+    return true
+
+
+func resolve_character_event(character_id: String, event_id: String, source: String = "campaign_event", instance_id: String = "") -> Dictionary:
+    var member = party.sheet(character_id)
+    if member == null:
+        return {"ok": false, "reason": "Unknown character.", "traits_gained": []}
+    return member.apply_personality_event(event_id, GameData.trait_events, GameData.traits, source, instance_id)
+
+
+func progress_character_ambition(character_id: String, amount: int) -> Dictionary:
+    var member = party.sheet(character_id)
+    if member == null:
+        return {"ok": false, "completed": false, "progress": 0}
+    return member.advance_ambition(amount)
+
+
 ## Battle database with the party's current sheets (level, stats, equipment) substituted in.
 func battle_db() -> Dictionary:
     return party.battle_db(GameData.as_db())

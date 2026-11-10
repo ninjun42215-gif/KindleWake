@@ -1,6 +1,7 @@
 extends SceneTree
 
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
+const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
@@ -33,6 +34,7 @@ func _initialize() -> void:
     _test_controller()
     _test_auto_battle()
     _test_progression()
+    _test_trait_system()
     _test_recruitment()
     _test_prologue()
     _test_escape_mission()
@@ -1596,3 +1598,73 @@ func _simulate_battles(n: int) -> void:
         total_turns += c.turn_count
     check(unfinished == 0, "all %d simulated battles reach a result" % n)
     print("  info  AI vs AI: player side won %d/%d, average %.1f turns per battle" % [wins, n, float(total_turns) / float(n)])
+
+
+func _test_trait_system() -> void:
+    print("[trait and personality system]")
+    var defs: Dictionary = gd.traits
+    check(defs.size() >= 60, "data-driven trait catalogue loads a broad initial library")
+    var categories: Dictionary = {}
+    var valid_trait_links := true
+    for trait_id in defs:
+        if str(trait_id) == "_synergies":
+            continue
+        var trait_def: Dictionary = defs[trait_id]
+        categories[str(trait_def.get("category", ""))] = true
+        for conflict_id in trait_def.get("conflicts", []):
+            if not defs.has(str(conflict_id)):
+                valid_trait_links = false
+        var evolution_id := str(trait_def.get("evolves_to", ""))
+        if evolution_id != "" and not defs.has(evolution_id):
+            valid_trait_links = false
+    for category_id in ["personality", "intelligence", "combat", "social", "physical", "psychological", "leadership", "lifestyle", "morality", "magical"]:
+        check(categories.has(category_id), "trait catalogue includes " + category_id + " category")
+    check(valid_trait_links, "all opposing and evolution links resolve to defined traits")
+    var valid_event_awards := true
+    for event_id in gd.trait_events:
+        var event_def: Dictionary = gd.trait_events[event_id]
+        for award_id in event_def.get("trait_awards", []):
+            if not defs.has(str(award_id)):
+                valid_event_awards = false
+    check(valid_event_awards, "all event trait awards resolve to defined trait IDs")
+    check(defs.has("brave") and defs.has("scholar") and defs.has("battle_trauma") and defs.has("magical_affinity"), "catalogue covers personality, knowledge, psychological and rare magical traits")
+    var sheet := CharacterSheet.from_def("trait_test", {"name":"Test Hero","class_id":"swordsman","level":1,"stats":{"hp":20,"mp":5,"str":5,"dex":5,"int":5,"vit":5,"spd":5,"lck":5,"acc":70,"eva":5,"ldr":5,"mor":50}})
+    var base: Dictionary = sheet.base_stats.duplicate(true)
+    var gained: Dictionary = sheet.acquire_trait("brave", "unit_test", defs)
+    check(bool(gained.get("ok", false)) and sheet.traits.has("brave"), "valid trait acquisition records an enduring trait")
+    check(int(sheet.base_stats.get("mor", 0)) == int(base.get("mor", 0)), "trait effects never mutate permanent base stats")
+    var trait_stats: Dictionary = sheet.total_stats({}, {}, defs)
+    check(int(trait_stats.get("mor", 0)) == int(base.get("mor", 0)) + 2, "trait stat effects are applied through derived stats")
+    var synergy_sheet := CharacterSheet.from_def("synergy_test", {"name":"Synergy Hero","class_id":"knight","level":1,"traits":["brave","battle_hardened"],"stats":{"hp":20,"mp":5,"str":5,"dex":5,"int":5,"vit":5,"spd":5,"lck":5,"acc":70,"eva":5,"ldr":5,"mor":50}})
+    var synergy_stats: Dictionary = synergy_sheet.total_stats({}, {}, defs)
+    check(int(synergy_stats.get("mor", 0)) == 54 and TraitSystemScript.active_synergies(synergy_sheet.traits, defs).size() == 1, "compatible traits unlock a derived synergy without adding a duplicate trait")
+    var conflict: Dictionary = sheet.acquire_trait("cowardly", "unit_test", defs)
+    check(not bool(conflict.get("ok", false)) and sheet.traits.has("brave"), "opposing traits cannot be acquired together")
+    var duplicate: Dictionary = sheet.acquire_trait("brave", "unit_test", defs)
+    check(not bool(duplicate.get("ok", false)), "duplicate trait acquisition is rejected")
+    var premature_evolve: Dictionary = sheet.evolve_trait("brave", defs, "unit_test")
+    check(not bool(premature_evolve.get("ok", false)) and sheet.traits.has("brave"), "trait evolution is blocked until its behavior evidence threshold is met")
+    sheet.record_behavior("brave_actions", 3, "evolution:courage-1")
+    var evolve: Dictionary = sheet.evolve_trait("brave", defs, "unit_test")
+    check(bool(evolve.get("ok", false)) and sheet.traits.has("fearless") and not sheet.traits.has("brave"), "eligible traits evolve without stacking their predecessor")
+    var permanent: Dictionary = sheet.acquire_trait("magical_affinity", "unit_test", defs)
+    var blocked: Dictionary = sheet.remove_trait("magical_affinity", "unit_test", defs)
+    check(bool(permanent.get("ok", false)) and not bool(blocked.get("ok", false)), "permanent traits require an explicit story-resolution override to remove")
+    sheet.record_behavior("ally_protection", 1, "event:protect-1")
+    var evidence_before: int = int(sheet.behavior.get("ally_protection", 0))
+    sheet.record_behavior("ally_protection", 1, "event:protect-1")
+    check(int(sheet.behavior.get("ally_protection", 0)) == evidence_before, "the same evidence identifier cannot be farmed twice")
+    var event_result: Dictionary = sheet.apply_personality_event("protected_companion", gd.trait_events, defs, "unit_test", "event:protect-companion-unique")
+    check(bool(event_result.get("ok", false)) and sheet.traits.has("protective"), "qualifying event evidence awards a contextual protective trait")
+    check(sheet.memories.size() == 1 and sheet.stress == 0, "personality event records a memory and applies stress recovery")
+    var restored := CharacterSheet.from_dict(sheet.to_dict())
+    check(restored.traits == sheet.traits and restored.trait_history.size() == sheet.trait_history.size(), "trait IDs and history survive character serialization")
+    check(restored.memories.size() == sheet.memories.size() and restored.behavior == sheet.behavior and restored.stress == sheet.stress, "stress, memories and behavior evidence survive character serialization")
+    check(sheet.adjust_stress(150) == 100 and sheet.adjust_stress(-200) == 0, "stress remains bounded between calm and crisis")
+    check(sheet.begin_ambition("prove_courage", "Prove My Courage", "Face the danger threatening the frontier.", 3), "character can receive a structured ambition")
+    var progress := sheet.advance_ambition(2)
+    check(bool(progress.ok) and not bool(progress.completed) and int(progress.progress) == 2, "ambition progress advances without premature completion")
+    var completion := sheet.advance_ambition(2)
+    check(bool(completion.completed) and str(sheet.ambition.get("status", "")) == "completed", "ambition completes exactly at its target")
+    var legacy := CharacterSheet.from_dict({"character_id":"legacy","name":"Legacy","class_id":"swordsman","level":1,"base_stats":{"hp":10,"str":4},"skills":[],"equipment":{}})
+    check(legacy.traits.is_empty() and legacy.trait_history.is_empty(), "legacy character saves load safely without trait fields")
