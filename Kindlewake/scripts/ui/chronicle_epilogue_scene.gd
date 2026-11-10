@@ -90,6 +90,7 @@ func _render() -> void:
 	title_label.text = "THE FIRST LEAF IN THE CHRONICLE"
 	body_label.text = "The founder's life is complete. The Empire was dissolved, the Concord remains answerable to its realms, and the old imperial seal is kept as a witness rather than a claim. The Chronicle of Houses is now open—not as a restoration of the Empire, but as the story of families learning to serve within the Free Realms."
 	status_label.text = "Founder: %s • Age at death: %d • Ending: %s" % [str(state.protagonist_id), int(state.current_age), str(state.ending_id)]
+	_add("Begin Chronicle of Houses", _begin_chronicle)
 	_add("Return to title", _return_title)
 
 func _reflection(key: String, choice: String) -> void:
@@ -153,3 +154,10 @@ func _show_blocked() -> void:
 	button.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	button.pressed.connect(func(): get_tree().change_scene_to_file("res://TitleScreen.tscn"))
 	add_child(button)
+
+func _begin_chronicle() -> void:
+	if not GameState.chronicle_unlocked():
+		status_label.text = "The Chronicle remains sealed until the founder's natural death is recorded."
+		return
+	_save()
+	get_tree().change_scene_to_file("res://ChronicleHouse.tscn")
