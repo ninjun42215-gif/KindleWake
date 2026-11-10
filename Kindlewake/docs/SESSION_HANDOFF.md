@@ -164,3 +164,17 @@ Working branch: `feature/empire-management-system`.
 - Added regression coverage for mobilization, garrison transfer, invalid troop types, adjacency, one-move limit, supply refresh and save normalization. Tests are not executed yet.
 - Next: add destructible fort gates/walls and dedicated ballista/trebuchet units; then trade routes, faction AI, rebellion warnings and negotiated peace. Keep the dynasty/family mode post-campaign only.
 - Branch remains one commit behind `main`; reconcile before merge. No current exact-head validation is claimed.
+
+
+## 2026-11-10 — Trade, diplomacy, unrest and advanced siege expansion
+
+- Added persistent direct trade routes between adjacent controlled provinces. A charter costs 100 gold and returns 20 gold per season; duplicate/reverse routes are rejected.
+- Added a pure seasonal forecast that simulates the current rules on a deep copy, exposing projected treasury, food and manpower without mutating the campaign.
+- Added authored personality trait tags for 23 companions. Council office effects now combine role bonuses with compatible traits; the Council UI displays the assigned companion's traits.
+- Added deterministic rebellion pressure from low public order, stability and legitimacy, persistent province warnings, and a player-funded relief action that reduces risk and restores order.
+- Added deterministic NPC diplomacy: hostile NPC pairs can declare war at -80 relation, and friendly neutral pairs can form trade pacts at +70. The player faction is excluded from autonomous declarations.
+- Added a Diplomacy tab for non-aggression pacts, trade pacts, alliances (minimum +50 relation), war declarations and negotiated peace offers. Peace acceptance weighs relation, war exhaustion and offered treasury; successful terms reduce war exhaustion.
+- Advanced siege battles now deploy destructible outer/inner wall segments, gate tower, Fort Gate objective, battering ram, ballista, trebuchet and a siege engineer whose passive support reduces fortification HP and improves ram durability.
+- Added GameState.complete_story_milestone("crown_authority_granted") as the explicit narrative unlock contract. The sea-charter milestone is deliberately not used as a substitute for the story event that grants governing authority; the approved scene still needs to invoke this contract.
+- Added regression coverage for trade, forecast immutability, council traits, rebellion relief, faction AI diplomacy, siege artillery and engineer effects. Tests remain unexecuted because Godot is unavailable in the current environment.
+- Do not merge until branch reconciliation and exact-head Godot/Android validation are complete. The hereditary family system remains post-campaign only.
