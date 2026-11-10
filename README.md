@@ -1,6 +1,7 @@
-> **ACTIVE MAINTENANCE CANDIDATE — 2026-11-10:** Branch `fix/headless-resource-cleanup-current-main`, based on current main `0785d76c86f6a4b1eafcec54ccb54ca3b5299acc`. This maintenance slice changes no gameplay rules, save data/schema, game version or Android permissions. It synchronously frees the temporary PartyScreen used by the headless UI test, drains deferred child-node deletions, releases the balance report's GameData Node before shutdown, and disables Blender import because the tracked project contains no `.blend` source files. Exact-head Godot import, scene smoke, strict tests, balance report and Android export are pending; do not call the cleanup verified until this rebased PR's workflows finish.
+> **ACTIVE COMBAT-CORRECTNESS CANDIDATE — 2026-11-10:** Branch `fix/ai-block-allies-in-approach-paths`, based on main `0e3b6ac4f526f599d0e585d544e6d7968fbf5252`. It adds an opt-in allied-cell blocker to `BattleMap.compute_reach`, uses that mode for AI candidate generation and approach/fallback routes, and leaves ordinary player movement's ally pass-through rule unchanged. A deterministic corridor regression proves the AI route avoids the ally while player movement retains pass-through. Exact-head Godot import, scene smoke, strict tests, balance report and Android export are pending; do not call the fix verified until the PR workflows finish.
 
 ---
+
 
 
 
