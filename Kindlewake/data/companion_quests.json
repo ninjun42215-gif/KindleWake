@@ -251,7 +251,12 @@
         "protected_ownership": "Edda accepts ownership only after signing enforceable wage, safety and apprenticeship protections. The workers retain a route to challenge violations.",
         "independent_guild": "Edda refuses the employer's terms and leaves to form an independent guild. The foundry remains closed for now, but its workers keep their claims and tools."
       },
-      "journal_summary": "Edda uncovers a labour debt hidden in the foundry accounts. Audit the tools, hear the workers and decide who should own the furnace."
+      "journal_summary": "Edda uncovers a labour debt hidden in the foundry accounts. Audit the tools, hear the workers and decide who should own the furnace.",
+      "outcome_flags": {
+        "shared_workshop": "edda_outcome_shared_workshop",
+        "protected_ownership": "edda_outcome_protected_ownership",
+        "independent_guild": "edda_outcome_independent_guild"
+      }
     },
     "q_companion_joss_debt_of_silence": {
       "companion_id": "joss_harrow",
@@ -321,7 +326,12 @@
         "public_tribunal": "Bram submits the forged transfers and witness statements to a public tribunal. Legitimate debts remain subject to review, while the unlawful seizures face judgment.",
         "negotiate_release": "Bram negotiates the debtors' release in exchange for preserving the full record for later claims. The company withdraws its immediate seizure order but is not granted immunity."
       },
-      "journal_summary": "A private company has bought Bram Cullen's prison debt and is using false transfers to seize other inmates. Expose the fraud and secure their release."
+      "journal_summary": "A private company has bought Bram Cullen's prison debt and is using false transfers to seize other inmates. Expose the fraud and secure their release.",
+      "outcome_flags": {
+        "destroy_false_records": "bram_cullen_outcome_records_destroyed",
+        "public_tribunal": "bram_cullen_outcome_public_tribunal",
+        "negotiate_release": "bram_cullen_outcome_negotiated_release"
+      }
     },
     "q_companion_verra_song_without_seal": {
       "companion_id": "verra_nightsong",
