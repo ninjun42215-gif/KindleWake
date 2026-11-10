@@ -733,6 +733,26 @@ def main(argv: Optional[List[str]] = None) -> int:
                     if args.strict:
                         raise BuildError("Campaign continue runtime lifecycle test failed.")
 
+            campaign_test_scripts = [
+                "test_act_five.gd",
+                "test_campaign_continuity.gd",
+                "test_chronicle_dynasty.gd",
+                "test_chronicle_family_development.gd",
+            ]
+            for test_name in campaign_test_scripts:
+                say("\n[5b] Running " + test_name)
+                code, out = run(
+                    [str(godot), "--headless", "--path", str(PROJECT), "--script", "res://tests/" + test_name],
+                    env=env, log=logs / (test_name.removesuffix(".gd") + ".txt"), timeout=600
+                )
+                counts = summarize_test_output(out)
+                summary.append("%s: exit %d, FAIL %d, SCRIPT ERROR %d, Parse Error %d" %
+                               (test_name, code, counts["FAIL"], counts["SCRIPT ERROR"], counts["Parse Error"]))
+                if code != 0 or any(counts.values()):
+                    say("  CAMPAIGN TEST FAILED: " + summary[-1])
+                    if args.strict:
+                        raise BuildError(test_name + " failed and --strict was given.")
+
             if args.with_balance:
                 say("\n    Running tests/balance_report.gd")
                 code, out = run([str(godot), "--headless", "--path", str(PROJECT), "--script", "res://tests/balance_report.gd"],
