@@ -39,7 +39,8 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
 	state["next_army_id"] = maxi(1, int(raw.get("next_army_id", 1)))
 	state["next_battle_id"] = maxi(1, int(raw.get("next_battle_id", 1)))
 	if typeof(raw.get("resolved_battle_ids", [])) == TYPE_ARRAY:
-		state["resolved_battle_ids"] = (raw["resolved_battle_ids"] as Array).slice(-100)
+		var resolved_ids: Array = raw["resolved_battle_ids"]
+		state["resolved_battle_ids"] = resolved_ids.slice(maxi(0, resolved_ids.size() - 100))
 	state["war_exhaustion"] = clampi(int(raw.get("war_exhaustion", 0)), 0, 100)
 	for stat in ["treasury", "food", "manpower", "turn"]:
 		state[stat] = maxi(0, int(state[stat]))
