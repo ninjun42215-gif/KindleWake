@@ -233,3 +233,16 @@ After the two draft PRs are reviewed and integrated in an explicitly approved or
 - Save compatibility: keep explicit v1→v2→v3 and future migration fixtures, backup recovery, corrupt-save handling and newer-version refusal in the strict suite.
 
 Do not claim the architecture, accessibility, AAB, or physical-device items above are complete until implemented and validated. Current CI success covers the current APK export, strict tests, balance report, workflow validation and source handoff only.
+
+
+## CURRENT TASK — CAMPAIGN FACTIONS AND DIPLOMACY (2026-11-10)
+
+Working branch: `feature/campaign-factions-diplomacy`, based on main `c1069d116e234a17437bd93af9b0282ca255f31b`.
+
+Implemented in this branch:
+- `data/factions.json`: political powers grounded in the seven-continent atlas and initial affiliations for every existing atlas region.
+- `scripts/core/faction_system.gd`: relation bounds, diplomacy states, alliance threshold, territory transfers, bounded history and legacy-state normalization.
+- `GameData` and `GameState` integration; political state is optional campaign-save data and does not change save schema 4.
+- Strict regression tests for faction coverage, diplomacy, territorial changes and normalization.
+
+Do not claim player-facing kingdom management, AI faction simulation, full war campaigns or new playable continents are implemented. Do not add guessed territory names or ungrounded ownership. The next step is to connect authored narrative/quest outcomes to this API, then design a mobile-first faction dossier. Keep all code offline and data-driven. Require every existing exact-head CI gate and preserve physical-device QA as a separate release gate.

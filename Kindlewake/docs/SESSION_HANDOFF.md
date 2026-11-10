@@ -117,3 +117,17 @@
 
 ---
 
+
+
+---
+
+# CURRENT IMPLEMENTATION HANDOFF — CAMPAIGN FACTIONS (2026-11-10)
+
+- Working branch: `feature/campaign-factions-diplomacy`, created from the verified `main` ref `c1069d116e234a17437bd93af9b0282ca255f31b`. Do not edit `main` directly.
+- Added `data/factions.json` with the major political powers already established by `data/continents.json`, plus a starting affiliation for every atlas region. No new continent or region has been invented.
+- Added `scripts/core/faction_system.gd` for bounded relation values, treaty/war states, alliance trust gating, validated region transfers, history and safe normalization.
+- `GameData` loads faction definitions. `GameState` initializes faction state for new campaigns, exposes APIs for authored story outcomes and includes the optional state in campaign payloads. Existing schema-4 saves remain compatible through defaults.
+- Added strict regression assertions in `tests/run_tests.gd` for atlas-region coverage, diplomacy thresholds, territory validation, history and legacy defaults.
+- Current scope is backend foundation only. No diplomacy screen, automatic war simulation, AI faction turns or strategic battle layer is claimed complete.
+- Validation on code head `f7b31035e4651a4a6854cc5ad644beff88c2148b`: Build Android APK run #683 passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 447 strict checks / 0 failures, balance report and signed APK export for arm64-v8a + armeabi-v7a with no requested Android permissions. APK artifact `13733346417` (~41.0 MB); test logs artifact `13732869336`. Version Sync #188, Workflow YAML Lint #666 and Project Health Audit #458 also passed on that exact code head. The first CI attempt caught a missing `GameData.factions` declaration and a strict-test type inference error; both were fixed before the successful rerun. Documentation commits after that code head require a fresh exact-head gate. Physical Android QA remains outstanding.
+- Next implementation slice after this foundation: connect authored quests/choices to relation changes, then add a compact faction dossier UI before enabling player-initiated treaty/war actions. Preserve offline-only architecture, existing saves and schema 4.

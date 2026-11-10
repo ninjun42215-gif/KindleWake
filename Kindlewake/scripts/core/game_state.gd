@@ -4,6 +4,7 @@ const PartyStateScript = preload("res://scripts/core/party_state.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
+const FactionSystem = preload("res://scripts/core/faction_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
 
@@ -20,6 +21,7 @@ var world_flags: Dictionary = {}         # e.g. "camp_cleared", "found_watch"
 var pending_location: String = ""        # town map the location scene opens next (set by the overworld)
 var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored with battle saves
 var campaign_slot: String = ""
+var faction_state: Dictionary = {}
 
 
 
@@ -51,6 +53,22 @@ func new_game(profile: Dictionary = {}) -> void:
     world_positions = {}
     world_flags = {}
     pending_location = ""
+    faction_state = FactionSystem.new_campaign_state(GameData.factions)
+
+
+## Change diplomatic standing after an authored campaign event.
+func adjust_faction_relation(faction_a: String, faction_b: String, amount: int, reason: String = "") -> bool:
+    return FactionSystem.adjust_relation(faction_state, faction_a, faction_b, amount, reason)
+
+
+## Set a treaty or war state after story conditions have been resolved.
+func set_faction_diplomacy(faction_a: String, faction_b: String, next_state: String) -> bool:
+    return FactionSystem.set_diplomatic_state(faction_state, faction_a, faction_b, next_state)
+
+
+## Transfer a known atlas region after a battle, treaty or authored story outcome.
+func transfer_faction_region(region_id: String, new_owner: String, cause: String) -> bool:
+    return FactionSystem.transfer_region(faction_state, region_id, new_owner, cause)
 
 
 ## Battle database with the party's current sheets (level, stats, equipment) substituted in.
@@ -102,6 +120,7 @@ func campaign_payload() -> Dictionary:
         "active_region_id": active_region_id,
         "world_positions": world_positions.duplicate(true),
         "world_flags": world_flags.duplicate(true),
+        "faction_state": faction_state.duplicate(true),
         "from_world": true
     }
 
@@ -127,6 +146,7 @@ func load_campaign(slot_id: String) -> bool:
     party = restored_party
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
+    faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
     world_pos = region_state["world_pos"]
     active_region_id = str(region_state["active_region_id"])
     world_positions = region_state["world_positions"]
