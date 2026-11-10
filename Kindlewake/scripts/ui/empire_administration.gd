@@ -148,7 +148,7 @@ func _rebuild() -> void:
     tabs = HBoxContainer.new()
     tabs.add_theme_constant_override("separation", 5)
     tab_scroll.add_child(tabs)
-    for tab in ["realm", "council", "provinces", "military", "economy", "chronicle"]:
+    for tab in ["realm", "council", "provinces", "military", "diplomacy", "economy", "chronicle"]:
         tabs.add_child(_button(tab.capitalize(), _select_tab.bind(tab), tab == active_tab))
     scroll = ScrollContainer.new()
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -167,6 +167,7 @@ func _rebuild() -> void:
         "council": _build_council()
         "provinces": _build_provinces()
         "military": _build_military()
+        "diplomacy": _build_diplomacy()
         "economy": _build_economy()
         "chronicle": _build_chronicle()
 
@@ -436,6 +437,41 @@ func _disband_troops(province: String, troop_type: String, amount: int) -> void:
     GameState.save_campaign("auto_a")
 
 
+func _build_diplomacy() -> void:
+    _section("THE GREAT HOUSES AND FOREIGN POWERS")
+    body.add_child(_label("Diplomatic actions change bilateral relations. Alliances require at least +50 relations. War declarations affect strategic diplomacy but do not automatically transfer territory.", 14, C_DIM))
+    var faction_ids: Array = []
+    for faction in GameData.factions.get("factions", []):
+        var faction_id := str(faction.get("id", ""))
+        if faction_id != "" and faction_id not in ["house_dunmarrow", "crownlands"]:
+            faction_ids.append(faction_id)
+    faction_ids.sort()
+    var relations: Dictionary = GameState.faction_state.get("relations", {})
+    var diplomacy: Dictionary = GameState.faction_state.get("diplomacy", {})
+    for faction_id in faction_ids:
+        var key := "house_dunmarrow|" + faction_id if "house_dunmarrow" < faction_id else faction_id + "|house_dunmarrow"
+        var relation_value := int(relations.get(key, 0))
+        var status := str(diplomacy.get(key, "neutral"))
+        _section(_faction_name(faction_id))
+        _metric("Relations", "%+d" % relation_value, "Current treaty: " + status.replace("_", " ").capitalize())
+        var actions := HBoxContainer.new()
+        actions.add_child(_button("Non-aggression", _set_diplomacy.bind(faction_id, "non_aggression"), status == "non_aggression"))
+        actions.add_child(_button("Trade pact", _set_diplomacy.bind(faction_id, "trade_pact"), status == "trade_pact"))
+        body.add_child(actions)
+        var actions_two := HBoxContainer.new()
+        var alliance := _button("Alliance", _set_diplomacy.bind(faction_id, "alliance"), status == "alliance")
+        alliance.disabled = relation_value < 50
+        actions_two.add_child(alliance)
+        actions_two.add_child(_button("Declare war" if status != "war" else "Offer peace", _set_diplomacy.bind(faction_id, "war" if status != "war" else "neutral"), status == "war"))
+        body.add_child(actions_two)
+
+
+func _set_diplomacy(faction_id: String, next_state: String) -> void:
+    var ok: bool = GameState.set_faction_diplomacy("house_dunmarrow", faction_id, next_state)
+    _set_message("Diplomatic status updated." if ok else "The diplomatic action was refused.", ok)
+    _rebuild()
+
+
 func _build_economy() -> void:
     var s: Dictionary = GameState.empire_state
     var unrest: Dictionary = {"risk": int(s.get("rebellion_risk", 0)), "alerts": s.get("rebellion_alerts", [])}
@@ -486,6 +522,12 @@ func _build_economy() -> void:
 
 
 func _build_chronicle() -> void:
+    _section("DIPLOMATIC CHRONICLE")
+    var diplomatic_history: Array = GameState.faction_state.get("history", [])
+    if diplomatic_history.is_empty():
+        body.add_child(_label("No diplomatic events have been recorded.", 14, C_DIM))
+    for i in range(diplomatic_history.size() - 1, maxi(-1, diplomatic_history.size() - 11), -1):
+        body.add_child(_label(JSON.stringify(diplomatic_history[i]), 14))
     _section("THE CROWN'S RECENT DECISIONS")
     var history: Array = GameState.empire_state.get("history", [])
     if history.is_empty():
