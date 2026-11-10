@@ -968,6 +968,10 @@ func _test_empire_management() -> void:
     check(int(council_effect.get("income", 0)) == 13, "steward office and administrator trait combine their seasonal income bonuses")
     var authored_council_effect: Dictionary = EmpireSystem.council_effects(state, gd.characters)
     check(int(authored_council_effect.get("income", 0)) >= 18, "authored companion traits provide additional council office bonuses")
+    var treasury_before_forecast := int(state["treasury"])
+    var forecast: Dictionary = EmpireSystem.preview_season(state, known_regions, routes, gd.characters)
+    check(bool(forecast.get("ok", false)) and int(forecast.get("trade_income", 0)) == 20, "season forecast includes trade and council contributions")
+    check(int(state["treasury"]) == treasury_before_forecast and int(state["turn"]) == 0, "season forecast never mutates live campaign resources or turn")
     var unrest_state: Dictionary = EmpireSystem.new_state()
     EmpireSystem.unlock(unrest_state)
     unrest_state["public_order"] = 0
@@ -975,6 +979,8 @@ func _test_empire_management() -> void:
     unrest_state["legitimacy"] = 0
     var unrest: Dictionary = EmpireSystem.rebellion_assessment(unrest_state, known_regions)
     check(int(unrest.get("risk", 0)) == 100 and not unrest.get("alerts", []).is_empty(), "severe unrest produces a persistent province warning")
+    unrest_state["treasury"] = 200
+    check(EmpireSystem.suppress_rebellion(unrest_state) and int(unrest_state["rebellion_risk"]) == 75, "funded public relief reduces rebellion risk and clears immediate alerts")
     var ai_state: Dictionary = FactionSystem.new_campaign_state(gd.factions)
     var npc_ids: Array = []
     for faction in gd.factions.get("factions", []):
@@ -986,6 +992,9 @@ func _test_empire_management() -> void:
         FactionSystem.adjust_relation(ai_state, str(npc_ids[0]), str(npc_ids[1]), -85, "test hostility")
         var ai_report: Dictionary = EmpireSystem.advance_faction_ai(ai_state, npc_ids, "house_dunmarrow")
         check(not ai_report.get("declarations", []).is_empty(), "hostile NPC factions can declare deterministic AI wars")
+        state["war_exhaustion"] = 50
+        FactionSystem.adjust_relation(ai_state, str(npc_ids[0]), str(npc_ids[1]), 80, "peace talks")
+        check(EmpireSystem.negotiate_peace(ai_state, state, str(npc_ids[0]), str(npc_ids[1]), 100), "war exhaustion, improved relations and a treasury offer can secure negotiated peace")
 
     state["buildings"] = {}
     state["food"] = 0
