@@ -328,3 +328,91 @@ The post-campaign era should explore the tension between **inheritance and stewa
 - A family can preserve its name through adoption, a cadet branch or a chosen successor when direct descendants are absent.
 
 Each generation should inherit both assets and unresolved consequences. The family chronicle is a record of obligations as much as prestige.
+
+
+## 15. Refined campaign premise and dramatic canon
+
+### The Sundered Vow — definitive narrative framing
+
+Eldrimar did not fall because one cruel man seized power. It began to fail because the people entrusted with keeping a promise learned how to edit it without admitting that they had broken it.
+
+The Covenant of Seven Flames was meant to bind the Crown and the Seven Houses to duties that no single ruler could revoke at convenience. Its promises were practical as well as ceremonial: grain in famine, sanctuary for the displaced, limits on conscription, appeal against local power and mutual defence. Over generations, the Houses kept the language of unity while narrowing the obligations that made unity meaningful. The Crown inherited the symbols; the people inherited the costs.
+
+Edmer Dunmarrow discovered that the surviving public versions no longer matched the original compact. He tried to expose the difference and was executed for treason. His death did not make him a saint. He withheld one clause to protect someone, and that act helped preserve a life while weakening the truth he meant to defend.
+
+The player begins after the verdict, after the fire, and after the powerful have already agreed on what the story is supposed to mean. The heir has no army, no reliable court and no complete record—only a ruined keep, a few witnesses and the ability to decide what kind of company will stand beside them.
+
+The campaign grows outward from the needs of ordinary people. A convoy needs grain. A road needs protection. A witness needs safety. A town needs a hearing that will be honoured after the soldiers leave. These are not distractions from the central plot: they are the living tests of whether the Covenant meant anything.
+
+As the player gathers evidence, the conflict becomes harder, not simpler. Each House has preserved a version of the founding promise that justifies its present power. Some of those versions prevented immediate disaster; others made exploitation lawful. Maelor Brennhallow fears that exposing the whole truth during a succession crisis will bring famine, invasion and civil war. His fear is not invented. His decision to suppress testimony and rule without accountability is still a choice for which he is responsible.
+
+The final question is therefore not whether the heir can take the throne. It is whether the realm can accept obligations that bind the powerful as firmly as they bind everyone else—and whether the protagonist can surrender or limit power when the moment comes.
+
+### The Covenant's moral structure
+
+The Covenant must never be treated as a magical answer key. Its authority comes from the obligations people once agreed to uphold, the evidence that survives, and the willingness of living communities to recognise those obligations again.
+
+The Hidden Codicil should clarify the original compact without dictating a single political ending. It can establish what was promised; it cannot decide how a hungry village, a threatened frontier or a divided House should fulfil that promise today.
+
+The seven flames are a shared witness and a symbol of mutual obligation. Their supernatural function remains restrained, rare and costly. They may preserve, reveal, bind or witness an oath according to rules established elsewhere in the lore and mechanics. They must not compel affection, prove every disputed memory, resurrect the dead, or solve material crises by miracle.
+
+### The antagonist's credible case
+
+Maelor's strongest argument is that a true account released at the wrong moment can be used by people who do not care about justice. Rival Houses may seize the Codicil as a weapon. Foreign powers may exploit a divided Eldrimar. Grain convoys may stop while nobles argue over legitimacy. Soldiers may choose competing oaths.
+
+The story must allow the player to see evidence for these risks. Maelor's failure is not that he worries about stability; it is that he treats the public as incapable of bearing truth and himself as entitled to decide what they may know. His settlement should preserve something valuable while leaving something essential unresolved.
+
+### The protagonist's earned legitimacy
+
+The Dunmarrow name opens doors and creates suspicion; it does not settle the question of whether the heir should rule. Legitimacy is built through conduct:
+- keeping a promise when breaking it would be profitable;
+- accepting scrutiny and allowing testimony that is inconvenient;
+- protecting people who cannot repay the favour;
+- admitting when evidence is uncertain;
+- distinguishing lawful authority from the ability to command armed people;
+- accepting limits, shared responsibility or the loss of office when the public settlement requires it.
+
+A player may pursue authority, but the story must make its duties and costs visible. A player may refuse authority, but refusal must not become a way to evade responsibility for the consequences of earlier victories.
+
+## 16. Narrative continuity and character knowledge
+
+### Knowledge boundaries
+
+No character should know the complete truth simply because the plot needs an explanation. Maintain a knowledge ledger for major revelations:
+- what the character witnessed directly;
+- what they heard from a named source;
+- what they believe but cannot prove;
+- what they are concealing;
+- what they misunderstand;
+- what new evidence would change their position.
+
+A character may lie, misremember, protect someone or be mistaken. The narrative must distinguish these cases through evidence and later context rather than treating every contradiction as a secret conspiracy.
+
+### Character motivations in every major scene
+
+- **The heir / player character:** seeks safety, answers and a future for the company; gradually faces the burden of deciding what the realm should owe its people.
+- **Bram Vosk:** wants people under his protection to survive; fears that hesitation will cost lives, but must learn that obedience can also endanger them.
+- **Sela Wrenfield:** wants testimony to be accurate and witnesses to remain alive; distrusts convenient certainty and refuses to let powerful people spend other people's safety.
+- **Brother Wystan:** wants mercy to have practical form; fears that institutions can turn faith into a shield for authority, but refuses to abandon belief merely because leaders fail.
+- **Edmer Dunmarrow:** wanted the broken obligations exposed, but made a protective compromise that complicates his legacy.
+- **Maelor Brennhallow:** wants to prevent state collapse; believes controlled secrecy is safer than public conflict and is responsible for the coercion he uses to preserve that belief.
+- **Captain Ilyra Venn:** must balance public safety, harbour livelihoods and the dangerous knowledge carried by the beacon records.
+- **Maren Vey:** values the freedom and skill required to move through dangerous waters; joining the company must connect to a personal stake in the coast, not simply a reward for combat.
+
+These are dramatic functions, not permission to overwrite live character data or invent unapproved biographies. Where a character's established profile differs, record the discrepancy and resolve it deliberately.
+
+### Recurring motifs
+
+Use motifs as evolving meaning, not repeated decoration:
+- **Fire:** destruction, warning, witness and the danger of forcing revelation before people are safe.
+- **The road:** who may travel, who is stopped, and who pays to keep passage open.
+- **Grain and bread:** the material cost of promises and the difference between a law and a meal.
+- **Records and names:** who is remembered, who is omitted and who controls the official account.
+- **The keep:** a home built by shared labour, not proof of inherited entitlement.
+- **The bell / beacon:** warnings that only matter when someone is willing to hear and act.
+
+### Tone calibration
+
+The setting is dark medieval fantasy, but darkness must have contrast. Use ordinary warmth, dry humour, shared meals, craft, local festivals, friendship and small acts of competence. A world where every person is cruel and every institution is corrupt has no meaningful moral choices. Let kindness be ordinary enough to matter and difficult enough to reveal character.
+
+Do not make every line poetic. Reserve elevated language for ritual, grief, public vows and moments when a character consciously chooses their words. In daily scenes, prefer concrete speech, interrupted thoughts and specific concerns.

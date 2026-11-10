@@ -7,9 +7,10 @@ This index gathers the separate bibles needed to understand and develop the game
 
 1. **[Base44 Start Here](BASE44_START_HERE.md)** — repository rules, architecture constraints, safe workflow and reading order.
 2. **[In-Depth Lore Bible](LORE_BIBLE.md)** — canon, story, history, characters, continents, factions, territories and regional bestiary direction.
-3. **[Game Mechanics Bible](MECHANICS_BIBLE.md)** — campaign loop, combat formulas, CTB, terrain, progression, classes, skills, runes, traits, recruitment, platoons, kingdom/empire systems and mini-games.
-4. **[Game Vision and Requirements](GAME_VISION_AND_REQUIREMENTS.md)** — what the owner wants the finished game to become and acceptance criteria.
-5. **[Current Game State and Gap Analysis](CURRENT_GAME_STATE_AND_GAP_ANALYSIS.md)** — what is documented as current, what is unverified, limitations and next implementation priorities.
+3. **[Scenario and Narrative Production Bible](SCENARIO_BIBLE.md)** — polished campaign scenario spine, regional scenario cards, companion arcs, choice/consequence ledger and scenario acceptance criteria.
+4. **[Game Mechanics Bible](MECHANICS_BIBLE.md)** — campaign loop, combat formulas, CTB, terrain, progression, classes, skills, runes, traits, recruitment, platoons, kingdom/empire systems and mini-games.
+5. **[Game Vision and Requirements](GAME_VISION_AND_REQUIREMENTS.md)** — what the owner wants the finished game to become and acceptance criteria.
+6. **[Current Game State and Gap Analysis](CURRENT_GAME_STATE_AND_GAP_ANALYSIS.md)** — what is documented as current, what is unverified, limitations and next implementation priorities.
 
 ## Existing detailed bibles — preserve and use
 
@@ -17,7 +18,7 @@ This index gathers the separate bibles needed to understand and develop the game
 |---|---|---|
 | [Game Design Document](GDD.md) | Detailed rules and historical design: core loop, combat, damage, turn order, classes, progression, recruitment, platoons, army battles, Kaer Sethorn, legacy mode, story, world, characters, sprites, mobile UI and offline architecture | Treat as the deep mechanical reference; inspect the relevant sections before changing a system. It contains historical notes, so verify current implementation. |
 | [Premium Production Bible](PREMIUM_PRODUCTION_BIBLE.md) | Creative direction, emotional experience, narrative quality, premium visual/audio standards, mobile UX, chapter production and release guardrails | Treat as the quality bar for all content and presentation. |
-| [Lore Bible](LORE_BIBLE.md) | World and narrative canon | Do not introduce contradictions or unapproved retcons. |
+| [Lore Bible](LORE_BIBLE.md) | World and narrative canon | Do not introduce contradictions or unapproved retcons. |\n| [Scenario and Narrative Production Bible](SCENARIO_BIBLE.md) | Chapter scenarios, regional story seeds, character arcs, choices, dialogue and narrative QA | Use as the production blueprint; verify all names, gates and consequences against live data before scripting. |
 | [Mechanics Bible](MECHANICS_BIBLE.md) | Consolidated mechanics contracts and system interactions | Use for cross-system consistency; GDD remains the detailed formula/history reference. |
 | [Vision and Requirements](GAME_VISION_AND_REQUIREMENTS.md) | Owner-requested features and intended final scope | Treat planned features as targets, not shipped claims. |
 | [Current State and Gap Analysis](CURRENT_GAME_STATE_AND_GAP_ANALYSIS.md) | Implementation status and known gaps | Update after every meaningful code PR with exact evidence. |
