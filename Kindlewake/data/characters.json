@@ -1147,6 +1147,16 @@
         "relationship_on_join": {
           "trust": 6,
           "respect": 8
+        },
+        "relationship_on_ledger_choice": {
+          "public": {
+            "trust": 5,
+            "respect": 3
+          },
+          "private": {
+            "trust": -4,
+            "respect": -2
+          }
         }
       }
     },
