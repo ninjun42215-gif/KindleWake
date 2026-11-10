@@ -616,7 +616,7 @@ func _draw_place_fallback(p: Dictionary) -> void:
         draw_colored_polygon(PackedVector2Array([c + Vector2(-25, 22), c + Vector2(25, 22), c + Vector2(16, 38), c + Vector2(-16, 38)]), Color("#463d35"))
         draw_line(c + Vector2(0, 20), c + Vector2(0, -32), Color("#d7c49a"), 3.0)
         draw_colored_polygon(PackedVector2Array([c + Vector2(2, -30), c + Vector2(24, -18), c + Vector2(2, -6)]), Color("#7aaeb0"))
-    elif kind == "keep":
+    elif kind == "keep" or kind == "stronghold":
         draw_rect(Rect2(c + Vector2(-20, -18), Vector2(40, 32)), Color(0.55, 0.55, 0.58))
         draw_rect(Rect2(c + Vector2(-24, -28), Vector2(12, 16)), Color(0.48, 0.48, 0.52))
         draw_rect(Rect2(c + Vector2(12, -28), Vector2(12, 16)), Color(0.48, 0.48, 0.52))
