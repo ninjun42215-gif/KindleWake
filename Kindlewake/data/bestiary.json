@@ -169,6 +169,33 @@
       "threat_tier": 5,
       "battle_character_id": "reef_matriarch",
       "lore": "An ancient creature beneath the outer reef; its shell bears the same seven-cut mark as the drowned vault."
+    },
+    "veyrwood_canopy_lurker": {
+      "name": "Canopy Lurker",
+      "family": "beast",
+      "territory": "Veyrwood",
+      "role": "arboreal ambusher",
+      "threat_tier": 3,
+      "battle_character_id": "veyrwood_canopy_lurker",
+      "lore": "A long-armed canopy hunter that drops silently from the old bough roads."
+    },
+    "asterreach_stormwing": {
+      "name": "Stormwing Raptor",
+      "family": "beast",
+      "territory": "Asterreach",
+      "role": "swift ranged hunter",
+      "threat_tier": 3,
+      "battle_character_id": "asterreach_stormwing",
+      "lore": "A sea-cliff raptor whose cries vanish beneath the thunder rolling off the Stormforged Coast."
+    },
+    "ilyr_lantern_wraith": {
+      "name": "Lantern Wraith",
+      "family": "spectral",
+      "territory": "Ilyr",
+      "role": "spectral caster",
+      "threat_tier": 4,
+      "battle_character_id": "ilyr_lantern_wraith",
+      "lore": "A pale keeper-light that appears on abandoned roads where the covenant lamps were extinguished."
     }
   },
   "regions": {
