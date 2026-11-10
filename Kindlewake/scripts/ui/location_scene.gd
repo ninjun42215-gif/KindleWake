@@ -371,7 +371,7 @@ func _resolve_mechanism(spot: Dictionary, choice: String) -> void:
     if bool(GameState.world_flags.get(solved_flag, false)):
         return
     var progress_key := "mechanism_progress_" + mechanism_id
-    var progress := clampi(int(GameState.world_flags.get(progress_key, 0)), 0, sequence.size())
+    var progress := clampi(int(GameState.world_flags.get(progress_key, 0)), 0, sequence.size() - 1)
     if choice == str(sequence[progress]):
         progress += 1
         GameState.world_flags[progress_key] = progress
