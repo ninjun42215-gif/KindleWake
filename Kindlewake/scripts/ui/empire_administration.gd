@@ -438,6 +438,11 @@ func _disband_troops(province: String, troop_type: String, amount: int) -> void:
 
 func _build_economy() -> void:
     var s: Dictionary = GameState.empire_state
+    var unrest: Dictionary = EmpireSystem.rebellion_assessment(s, GameState.player_controlled_provinces())
+    _section("REALM STABILITY")
+    _metric("Rebellion pressure", "%d / 100" % int(unrest.get("risk", 0)), "Warnings appear before unrest can become an uprising")
+    for alert in unrest.get("alerts", []):
+        body.add_child(_label("Unrest warning: %s · risk %d%%" % [str(alert.get("province", "")).replace("_", " ").capitalize(), int(alert.get("risk", 0))], 15, C_RED))
     _section("TAXATION")
     body.add_child(_label("Current tax policy: " + str(s.get("tax_rate", "normal")).capitalize(), 16))
     for rate in ["low", "normal", "high"]:
@@ -449,6 +454,35 @@ func _build_economy() -> void:
         var on: bool = enabled.has(policy)
         body.add_child(_button(("[ACTIVE]  " if on else "[INACTIVE]  ") + str(POLICIES[policy]), _toggle_policy.bind(policy), on))
     body.add_child(_label("Edicts are strategic trade-offs. Relief costs treasury; conscription and commerce change the seasonal balance.", 14, C_DIM))
+    _section("TRADE NETWORK")
+    var controlled: Array = GameState.player_controlled_provinces()
+    var adjacency: Dictionary = GameState.atlas_region_adjacency()
+    var routes: Dictionary = s.get("trade_routes", {})
+    var route_ids: Array = routes.keys()
+    route_ids.sort()
+    if route_ids.is_empty():
+        body.add_child(_label("No chartered trade routes. Establish a direct route between two neighbouring controlled provinces for 100 gold; each route earns 20 gold per season.", 14, C_DIM))
+    for route_id in route_ids:
+        var route: Dictionary = routes[route_id]
+        body.add_child(_label("%s ↔ %s · +%d gold / season" % [str(route.get("origin", "")).replace("_", " ").capitalize(), str(route.get("destination", "")).replace("_", " ").capitalize(), int(route.get("income", 20))], 15, C_GOLD))
+        body.add_child(_button("Close trade route", _close_trade_route.bind(str(route_id))))
+    var route_candidates: Dictionary = {}
+    for origin_variant in controlled:
+        var origin := str(origin_variant)
+        for destination_variant in adjacency.get(origin, []):
+            var destination := str(destination_variant)
+            if controlled.has(destination):
+                var route_id := origin + "|" + destination if origin < destination else destination + "|" + origin
+                if not routes.has(route_id):
+                    route_candidates[route_id] = {"origin": origin, "destination": destination}
+    var candidate_ids: Array = route_candidates.keys()
+    candidate_ids.sort()
+    for route_id in candidate_ids:
+        var candidate: Dictionary = route_candidates[route_id]
+        body.add_child(_button("Establish %s ↔ %s · 100 gold" % [str(candidate.origin).replace("_", " ").capitalize(), str(candidate.destination).replace("_", " ").capitalize()], _create_trade_route.bind(str(candidate.origin), str(candidate.destination)), true))
+    var council_effect: Dictionary = EmpireSystem.council_effects(s, GameData.characters)
+    _section("COUNCIL CONTRIBUTION")
+    _metric("Seasonal council effect", "+%d gold · %+d stability · %+d order" % [int(council_effect.get("income", 0)), int(council_effect.get("stability", 0)), int(council_effect.get("public_order", 0))], "Office skills and compatible character traits influence the realm ledger")
 
 
 func _build_chronicle() -> void:
@@ -463,6 +497,18 @@ func _build_chronicle() -> void:
             int(entry.get("turn", 0)), str(entry.get("kind", "event")).replace("_", " ").capitalize(),
             JSON.stringify(entry.get("details", {}))
         ], 14))
+
+
+func _create_trade_route(origin: String, destination: String) -> void:
+    var ok: bool = GameState.establish_empire_trade_route(origin, destination)
+    _set_message("Trade route chartered." if ok else "The trade route could not be established.", ok)
+    _rebuild()
+
+
+func _close_trade_route(route_id: String) -> void:
+    var ok: bool = GameState.close_empire_trade_route(route_id)
+    _set_message("Trade route closed." if ok else "The trade route could not be closed.", ok)
+    _rebuild()
 
 
 func _advance_season() -> void:
