@@ -127,7 +127,7 @@ The seven regional boss records now have matching tactical battle definitions an
 
 The overworld exposes a Regional Guardian challenge in a region after the player secures at least one holding there. The challenge loads the corresponding continent guardian battle. This is a regional gate based on local holding ownership, not an unrestricted global boss selector.
 
-The Holdings screen also launches a siege battlefield from a player-administered holding. The battle result resolves the associated siege record as secured or repelled; a repelled siege can be attempted again. The current siege battlefield is a reusable assault scenario, not yet a unique authored map for every enemy holding. Siege victories do not automatically transfer sovereignty.
+The Holdings screen can launch a target-specific assault against a foreign holding from an available player-administered staging holding. The battle result resolves the associated siege record as secured or repelled; a repelled siege can be attempted again. A victorious assault transfers only the selected location to provisional player control, records its previous owner and applies a diplomatic relation penalty to the displaced faction when its identity can be resolved. The wider atlas region does not transfer automatically. The current siege battlefield is a reusable assault scenario, not yet a unique authored map for every enemy holding.
 
 ## Current tactical scope
 
@@ -139,3 +139,6 @@ The guardian fights are playable with their own commander units, enemy escorts, 
 Holding recruitment now creates deployable Frontier Levy, March Archer and Household Knight combatants. When a regional guardian or holding siege is launched from a player-held settlement, up to four reserve troops are added to the tactical deployment. They are deducted from the holding reserve at launch; survivors return to that holding after battle, while fallen troops are recorded as campaign casualties. The deployment and recovery rules are covered by source-level tests.
 
 Settlement development now has a visible local-map presentation for supported holdings: farms add crop plots, workshops add workbenches, trade posts add cargo crates and fortifications add defensive posts. The visuals are derived from saved building tiers and do not alter navigation or collision.
+
+
+A player can select a foreign holding in the Holdings list and launch an assault when at least one player-held staging location exists. The campaign selects a staging holding in the same continent where possible. Victory establishes provisional local control at 25 stability, records the previous authority in holding history and reduces the displaced faction's relation with House Dunmarrow. A failed assault leaves ownership unchanged. The atlas region's faction owner remains unchanged until a separate authored regional outcome.
