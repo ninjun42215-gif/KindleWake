@@ -96,6 +96,9 @@ func _initialize() -> void:
     _test_campaign_restore_validation()
     _test_campaign_save_semantic_backup_fallback()
     _simulate_battles(30)
+    # PartyScreen rebuilds defer old child-node deletion; allow the SceneTree to drain it before exit.
+    await process_frame
+    await process_frame
     print("")
     print("Checks: %d   Failures: %d" % [checks, failures])
     ArtScript._cache.clear()
