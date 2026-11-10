@@ -6,6 +6,7 @@ const CharacterCreationScript = preload("res://scripts/core/character_creation.g
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
 const RelationshipSystem = preload("res://scripts/core/relationship_system.gd")
+const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
 
@@ -24,6 +25,7 @@ var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored w
 var campaign_slot: String = ""
 var faction_state: Dictionary = {}
 var companion_relationships: Dictionary = {}
+var companion_quests: Dictionary = {}
 
 
 
@@ -57,6 +59,7 @@ func new_game(profile: Dictionary = {}) -> void:
     pending_location = ""
     faction_state = FactionSystem.new_campaign_state(GameData.factions)
     companion_relationships = {}
+    companion_quests = {}
 
 
 ## Change diplomatic standing after an authored campaign event.
@@ -85,6 +88,18 @@ func adjust_companion_relationship(character_a: String, character_b: String, dim
 ## Read the current pair relationship without exposing mutable campaign state.
 func companion_relationship(character_a: String, character_b: String) -> Dictionary:
     return RelationshipSystem.get_relationship(companion_relationships, character_a, character_b)
+
+## Companion personal quests are optional, recruit-gated and persisted with the campaign.
+func start_companion_quest(quest_id: String) -> Dictionary:
+    return CompanionQuestSystem.start(companion_quests, quest_id, party.roster, {"quests": GameData.companion_quests})
+
+
+func advance_companion_quest(quest_id: String, milestone_id: String) -> Dictionary:
+    return CompanionQuestSystem.advance(companion_quests, quest_id, milestone_id, {"quests": GameData.companion_quests})
+
+
+func resolve_companion_quest(quest_id: String, outcome: String) -> Dictionary:
+    return CompanionQuestSystem.resolve(companion_quests, quest_id, outcome, {"quests": GameData.companion_quests})
 
 
 ## Campaign/story systems call these methods with authored, consequential evidence; no random trait rolls occur.
@@ -214,6 +229,7 @@ func campaign_payload() -> Dictionary:
         "world_flags": world_flags.duplicate(true),
         "faction_state": faction_state.duplicate(true),
         "companion_relationships": companion_relationships.duplicate(true),
+        "companion_quests": companion_quests.duplicate(true),
         "from_world": true
     }
 
@@ -241,6 +257,7 @@ func load_campaign(slot_id: String) -> bool:
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
     faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
     companion_relationships = RelationshipSystem.normalize_state(payload.get("companion_relationships", {}))
+    companion_quests = CompanionQuestSystem.normalize_state(payload.get("companion_quests", {}), {"quests": GameData.companion_quests})
     world_pos = region_state["world_pos"]
     active_region_id = str(region_state["active_region_id"])
     world_positions = region_state["world_positions"]
