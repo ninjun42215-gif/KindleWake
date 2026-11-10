@@ -1,6 +1,6 @@
 # KINDLEWAKE — CURRENT LIVE HANDOFF (2026-11-10)
 
-> **Authoritative state:** Repository `ninjun42215-gif/KindleWake`; current `main` commit `a156b8c5532b88cf9fa222253ab0ba1cbcf7a9c2`; PRs [#30](https://github.com/ninjun42215-gif/KindleWake/pull/30) and [#31](https://github.com/ninjun42215-gif/KindleWake/pull/31) are merged; no active implementation branch. The earlier checkpoints below are historical only and must not override this block.
+> **Authoritative state:** Repository `ninjun42215-gif/KindleWake`; default branch `main`; PRs [#28](https://github.com/ninjun42215-gif/KindleWake/pull/28), [#30](https://github.com/ninjun42215-gif/KindleWake/pull/30), [#31](https://github.com/ninjun42215-gif/KindleWake/pull/31) and [#32](https://github.com/ninjun42215-gif/KindleWake/pull/32) are merged; no active implementation branch. Always inspect the live `main` ref before starting new work. The earlier checkpoints below are historical only and must not override this block.
 >
 > **Project baseline:** Godot 4.2 / GL Compatibility; game and Android version 0.12.0; Android version code 1200; save schema 4. Keep the game offline. Preserve all existing systems, data and save compatibility; no version/schema change is part of this fix.
 >
