@@ -312,13 +312,13 @@ func _faction_name(faction_id: String) -> String:
 func _describe_diplomatic_event(event: Dictionary, faction_names: Dictionary) -> String:
     var kind := str(event.get("kind", ""))
     if kind == "relation":
-        var pair: Array = event.get("factions", [])
-        if pair.size() >= 2:
-            return "%s / %s: relation %s (%s)" % [str(faction_names.get(str(pair[0]), pair[0])), str(faction_names.get(str(pair[1]), pair[1])), str(event.get("value", 0)), str(event.get("reason", "campaign event"))]
+        var relation_pair: Array = event.get("factions", [])
+        if relation_pair.size() >= 2:
+            return "%s / %s: relation %s (%s)" % [str(faction_names.get(str(relation_pair[0]), relation_pair[0])), str(faction_names.get(str(relation_pair[1]), relation_pair[1])), str(event.get("value", 0)), str(event.get("reason", "campaign event"))]
     elif kind == "diplomacy":
-        var pair: Array = event.get("factions", [])
-        if pair.size() >= 2:
-            return "%s / %s: %s" % [str(faction_names.get(str(pair[0]), pair[0])), str(faction_names.get(str(pair[1]), pair[1])), str(event.get("state", "neutral")).replace("_", " ").capitalize()]
+        var diplomacy_pair: Array = event.get("factions", [])
+        if diplomacy_pair.size() >= 2:
+            return "%s / %s: %s" % [str(faction_names.get(str(diplomacy_pair[0]), diplomacy_pair[0])), str(faction_names.get(str(diplomacy_pair[1]), diplomacy_pair[1])), str(event.get("state", "neutral")).replace("_", " ").capitalize()]
     elif kind == "territory":
         return "%s transferred from %s to %s (%s)" % [str(event.get("region", "Unknown region")).replace("_", " ").capitalize(), str(faction_names.get(str(event.get("from", "")), event.get("from", ""))), str(faction_names.get(str(event.get("to", "")), event.get("to", ""))), str(event.get("cause", "campaign outcome"))]
     return "A diplomatic event was recorded."
