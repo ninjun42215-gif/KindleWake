@@ -2,7 +2,9 @@ extends Node2D
 
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
+const EmpireScreenScript = preload("res://scripts/ui/empire_screen.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
+const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
@@ -46,6 +48,9 @@ var leader_exp_bar: ProgressBar
 var company_btn: Button
 var manual_save_btn: Button
 var global_atlas_btn: Button
+var empire_btn: Button
+var boss_btn: Button
+var empire_screen: EmpireScreenScript
 var prompt_btn: Button
 var place_panel: PanelContainer
 var place_title: Label
@@ -362,6 +367,16 @@ func _open_place(p: Dictionary, extra: String = "") -> void:
             text += "\n\nThe palisade burns. The raiders are gone."
         else:
             place_buttons.add_child(_btn("Attack the camp", _on_attack_camp.bind(p), 24))
+    elif kind == "stronghold":
+        var holding: Dictionary = HoldingSystem.inspect(p, GameState.world_flags)
+        if bool(holding.get("claimed", false)):
+            text += "\n\nCONTROL: %s • STATUS: %s • STABILITY: %d/100" % [str(holding.get("owner", "unknown")), str(holding.get("status", "provisional")).to_upper(), int(GameState.world_flags.get("holding_stability_" + id, 35))]
+        elif bool(holding.get("available", false)):
+            var method: String = str(p.get("capture_method", "occupation"))
+            var action: String = "Negotiate the stewardship compact" if method == "forest_stewardship_compact" else ("Sign the grain charter" if method == "grain_charter" else ("Restore the beacon and assume the watch" if method == "beacon_restoration" else "Secure the keep and establish a garrison"))
+            place_buttons.add_child(_btn(action, _claim_holding.bind(p), 24))
+        else:
+            text += "\n\nSOVEREIGNTY UNRESOLVED: " + str(holding.get("reason", "The local objective remains unresolved."))
     if extra != "":
         text += "\n\n" + extra
     place_text.text = text
@@ -388,6 +403,21 @@ func _pass_gate(p: Dictionary) -> void:
     GameState.world_flags[flag] = true
     var region: String = "Orrowen Weald" if str(p.get("id", "")) == "orrowen_gate" else "Vessmoor Plains"
     _open_place(p, "The company passes into %s. The road remains open behind you." % region)
+
+
+func _claim_holding(p: Dictionary) -> void:
+    var result: Dictionary = HoldingSystem.claim(p, GameState.world_flags)
+    if not bool(result.get("ok", false)):
+        _open_place(p, str(result.get("reason", "The holding cannot be secured.")))
+        return
+    GameState.save_campaign("auto_a")
+    var method: String = str(p.get("capture_method", "occupation"))
+    var consequence: String = "A provisional garrison is sworn in. The holding is yours to administer, but stability must be earned through food, safety, fair levies and respect for local custom."
+    if method == "forest_stewardship_compact":
+        consequence = "The wardens accept a stewardship compact. The watch remains under local law, and the old-growth grove is placed under protection."
+    elif method == "grain_charter":
+        consequence = "The freeholders sign a grain charter. Seed stores and winter reserves are protected before any military requisition."
+    _open_place(p, consequence)
 
 
 ## Walk into a town: the location scene opens the town map; leaving it puts us back just south of the place.
@@ -543,7 +573,7 @@ func _draw_place(p: Dictionary) -> void:
     var c: Vector2 = p.get("_render_pos", cell_center(wmap.place_cell(id)))
     draw_circle(c + Vector2(0, 14), 26.0, Color(0, 0, 0, 0.22))
     var top: float = 60.0
-    if kind == "keep":
+    if kind == "keep" or kind == "stronghold":
         Art.draw_world(self, "keep", c + Vector2(0, 26), 0.85)
         top = 100.0
     elif kind == "port":
@@ -597,7 +627,7 @@ func _draw_place_fallback(p: Dictionary) -> void:
         draw_colored_polygon(PackedVector2Array([c + Vector2(-25, 22), c + Vector2(25, 22), c + Vector2(16, 38), c + Vector2(-16, 38)]), Color("#463d35"))
         draw_line(c + Vector2(0, 20), c + Vector2(0, -32), Color("#d7c49a"), 3.0)
         draw_colored_polygon(PackedVector2Array([c + Vector2(2, -30), c + Vector2(24, -18), c + Vector2(2, -6)]), Color("#7aaeb0"))
-    elif kind == "keep":
+    elif kind == "keep" or kind == "stronghold":
         draw_rect(Rect2(c + Vector2(-20, -18), Vector2(40, 32)), Color(0.55, 0.55, 0.58))
         draw_rect(Rect2(c + Vector2(-24, -28), Vector2(12, 16)), Color(0.48, 0.48, 0.52))
         draw_rect(Rect2(c + Vector2(12, -28), Vector2(12, 16)), Color(0.48, 0.48, 0.52))
@@ -722,6 +752,9 @@ func _apply_safe_area() -> void:
     if global_atlas_btn != null:
         global_atlas_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0)
         global_atlas_btn.add_theme_font_size_override("font_size", 14 if compact else 17)
+    if empire_btn != null:
+        empire_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0)
+        empire_btn.add_theme_font_size_override("font_size", 14 if compact else 17)
     if prompt_btn != null:
         prompt_btn.custom_minimum_size = Vector2(clampf(vw * 0.42, 230.0, 380.0), 64.0 if compact else 68.0)
         prompt_btn.add_theme_font_size_override("font_size", 20 if compact else 28)
@@ -785,6 +818,16 @@ func _build_ui() -> void:
     root.add_child(global_atlas_btn)
     global_atlas_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 144)
     global_atlas_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    empire_btn = _btn("HOLDINGS", _open_empire, 17)
+    empire_btn.custom_minimum_size = Vector2(190, 48)
+    root.add_child(empire_btn)
+    empire_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 204)
+    empire_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    boss_btn = _btn("REGIONAL GUARDIAN", _challenge_regional_boss, 17)
+    boss_btn.custom_minimum_size = Vector2(190, 48)
+    root.add_child(boss_btn)
+    boss_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 264)
+    boss_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 
     # Top-centre: ambush banner
     banner = _hud_panel(0.95)
@@ -849,6 +892,37 @@ func _build_ui() -> void:
     party_screen.visible = false
     party_screen.closed.connect(_on_party_closed)
 
+    empire_screen = EmpireScreenScript.new()
+    root.add_child(empire_screen)
+    empire_screen.setup(GameData.world_expansion.get("capturable_locations", []))
+    empire_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    empire_screen.visible = false
+    empire_screen.closed.connect(_on_empire_closed)
+
+
+
+func _challenge_regional_boss() -> void:
+    if panel_open or ambush_timer >= 0.0 or not GameState.regional_boss_available(GameState.active_region_id):
+        return
+    GameState.world_pos = wmap.wrap_position(player_pos)
+    if GameState.start_regional_boss_for_region(GameState.active_region_id):
+        _go_to_battle(GameState.take_pending_battle())
+
+
+func _open_empire() -> void:
+    if panel_open or party_screen.visible or ambush_timer >= 0.0:
+        return
+    has_target = false
+    pressing = false
+    GameState.world_pos = wmap.wrap_position(player_pos)
+    GameState.save_campaign("auto_a")
+    panel_open = true
+    empire_screen.open()
+
+
+func _on_empire_closed() -> void:
+    panel_open = false
+    _update_hud()
 
 
 func _open_world_atlas() -> void:
@@ -953,6 +1027,8 @@ func _region_name_at(cell: Vector2i) -> String:
 
 
 func _update_hud() -> void:
+    if boss_btn != null:
+        boss_btn.visible = GameState.regional_boss_available(GameState.active_region_id) and not panel_open
     var cell: Vector2i = cell_of(player_pos)
     var txt: String = "%s  •  %s%s\nGOLD  %d" % [_region_name_at(cell), wmap.terrain_name(cell), "  •  SAFE" if _in_safe_zone(cell) else "", GameState.party.gold]
     if txt != hud_text:
