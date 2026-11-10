@@ -98,6 +98,9 @@ func _initialize() -> void:
     _simulate_battles(30)
     print("")
     print("Checks: %d   Failures: %d" % [checks, failures])
+    ArtScript._cache.clear()
+    gd.free()
+    ss.free()
     quit(1 if failures > 0 else 0)
 
 
