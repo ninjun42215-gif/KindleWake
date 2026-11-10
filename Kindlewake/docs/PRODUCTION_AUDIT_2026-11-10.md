@@ -156,3 +156,28 @@ Branch `feat/mobile-realm-administration-ui` extends the existing EmpireScreen r
 
 
 Additional mobile polish in candidate `feat/mobile-realm-administration-ui`: the world HUD action buttons are stacked in one top-right container for phone screens; EmpireScreen is single-column with Holdings/Realm tabs; building and recruitment controls are vertically reflowed. Governor appointments are unique, removed when a region leaves the realm, and pruned against held regions/current roster during save load. Exact-head CI and Android viewport/touch review remain pending.
+
+
+## Latest verified checkpoint — 2026-11-10 13:02 UTC
+
+Current main: `68523bbbd78b5aa780ae15b2d06c47262536f0bc`.
+
+### PR #128 merged: mobile realm administration
+- Existing EmpireScreen now uses mobile-first Holdings and Realm tabs instead of a two-column layout.
+- Realm UI shows shared party-gold treasury, tax rate, stability, legitimacy, owned regions, governor selectors and four royal policies.
+- Realm controls unlock when the first external stronghold is claimed through the authored holding objective.
+- Governor appointments are unique, removed when a region leaves House Dunmarrow, and pruned on load against held regions/current roster.
+- Existing holding governance, garrison, development, recruitment and siege actions are preserved. Governor-specific gameplay bonuses remain future work.
+- World HUD actions now use one vertical stack to prevent phone viewport overlap.
+
+### Current-main verification
+- Android build [#42820633100](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42820633100): 18 scenes loaded; 948 strict checks / 0 failures; campaign lifecycle 0 failures; Act V checks; campaign continuity 70 checks / 0 failures; Chronicle dynasty 39 checks; Chronicle family development 19 checks; balance report and signed APK export passed.
+- Project Health Audit #42820633040, Version Sync #42820633003, Workflow YAML Lint #42820633101 and source handoff #42820632950 passed.
+- APK artifact `13767006152`, archive size 41,200,629 bytes; APK 41.6 MB.
+- ObjectDB/resource-shutdown and Blender-import warnings remain resolved. Non-fatal first-pass class registration diagnostics still clear on the clean import retry; headless custom cursor and Actions Node deprecations remain.
+
+### Remaining high-priority work
+1. Rework regional trade PR #81 before integration: separate cargo from equipment inventory or define trade-only items; enforce player ownership for tariffs and route policy; require canonical region IDs and story unlock flags for travel; redesign merchant rows for mobile widths.
+2. Add governor stat/trait effects and a clear appointment/removal feedback loop.
+3. Complete physical Android touch/layout/resume testing on at least one low-memory and one modern device.
+4. Verify third-party voxel/sprite licenses or replace assets before any public/commercial release.
