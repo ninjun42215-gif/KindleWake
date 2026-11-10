@@ -701,6 +701,24 @@
       ],
       "completion_reward": {
         "gold": 65
+      },
+      "synopsis": "Ilyan discovers that a page has been removed from the Silent Tower's research record, concealing a dangerous interaction between two runes. He insists on a controlled test with strict containment limits. The missing apprentice has repeated the experiment without safeguards, forcing Ilyan to choose between secrecy, shared oversight and publishing a safe procedure that does not expose the dangerous sequence.",
+      "journal_summary": "Recover the missing research page, contain a controlled rune experiment and reach the apprentice before the unsafe procedure spreads. Decide how the knowledge should be kept or shared.",
+      "resolution_prompt": "The apprentice is safe and the experiment is contained. Should Ilyan destroy the research, place it under shared oversight or publish a safe procedure while withholding dangerous details?",
+      "outcome_labels": {
+        "destroy_research": "Destroy the dangerous research",
+        "shared_oversight": "Place it under shared oversight",
+        "publish_safe_procedure": "Publish a safe procedure"
+      },
+      "outcome_descriptions": {
+        "destroy_research": "Ilyan destroys the dangerous sequence and keeps only a record of the hazard. He accepts that some knowledge must be lost when no safe custodian can be trusted.",
+        "shared_oversight": "Ilyan deposits the research with independent scholars and tower wardens under a review charter, requiring multiple custodians and documented safety checks before any future experiment.",
+        "publish_safe_procedure": "Ilyan publishes the containment method and warning signs while withholding the unstable rune sequence. The apprentice helps teach the procedure so that safety does not depend on secrecy."
+      },
+      "outcome_flags": {
+        "destroy_research": "ilyan_outcome_research_destroyed",
+        "shared_oversight": "ilyan_outcome_shared_oversight",
+        "publish_safe_procedure": "ilyan_outcome_safe_procedure_published"
       }
     },
     "q_companion_maren_tideglass_wake": {
@@ -720,6 +738,24 @@
       ],
       "completion_reward": {
         "gold": 65
+      },
+      "synopsis": "Maren discovers that the Tideglass Ledger omits a voyage carrying refugees and sealed cargo. She plots a safe approach through shoals by comparing tide marks, local pilot testimony and a damaged chart, then reaches the wreck and recovers its manifest. The evidence shows the crew diverted the vessel to evade a blockade, while the cargo's owner later profited from the disappearance. The story keeps Ilyra Venn's leadership distinct and Brinegate under the Tidebound Assembly.",
+      "journal_summary": "Recover the missing Tideglass Ledger page, plot a safe route through the shoals and retrieve the wreck's sealed manifest. Decide how to protect the surviving crew and expose the voyage's disappearance.",
+      "resolution_prompt": "The manifest proves what happened, but publishing it could expose the surviving crew. Should Maren publish the record, protect the crew through neutral custodians or negotiate reparations?",
+      "outcome_labels": {
+        "publish_manifest": "Publish the manifest",
+        "protect_crew": "Protect the surviving crew",
+        "negotiate_reparations": "Negotiate reparations"
+      },
+      "outcome_descriptions": {
+        "publish_manifest": "Maren publishes the authenticated manifest and its route evidence. The voyage can no longer be erased, though the crew must face renewed scrutiny and the cargo owner loses the protection of silence.",
+        "protect_crew": "Maren submits the evidence to neutral custodians and keeps vulnerable crew identities sealed. The record survives without turning rescued people into public targets.",
+        "negotiate_reparations": "Maren uses the manifest to secure compensation and a standing rescue route for affected families. The settlement is public in its obligations but limits disclosure of individual crew identities."
+      },
+      "outcome_flags": {
+        "publish_manifest": "maren_outcome_manifest_published",
+        "protect_crew": "maren_outcome_crew_protected",
+        "negotiate_reparations": "maren_outcome_reparations"
       }
     }
   }
