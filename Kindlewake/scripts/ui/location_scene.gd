@@ -535,7 +535,7 @@ func _refresh_development_props() -> void:
             for y in range(1, lmap.height - 1):
                 for x in range(1, lmap.width - 1):
                     var cell := Vector2i(x, y)
-                    if used.has(cell) or not lmap.walkable(cell) or lmap.tile_at(cell) != ".":
+                    if used.has(cell) or not lmap.walkable(cell) or not [".", ",", "="].has(lmap.tile_at(cell)):
                         continue
                     used[cell] = true
                     development_props.append({"cell":cell,"kind":building_id,"tier":level+1})
