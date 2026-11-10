@@ -18,7 +18,9 @@ This document describes the first playable gameplay pass for the five Kaer Setho
 - The five challenges have separate authored stage content, not one generic quiz prompt.
 - Choices are validated. A wrong answer explains that the choice puts people or evidence at risk and allows another attempt; it does not softlock the campaign.
 - Successful completion writes the established GameState.world_flags used by the Act I quest gates and saves through the existing local campaign save path.
-- The Last Convoy and First Oath launch dedicated tactical BattleController encounters with boss-grade units, signature skills, supporting enemies, authored battlefields, commander objectives and story-specific victory flags. The story challenge resumes after the battle result. Unique multi-phase boss AI, bespoke animated boss sprites and custom attack VFX remain future polish work.
+- The Last Convoy and First Oath launch dedicated tactical BattleController encounters with boss-grade units, signature skills, supporting enemies, authored battlefields, commander objectives and story-specific victory flags. The story challenge resumes after the battle result.
+- Both commanders have a one-time, persisted phase transition at a data-authored HP threshold. Hask becomes faster and stronger, recovers health and unlocks Fordbreaker Cleave; the Ash Bailiff gains strength and armour, recovers health and unlocks Final Edict. The existing tactical AI can select these newly unlocked damage skills.
+- Phase transitions emit battle events for a distinct on-field burst and phase callout, using the existing lightweight VFX renderer rather than claiming bespoke sprite animations or particle assets.
 - The initial arrival priority remains respected: if the player already completed the well or roof through the arrival decision, that work remains complete and the corresponding quest is not replayed.
 - All content is offline and uses the existing Godot scene and campaign state architecture.
 
@@ -50,4 +52,4 @@ The Last Convoy and The First Oath now launch dedicated tactical encounters thro
 - The battle result screen returns to the active quest challenge. The challenge resumes at its boss stage, checks the victory flag and advances to the next story beat. A defeat returns to the same challenge so the boss can be retried.
 - Boss battles are not exposed as random overworld encounters and do not show the normal overworld flee option.
 
-These are data-driven tactical encounters using existing combat systems. Unique multi-phase boss AI, bespoke animated boss sprites and custom attack VFX remain future polish work; the current boss identity comes from their dedicated stats, skills, retainers, terrain and story-specific victory conditions.
+These are data-driven tactical encounters using existing combat systems. The first phase pass uses a reusable commander HP-threshold rule, phase-specific stat/armour recovery, newly unlocked signature damage skills and lightweight burst/callout feedback. Bespoke animated boss sprites, custom attack animations and authored particle assets remain future polish work; current phase effects use the existing renderer.
