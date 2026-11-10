@@ -934,6 +934,20 @@ static func council_effects(state: Dictionary, character_profiles: Dictionary = 
 	var role_bonus := {"steward": {"income": 8}, "marshal": {"war_exhaustion": -2}, "spymaster": {"public_order": 1}, "chancellor": {"stability": 2}, "high_priest": {"food": 2, "public_order": 1}}
 	for role in state.get("council", {}).keys():
 		var profile: Dictionary = character_profiles.get(str(state["council"][role]), {})
+		var loyalty := clampi(int(profile.get("loyalty", 60)), 0, 100)
+		if loyalty < 35:
+			effects["stability"] -= 1
+			effects["public_order"] -= 1
+			effects["war_exhaustion"] += 1
+		elif loyalty >= 80:
+			if role == "steward":
+				effects["income"] += 2
+			elif role == "marshal":
+				effects["war_exhaustion"] -= 1
+			elif role in ["spymaster", "high_priest"]:
+				effects["public_order"] += 1
+			elif role == "chancellor":
+				effects["stability"] += 1
 		var traits: Array = profile.get("traits", [])
 		for trait_variant in traits:
 			var trait_id := str(trait_variant).to_lower()
