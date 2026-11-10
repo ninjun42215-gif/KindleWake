@@ -4,6 +4,7 @@ const PartyStateScript = preload("res://scripts/core/party_state.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
+const FactionSystem = preload("res://scripts/core/faction_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
 
@@ -20,6 +21,7 @@ var world_flags: Dictionary = {}         # e.g. "camp_cleared", "found_watch"
 var pending_location: String = ""        # town map the location scene opens next (set by the overworld)
 var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored with battle saves
 var campaign_slot: String = ""
+var faction_state: Dictionary = {}
 
 
 
@@ -127,6 +129,7 @@ func load_campaign(slot_id: String) -> bool:
     party = restored_party
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
+    faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
     world_pos = region_state["world_pos"]
     active_region_id = str(region_state["active_region_id"])
     world_positions = region_state["world_positions"]
