@@ -130,5 +130,29 @@
   "world_flag_on_victory": "act1_hask_defeated",
   "victory_text": "Hask's axe is knocked into the mud. The roadwolves scatter, and the convoy crosses under guard. The manifest is recovered.",
   "defeat_text": "The convoy line breaks. The company is driven back, but the road remains open for another attempt.",
-  "return_scene": "res://ActOneQuestChallenge.tscn"
+  "return_scene": "res://ActOneQuestChallenge.tscn",
+  "boss_phases": [
+    {
+      "character_id": "hask_convoy_champion",
+      "threshold_percent": 55,
+      "message": "Hask roars and drives forward with brutal desperation!",
+      "stat_bonuses": {
+        "str": 4,
+        "spd": 2
+      },
+      "heal_percent": 8,
+      "morale_restore": 20
+    },
+    {
+      "character_id": "hask_convoy_champion",
+      "threshold_percent": 25,
+      "message": "The ford runs red. Hask commits to one last crushing assault!",
+      "stat_bonuses": {
+        "str": 3,
+        "acc": 8
+      },
+      "heal_percent": 0,
+      "morale_restore": 15
+    }
+  ]
 }
