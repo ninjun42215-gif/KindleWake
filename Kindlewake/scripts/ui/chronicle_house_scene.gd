@@ -90,7 +90,7 @@ func _build() -> void:
  for title_id in state.titles.keys():
   title_picker.add_item(str(state.titles[title_id].get("name",title_id)))
  col.add_child(title_picker)
- col.add_child(_button("Grant title to selected family member",_grant_title))
+ col.add_child(_button("Grant title to selected family member",_grant_title))\n title_rank_picker = OptionButton.new()\n for rank in Dynasty.RANKS:\n  title_rank_picker.add_item(str(rank.name))\n col.add_child(title_rank_picker)\n title_name = LineEdit.new()\n title_name.placeholder_text = "New title name"\n col.add_child(title_name)\n col.add_child(_button("Establish next rank title",_create_title))\n domain_name = LineEdit.new()\n domain_name.placeholder_text = "New holding name"\n col.add_child(domain_name)\n col.add_child(_button("Found a new holding for selected member",_create_domain))
  policy_picker = OptionButton.new()
  for policy in Dynasty.SUCCESSION_POLICIES:
   policy_picker.add_item(str(policy).replace("_"," ").capitalize())
@@ -208,8 +208,24 @@ func _remove_trait() -> void:
 func _grant_title() -> void:
  if title_picker.item_count == 0:
   return
- var title_id := str(state.titles.keys()[title_picker.selected])
+ var title_id := str(title_picker.get_item_metadata(title_picker.selected))
  _apply_result(Dynasty.assign_title(state,title_id,selected_person))
+
+func _create_title() -> void:
+ if state.domains.is_empty():
+  status.text = "Establish a holding before creating a title."
+  return
+ var rank_id := str(Dynasty.RANKS[title_rank_picker.selected].id)
+ var result := Dynasty.create_title(state,rank_id,title_name.text,selected_person,str(state.domains.keys()[0]))
+ if bool(result.get("ok",false)):
+  title_name.clear()
+ _apply_result(result)
+
+func _create_domain() -> void:
+ var result := Dynasty.create_domain(state,domain_name.text,selected_person)
+ if bool(result.get("ok",false)):
+  domain_name.clear()
+ _apply_result(result)
 
 func _set_policy() -> void:
  var policy := Dynasty.SUCCESSION_POLICIES[policy_picker.selected]
