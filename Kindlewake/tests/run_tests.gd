@@ -2462,6 +2462,9 @@ func _test_campaign_restore_validation() -> void:
     var malformed_companion_quests: Dictionary = payload.duplicate(true)
     malformed_companion_quests["companion_quests"] = []
     check(not RegionSaveState.is_valid_campaign_payload(malformed_companion_quests), "campaign restore rejects malformed companion quest state")
+    var malformed_chronicle: Dictionary = payload.duplicate(true)
+    malformed_chronicle["chronicle_state"] = []
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_chronicle), "campaign restore rejects malformed chronicle milestone state")
     var missing_party: Dictionary = payload.duplicate(true)
     missing_party.erase("party")
     check(not RegionSaveState.is_valid_campaign_payload(missing_party), "campaign restore rejects a missing party")
