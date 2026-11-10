@@ -964,7 +964,7 @@
       "rows": [
         "################",
         "#..............#",
-        "#..1......2....#",
+        "#..1......2.4..#",
         "#..............#",
         "#....3.........#",
         "#..............#",
@@ -995,6 +995,13 @@
           "spawn": [
             5,
             6
+          ]
+        },
+        "4": {
+          "to": "quillon_archive",
+          "spawn": [
+            7,
+            9
           ]
         }
       },
@@ -1030,6 +1037,17 @@
           "name": "The Banner in the Reeds",
           "story_id": "banner_reeds",
           "text": "A hostile banner moves through the reed beds, but Sela has seen civilians beneath it."
+        },
+        {
+          "cell": [
+            12,
+            7
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "The Witness Who Recanted",
+          "story_id": "witness_recanted",
+          "text": "The Orrowen witness has withdrawn their account. Their family has been threatened, and they refuse to be used as proof without their consent."
         }
       ]
     },
@@ -2183,6 +2201,71 @@
           "text": "A former beacon guard stands between you and the outer chamber. He has been ordered to keep the ledger buried, but his hands shake when he sees the seal.",
           "battle_id": "battle_tideglass",
           "world_flag_on_victory": "tideglass_grotto_cleared"
+        }
+      ]
+    },
+    "quillon_archive": {
+      "name": "Quillon Archive",
+      "kind": "interior",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.15,
+      "rows": [
+        "##############",
+        "#............#",
+        "#..####..##..#",
+        "#..#......#..#",
+        "#..#......#..#",
+        "#..####..##..#",
+        "#............#",
+        "#.####..####.#",
+        "#............#",
+        "#............#",
+        "#............#",
+        "######1#######"
+      ],
+      "doors": {
+        "1": {
+          "to": "elderbough",
+          "spawn": [
+            12,
+            3
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            7,
+            4
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "Archive Registrar",
+          "story_id": "quillon_archive",
+          "text": "The custodians of the Quillon Archive will hear a petition, but the sealed stacks are not open to force without consequence."
+        },
+        {
+          "cell": [
+            3,
+            8
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Index Keeper",
+          "text": "The index records who consulted each volume. Several names were struck out by Edmer's own hand."
+        },
+        {
+          "cell": [
+            10,
+            8
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Custodian of Seals",
+          "text": "An original can survive a generation in a locked room. A copy can survive a fire. Neither choice is neutral."
         }
       ]
     }
