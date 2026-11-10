@@ -949,3 +949,5 @@ Trade, diplomacy, rebellion and budget features are persistent and deterministic
 **Validation status:** strict tests now cover lock state, economy, trade-route persistence/income, forecast immutability, council trait effects, unrest relief, NPC war declarations, siege withdrawal, artillery profiles, engineer support, destructible objectives and tactical battle simulation. They are authored but have not been executed for this branch head. No Godot import, test suite, scene smoke test or Android build has yet been run for this feature-branch head. Do not report this as CI-passed or production-ready until exact-head repository gates pass. Physical-device QA remains separate.
 
 - Strategic battle instances now receive unique persisted IDs; resolved battle IDs are retained in campaign state and duplicate result submissions are rejected, preventing repeated casualties/war-exhaustion awards after reloads.
+
+- Siege engineer now has two tactical skills: Field Repair restores HP to a nearby allied unit (including the ram), and Breach Charge damages a nearby wall/gate or enemy. Both use the standard BattleController skill/target flow.
