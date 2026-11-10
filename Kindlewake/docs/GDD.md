@@ -958,3 +958,12 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - PR #126 adds a persisted realm-administration backend for tax, stability, legitimacy, governors, policies and idempotent monthly settlement. `FactionSystem` remains the region-owner authority; `EmpireEconomySystem` remains the holding economy; `party.gold` remains the only treasury. Realm policies modify the existing settlement rather than adding a second income stream.
 - Realm administration is gated by an authored campaign flag. The backend has no dedicated player-facing UI or authored unlock quest yet; those are explicit follow-up work.
 - Main commit `b88f4da2c49a6de13f715604de502750e68ccf45` passed 18 scene loads, 945 strict checks / 0 failures, campaign/Chronicle tests, balance report and signed Android export. Version remains 0.12.0; save schema remains 4.
+
+
+## Realm administration UI — 2026-11-10 (candidate)
+
+- The existing EmpireScreen is being refactored into mobile-first `HOLDINGS` and `REALM` tabs instead of a side-by-side desktop split.
+- The Realm tab displays the shared party-gold treasury, tax rate, stability, legitimacy, owned regions, governor selectors and policy cards. It uses the same canonical FactionSystem and EmpireEconomySystem data as the backend.
+- Realm administration unlocks when the player claims the first external stronghold through its authored world objective. The unlock is saved with the campaign; it does not grant a second treasury or alter territory ownership.
+- Governor assignments are unique per companion and normalized against currently held regions and the current roster on load. The screen retains existing holding governance, garrison, building, recruitment and siege actions.
+- Candidate branch `feat/mobile-realm-administration-ui` adds a UI smoke test. Actual Android viewport/touch QA remains pending; governor-specific gameplay bonuses are a future balance milestone.
