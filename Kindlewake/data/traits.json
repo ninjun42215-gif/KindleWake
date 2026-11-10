@@ -1,0 +1,727 @@
+{
+  "traits": {
+    "brave": {
+      "name": "Brave",
+      "category": "personality",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Holds steady when danger closes in. Fear and intimidation have less power over this character.",
+      "effects": {
+        "mor": 2,
+        "ldr": 1
+      },
+      "conflicts": [
+        "cowardly"
+      ],
+      "evolves_to": "fearless",
+      "sources": [
+        "story_choice",
+        "battle_courage",
+        "training"
+      ],
+      "permanent": false
+    },
+    "cowardly": {
+      "name": "Cowardly",
+      "category": "personality",
+      "rarity": "uncommon",
+      "alignment": "negative",
+      "description": "Threats can overwhelm sound judgment. This trait is never awarded for a tactical retreat or obeying a withdrawal order.",
+      "effects": {
+        "mor": -2
+      },
+      "conflicts": [
+        "brave",
+        "fearless"
+      ],
+      "sources": [
+        "repeated_panic"
+      ],
+      "permanent": false
+    },
+    "honest": {
+      "name": "Honest",
+      "category": "personality",
+      "rarity": "common",
+      "alignment": "positive",
+      "description": "Values truth and keeps words straightforward, even when deception would be easier.",
+      "effects": {
+        "ldr": 1
+      },
+      "conflicts": [
+        "deceitful"
+      ],
+      "sources": [
+        "story_choice",
+        "kept_promise"
+      ],
+      "permanent": false
+    },
+    "deceitful": {
+      "name": "Deceitful",
+      "category": "personality",
+      "rarity": "uncommon",
+      "alignment": "negative",
+      "description": "Defaults to concealment and misdirection when dealing with others.",
+      "effects": {
+        "lck": 1,
+        "mor": -1
+      },
+      "conflicts": [
+        "honest"
+      ],
+      "sources": [
+        "betrayal",
+        "repeated_lies"
+      ],
+      "permanent": false
+    },
+    "compassionate": {
+      "name": "Compassionate",
+      "category": "personality",
+      "rarity": "common",
+      "alignment": "positive",
+      "description": "Takes the suffering of others seriously and is inclined to offer aid.",
+      "effects": {
+        "ldr": 1,
+        "mor": 1
+      },
+      "conflicts": [
+        "cruel"
+      ],
+      "sources": [
+        "mercy",
+        "healing_allies"
+      ],
+      "permanent": false
+    },
+    "cruel": {
+      "name": "Cruel",
+      "category": "personality",
+      "rarity": "uncommon",
+      "alignment": "negative",
+      "description": "Shows little concern for an enemy's suffering and may favour harsh solutions.",
+      "effects": {
+        "str": 1,
+        "mor": -2
+      },
+      "conflicts": [
+        "compassionate"
+      ],
+      "sources": [
+        "deliberate_cruelty"
+      ],
+      "permanent": false
+    },
+    "patient": {
+      "name": "Patient",
+      "category": "personality",
+      "rarity": "common",
+      "alignment": "positive",
+      "description": "Can wait for the right moment instead of forcing an immediate outcome.",
+      "effects": {
+        "int": 1,
+        "lck": 1
+      },
+      "conflicts": [
+        "impatient"
+      ],
+      "sources": [
+        "training",
+        "story_choice"
+      ],
+      "permanent": false
+    },
+    "impatient": {
+      "name": "Impatient",
+      "category": "personality",
+      "rarity": "common",
+      "alignment": "negative",
+      "description": "Dislikes delay and may press forward before every detail is settled.",
+      "effects": {
+        "spd": 1,
+        "int": -1
+      },
+      "conflicts": [
+        "patient"
+      ],
+      "sources": [
+        "repeated_rash_choices"
+      ],
+      "permanent": false
+    },
+    "generous": {
+      "name": "Generous",
+      "category": "personality",
+      "rarity": "common",
+      "alignment": "positive",
+      "description": "Readily shares resources and rewards with companions in need.",
+      "effects": {
+        "ldr": 1
+      },
+      "conflicts": [
+        "greedy"
+      ],
+      "sources": [
+        "shared_reward",
+        "gift"
+      ],
+      "permanent": false
+    },
+    "greedy": {
+      "name": "Greedy",
+      "category": "personality",
+      "rarity": "uncommon",
+      "alignment": "negative",
+      "description": "Places unusual weight on personal gain and valuable spoils.",
+      "effects": {
+        "lck": 1,
+        "ldr": -1
+      },
+      "conflicts": [
+        "generous"
+      ],
+      "sources": [
+        "hoarded_reward",
+        "story_choice"
+      ],
+      "permanent": false
+    },
+    "disciplined": {
+      "name": "Disciplined",
+      "category": "personality",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Maintains routines and follows through on deliberate practice.",
+      "effects": {
+        "vit": 1,
+        "int": 1
+      },
+      "sources": [
+        "training_streak",
+        "mentorship"
+      ],
+      "permanent": false
+    },
+    "reckless": {
+      "name": "Reckless",
+      "category": "personality",
+      "rarity": "uncommon",
+      "alignment": "negative",
+      "description": "Accepts risks without always weighing the cost to self or allies.",
+      "effects": {
+        "str": 1,
+        "vit": -1
+      },
+      "sources": [
+        "repeated_risky_combat"
+      ],
+      "permanent": false
+    },
+    "humble": {
+      "name": "Humble",
+      "category": "personality",
+      "rarity": "common",
+      "alignment": "positive",
+      "description": "Does not assume personal importance makes their judgment superior.",
+      "effects": {
+        "ldr": 1
+      },
+      "conflicts": [
+        "arrogant"
+      ],
+      "sources": [
+        "story_choice",
+        "mentorship"
+      ],
+      "permanent": false
+    },
+    "arrogant": {
+      "name": "Arrogant",
+      "category": "personality",
+      "rarity": "uncommon",
+      "alignment": "negative",
+      "description": "Overestimates personal standing and is slow to accept correction.",
+      "effects": {
+        "ldr": -1,
+        "str": 1
+      },
+      "conflicts": [
+        "humble"
+      ],
+      "sources": [
+        "repeated_contempt"
+      ],
+      "permanent": false
+    },
+    "loyal": {
+      "name": "Loyal",
+      "category": "personality",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Places lasting commitments and the safety of trusted companions above convenience.",
+      "effects": {
+        "ldr": 2
+      },
+      "sources": [
+        "kept_oath",
+        "protected_companion"
+      ],
+      "permanent": false
+    },
+    "ambitious": {
+      "name": "Ambitious",
+      "category": "personality",
+      "rarity": "uncommon",
+      "alignment": "neutral",
+      "description": "Seeks a larger purpose, greater responsibility, or lasting achievement.",
+      "effects": {
+        "ldr": 1,
+        "str": 1
+      },
+      "sources": [
+        "ambition_progress",
+        "story_choice"
+      ],
+      "permanent": false
+    },
+    "curious": {
+      "name": "Curious",
+      "category": "personality",
+      "rarity": "common",
+      "alignment": "positive",
+      "description": "Is drawn to unfamiliar places, lost histories, and unanswered questions.",
+      "effects": {
+        "int": 1,
+        "lck": 1
+      },
+      "sources": [
+        "exploration",
+        "research"
+      ],
+      "permanent": false
+    },
+    "fearless": {
+      "name": "Fearless",
+      "category": "psychological",
+      "rarity": "rare",
+      "alignment": "positive",
+      "description": "Has learned to act clearly under extraordinary pressure. Fear does not disappear, but it no longer dictates action.",
+      "effects": {
+        "mor": 3,
+        "vit": 1
+      },
+      "conflicts": [
+        "cowardly"
+      ],
+      "sources": [
+        "overcame_fear",
+        "story_trial"
+      ],
+      "permanent": false
+    },
+    "focused": {
+      "name": "Focused",
+      "category": "psychological",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Keeps attention on the task despite distraction and pressure.",
+      "effects": {
+        "acc": 2,
+        "int": 1
+      },
+      "sources": [
+        "training",
+        "precision_victory"
+      ],
+      "permanent": false
+    },
+    "mentally_resilient": {
+      "name": "Mentally Resilient",
+      "category": "psychological",
+      "rarity": "rare",
+      "alignment": "positive",
+      "description": "Recovers composure after setbacks and difficult experiences.",
+      "effects": {
+        "mor": 2,
+        "vit": 1
+      },
+      "sources": [
+        "recovered_from_failure",
+        "story_trial"
+      ],
+      "permanent": false
+    },
+    "scholar": {
+      "name": "Scholar",
+      "category": "intelligence",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Has pursued sustained study and can interpret difficult written knowledge.",
+      "effects": {
+        "int": 2
+      },
+      "evolves_to": "brilliant_scholar",
+      "sources": [
+        "research",
+        "ancient_text"
+      ],
+      "permanent": false
+    },
+    "strategist": {
+      "name": "Strategist",
+      "category": "intelligence",
+      "rarity": "rare",
+      "alignment": "positive",
+      "description": "Recognises patterns in a battlefield and plans several moves ahead.",
+      "effects": {
+        "int": 1,
+        "ldr": 1
+      },
+      "sources": [
+        "tactical_victory",
+        "command"
+      ],
+      "permanent": false
+    },
+    "observant": {
+      "name": "Observant",
+      "category": "intelligence",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Notices small details that others overlook.",
+      "effects": {
+        "acc": 1,
+        "lck": 1
+      },
+      "sources": [
+        "discovery",
+        "investigation"
+      ],
+      "permanent": false
+    },
+    "brilliant_scholar": {
+      "name": "Brilliant Scholar",
+      "category": "intelligence",
+      "rarity": "epic",
+      "alignment": "positive",
+      "description": "A rare breadth and depth of learning built through years of study.",
+      "effects": {
+        "int": 3,
+        "lck": 1
+      },
+      "sources": [
+        "scholar_evolution",
+        "major_discovery"
+      ],
+      "permanent": false
+    },
+    "skilled_swordsman": {
+      "name": "Skilled Swordsman",
+      "category": "combat",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Demonstrates practiced control and timing with bladed weapons.",
+      "effects": {
+        "str": 1,
+        "acc": 2
+      },
+      "evolves_to": "master_swordsman",
+      "sources": [
+        "sword_training",
+        "sword_victory"
+      ],
+      "permanent": false
+    },
+    "master_swordsman": {
+      "name": "Master Swordsman",
+      "category": "combat",
+      "rarity": "epic",
+      "alignment": "positive",
+      "description": "Has mastered distance, tempo, and precision in swordplay.",
+      "effects": {
+        "str": 2,
+        "acc": 3
+      },
+      "sources": [
+        "skilled_swordsman_evolution",
+        "duel_victory"
+      ],
+      "permanent": false
+    },
+    "marksman": {
+      "name": "Marksman",
+      "category": "combat",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Practised at judging distance and placing accurate ranged attacks.",
+      "effects": {
+        "dex": 1,
+        "acc": 3
+      },
+      "evolves_to": "master_archer",
+      "sources": [
+        "archery_training",
+        "ranged_victory"
+      ],
+      "permanent": false
+    },
+    "master_archer": {
+      "name": "Master Archer",
+      "category": "combat",
+      "rarity": "epic",
+      "alignment": "positive",
+      "description": "An exceptional archer with refined aim and control under pressure.",
+      "effects": {
+        "dex": 2,
+        "acc": 4
+      },
+      "sources": [
+        "marksman_evolution",
+        "archery_trial"
+      ],
+      "permanent": false
+    },
+    "battle_hardened": {
+      "name": "Battle-Hardened",
+      "category": "combat",
+      "rarity": "rare",
+      "alignment": "positive",
+      "description": "Has endured repeated battles and learned to keep functioning under pressure.",
+      "effects": {
+        "vit": 2,
+        "mor": 1
+      },
+      "sources": [
+        "battle_milestone",
+        "survived_boss"
+      ],
+      "permanent": false
+    },
+    "protective": {
+      "name": "Protective",
+      "category": "social",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Pays close attention to companions in danger and is inclined to shield them.",
+      "effects": {
+        "vit": 1,
+        "ldr": 1
+      },
+      "sources": [
+        "protected_ally",
+        "rescue"
+      ],
+      "permanent": false
+    },
+    "charismatic": {
+      "name": "Charismatic",
+      "category": "social",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Communicates with warmth and presence, making it easier to earn an audience.",
+      "effects": {
+        "ldr": 2
+      },
+      "sources": [
+        "diplomacy",
+        "community_choice"
+      ],
+      "permanent": false
+    },
+    "diplomatic": {
+      "name": "Diplomatic",
+      "category": "social",
+      "rarity": "rare",
+      "alignment": "positive",
+      "description": "Can find language that lets opposing parties negotiate without surrendering every principle.",
+      "effects": {
+        "ldr": 2,
+        "int": 1
+      },
+      "sources": [
+        "peaceful_resolution",
+        "negotiation"
+      ],
+      "permanent": false
+    },
+    "robust": {
+      "name": "Robust",
+      "category": "physical",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Possesses a naturally hardy constitution and recovers well from exertion.",
+      "effects": {
+        "hp": 3,
+        "vit": 2
+      },
+      "sources": [
+        "survival_trial",
+        "constitution_training"
+      ],
+      "permanent": false
+    },
+    "agile": {
+      "name": "Agile",
+      "category": "physical",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Moves with balance and quickness, especially across difficult ground.",
+      "effects": {
+        "dex": 1,
+        "spd": 2,
+        "eva": 1
+      },
+      "sources": [
+        "agility_training",
+        "evasion_trial"
+      ],
+      "permanent": false
+    },
+    "frail": {
+      "name": "Frail",
+      "category": "physical",
+      "rarity": "uncommon",
+      "alignment": "negative",
+      "description": "Has a weaker constitution and tires more readily than most.",
+      "effects": {
+        "hp": -2,
+        "vit": -1
+      },
+      "sources": [
+        "lasting_injury",
+        "story_history"
+      ],
+      "permanent": false
+    },
+    "battle_trauma": {
+      "name": "Battle Trauma",
+      "category": "psychological",
+      "rarity": "rare",
+      "alignment": "negative",
+      "description": "A difficult battle has left painful memories. This is not cowardice or a measure of courage; recovery and support are possible.",
+      "effects": {
+        "mor": -1
+      },
+      "sources": [
+        "traumatic_battle"
+      ],
+      "permanent": false
+    },
+    "healer": {
+      "name": "Healer",
+      "category": "lifestyle",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Has learned practical field medicine and the careful treatment of wounds.",
+      "effects": {
+        "int": 1,
+        "ldr": 1
+      },
+      "sources": [
+        "healing_milestone",
+        "medical_training"
+      ],
+      "permanent": false
+    },
+    "survivalist": {
+      "name": "Survivalist",
+      "category": "lifestyle",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Knows how to travel light, read the land, and endure harsh conditions.",
+      "effects": {
+        "vit": 1,
+        "lck": 1
+      },
+      "sources": [
+        "expedition",
+        "wilderness_survival"
+      ],
+      "permanent": false
+    },
+    "honorable": {
+      "name": "Honorable",
+      "category": "morality",
+      "rarity": "uncommon",
+      "alignment": "positive",
+      "description": "Holds to a personal code even when keeping it carries a cost.",
+      "effects": {
+        "ldr": 1,
+        "mor": 2
+      },
+      "sources": [
+        "kept_oath",
+        "honorable_choice"
+      ],
+      "permanent": false
+    },
+    "oathbreaker": {
+      "name": "Oathbreaker",
+      "category": "morality",
+      "rarity": "rare",
+      "alignment": "negative",
+      "description": "Has knowingly broken a solemn promise. Repair requires meaningful action, not a simple reset.",
+      "effects": {
+        "ldr": -2,
+        "mor": -1
+      },
+      "conflicts": [
+        "vowkeeper"
+      ],
+      "sources": [
+        "broken_oath"
+      ],
+      "permanent": false
+    },
+    "vowkeeper": {
+      "name": "Vowkeeper",
+      "category": "morality",
+      "rarity": "rare",
+      "alignment": "positive",
+      "description": "Has honoured a consequential vow despite hardship.",
+      "effects": {
+        "ldr": 2,
+        "mor": 1
+      },
+      "conflicts": [
+        "oathbreaker"
+      ],
+      "sources": [
+        "fulfilled_vow"
+      ],
+      "permanent": false
+    },
+    "magical_affinity": {
+      "name": "Magical Affinity",
+      "category": "magical",
+      "rarity": "rare",
+      "alignment": "positive",
+      "description": "Shows an uncommon sensitivity to the world's scarce supernatural forces.",
+      "effects": {
+        "mp": 2,
+        "int": 1
+      },
+      "sources": [
+        "magical_awakening",
+        "story_relic"
+      ],
+      "permanent": true
+    },
+    "mana_regeneration": {
+      "name": "Mana Regeneration",
+      "category": "magical",
+      "rarity": "epic",
+      "alignment": "positive",
+      "description": "The character's connection to magic restores a little mana over time where the combat rules support regeneration.",
+      "effects": {
+        "mp": 3
+      },
+      "sources": [
+        "arcane_trial",
+        "rare_mentor"
+      ],
+      "permanent": false
+    }
+  }
+}
