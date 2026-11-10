@@ -98,8 +98,8 @@
       "town": "veyhaven_beacon",
       "owner": "tidebound_assembly",
       "capture_method": "beacon_restoration",
-      "claim_requires_flag": "stormwell_grounding_solved",
-      "claim_requirement_text": "Restore the Stormwell grounding chain before the beacon keepers will transfer the watch.",
+      "claim_requires_flag": "dungeon_stormwell_cleared",
+      "claim_requirement_text": "Defeat the Chainbound Tempest and restore Stormwell's grounding chain before the beacon keepers will transfer the watch.",
       "governance": "beacon_warden",
       "text": "A cliff-top signal fortress links the outer islands by fire and mirror. Its lamp room is intact, but the signal chain has failed. Ships without the beacon's warning risk the reefs, so restoring the light matters more than merely occupying its walls."
     },
