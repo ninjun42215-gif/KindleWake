@@ -441,6 +441,15 @@ func _test_controller() -> void:
     var duplicate_ids: Dictionary = parsed.duplicate(true)
     duplicate_ids["units"][1]["id"] = duplicate_ids["units"][0]["id"]
     check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), duplicate_ids), "restore rejects duplicate unit IDs")
+    var outside_map: Dictionary = parsed.duplicate(true)
+    outside_map["units"][0]["cell"] = [999, 999]
+    check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), outside_map), "restore rejects unit coordinates outside the battlefield")
+    var invalid_facing: Dictionary = parsed.duplicate(true)
+    invalid_facing["units"][0]["facing"] = 99
+    check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), invalid_facing), "restore rejects invalid facing directions")
+    var invalid_active: Dictionary = parsed.duplicate(true)
+    invalid_active["active_id"] = 999
+    check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), invalid_active), "restore rejects an active unit ID absent from the snapshot")
 
 
 ## Auto Battle = the AI plays the player's units (run_ai_turn(true)); also covers the cleric's heal logic.
