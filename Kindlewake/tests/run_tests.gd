@@ -1038,9 +1038,14 @@ func _test_strategic_battle_integration() -> void:
     var controlled: Array = ["sethmarch"]
     var adjacency: Dictionary = {"sethmarch": ["orrowen_weald"], "orrowen_weald": ["sethmarch"]}
     check(EmpireSystem.recruit_troops(state, "sethmarch", "infantry", 20, controlled), "integration test recruits an infantry field force")
-    var army_id: String = EmpireSystem.mobilize_army(state, "sethmarch", {"infantry": 20}, controlled)
+    var army_id: String = EmpireSystem.mobilize_army(state, "sethmarch", {"infantry": 20}, controlled, "torren")
     check(army_id != "" and EmpireSystem.move_field_army(state, army_id, "orrowen_weald", adjacency, controlled), "integration test deploys its field army to a hostile region")
     var battle_def: Dictionary = EmpireSystem.build_tactical_battle(state, army_id, gd.battle_def("battle_01"), "orrowen_weald", "house_orrowen", false, 1)
+    var commander_deployed := false
+    for spawn in battle_def.get("units", []):
+        if str(spawn.get("character_id", "")) == "torren" and bool(spawn.get("commander", false)):
+            commander_deployed = true
+    check(commander_deployed, "the appointed party commander receives the tactical commander role")
     var db: Dictionary = gd.as_db()
     var chars: Dictionary = db["characters"].duplicate(true)
     var classes: Dictionary = db["classes"].duplicate(true)
