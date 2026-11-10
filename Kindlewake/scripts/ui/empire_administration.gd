@@ -486,7 +486,7 @@ func _build_economy() -> void:
     var s: Dictionary = GameState.empire_state
     var unrest: Dictionary = {"risk": int(s.get("rebellion_risk", 0)), "alerts": s.get("rebellion_alerts", [])}
     _section("REALM STABILITY")
-    _metric("Rebellion pressure", "%d / 100" % int(unrest.get("risk", 0)), "Warnings appear before unrest can become an uprising")
+    _metric("Rebellion pressure", "%d / 100" % int(unrest.get("risk", 0)), "Warnings identify provinces with elevated unrest; funded relief lowers pressure")
     for alert in unrest.get("alerts", []):
         body.add_child(_label("Unrest warning: %s · risk %d%%" % [str(alert.get("province", "")).replace("_", " ").capitalize(), int(alert.get("risk", 0))], 15, C_RED))
     if int(unrest.get("risk", 0)) >= 20:
