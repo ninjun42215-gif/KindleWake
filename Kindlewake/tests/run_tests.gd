@@ -12,6 +12,9 @@ const MarenQuestSystem = preload("res://scripts/core/maren_quest_system.gd")
 const NerisQuestSystem = preload("res://scripts/core/neris_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const EmpireEconomySystem = preload("res://scripts/core/empire_economy_system.gd")
+const EmpireDevelopmentSystem = preload("res://scripts/core/empire_development_system.gd")
+const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 const ArtScript = preload("res://scripts/ui/art.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
@@ -60,6 +63,13 @@ func _initialize() -> void:
     _test_weapon_skills()
     _test_world()
     _test_world_atlas()
+    _test_world_expansion()
+    _test_regional_boss_battles()
+    _test_holding_system()
+    _test_empire_economy()
+    _test_empire_development()
+    _test_dungeon_mechanisms()
+    _test_secret_passages()
     _test_faction_politics()
     _test_thalassar_region()
     _test_wraparound_world()
@@ -316,6 +326,231 @@ func _test_companion_quests() -> void:
         if playable_flags.size() != (playable_definition.get("outcomes", []) as Array).size():
             playable_flags_ok = false
     check(playable_flags_ok, "all twenty-one authored companion quest routes persist every distinct resolution outcome")
+
+
+func _test_world_expansion() -> void:
+    print("[world expansion]")
+    var catalogue: Dictionary = gd.world_expansion
+    check(catalogue.get("schema_version", 0) == 1, "world expansion catalogue loads with supported schema")
+    var region_ids := {}
+    for continent in gd.continents.get("continents", []):
+        for region in continent.get("regions", []):
+            region_ids[str(region.get("id", ""))] = true
+    var holding_ids := {}
+    var holdings_valid := true
+    for holding in catalogue.get("capturable_locations", []):
+        var hid := str(holding.get("id", ""))
+        if hid.is_empty() or holding_ids.has(hid) or not region_ids.has(str(holding.get("region", ""))):
+            holdings_valid = false
+        holding_ids[hid] = true
+        if str(holding.get("description", "")).length() < 80 or holding.get("economy", {}).is_empty():
+            holdings_valid = false
+        if not holding.has("capture") or not holding.has("governance"):
+            holdings_valid = false
+    check(holdings_valid and holding_ids.size() >= 15, "capturable holdings have unique IDs, canonical regions, descriptions and governance")
+    var dungeon_ids := {}
+    var dungeons_valid := true
+    for dungeon in catalogue.get("dungeons", []):
+        var did := str(dungeon.get("id", ""))
+        if did.is_empty() or dungeon_ids.has(did) or not region_ids.has(str(dungeon.get("region", ""))):
+            dungeons_valid = false
+        dungeon_ids[did] = true
+        if str(dungeon.get("description", "")).length() < 80 or dungeon.get("mechanics", []).size() < 2:
+            dungeons_valid = false
+        if not dungeon.has("boss") or not dungeon.has("world_effect") or not dungeon.has("rewards"):
+            dungeons_valid = false
+    check(dungeons_valid and dungeon_ids.size() >= 15, "dungeons have unique IDs, canonical regions, mechanics, bosses, rewards and consequences")
+
+
+    var bosses: Dictionary = gd.regional_boss_encounters
+    var boss_valid := bosses.size() == 7
+    for boss_id in bosses:
+        var boss: Dictionary = bosses[boss_id]
+        if str(boss.get("region", "")).is_empty() or str(boss.get("arena", "")).is_empty() or boss.get("phases", []).size() < 3 or str(boss.get("counterplay", "")).is_empty():
+            boss_valid = false
+        for phase in boss.get("phases", []):
+            if str(phase.get("objective", "")).is_empty() or str(phase.get("hazard", "")).is_empty():
+                boss_valid = false
+    check(boss_valid, "all seven continents load distinct boss arenas, three-phase hazards, objectives and counterplay")
+
+
+func _test_regional_boss_battles() -> void:
+    print("[regional boss battles]")
+    var boss_ids := ["hollow_hart", "drowned_crown", "ash_regent", "pale_matriarch", "briar_sovereign", "star_eater", "last_cantor"]
+    var valid := true
+    for boss_id in boss_ids:
+        var battle_id: String = "battle_boss_" + str(boss_id)
+        var def: Dictionary = gd.battle_def(battle_id)
+        if def.is_empty() or def.get("boss_phases", []).size() != 3 or str(def.get("boss_encounter_id", "")) != boss_id:
+            valid = false
+            continue
+        var boss_found := false
+        for spawn in def.get("units", []):
+            if str(spawn.get("character_id", "")) == "boss_" + boss_id and str(spawn.get("team", "")) == "enemy" and bool(spawn.get("commander", false)):
+                boss_found = true
+        if not boss_found:
+            valid = false
+    check(valid, "all seven regional guardians load as playable battles with a commander and three authored phases")
+    var siege: Dictionary = gd.battle_def("battle_holding_siege")
+    check(not siege.is_empty() and siege.get("victory", []).has("defeat_commander"), "holding siege has a playable tactical battlefield and commander objective")
+    var sample: Dictionary = gd.battle_def("battle_boss_hollow_hart")
+    var controller := BattleController.new()
+    controller.setup(sample, gd.as_db(), 1234)
+    var boss: BattleUnit = null
+    for unit in controller.units:
+        if unit.is_commander and unit.team == "enemy":
+            boss = unit
+            break
+    if boss != null:
+        boss.hp = int(floor(float(boss.max_hp()) * 0.60))
+        controller._update_boss_phase(boss)
+    check(boss != null and controller.boss_phase_index == 1, "regional boss transitions into its second phase at the authored health threshold")
+
+
+func _test_holding_system() -> void:
+    print("[holding sovereignty]")
+    var flags := {}
+    var keep: Dictionary = {}
+    for p in gd.world.get("places", []):
+        if str(p.get("id", "")) == "sallow_ford_keep":
+            keep = p
+            break
+    check(not keep.is_empty(), "Sallow Ford Keep is authored as a capturable holding")
+    var locked: Dictionary = HoldingSystem.inspect(keep, flags)
+    check(not bool(locked.get("available", true)), "a holding cannot be claimed before its prerequisite is resolved")
+    flags["camp_cleared"] = true
+    var ready: Dictionary = HoldingSystem.inspect(keep, flags)
+    check(bool(ready.get("available", false)) and str(ready.get("owner", "")) == "crownlands", "the keep becomes claimable only after its garrison objective")
+    var claimed: Dictionary = HoldingSystem.claim(keep, flags)
+    check(bool(claimed.get("ok", false)) and str(flags.get("holding_owner_sallow_ford_keep", "")) == "house_dunmarrow", "claim records location-level ownership without transferring the atlas region")
+    check(str(flags.get("holding_status_sallow_ford_keep", "")) == "provisional" and int(flags.get("holding_stability_sallow_ford_keep", 0)) == 35, "new occupation starts provisional and requires stabilisation")
+    check(not bool(HoldingSystem.claim(keep, flags).get("ok", true)), "a holding cannot be claimed twice")
+    check((flags.get("holding_history", []) as Array).size() == 1, "holding ownership changes are recorded in campaign history")
+    var beacon: Dictionary = {}
+    for p in gd.thalassar_world.get("places", []):
+        if str(p.get("id", "")) == "veyhaven_beacon":
+            beacon = p
+            break
+    var beacon_locked: Dictionary = HoldingSystem.inspect(beacon, flags)
+    check(not bool(beacon_locked.get("available", true)), "Veyhaven Beacon remains unclaimable until Stormwell is restored")
+    flags["dungeon_stormwell_cleared"] = true
+    check(bool(HoldingSystem.inspect(beacon, flags).get("available", false)), "defeating Stormwell guardian unlocks the beacon stewardship claim")
+
+
+func _test_empire_economy() -> void:
+    print("[empire economy]")
+    var flags := {"holding_claimed_keep": true, "holding_owner_keep": "house_dunmarrow", "holding_status_keep": "provisional", "holding_stability_keep": 35, "holding_governance_keep": "appointed_warden"}
+    var assigned: Dictionary = EmpireEconomySystem.assign_garrison("keep", 3, flags)
+    check(bool(assigned.get("ok", false)) and int(flags.get("holding_garrison_keep", 0)) == 3, "garrison can be assigned only to a player-held location")
+    var invalid: Dictionary = EmpireEconomySystem.assign_garrison("unknown", 2, flags)
+    check(not bool(invalid.get("ok", true)), "unclaimed locations reject garrison assignments")
+    var governance: Dictionary = EmpireEconomySystem.set_governance("keep", "local_compact", flags)
+    check(bool(governance.get("ok", false)), "valid local governance can be appointed")
+    check(not bool(EmpireEconomySystem.set_governance("keep", "tyranny", flags).get("ok", true)), "unknown governance models are rejected")
+    var foreign_admin := {"holding_claimed_keep":true,"holding_owner_keep":"foreign_house"}
+    check(not bool(EmpireEconomySystem.assign_garrison("keep", 2, foreign_admin).get("ok", true)), "foreign-held locations reject player garrison changes")
+    check(not bool(EmpireEconomySystem.set_governance("keep", "local_compact", foreign_admin).get("ok", true)), "foreign-held locations reject player governance changes")
+    var definitions: Array = [{"id":"keep","turn_income":20,"garrison_upkeep":2,"recommended_garrison":2,"economy":{"gold":20,"provisions":3,"materials":2}}]
+    var turn: Dictionary = EmpireEconomySystem.advance_turn(definitions, flags, 100)
+    check(bool(turn.get("ok", false)) and int(turn.get("income", 0)) == 20 and int(turn.get("upkeep", 0)) == 4, "empire turn calculates holding income, fixed upkeep and garrison upkeep")
+    check(int(turn.get("treasury_after", 0)) == 116 and int(flags.get("holding_stability_keep", 0)) > 35, "turn pays net income and a sufficient garrison improves stability")
+    check(int(turn.get("provisions_gained", 0)) == 3 and int(turn.get("materials_gained", 0)) == 2 and int(flags.get("empire_stockpile_provisions", 0)) == 3 and int(flags.get("empire_stockpile_materials", 0)) == 2, "claimed holdings add provisions and materials to persistent stockpiles")
+    flags["holding_owner_keep"] = "foreign_house"
+    var lost: Dictionary = EmpireEconomySystem.advance_turn(definitions, flags, 100)
+    check(int(lost.get("holdings_processed", -1)) == 0 and int(lost.get("treasury_after", 0)) == 100, "foreign-held locations stop producing player income and upkeep")
+    check(EmpireEconomySystem.stability_label(10) == "Unrest" and EmpireEconomySystem.stability_label(80) == "Secure", "holding stability exposes clear unrest and security states")
+
+
+func _test_empire_development() -> void:
+    print("[empire development]")
+    var flags := {
+        "holding_claimed_keep":true,
+        "holding_owner_keep":"house_dunmarrow",
+        "empire_stockpile_materials":30,
+        "empire_stockpile_provisions":40
+    }
+    var upgrade := EmpireDevelopmentSystem.upgrade_building("keep", "farm", flags, 200)
+    check(bool(upgrade.get("ok", false)) and int(upgrade.get("tier", 0)) == 1 and int(flags.get("empire_stockpile_materials", 0)) == 26, "holding farm upgrades consume materials and advance one tier")
+    check(not bool(EmpireDevelopmentSystem.recruit("keep", "levy", 0, flags, 100).get("ok", true)), "zero-sized recruitment requests are rejected")
+    var insufficient := EmpireDevelopmentSystem.upgrade_building("keep", "farm", flags, 10)
+    check(not bool(insufficient.get("ok", true)) and int(flags.get("holding_building_keep_farm", 0)) == 1, "unaffordable building upgrades leave the holding unchanged")
+    var recruited := EmpireDevelopmentSystem.recruit("keep", "archer", 2, flags, 100)
+    check(bool(recruited.get("ok", false)) and int(recruited.get("recruited", 0)) == 2 and int(flags.get("empire_stockpile_provisions", 0)) == 32, "recruitment spends gold and provisions and stores a troop reserve")
+    var assigned := EmpireDevelopmentSystem.assign_recruits_to_garrison("keep", "archer", 1, flags)
+    check(bool(assigned.get("ok", false)) and int(flags.get("holding_garrison_keep", 0)) == 1 and int(flags["holding_recruits_keep"]["archer"]) == 1, "recruited troops can be assigned from reserve to the holding garrison")
+    var siege := EmpireDevelopmentSystem.start_siege("keep", "siege_test", 2, flags)
+    check(bool(siege.get("ok", false)), "a player holding can stage an objective-based siege")
+    var progress := EmpireDevelopmentSystem.progress_siege("siege_test", 1, flags)
+    check(bool(progress.get("ok", false)) and not bool(progress.get("completed", true)), "siege objectives preserve incremental progress")
+    var early_resolution := EmpireDevelopmentSystem.resolve_siege("siege_test", true, flags)
+    check(not bool(early_resolution.get("ok", true)), "siege cannot be resolved before its objective is complete")
+    var completed := EmpireDevelopmentSystem.progress_siege("siege_test", 1, flags)
+    check(bool(completed.get("completed", false)), "siege objective completes at its required progress")
+    var resolved := EmpireDevelopmentSystem.resolve_siege("siege_test", true, flags)
+    check(bool(resolved.get("ok", false)) and str(resolved.get("status", "")) == "resolved", "a completed siege objective can be resolved after its encounter")
+    var repelled_start := EmpireDevelopmentSystem.start_siege("keep", "siege_retrial", 2, flags)
+    var repelled := EmpireDevelopmentSystem.resolve_siege("siege_retrial", false, flags)
+    var retry := EmpireDevelopmentSystem.start_siege("keep", "siege_retrial", 2, flags)
+    check(bool(repelled_start.get("ok", false)) and bool(repelled.get("ok", false)) and bool(retry.get("ok", false)), "repelled sieges resolve cleanly and can be attempted again")
+    var foreign_flags := {"holding_claimed_keep":true,"holding_owner_keep":"foreign_house"}
+    check(not bool(EmpireDevelopmentSystem.recruit("keep", "levy", 1, foreign_flags, 100).get("ok", true)), "foreign holdings cannot recruit for the player")
+
+    var productive_flags := {"holding_claimed_keep":true,"holding_owner_keep":"house_dunmarrow","holding_building_keep_farm":1,"holding_building_keep_fortifications":1,"holding_garrison_keep":2}
+    var developed_turn := EmpireEconomySystem.advance_turn([{"id":"keep","turn_income":10,"recommended_garrison":1,"economy":{"provisions":0,"materials":0}}], productive_flags, 50)
+    check(int(developed_turn.get("provisions_gained", 0)) == 3 and int(productive_flags.get("holding_stability_keep", 0)) >= 37, "farms add recurring provisions and fortifications improve stability each empire turn")
+
+
+
+
+func _test_dungeon_mechanisms() -> void:
+    print("[dungeon mechanisms]")
+    var maps: Dictionary = gd.locations.get("maps", {})
+    var expected := {
+        "dungeon_sunken_tollhouse": "tollhouse_sluice_solved",
+        "dungeon_wardens_barrow": "wardens_oath_trial_solved",
+        "dungeon_ashen_granary": "ashen_firebreak_solved",
+        "dungeon_wreck_kings_hold": "wreck_signal_solved",
+        "dungeon_stormwell": "stormwell_grounding_solved"
+    }
+    var valid := true
+    for map_id in expected.keys():
+        if not maps.has(map_id):
+            valid = false
+            continue
+        var mechanism: Dictionary = {}
+        var boss: Dictionary = {}
+        for spot in maps[map_id].get("spots", []):
+            if str(spot.get("kind", "")) == "mechanism":
+                mechanism = spot
+            elif str(spot.get("kind", "")) == "boss":
+                boss = spot
+        if mechanism.is_empty() or boss.is_empty():
+            valid = false
+            continue
+        if mechanism.get("sequence", []).size() < 3 or mechanism.get("options", []).size() < 3:
+            valid = false
+        if str(mechanism.get("world_flag_on_solved", "")) != str(expected[map_id]) or str(boss.get("requires_flag", "")) != str(expected[map_id]):
+            valid = false
+    check(valid, "five dungeons have unique multi-step mechanisms that gate their guardian encounters")
+
+
+func _test_secret_passages() -> void:
+    print("[secret passages]")
+    var maps: Dictionary = gd.locations.get("maps", {})
+    var expected := ["dungeon_sunken_tollhouse", "dungeon_wardens_barrow", "dungeon_ashen_granary", "dungeon_wreck_kings_hold", "dungeon_stormwell"]
+    var valid := true
+    for map_id in expected:
+        if not maps.has(map_id):
+            valid = false
+            continue
+        var found := false
+        for spot in maps[map_id].get("spots", []):
+            if str(spot.get("kind", "")) == "secret" and str(spot.get("world_flag_on_reveal", "")) != "":
+                found = true
+        if not found:
+            valid = false
+    var sample := LocalMap.from_def("secret_test", {"kind":"dungeon","entry":[1,1],"rows":["#####","#...#","#.#.#","#...E","#####"],"spots":[]})
+    check(valid and sample.set_tile(Vector2i(2,2), "." ) and sample.tile_at(Vector2i(2,2)) == ".", "five dungeons contain persistent hidden passages and the map runtime can reveal blocked tiles")
 
 
 func _test_prologue() -> void:
@@ -1023,7 +1258,7 @@ func _test_weapon_skills() -> void:
 func _test_world() -> void:
     print("[overworld]")
     var cfg: Dictionary = gd.world
-    check(int(cfg.get("width", 0)) >= 32 and (cfg.get("places", []) as Array).size() >= 4, "world.json defines a map and at least four places")
+    check(int(cfg.get("width", 0)) >= 32 and (cfg.get("places", []) as Array).size() >= 24, "world.json defines an expanded map with at least 24 named places")
     var w1: WorldMap = WorldMap.generate(cfg)
     var w2: WorldMap = WorldMap.generate(cfg)
     check(w1.width == int(cfg["width"]) and w1.height == int(cfg["height"]) and w1.tiles.size() == w1.width * w1.height, "the generated map has the configured size")
@@ -1393,7 +1628,7 @@ func _test_locations() -> void:
     for p in (gd.world.get("places", []) as Array):
         var pd: Dictionary = p
         var kind: String = str(pd.get("kind", ""))
-        if kind == "keep" or kind == "village":
+        if kind == "keep" or kind == "village" or kind == "stronghold":
             var tid: String = str(pd.get("town", ""))
             if not maps.has(tid) or (maps[tid] as LocalMap).kind != "town":
                 towns_ok = false

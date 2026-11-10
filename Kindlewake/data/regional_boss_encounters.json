@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "encounters": {
+    "hollow_hart": {
+      "region": "eldrimar",
+      "name": "The Hollow Hart",
+      "arena": "The Root-Crowned Clearing",
+      "theme": "ancient woodland guardian",
+      "phases": [
+        {"id":"rootbound","trigger":"100_to_65_percent","hazard":"Root snares mark two lanes before striking","objective":"Destroy the two living root anchors"},
+        {"id":"antlered_wrath","trigger":"below_65_percent","hazard":"Thorn growth blocks the central approach","objective":"Defeat the summoned Thornbound sentries"},
+        {"id":"hollow_core","trigger":"below_30_percent","hazard":"The clearing pulses with draining sap","objective":"Expose and defeat the heartwood core"}
+      ],
+      "counterplay": "Root anchors suppress the guardian's regeneration; fire and severing attacks are effective."
+    },
+    "drowned_crown": {
+      "region": "thalassar",
+      "name": "Admiral Veyr, the Drowned Crown",
+      "arena": "The Broken Flagship",
+      "theme": "corsair admiral and tidal warfare",
+      "phases": [
+        {"id":"broadside","trigger":"100_to_70_percent","hazard":"Telegraphed cannon lanes cross the deck","objective":"Disable both signal drums"},
+        {"id":"boarding","trigger":"below_70_percent","hazard":"A moving gangplank opens a flanking lane","objective":"Defeat the tide-callers maintaining the storm"},
+        {"id":"undertow","trigger":"below_35_percent","hazard":"Flooded deck tiles slow movement","objective":"Break the admiral's anchor standard"}
+      ],
+      "counterplay": "Signal drums coordinate enemy volleys; disabling them reduces incoming ranged pressure."
+    },
+    "ash_regent": {
+      "region": "varakhan",
+      "name": "Kharzug the Ash Regent",
+      "arena": "The Cinder Throneworks",
+      "theme": "siege ogre and ash sorcery",
+      "phases": [
+        {"id":"warded","trigger":"100_to_70_percent","hazard":"Ash shamans shield the throne","objective":"Destroy the ward pylons"},
+        {"id":"collapse","trigger":"below_70_percent","hazard":"Marked cover collapses at round end","objective":"Break the regent's siege maul"},
+        {"id":"eruption","trigger":"below_30_percent","hazard":"Ash vents erupt in announced patterns","objective":"Defeat Kharzug before the final eruption"}
+      ],
+      "counterplay": "Ward pylons protect the boss; ranged attacks can reach them before the ogre advances."
+    },
+    "pale_matriarch": {
+      "region": "nhalor",
+      "name": "The Pale Matriarch",
+      "arena": "The Ossuary Court",
+      "theme": "grave-weaver and revenant host",
+      "phases": [
+        {"id":"procession","trigger":"100_to_70_percent","hazard":"Grave mist obscures distant tiles","objective":"Destroy the revenant banners"},
+        {"id":"weave","trigger":"below_70_percent","hazard":"Soul threads bind adjacent units","objective":"Interrupt the three grave-weaving rites"},
+        {"id":"pall","trigger":"below_30_percent","hazard":"The Matriarch raises one fallen guard","objective":"Break her bone spindle and finish the duel"}
+      ],
+      "counterplay": "Banners enable resurrection pulses; destroying them prevents the enemy from recovering fallen units."
+    },
+    "briar_sovereign": {
+      "region": "veyrwood",
+      "name": "The Briar Sovereign",
+      "arena": "The Ironwood Labyrinth",
+      "theme": "mobile forest colossus",
+      "phases": [
+        {"id":"stalking","trigger":"100_to_70_percent","hazard":"Vines reshape two corridors each round","objective":"Lure the Sovereign across the prepared ironwood traps"},
+        {"id":"bloom","trigger":"below_70_percent","hazard":"Pollen clouds weaken clustered units","objective":"Destroy the seed-heart growths"},
+        {"id":"uprooted","trigger":"below_30_percent","hazard":"The colossus charges along a marked line","objective":"Strike the exposed crown"}
+      ],
+      "counterplay": "Trap tiles interrupt charges and expose the Sovereign; spreading out limits pollen effects."
+    },
+    "star_eater": {
+      "region": "asterreach",
+      "name": "The Star-Eater",
+      "arena": "The Observatory of Falling Stars",
+      "theme": "astral construct and shifting constellations",
+      "phases": [
+        {"id":"orbit","trigger":"100_to_70_percent","hazard":"Constellation lines mark tiles before impact","objective":"Activate the three observatory lenses"},
+        {"id":"eclipse","trigger":"below_70_percent","hazard":"Safe tiles rotate after each enemy phase","objective":"Disrupt the orbiting star nodes"},
+        {"id":"singularity","trigger":"below_25_percent","hazard":"A central pull draws units toward the core","objective":"Destroy the exposed singularity"}
+      ],
+      "counterplay": "Lens activation reveals safe lanes; star nodes delay the arena's tile rotation."
+    },
+    "last_cantor": {
+      "region": "ilyr",
+      "name": "The Last Cantor",
+      "arena": "The Hall of Unwritten Names",
+      "theme": "memory-bound duelist",
+      "phases": [
+        {"id":"refrain","trigger":"100_to_70_percent","hazard":"The Cantor echoes the party's most-used skill","objective":"Vary attacks and break the echoing reliquaries"},
+        {"id":"counterpoint","trigger":"below_70_percent","hazard":"Repeated skill families are countered","objective":"Rotate physical, magical and support actions"},
+        {"id":"silence","trigger":"below_30_percent","hazard":"A marked silence field suppresses one skill category","objective":"Defeat the Cantor during the exposed final refrain"}
+      ],
+      "counterplay": "Avoid repeating the same skill family; reliquaries reveal which actions the Cantor can echo."
+    }
+  }
+}

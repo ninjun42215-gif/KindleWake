@@ -1,0 +1,132 @@
+{
+  "id": "battle_boss_briar_sovereign",
+  "title": "The Ironwood Labyrinth",
+  "briefing": "The Briar Sovereign stalks the ironwood maze. Avoid the lanes it marks and bring the colossus down.",
+  "weather": "clear",
+  "legend": {
+    ".": "grass",
+    "f": "forest",
+    "r": "road",
+    "h": "hill",
+    "~": "deep_water",
+    "b": "bridge",
+    "#": "rock"
+  },
+  "terrain": [
+    "....................",
+    "....ffff............",
+    "...ffffff..f........",
+    "....ffff...f........",
+    ".........r..........",
+    "..f......r......f...",
+    "..ff.....r.....ff...",
+    ".........r..........",
+    "....f....r....f.....",
+    "....ff...r...ff.....",
+    ".........r..........",
+    "....................",
+    "....................",
+    "...................."
+  ],
+  "heights": [
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000"
+  ],
+  "victory": [
+    "rout_all",
+    "defeat_commander"
+  ],
+  "units": [
+    {
+      "character_id": "torren",
+      "team": "player",
+      "cell": [
+        8,
+        10
+      ],
+      "facing": 0,
+      "protagonist": true
+    },
+    {
+      "character_id": "bram",
+      "team": "player",
+      "cell": [
+        7,
+        9
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "sela",
+      "team": "player",
+      "cell": [
+        9,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "brother_wystan",
+      "team": "player",
+      "cell": [
+        6,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "boss_briar_sovereign",
+      "team": "enemy",
+      "cell": [
+        14,
+        4
+      ],
+      "facing": 2,
+      "commander": true
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        12,
+        3
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        15,
+        6
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadbowman",
+      "team": "enemy",
+      "cell": [
+        16,
+        3
+      ],
+      "facing": 2
+    }
+  ],
+  "battlefield": "regional_boss_veyrwood",
+  "boss_encounter_id": "briar_sovereign",
+  "world_flag_on_victory": "regional_boss_veyrwood_cleared",
+  "victory_text": "The regional guardian is defeated. Its territory falls quiet, and the campaign can advance.",
+  "defeat_text": "The company is driven from the arena. The guardian remains undefeated."
+}

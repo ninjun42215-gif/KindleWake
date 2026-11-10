@@ -5,6 +5,8 @@ const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const EmpireEconomySystem = preload("res://scripts/core/empire_economy_system.gd")
+const EmpireDevelopmentSystem = preload("res://scripts/core/empire_development_system.gd")
 const RelationshipSystem = preload("res://scripts/core/relationship_system.gd")
 const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
@@ -60,6 +62,115 @@ func new_game(profile: Dictionary = {}) -> void:
     faction_state = FactionSystem.new_campaign_state(GameData.factions)
     companion_relationships = {}
     companion_quests = {}
+
+
+
+## Assign troops to a claimed holding. Upkeep is charged only on an explicit empire turn.
+func assign_holding_garrison(holding_id: String, unit_count: int) -> Dictionary:
+    return EmpireEconomySystem.assign_garrison(holding_id, unit_count, world_flags)
+
+
+func set_holding_governance(holding_id: String, governance_id: String) -> Dictionary:
+    return EmpireEconomySystem.set_governance(holding_id, governance_id, world_flags)
+
+
+func advance_empire_turn(holding_definitions: Array) -> Dictionary:
+    var result: Dictionary = EmpireEconomySystem.advance_turn(holding_definitions, world_flags, party.gold)
+    if not bool(result.get("ok", false)):
+        return result
+    party.gold = int(result.get("treasury_after", party.gold))
+    world_flags["empire_turn"] = int(world_flags.get("empire_turn", 0)) + 1
+    world_flags["empire_last_report"] = result.get("reports", []).duplicate(true)
+    return result
+
+
+func upgrade_holding_building(holding_id: String, building_id: String) -> Dictionary:
+    var result: Dictionary = EmpireDevelopmentSystem.upgrade_building(holding_id, building_id, world_flags, party.gold)
+    if bool(result.get("ok", false)):
+        party.gold = int(result.treasury_after)
+    return result
+
+
+func recruit_holding_troops(holding_id: String, troop_id: String, amount: int = 1) -> Dictionary:
+    var result: Dictionary = EmpireDevelopmentSystem.recruit(holding_id, troop_id, amount, world_flags, party.gold)
+    if bool(result.get("ok", false)):
+        party.gold = int(result.treasury_after)
+    return result
+
+
+func assign_recruits_to_holding_garrison(holding_id: String, troop_id: String, amount: int) -> Dictionary:
+    return EmpireDevelopmentSystem.assign_recruits_to_garrison(holding_id, troop_id, amount, world_flags)
+
+
+func begin_holding_siege(holding_id: String, objective_id: String, required_progress: int = 3) -> Dictionary:
+    return EmpireDevelopmentSystem.start_siege(holding_id, objective_id, required_progress, world_flags)
+
+
+func advance_siege_objective(objective_id: String, progress: int = 1) -> Dictionary:
+    return EmpireDevelopmentSystem.progress_siege(objective_id, progress, world_flags)
+
+
+func resolve_siege_objective(objective_id: String, won: bool) -> Dictionary:
+    return EmpireDevelopmentSystem.resolve_siege(objective_id, won, world_flags)
+
+
+func continent_for_region(region_id: String) -> String:
+    for continent in GameData.continents.get("continents", []):
+        for region in continent.get("regions", []):
+            if str(region.get("id", "")) == region_id:
+                return str(continent.get("id", ""))
+    return ""
+
+
+func regional_boss_available(region_id: String) -> bool:
+    var continent_id := continent_for_region(region_id)
+    if continent_id == "" or bool(world_flags.get("regional_boss_" + continent_id + "_cleared", false)):
+        return false
+    for holding in GameData.world_expansion.get("capturable_locations", []):
+        if str(holding.get("region", "")) == region_id:
+            var id := str(holding.get("id", ""))
+            if bool(world_flags.get("holding_claimed_" + id, false)) and str(world_flags.get("holding_owner_" + id, "")) == "house_dunmarrow":
+                return true
+    return false
+
+
+func start_regional_boss_for_region(region_id: String) -> bool:
+    var continent_id := continent_for_region(region_id)
+    if continent_id == "" or not regional_boss_available(region_id):
+        return false
+    var boss_suffix := str({
+        "eldrimar":"hollow_hart",
+        "thalassar":"drowned_crown",
+        "varakhan":"ash_regent",
+        "nhalor":"pale_matriarch",
+        "veyrwood":"briar_sovereign",
+        "asterreach":"star_eater",
+        "ilyr":"last_cantor"
+    }.get(continent_id, ""))
+    if boss_suffix == "":
+        return false
+    var def: Dictionary = GameData.battle_def("battle_boss_" + boss_suffix)
+    if def.is_empty():
+        return false
+    start_battle_from_world(def)
+    return true
+
+
+func start_holding_siege_battle(holding_id: String) -> bool:
+    if not bool(world_flags.get("holding_claimed_" + holding_id, false)) or str(world_flags.get("holding_owner_" + holding_id, "")) != "house_dunmarrow":
+        return false
+    var objective_id := "field_siege_" + holding_id
+    var staged: Dictionary = begin_holding_siege(holding_id, objective_id, 3)
+    if not bool(staged.get("ok", false)):
+        return false
+    var def: Dictionary = GameData.battle_def("battle_holding_siege")
+    if def.is_empty():
+        return false
+    def = def.duplicate(true)
+    def["siege_objective_id"] = objective_id
+    def["title"] = "Siege Exercise: " + holding_id.replace("_", " ").capitalize()
+    start_battle_from_world(def)
+    return true
 
 
 ## Change diplomatic standing after an authored campaign event.
