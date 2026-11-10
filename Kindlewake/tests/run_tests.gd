@@ -7,6 +7,7 @@ const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const ChronicleSystem = preload("res://scripts/core/chronicle_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -43,6 +44,7 @@ func _initialize() -> void:
     _test_world()
     _test_world_atlas()
     _test_faction_politics()
+    _test_chronicle_gate()
     _test_thalassar_region()
     _test_wraparound_world()
     _test_brinegate_quest()
@@ -1480,6 +1482,32 @@ func _sigil_index(party: PartyState, sigil_id: String) -> int:
             return i
     return -1
 
+
+
+func _test_chronicle_gate() -> void:
+    print("[Chronicle of Houses unlock gate]")
+    var state: Dictionary = ChronicleSystem.new_state()
+    check(not ChronicleSystem.is_unlocked(state), "a new campaign starts with the Chronicle locked")
+    check(not ChronicleSystem.record_milestone(state, "became_last_emperor"), "becoming Emperor cannot precede campaign completion")
+    check(not ChronicleSystem.record_milestone(state, "natural_old_age_death", {"cause":"old_age", "protagonist_id":"torren"}), "old-age death cannot bypass the required ending milestones")
+    check(ChronicleSystem.record_milestone(state, "campaign_completed"), "campaign completion is recorded")
+    check(ChronicleSystem.record_milestone(state, "became_last_emperor"), "the protagonist may become the Last Emperor after campaign completion")
+    check(not ChronicleSystem.record_milestone(state, "epilogue_completed"), "the late-life epilogue cannot precede dissolution")
+    check(ChronicleSystem.record_milestone(state, "empire_dissolved"), "formal dissolution is recorded after the Last Emperor milestone")
+    check(ChronicleSystem.record_milestone(state, "epilogue_completed"), "the late-life epilogue is recorded after dissolution")
+    check(not ChronicleSystem.record_milestone(state, "natural_old_age_death", {"cause":"battle", "protagonist_id":"torren"}), "battle death does not unlock generational play")
+    check(not ChronicleSystem.record_milestone(state, "natural_old_age_death", {"cause":"old_age"}), "death without a protagonist identity is rejected")
+    check(ChronicleSystem.record_milestone(state, "natural_old_age_death", {"cause":"old_age", "protagonist_id":"torren", "age_at_death":82, "death_date":"Year 44, Winter"}), "natural old-age death completes the founder chronicle")
+    check(ChronicleSystem.is_unlocked(state), "all five required milestones unlock the Chronicle")
+    check(str(state["founder_record"].get("protagonist_id", "")) == "torren" and int(state["founder_record"].get("age_at_death", 0)) == 82, "the founder record preserves protagonist identity and age")
+    check(not ChronicleSystem.record_milestone(state, "natural_old_age_death", {"cause":"old_age", "protagonist_id":"torren"}), "milestones cannot be recorded twice")
+    var restored: Dictionary = ChronicleSystem.normalize_state(state)
+    check(ChronicleSystem.is_unlocked(restored) and restored["founder_record"] == state["founder_record"], "a valid founder chronicle survives normalization")
+    var forged := {"unlocked":true, "milestones":{}}
+    check(not ChronicleSystem.is_unlocked(forged), "a forged unlocked flag cannot bypass the milestone gate")
+    var incomplete := {"milestones":{"campaign_completed":true, "became_last_emperor":true, "empire_dissolved":true, "epilogue_completed":true, "natural_old_age_death":true}, "founder_record":{"cause":"battle", "protagonist_id":"torren"}}
+    check(not ChronicleSystem.is_unlocked(incomplete), "a corrupted or non-natural founder death cannot unlock generational play")
+    check(ChronicleSystem.next_milestone(ChronicleSystem.new_state()) == "campaign_completed", "the locked Chronicle identifies its first required milestone")
 
 
 func _test_campaign_restore_validation() -> void:
