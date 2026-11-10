@@ -723,7 +723,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                                 env=env, log=logs / "balance_report.txt", timeout=3600)
                 summary.append("balance_report: exit %d" % code)
 
-        say("\n[5] Exporting the APK")
+        say("\n[6] Exporting the APK")
         apk = dist / APK_NAME
         if apk.exists():
             apk.unlink()
@@ -804,6 +804,11 @@ def write_ci_summary(logs: Path) -> None:
     out: List[str] = ["## Kindlewake build report"]
     build = read("BUILD_SUMMARY.txt")
     out += block("Build summary", build)
+    smoke = read("scene_smoke_test.txt")
+    if smoke:
+        hits = problems(smoke)
+        out += block("Scene smoke problems (%d line(s); first 80 shown)" % len(hits), hits[:80] or ["none"])
+        out += block("Scene smoke summary", smoke[-25:])
     tests = read("run_tests.txt")
     if tests:
         hits = problems(tests)
