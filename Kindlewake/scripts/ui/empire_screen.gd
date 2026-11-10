@@ -6,6 +6,7 @@ extends Control
 signal closed
 
 const Economy = preload("res://scripts/core/empire_economy_system.gd")
+const EmpireSystemScript = preload("res://scripts/core/empire_system.gd")
 const HOLDING = "house_dunmarrow"
 const BG := Color(0.075, 0.065, 0.052, 0.98)
 const PANEL := Color(0.16, 0.13, 0.09)
@@ -15,8 +16,10 @@ const DIM := Color(0.68, 0.63, 0.53)
 
 var definitions: Array = []
 var selected_id := ""
-var list_box: VBoxContainer
+var tabs: TabContainer
+var holding_picker: OptionButton
 var detail_box: VBoxContainer
+var realm_box: VBoxContainer
 var summary_label: Label
 var result_label: Label
 var governance_picker: OptionButton
@@ -79,6 +82,7 @@ func _button(value: String, callback: Callable) -> Button:
 
 func _build() -> void:
     for child in get_children():
+        remove_child(child)
         child.queue_free()
     set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     var backdrop := ColorRect.new()
@@ -90,65 +94,73 @@ func _build() -> void:
     var outer := MarginContainer.new()
     outer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     outer.add_theme_constant_override("margin_left", 14)
-    outer.add_theme_constant_override("margin_top", 14)
+    outer.add_theme_constant_override("margin_top", 12)
     outer.add_theme_constant_override("margin_right", 14)
-    outer.add_theme_constant_override("margin_bottom", 14)
+    outer.add_theme_constant_override("margin_bottom", 12)
     add_child(outer)
     var column := VBoxContainer.new()
-    column.add_theme_constant_override("separation", 10)
+    column.add_theme_constant_override("separation", 8)
     outer.add_child(column)
 
     var header := HBoxContainer.new()
     column.add_child(header)
-    var title := _label("THE HOLDFASTS  •  HOUSE DUNMARROW", 24, GOLD)
+    var title := _label("DUNMARROW REALM", 21, GOLD)
     header.add_child(title)
     var close_button := _button("CLOSE", close)
-    close_button.custom_minimum_size = Vector2(100, 46)
+    close_button.custom_minimum_size = Vector2(86, 44)
     close_button.size_flags_horizontal = Control.SIZE_SHRINK_END
     header.add_child(close_button)
 
-    summary_label = _label("", 16, DIM)
+    summary_label = _label("", 14, DIM)
     column.add_child(summary_label)
-    var split := HBoxContainer.new()
-    split.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    split.add_theme_constant_override("separation", 12)
-    column.add_child(split)
 
-    var list_panel := PanelContainer.new()
-    list_panel.custom_minimum_size = Vector2(300, 0)
-    list_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    list_panel.size_flags_stretch_ratio = 0.9
-    list_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    list_panel.add_theme_stylebox_override("panel", _style_panel(PANEL))
-    split.add_child(list_panel)
-    var list_scroll := ScrollContainer.new()
-    list_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    list_panel.add_child(list_scroll)
-    list_box = VBoxContainer.new()
-    list_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    list_box.add_theme_constant_override("separation", 6)
-    list_scroll.add_child(list_box)
+    tabs = TabContainer.new()
+    tabs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    column.add_child(tabs)
+
+    var holdings_tab := VBoxContainer.new()
+    holdings_tab.name = "HOLDINGS"
+    holdings_tab.add_theme_constant_override("separation", 8)
+    tabs.add_child(holdings_tab)
+    holdings_tab.add_child(_label("SELECT A HOLDING", 13, DIM))
+    holding_picker = OptionButton.new()
+    holding_picker.custom_minimum_size = Vector2(0, 46)
+    holding_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    holding_picker.item_selected.connect(_on_holding_selected)
+    holdings_tab.add_child(holding_picker)
 
     var detail_panel := PanelContainer.new()
     detail_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    detail_panel.size_flags_stretch_ratio = 1.5
     detail_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
     detail_panel.add_theme_stylebox_override("panel", _style_panel(PANEL))
-    split.add_child(detail_panel)
+    holdings_tab.add_child(detail_panel)
     var detail_scroll := ScrollContainer.new()
+    detail_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     detail_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     detail_panel.add_child(detail_scroll)
     detail_box = VBoxContainer.new()
     detail_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    detail_box.add_theme_constant_override("separation", 10)
+    detail_box.add_theme_constant_override("separation", 9)
     detail_scroll.add_child(detail_box)
 
-    var footer := HBoxContainer.new()
+    var realm_scroll := ScrollContainer.new()
+    realm_scroll.name = "REALM"
+    realm_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    realm_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    tabs.add_child(realm_scroll)
+    realm_box = VBoxContainer.new()
+    realm_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    realm_box.add_theme_constant_override("separation", 10)
+    realm_scroll.add_child(realm_box)
+
+    var footer := VBoxContainer.new()
+    footer.add_theme_constant_override("separation", 6)
     column.add_child(footer)
-    result_label = _label("A campaign turn is advanced only when you choose it.", 14, DIM)
+    result_label = _label("A campaign turn advances only when you choose it.", 13, DIM)
     footer.add_child(result_label)
     var advance := _button("ADVANCE EMPIRE TURN", _advance_turn)
-    advance.custom_minimum_size = Vector2(250, 50)
+    advance.custom_minimum_size = Vector2(0, 48)
     footer.add_child(advance)
 
 
@@ -164,11 +176,11 @@ func _is_player_holding(id: String) -> bool:
 
 
 func _refresh() -> void:
-    if list_box == null:
+    if holding_picker == null:
         return
     _building = true
-    for child in list_box.get_children():
-        child.queue_free()
+    holding_picker.clear()
+    var selected_index := -1
     var claimed_count := 0
     for raw in definitions:
         var d: Dictionary = raw
@@ -177,17 +189,163 @@ func _refresh() -> void:
         if claimed:
             claimed_count += 1
         var status := "ADMINISTERED" if claimed else str(GameState.world_flags.get("holding_status_" + id, "NOT CLAIMED")).to_upper()
-        var b := _button(("%s\n%s  •  %s" % [str(d.get("name", id)), str(d.get("region", "Unknown region")), status]), _select_holding.bind(id))
+        holding_picker.add_item("%s  •  %s" % [str(d.get("name", id)), status])
+        holding_picker.set_item_metadata(holding_picker.item_count - 1, id)
         if id == selected_id:
-            b.add_theme_stylebox_override("normal", _style_panel(Color(0.31, 0.23, 0.12)))
-        list_box.add_child(b)
-    summary_label.text = "TURN %d   •   %d GOLD   •   %d PROVISIONS   •   %d MATERIALS   •   %d / %d HOLDINGS" % [int(GameState.world_flags.get("empire_turn", 0)), GameState.party.gold, int(GameState.world_flags.get("empire_stockpile_provisions", 0)), int(GameState.world_flags.get("empire_stockpile_materials", 0)), claimed_count, definitions.size()]
+            selected_index = holding_picker.item_count - 1
+    if holding_picker.item_count > 0:
+        if selected_index < 0:
+            selected_index = 0
+            selected_id = str(holding_picker.get_item_metadata(0))
+        holding_picker.select(selected_index)
+    summary_label.text = "TURN %d  •  %d GOLD  •  %d PROVISIONS  •  %d MATERIALS  •  %d / %d HOLDINGS" % [int(GameState.world_flags.get("empire_turn", 0)), GameState.party.gold, int(GameState.world_flags.get("empire_stockpile_provisions", 0)), int(GameState.world_flags.get("empire_stockpile_materials", 0)), claimed_count, definitions.size()]
     _refresh_detail()
+    _refresh_realm_admin()
     _building = false
 
 
-func _select_holding(id: String) -> void:
-    selected_id = id
+func _on_holding_selected(index: int) -> void:
+    if _building or index < 0 or index >= holding_picker.item_count:
+        return
+    selected_id = str(holding_picker.get_item_metadata(index))
+    _refresh_detail()
+
+
+func _refresh_realm_admin() -> void:
+    if realm_box == null:
+        return
+    for child in realm_box.get_children():
+        child.queue_free()
+    if not GameState.empire_management_unlocked():
+        realm_box.add_child(_label("REALM AUTHORITY NOT YET ESTABLISHED", 20, GOLD))
+        realm_box.add_child(_label("Secure your first external stronghold through its authored world objective. Once the holding is under House Dunmarrow's banner, realm tax policy, governors and royal decrees become available.", 16, DIM))
+        return
+
+    var summary: Dictionary = GameState.empire_summary()
+    realm_box.add_child(_label("THE ROYAL ADMINISTRATION", 22, GOLD))
+    realm_box.add_child(_label("Shared treasury  •  %d gold\nOwned regions  •  %d\nStability  •  %d / 100 (%s)\nLegitimacy  •  %d / 100\nMonthly projection  •  %+d gold" % [
+        int(summary.get("treasury", GameState.party.gold)),
+        (summary.get("owned_regions", []) as Array).size(),
+        int(summary.get("stability", 0)),
+        str(summary.get("stability_label", "Unknown")),
+        int(summary.get("legitimacy", 0)),
+        int(summary.get("monthly_net", 0))
+    ], 15))
+    realm_box.add_child(_label("TAX POLICY", 18, GOLD))
+    realm_box.add_child(_label("Higher taxes increase income but can weaken stability. The treasury is your existing party gold; there is no separate realm currency.", 14, DIM))
+    var tax_picker := OptionButton.new()
+    tax_picker.custom_minimum_size = Vector2(0, 46)
+    tax_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    var tax_values: Array[float] = [0.0, 0.05, 0.10, 0.15, 0.20, 0.25]
+    var selected_tax := 2
+    for i in range(tax_values.size()):
+        var rate := tax_values[i]
+        tax_picker.add_item("%d%% tax" % roundi(rate * 100.0))
+        tax_picker.set_item_metadata(i, rate)
+        if absf(rate - float(summary.get("tax_rate", 0.10))) < 0.001:
+            selected_tax = i
+    tax_picker.select(selected_tax)
+    tax_picker.item_selected.connect(_on_tax_rate_selected.bind(tax_picker))
+    realm_box.add_child(tax_picker)
+
+    realm_box.add_child(_label("REGIONAL GOVERNORS", 18, GOLD))
+    var owned_regions: Array = summary.get("owned_regions", [])
+    var governors: Dictionary = summary.get("governors", {})
+    if owned_regions.is_empty():
+        realm_box.add_child(_label("No fully held region is available for a governor. Resolve a regional objective and establish recognised control first.", 14, DIM))
+    else:
+        for region_value in owned_regions:
+            var region_id := str(region_value)
+            var region_card := PanelContainer.new()
+            region_card.add_theme_stylebox_override("panel", _style_panel(PANEL))
+            var region_column := VBoxContainer.new()
+            region_column.add_theme_constant_override("separation", 5)
+            region_card.add_child(region_column)
+            region_column.add_child(_label(region_id.replace("_", " ").capitalize(), 17, GOLD))
+            var picker := OptionButton.new()
+            picker.custom_minimum_size = Vector2(0, 44)
+            picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+            var current_governor := str(governors.get(region_id, ""))
+            picker.add_item("Select governor...")
+            picker.set_item_metadata(0, "")
+            var selected_governor := 0
+            for character_value in GameState.party.roster:
+                var character_id := str(character_value)
+                var assigned_elsewhere := false
+                for other_region in governors:
+                    if str(other_region) != region_id and str(governors[other_region]) == character_id:
+                        assigned_elsewhere = true
+                        break
+                if assigned_elsewhere and character_id != current_governor:
+                    continue
+                var character: Dictionary = GameData.characters.get(character_id, {})
+                picker.add_item(str(character.get("name", character_id)))
+                picker.set_item_metadata(picker.item_count - 1, character_id)
+                if character_id == current_governor:
+                    selected_governor = picker.item_count - 1
+            if picker.item_count == 1:
+                picker.set_item_text(0, "No eligible companions")
+                picker.disabled = true
+            else:
+                picker.select(selected_governor)
+            picker.item_selected.connect(_on_governor_selected.bind(region_id, picker))
+            region_column.add_child(picker)
+            realm_box.add_child(region_card)
+
+    realm_box.add_child(_label("ROYAL POLICIES", 18, GOLD))
+    var policy_copy := {
+        "granaries":"Improve food security and realm stability.",
+        "tax_relief":"Ease unrest and improve public confidence.",
+        "road_works":"Increase income from the existing holding economy.",
+        "regional_garrisons":"Strengthen security at an additional regional upkeep cost."
+    }
+    var active_policies: Array = summary.get("active_policies", [])
+    for policy_id in ["granaries", "tax_relief", "road_works", "regional_garrisons"]:
+        var definition: Dictionary = EmpireSystemScript.POLICY_DEFINITIONS[policy_id]
+        var cost := int(definition.get("cost", 0))
+        var active := active_policies.has(policy_id)
+        var policy_card := PanelContainer.new()
+        policy_card.add_theme_stylebox_override("panel", _style_panel(PANEL))
+        var policy_column := VBoxContainer.new()
+        policy_column.add_theme_constant_override("separation", 5)
+        policy_card.add_child(policy_column)
+        policy_column.add_child(_label("%s  •  %d GOLD" % [str(definition.get("name", policy_id)), cost], 16, GOLD))
+        policy_column.add_child(_label(str(policy_copy.get(policy_id, "")), 14, DIM))
+        var enact := _button("POLICY ACTIVE" if active else "ENACT POLICY", _enact_realm_policy.bind(policy_id))
+        enact.disabled = active or GameState.party.gold < cost
+        policy_column.add_child(enact)
+        realm_box.add_child(policy_card)
+
+
+func _on_tax_rate_selected(index: int, picker: OptionButton) -> void:
+    var rate := float(picker.get_item_metadata(index))
+    if GameState.set_empire_tax_rate(rate):
+        result_label.text = "Realm tax policy updated."
+        GameState.save_campaign("auto_a")
+    else:
+        result_label.text = "Tax policy could not be changed."
+    _refresh()
+
+
+func _on_governor_selected(index: int, region_id: String, picker: OptionButton) -> void:
+    if index < 0:
+        return
+    var character_id := str(picker.get_item_metadata(index))
+    if character_id == "":
+        return
+    if GameState.appoint_empire_governor(region_id, character_id):
+        result_label.text = "%s appointed as governor of %s." % [character_id.capitalize(), region_id.replace("_", " ").capitalize()]
+        GameState.save_campaign("auto_a")
+    else:
+        result_label.text = "That companion cannot govern this region."
+    _refresh()
+
+
+func _enact_realm_policy(policy_id: String) -> void:
+    var result: Dictionary = GameState.enact_empire_policy(policy_id)
+    result_label.text = "%s enacted." % str(result.get("name", policy_id)) if bool(result.get("ok", false)) else str(result.get("reason", "Policy could not be enacted."))
+    if bool(result.get("ok", false)):
+        GameState.save_campaign("auto_a")
     _refresh()
 
 
@@ -250,7 +408,8 @@ func _refresh_detail() -> void:
         var building_names := {"farm":"Granary Farms","workshop":"Civic Workshop","trade_post":"Trade Post","fortifications":"Fortifications"}
         var cost_gold := {"farm":45,"workshop":60,"trade_post":75,"fortifications":65}
         var cost_materials := {"farm":4,"workshop":6,"trade_post":5,"fortifications":8}
-        var building_row := HBoxContainer.new()
+        var building_row := VBoxContainer.new()
+        building_row.add_theme_constant_override("separation", 4)
         building_row.add_child(_label("%s  •  TIER %d/3" % [str(building_names[building_id]), tier], 14))
         building_row.add_child(_button("UPGRADE  %dG / %dM" % [int(cost_gold[building_id]) * (tier + 1), int(cost_materials[building_id]) * (tier + 1)], _develop_building.bind(building_id)))
         detail_box.add_child(building_row)
@@ -261,10 +420,13 @@ func _refresh_detail() -> void:
         var troop_names := {"levy":"Frontier Levy","archer":"March Archer","knight":"Household Knight"}
         var troop_cost := {"levy":18,"archer":32,"knight":65}
         var food_cost := {"levy":3,"archer":4,"knight":7}
-        var troop_row := HBoxContainer.new()
+        var troop_row := VBoxContainer.new()
+        troop_row.add_theme_constant_override("separation", 4)
         troop_row.add_child(_label("%s  •  RESERVE %d" % [str(troop_names[troop_id]), int(recruits.get(troop_id, 0))], 14))
-        troop_row.add_child(_button("RECRUIT 1  %dG / %dP" % [int(troop_cost[troop_id]), int(food_cost[troop_id])], _recruit_troop.bind(troop_id)))
-        troop_row.add_child(_button("GARRISON +1", _assign_recruit.bind(troop_id)))
+        var troop_actions := HBoxContainer.new()
+        troop_actions.add_child(_button("RECRUIT 1  %dG / %dP" % [int(troop_cost[troop_id]), int(food_cost[troop_id])], _recruit_troop.bind(troop_id)))
+        troop_actions.add_child(_button("GARRISON +1", _assign_recruit.bind(troop_id)))
+        troop_row.add_child(troop_actions)
         detail_box.add_child(troop_row)
 
     detail_box.add_child(_label("TACTICAL OPERATIONS", 17, GOLD))

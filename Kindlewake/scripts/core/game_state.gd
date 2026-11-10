@@ -262,7 +262,13 @@ func set_faction_diplomacy(faction_a: String, faction_b: String, next_state: Str
 
 ## Transfer a known atlas region after a battle, treaty or authored story outcome.
 func transfer_faction_region(region_id: String, new_owner: String, cause: String) -> bool:
-    return FactionSystem.transfer_region(faction_state, region_id, new_owner, cause)
+    var transferred := FactionSystem.transfer_region(faction_state, region_id, new_owner, cause)
+    if transferred:
+        var governors: Dictionary = empire_state.get("governors", {}).duplicate(true)
+        if new_owner != str(empire_state.get("ruler_faction", "")):
+            governors.erase(region_id)
+            empire_state["governors"] = governors
+    return transferred
 
 
 
@@ -456,7 +462,7 @@ func load_campaign(slot_id: String) -> bool:
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
     faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
-    empire_state = EmpireSystemScript.normalize_state(payload.get("empire_state", {}), _faction_ids())
+    empire_state = EmpireSystemScript.normalize_state(payload.get("empire_state", {}), _faction_ids(), faction_state, party.roster)
     companion_relationships = RelationshipSystem.normalize_state(payload.get("companion_relationships", {}))
     companion_quests = CompanionQuestSystem.normalize_state(payload.get("companion_quests", {}), {"quests": GameData.companion_quests})
     chronicle_state = ChronicleSystem.normalize_state(payload.get("chronicle_state", {}))
