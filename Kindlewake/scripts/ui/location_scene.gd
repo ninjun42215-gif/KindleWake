@@ -16,6 +16,7 @@ const PLAYER_RADIUS := 11.0
 const SPOT_RADIUS := 1.6                 # tiles
 
 var maps: Dictionary = {}
+var development_props: Array[Dictionary] = []
 var current_map_id: String = ""
 var lmap: LocalMap
 var camera: Camera2D
@@ -68,6 +69,7 @@ func cell_of(pos: Vector2) -> Vector2i:
 func _load_map(id: String, spawn: Vector2i) -> void:
     current_map_id = id
     lmap = maps[id]
+    _refresh_development_props()
     # Reapply discovered secret passages when a map is revisited.
     for secret_spot in lmap.spots:
         if str(secret_spot.get("kind", "")) == "secret":
@@ -485,6 +487,9 @@ func _draw() -> void:
     for s in lmap.spots:
         var sc: Vector2i = lmap.spot_cell(s)
         props.append({"y": cell_center(sc).y + 10.0, "kind": "spot", "spot": s})
+    for prop in development_props:
+        var pc: Vector2i = prop.get("cell", Vector2i.ZERO)
+        props.append({"y": cell_center(pc).y + 8.0, "kind": "development", "prop": prop})
     props.append({"y": player_pos.y + 6.0, "kind": "player"})
     props.sort_custom(func(a, b): return float(a["y"]) < float(b["y"]))
     for o in props:
@@ -494,10 +499,83 @@ func _draw() -> void:
             _draw_tree(d["cell"])
         elif k == "spot":
             _draw_spot(d["spot"])
+        elif k == "development":
+            _draw_development_prop(d["prop"])
         else:
             _draw_player()
     if has_target and not panel_open:
         draw_arc(target, 8.0, 0.0, TAU, 16, Color(1, 1, 1, 0.45), 2.0)
+
+
+func _refresh_development_props() -> void:
+    development_props.clear()
+    var map_to_holding := {
+        "sallow_ford_keep":"sallow_ford_keep",
+        "sallow_keep_hall":"sallow_ford_keep",
+        "sallow_keep_barracks":"sallow_ford_keep",
+        "milefort":"milefort",
+        "elderbough_watch":"elderbough_watch",
+        "elderbough_watch_hall":"elderbough_watch",
+        "redwater_granary":"redwater_granary",
+        "redwater_storehouse":"redwater_granary",
+        "morrowtide_exchange":"morrowtide_exchange",
+        "veyhaven_beacon":"veyhaven_beacon"
+    }
+    var holding_id := str(map_to_holding.get(current_map_id, ""))
+    if holding_id == "":
+        return
+    var used: Dictionary = {}
+    for spot in lmap.spots:
+        used[lmap.spot_cell(spot)] = true
+    used[lmap.entry] = true
+    for building_id in ["farm", "workshop", "trade_post", "fortifications"]:
+        var tier := clampi(int(GameState.world_flags.get("holding_building_" + holding_id + "_" + building_id, 0)), 0, 3)
+        for level in range(tier):
+            var placed := false
+            for y in range(1, lmap.height - 1):
+                for x in range(1, lmap.width - 1):
+                    var cell := Vector2i(x, y)
+                    if used.has(cell) or not lmap.walkable(cell) or lmap.tile_at(cell) != ".":
+                        continue
+                    used[cell] = true
+                    development_props.append({"cell":cell,"kind":building_id,"tier":level+1})
+                    placed = true
+                    break
+                if placed:
+                    break
+
+
+func _draw_development_prop(prop: Dictionary) -> void:
+    var cell: Vector2i = prop.get("cell", Vector2i.ZERO)
+    var center := cell_center(cell)
+    var kind := str(prop.get("kind", ""))
+    var tier := int(prop.get("tier", 1))
+    var scale := 1.0 + float(tier - 1) * 0.08
+    match kind:
+        "farm":
+            draw_rect(Rect2(center + Vector2(-17, -10), Vector2(34, 20)), Color(0.34, 0.23, 0.12))
+            for row in range(3):
+                var yy := center.y - 6.0 + float(row) * 6.0
+                draw_line(Vector2(center.x - 13, yy), Vector2(center.x + 13, yy), Color(0.55, 0.42, 0.20), 2.0)
+                for plant in range(4):
+                    draw_circle(Vector2(center.x - 10 + float(plant) * 7.0, yy - 2.0), 2.0, Color(0.38, 0.62, 0.29))
+        "workshop":
+            draw_rect(Rect2(center + Vector2(-16, -8), Vector2(32, 16)), Color(0.34, 0.20, 0.11))
+            draw_rect(Rect2(center + Vector2(-14, -13), Vector2(28, 5)), Color(0.62, 0.43, 0.23))
+            draw_line(center + Vector2(-8, 8), center + Vector2(-8, 15), Color(0.25, 0.16, 0.10), 3.0)
+            draw_line(center + Vector2(8, 8), center + Vector2(8, 15), Color(0.25, 0.16, 0.10), 3.0)
+        "trade_post":
+            draw_rect(Rect2(center + Vector2(-14, -12), Vector2(13, 13)), Color(0.56, 0.34, 0.16))
+            draw_rect(Rect2(center + Vector2(2, -7), Vector2(13, 13)), Color(0.68, 0.45, 0.22))
+            draw_line(center + Vector2(-14, -5), center + Vector2(-1, -5), Color(0.28, 0.18, 0.10), 2.0)
+            draw_line(center + Vector2(2, 0), center + Vector2(15, 0), Color(0.28, 0.18, 0.10), 2.0)
+        "fortifications":
+            for post in range(4):
+                var x := center.x - 15.0 + float(post) * 10.0
+                draw_rect(Rect2(Vector2(x, center.y - 13), Vector2(5, 26)), Color(0.47, 0.47, 0.48))
+            draw_rect(Rect2(center + Vector2(-17, -5), Vector2(34, 5)), Color(0.55, 0.55, 0.56))
+    if tier >= 2:
+        draw_circle(center + Vector2(0, -19), 3.0 * scale, Color(0.84, 0.69, 0.36))
 
 
 func _shade(c: Color, cell: Vector2i, amount: float = 0.1) -> Color:
