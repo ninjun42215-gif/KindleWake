@@ -9,7 +9,8 @@ const BUILDINGS := {
     "barracks": "Barracks  ·  220",
     "roads": "Road Network  ·  160",
     "fort": "Border Keep  ·  260",
-    "aqueduct": "Aqueduct  ·  240"
+    "aqueduct": "Aqueduct  ·  240",
+    "depot": "Supply Depot  ·  210"
 }
 const ROLES := {
     "steward": "Steward",
@@ -353,6 +354,43 @@ func _build_military() -> void:
         _metric(str(army.get("name", army_id)), "%d soldiers · %s" % [total, location.replace("_", " ").capitalize()], "Commander: %s · %s" % [str(army.get("commander", "Unassigned")) if str(army.get("commander", "")) != "" else "Unassigned", "Supplied" if bool(army.get("supplied", false)) else "Unsupplied"])
         for destination in adjacency.get(location, []):
             body.add_child(_button("March to " + str(destination).replace("_", " ").capitalize(), _move_field_army.bind(str(army_id), str(destination)), true))
+        if not GameState.player_controlled_provinces().has(location) and not GameState.empire_state.get("sieges", {}).has(location):
+            body.add_child(_button("Begin siege of " + location.replace("_", " ").capitalize(), _start_siege.bind(str(army_id), location), true))
+    _section("ACTIVE SIEGES")
+    var sieges: Dictionary = GameState.empire_state.get("sieges", {})
+    if sieges.is_empty():
+        body.add_child(_label("No provinces are currently under siege.", 14, C_DIM))
+    for region_id in sieges.keys():
+        var siege: Dictionary = sieges[region_id]
+        body.add_child(_label("%s · Progress %d/4 · %s" % [str(region_id).replace("_", " ").capitalize(), int(siege.get("progress", 0)), str(siege.get("status", "besieging")).replace("_", " ").capitalize()], 15, C_GOLD))
+        if bool(siege.get("captured", false)):
+            body.add_child(_button("Confirm occupation", _confirm_occupation.bind(str(region_id)), true))
+        elif int(siege.get("progress", 0)) >= 4:
+            body.add_child(_button("Assault breached defences", _assault_siege.bind(str(region_id)), true))
+
+
+func _start_siege(army_id: String, region_id: String) -> void:
+    var ok: bool = GameState.start_province_siege(army_id, region_id)
+    _set_message("The siege lines are established." if ok else "Cannot establish a siege here. The army must occupy a hostile region adjacent to your supply network.", ok)
+    GameState.save_campaign("auto_a")
+
+
+func _assault_siege(region_id: String) -> void:
+    var result: Dictionary = GameState.resolve_province_siege(region_id, 30, 1)
+    var ok: bool = bool(result.get("ok", false))
+    if ok:
+        message = "Assault %s · %d casualties · war exhaustion %d." % ["succeeded" if bool(result.get("won", false)) else "repulsed", int(result.get("casualties", 0)), int(result.get("war_exhaustion", 0))]
+    else:
+        message = "The siege assault cannot proceed: " + str(result.get("reason", "unknown"))
+    message_good = ok and bool(result.get("won", false))
+    GameState.save_campaign("auto_a")
+    _rebuild()
+
+
+func _confirm_occupation(region_id: String) -> void:
+    var ok: bool = GameState.confirm_siege_occupation(region_id)
+    _set_message("The province is transferred to your faction." if ok else "Occupation transfer failed; check faction control.", ok)
+    GameState.save_campaign("auto_a")
 
 
 func _select_field_commander(index: int, picker: OptionButton) -> void:
@@ -422,6 +460,10 @@ func _advance_season() -> void:
     ]
     if bool(report.get("food_shortage", false)):
         result += " Famine threatens public order!"
+    if int(report.get("sieges_advanced", 0)) > 0:
+        result += " %d siege operation(s) advanced; %d breached." % [int(report.get("sieges_advanced", 0)), int(report.get("sieges_completed", 0))]
+    if int(report.get("supply_losses", 0)) > 0:
+        result += " Supply attrition: %d soldiers lost." % int(report.get("supply_losses", 0))
     _set_message(result, not bool(report.get("food_shortage", false)))
     GameState.save_campaign("auto_a")
 
