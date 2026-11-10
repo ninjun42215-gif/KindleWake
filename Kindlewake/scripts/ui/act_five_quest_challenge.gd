@@ -80,7 +80,7 @@ func _render() -> void:
   return
  var resolved := int(f.get("act5_fires_resolved", 0))
  if resolved < 3:
-  var fire := System.FIRES[resolved]
+  var fire: String = str(System.FIRES[resolved])
   title_label.text = "THREE FIRES — %d / 3" % [resolved+1]
   if fire == "granary_fire":
    body_label.text = "Evidence corroboration: %d / 7 strands.\n\nThe granaries burn. Open them to feed the city and risk disorder, or save the grain stores and accept hunger through the night." % int(f.get("act5_evidence_count",0))
