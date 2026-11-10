@@ -210,7 +210,15 @@ func _refresh_detail() -> void:
     detail_box.add_child(_label("STRATEGIC VALUE\n• " + "\n• ".join(strategic_lines), 15, DIM))
     detail_box.add_child(_label("LOCAL OUTPUT  •  %d GOLD  /  %d PROVISIONS  /  %d MATERIALS" % [int(economy.get("gold", 0)), int(economy.get("provisions", 0)), int(economy.get("materials", 0))], 15, GOLD))
     if not claimed:
-        detail_box.add_child(_label("This location is not under your administration. Its capture must be resolved through the authored world objective, battle, or treaty. Remote holdings cannot be claimed from this screen.", 16, DIM))
+        detail_box.add_child(_label("This location is not under your administration. Capture requires a tactical victory or an authored treaty; this screen cannot claim it remotely.", 16, DIM))
+        var has_source := false
+        for source in definitions:
+            var source_id := str(source.get("id", ""))
+            if bool(GameState.world_flags.get("holding_claimed_" + source_id, false)) and str(GameState.world_flags.get("holding_owner_" + source_id, "")) == HOLDING:
+                has_source = true
+                break
+        if has_source:
+            detail_box.add_child(_button("ASSAULT THIS HOLDING", _launch_campaign_siege))
         return
 
     var stability := int(GameState.world_flags.get("holding_stability_" + id, 35))
@@ -292,6 +300,14 @@ func _change_garrison(delta: int) -> void:
         GameState.save_campaign("auto_a")
     else:
         result_label.text = str(result.get("reason", "Could not assign garrison."))
+
+
+func _launch_campaign_siege() -> void:
+    if not GameState.start_campaign_siege(selected_id):
+        result_label.text = "No valid friendly staging holding is available, or a siege is already active."
+        return
+    GameState.save_campaign("auto_a")
+    get_tree().change_scene_to_file("res://Main.tscn")
 
 
 func _launch_siege_assault() -> void:
