@@ -47,6 +47,7 @@ func _initialize() -> void:
     _test_empire_management()
     _test_field_army_supply_attrition()
     _test_supply_siege_and_tactical_bridge()
+    _test_strategic_battle_integration()
     _test_thalassar_region()
     _test_wraparound_world()
     _test_brinegate_quest()
@@ -1004,8 +1005,12 @@ func _test_supply_siege_and_tactical_bridge() -> void:
     var season_one: Dictionary = EmpireSystem.advance_season(state, controlled, adjacency)
     var season_two: Dictionary = EmpireSystem.advance_season(state, controlled, adjacency)
     check(int(state["sieges"]["orrowen_weald"]["progress"]) == 4 and int(season_one.get("sieges_advanced", 0)) == 1 and int(season_two.get("sieges_completed", 0)) == 1, "seasonal siege progress reaches a breach with supplied forces")
-    var assault: Dictionary = EmpireSystem.resolve_siege_assault(state, "orrowen_weald", 10, 0)
-    check(bool(assault.get("ok", false)) and bool(assault.get("won", false)) and bool(assault.get("territory_transfer_required", false)), "a successful assault requests an explicit faction territory transfer")
+    var battle_def: Dictionary = EmpireSystem.build_tactical_battle(state, army_id, {"id": "test_battle", "units": [{"character_id": "torren", "team": "player", "cell": [9, 10]}]}, "orrowen_weald", "house_orrowen", true, 1)
+    var battle_units: Array = battle_def.get("units", [])
+    check(not battle_def.is_empty() and battle_def.get("strategic_units", {}).size() == 4, "strategic army composition builds four tactical infantry cohorts")
+    check(battle_units.any(func(unit): return str(unit.get("character_id", "")) == "strategic_siege_engine"), "siege assault battle deploys a dedicated battering ram")
+    check(battle_units.any(func(unit): return str(unit.get("team", "")) == "enemy" and str(unit.get("character_id", "")).begins_with("strategic_defender_")), "hostile region garrison is generated as tactical defenders")
+    check(EmpireSystem.resolve_siege_battle(state, "orrowen_weald", true) and bool(state["sieges"]["orrowen_weald"].get("captured", false)), "winning the tactical siege assault breaches the occupation objective")
     check(int(state["war_exhaustion"]) > 2 and EmpireSystem.reduce_war_exhaustion(state, 5), "war exhaustion rises after an assault and can be reduced by a peace action")
     check(EmpireSystem.complete_siege_transfer(state, "orrowen_weald") and not state["sieges"].has("orrowen_weald"), "completed occupation closes the siege record")
     state["war_exhaustion"] = 75
@@ -1015,6 +1020,59 @@ func _test_supply_siege_and_tactical_bridge() -> void:
     check(int(state["stability"]) == stability_before_exhaustion - 1 and int(state["public_order"]) == order_before_exhaustion - 2, "severe war exhaustion carries a visible seasonal stability and order penalty")
     var restored: Dictionary = EmpireSystem.normalize_state(state)
     check(restored.get("sieges", {}).is_empty() and int(restored.get("war_exhaustion", 0)) >= 0, "siege and exhaustion data normalize safely for campaign saves")
+
+
+func _test_strategic_battle_integration() -> void:
+    print("[strategic battle integration]")
+    var state: Dictionary = EmpireSystem.new_state()
+    EmpireSystem.unlock(state)
+    state["treasury"] = 10000
+    var controlled: Array = ["sethmarch"]
+    var adjacency: Dictionary = {"sethmarch": ["orrowen_weald"], "orrowen_weald": ["sethmarch"]}
+    check(EmpireSystem.recruit_troops(state, "sethmarch", "infantry", 20, controlled), "integration test recruits an infantry field force")
+    var army_id: String = EmpireSystem.mobilize_army(state, "sethmarch", {"infantry": 20}, controlled)
+    check(army_id != "" and EmpireSystem.move_field_army(state, army_id, "orrowen_weald", adjacency, controlled), "integration test deploys its field army to a hostile region")
+    var battle_def: Dictionary = EmpireSystem.build_tactical_battle(state, army_id, gd.battle_def("battle_01"), "orrowen_weald", "house_orrowen", false, 1)
+    var db: Dictionary = gd.as_db()
+    var chars: Dictionary = db["characters"].duplicate(true)
+    var classes: Dictionary = db["classes"].duplicate(true)
+    for spawn in battle_def.get("units", []):
+        var character_id := str(spawn.get("character_id", ""))
+        if not character_id.begins_with("strategic_") or chars.has(character_id):
+            continue
+        var defender := character_id.begins_with("strategic_defender_")
+        var troop_type := "infantry"
+        if battle_def.get("strategic_units", {}).has(character_id):
+            troop_type = str(battle_def["strategic_units"][character_id]["troop_type"])
+        elif defender:
+            var parts := character_id.split("_")
+            troop_type = str(parts[2]) if parts.size() > 2 else "infantry"
+        var class_id := "swordsman"
+        var weapon_id := "arming_sword"
+        var stats := {"hp": 30, "mp": 0, "str": 8, "dex": 7, "int": 2, "vit": 8, "spd": 6, "lck": 3, "acc": 78, "eva": 10, "ldr": 2, "mor": 75}
+        if troop_type == "archers":
+            class_id = "archer"
+            weapon_id = "short_bow"
+            stats = {"hp": 24, "mp": 0, "str": 5, "dex": 10, "int": 2, "vit": 5, "spd": 8, "lck": 4, "acc": 88, "eva": 16, "ldr": 2, "mor": 75}
+        elif troop_type == "cavalry":
+            class_id = "knight"
+            weapon_id = "spear"
+            stats = {"hp": 36, "mp": 0, "str": 10, "dex": 7, "int": 2, "vit": 9, "spd": 8, "lck": 3, "acc": 80, "eva": 13, "ldr": 3, "mor": 75}
+        chars[character_id] = {"name": str(spawn.get("name", troop_type)), "class_id": class_id, "level": 1, "weapon_id": weapon_id, "armor_def": 2 if not defender else 4, "armor_res": 1, "skills": [], "stats": stats}
+    db["characters"] = chars
+    if battle_def.get("units", []).any(func(unit): return str(unit.get("character_id", "")) == "strategic_siege_engine"):
+        classes["siege_engine"] = {"name": "Battering Ram", "move": 2, "jump": 0}
+        chars["strategic_siege_engine"] = {"name": "Battering Ram", "class_id": "siege_engine", "level": 1, "weapon_id": "battle_axe", "armor_def": 8, "armor_res": 2, "skills": [], "stats": {"hp": 70, "mp": 0, "str": 12, "dex": 3, "int": 1, "vit": 14, "spd": 2, "lck": 1, "acc": 70, "eva": 0, "ldr": 0, "mor": 100}}
+    db["classes"] = classes
+    var controller := BattleController.new()
+    controller.setup(battle_def, db, 9191)
+    controller.begin()
+    var guard := 0
+    while controller.result == "" and guard < 800:
+        controller.run_ai_turn(true)
+        guard += 1
+    check(controller.result != "" and guard < 800, "generated field army and regional garrison complete a real BattleController simulation")
+    check(controller.units.size() > 8, "tactical encounter contains company, levy cohorts and regional defenders")
 
 
 func _test_thalassar_region() -> void:
