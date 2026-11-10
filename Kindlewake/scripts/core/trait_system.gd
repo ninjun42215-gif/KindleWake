@@ -6,7 +6,9 @@ extends RefCounted
 const MAX_HISTORY := 100
 
 static func definitions_from_json(data: Dictionary) -> Dictionary:
-    return (data.get("traits", {}) as Dictionary).duplicate(true)
+    var definitions: Dictionary = (data.get("traits", {}) as Dictionary).duplicate(true)
+    definitions["_synergies"] = (data.get("synergies", []) as Array).duplicate(true)
+    return definitions
 
 static func normalized_ids(values: Array) -> Array[String]:
     var out: Array[String] = []
@@ -24,7 +26,34 @@ static func stat_effects(trait_ids: Array, definitions: Dictionary) -> Dictionar
         for stat in effects:
             var key := str(stat)
             totals[key] = int(totals.get(key, 0)) + int(effects[stat])
+    for synergy in definitions.get("_synergies", []):
+        var synergy_def: Dictionary = synergy
+        var required: Array = synergy_def.get("requires", [])
+        var active := not required.is_empty()
+        for required_id in required:
+            if not trait_ids.has(str(required_id)):
+                active = false
+                break
+        if active:
+            var synergy_effects: Dictionary = synergy_def.get("effects", {})
+            for stat in synergy_effects:
+                var key := str(stat)
+                totals[key] = int(totals.get(key, 0)) + int(synergy_effects[stat])
     return totals
+
+static func active_synergies(trait_ids: Array, definitions: Dictionary) -> Array:
+    var active: Array = []
+    for synergy in definitions.get("_synergies", []):
+        var synergy_def: Dictionary = synergy
+        var required: Array = synergy_def.get("requires", [])
+        var matches := not required.is_empty()
+        for required_id in required:
+            if not trait_ids.has(str(required_id)):
+                matches = false
+                break
+        if matches:
+            active.append(synergy_def.duplicate(true))
+    return active
 
 static func can_acquire(trait_ids: Array, trait_id: String, definitions: Dictionary) -> Dictionary:
     if not definitions.has(trait_id):
