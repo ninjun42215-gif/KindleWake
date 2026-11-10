@@ -78,3 +78,8 @@ Do not seed traits onto the existing named cast merely from class or combat stat
 ### Authored Brinegate relationship consequences
 
 The harbour-ledger decision applies relationship changes only for recruited companions with an explicit `recruit.relationship_on_ledger_choice` definition. Maren Vey gains trust and respect when the evidence is made public, and loses a smaller amount of each when it is withheld. The relationship event uses a stable quest/choice/character/dimension evidence key, so revisiting the UI or reloading a save cannot farm the reward. Companions without authored reactions are unaffected. These consequences are separate from company loyalty and do not infer romance.
+
+
+### Companion tactical personality
+
+Party battle definitions now carry each deployed character's enduring traits, stress, recent memory types, active ambition focus and authored bonds with other deployed companions. BattleUnit treats these as optional transient context and serializes them with safe defaults for older battle snapshots. The tactical AI uses explicit `battle_behavior` metadata on traits to adjust risk tolerance and support priority; high stress and recent traumatic/betrayal memories increase caution. An ambition affects tactics only when story code explicitly assigns `combat_focus` as `aggressive` or `support`. Healing decisions modestly favor trusted companions, while the existing HP threshold, tactical range and damage calculations remain authoritative.
