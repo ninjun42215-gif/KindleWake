@@ -41,6 +41,7 @@ func _initialize() -> void:
     _test_opening_chapter()
     _test_opening_act_one_quests()
     _test_act_one_challenge_content()
+    _test_act_one_tactical_bosses()
     _test_escape_mission()
     _test_escape_ui_layout()
     _test_sigils()
@@ -183,6 +184,35 @@ func _test_act_one_challenge_content() -> void:
     check(toll_options.any(func(option): return str(option[1]) == "seal"), "Toll Book preserves the sealed evidence branch")
     var oath_options: Array = ActOneQuestChallenge.CHALLENGES["first_oath"].steps[2].options
     check(oath_options.any(func(option): return str(option[1]) == "people") and oath_options.any(func(option): return str(option[1]) == "law"), "First Oath preserves both political promise branches")
+
+
+func _test_act_one_tactical_bosses() -> void:
+    print("[Act I tactical boss encounters]")
+    var cases := [
+        {"id":"act1_hask_boss","boss":"hask_convoy_champion","flag":"act1_hask_defeated"},
+        {"id":"act1_ash_bailiff_boss","boss":"ash_bailiff","flag":"act1_ash_bailiff_defeated"}
+    ]
+    for entry in cases:
+        var battle_id := str(entry.id)
+        var boss_id := str(entry.boss)
+        var def: Dictionary = gd.battles.get(battle_id, {})
+        check(not def.is_empty(), battle_id + " battle data loads")
+        check(gd.characters.has(boss_id), boss_id + " boss character exists")
+        check(str(def.get("world_flag_on_victory", "")) == str(entry.flag), battle_id + " sets its story victory flag")
+        check(str(def.get("return_scene", "")) == "res://ActOneQuestChallenge.tscn", battle_id + " returns to the active story challenge")
+        var commander_found := false
+        var all_units_valid := true
+        for spawn in def.get("units", []):
+            var cid := str((spawn as Dictionary).get("character_id", ""))
+            if cid == boss_id and bool((spawn as Dictionary).get("commander", false)):
+                commander_found = true
+            if not gd.characters.has(cid):
+                all_units_valid = false
+        check(commander_found, battle_id + " has its boss as the commander objective")
+        check(all_units_valid, battle_id + " references only existing character data")
+        check((def.get("units", []) as Array).size() >= 7, battle_id + " includes a full tactical encounter roster")
+    check(int(gd.characters["hask_convoy_champion"].stats.hp) >= 90, "Hask has dedicated boss-grade health")
+    check(int(gd.characters["ash_bailiff"].stats.hp) >= 100, "Ash Bailiff has dedicated boss-grade health")
 
 
 func _test_escape_mission() -> void:
