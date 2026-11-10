@@ -264,7 +264,7 @@ func _build_provinces() -> void:
         picker.add_item(_character_name(id))
         picker.set_item_metadata(picker.item_count - 1, id)
     body.add_child(picker)
-    body.add_child(_button("Appoint governor", _appoint_governor.bind(province, picker)))
+    var appoint_button := _button("Appoint governor", _appoint_governor.bind(province, picker))\n    appoint_button.disabled = not controlled\n    body.add_child(appoint_button)
     if governor != "":
         body.add_child(_button("Recall governor", _recall_governor.bind(province)))
     _section("CONSTRUCTION")
@@ -381,7 +381,7 @@ func _set_message(text: String, good: bool) -> void:
     _rebuild()
 
 
-func _character_name(id: String) -> String:
+func _faction_name(id: String) -> String:\n    for faction in GameData.factions.get("factions", []):\n        if str(faction.get("id", "")) == id:\n            return str(faction.get("name", id))\n    return "Unclaimed" if id == "" else id.replace("_", " ").capitalize()\n\n\nfunc _character_name(id: String) -> String:
     if id == "":
         return "Vacant"
     var sh = GameState.party.sheet(id)
