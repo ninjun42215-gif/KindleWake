@@ -83,6 +83,7 @@ func _test_data() -> void:
     check(gd.weapons.size() >= 5, "weapons loaded")
     check(gd.strategic_warfare.get("troops", {}).has("infantry") and gd.strategic_warfare.get("troops", {}).has("archers") and gd.strategic_warfare.get("troops", {}).has("cavalry"), "authored tactical profiles load for all strategic troop types")
     check(gd.strategic_warfare.get("siege_engines", {}).has("battering_ram"), "authored siege engine profile loads")
+    check(gd.strategic_warfare.get("fortifications", {}).has("fort_gate"), "authored fortification objective profile loads")
     check(gd.strategic_warfare.get("garrisons", {}).get("faction_bonus", {}).has("tidebound_assembly"), "regional garrison composition includes faction-specific doctrine")
     var all_faction_doctrines := true
     var faction_bonuses: Dictionary = gd.strategic_warfare.get("garrisons", {}).get("faction_bonus", {})
@@ -1019,17 +1020,24 @@ func _test_supply_siege_and_tactical_bridge() -> void:
     var battle_units: Array = battle_def.get("units", [])
     check(not battle_def.is_empty() and battle_def.get("strategic_units", {}).size() == 3, "strategic army composition builds three tactical infantry cohorts")
     var has_ram := false
+    var has_gate := false
+    var has_gate_commander := false
     var has_defender := false
     for unit in battle_units:
         var unit_id := str(unit.get("character_id", ""))
         if unit_id == "strategic_siege_engine":
             has_ram = true
+        if unit_id == "strategic_fort_gate":
+            has_gate = true
+            has_gate_commander = bool(unit.get("commander", false))
         if str(unit.get("team", "")) == "enemy" and unit_id.begins_with("strategic_defender_"):
             has_defender = true
     check(has_ram, "siege assault battle deploys a dedicated battering ram")
+    check(has_gate and has_gate_commander, "breached siege battle makes the fort gate the commander objective")
     check(has_defender, "hostile region garrison is generated as tactical defenders")
     var siege_db: Dictionary = EmpireSystem.tactical_battle_database(gd.as_db(), battle_def, gd.strategic_warfare, 75)
     check(siege_db.get("characters", {}).has("strategic_siege_engine") and siege_db.get("classes", {}).has("siege_engine"), "authored battering ram resolves to a dedicated tactical class")
+    check(siege_db.get("characters", {}).has("strategic_fort_gate") and siege_db.get("classes", {}).has("fort_gate"), "authored fort gate resolves to a destructible tactical objective")
     check(EmpireSystem.resolve_siege_battle(state, "orrowen_weald", true) and bool(state["sieges"]["orrowen_weald"].get("captured", false)), "winning the tactical siege assault breaches the occupation objective")
     check(int(state["war_exhaustion"]) > 2 and EmpireSystem.reduce_war_exhaustion(state, 5), "war exhaustion rises after an assault and can be reduced by a peace action")
     check(EmpireSystem.complete_siege_transfer(state, "orrowen_weald") and not state["sieges"].has("orrowen_weald"), "completed occupation closes the siege record")
