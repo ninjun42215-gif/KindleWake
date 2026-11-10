@@ -1002,7 +1002,7 @@ func _test_supply_siege_and_tactical_bridge() -> void:
     check(EmpireSystem.start_siege(state, army_id, "orrowen_weald", controlled, adjacency), "an army on a hostile frontier can begin a siege")
     check(not EmpireSystem.start_siege(state, army_id, "sethmarch", controlled, adjacency), "friendly provinces cannot be besieged")
     var season_one: Dictionary = EmpireSystem.advance_season(state, controlled, adjacency)
-    var season_two: Dictionary = EmpireSystem.advance_season(state, regions, adjacency)
+    var season_two: Dictionary = EmpireSystem.advance_season(state, controlled, adjacency)
     check(int(state["sieges"]["orrowen_weald"]["progress"]) == 4 and int(season_one.get("sieges_advanced", 0)) == 1 and int(season_two.get("sieges_completed", 0)) == 1, "seasonal siege progress reaches a breach with supplied forces")
     var assault: Dictionary = EmpireSystem.resolve_siege_assault(state, "orrowen_weald", 10, 0)
     check(bool(assault.get("ok", false)) and bool(assault.get("won", false)) and bool(assault.get("territory_transfer_required", false)), "a successful assault requests an explicit faction territory transfer")
@@ -1011,7 +1011,7 @@ func _test_supply_siege_and_tactical_bridge() -> void:
     state["war_exhaustion"] = 75
     var stability_before_exhaustion: int = int(state["stability"])
     var order_before_exhaustion: int = int(state["public_order"])
-    EmpireSystem.advance_season(state, regions, adjacency)
+    EmpireSystem.advance_season(state, controlled, adjacency)
     check(int(state["stability"]) == stability_before_exhaustion - 1 and int(state["public_order"]) == order_before_exhaustion - 2, "severe war exhaustion carries a visible seasonal stability and order penalty")
     var restored: Dictionary = EmpireSystem.normalize_state(state)
     check(restored.get("sieges", {}).is_empty() and int(restored.get("war_exhaustion", 0)) >= 0, "siege and exhaustion data normalize safely for campaign saves")
