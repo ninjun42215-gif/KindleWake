@@ -90,20 +90,22 @@ static func appoint_councillor(state: Dictionary, role: String, character_id: St
 
 
 static func dismiss_councillor(state: Dictionary, role: String) -> bool:
-    if not bool(state.get("unlocked", false)) or not COUNCIL_ROLES.has(role) or not state.get("council", {}).has(role):
-        return false
-    var previous := str(state["council"].get(role, ""))
-    state["council"].erase(role)
-    _record(state, "council_dismissal", {"role": role, "character": previous})
-    return true
+	if not bool(state.get("unlocked", false)) or not COUNCIL_ROLES.has(role) or not state.get("council", {}).has(role):
+		return false
+	var previous := str(state["council"].get(role, ""))
+	state["council"].erase(role)
+	_record(state, "council_dismissal", {"role": role, "character": previous})
+	return true
+
 
 static func dismiss_governor(state: Dictionary, province_id: String) -> bool:
-    if not bool(state.get("unlocked", false)) or not state.get("governors", {}).has(province_id):
-        return false
-    var previous := str(state["governors"].get(province_id, ""))
-    state["governors"].erase(province_id)
-    _record(state, "governor_recall", {"province": province_id, "character": previous})
-    return true
+	if not bool(state.get("unlocked", false)) or not state.get("governors", {}).has(province_id):
+		return false
+	var previous := str(state["governors"].get(province_id, ""))
+	state["governors"].erase(province_id)
+	_record(state, "governor_recall", {"province": province_id, "character": previous})
+	return true
+
 
 static func appoint_governor(state: Dictionary, province_id: String, character_id: String, known_provinces: Array) -> bool:
 	if not bool(state.get("unlocked", false)) or not known_provinces.has(province_id) or character_id.strip_edges() == "":
