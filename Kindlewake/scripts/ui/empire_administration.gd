@@ -331,7 +331,7 @@ func _build_military() -> void:
             if str(character_id) == selected_commander:
                 commander_index = commander_picker.item_count - 1
         commander_picker.select(commander_index)
-        commander_picker.item_selected.connect(_select_field_commander)
+        commander_picker.item_selected.connect(_select_field_commander.bind(commander_picker))
         body.add_child(_label("Appoint a party character to command the new field army:", 14, C_DIM))
         body.add_child(commander_picker)
         body.add_child(_button("Mobilize 5 Infantry into Field Army", _mobilize_field_army.bind(selected_province, {"infantry": 5}), true))
@@ -353,8 +353,7 @@ func _build_military() -> void:
             body.add_child(_button("March to " + str(destination).replace("_", " ").capitalize(), _move_field_army.bind(str(army_id), str(destination)), true))
 
 
-func _select_field_commander(index: int) -> void:
-    var picker := body.get_child(body.get_child_count() - 1) as OptionButton
+func _select_field_commander(index: int, picker: OptionButton) -> void:
     selected_commander = str(picker.get_item_metadata(index))
 
 
