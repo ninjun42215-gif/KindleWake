@@ -127,6 +127,24 @@
       ],
       "completion_reward": {
         "gold": 35
+      },
+      "synopsis": "Anselm finds his name on a muster order issued after the fighting ended. He traces the order through a drill ground and hears the soldiers who were pressured to serve. The company must decide whether to expose the false muster, offer lawful service, or refuse to legitimise the unit.",
+      "journal_summary": "Trace the false muster order that threatens Anselm's former soldiers, verify the drill-ground record and hear the men before deciding what justice requires.",
+      "resolution_prompt": "The muster order is proven unlawful, but the soldiers still need a future. What should Anselm ask of the company and the town?",
+      "outcome_labels": {
+        "testify": "Testify against the false muster",
+        "lawful_service": "Offer a lawful service compact",
+        "refuse_unit": "Refuse to rebuild the unit"
+      },
+      "outcome_descriptions": {
+        "testify": "Anselm gives a public account of the false muster and accepts that the officers responsible may retaliate.",
+        "lawful_service": "The soldiers receive a voluntary, time-limited service compact with wages, clear command and the right to leave.",
+        "refuse_unit": "Anselm refuses to preserve the old unit in any form. The soldiers are helped to return to civilian work."
+      },
+      "outcome_flags": {
+        "testify": "anselm_outcome_testimony",
+        "lawful_service": "anselm_outcome_lawful_compact",
+        "refuse_unit": "anselm_outcome_refused_unit"
       }
     },
     "q_companion_petra_bitter_draught": {
@@ -146,6 +164,24 @@
       ],
       "completion_reward": {
         "gold": 35
+      },
+      "synopsis": "Petra discovers that a charitable ward has been distributing a diluted treatment while its accounts record full-strength medicine. She verifies the surviving doses, interviews patients and must choose between public exposure, a restorative agreement or protecting a vulnerable informant.",
+      "journal_summary": "Audit the ward's medicine ledger, verify the treatment and hear patients before Petra decides how to answer a dangerous medical fraud.",
+      "resolution_prompt": "The ward's false accounts are proven, but exposing every name could harm patients and the informant. How should Petra proceed?",
+      "outcome_labels": {
+        "publish_error": "Publish the ward's errors",
+        "restorative_agreement": "Secure a restorative agreement",
+        "protect_identity": "Protect the informant's identity"
+      },
+      "outcome_descriptions": {
+        "publish_error": "Petra publishes the falsified accounts and treatment record, making the institution answer publicly while redacting patient names.",
+        "restorative_agreement": "The ward accepts independent oversight, replaces the diluted medicine and compensates affected families under a signed agreement.",
+        "protect_identity": "Petra gives the verified evidence to an independent healer's circle and keeps the informant's identity sealed."
+      },
+      "outcome_flags": {
+        "publish_error": "petra_outcome_public_record",
+        "restorative_agreement": "petra_outcome_restoration",
+        "protect_identity": "petra_outcome_identity_protected"
       }
     },
     "q_companion_dorian_unspent_bolt": {
@@ -165,6 +201,24 @@
       ],
       "completion_reward": {
         "gold": 50
+      },
+      "synopsis": "Dorian recognises the fletching on a bolt recovered from a convoy ambush. Reconstructing the shot reveals that the attack was staged to conceal a quartermaster's diversion of supplies. Dorian must decide whether to testify, make restitution or refuse an easy absolution.",
+      "journal_summary": "Reconstruct the convoy shot that still haunts Dorian, follow the missing supplies and confront the quartermaster who profited from the ambush.",
+      "resolution_prompt": "The quartermaster's diversion is proven, but Dorian's bolt caused a death during the staged ambush. What should happen next?",
+      "outcome_labels": {
+        "give_testimony": "Give testimony at the hearing",
+        "make_restitution": "Make restitution to the family",
+        "decline_absolution": "Decline public absolution"
+      },
+      "outcome_descriptions": {
+        "give_testimony": "Dorian testifies fully, including his own actions, so the quartermaster's diversion and the ambush can be judged together.",
+        "make_restitution": "Dorian directs the recovered convoy funds toward the victim's family and accepts a private hearing rather than a public pardon.",
+        "decline_absolution": "Dorian refuses to let the quartermaster's crimes erase his own responsibility. He preserves the evidence and leaves judgment to the family."
+      },
+      "outcome_flags": {
+        "give_testimony": "dorian_outcome_testimony",
+        "make_restitution": "dorian_outcome_restitution",
+        "decline_absolution": "dorian_outcome_no_absolution"
       }
     },
     "q_companion_edda_iron_and_ash": {
