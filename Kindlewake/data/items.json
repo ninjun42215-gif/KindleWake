@@ -1595,6 +1595,54 @@
       "price": 0,
       "unique": true,
       "lore": "A singular relic whose history is bound to the fate of Sethmarch."
+    },
+    "deepwater_spice": {
+      "name": "Deepwater Spice",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 125,
+      "trade_good": true,
+      "description": "A fragrant spice carried through the newly charted merchant passage. High demand in inland markets."
+    },
+    "stormglass": {
+      "name": "Stormglass",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 180,
+      "trade_good": true,
+      "description": "Sea-polished glass recovered from storm reefs. Sailors prize it for signal lenses and navigation charms."
+    },
+    "northstar_chart": {
+      "name": "Northstar Chart Fragment",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 95,
+      "trade_good": true,
+      "description": "A copied fragment of the Northstar's route, useful to merchants studying the shoals."
+    },
+    "reef_salt": {
+      "name": "Reef Salt",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 45,
+      "trade_good": true,
+      "description": "Coarse salt harvested by Saltmere fishers and traded along the protected coastal route."
+    },
+    "smoked_tidefish": {
+      "name": "Smoked Tidefish",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 70,
+      "trade_good": true,
+      "description": "A shelf-stable coastal delicacy prepared by local fishing families."
+    },
+    "kelp_linen": {
+      "name": "Kelp Linen",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 60,
+      "trade_good": true,
+      "description": "Strong woven kelp fibre used for nets, sail patches and waterproof bindings."
     }
   },
   "grades": {
