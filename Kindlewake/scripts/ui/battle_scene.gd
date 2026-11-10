@@ -439,8 +439,11 @@ func _on_zoom_out() -> void:
 
 
 func _on_world_pressed() -> void:
-    if str(battle_def.get("id", "")) == "east_gallery_escape" and controller.result != "victory":
-        get_tree().change_scene_to_file("res://Escape.tscn")
+    if str(battle_def.get("id", "")) == "east_gallery_escape":
+        if controller.result != "victory":
+            get_tree().change_scene_to_file("res://Escape.tscn")
+            return
+        get_tree().change_scene_to_file("res://KaerArrival.tscn")
         return
     if controller.result == "defeat" and _all_company_members_fallen():
         GameState.new_game()
