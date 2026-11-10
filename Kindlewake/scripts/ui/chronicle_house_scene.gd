@@ -77,7 +77,7 @@ func _build() -> void:
  spouse_b = OptionButton.new()
  col.add_child(spouse_a)
  col.add_child(spouse_b)
- col.add_child(_button("Record marriage",_marry))
+ col.add_child(_button("Record marriage",_marry))\n member_name = LineEdit.new()\n member_name.placeholder_text = "Unrelated adult / prospective spouse"\n col.add_child(member_name)\n member_age = SpinBox.new()\n member_age.min_value = 18\n member_age.max_value = 80\n member_age.value = 25\n member_age.prefix = "Age " \n col.add_child(member_age)\n col.add_child(_button("Record an allied adult",_add_member))
  _section(col,"CHARACTER TRAITS")
  trait_picker = OptionButton.new()
  for trait_id in Dynasty.TRAITS.keys():
@@ -183,6 +183,17 @@ func _add_child() -> void:
  state = result.state
  selected_person = str(result.person_id)
  child_name.clear()
+ _save()
+ _refresh()
+
+func _add_member() -> void:
+ var result := Dynasty.add_house_member(state,member_name.text,int(member_age.value),[])
+ if not bool(result.get("ok",false)):
+  status.text = str(result.get("reason","Could not add member."))
+  return
+ state = result.state
+ selected_person = str(result.person_id)
+ member_name.clear()
  _save()
  _refresh()
 
