@@ -21,6 +21,7 @@ var turn_count: int = 0
 var next_unit_id: int = 1
 var result: String = ""              # "" while running, then "victory" or "defeat"
 var _skip_guard: int = 0
+var boss_phase_index: int = -1
 
 
 # ---------------------------------------------------------------- setup / persistence
@@ -37,6 +38,7 @@ func setup(battle_def: Dictionary, database: Dictionary, seed_value: int = 0) ->
     turn_count = 0
     active_id = -1
     _skip_guard = 0
+    boss_phase_index = -1
     var chars: Dictionary = db.get("characters", {})
     var classes: Dictionary = db.get("classes", {})
     var spawns: Array = def.get("units", [])
@@ -67,6 +69,11 @@ func _init_static(battle_def: Dictionary, database: Dictionary) -> void:
 
 func begin() -> void:
     log_message.emit("Battle begins: " + str(def.get("title", "")))
+    var phases: Array = def.get("boss_phases", [])
+    if not phases.is_empty():
+        boss_phase_index = 0
+        var phase: Dictionary = phases[0]
+        log_message.emit("%s — %s. Objective: %s." % [str(def.get("boss_name", "Regional Guardian")), str(phase.get("hazard", "")), str(phase.get("objective", ""))])
     _start_next_turn()
 
 
@@ -83,6 +90,7 @@ func to_dict() -> Dictionary:
         "turn_count": turn_count,
         "next_unit_id": next_unit_id,
         "result": result,
+        "boss_phase_index": boss_phase_index,
         "rng_seed": str(rng.seed),
         "rng_state": str(rng.state),
     }
@@ -101,6 +109,7 @@ func restore(battle_def: Dictionary, database: Dictionary, saved: Dictionary) ->
     turn_count = int(saved.get("turn_count", 0))
     next_unit_id = int(saved.get("next_unit_id", units.size() + 1))
     result = str(saved.get("result", ""))
+    boss_phase_index = int(saved.get("boss_phase_index", -1))
     rng.seed = str(saved.get("rng_seed", "1")).to_int()
     rng.state = str(saved.get("rng_state", "1")).to_int()
     _skip_guard = 0
@@ -270,6 +279,7 @@ func try_attack(unit: BattleUnit, target: BattleUnit) -> bool:
         msg = "%s misses %s." % [unit.display_name, target.display_name]
     log_message.emit(msg)
     unit_acted.emit(unit.id, "attack", {"target_id": target.id, "result": res})
+    _update_boss_phase(target)
     if bool(res["killed"]):
         log_message.emit("%s is defeated!" % target.display_name)
         unit.kills += 1
@@ -330,6 +340,7 @@ func _cast_damage(unit: BattleUnit, skill_id: String, sk: Dictionary, target: Ba
     unit.facing = BattleMap.facing_from_delta(target.cell - unit.cell)
     log_message.emit("%s uses %s on %s for %d." % [unit.display_name, str(sk.get("name", skill_id)), target.display_name, int(res["damage"])])
     unit_acted.emit(unit.id, "skill_damage", {"target_id": target.id, "damage": int(res["damage"]), "killed": bool(res["killed"]), "status": applied_status})
+    _update_boss_phase(target)
     if bool(res["killed"]):
         log_message.emit("%s is defeated!" % target.display_name)
         unit.kills += 1
@@ -368,6 +379,25 @@ func run_ai_turn(force: bool = false) -> void:
 
 
 # ---------------------------------------------------------------- internals
+
+func _update_boss_phase(target: BattleUnit) -> void:
+    var phases: Array = def.get("boss_phases", [])
+    if phases.is_empty() or target == null or target.team != "enemy" or not target.is_commander or not target.is_alive():
+        return
+    for i in range(boss_phase_index + 1, phases.size()):
+        var phase: Dictionary = phases[i]
+        var trigger := str(phase.get("trigger", ""))
+        var parts := trigger.split("_")
+        if parts.size() < 3 or parts[0] != "below":
+            continue
+        var threshold := int(parts[1])
+        var hp_percent := int(floor(float(target.hp) * 100.0 / float(maxi(1, target.max_hp()))))
+        if hp_percent <= threshold:
+            boss_phase_index = i
+            log_message.emit("%s enters phase %d: %s. Objective: %s." % [str(def.get("boss_name", target.display_name)), i + 1, str(phase.get("hazard", "")), str(phase.get("objective", ""))])
+        else:
+            break
+
 
 func _start_next_turn() -> void:
     if result != "":
