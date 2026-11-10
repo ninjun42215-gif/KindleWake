@@ -93,10 +93,11 @@ Do not inflate the 15-skill catalogue by adding superficial variants. Add abilit
 
 ### 3. Traits and personality
 
-The 69 traits and five synergies are a substantial foundation. The 20 event definitions are templates, not automatic triggers. The closed, unmerged PR #99 proposed 40 templates, but that expansion is not part of main.
+The 69 traits and five synergies are a substantial foundation. The 40 event definitions are templates, not automatic triggers. The closed, unmerged PR #99 proposed 40 templates, but that expansion is not part of main.
 
 Next:
-- Connect evidence to committed outcomes in battle, quests, dialogue, training, crafting, and exploration.
+- Wire evidence to committed outcomes across battle, quests, dialogue, training, crafting, and exploration; avoid leaving behavior counters as API-only state.
+- Add a clear ambition assignment/selection UI, explain objective progress, and expose completion/failure outcomes.
 - Keep evidence IDs unique and deduplicated.
 - Never infer morality, betrayal, romance, trauma, cowardice, or consent from generic combat heuristics.
 - Add a touch-friendly trait journal with acquisition/removal history and explainable effects.
