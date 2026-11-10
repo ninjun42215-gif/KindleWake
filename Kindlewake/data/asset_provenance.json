@@ -25,9 +25,9 @@
       "license": null,
       "license_evidence": null,
       "license_status": "unverified",
-      "used_in_game": true,
-      "release_blocker": true,
-      "notes": "Credits record says no licence file was present in the ZIPs. Obtain authoritative licence evidence before distribution."
+      "used_in_game": false,
+      "release_blocker": false,
+      "notes": "Legacy PNGs are retained for provenance/history but are no longer loaded; replaced in-game by original KindleWake vector settlement art."
     },
     {
       "id": "tiny-rpg-character-pack-01",
@@ -80,6 +80,19 @@
       "used_in_game": true,
       "release_blocker": false,
       "notes": "Original vector artwork; keep this entry aligned with the actual files in use."
+    },
+    {
+      "id": "kindlewake-settlement-vector-art",
+      "name": "Kindlewake original settlement building illustrations",
+      "author": "Kindlewake project",
+      "source_reference": "Original SVG assets authored in this repository",
+      "source_url": null,
+      "license": "Original project content",
+      "license_evidence": "Repository source history",
+      "license_status": "verified",
+      "used_in_game": true,
+      "release_blocker": false,
+      "notes": "Original vector replacements for house_a, house_b, house_c, hut, keep, tower_a, tower_b and tower_c. Loaded directly by Art.world()."
     }
   ]
 }
