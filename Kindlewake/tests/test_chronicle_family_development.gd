@@ -50,7 +50,7 @@ func _initialize() -> void:
  var recognized := Dynasty.resolve_title_claim(state,"heir_2","founder_barony","recognize")
  check(bool(recognized.ok) and str(recognized.state.titles["founder_barony"].holder) == "heir_2","recognized claim transfers title and preserves the claim record")
  state = recognized.state
- var saved := JSON.parse_string(JSON.stringify(state))
+ var saved: Variant = JSON.parse_string(JSON.stringify(state))
  var restored := Dynasty.normalize_state(saved)
  check(restored.council.size() == 2 and restored.people[child_id].education.completed,"council and education survive offline save normalization")
  print("Chronicle family development checks: %d   Failures: %d" % [checks,failures])
