@@ -24,6 +24,7 @@ func _initialize() -> void:
     gd.reload()
     ss = load("res://scripts/core/save_system.gd").new()
     _test_data()
+    _test_regional_bestiary()
     _test_class_tree()
     _test_character_creation()
     _test_map()
@@ -104,6 +105,37 @@ func _test_data() -> void:
         var cdef: Dictionary = db["characters"][cid]
         check(db["classes"].has(str(cdef["class_id"])), "class exists for " + cid)
         check(db["weapons"].has(str(cdef["weapon_id"])), "weapon exists for " + cid)
+
+
+func _test_regional_bestiary() -> void:
+    print("[regional bestiary]")
+    check(gd.bestiary.has("species") and (gd.bestiary.get("species", {}) as Dictionary).size() >= 18, "bestiary loads a broad roster of original enemy species")
+    var species: Dictionary = gd.bestiary.get("species", {})
+    var enemy_db: Dictionary = gd.as_db().get("characters", {})
+    var all_refs_valid := true
+    for species_id in species.keys():
+        var record: Dictionary = species[species_id]
+        var cid := str(record.get("battle_character_id", ""))
+        if not enemy_db.has(cid) or str(enemy_db[cid].get("house", "")) != "none":
+            all_refs_valid = false
+    check(all_refs_valid, "every bestiary species resolves to a battle-ready enemy character")
+    var regional_rng := RandomNumberGenerator.new()
+    regional_rng.seed = 417
+    var regions: Dictionary = gd.bestiary.get("regions", {})
+    for region_id in ["sethmarch", "brinegate_coast"]:
+        var def: Dictionary = EncounterBuilder.build_regional_skirmish(gd.bestiary, region_id, gd.battles, regional_rng)
+        check(not def.is_empty(), "regional encounter builds for " + region_id)
+        var enemy_count := 0
+        var valid_spawns := true
+        for spawn in (def.get("units", []) as Array):
+            var unit: Dictionary = spawn
+            if str(unit.get("team", "")) == "enemy":
+                enemy_count += 1
+                if not enemy_db.has(str(unit.get("character_id", ""))):
+                    valid_spawns = false
+        check(enemy_count >= 3 and enemy_count <= 5, "regional encounter has a valid enemy group for " + region_id)
+        check(valid_spawns, "regional encounter references valid enemy definitions for " + region_id)
+    check(EncounterBuilder.build_regional_skirmish(gd.bestiary, "unreleased_region", gd.battles, regional_rng).is_empty(), "unreleased territories do not invent playable encounters")
 
 
 func _test_prologue() -> void:
