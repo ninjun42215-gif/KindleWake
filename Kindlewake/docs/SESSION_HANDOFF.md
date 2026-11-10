@@ -152,4 +152,4 @@
 - Added regional tariffs, authorized empire tariff/route-policy APIs, four regional corridors, tolls, protected routes, route closure and active-region travel integration.
 - Added smuggling with customs seizure, fines and rising heat; guards reduce detection probability.
 - Added legacy trade-state normalization and strict regression assertions. Campaign save schema remains 4; game version remains 0.12.0.
-- Scope: gameplay rules, data and GameState campaign APIs are implemented. Dedicated merchant UI, guild hall UI, visual route map, and empire policy screens are not yet wired. Exact-head Godot import/tests/APK CI must pass before merge; physical Android QA remains separate.
+- Added the player-facing Merchant Exchange overlay to the overworld HUD and settlement scenes. It exposes regional market buy/sell, cargo weight, caravan purchase/upgrades/guards, contracts, guilds, smuggling, route travel, and unlock-gated imperial tariff/toll/protection/closure policies. Successful route travel reloads the destination world scene. Exact-head Godot import/tests/APK CI must pass before merge; physical Android QA remains separate.
