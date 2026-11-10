@@ -269,7 +269,8 @@
           ],
           "commander": "bog_ironbrute"
         }
-      ]
+      ],
+      "ambush_text": "Ambush! Marsh hounds break from the reeds as something moves beneath the black water."
     },
     "brinegate_coast": {
       "name": "Brinegate Coast",
@@ -340,7 +341,8 @@
           ],
           "commander": "reef_matriarch"
         }
-      ]
+      ],
+      "ambush_text": "Ambush! Shore-raiders and reef-born things surge from the tide pools."
     }
   }
 }
