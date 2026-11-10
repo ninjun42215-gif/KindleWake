@@ -137,7 +137,7 @@ func start_regional_boss_for_region(region_id: String) -> bool:
     var continent_id := continent_for_region(region_id)
     if continent_id == "" or not regional_boss_available(region_id):
         return false
-    var battle_id := "battle_boss_" + {
+    var boss_battle_ids := {
         "eldrimar":"hollow_hart",
         "thalassar":"drowned_crown",
         "varakhan":"ash_regent",
@@ -145,7 +145,8 @@ func start_regional_boss_for_region(region_id: String) -> bool:
         "veyrwood":"briar_sovereign",
         "asterreach":"star_eater",
         "ilyr":"last_cantor"
-    }.get(continent_id, "")
+    }
+    var battle_id := "battle_boss_" + str(boss_battle_ids.get(continent_id, ""))
     var def: Dictionary = GameData.battle_def(battle_id)
     if def.is_empty():
         return false
