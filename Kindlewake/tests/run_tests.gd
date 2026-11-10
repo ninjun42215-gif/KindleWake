@@ -1046,6 +1046,13 @@ func _test_supply_siege_and_tactical_bridge() -> void:
         siege_controller.run_ai_turn(true)
         siege_guard += 1
     check(siege_controller.result != "" and siege_guard < 800, "battering ram and garrison gate objective resolve in BattleController simulation")
+    var gate_objective_test := BattleController.new()
+    gate_objective_test.setup(battle_def, siege_db, 9193)
+    for unit in gate_objective_test.units:
+        if unit.character_id == "strategic_fort_gate":
+            unit.hp = 0
+    gate_objective_test._check_end()
+    check(gate_objective_test.result == "victory", "destroying the fort gate commander objective completes the siege battle")
     check(EmpireSystem.resolve_siege_battle(state, "orrowen_weald", true) and bool(state["sieges"]["orrowen_weald"].get("captured", false)), "winning the tactical siege assault breaches the occupation objective")
     check(int(state["war_exhaustion"]) > 2 and EmpireSystem.reduce_war_exhaustion(state, 5), "war exhaustion rises after an assault and can be reduced by a peace action")
     check(EmpireSystem.complete_siege_transfer(state, "orrowen_weald") and not state["sieges"].has("orrowen_weald"), "completed occupation closes the siege record")
