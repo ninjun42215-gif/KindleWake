@@ -324,7 +324,11 @@ func _open_place(p: Dictionary, extra: String = "") -> void:
     var text: String = str(p.get("text", ""))
     _clear_children(place_buttons)
     var town: String = str(p.get("town", ""))
-    if town != "" and GameData.locations.get("maps", {}).has(town):
+    var can_enter_town := true
+    if id == "northstar_wreck" and not bool(GameState.world_flags.get("maren_signal_solved", false)):
+        can_enter_town = false
+        text += "\n\nThe wreck is hidden among the shoals. Restore the old beacon signal at Lantern Quay before attempting to chart a safe approach."
+    if town != "" and GameData.locations.get("maps", {}).has(town) and can_enter_town:
         place_buttons.add_child(_btn("Enter %s" % str(p.get("name", "town")), _enter_town.bind(p), 24))
     if kind == "charter":
         if not bool(GameState.world_flags.get("east_gallery_escaped", false)):
@@ -345,11 +349,14 @@ func _open_place(p: Dictionary, extra: String = "") -> void:
         else:
             place_buttons.add_child(_btn("Search the ruins", _on_search.bind(p), 24))
     elif kind == "dungeon":
-        var clear_flag: String = str(p.get("world_flag_on_victory", "dungeon_" + id + "_cleared"))
-        if bool(GameState.world_flags.get(clear_flag, false)):
-            text += "\n\nThe dungeon's guardian has fallen. The route is quiet."
+        if id == "northstar_wreck" and not bool(GameState.world_flags.get("maren_signal_solved", false)):
+            pass
         else:
-            text += "\n\nThe entrance leads into an explorable dungeon. Find its cache and face the guardian below."
+            var clear_flag: String = str(p.get("world_flag_on_victory", "dungeon_" + id + "_cleared"))
+            if bool(GameState.world_flags.get(clear_flag, false)):
+                text += "\n\nThe dungeon's guardian has fallen. The route is quiet."
+            else:
+                text += "\n\nThe entrance leads into an explorable dungeon. Find its cache and face the guardian below."
     elif kind == "camp":
         if bool(GameState.world_flags.get("camp_cleared", false)):
             text += "\n\nThe palisade burns. The raiders are gone."

@@ -1,0 +1,149 @@
+{
+  "id": "battle_northstar_wreck",
+  "title": "Northstar Wreck: Blackwake Salvage",
+  "briefing": "The Northstar lies broken across the reef. Blackwake salvagers have stripped the hull and taken the captain's final log. Maren recognizes the brass compass on their leader. Defeat the salvage captain and recover the logbook.",
+  "weather": "storm",
+  "legend": {
+    ".": "grass",
+    "f": "forest",
+    "r": "road",
+    "h": "hill",
+    "w": "ford",
+    "~": "deep_water",
+    "b": "bridge",
+    "#": "rock"
+  },
+  "terrain": [
+    "....................",
+    "....................",
+    "......ff....hh......",
+    ".....fff...hhh......",
+    "......f....hh.#.....",
+    ".........r..........",
+    "....~~~~~b~~~w~~....",
+    "....~~~~~b~~~w~~....",
+    ".........r..........",
+    ".....f...r...f......",
+    ".....ff..r..........",
+    "......f.............",
+    "....................",
+    "...................."
+  ],
+  "heights": [
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000011000000",
+    "00000000000122000000",
+    "00000000000110000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000"
+  ],
+  "victory": [
+    "rout_all",
+    "defeat_commander"
+  ],
+  "units": [
+    {
+      "character_id": "torren",
+      "team": "player",
+      "cell": [
+        5,
+        10
+      ],
+      "facing": 0,
+      "protagonist": true
+    },
+    {
+      "character_id": "bram",
+      "team": "player",
+      "cell": [
+        4,
+        11
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "sela",
+      "team": "player",
+      "cell": [
+        6,
+        11
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "brother_wystan",
+      "team": "player",
+      "cell": [
+        3,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "maren_vey",
+      "team": "player",
+      "cell": [
+        7,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "blackwake_captain",
+      "team": "enemy",
+      "cell": [
+        14,
+        4
+      ],
+      "facing": 2,
+      "commander": true
+    },
+    {
+      "character_id": "saltcutthroat",
+      "team": "enemy",
+      "cell": [
+        12,
+        5
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "saltcutthroat",
+      "team": "enemy",
+      "cell": [
+        15,
+        6
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "saltbow",
+      "team": "enemy",
+      "cell": [
+        16,
+        3
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "saltbow",
+      "team": "enemy",
+      "cell": [
+        13,
+        2
+      ],
+      "facing": 2
+    }
+  ],
+  "battlefield": "river_crossing",
+  "world_flag_on_victory": "northstar_wreck_cleared",
+  "victory_text": "The Blackwake captain falls and the salvagers scatter into the surf. Maren spots the Northstar's waterproof log case beneath a collapsed chart table. Its final entry records a second beacon burning beyond the reef—one that does not appear on any Assembly chart."
+}

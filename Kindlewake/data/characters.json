@@ -1257,6 +1257,35 @@
         "ldr": 3,
         "mor": 48
       }
+    },
+    "blackwake_captain": {
+      "name": "Blackwake Salvage Captain",
+      "class_id": "roadreaver",
+      "level": 5,
+      "house": "none",
+      "weapon_id": "battle_axe",
+      "armor_def": 6,
+      "armor_res": 3,
+      "skills": [],
+      "reward": {
+        "exp": 210,
+        "ap": 36,
+        "gold": 150
+      },
+      "stats": {
+        "hp": 68,
+        "mp": 0,
+        "str": 16,
+        "dex": 10,
+        "int": 5,
+        "vit": 14,
+        "spd": 8,
+        "lck": 8,
+        "acc": 88,
+        "eva": 13,
+        "ldr": 7,
+        "mor": 78
+      }
     }
   }
 }

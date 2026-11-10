@@ -7,6 +7,8 @@ const PROGRESS_FLAG := "maren_signal_progress"
 const ATTEMPTS_FLAG := "maren_signal_attempts"
 const SOLVED_FLAG := "maren_signal_solved"
 const COMPLETE_FLAG := "maren_signal_completed"
+const WRECK_CLEARED_FLAG := "northstar_wreck_cleared"
+const LOG_FOUND_FLAG := "northstar_wreck_log_found"
 const RelationshipSystem = preload("res://scripts/core/relationship_system.gd")
 const SIGNAL_SEQUENCE: Array[String] = ["low", "high", "rising"]
 
@@ -43,8 +45,8 @@ static func submit_signal(flags: Dictionary, tone: String) -> Dictionary:
 
 
 static func resolve_quest(flags: Dictionary, choice: String) -> Dictionary:
-    if not bool(flags.get(SOLVED_FLAG, false)) or bool(flags.get(COMPLETE_FLAG, false)):
-        return {"ok": false, "reason": "Restore the Northstar signal before deciding what becomes of its log."}
+    if not bool(flags.get(SOLVED_FLAG, false)) or not bool(flags.get(WRECK_CLEARED_FLAG, false)) or not bool(flags.get(LOG_FOUND_FLAG, false)) or bool(flags.get(COMPLETE_FLAG, false)):
+        return {"ok": false, "reason": "Restore the signal, defeat the Northstar Wreck salvage captain and recover the logbook before deciding what becomes of it."}
     if not ["return_log", "publish_log"].has(choice):
         return {"ok": false, "reason": "Unknown Northstar log resolution."}
     var updated: Dictionary = flags.duplicate(true)
