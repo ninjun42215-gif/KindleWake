@@ -1844,6 +1844,108 @@
       "enemy_role": "regional boss",
       "threat_tier": 5,
       "lore": "An ancient creature beneath the outer reef; its shell bears the same seven-cut mark as the drowned vault."
+    },
+    "veyrwood_canopy_lurker": {
+      "name": "Canopy Lurker",
+      "class_id": "assassin",
+      "level": 4,
+      "house": "none",
+      "weapon_id": "dagger",
+      "armor_def": 4,
+      "armor_res": 1,
+      "skills": [],
+      "stats": {
+        "hp": 36,
+        "mp": 0,
+        "str": 9,
+        "dex": 14,
+        "int": 3,
+        "vit": 7,
+        "spd": 12,
+        "lck": 9,
+        "acc": 86,
+        "eva": 24,
+        "ldr": 1,
+        "mor": 52
+      },
+      "reward": {
+        "exp": 76,
+        "ap": 13,
+        "gold": 22
+      },
+      "enemy_family": "beast",
+      "territory": "Veyrwood",
+      "enemy_role": "arboreal ambusher",
+      "threat_tier": 3,
+      "lore": "A long-armed canopy hunter that drops silently from the old bough roads."
+    },
+    "asterreach_stormwing": {
+      "name": "Stormwing Raptor",
+      "class_id": "archer",
+      "level": 5,
+      "house": "none",
+      "weapon_id": "short_bow",
+      "armor_def": 4,
+      "armor_res": 1,
+      "skills": [],
+      "stats": {
+        "hp": 33,
+        "mp": 0,
+        "str": 7,
+        "dex": 15,
+        "int": 4,
+        "vit": 7,
+        "spd": 13,
+        "lck": 9,
+        "acc": 88,
+        "eva": 25,
+        "ldr": 1,
+        "mor": 58
+      },
+      "reward": {
+        "exp": 96,
+        "ap": 16,
+        "gold": 29
+      },
+      "enemy_family": "beast",
+      "territory": "Asterreach",
+      "enemy_role": "swift ranged hunter",
+      "threat_tier": 3,
+      "lore": "A sea-cliff raptor whose cries vanish beneath the thunder rolling off the Stormforged Coast."
+    },
+    "ilyr_lantern_wraith": {
+      "name": "Lantern Wraith",
+      "class_id": "apprentice_mage",
+      "level": 6,
+      "house": "none",
+      "weapon_id": "staff",
+      "armor_def": 3,
+      "armor_res": 4,
+      "skills": [],
+      "stats": {
+        "hp": 42,
+        "mp": 24,
+        "str": 5,
+        "dex": 10,
+        "int": 16,
+        "vit": 8,
+        "spd": 10,
+        "lck": 10,
+        "acc": 88,
+        "eva": 17,
+        "ldr": 5,
+        "mor": 70
+      },
+      "reward": {
+        "exp": 128,
+        "ap": 22,
+        "gold": 40
+      },
+      "enemy_family": "spectral",
+      "territory": "Ilyr",
+      "enemy_role": "spectral caster",
+      "threat_tier": 4,
+      "lore": "A pale keeper-light that appears on abandoned roads where the covenant lamps were extinguished."
     }
   }
 }
