@@ -8,7 +8,7 @@
 >
 > **Repository hygiene:** canonical extracted Godot source remains in `Kindlewake/`; the old root-level `Feature_*.zip` snapshots have been removed from this branch; root and project-level ignore rules cover generated Godot/build output and signing credentials. No old `Kindlewake_Project.zip` was present at repository root to archive.
 >
-> **CI/device status:** PR checks have started. Do not claim Godot import, scene smoke, strict tests, balance or APK export passed until the exact current PR head has completed successfully. No physical-device screenshots or QA have been supplied; 20:9 portrait/landscape, notch/safe-area, creator navigation and Chapter I → battle → World flow remain manual gates.
+> **CI/device status:** the runtime implementation passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 427 strict checks with 0 failures, balance simulation, signed 40.8 MB Android APK export and zero requested Android permissions on runtime-code commit `b2598c3c8620a701d1fabd84394ec5cbb7449451`. Build run [#633](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42731540020), APK artifact `13724652587`; Version Sync #139, Project Health Audit #348 and Workflow YAML Lint #526 passed. Transient first-pass global-class registration errors retry cleanly; ObjectDB/resource-cleanup warnings remain non-failing. Physical Android QA remains outstanding; no device screenshots/results exist.
 >
 > **Next step:** inspect all checks for the exact PR head, fix any failure, and update this block with actual evidence. Stop after Phase 0/1 and report before Phase 2. Do not merge until the required checks pass and the owner explicitly approves.
 >
