@@ -977,6 +977,7 @@ func _test_empire_management() -> void:
     unrest_state["public_order"] = 0
     unrest_state["stability"] = 0
     unrest_state["legitimacy"] = 0
+    unrest_state["rebellion_risk"] = 80
     var unrest: Dictionary = EmpireSystem.rebellion_assessment(unrest_state, known_regions)
     check(int(unrest.get("risk", 0)) == 100 and not unrest.get("alerts", []).is_empty(), "severe unrest produces a persistent province warning")
     unrest_state["treasury"] = 200
