@@ -950,3 +950,11 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - Realm administration is unlocked only by an authored campaign event through `GameState.unlock_empire_management()`. The campaign state is persisted as an optional `empire_state` field and normalized for older saves.
 - `GameState.advance_empire_turn()` applies realm settlement once per explicit turn after holding settlement. The backend currently has no dedicated administration UI; a player-facing screen and authored unlock event remain future work.
 - Candidate branch `feat/unified-realm-administration` refactors the earlier realm-governance proposal to avoid duplicate treasury and territory sources of truth. Exact-head validation is pending.
+
+
+## Revision log — unified realm administration and tactical AI (2026-11-10)
+
+- PR #125 adds an explicit AI-only allied-cell blocker to `BattleMap.compute_reach`. AI attack-position selection, approach routes and fallback movement avoid occupied allies; normal player movement retains the original pass-through rule. A deterministic corridor regression proves both behaviors.
+- PR #126 adds a persisted realm-administration backend for tax, stability, legitimacy, governors, policies and idempotent monthly settlement. `FactionSystem` remains the region-owner authority; `EmpireEconomySystem` remains the holding economy; `party.gold` remains the only treasury. Realm policies modify the existing settlement rather than adding a second income stream.
+- Realm administration is gated by an authored campaign flag. The backend has no dedicated player-facing UI or authored unlock quest yet; those are explicit follow-up work.
+- Main commit `b88f4da2c49a6de13f715604de502750e68ccf45` passed 18 scene loads, 945 strict checks / 0 failures, campaign/Chronicle tests, balance report and signed Android export. Version remains 0.12.0; save schema remains 4.

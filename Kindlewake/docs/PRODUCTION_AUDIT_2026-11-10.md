@@ -112,3 +112,39 @@ PR #123 merged a change that passed ally cells to `BattleMap.compute_reach`, but
 Current main already has `FactionSystem` for region ownership, `EmpireEconomySystem` for holding-level income/upkeep and `EmpireDevelopmentSystem` for buildings, recruitment and siege objectives. The earlier realm-governance PR #91 introduced a second treasury and a separate region-count income calculation; PR #87 introduced another mutable territory-owner map. Both approaches risk divergent state and duplicate accounting. Review comments were added to those PRs.
 
 Branch `feat/unified-realm-administration` takes the compatible slice: realm tax/stability/legitimacy, governors and policies are stored in optional `empire_state`; region ownership remains in `FactionSystem`; holding economy and the one shared `party.gold` treasury remain in `EmpireEconomySystem`. Realm modifiers are applied to the existing holding settlement only after an authored unlock. This is a backend foundation, not a complete player-facing empire-management feature; the administration UI and story unlock event remain future milestones. Exact-head CI is pending.
+
+
+## Latest integration checkpoint — 2026-11-10 12:46 UTC
+
+Current main: `b88f4da2c49a6de13f715604de502750e68ccf45`.
+
+### Merged since the initial audit
+- PR #121: persistent Chronicle inter-house diplomacy and decision UI.
+- PR #122: deterministic headless cleanup; the previous ObjectDB/resource and unused Blender-import warnings are absent.
+- PR #125: actual AI-only allied-cell path blocking for candidate attacks, long-range approach and fallback movement. Player movement still allows passing through allies.
+- PR #126: unified realm-administration backend. It uses the canonical FactionSystem ownership map, existing EmpireEconomySystem holding settlement and shared party.gold treasury. No second treasury or owner map is introduced.
+
+### Current verification
+- Android build [#42818566073](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42818566073): 18 scenes loaded, 945 strict checks / 0 failures, campaign lifecycle/continuity, Chronicle dynasty/family checks, balance simulation and signed APK export.
+- Project Health Audit #42818566176, Version Sync #42818566098, Workflow YAML Lint #42818566214 and source handoff #42818566233 passed.
+- APK artifact `13766128142`, archive size 41,198,600 bytes; APK 41.6 MB.
+- Remaining diagnostics are non-fatal: transient first-pass global-class registration errors followed by a clean retry, unsupported custom cursor on headless display, and GitHub Actions Node.js deprecations.
+
+### Open feature portfolio — latest triage
+| PR | Area | Current decision |
+|---|---|---|
+| #81 | Regional trade / merchant economy | **Do not merge yet.** Review found undefined trade-good item IDs in PartyState inventory, foreign-region tariff/route-policy authorization, possible story-gate bypass through direct region changes, invalid settlement IDs used as region endpoints, and market rows wider than the Android viewport. Rework cargo storage, authority checks, canonical region routing and mobile cards first. |
+| #46 | Broad empire-management system | Keep as a reference source only; 261-commit scope overlaps the now-merged realm backend, holding economy and development systems. Extract UI/army-battle work in small independent PRs; never bulk-merge. |
+| #78, #66, #63 | Boss AI / simulations / test gate | Stacked dependency chain; review and validate in dependency order. |
+| #43, #45, #47 | Lore and campaign documentation | Consolidate canon into the current GDD/production bible; avoid parallel authoritative documents. |
+| #42 | Bestiary and human factions | Rebase, review encounter balance and asset provenance, then run exact-head tests. |
+| #44 | Chronicle founder gate | Keep locked until actual campaign-ending milestones exist and invoke it. |
+| #22, #23 | Premium creative direction | Consolidate the strongest material into the canonical production bible; avoid duplicate documents. |
+
+PR #91 was closed as superseded by #126 because it introduced a second treasury and separate region-count income. PR #87 was closed because it introduced a second mutable region-owner map. PR #112 was closed unmerged; use mainline PR #121's diplomacy implementation. PR #120 and #124 were closed as superseded. PR #123's incomplete ally-path change was corrected by PR #125.
+
+### Realm administration status
+The backend is merged and save-compatible, but the story unlock event and player-facing administration UI are not implemented. Next work should add the unlock quest/flag, a mobile-first administration screen, governor effect rules, and integration tests that cover save/load and one-time monthly settlement. Do not add a second treasury or region ownership source.
+
+### Regional trade integration decision
+The PR #81 design is promising but not release-ready. Keep regional trade separate from equipment inventory; require canonical region IDs and story flags for transport; authorize tariffs only in player-held territories; and design all merchant controls for a 360px phone viewport. Preserve offline operation.
