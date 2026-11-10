@@ -70,6 +70,14 @@ func _close() -> void:
     closed.emit()
 
 
+func _travel_route(route_id: String) -> void:
+    var result := GameState.merchant_travel_route(route_id)
+    if result == "":
+        _close()
+    else:
+        _notify_result(result)
+
+
 func _clear_content() -> void:
     for child in content.get_children():
         child.queue_free()
@@ -234,10 +242,19 @@ func refresh(reset_status: bool = true) -> void:
             label.text = "Route policy — " + str(route_id)
             label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
             row.add_child(label)
+            var toll := SpinBox.new()
+            toll.min_value = 0
+            toll.max_value = 10000
+            toll.step = 5
+            toll.value = int(state.get("route_policies", {}).get(route_id, {}).get("toll", route.get("base_toll", 0)))
+            row.add_child(toll)
+            row.add_child(_action_button("OPEN", func():
+                _notify_result(GameState.merchant_set_route_policy(str(route_id), {"open":true,"toll":int(toll.value)}))
+            ))
             row.add_child(_action_button("PROTECT", func():
-                _notify_result(GameState.merchant_set_route_policy(str(route_id), {"open":true,"protected":true}))
+                _notify_result(GameState.merchant_set_route_policy(str(route_id), {"open":true,"protected":true,"toll":int(toll.value)}))
             ))
             row.add_child(_action_button("CLOSE", func():
-                _notify_result(GameState.merchant_set_route_policy(str(route_id), {"open":false}))
+                _notify_result(GameState.merchant_set_route_policy(str(route_id), {"open":false,"toll":int(toll.value)}))
             ))
             content.add_child(row)
