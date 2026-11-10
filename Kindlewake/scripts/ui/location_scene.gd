@@ -298,6 +298,17 @@ func _render_opening_story(spot: Dictionary) -> void:
         spot_text.text += "\\n\\nThis quest has been completed or is waiting for another campaign milestone."
 
 
+func _launch_opening_challenge(story_id: String) -> void:
+    if not ["blocked_well", "roof_before_banner", "last_convoy", "toll_book", "first_oath"].has(story_id):
+        spot_text.text += "\\n\\nThis story challenge is not available."
+        return
+    GameState.pending_location = current_map_id
+    get_tree().change_scene_to_file("res://ActOneQuestChallenge.tscn")
+    var challenge_scene := get_tree().current_scene
+    if challenge_scene != null:
+        challenge_scene.set("quest_id", story_id)
+
+
 func _resolve_opening_story_action(story_id: String, action_id: String) -> void:
     var outcome: Dictionary = OpeningActOneQuestSystem.resolve(story_id, action_id, GameState.world_flags)
     if not bool(outcome.get("ok", false)):
