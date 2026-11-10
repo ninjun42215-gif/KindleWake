@@ -393,13 +393,15 @@ func _resolve_mechanism(spot: Dictionary, choice: String) -> void:
             spot_text.text += "\n\nThe sequence locks into place. A deep mechanism turns, and the guardian seal releases."
             GameState.save_campaign("auto_a")
             for child in spot_buttons.get_children():
-                if child is Button:
+                if child is Button and (child as Button).text != "Close":
                     (child as Button).disabled = true
         else:
             spot_text.text += "\n\nThe mechanism accepts the setting. %d of %d stages are aligned." % [progress, sequence.size()]
+            GameState.save_campaign("auto_a")
     else:
         GameState.world_flags[progress_key] = 1 if choice == str(sequence[0]) else 0
         spot_text.text += "\n\nThe mechanism shudders and resets. The sequence must begin again."
+        GameState.save_campaign("auto_a")
 
 
 func _reveal_secret_passage(spot: Dictionary) -> void:
@@ -417,7 +419,7 @@ func _reveal_secret_passage(spot: Dictionary) -> void:
     GameState.save_campaign("auto_a")
     queue_redraw()
     for child in spot_buttons.get_children():
-        if child is Button:
+        if child is Button and (child as Button).text != "Close":
             (child as Button).disabled = true
 
 
