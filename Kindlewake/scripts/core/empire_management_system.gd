@@ -530,6 +530,103 @@ static func reduce_war_exhaustion(state: Dictionary, amount: int = 15) -> bool:
 	return true
 
 
+static func build_tactical_battle(state: Dictionary, army_id: String, base_battle: Dictionary, region_id: String, defender_owner: String, siege_assault: bool = false, fort_level: int = 0) -> Dictionary:
+	var deployment := tactical_deployment(state, army_id)
+	if not bool(deployment.get("ok", false)) or base_battle.is_empty():
+		return {}
+	var battle := base_battle.duplicate(true)
+	var units: Array = []
+	for spawn in battle.get("units", []):
+		if str(spawn.get("team", "")) == "player":
+			units.append(spawn.duplicate(true))
+	var strategic_units: Dictionary = {}
+	var cells: Array[Vector2i] = []
+	for y in range(11, 14):
+		for x in range(0, 7):
+			cells.append(Vector2i(x, y))
+	var cell_index := 0
+	var commander_assigned := false
+	for entry in deployment.get("roster", []):
+		var troop_type := str(entry.get("troop_type", "infantry"))
+		var remaining := int(entry.get("count", 0))
+		var cohort_index := 0
+		while remaining > 0 and cell_index < cells.size():
+			var cohort_count := mini(5, remaining)
+			var unit_id := "strategic_%s_%s_%d" % [army_id, troop_type, cohort_index]
+			var cell: Vector2i = cells[cell_index]
+			units.append({"character_id": unit_id, "team": "player", "cell": [cell.x, cell.y], "facing": 0, "commander": not commander_assigned and str(deployment.get("commander", "")) != "", "name": "%s Cohort" % troop_type.capitalize()})
+			strategic_units[unit_id] = {"troop_type": troop_type, "count": cohort_count}
+			commander_assigned = true
+			remaining -= cohort_count
+			cohort_index += 1
+			cell_index += 1
+	var defenders := {"infantry": 10, "archers": 5, "cavalry": 0}
+	if region_id.contains("highland") or region_id.contains("height") or region_id == "aurelmont" or region_id.contains("thorncrown") or region_id.contains("ironvale"):
+		defenders["infantry"] += 10
+		defenders["archers"] += 5
+		defenders["cavalry"] += 5
+	if defender_owner == "tidebound_assembly":
+		defenders["archers"] += 5
+	elif defender_owner == "nine_wells_compact":
+		defenders["cavalry"] += 5
+	elif defender_owner == "hearthfjord_jarldoms":
+		defenders["infantry"] += 5
+		defenders["cavalry"] += 5
+	elif defender_owner == "lantern_synod":
+		defenders["archers"] += 5
+	fort_level = clampi(fort_level, 0, 3)
+	defenders["infantry"] += fort_level * 5
+	var enemy_cells: Array[Vector2i] = []
+	for y in range(0, 5):
+		for x in range(12, 20):
+			enemy_cells.append(Vector2i(x, y))
+	var enemy_index := 0
+	for troop_type in ["infantry", "archers", "cavalry"]:
+		var remaining := int(defenders[troop_type])
+		var cohort_index := 0
+		while remaining > 0 and enemy_index < enemy_cells.size():
+			var cohort_count := mini(5, remaining)
+			var unit_id := "strategic_defender_%s_%d" % [troop_type, cohort_index]
+			var cell: Vector2i = enemy_cells[enemy_index]
+			units.append({"character_id": unit_id, "team": "enemy", "cell": [cell.x, cell.y], "facing": 2, "name": "%s Garrison" % troop_type.capitalize()})
+			remaining -= cohort_count
+			cohort_index += 1
+			enemy_index += 1
+	if siege_assault:
+		units.append({"character_id": "strategic_siege_engine", "team": "player", "cell": [6, 12], "facing": 0, "name": "Battering Ram"})
+	battle["id"] = "field_army_%s_%s" % [army_id, region_id]
+	battle["title"] = "Battle for %s" % region_id.replace("_", " ").capitalize()
+	battle["briefing"] = ("The besieging army advances behind a battering ram. Break the garrison and take the breached walls." if siege_assault else "Your field army engages the regional garrison. Keep the company and levy cohorts alive; every cohort lost weakens the standing army.")
+	battle["units"] = units
+	battle["strategic_army_id"] = army_id
+	battle["strategic_region_id"] = region_id
+	battle["strategic_siege_assault"] = siege_assault
+	battle["strategic_fort_level"] = fort_level
+	battle["strategic_units"] = strategic_units
+	battle["victory_text"] = "The garrison is broken. Your army holds the field."
+	battle["defeat_text"] = "The field army is driven back. Survivors withdraw in disorder."
+	return battle
+
+
+static func resolve_siege_battle(state: Dictionary, region_id: String, won: bool) -> bool:
+	if not state.get("sieges", {}).has(region_id):
+		return false
+	var siege: Dictionary = state["sieges"][region_id]
+	if int(siege.get("progress", 0)) < 4 or bool(siege.get("captured", false)):
+		return false
+	if won:
+		siege["captured"] = true
+		siege["status"] = "captured"
+		state["war_exhaustion"] = clampi(int(state.get("war_exhaustion", 0)) + 2, 0, 100)
+	else:
+		siege["progress"] = 2
+		siege["status"] = "repulsed"
+		state["war_exhaustion"] = clampi(int(state.get("war_exhaustion", 0)) + 7, 0, 100)
+	state["sieges"][region_id] = siege
+	_record(state, "siege_battle_result", {"region": region_id, "won": won, "progress": int(siege["progress"]), "captured": bool(siege.get("captured", false))})
+	return true
+
+
 static func tactical_deployment(state: Dictionary, army_id: String) -> Dictionary:
 	if not state.get("field_armies", {}).has(army_id):
 		return {"ok": false, "reason": "army_missing"}
