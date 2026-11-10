@@ -195,6 +195,7 @@ func _close_diplomacy() -> void:
 
 
 func _refresh_diplomacy() -> void:
+    var compact := size.x < 800.0 or size.y > size.x
     for child in diplomacy_body.get_children():
         diplomacy_body.remove_child(child)
         child.queue_free()
