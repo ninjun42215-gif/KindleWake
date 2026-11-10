@@ -1,3 +1,18 @@
+# AUTHORITATIVE LIVE CHECKPOINT — 2026-11-10 (Premium Pass v1 merged)
+
+- Repository: `ninjun42215-gif/KindleWake`; default branch `main`; merged commit: `b78fc7847f166ea51290d0cd15c8b954a4034350` (PR #34).
+- Project baseline remains Godot 4.2 / GL Compatibility, game/Android version 0.12.0, Android version code 1200, save schema 4. No game version, save schema, gameplay data or permissions changed.
+- Premium Pass v1: `KW` is now an autoload providing the brass/ink shared theme, button press feedback, optional font/audio hooks, haptics, opt-in fade transitions and persistent haptics/reduce-motion/UI-SFX settings. The Company overlay now stacks above the minimap. Battle turn chips use readable names; only active/inspected units get name tags; floating combat text has a wider outlined treatment.
+- PR head `062677c8f8f7eb54300d31dfd2a16d67162b2763` passed all four required exact-SHA checks. Build run `42734417425`: Godot 4.2.2 import clean, 8/8 scene smoke loads, 427 strict checks / 0 failures, balance report pass, signed 41.2 MB APK, arm64-v8a + armeabi-v7a, no requested Android permissions.
+- Post-merge main checks also passed on `b78fc7847f166ea51290d0cd15c8b954a4034350`: Build APK run `42734657735`; Version Sync `42734657698`; Workflow YAML Lint `42734657714`; Project Health Audit `42734657704`; source handoff `42734658083`.
+- Main APK artifact: `13726900432`, 41,207,581 bytes, SHA-256 `e391fb8cdf308bd1419b3f0c382850c07c51817683a4560623b4d762ce2829cc`. Downloaded and locally verified as an APK archive. Test log artifact: `13725404960`.
+- Receiving intake: both reviewed ZIPs removed; only `Kindlewake/receiving/README.md` remains. Full review and disposition are in `Kindlewake/docs/RECEIVING_REVIEW_2026-11-10.md`.
+- Limitations: the ZIP did not contain fonts, audio, portraits or tiles, so those are not bundled; the game remains without new SFX/music. Physical Android QA is not recorded. The third-party voxel pack redistribution licence remains unresolved and blocks public/commercial release.
+- Existing non-failing Godot ObjectDB/resource cleanup warnings remain in the test log. Do not report them as test failures, but keep them on the cleanup backlog.
+- Next: continue Premium Pass Sprint 1 in small tested slices (licensed font/audio integration, compact world HUD icon bar, title/world atmosphere and responsive label treatment); then Company/recruit portrait/icon pass and battle HUD work. Preserve all systems and saves; do not add unverified assets. Device QA remains a separate gate.
+
+---
+
 # KINDLEWAKE — CURRENT LIVE HANDOFF (2026-11-10)
 
 > **Authoritative state:** Repository `ninjun42215-gif/KindleWake`; default branch `main`; PRs [#28](https://github.com/ninjun42215-gif/KindleWake/pull/28), [#30](https://github.com/ninjun42215-gif/KindleWake/pull/30), [#31](https://github.com/ninjun42215-gif/KindleWake/pull/31) and [#32](https://github.com/ninjun42215-gif/KindleWake/pull/32) are merged; no active implementation branch. Always inspect the live `main` ref before starting new work. The earlier checkpoints below are historical only and must not override this block.
