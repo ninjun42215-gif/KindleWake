@@ -119,6 +119,17 @@
           "name": "The Changed Escort",
           "story_id": "changed_escort",
           "text": "A diplomatic escort has been ordered to turn a marked supply train back at the narrow crossing. The wagons carry displaced families."
+        },
+        {
+          "cell": [
+            13,
+            8
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "The Price of a Crossing",
+          "story_id": "price_crossing",
+          "text": "The river road is open, but only one priority convoy can cross before the weather turns."
         }
       ]
     },
@@ -579,6 +590,17 @@
           "name": "The Boundary Tree",
           "story_id": "boundary_tree",
           "text": "A felled boundary tree has reopened a dispute over woodland rights, tenant fields and old coppice paths."
+        },
+        {
+          "cell": [
+            9,
+            5
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "Three Bridges",
+          "story_id": "three_bridges",
+          "text": "The river road has become a military lifeline. Three crossings and a downstream storehouse must be secured before the evacuation can continue."
         }
       ]
     },
@@ -997,6 +1019,17 @@
           "name": "The Orrowen Hearing",
           "story_id": "orrowen_hearing",
           "text": "Four witnesses have gathered to speak about the disputed levy and boundary order."
+        },
+        {
+          "cell": [
+            10,
+            7
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "The Banner in the Reeds",
+          "story_id": "banner_reeds",
+          "text": "A hostile banner moves through the reed beds, but Sela has seen civilians beneath it."
         }
       ]
     },
