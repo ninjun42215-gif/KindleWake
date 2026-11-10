@@ -52,29 +52,35 @@ func _build() -> void:
     center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     add_child(center)
 
+    var viewport_size := get_viewport_rect().size
+    var compact := viewport_size.x < 420.0
     var panel := PanelContainer.new()
-    panel.custom_minimum_size = Vector2(maxf(300.0, minf(440.0, get_viewport_rect().size.x - 28.0)), 0)
+    # Keep the panel inside the usable viewport on narrow phones; never force
+    # a 300 px minimum that can push its edges off-screen.
+    panel.custom_minimum_size = Vector2(maxf(220.0, minf(440.0, viewport_size.x - 32.0)), 0)
     panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
     var style := StyleBoxFlat.new()
     style.bg_color = Color("#101820")
     style.border_color = Color("#8b7045")
-    style.set_border_width_all(2)
-    style.set_corner_radius_all(8)
-    style.content_margin_left = 18 if get_viewport_rect().size.x < 480.0 else 34
-    style.content_margin_right = 18 if get_viewport_rect().size.x < 480.0 else 34
-    style.content_margin_top = 28
-    style.content_margin_bottom = 28
+    style.set_border_width_all(1 if compact else 2)
+    style.set_corner_radius_all(6 if compact else 8)
+    var side_margin := 12.0 if viewport_size.x < 380.0 else (18.0 if compact else 34.0)
+    style.content_margin_left = side_margin
+    style.content_margin_right = side_margin
+    style.content_margin_top = 20.0 if compact else 28.0
+    style.content_margin_bottom = 20.0 if compact else 28.0
     panel.add_theme_stylebox_override("panel", style)
     center.add_child(panel)
 
     root_box = VBoxContainer.new()
-    root_box.add_theme_constant_override("separation", 13)
+    root_box.add_theme_constant_override("separation", 9 if compact else 13)
     panel.add_child(root_box)
 
     var title := Label.new()
     title.text = "K I N D L E W A K E"
     title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-    title.add_theme_font_size_override("font_size", 28 if get_viewport_rect().size.x < 480.0 else 34)
+    title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    title.add_theme_font_size_override("font_size", 19 if viewport_size.x < 340.0 else (23 if compact else 32))
     title.add_theme_color_override("font_color", Color("#e4c58a"))
     root_box.add_child(title)
 
@@ -87,7 +93,8 @@ func _build() -> void:
 
     var ornament := TextureRect.new()
     ornament.texture = load("res://assets/art/ui/ornament_divider.svg")
-    ornament.custom_minimum_size = Vector2(320, 54)
+    ornament.custom_minimum_size = Vector2(minf(320.0, maxf(176.0, viewport_size.x - 72.0)), 42 if compact else 54)
+    ornament.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     ornament.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
     ornament.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
     ornament.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -109,9 +116,10 @@ func _build() -> void:
 func _button(label: String, callback: Callable, primary: bool = false) -> Button:
     var b := Button.new()
     b.text = label
-    b.custom_minimum_size = Vector2(0, 54)
+    var compact := get_viewport_rect().size.x < 420.0
+    b.custom_minimum_size = Vector2(0, 48 if compact else 54)
     b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    b.add_theme_font_size_override("font_size", 20)
+    b.add_theme_font_size_override("font_size", 16 if compact else 19)
     var normal := StyleBoxFlat.new()
     normal.bg_color = Color("#26333b") if not primary else Color("#59452b")
     normal.border_color = Color("#596873") if not primary else Color("#c09b5e")
@@ -213,20 +221,23 @@ func _show_settings() -> void:
     status_label.text = "Audio settings are saved on this device."
     var cfg := ConfigFile.new()
     cfg.load(SETTINGS_PATH)
-    var row := HBoxContainer.new()
+    # Stack the label and slider so the settings row never overflows on phones.
+    var volume_group := VBoxContainer.new()
+    volume_group.add_theme_constant_override("separation", 4)
     var label := Label.new()
     label.text = "MASTER VOLUME"
-    label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    row.add_child(label)
+    label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    volume_group.add_child(label)
     master_slider = HSlider.new()
-    master_slider.custom_minimum_size = Vector2(180, 36)
+    master_slider.custom_minimum_size = Vector2(0, 36)
+    master_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     master_slider.min_value = 0.0
     master_slider.max_value = 1.0
     master_slider.step = 0.05
     master_slider.value = float(cfg.get_value("audio", "master", 0.8))
     master_slider.value_changed.connect(_on_volume_changed)
-    row.add_child(master_slider)
-    content_box.add_child(row)
+    volume_group.add_child(master_slider)
+    content_box.add_child(volume_group)
 
     var haptics_toggle := CheckButton.new()
     haptics_toggle.text = "HAPTIC FEEDBACK"
