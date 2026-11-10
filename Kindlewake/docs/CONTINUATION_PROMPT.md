@@ -263,7 +263,8 @@ Implemented in this branch:
 - Field army upkeep and rations are included in the seasonal realm ledger; military UI shows deployment, morale, supply, sieges and war exhaustion.
 - Supply depots seed a connected network through controlled atlas links; hostile frontier regions adjacent to the network can be supplied. Isolation causes morale loss and deterministic attrition after a one-season grace period.
 - Seasonal siege progression, breached defences, deterministic assault casualties and explicit post-assault faction transfer are implemented.
-- Tactical deployment exports troop composition, commander, morale and supply state; tactical casualties/results can be applied back to the strategic army. Direct BattleController encounter creation remains future work.
+- Field armies launch actual BattleController encounters against region-specific garrisons. Troop cohorts use infantry/archer/cavalry profiles; assigned party commanders deploy, and tactical damage/deaths convert into individual strategic casualties.
+- Fortified regions have stronger garrisons. Breached sieges launch tactical battles with a battering-ram support unit; victory marks the siege captured and defeat reduces progress. Occupation remains an explicit faction transfer.
 - War exhaustion rises after tactical losses and siege assaults, penalizes stability/order at 70+, and can be reduced through the military-tab armistice action.
 - Governors/buildings/seasons validate against provinces controlled by House Dunmarrow or the Crownlands; do not allow management of foreign territories.
 - Strict regression tests added in `tests/run_tests.gd`, not yet executed.
@@ -275,10 +276,10 @@ Next work:
 2. Run strict tests, scene smoke test, balance report, static checker, Android offline preflight and Android export; fix regressions before merge.
 3. Wire the unlock into the appropriate authored narrative milestone only after the campaign scenario is approved.
 4. Improve council effects using existing character traits/skills and add an at-a-glance projected seasonal ledger.
-5. Integrate the tactical deployment/result contract with BattleController and authored troop unit definitions; add defender formations and siege engines, then trade routes, faction AI, rebellion warnings and negotiated peace.
+5. Add destructible fort gates/walls and dedicated ballista/trebuchet units, then trade routes, faction AI, rebellion warnings and negotiated peace.
 6. Keep all screens responsive on portrait Android and landscape, with no new permissions or schema/version changes unless necessary and documented.
 
 
 ## FIELD ARMY IMPLEMENTATION STATUS
 
-The field army layer now includes depot-based connected supply, forward supply checks, morale and attrition, seasonal sieges and assaults, war exhaustion, and a strategic-to-tactical roster/result contract. It still does not automatically create BattleController encounters or enemy formations. Army movement is strategic and follows only authored atlas region links. Current tests are authored but require exact-head Godot validation. The branch is diverged from `main` and one commit behind; reconcile before merge and require all exact-head CI gates.
+The field army layer now includes depot-based connected supply, forward supply checks, morale and attrition, seasonal sieges and assaults, war exhaustion, and a strategic-to-tactical roster/result contract. It now launches BattleController encounters with generated regional garrisons and applies cohort casualties back to the strategic army. Destructible walls and advanced siege engines remain future work. Army movement is strategic and follows only authored atlas region links. Current tests are authored but require exact-head Godot validation. The branch is diverged from `main` and one commit behind; reconcile before merge and require all exact-head CI gates.
