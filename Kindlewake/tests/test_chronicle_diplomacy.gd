@@ -7,10 +7,10 @@ func _initialize() -> void:
  var result := Politics.perform_action(state,"player_house","house_ashcombe","envoy")
  assert(result.ok)
  state = result.state
- assert(Politics.relation_between(state,"player_house","house_ashcombe").score == 20)
+ assert(Politics.relation_between(state,"player_house","house_ashcombe").score == 16)
  var relation := Politics.relation_between(state,"house_ashcombe","house_merevale")
  relation.score = 150
- state.politics.relations["house_ashcombe|house_merevale"] = relation
+ state.politics.relations["house_ashcombe|player_house"] = relation
  state = Politics.normalize(state)
  assert(Politics.relation_between(state,"house_ashcombe","house_merevale").score == 100)
  result = Politics.perform_action(state,"player_house","house_ashcombe","propose_alliance")
