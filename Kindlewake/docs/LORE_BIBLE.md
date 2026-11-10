@@ -244,3 +244,87 @@ Before adding or changing lore:
 - Do not make every monster a supernatural manifestation of the Covenant.
 - Do not turn all factions into morally uniform groups.
 - Do not promise branching outcomes unless campaign state records and later scenes acknowledge them.
+
+
+## 13. The Last Emperor and the Age of Houses — post-campaign canon
+
+**Status: OWNER-REQUESTED CANON DIRECTION / DESIGNED, NOT VERIFIED IMPLEMENTED.** This section establishes the intended endgame-to-generational transition. It does not make family gameplay available during the main campaign.
+
+### The Emperor Who Ended the Empire
+
+The main campaign's victory is not the founding of a permanent Dunmarrow dynasty on an imperial throne. The protagonist may, through the final campaign resolution, become the last Emperor of the old imperial order. This authority is deliberately transitional: it gives the protagonist the legal and political power to dismantle the institution that enabled the Covenant's betrayal, concentration of power and abuses of hereditary rule.
+
+The protagonist's defining final act is the **Dissolution of the Empire**. The imperial crown, central court and claim of permanent supremacy are formally abolished. The Seven Houses and regional powers are not simply replaced by one new royal family. Instead, the protagonist establishes a successor settlement provisionally called the **Concord of Free Realms**: a compact of self-governing realms bound by mutual defence, open routes, famine relief, sanctuary, lawful arbitration and the surviving obligations of the Covenant of Seven Flames.
+
+The Concord is not a utopia. It inherits border disputes, old debts, competing laws, ambitious nobles, displaced soldiers and communities that distrust every new promise. The protagonist's achievement is not that conflict disappears, but that no single imperial office can quietly rewrite the compact for everyone.
+
+The protagonist is remembered in conflicting ways: liberator, oath-keeper, usurper, reluctant monarch, destroyer of the old order or founder of a fragile peace. Which account dominates depends on the campaign's recorded choices, companion fates, faction relations, treatment of occupied territories and the terms of dissolution.
+
+### The long farewell
+
+The main story does not abruptly hand control to a child at the final battle. After the imperial dissolution, an authored late-life epilogue follows the protagonist through a period of retirement from command, public duties, family or chosen household life, and the slow transfer of responsibilities. The protagonist can grow old, witness the first years of the Concord and see how the world interprets the new settlement.
+
+The generational mode unlocks only when all of the following are true:
+1. The main campaign's required final objective and ending resolution are complete.
+2. The protagonist has become the last Emperor in the ending path.
+3. The Dissolution of the Empire has been formally enacted and recorded.
+4. The late-life epilogue has advanced the protagonist to a natural death from old age.
+5. The death is recorded as a completed life event, not a battle casualty, scripted early death, or ordinary game-over.
+
+Only after this sequence does the game open the **Chronicle of Houses** and transfer player control to the chosen eligible successor. No marriage, child-rearing, dynasty succession or playable family-management loop should be exposed during the main campaign. Main-campaign companions can have relationships and personal histories, but this is not the generational family simulation.
+
+### The new political order
+
+The Concord recognises local titles as offices of stewardship and responsibility rather than automatic ownership of people. Its founding charter distinguishes:
+- **Household / landed gentry:** recognised family estate or civic holding, with obligations to its workers and neighbours.
+- **Knight / Dame:** sworn service, land grant or recognised military-civic distinction; not automatically hereditary.
+- **Baron / Baroness:** stewardship of a barony, its villages, roads, courts and levy obligations.
+- **Viscount / Viscountess:** a delegated county office or oversight of several smaller holdings; title usage may vary by realm.
+- **Count / Countess (Earl / Countess in some regions):** stewardship of a county, its settlements, revenues, justice and defence.
+- **Marquess / Marchioness:** frontier march authority with exceptional defence and logistics duties.
+- **Duke / Duchess:** stewardship of a duchy comprising multiple counties and major regional obligations.
+- **Archduke / Archduchess:** a rare senior rank recognised by several realms, normally tied to a major historic region or compact responsibility.
+- **Prince / Princess of a Free Realm:** a dynastic or elected-heir title used only by realms whose own constitutional law recognises it.
+- **High Protector / First Warden:** exceptional non-imperial compact office, elected or appointed under strict limits; it is not a disguised Emperor.
+
+These are a shared design ladder, not a claim that every culture uses identical titles. Preserve local terms and laws in each continent. A title must carry a defined duty, jurisdiction, source of legitimacy and accountability. Nobility is not simply a cosmetic colour or a universal combat-stat multiplier.
+
+### The Chronicle of Houses
+
+The post-campaign player follows a family or adopted house across generations. The original protagonist remains a historical founder and a remembered person, not a character who can be revived or replaced. The player's house can rise, fracture, lose land, regain trust, become extinct or survive through adoption and marriage alliances.
+
+The central narrative question changes from “Can one person repair a broken realm?” to “Can a family preserve its obligations without becoming the kind of institution it once opposed?”
+
+The Chronicle should remember:
+- the protagonist's ending, final title and manner/age of death;
+- the exact terms and signatories of imperial dissolution;
+- companions, allies, rivals and family members who survived;
+- lands granted, inherited, purchased, defended, lost or returned;
+- treaties, wars, famines, reforms, betrayals and public works;
+- each generation's marriages, children, guardians, education, traits, wounds, achievements and death;
+- contested succession claims, inheritance settlements and local historical memory.
+
+### Narrative safeguards
+
+- Do not turn the protagonist's abolition of the Empire into a secret restoration of imperial rule under another name.
+- Do not assume every realm accepts the Concord or the protagonist's settlement. Opposition and alternate political traditions should remain possible.
+- Do not make every noble cruel or every commoner virtuous. Show competence, corruption, sacrifice and ambition at every rank.
+- Bloodline must never be a measure of human worth. Hereditary qualities are narrative/gameplay variation, not racial purity or a eugenic optimisation ladder.
+- Adoption, legitimisation, chosen heirs, capable daughters, younger children, collateral branches and non-biological succession must be viable story paths.
+- A dynasty may lose its title or lands through lawful judgment, debt, rebellion, neglect or defeat; avoid arbitrary random destruction.
+- Generational play is an optional post-campaign continuation, not a prerequisite for seeing the main story's ending.
+
+## 14. Lore themes for the generational era
+
+The post-campaign era should explore the tension between **inheritance and stewardship**:
+- A baron inherits a keep but discovers the villages no longer trust the family.
+- A count must decide whether to honour a famine compact that costs the county its winter surplus.
+- A marquess must defend a frontier without treating border communities as expendable.
+- A duke must arbitrate disputes among ambitious counts while maintaining the Concord.
+- A younger child with no inherited title may earn office through service, scholarship, diplomacy or military leadership.
+- An heir may reject a title, enter a religious or civic order, become a wandering adventurer, or challenge a parent's decisions.
+- A marriage can unite claims but also create divided loyalties, rival heirs and diplomatic obligations.
+- A beloved heir may be unsuited to rule; a disliked sibling may be the most capable steward.
+- A family can preserve its name through adoption, a cadet branch or a chosen successor when direct descendants are absent.
+
+Each generation should inherit both assets and unresolved consequences. The family chronicle is a record of obligations as much as prestige.
