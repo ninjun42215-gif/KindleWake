@@ -1,6 +1,7 @@
 extends Control
 ## First playable Chronicle of Houses interface. All state is offline and rules-driven.
 const Dynasty = preload("res://scripts/core/chronicle_dynasty_system.gd")
+const Politics = preload("res://scripts/core/chronicle_diplomacy_system.gd")
 var state: Dictionary = {}
 var selected_person := "heir_1"
 var summary: Label
@@ -25,6 +26,8 @@ var education_picker: OptionButton
 var council_role_picker: OptionButton
 var claim_title_picker: OptionButton
 var claim_basis_picker: OptionButton
+var diplomacy_target_picker: OptionButton
+var diplomacy_summary: Label
 var status: Label
 
 func _ready() -> void:
@@ -41,6 +44,8 @@ func _ready() -> void:
    _blocked()
    return
   _save()
+ state = Politics.initialize(state)
+ _save()
  _build()
  _refresh()
 
@@ -172,6 +177,18 @@ func _build() -> void:
  col.add_child(_button("Record title claim for selected person",_record_claim))
  col.add_child(_button("Recognize claim",_recognize_claim))
  col.add_child(_button("Reject claim",_reject_claim))
+ _section(col,"INTER-HOUSE DIPLOMACY")
+ diplomacy_summary = Label.new()
+ diplomacy_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+ col.add_child(diplomacy_summary)
+ diplomacy_target_picker = OptionButton.new()
+ col.add_child(diplomacy_target_picker)
+ col.add_child(_button("Send envoy (-5 influence, +8 relation)",_diplomacy_envoy))
+ col.add_child(_button("Offer public gift (-3 influence, +12 relation)",_diplomacy_gift))
+ col.add_child(_button("Propose alliance",_diplomacy_alliance))
+ col.add_child(_button("Declare feud",_diplomacy_feud))
+ col.add_child(_button("Reconcile feud",_diplomacy_reconcile))
+ col.add_child(_button("Break alliance",_diplomacy_break))
  _section(col,"DOMAIN STEWARDSHIP")
  col.add_child(_button("Improve food stores (+5)",_domain_food))
  col.add_child(_button("Improve security (+5)",_domain_security))
@@ -184,6 +201,54 @@ func _build() -> void:
  status.add_theme_color_override("font_color",Color("#d3b77d"))
  col.add_child(status)
  col.add_child(_button("Return to title",_return_title))
+
+func _diplomacy_overview(player_house: String) -> String:
+ var lines: Array[String] = []
+ for house_id in state.get("politics",{}).get("houses",{}).keys():
+  if str(house_id) == player_house:
+   continue
+  var house: Dictionary = state.politics.houses[house_id]
+  var relation: Dictionary = Politics.relation_between(state,player_house,str(house_id))
+  lines.append("%s: %s (%d)%s" % [str(house.get("name",house_id)),Politics.relation_state(relation),int(relation.get("score",0))," • alliance" if bool(relation.get("allied",false)) else ""])
+ return "\\n".join(lines)
+
+func _diplomacy_target() -> String:
+ if diplomacy_target_picker.item_count == 0 or diplomacy_target_picker.selected < 0:
+  return ""
+ return str(diplomacy_target_picker.get_item_metadata(diplomacy_target_picker.selected))
+
+func _diplomacy_action(action: String) -> void:
+ var target := _diplomacy_target()
+ if target.is_empty():
+  status.text = "No rival house is available for diplomacy."
+  return
+ var player_house := str(state.get("politics",{}).get("player_house","player_house"))
+ var result := Politics.perform_action(state,player_house,target,action)
+ if not bool(result.get("ok",false)):
+  status.text = str(result.get("reason","Diplomatic action rejected."))
+  return
+ state = result.state
+ _save()
+ _refresh()
+ status.text = "Diplomatic action recorded: %s." % action.replace("_"," ")
+
+func _diplomacy_envoy() -> void:
+ _diplomacy_action("envoy")
+
+func _diplomacy_gift() -> void:
+ _diplomacy_action("gift")
+
+func _diplomacy_alliance() -> void:
+ _diplomacy_action("propose_alliance")
+
+func _diplomacy_feud() -> void:
+ _diplomacy_action("declare_feud")
+
+func _diplomacy_reconcile() -> void:
+ _diplomacy_action("reconcile")
+
+func _diplomacy_break() -> void:
+ _diplomacy_action("break_alliance")
 
 func _section(parent: VBoxContainer, text_value: String) -> void:
  var label := Label.new()
@@ -252,6 +317,19 @@ func _refresh() -> void:
   domain_picker.set_item_metadata(domain_picker.item_count-1,str(domain_id))
  if domain_picker.item_count > 0:
   domain_picker.select(0)
+ var politics: Dictionary = state.get("politics",{})
+ var player_house := str(politics.get("player_house","player_house"))
+ diplomacy_summary.text = "Influence: %d • Reputation: %d • Political year: %d\\n%s" % [int(politics.get("influence",0)),int(politics.get("reputation",0)),int(politics.get("year",state.year)),_diplomacy_overview(player_house)]
+ diplomacy_target_picker.clear()
+ var house_ids: Array = politics.get("houses",{}).keys()
+ house_ids.sort()
+ for house_id in house_ids:
+  if str(house_id) == player_house:
+   continue
+  var house: Dictionary = politics.houses[house_id]
+  var relation: Dictionary = Politics.relation_between(state,player_house,str(house_id))
+  diplomacy_target_picker.add_item("%s — %s (%d)" % [str(house.get("name",house_id)),Politics.relation_state(relation),int(relation.get("score",0))])
+  diplomacy_target_picker.set_item_metadata(diplomacy_target_picker.item_count-1,str(house_id))
  status.text = "Selected: %s. Kinship, titles and yearly events are preserved in this house chronicle." % str(state.people.get(selected_person,{}).get("name","None"))
 
 func _fill_people_picker(picker: OptionButton, living_only: bool) -> void:
@@ -410,6 +488,9 @@ func _advance_year() -> void:
   status.text = str(result.get("reason","The year could not advance."))
   return
  state = result.state
+ var political_result := Politics.advance_political_year(state)
+ if bool(political_result.get("ok",false)):
+  state = political_result.state
  var deaths: Array = result.get("deaths",[])
  var result_text := "Year %d recorded. Natural deaths: %s. Succession is resolved under %s." % [int(state.year),", ".join(deaths) if not deaths.is_empty() else "none",str(state.succession_policy)]
  _save()
