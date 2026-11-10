@@ -28,7 +28,7 @@ static func new_campaign_state(ruler_faction: String = "house_dunmarrow") -> Dic
     }
 
 
-static func normalize_state(raw: Dictionary, valid_factions: Array = []) -> Dictionary:
+static func normalize_state(raw: Dictionary, valid_factions: Array = [], faction_state: Dictionary = {}, eligible_roster: Array = []) -> Dictionary:
     var source: Dictionary = raw if raw is Dictionary else {}
     var ruler := str(source.get("ruler_faction", "house_dunmarrow"))
     if not valid_factions.is_empty() and not valid_factions.has(ruler):
@@ -39,10 +39,18 @@ static func normalize_state(raw: Dictionary, valid_factions: Array = []) -> Dict
     state["legitimacy"] = clampi(int(source.get("legitimacy", 50)), 0, 100)
     state["month_index"] = maxi(0, int(source.get("month_index", 0)))
     var raw_governors: Dictionary = source.get("governors", {}) if source.get("governors", {}) is Dictionary else {}
+    var territories: Dictionary = faction_state.get("territories", {})
     for region_id in raw_governors:
         var character_id := str(raw_governors[region_id])
-        if str(region_id) != "" and character_id != "":
-            state["governors"][str(region_id)] = character_id
+        if str(region_id) == "" or character_id == "":
+            continue
+        if not faction_state.is_empty():
+            var territory: Dictionary = territories.get(str(region_id), {})
+            if str(territory.get("owner", "")) != ruler or str(territory.get("status", "")) != "held":
+                continue
+        if not eligible_roster.is_empty() and not eligible_roster.has(character_id):
+            continue
+        state["governors"][str(region_id)] = character_id
     var raw_policies: Dictionary = source.get("policies", {}) if source.get("policies", {}) is Dictionary else {}
     for policy_id in POLICY_DEFINITIONS:
         if bool(raw_policies.get(policy_id, false)):
@@ -79,6 +87,9 @@ static func appoint_governor(state: Dictionary, faction_state: Dictionary, regio
     if str(territory.get("owner", "")) != ruler or str(territory.get("status", "")) != "held":
         return false
     var governors: Dictionary = state.get("governors", {}).duplicate(true)
+    for assigned_region in governors:
+        if str(assigned_region) != region_id and str(governors[assigned_region]) == character_id:
+            return false
     governors[region_id] = character_id
     state["governors"] = governors
     return true
