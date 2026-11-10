@@ -2695,6 +2695,35 @@
           "text": "A former road captain has become the keeper of this den. He has chained the old tunnel doors and refuses to let the dead rest.",
           "battle_id": "battle_hollowroot",
           "world_flag_on_victory": "dungeon_hollowroot_cleared"
+        },
+        {
+          "cell": [
+            5,
+            8
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Containment Lattice",
+          "tint": [
+            0.72,
+            0.82,
+            0.9
+          ],
+          "text": "Three rune sockets surround a cracked containment ring. The apparatus is dormant but unstable.",
+          "companion_quest_id": "q_companion_ilyan_silent_tower",
+          "companion_quest_milestone": "rune_experiment_contained",
+          "companion_quest_text": "Ilyan asks you to stabilise the lattice without completing the dangerous resonance. Use the page's safety notes to ground the active rune, isolate the feedback path and leave the final socket empty.",
+          "companion_quest_challenge": {
+            "prompt": "Which sequence safely contains the lattice without triggering the unstable resonance?",
+            "options": [
+              "Ground the active rune, isolate the feedback path and leave the final socket empty",
+              "Activate all three runes at once to equalise their power",
+              "Remove the grounding rune while the feedback path remains open"
+            ],
+            "correct_option": "Ground the active rune, isolate the feedback path and leave the final socket empty",
+            "success_text": "The lattice settles. The experiment is contained, and Ilyan records the safe shutdown procedure before anyone touches the apparatus again.",
+            "failure_text": "The lattice begins to hum. Ilyan stops the attempt before it can escalate and explains why grounding and isolation must come before any further action."
+          }
         }
       ]
     },
@@ -2745,6 +2774,24 @@
           "text": "The last keeper guards the bronze bell, convinced its toll is the only thing keeping a buried plague asleep.",
           "battle_id": "battle_bell",
           "world_flag_on_victory": "dungeon_bell_cleared"
+        },
+        {
+          "cell": [
+            5,
+            2
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Missing Tower Page",
+          "tint": [
+            0.78,
+            0.78,
+            0.9
+          ],
+          "text": "A loose folio is wedged behind the bell mechanism, its edge marked with Ilyan's tower cipher.",
+          "companion_quest_id": "q_companion_ilyan_silent_tower",
+          "companion_quest_milestone": "missing_page_found",
+          "companion_quest_text": "Ilyan recognises the folio as a page removed from the Silent Tower's rune-interaction record. Preserve the original sequence and its warning annotations; the missing page explains why the experiment was halted."
         }
       ]
     },
@@ -2795,6 +2842,24 @@
           "text": "A disgraced Vessmoor reeve commands the ossuary's looters, claiming the crown still owes his family a debt.",
           "battle_id": "battle_catacombs",
           "world_flag_on_victory": "dungeon_catacombs_cleared"
+        },
+        {
+          "cell": [
+            5,
+            8
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Apprentice's Signal",
+          "tint": [
+            0.82,
+            0.78,
+            0.66
+          ],
+          "text": "A faint tapping answers from behind the sealed apparatus chamber.",
+          "companion_quest_id": "q_companion_ilyan_silent_tower",
+          "companion_quest_milestone": "apprentice_reached",
+          "companion_quest_text": "The apprentice is alive but frightened, and the apparatus is still drawing power. Reach them by negotiation, rescue or a careful shutdown; do not treat the apprentice as the enemy. The research must be secured without sacrificing a person to protect it."
         }
       ]
     },
@@ -2924,6 +2989,24 @@
             9,
             5
           ]
+        },
+        {
+          "cell": [
+            7,
+            9
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Ledger's Missing Page",
+          "tint": [
+            0.76,
+            0.82,
+            0.88
+          ],
+          "text": "A ledger keeper has hidden a torn Tideglass page among routine harbour manifests.",
+          "companion_quest_id": "q_companion_maren_tideglass_wake",
+          "companion_quest_milestone": "ledger_page_found",
+          "companion_quest_text": "Maren recognises the voyage notation but not the cargo seal. Compare the page with the public harbour register and preserve the original before the missing voyage is dismissed as a clerical error."
         }
       ]
     },
@@ -3040,6 +3123,35 @@
             8,
             5
           ]
+        },
+        {
+          "cell": [
+            13,
+            9
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Soundings at Low Tide",
+          "tint": [
+            0.68,
+            0.82,
+            0.88
+          ],
+          "text": "A local pilot has marked the shoals on a chart, but the tide has shifted since the last safe passage.",
+          "companion_quest_id": "q_companion_maren_tideglass_wake",
+          "companion_quest_milestone": "safe_route_plotted",
+          "companion_quest_text": "Plot a safe approach using the tide marks, pilot testimony and damaged chart. The paid chart is only one source; verify it against the waterline and the pilot's independent soundings.",
+          "companion_quest_challenge": {
+            "prompt": "Which route uses the available evidence while avoiding the newly exposed shoal?",
+            "options": [
+              "Follow the old chart's straight channel without checking the tide",
+              "Cross the eastern shoal at ebb because the waterline and pilot's sounding agree on the western channel",
+              "Choose the deepest-looking water by colour alone"
+            ],
+            "correct_option": "Cross the eastern shoal at ebb because the waterline and pilot's sounding agree on the western channel",
+            "success_text": "The combined tide marks and pilot sounding reveal the safe western channel. Maren plots the approach without requiring a paid chart.",
+            "failure_text": "A chart alone or water colour cannot confirm depth. Compare the current tide marks with the pilot's independent sounding."
+          }
         }
       ]
     },
@@ -3183,6 +3295,24 @@
           "text": "A former beacon guard stands between you and the outer chamber. He has been ordered to keep the ledger buried, but his hands shake when he sees the seal.",
           "battle_id": "battle_tideglass",
           "world_flag_on_victory": "tideglass_grotto_cleared"
+        },
+        {
+          "cell": [
+            5,
+            8
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Wreck's Sealed Manifest",
+          "tint": [
+            0.74,
+            0.82,
+            0.9
+          ],
+          "text": "A watertight case remains trapped beneath a collapsed beam in the wreck.",
+          "companion_quest_id": "q_companion_maren_tideglass_wake",
+          "companion_quest_milestone": "wreck_manifest_recovered",
+          "companion_quest_text": "Recover the sealed manifest and compare its cargo marks with the missing ledger page. The crew diverted the ship to evade a blockade, but the cargo owner later profited from the disappearance. Keep the surviving crew's safety in view as Maren chooses what to reveal."
         }
       ]
     }
