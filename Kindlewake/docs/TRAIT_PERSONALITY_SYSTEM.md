@@ -45,6 +45,6 @@ This branch is a working foundation, not the entire long-term design target. It 
 4. Separate affinity/trust/respect relationship dimensions while preserving the existing loyalty system.
 5. Trait-aware companion AI decisions, dialogue checks, campaign rewards, and supported profession/crafting hooks.
 6. Full trait detail/history/filter UI and touch-tested portrait integration.
-7. Godot headless tests, scene smoke tests, Android export, and physical-device validation on the exact PR head.
+7. Physical-device validation on Android. Exact-head CI on `501e3abfa6877502254d8a60790f6a7818f30587` passed Godot 4.2.2 import, 8/8 scene smoke loads, 465 strict checks / 0 failures, balance report, signed Android export for both supported ABIs, Version Sync, Project Health Audit, and Workflow YAML Lint. Physical-device validation remains pending.
 
 Do not seed traits onto the existing named cast merely from class or combat stats. Starting personalities must be grounded in approved character writing and consistent with the exact sprite/portrait identity.
