@@ -135,6 +135,8 @@ func close_empire_trade_route(route_id: String) -> bool:
 
 func advance_empire_season() -> Dictionary:
     var report: Dictionary = EmpireSystem.advance_season(empire_state, player_controlled_provinces(), atlas_region_adjacency(), GameData.characters)
+    if not bool(report.get("ok", false)):
+        return report
     var faction_ids: Array = []
     for faction in GameData.factions.get("factions", []):
         faction_ids.append(str(faction.get("id", "")))
