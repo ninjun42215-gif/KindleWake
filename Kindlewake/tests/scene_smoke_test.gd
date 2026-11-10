@@ -32,7 +32,7 @@ func _collect_scenes(directory_path: String) -> void:
         if entry != "." and entry != ".." and not entry.begins_with("."):
             var child_path: String = directory_path.path_join(entry)
             if directory.current_is_dir():
-                if entry not in ["dist", "build", "export", "addons"]:
+                if entry not in ["dist", "build", "export"]:
                     _collect_scenes(child_path)
             elif entry.ends_with(".tscn"):
                 scene_paths.append(child_path)
