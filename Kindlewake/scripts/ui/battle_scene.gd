@@ -1038,7 +1038,7 @@ func _draw_unit(u: BattleUnitScript, p: Vector2) -> void:
     var ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40, 7)), Color(0.1, 0.08, 0.08))
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40.0 * ratio, 7)), Color(0.85, 0.2, 0.2).lerp(Color(0.25, 0.85, 0.38), ratio))
-    draw_string(ThemeDB.fallback_font, p + Vector2(-40, -55), u.display_name, HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color.WHITE)
+    _draw_unit_tag(u, p)
     _draw_status_pips(u, p)
     if u.morale <= 0:
         draw_string(ThemeDB.fallback_font, p + Vector2(-40, -70), "ROUTED", HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color(1, 0.6, 0.3))
@@ -1174,7 +1174,7 @@ func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: V
     var ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40, 7)), Color(0.1, 0.08, 0.08))
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40.0 * ratio, 7)), Color(0.85, 0.2, 0.2).lerp(Color(0.25, 0.85, 0.38), ratio))
-    draw_string(ThemeDB.fallback_font, p + Vector2(-40, -55), u.display_name, HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color.WHITE)
+    _draw_unit_tag(u, p)
     if u.morale <= 0:
         draw_string(ThemeDB.fallback_font, p + Vector2(-40, -70), "ROUTED", HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color(1, 0.6, 0.3))
     return true
@@ -1235,13 +1235,34 @@ func _draw_branch_glyph(p: Vector2, branch: String) -> void:
         draw_line(p + Vector2(10, -18), p + Vector2(19, -38), Color(0.85, 0.82, 0.66), 3.0)
 
 
+## Short, readable name for turn chips: heroes by first name, enemies by their role word.
+func _short_name(u: BattleUnitScript) -> String:
+    var parts: PackedStringArray = u.display_name.split(" ", false)
+    if parts.is_empty():
+        return u.character_id.substr(0, 4).capitalize()
+    return parts[0] if u.team == "player" else parts[parts.size() - 1]
+
+
+## Only the active or inspected unit gets a name tag, avoiding overlap in clusters.
+func _draw_unit_tag(u: BattleUnitScript, p: Vector2) -> void:
+    if u.id != inspected_id and u.id != controller.active_id:
+        return
+    var parts: PackedStringArray = u.display_name.split(" ", false)
+    var label: String = parts[0] if not parts.is_empty() else u.display_name
+    var pos: Vector2 = p + Vector2(-60, -56)
+    draw_string_outline(ThemeDB.fallback_font, pos, label, HORIZONTAL_ALIGNMENT_CENTER, 120, 15, 5, Color(0, 0, 0, 0.9))
+    draw_string(ThemeDB.fallback_font, pos, label, HORIZONTAL_ALIGNMENT_CENTER, 120, 15, Color(1.0, 0.94, 0.78))
+
+
 func _draw_popups() -> void:
     for pop in popups:
         var age: float = float(pop["age"])
         var base: Vector2 = pop["pos"]
         var c: Color = pop["color"]
         c.a = clampf(1.2 - age, 0.0, 1.0)
-        draw_string(ThemeDB.fallback_font, base + Vector2(-30, -64 - age * 34.0), str(pop["text"]), HORIZONTAL_ALIGNMENT_CENTER, 60, 28, c)
+        var pop_pos: Vector2 = base + Vector2(-80, -64 - age * 34.0)
+        draw_string_outline(ThemeDB.fallback_font, pop_pos, str(pop["text"]), HORIZONTAL_ALIGNMENT_CENTER, 160, 28, 6, Color(0, 0, 0, c.a))
+        draw_string(ThemeDB.fallback_font, pop_pos, str(pop["text"]), HORIZONTAL_ALIGNMENT_CENTER, 160, 28, c)
 
 
 # ------------------------------------------------------------------ HUD
@@ -1751,12 +1772,14 @@ func _refresh_timeline() -> void:
         sb.border_color = Color(1.0, 0.86, 0.3) if first else Color(0, 0, 0, 0.6)
         sb.set_corner_radius_all(6)
         panel.add_theme_stylebox_override("panel", sb)
-        panel.custom_minimum_size = Vector2(62, 50)
+        panel.custom_minimum_size = Vector2(78, 50)
         panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
         var lbl := Label.new()
-        lbl.text = u.character_id.substr(0, 3).to_upper()
+        lbl.text = _short_name(u)
         lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-        lbl.add_theme_font_size_override("font_size", 20)
+        lbl.clip_text = true
+        lbl.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+        lbl.add_theme_font_size_override("font_size", 15)
         lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
         panel.add_child(lbl)
         timeline_box.add_child(panel)

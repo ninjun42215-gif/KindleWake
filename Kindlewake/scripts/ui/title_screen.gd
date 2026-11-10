@@ -227,6 +227,24 @@ func _show_settings() -> void:
     master_slider.value_changed.connect(_on_volume_changed)
     row.add_child(master_slider)
     content_box.add_child(row)
+
+    var haptics_toggle := CheckButton.new()
+    haptics_toggle.text = "HAPTIC FEEDBACK"
+    haptics_toggle.button_pressed = KW.haptics
+    haptics_toggle.toggled.connect(KW.set_haptics_enabled)
+    content_box.add_child(haptics_toggle)
+
+    var motion_toggle := CheckButton.new()
+    motion_toggle.text = "REDUCE MOTION"
+    motion_toggle.button_pressed = KW.reduce_motion
+    motion_toggle.toggled.connect(KW.set_reduce_motion_enabled)
+    content_box.add_child(motion_toggle)
+
+    var sfx_toggle := CheckButton.new()
+    sfx_toggle.text = "UI SOUND EFFECTS"
+    sfx_toggle.button_pressed = KW.sfx_enabled
+    sfx_toggle.toggled.connect(KW.set_sfx_enabled)
+    content_box.add_child(sfx_toggle)
     content_box.add_child(_button("BACK", _show_main))
 
 
