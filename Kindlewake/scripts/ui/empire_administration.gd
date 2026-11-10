@@ -294,6 +294,9 @@ func _build_military() -> void:
     var deployed: Dictionary = GameState.field_army_summary()
     _metric("Field deployments", "%d armies · %d soldiers" % [int(deployed.get("armies", 0)), int(deployed.get("troops", 0))], "%d unsupplied armies" % int(deployed.get("unsupplied", 0)))
     _metric("Seasonal military burden", "%d gold · %d food" % [int(summary.get("upkeep", 0)), int(summary.get("food", 0))], "Readiness estimate: %d%% based on current food reserves" % int(summary.get("readiness", 100)))
+    _metric("War exhaustion", "%d / 100" % int(GameState.empire_state.get("war_exhaustion", 0)), "At 70+, prolonged war reduces stability and public order")
+    if int(GameState.empire_state.get("war_exhaustion", 0)) > 0:
+        body.add_child(_button("Negotiate armistice · reduce exhaustion by 15", _reduce_war_exhaustion, true))
     _section("SELECT GARRISON PROVINCE")
     var region_ids: Array = GameData.factions.get("regions", {}).keys()
     region_ids.sort()
@@ -338,7 +341,7 @@ func _build_military() -> void:
         body.add_child(_label("Appoint a party character to command the new field army:", 14, C_DIM))
         body.add_child(commander_picker)
         body.add_child(_button("Mobilize 5 Infantry into Field Army", _mobilize_field_army.bind(selected_province, {"infantry": 5}), true))
-    body.add_child(_label("Garrisons defend their province. Mobilized field armies travel one atlas region-link per strategic move. Armies outside controlled territory are unsupplied.", 14, C_DIM))
+    body.add_child(_label("Garrisons defend their province. Mobilized field armies travel one atlas region-link per strategic move. Supply depots project a connected network through controlled regions; exposed armies suffer morale loss and attrition.", 14, C_DIM))
     _section("FIELD ARMIES")
     var field_armies: Dictionary = GameState.empire_state.get("field_armies", {})
     var adjacency: Dictionary = GameState.atlas_region_adjacency()
@@ -369,9 +372,15 @@ func _build_military() -> void:
             body.add_child(_button("Assault breached defences", _assault_siege.bind(str(region_id)), true))
 
 
+func _reduce_war_exhaustion() -> void:
+    var ok: bool = GameState.reduce_campaign_war_exhaustion(15)
+    _set_message("An armistice has eased the realm's war burden." if ok else "There is no war exhaustion to reduce.", ok)
+    GameState.save_campaign("auto_a")
+
+
 func _start_siege(army_id: String, region_id: String) -> void:
     var ok: bool = GameState.start_province_siege(army_id, region_id)
-    _set_message("The siege lines are established." if ok else "Cannot establish a siege here. The army must occupy a hostile region adjacent to your supply network.", ok)
+    _set_message("The siege lines are established." if ok else "Cannot establish a siege here. The army must occupy a hostile region adjacent to your controlled territory.", ok)
     GameState.save_campaign("auto_a")
 
 
