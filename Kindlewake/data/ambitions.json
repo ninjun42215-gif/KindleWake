@@ -1,0 +1,136 @@
+{
+  "ambitions": {
+    "prove_courage": {
+      "name": "Prove My Courage",
+      "description": "Face danger without abandoning those who depend on you.",
+      "category": "personal",
+      "objective": {
+        "behavior": "brave_actions",
+        "target": 5
+      },
+      "completion_trait": "fearless",
+      "stress_reward": -5
+    },
+    "become_a_scholar": {
+      "name": "Seek Lost Knowledge",
+      "description": "Study and preserve knowledge that would otherwise be lost.",
+      "category": "knowledge",
+      "objective": {
+        "behavior": "research_sessions",
+        "target": 5
+      },
+      "completion_trait": "scholar",
+      "stress_reward": -3
+    },
+    "protect_the_company": {
+      "name": "Shield the Company",
+      "description": "Stand between danger and the companions who trust you.",
+      "category": "companionship",
+      "objective": {
+        "behavior": "ally_protection",
+        "target": 5
+      },
+      "completion_trait": "protective",
+      "stress_reward": -4
+    },
+    "master_the_blade": {
+      "name": "Master the Blade",
+      "description": "Train consistently and prove your skill in meaningful combat.",
+      "category": "combat",
+      "objective": {
+        "behavior": "sword_training",
+        "target": 12
+      },
+      "completion_trait": "skilled_swordsman",
+      "stress_reward": -3
+    },
+    "earn_company_trust": {
+      "name": "Earn the Company's Trust",
+      "description": "Keep your word through consequential choices.",
+      "category": "morality",
+      "objective": {
+        "behavior": "kept_oaths",
+        "target": 3
+      },
+      "completion_trait": "honorable",
+      "stress_reward": -4
+    },
+    "share_bounty": {
+      "name": "Share the Company's Fortune",
+      "description": "Choose fairness when dividing meaningful rewards.",
+      "category": "companionship",
+      "objective": {
+        "behavior": "shared_rewards",
+        "target": 4
+      },
+      "completion_trait": "generous",
+      "stress_reward": -3
+    },
+    "survive_frontier": {
+      "name": "Survive the Frontier",
+      "description": "Lead yourself and others through harsh conditions.",
+      "category": "survival",
+      "objective": {
+        "behavior": "harsh_expeditions",
+        "target": 3
+      },
+      "completion_trait": "survivalist",
+      "stress_reward": -5
+    },
+    "field_healer": {
+      "name": "Keep Them Alive",
+      "description": "Treat wounded allies when the company needs you most.",
+      "category": "service",
+      "objective": {
+        "behavior": "allies_healed",
+        "target": 15
+      },
+      "completion_trait": "healer",
+      "stress_reward": -4
+    },
+    "lead_by_example": {
+      "name": "Lead by Example",
+      "description": "Inspire others through decisive action and responsibility.",
+      "category": "leadership",
+      "objective": {
+        "behavior": "accepted_responsibility",
+        "target": 3
+      },
+      "completion_trait": "inspiring_commander",
+      "stress_reward": -4
+    },
+    "find_your_path": {
+      "name": "Find the Forgotten Paths",
+      "description": "Explore carefully and chart routes through unknown country.",
+      "category": "exploration",
+      "objective": {
+        "behavior": "routes_discovered",
+        "target": 3
+      },
+      "completion_trait": "curious",
+      "stress_reward": -3
+    },
+    "master_the_bow": {
+      "name": "Become a Sure Shot",
+      "description": "Practise patience and precision with a ranged weapon.",
+      "category": "combat",
+      "objective": {
+        "behavior": "ranged_hits",
+        "target": 40
+      },
+      "completion_trait": "marksman",
+      "stress_reward": -3
+    },
+    "mend_wounded_spirit": {
+      "name": "Make Peace with the Past",
+      "description": "Take supported steps toward recovery after hardship.",
+      "category": "personal",
+      "objective": {
+        "behavior": "trauma_recovery_milestones",
+        "target": 3
+      },
+      "completion_trait": "mentally_resilient",
+      "stress_reward": -10
+    }
+  }
+}

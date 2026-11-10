@@ -247,8 +247,11 @@ func evolve_trait(trait_id: String, definitions: Dictionary, source: String) -> 
 
 
 
-func record_behavior(behavior_id: String, amount: int, evidence_id: String) -> void:
-    behavior = PersonalitySystemScript.record_behavior(behavior, behavior_id, amount, evidence_id)
+func record_behavior(behavior_id: String, amount: int, evidence_id: String) -> bool:
+    var updated: Dictionary = PersonalitySystemScript.record_behavior(behavior, behavior_id, amount, evidence_id)
+    var changed := updated != behavior
+    behavior = updated
+    return changed
 
 
 func apply_personality_event(event_id: String, event_definitions: Dictionary, trait_definitions: Dictionary, source: String = "campaign_event", instance_id: String = "") -> Dictionary:
