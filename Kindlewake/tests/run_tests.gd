@@ -4,6 +4,7 @@ const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const OpeningChapterSystem = preload("res://scripts/core/opening_chapter_system.gd")
+const OpeningActOneQuestSystem = preload("res://scripts/core/opening_act_one_quest_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
@@ -37,6 +38,7 @@ func _initialize() -> void:
     _test_recruitment()
     _test_prologue()
     _test_opening_chapter()
+    _test_opening_act_one_quests()
     _test_escape_mission()
     _test_escape_ui_layout()
     _test_sigils()
@@ -124,6 +126,38 @@ func _test_prologue() -> void:
     check(str(PrologueSystem.acknowledgement(record)).contains("kept the record"), "record choice receives a later narrative acknowledgement")
     check(str(PrologueSystem.acknowledgement(split)).contains("both lives and truth"), "split choice receives a later narrative acknowledgement")
     check(PrologueSystem.apply_choice(prior, "unknown").is_empty(), "unknown prologue choices are rejected")
+
+
+func _test_opening_act_one_quests() -> void:
+    print("[opening Act I quests]")
+    var flags: Dictionary = {}
+    check(not bool(OpeningActOneQuestSystem.inspect("blocked_well", flags).get("actions", []).is_empty()), "blocked well begins with a clearable obstruction")
+    check(not bool(OpeningActOneQuestSystem.inspect("first_oath", flags).get("actions", []).size() > 0), "first oath is gated until the keep and road are prepared")
+    var result: Dictionary = OpeningActOneQuestSystem.resolve("blocked_well", "clear_well", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("kaer_well_blockage_cleared", false)), "well obstruction can be cleared and persisted")
+    result = OpeningActOneQuestSystem.resolve("blocked_well", "test_well", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("kaer_well_water_safe", false)), "well water is tested before it is declared safe")
+    result = OpeningActOneQuestSystem.resolve("roof_before_banner", "salvage_roof_timber", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("kaer_roof_timber_salvaged", false)), "roof quest requires timber salvage")
+    result = OpeningActOneQuestSystem.resolve("roof_before_banner", "secure_roof", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("kaer_roof_secured", false)), "roof is secured after salvage")
+    result = OpeningActOneQuestSystem.resolve("last_convoy", "shelter_families", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("last_convoy_families_sheltered", false)), "convoy choice records family shelter outcome")
+    check(not bool(OpeningActOneQuestSystem.resolve("toll_book", "read_names", {}).get("ok", true)), "toll book cannot be reviewed without the convoy manifest")
+    result = OpeningActOneQuestSystem.resolve("toll_book", "read_names", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("toll_book_public", false)), "public toll-book choice records disclosure")
+    check(not bool(OpeningActOneQuestSystem.inspect("first_oath", flags).get("actions", []).is_empty()), "first oath unlocks after well, roof, convoy and toll-book quests")
+    result = OpeningActOneQuestSystem.resolve("first_oath", "oath_people", flags)
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(result.get("ok", false)) and bool(flags.get("chapter_1_complete", false)) and bool(flags.get("sethmarch_people_first", false)), "people-first oath completes Act I with a persistent outcome")
+    check(not bool(OpeningActOneQuestSystem.resolve("first_oath", "oath_law", flags).get("ok", true)), "first oath cannot be changed after it is witnessed")
+    check(not bool(OpeningActOneQuestSystem.resolve("blocked_well", "unknown", {}).get("ok", true)), "unknown story actions are rejected")
 
 
 func _test_escape_mission() -> void:
