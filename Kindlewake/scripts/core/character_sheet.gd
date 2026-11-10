@@ -237,7 +237,7 @@ func remove_trait(trait_id: String, reason: String, definitions: Dictionary, all
 
 
 func evolve_trait(trait_id: String, definitions: Dictionary, source: String) -> Dictionary:
-    var result: Dictionary = TraitSystemScript.evolve(traits, trait_history, trait_id, definitions, source)
+    var result: Dictionary = TraitSystemScript.evolve(traits, trait_history, trait_id, definitions, source, behavior)
     if bool(result.get("ok", false)):
         traits = result.traits
         trait_history = result.history
@@ -250,12 +250,12 @@ func record_behavior(behavior_id: String, amount: int, evidence_id: String) -> v
     behavior = PersonalitySystemScript.record_behavior(behavior, behavior_id, amount, evidence_id)
 
 
-func apply_personality_event(event_id: String, event_definitions: Dictionary, trait_definitions: Dictionary, source: String = "campaign_event") -> Dictionary:
+func apply_personality_event(event_id: String, event_definitions: Dictionary, trait_definitions: Dictionary, source: String = "campaign_event", instance_id: String = "") -> Dictionary:
     var state := {
         "stress": stress, "memories": memories, "behavior": behavior,
         "traits": traits, "trait_history": trait_history, "ambition": ambition
     }
-    var result: Dictionary = PersonalitySystemScript.apply_event(state, event_id, event_definitions, trait_definitions, source)
+    var result: Dictionary = PersonalitySystemScript.apply_event(state, event_id, event_definitions, trait_definitions, source, instance_id)
     if bool(result.get("ok", false)):
         var updated: Dictionary = result.state
         stress = clampi(int(updated.get("stress", stress)), 0, 100)
