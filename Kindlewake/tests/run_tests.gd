@@ -8,6 +8,7 @@ const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
+const MarenQuestSystem = preload("res://scripts/core/maren_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
@@ -52,6 +53,7 @@ func _initialize() -> void:
     _test_thalassar_region()
     _test_wraparound_world()
     _test_brinegate_quest()
+    _test_maren_companion_quest()
     _test_region_save_compatibility()
     _test_locations()
     _test_shop_and_screen()
@@ -1004,6 +1006,44 @@ func _test_brinegate_quest() -> void:
     var duplicate: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(public_result.get("world_flags", {}), "private")
     check(not bool(duplicate.get("ok", true)), "the harbour decision can only be recorded once")
     check(not bool(BrinegateQuestSystem.resolve_ledger_choice(ready_flags, "unknown").get("ok", true)), "unknown harbour choices are rejected")
+
+
+func _test_maren_companion_quest() -> void:
+    print("[Maren Vey companion quest]")
+    check(not MarenQuestSystem.start_quest({}, ["torren", "maren_vey"]).get("ok", false), "Maren's personal quest stays locked until the harbour decision is settled")
+    check(not MarenQuestSystem.start_quest({"brinegate_ledger_decision": true}, ["torren"]).get("ok", false), "Maren's personal quest stays locked until she joins")
+    var started: Dictionary = MarenQuestSystem.start_quest({"brinegate_ledger_decision": true}, ["torren", "maren_vey"])
+    check(bool(started.get("ok", false)), "the last sounding quest starts once its prerequisites are met")
+    var flags: Dictionary = started.get("world_flags", {})
+    var wrong: Dictionary = MarenQuestSystem.submit_signal(flags, "high")
+    check(bool(wrong.get("ok", false)) and not bool(wrong.get("correct", true)) and int(wrong.world_flags.get(MarenQuestSystem.PROGRESS_FLAG, -1)) == 0, "an incorrect signal tone resets the sequence without awarding progress")
+    flags = MarenQuestSystem.submit_signal(wrong.world_flags, "low").world_flags
+    flags = MarenQuestSystem.submit_signal(flags, "high").world_flags
+    var final_note: Dictionary = MarenQuestSystem.submit_signal(flags, "rising")
+    check(bool(final_note.get("complete", false)), "the low-high-rising signal puzzle restores the Northstar sounding")
+    flags = final_note.get("world_flags", {})
+    var resolved: Dictionary = MarenQuestSystem.resolve_quest(flags, "return_log")
+    check(bool(resolved.get("ok", false)), "Maren's recovered log can be resolved after the signal puzzle")
+    var duplicate: Dictionary = MarenQuestSystem.resolve_quest(resolved.get("world_flags", {}), "publish_log")
+    check(not bool(duplicate.get("ok", true)), "the companion quest resolution is one-time")
+    check(not bool(MarenQuestSystem.resolve_quest(flags, "unknown").get("ok", true)), "unknown companion quest outcomes are rejected")
+    var return_bonds: Dictionary = {}
+    check(MarenQuestSystem.apply_relationships(return_bonds, "torren", ["torren", "maren_vey"], gd.characters, "return_log") == 3, "returning the log applies Maren's authored friendship, trust and affection")
+    var returned: Dictionary = RelationshipSystemScript.get_relationship(return_bonds, "torren", "maren_vey")
+    check(int(returned.get("friendship", 0)) == 8 and int(returned.get("trust", 0)) == 10 and int(returned.get("affection", 0)) == 4, "the private resolution strengthens Maren's bond with the company leader")
+    check(MarenQuestSystem.apply_relationships(return_bonds, "torren", ["torren", "maren_vey"], gd.characters, "return_log") == 0, "Maren's personal quest relationship rewards cannot be farmed")
+    var public_bonds: Dictionary = {}
+    RelationshipSystemScript.adjust(public_bonds, "torren", "maren_vey", "trust", 20, "setup:trust")
+    var published_count: int = MarenQuestSystem.apply_relationships(public_bonds, "torren", ["torren", "maren_vey"], gd.characters, "publish_log")
+    var published_bond: Dictionary = RelationshipSystemScript.get_relationship(public_bonds, "torren", "maren_vey")
+    check(published_count == 2 and int(published_bond.get("respect", 0)) == 8 and int(published_bond.get("trust", 0)) == 15, "publishing the log trades some trust for respect with Maren")
+    var maps: Dictionary = LocalMap.load_all(gd.locations)
+    var has_maren_quest := false
+    for map_id in ["brinegate", "lantern_quay"]:
+        for spot in (maps[map_id] as LocalMap).spots:
+            if str((spot as Dictionary).get("quest_id", "")) == "maren_signal":
+                has_maren_quest = true
+    check(has_maren_quest, "Maren's personal quest is reachable from Brinegate and Lantern Quay")
 
 
 func _test_region_save_compatibility() -> void:
