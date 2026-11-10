@@ -966,6 +966,8 @@ func _test_empire_management() -> void:
     check(EmpireSystem.appoint_councillor(state, "steward", "torren"), "steward can be appointed for trait-effect testing")
     var council_effect: Dictionary = EmpireSystem.council_effects(state, {"torren": {"traits": ["administrator"]}})
     check(int(council_effect.get("income", 0)) == 13, "steward office and administrator trait combine their seasonal income bonuses")
+    var authored_council_effect: Dictionary = EmpireSystem.council_effects(state, gd.characters)
+    check(int(authored_council_effect.get("income", 0)) >= 18, "authored companion traits provide additional council office bonuses")
     var unrest_state: Dictionary = EmpireSystem.new_state()
     EmpireSystem.unlock(unrest_state)
     unrest_state["public_order"] = 0
@@ -991,12 +993,14 @@ func _test_empire_management() -> void:
     var report: Dictionary = EmpireSystem.advance_season(state, known_regions)
     check(bool(report.get("ok", false)) and int(report.get("season", 0)) == 1, "season advancement produces a dated report")
     check(bool(report.get("food_shortage", false)) and int(state["public_order"]) < before_order, "food shortage causes a public-order penalty")
+    check(int(report.get("trade_income", 0)) == 20, "each active trade route adds its contracted seasonal income")
     check(int(report.get("troops", 0)) == 13 and int(report.get("military_upkeep", 0)) == 13 and int(report.get("military_food", 0)) == 13, "seasonal ledger includes standing-army upkeep and ration consumption")
     check(int(state["field_armies"][field_id]["movement"]) == 1 and bool(state["field_armies"][field_id]["supplied"]), "season advancement refreshes field army movement and supply in controlled territory")
     var restored: Dictionary = EmpireSystem.normalize_state(state)
     check(bool(restored.get("unlocked", false)) and int(restored.get("turn", 0)) == 1, "empire state survives normalization")
     check(int(EmpireSystem.army_summary(restored).get("troops", 0)) == 13, "provincial garrisons survive campaign normalization and save restoration")
     check(int(EmpireSystem.field_army_summary(restored).get("troops", 0)) == 5, "field armies survive campaign normalization and save restoration")
+    check(restored.get("trade_routes", {}).size() == 1, "trade route charters survive campaign normalization and save restoration")
     check(not bool(EmpireSystem.normalize_state({}).get("unlocked", false)), "legacy saves without empire state remain locked and loadable")
 
 func _test_field_army_supply_attrition() -> void:
