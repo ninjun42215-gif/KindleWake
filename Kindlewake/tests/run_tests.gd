@@ -1007,6 +1007,11 @@ func _test_supply_siege_and_tactical_bridge() -> void:
     check(bool(assault.get("ok", false)) and bool(assault.get("won", false)) and bool(assault.get("territory_transfer_required", false)), "a successful assault requests an explicit faction territory transfer")
     check(int(state["war_exhaustion"]) > 2 and EmpireSystem.reduce_war_exhaustion(state, 5), "war exhaustion rises after an assault and can be reduced by a peace action")
     check(EmpireSystem.complete_siege_transfer(state, "orrowen_weald") and not state["sieges"].has("orrowen_weald"), "completed occupation closes the siege record")
+    state["war_exhaustion"] = 75
+    var stability_before_exhaustion: int = int(state["stability"])
+    var order_before_exhaustion: int = int(state["public_order"])
+    EmpireSystem.advance_season(state, regions, adjacency)
+    check(int(state["stability"]) == stability_before_exhaustion - 1 and int(state["public_order"]) == order_before_exhaustion - 2, "severe war exhaustion carries a visible seasonal stability and order penalty")
     var restored: Dictionary = EmpireSystem.normalize_state(state)
     check(restored.get("sieges", {}).is_empty() and int(restored.get("war_exhaustion", 0)) >= 0, "siege and exhaustion data normalize safely for campaign saves")
 
