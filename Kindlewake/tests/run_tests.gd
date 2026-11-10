@@ -411,7 +411,11 @@ func _test_act_four_winter_of_knives() -> void:
     check(boss_spawned, "Quillon Warden is the optional battle commander")
     check(gd.locations.maps.has("quillon_archive"), "Quillon Archive interior map exists")
     check(gd.locations.maps.elderbough.doors.has("4"), "Elderbough has a door to the Quillon Archive")
-    check(gd.locations.maps.elderbough.spots.any(func(spot): return str(spot.get("story_id", "")) == "witness_recanted"), "recanted witness story spot exists")
+    var witness_spot_found := false
+    for spot in gd.locations.maps.elderbough.spots:
+        if str(spot.get("story_id", "")) == "witness_recanted":
+            witness_spot_found = true
+    check(witness_spot_found, "recanted witness story spot exists")
 
 
 func _test_escape_mission() -> void:
