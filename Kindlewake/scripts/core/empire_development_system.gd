@@ -24,7 +24,7 @@ static func upgrade_building(holding_id: String, building_id: String, flags: Dic
         return {"ok":false,"reason":"Unknown building."}
     var def: Dictionary = BUILDINGS[building_id]
     var key := "holding_building_" + holding_id + "_" + building_id
-    var tier := int(flags.get(key, 0))
+    var tier := clampi(int(flags.get(key, 0)), 0, 3)
     if tier >= 3:
         return {"ok":false,"reason":"This building has reached its maximum tier."}
     var multiplier := tier + 1
@@ -42,7 +42,9 @@ static func recruit(holding_id: String, troop_id: String, amount: int, flags: Di
         return {"ok":false,"reason":"Recruitment requires a player-administered holding."}
     if not TROOPS.has(troop_id):
         return {"ok":false,"reason":"Unknown troop type."}
-    var count := clampi(amount, 1, 20)
+    if amount <= 0:
+        return {"ok":false,"reason":"Recruitment amount must be at least one."}
+    var count := mini(amount, 20)
     var troop: Dictionary = TROOPS[troop_id]
     var gold_cost := int(troop.gold) * count
     var provisions_cost := int(troop.provisions) * count
