@@ -449,14 +449,15 @@ static func _advance_sieges(state: Dictionary, controlled_provinces: Array) -> D
 	var sieges: Dictionary = state.get("sieges", {})
 	for region in sieges.keys():
 		var siege: Dictionary = sieges[region]
+		if bool(siege.get("captured", false)):
+			continue
 		if controlled_provinces.has(str(region)):
 			sieges.erase(region)
 			continue
 		var army_id := str(siege.get("army_id", ""))
 		if not state.get("field_armies", {}).has(army_id):
-			siege["status"] = "abandoned"
-			siege["progress"] = 0
-			sieges[region] = siege
+			sieges.erase(region)
+			_record(state, "siege_abandoned", {"region": str(region), "reason": "besieging_army_lost"})
 			continue
 		var army: Dictionary = state["field_armies"][army_id]
 		var strength := _troop_total(army.get("troops", {}))
