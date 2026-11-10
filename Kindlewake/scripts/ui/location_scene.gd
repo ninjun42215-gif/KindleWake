@@ -292,9 +292,10 @@ func _render_opening_story(spot: Dictionary) -> void:
     for child in spot_buttons.get_children():
         spot_buttons.remove_child(child)
         child.queue_free()
-    for action in view.get("actions", []):
-        var entry: Dictionary = action
-        spot_buttons.add_child(_btn(str(entry.get("label", "Continue")), _resolve_opening_story_action.bind(story_id, str(entry.get("id", "")))))
+    if not (view.get("actions", []) as Array).is_empty():
+        spot_buttons.add_child(_btn("Begin playable quest", _launch_opening_challenge.bind(story_id)))
+    else:
+        spot_text.text += "\\n\\nThis quest has been completed or is waiting for another campaign milestone."
 
 
 func _resolve_opening_story_action(story_id: String, action_id: String) -> void:
