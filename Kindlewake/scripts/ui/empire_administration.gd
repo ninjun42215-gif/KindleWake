@@ -354,7 +354,7 @@ func _build_military() -> void:
         var total := 0
         for amount in composition.values():
             total += int(amount)
-        _metric(str(army.get("name", army_id)), "%d soldiers · %s" % [total, location.replace("_", " ").capitalize()], "Commander: %s · %s" % [str(army.get("commander", "Unassigned")) if str(army.get("commander", "")) != "" else "Unassigned", "Supplied" if bool(army.get("supplied", false)) else "Unsupplied"])
+        _metric(str(army.get("name", army_id)), "%d soldiers · %s" % [total, location.replace("_", " ").capitalize()], "Commander: %s · %s · Morale %d/100" % [str(army.get("commander", "Unassigned")) if str(army.get("commander", "")) != "" else "Unassigned", "Supplied" if bool(army.get("supplied", false)) else "Unsupplied", int(army.get("morale", 100))])
         for destination in adjacency.get(location, []):
             body.add_child(_button("March to " + str(destination).replace("_", " ").capitalize(), _move_field_army.bind(str(army_id), str(destination)), true))
         if not GameState.player_controlled_provinces().has(location) and not GameState.empire_state.get("sieges", {}).has(location):
