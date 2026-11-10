@@ -3,7 +3,7 @@
 This deterministic rules module extends the offline Chronicle family, title, claim and council records. It remains within the already gated post-campaign mode; it does not provide an alternate unlock path.
 
 ## Seeded houses
-Three rival houses enter the political record: House Ashcombe, House Merevale and House Dunmar. Each has a leader, motto, influence, legitimacy, treasury, food and military strength, all bounded from 0 to 100. Pairwise relations are shared records, so both sides see the same treaty and score.
+The player dynasty and three rival houses enter the political record: House Ashcombe, House Merevale and House Dunmar. Each of the four houses has a shared bilateral record with every other house (six pairs total). Each has a leader, motto, influence, legitimacy, treasury, food and military strength, all bounded from 0 to 100. Pairwise relations are shared records, so both sides see the same treaty and score.
 
 ## Relations and diplomacy
 Relation scores are bounded from -100 to 100. At -50 or below a house is a rival; at 60 or above it is friendly. A feud overrides alliance. Available actions:
