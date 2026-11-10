@@ -1435,6 +1435,93 @@
         "ldr": 18,
         "mor": 90
       }
+    },
+    "frontier_levy": {
+      "name": "Frontier Levy",
+      "reward": {
+        "exp": 0,
+        "ap": 0,
+        "gold": 0
+      },
+      "class_id": "swordsman",
+      "level": 1,
+      "house": "none",
+      "weapon_id": "arming_sword",
+      "armor_def": 2,
+      "armor_res": 1,
+      "skills": [],
+      "stats": {
+        "hp": 25,
+        "mp": 5,
+        "str": 8,
+        "dex": 7,
+        "int": 4,
+        "vit": 7,
+        "spd": 7,
+        "lck": 6,
+        "acc": 78,
+        "eva": 10,
+        "ldr": 2,
+        "mor": 55
+      }
+    },
+    "march_archer": {
+      "name": "March Archer",
+      "reward": {
+        "exp": 0,
+        "ap": 0,
+        "gold": 0
+      },
+      "class_id": "archer",
+      "level": 1,
+      "house": "none",
+      "weapon_id": "short_bow",
+      "armor_def": 2,
+      "armor_res": 1,
+      "skills": [],
+      "stats": {
+        "hp": 21,
+        "mp": 5,
+        "str": 5,
+        "dex": 10,
+        "int": 4,
+        "vit": 8,
+        "spd": 9,
+        "lck": 7,
+        "acc": 78,
+        "eva": 10,
+        "ldr": 2,
+        "mor": 55
+      }
+    },
+    "household_knight": {
+      "name": "Household Knight",
+      "reward": {
+        "exp": 0,
+        "ap": 0,
+        "gold": 0
+      },
+      "class_id": "knight",
+      "level": 1,
+      "house": "none",
+      "weapon_id": "longsword",
+      "armor_def": 6,
+      "armor_res": 1,
+      "skills": [],
+      "stats": {
+        "hp": 34,
+        "mp": 4,
+        "str": 10,
+        "dex": 7,
+        "int": 4,
+        "vit": 7,
+        "spd": 6,
+        "lck": 8,
+        "acc": 78,
+        "eva": 10,
+        "ldr": 2,
+        "mor": 55
+      }
     }
   }
 }
