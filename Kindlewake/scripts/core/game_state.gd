@@ -22,6 +22,7 @@ var pending_location: String = ""        # town map the location scene opens nex
 var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored with battle saves
 var campaign_slot: String = ""
 var faction_state: Dictionary = {}
+var trade_state: Dictionary = TradeSystem.new_state()
 
 
 
@@ -54,6 +55,7 @@ func new_game(profile: Dictionary = {}) -> void:
     world_flags = {}
     pending_location = ""
     faction_state = FactionSystem.new_campaign_state(GameData.factions)
+    trade_state = TradeSystem.new_state()
 
 
 ## Change diplomatic standing after an authored campaign event.
@@ -121,6 +123,7 @@ func campaign_payload() -> Dictionary:
         "world_positions": world_positions.duplicate(true),
         "world_flags": world_flags.duplicate(true),
         "faction_state": faction_state.duplicate(true),
+        "trade_state": trade_state.duplicate(true),
         "from_world": true
     }
 
@@ -147,6 +150,7 @@ func load_campaign(slot_id: String) -> bool:
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
     faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
+    trade_state = (payload.get("trade_state", TradeSystem.new_state()) as Dictionary).duplicate(true)
     world_pos = region_state["world_pos"]
     active_region_id = str(region_state["active_region_id"])
     world_positions = region_state["world_positions"]
@@ -155,6 +159,19 @@ func load_campaign(slot_id: String) -> bool:
     pending_location = ""
     campaign_slot = slot_id
     return true
+
+
+## Buy or sell regional cargo. These rules run locally and require no network.
+func trade_buy(good_id: String, quantity: int = 1) -> String:
+    return TradeSystem.buy(party, active_region_id, good_id, quantity, GameData.trade_economy, trade_state)
+
+
+func trade_sell(good_id: String, quantity: int = 1) -> String:
+    return TradeSystem.sell(party, active_region_id, good_id, quantity, GameData.trade_economy, trade_state)
+
+
+func trade_quotes() -> Array:
+    return TradeSystem.quotes(active_region_id, GameData.trade_economy, trade_state)
 
 
 func newest_campaign_slot() -> String:
