@@ -98,6 +98,24 @@ static func set_diplomatic_state(state: Dictionary, faction_a: String, faction_b
     return true
 
 
+static func relation_label(value: int) -> String:
+    if value <= -50:
+        return "Hostile"
+    if value <= -20:
+        return "Strained"
+    if value < 20:
+        return "Neutral"
+    if value < ALLIANCE_THRESHOLD:
+        return "Cordial"
+    return "Trusted"
+
+
+static func can_propose_alliance(state: Dictionary, faction_a: String, faction_b: String) -> bool:
+    var key := _pair_key(faction_a, faction_b)
+    var diplomacy: Dictionary = state.get("diplomacy", {})
+    return faction_a != faction_b and diplomacy.has(key) and str(diplomacy[key]) != "war" and str(diplomacy[key]) != "alliance" and relation(state, faction_a, faction_b) >= ALLIANCE_THRESHOLD
+
+
 static func transfer_region(state: Dictionary, region_id: String, new_owner: String, cause: String) -> bool:
     if not (state.get("territories", {}) as Dictionary).has(region_id):
         return false
