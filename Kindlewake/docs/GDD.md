@@ -898,3 +898,17 @@ The Brinegate story loop is: meet Captain Ilyra Venn → investigate the darkene
 ## Exploration and control upgrade (0.12.0 candidate)
 
 The campaign overworld is a continuous wraparound surface: east-to-west, west-to-east, north-to-south and south-to-north transitions are traversable, with toroidal terrain sampling, shortest-path navigation, seam-aware landmarks and normalized saved coordinates. Settlements and dungeons remain enclosed authored maps. Exploration supports controller left stick/D-pad movement, A to interact and B to run; keyboard arrows/WASD, E and Shift; Android virtual stick and a persistent RUN toggle. Direct movement coexists with tap-to-move. Run speed targets 1.6× walking speed and retains collision and door/exit checks. Candidate code is subject to Godot/Android CI and physical-device QA before release.
+
+
+## 18. Chapter I input and chronicle creator reliability pass (0.12.0 maintenance)
+
+**Working branch:** `fix/ch1-and-creator-ux`  
+**Status:** implementation committed; branch CI and physical-device verification pending. No game-version or save-schema change.
+
+- Chapter I courtyard movement is handled in the root Control's `_gui_input`, so the full-rect Control no longer prevents taps from reaching `_unhandled_input` (which is not dispatched after GUI handling consumes the event). Mouse drag and touch drag also update the movement target.
+- Movement destinations are constrained to a responsive playable rectangle that excludes the objective and instruction panels. The postern is positioned below the objective panel and the party reaches it within a 120px radius.
+- The title screen creates the protagonist creator as a full-screen overlay rather than a child of the constrained title-card VBox. Cancel removes the overlay and restores the menu.
+- On narrow portrait viewports, the live portrait and concise character summary remain above the scrollable creator form. Desktop preview/form arrangement is retained; narrow landscape remains scrollable.
+- `tests/run_tests.gd` covers gate placement and tap-bound clamping at 360×800, 390×844, 1280×720 and 800×360. `tests/scene_smoke_test.gd` loads every authored `.tscn` resource headlessly; the APK builder runs it after editor import and before gameplay tests/export.
+
+**QA still required:** run Godot import, scene smoke, strict logic tests, balance simulation and APK export on the exact PR head. Then verify creator and Chapter I gameplay on a 20:9 Android phone in portrait and landscape. CI does not replace device QA.
