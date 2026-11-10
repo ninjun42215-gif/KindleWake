@@ -206,6 +206,112 @@ func field_army_summary() -> Dictionary:
 
 
 
+func start_field_army_battle(army_id: String, siege_assault: bool = false) -> bool:
+	if not empire_state.get("field_armies", {}).has(army_id):
+		return false
+	var army: Dictionary = empire_state["field_armies"][army_id]
+	var region_id := str(army.get("location", ""))
+	var territory: Dictionary = faction_state.get("territories", {}).get(region_id, {})
+	if region_id == "" or territory.is_empty() or player_controlled_provinces().has(region_id):
+		return false
+	var siege: Dictionary = empire_state.get("sieges", {}).get(region_id, {})
+	if siege_assault:
+		if siege.is_empty() or str(siege.get("army_id", "")) != army_id or int(siege.get("progress", 0)) < 4 or bool(siege.get("captured", false)):
+			return false
+	var fort_level := 0
+	if siege_assault:
+		fort_level = clampi(int(siege.get("defence", 20)) / 20, 1, 3)
+	elif region_id.contains("highland") or region_id.contains("height") or region_id == "aurelmont" or region_id.contains("thorncrown") or region_id == "ironvale":
+		fort_level = 1
+	var battle := EmpireSystem.build_tactical_battle(empire_state, army_id, GameData.battle_def("battle_01"), region_id, str(territory.get("owner", "")), siege_assault, fort_level)
+	if battle.is_empty():
+		return false
+	pending_battle = battle
+	from_world = true
+	return true
+
+
+func resolve_field_army_battle(battle: Dictionary, units: Array, won: bool) -> Dictionary:
+	var army_id := str(battle.get("strategic_army_id", ""))
+	var region_id := str(battle.get("strategic_region_id", ""))
+	if army_id == "" or region_id == "":
+		return {"ok": false, "reason": "not_a_strategic_battle"}
+	var cohort_data: Dictionary = battle.get("strategic_units", {})
+	var casualties: Dictionary = {}
+	for unit_obj in units:
+		var unit: BattleUnit = unit_obj
+		if not cohort_data.has(unit.character_id):
+			continue
+		var cohort: Dictionary = cohort_data[unit.character_id]
+		var count := int(cohort.get("count", 0))
+		var lost := count
+		if unit.is_alive():
+			lost = int(ceil(float(count) * float(unit.max_hp() - unit.hp) / float(unit.max_hp())))
+		if lost > 0:
+			var troop_type := str(cohort.get("troop_type", "infantry"))
+			casualties[troop_type] = int(casualties.get(troop_type, 0)) + lost
+	var army_result_ok := apply_field_army_battle_result(army_id, casualties, won)
+	if not army_result_ok:
+		return {"ok": false, "reason": "army_result_rejected"}
+	var effective_win := won and empire_state.get("field_armies", {}).has(army_id)
+	var siege_resolved := false
+	if bool(battle.get("strategic_siege_assault", false)):
+		siege_resolved = EmpireSystem.resolve_siege_battle(empire_state, region_id, effective_win)
+	save_campaign("auto_a")
+	return {"ok": true, "won": effective_win, "casualties": casualties, "siege_resolved": siege_resolved}
+
+
+func battle_db_for_battle(battle: Dictionary) -> Dictionary:
+	var db := battle_db()
+	var chars: Dictionary = db.get("characters", {}).duplicate(true)
+	var classes: Dictionary = db.get("classes", {}).duplicate(true)
+	var troop_data: Dictionary = battle.get("strategic_units", {})
+	var morale := 75
+	var army_id := str(battle.get("strategic_army_id", ""))
+	if empire_state.get("field_armies", {}).has(army_id):
+		var army: Dictionary = empire_state["field_armies"][army_id]
+		morale = int(army.get("morale", 75))
+		if not bool(army.get("supplied", false)):
+			morale -= 15
+	for spawn in battle.get("units", []):
+		var character_id := str(spawn.get("character_id", ""))
+		if not character_id.begins_with("strategic_") or chars.has(character_id):
+			continue
+		var troop_type := ""
+		var is_defender := character_id.begins_with("strategic_defender_")
+		if troop_data.has(character_id):
+			troop_type = str(troop_data[character_id].get("troop_type", "infantry"))
+		elif is_defender:
+			var parts := character_id.split("_")
+			troop_type = str(parts[2]) if parts.size() > 2 else "infantry"
+		if character_id == "strategic_siege_engine":
+			classes["siege_engine"] = {"name": "Battering Ram", "move": 2, "jump": 0}
+			chars[character_id] = {"name": "Battering Ram", "class_id": "siege_engine", "level": 1, "weapon_id": "battle_axe", "armor_def": 8, "armor_res": 2, "skills": [], "stats": {"hp": 70, "mp": 0, "str": 12, "dex": 3, "int": 1, "vit": 14, "spd": 2, "lck": 1, "acc": 70, "eva": 0, "ldr": 0, "mor": 100}}
+			continue
+		var class_id := "swordsman"
+		var weapon_id := "arming_sword"
+		var stats := {"hp": 30, "mp": 0, "str": 8, "dex": 7, "int": 2, "vit": 8, "spd": 6, "lck": 3, "acc": 78, "eva": 10, "ldr": 2, "mor": morale}
+		if troop_type == "archers":
+			class_id = "archer"
+			weapon_id = "short_bow"
+			stats = {"hp": 24, "mp": 0, "str": 5, "dex": 10, "int": 2, "vit": 5, "spd": 8, "lck": 4, "acc": 88, "eva": 16, "ldr": 2, "mor": morale}
+		elif troop_type == "cavalry":
+			class_id = "knight"
+			weapon_id = "spear"
+			stats = {"hp": 36, "mp": 0, "str": 10, "dex": 7, "int": 2, "vit": 9, "spd": 8, "lck": 3, "acc": 80, "eva": 13, "ldr": 3, "mor": morale}
+		var armour := 2
+		if is_defender:
+			var fort_bonus := int(battle.get("strategic_fort_level", 0)) * 2
+			armour += fort_bonus
+			stats["hp"] = int(stats["hp"]) + fort_bonus * 2
+			stats["vit"] = int(stats["vit"]) + fort_bonus
+			stats["mor"] = 65
+		chars[character_id] = {"name": str(spawn.get("name", troop_type.capitalize())), "class_id": class_id, "level": 1, "weapon_id": weapon_id, "armor_def": armour, "armor_res": 1, "skills": [], "stats": stats}
+	db["characters"] = chars
+	db["classes"] = classes
+	return db
+
+
 ## Battle database with the party's current sheets (level, stats, equipment) substituted in.
 func battle_db() -> Dictionary:
     return party.battle_db(GameData.as_db())
