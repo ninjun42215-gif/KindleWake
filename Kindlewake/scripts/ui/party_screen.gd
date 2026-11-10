@@ -630,6 +630,18 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
                 trait_box.add_child(_label("Effects  " + "  ·  ".join(effect_parts), 13, COL_GOOD))
             trait_card.add_child(trait_box)
             box.add_child(trait_card)
+    _add_section(box, "Inner life")
+    var stress_colour: Color = COL_GOOD if sh.stress < 40 else (COL_GOLD if sh.stress < 70 else COL_BAD)
+    box.add_child(_tile("Stress · %s" % PersonalitySystem.stress_band(sh.stress), "%d / 100" % sh.stress, stress_colour, 19))
+    if not sh.ambition.is_empty():
+        box.add_child(_label("Ambition  ·  %s" % str(sh.ambition.get("title", sh.ambition.get("id", "Unspoken"))), 16, COL_GOLD))
+        box.add_child(_label(str(sh.ambition.get("description", "")), 14, COL_DIM))
+    if not sh.memories.is_empty():
+        _add_section(box, "Recent memories")
+        var first_memory: int = maxi(0, sh.memories.size() - 3)
+        for memory_index in range(sh.memories.size() - 1, first_memory - 1, -1):
+            var memory: Dictionary = sh.memories[memory_index]
+            box.add_child(_label("• " + str(memory.get("summary", "A remembered event")), 14, COL_DIM))
     # skills
     var mods: Dictionary = sh.skill_mods(items, sdefs)
     var known: Array[String] = sh.all_skills(items, sdefs, classes)
