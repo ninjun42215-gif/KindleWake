@@ -7,6 +7,7 @@ const NerisQuestSystem = preload("res://scripts/core/neris_quest_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
+const CompanionQuestJournalScript = preload("res://scripts/ui/companion_quest_journal.gd")
 ## Towns and building interiors (data/locations.json, rules in LocalMap).
 ## Walk with tap / drag like the overworld. Walking into a door loads the next map (town -> house -> town) inside this
 ## scene; walking onto the exit (E) of a town returns to the overworld. People and objects ("spots") are used with the
@@ -40,6 +41,7 @@ var spot_title: Label
 var spot_text: Label
 var spot_buttons: VBoxContainer
 var party_screen: PartyScreen
+var quest_journal: CompanionQuestJournal
 var move_stick: VirtualStick
 var run_btn: Button
 var run_toggled: bool = false
@@ -85,7 +87,7 @@ func _load_map(id: String, spawn: Vector2i) -> void:
 # ------------------------------------------------------------------ input and movement
 
 func _unhandled_input(event: InputEvent) -> void:
-    if panel_open or party_screen.visible or leaving:
+    if panel_open or party_screen.visible or quest_journal.visible or leaving:
         return
     if event is InputEventMouseButton:
         var mb := event as InputEventMouseButton
@@ -113,7 +115,7 @@ func _free_at(p: Vector2) -> bool:
 func _process(delta: float) -> void:
     if leaving:
         return
-    if not panel_open and not party_screen.visible:
+    if not panel_open and not party_screen.visible and not quest_journal.visible:
         moving_vector = ExplorationControls.movement_vector()
         if move_stick != null and move_stick.value.length() > moving_vector.length():
             moving_vector = move_stick.value
@@ -243,7 +245,9 @@ func _on_prompt_pressed() -> void:
         spot_buttons.remove_child(c)
         c.queue_free()
     var spot_kind: String = str(near_spot.get("kind", "text"))
-    if spot_kind == "party":
+    if near_spot.has("companion_quest_id"):
+        _build_companion_quest_actions(near_spot)
+    elif spot_kind == "party":
         spot_buttons.add_child(_btn("Open market and company stores", _open_party))
     elif spot_kind == "inn":
         spot_buttons.add_child(_btn("Rest the company — 20 gold", _rest_at_inn))
@@ -287,6 +291,107 @@ func _on_prompt_pressed() -> void:
     spot_buttons.add_child(_btn("Close", _close_panel))
     spot_panel.visible = true
 
+
+## Turn authored location metadata into replay-safe companion quest interactions.
+func _build_companion_quest_actions(spot: Dictionary) -> void:
+    var quest_id := str(spot.get("companion_quest_id", ""))
+    var milestone := str(spot.get("companion_quest_milestone", ""))
+    var quest_state: Dictionary = GameState.companion_quests.get(quest_id, {})
+    var status := str(quest_state.get("status", "not_started"))
+    var progress := int(quest_state.get("progress", 0))
+    var definition: Dictionary = GameData.companion_quests.get(quest_id, {})
+    var milestones: Array = definition.get("milestones", [])
+    var outcomes: Array = definition.get("outcomes", [])
+    if not GameState.party.roster.has(str(definition.get("companion_id", ""))):
+        spot_text.text += "\\n\\nThis personal story requires its companion to be travelling with the company."
+        return
+    spot_text.text += "\\n\\n" + str(spot.get("companion_quest_text", "A personal matter waits for your attention."))
+    if status == "not_started":
+        spot_text.text += "\\n\\nBegin this story from the Companion Chronicle."
+        return
+    if status == "complete":
+        var descriptions: Dictionary = definition.get("outcome_descriptions", {})
+        var description := str(descriptions.get(str(quest_state.get("outcome", "")), "This companion's personal story has been resolved. Its consequences are recorded in the campaign chronicle."))
+        spot_text.text += "\\n\\n" + description
+        return
+    if status == "ready" and not milestones.is_empty() and milestone == str(milestones.back()):
+        var prompt := str(definition.get("resolution_prompt", "Choose how this personal story should be resolved."))
+        spot_text.text += "\\n\\n" + prompt
+        var labels: Dictionary = definition.get("outcome_labels", {})
+        for outcome in outcomes:
+            var outcome_label := str(labels.get(str(outcome), _format_quest_label(str(outcome))))
+            spot_buttons.add_child(_btn(outcome_label, _resolve_companion_quest.bind(quest_id, str(outcome))))
+        return
+    if status == "ready":
+        spot_text.text += "\\n\\nAll objectives are recorded. Return to the companion's designated story contact to make the concluding choice."
+        return
+    if progress < milestones.size() and str(milestones[progress]) == milestone:
+        var challenge: Dictionary = spot.get("companion_quest_challenge", {})
+        if not challenge.is_empty():
+            spot_text.text += "\\n\\n" + str(challenge.get("prompt", "Examine the evidence and choose the best conclusion."))
+            for option in challenge.get("options", []):
+                spot_buttons.add_child(_btn(str(option), _attempt_companion_quest_challenge.bind(quest_id, milestone, str(option), challenge)))
+        else:
+            spot_buttons.add_child(_btn("Record this objective", _advance_companion_quest.bind(quest_id, milestone)))
+    elif progress > milestones.find(milestone):
+        spot_text.text += "\\n\\nThis part of the record has already been secured."
+    else:
+        spot_text.text += "\\n\\nThe next step in this companion's story lies elsewhere."
+
+
+func _advance_companion_quest(quest_id: String, milestone_id: String) -> void:
+    var result: Dictionary = GameState.advance_companion_quest(quest_id, milestone_id)
+    if not bool(result.get("ok", false)):
+        spot_text.text += "\\n\\n" + str(result.get("reason", "The objective could not be recorded."))
+        return
+    GameState.save_campaign("auto_a")
+    spot_text.text += "\\n\\nObjective recorded in the Companion Chronicle."
+    for child in spot_buttons.get_children():
+        if child is Button and (child as Button).text != "Close":
+            (child as Button).disabled = true
+
+
+func _attempt_companion_quest_challenge(quest_id: String, milestone_id: String, selected_option: String, challenge: Dictionary) -> void:
+    var correct_option := str(challenge.get("correct_option", ""))
+    if correct_option == "" or selected_option != correct_option:
+        spot_text.text += "\\n\\n" + str(challenge.get("failure_text", "That interpretation does not fit the evidence. Examine the clues again."))
+        return
+    spot_text.text += "\\n\\n" + str(challenge.get("success_text", "The evidence fits. The objective is secured."))
+    _advance_companion_quest(quest_id, milestone_id)
+
+
+func _resolve_companion_quest(quest_id: String, outcome: String) -> void:
+    var result: Dictionary = GameState.resolve_companion_quest(quest_id, outcome)
+    if not bool(result.get("ok", false)):
+        spot_text.text += "\\n\\n" + str(result.get("reason", "This resolution is not available."))
+        return
+    GameState.world_flags["companion_quest_outcome_" + quest_id] = outcome
+    var definition: Dictionary = GameData.companion_quests.get(quest_id, {})
+    var descriptions: Dictionary = definition.get("outcome_descriptions", {})
+    var description := str(descriptions.get(outcome, "The companion's decision is recorded. This outcome can now be referenced by later story events."))
+    var outcome_flags: Dictionary = definition.get("outcome_flags", {})
+    var outcome_flag := str(outcome_flags.get(outcome, ""))
+    if outcome_flag != "":
+        GameState.world_flags[outcome_flag] = true
+    var reward_flag := "companion_quest_rewarded_" + quest_id
+    var reward: Dictionary = definition.get("completion_reward", {})
+    var gold_reward := maxi(0, int(reward.get("gold", 0)))
+    if not bool(GameState.world_flags.get(reward_flag, false)):
+        GameState.party.gold += gold_reward
+        GameState.world_flags[reward_flag] = true
+    GameState.save_campaign("auto_a")
+    if gold_reward > 0:
+        description += "\\n\\nReceived %d gold for completing this personal quest." % gold_reward
+    spot_text.text += "\\n\\n" + description
+    for child in spot_buttons.get_children():
+        if child is Button and (child as Button).text != "Close":
+            (child as Button).disabled = true
+
+
+
+
+func _format_quest_label(value: String) -> String:
+    return value.replace("_", " ").capitalize()
 
 func _resolve_brinegate_choice(choice: String) -> void:
     var outcome: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(GameState.world_flags, choice)
@@ -871,6 +976,12 @@ func _build_ui() -> void:
     run_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
     run_btn.grow_vertical = Control.GROW_DIRECTION_BEGIN
 
+    var journal_btn := _btn("CHRONICLE", _open_quest_journal, 17)
+    journal_btn.custom_minimum_size = Vector2(150, 54)
+    root.add_child(journal_btn)
+    journal_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
+    journal_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+
     spot_panel = _hud_panel(0.97)
     var box := VBoxContainer.new()
     box.add_theme_constant_override("separation", 12)
@@ -898,6 +1009,18 @@ func _build_ui() -> void:
     party_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     party_screen.visible = false
     party_screen.closed.connect(_on_party_closed)
+
+    quest_journal = CompanionQuestJournalScript.new()
+    root.add_child(quest_journal)
+    quest_journal.visible = false
+
+
+func _open_quest_journal() -> void:
+    if panel_open or party_screen.visible:
+        return
+    has_target = false
+    pressing = false
+    quest_journal.open()
 
 
 func _update_hud() -> void:
