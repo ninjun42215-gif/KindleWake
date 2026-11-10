@@ -36,6 +36,7 @@ static func new_campaign_state(definitions: Dictionary) -> Dictionary:
         "relations": relations,
         "diplomacy": diplomacy,
         "territories": territories,
+        "claims": {},
         "history": []
     }
 
@@ -64,6 +65,12 @@ static func normalize_state(raw: Dictionary, definitions: Dictionary) -> Diction
                     "owner": owner,
                     "status": str(saved.get("status", "held"))
                 }
+    var saved_claims: Variant = raw.get("claims", {})
+    if typeof(saved_claims) == TYPE_DICTIONARY:
+        for region_id in saved_claims.keys():
+            var claimant := str(saved_claims[region_id])
+            if state["territories"].has(str(region_id)) and _state_has_faction(state, claimant):
+                state["claims"][str(region_id)] = claimant
     var history: Variant = raw.get("history", [])
     if typeof(history) == TYPE_ARRAY:
         state["history"] = history.duplicate(true).slice(maxi(0, history.size() - HISTORY_LIMIT))
@@ -109,7 +116,27 @@ static func transfer_region(state: Dictionary, region_id: String, new_owner: Str
         return false
     territory["owner"] = new_owner
     territory["status"] = "held" if new_owner != "" else "unclaimed"
+    state.get("claims", {}).erase(region_id)
     _record(state, {"kind":"territory", "region":region_id, "from":old_owner, "to":new_owner, "cause":cause})
+    return true
+
+
+static func claim_region(state: Dictionary, faction_id: String, region_id: String, adjacency: Dictionary) -> bool:
+    if not _state_has_faction(state, faction_id) or not state.get("territories", {}).has(region_id):
+        return false
+    var territory: Dictionary = state["territories"][region_id]
+    if str(territory.get("owner", "")) == faction_id or state.get("claims", {}).has(region_id):
+        return false
+    var adjacent_hold := false
+    for neighbor in adjacency.get(region_id, []):
+        var neighbor_state: Dictionary = state.get("territories", {}).get(str(neighbor), {})
+        if str(neighbor_state.get("owner", "")) == faction_id and str(neighbor_state.get("status", "held")) == "held":
+            adjacent_hold = true
+            break
+    if not adjacent_hold:
+        return false
+    state["claims"][region_id] = faction_id
+    _record(state, {"kind":"claim", "faction":faction_id, "region":region_id})
     return true
 
 
