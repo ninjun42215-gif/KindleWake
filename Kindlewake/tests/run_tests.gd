@@ -1049,41 +1049,9 @@ func _test_strategic_battle_integration() -> void:
         if str(spawn.get("character_id", "")) == "torren" and bool(spawn.get("commander", false)):
             commander_deployed = true
     check(commander_deployed, "the appointed party commander receives the tactical commander role")
-    var db: Dictionary = gd.as_db()
-    var chars: Dictionary = db["characters"].duplicate(true)
-    var classes: Dictionary = db["classes"].duplicate(true)
-    for spawn in battle_def.get("units", []):
-        var character_id := str(spawn.get("character_id", ""))
-        if not character_id.begins_with("strategic_") or chars.has(character_id):
-            continue
-        var defender := character_id.begins_with("strategic_defender_")
-        var troop_type := "infantry"
-        if battle_def.get("strategic_units", {}).has(character_id):
-            troop_type = str(battle_def["strategic_units"][character_id]["troop_type"])
-        elif defender:
-            var parts := character_id.split("_")
-            troop_type = str(parts[2]) if parts.size() > 2 else "infantry"
-        var class_id := "swordsman"
-        var weapon_id := "arming_sword"
-        var stats := {"hp": 30, "mp": 0, "str": 8, "dex": 7, "int": 2, "vit": 8, "spd": 6, "lck": 3, "acc": 78, "eva": 10, "ldr": 2, "mor": 75}
-        if troop_type == "archers":
-            class_id = "archer"
-            weapon_id = "short_bow"
-            stats = {"hp": 24, "mp": 0, "str": 5, "dex": 10, "int": 2, "vit": 5, "spd": 8, "lck": 4, "acc": 88, "eva": 16, "ldr": 2, "mor": 75}
-        elif troop_type == "cavalry":
-            class_id = "knight"
-            weapon_id = "spear"
-            stats = {"hp": 36, "mp": 0, "str": 10, "dex": 7, "int": 2, "vit": 9, "spd": 8, "lck": 3, "acc": 80, "eva": 13, "ldr": 3, "mor": 75}
-        chars[character_id] = {"name": str(spawn.get("name", troop_type)), "class_id": class_id, "level": 1, "weapon_id": weapon_id, "armor_def": 2 if not defender else 4, "armor_res": 1, "skills": [], "stats": stats}
-    db["characters"] = chars
-    var has_ram := false
-    for spawn in battle_def.get("units", []):
-        if str(spawn.get("character_id", "")) == "strategic_siege_engine":
-            has_ram = true
-    if has_ram:
-        classes["siege_engine"] = {"name": "Battering Ram", "move": 2, "jump": 0}
-        chars["strategic_siege_engine"] = {"name": "Battering Ram", "class_id": "siege_engine", "level": 1, "weapon_id": "battle_axe", "armor_def": 8, "armor_res": 2, "skills": [], "stats": {"hp": 70, "mp": 0, "str": 12, "dex": 3, "int": 1, "vit": 14, "spd": 2, "lck": 1, "acc": 70, "eva": 0, "ldr": 0, "mor": 100}}
-    db["classes"] = classes
+    var db: Dictionary = EmpireSystem.tactical_battle_database(gd.as_db(), battle_def, gd.strategic_warfare, 75)
+    check(db.get("characters", {}).has("strategic_army_1_infantry_0") and db.get("characters", {}).has("strategic_defender_infantry_0"), "authored troop profiles populate the tactical battle database")
+    check(db.get("classes", {}).has("swordsman") and db.get("classes", {}).has("archer"), "tactical cohort profiles resolve through existing combat classes")
     var controller := BattleController.new()
     controller.setup(battle_def, db, 9191)
     controller.begin()
