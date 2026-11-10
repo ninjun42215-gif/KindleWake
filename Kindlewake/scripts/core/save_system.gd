@@ -15,7 +15,20 @@ const GAME_VERSION := "0.12.0"
 const AUTOSAVE_SLOTS := ["auto_a", "auto_b"]
 
 
+func _is_valid_slot_id(slot_id: String) -> bool:
+    if slot_id.is_empty() or slot_id.length() > 32:
+        return false
+    for index in range(slot_id.length()):
+        var code: int = slot_id.unicode_at(index)
+        var valid := (code >= 48 and code <= 57) or (code >= 65 and code <= 90) or (code >= 97 and code <= 122) or code == 45 or code == 95
+        if not valid:
+            return false
+    return true
+
+
 func slot_path(slot_id: String) -> String:
+    if not _is_valid_slot_id(slot_id):
+        return ""
     return SAVE_DIR + "slot_" + slot_id + ".save"
 
 
@@ -27,6 +40,8 @@ func checksum_of(text: String) -> String:
 
 
 func save_slot(slot_id: String, payload: Dictionary, summary: String = "") -> bool:
+    if not _is_valid_slot_id(slot_id):
+        return false
     DirAccess.make_dir_recursive_absolute(SAVE_DIR)
     var payload_text: String = JSON.stringify(payload)
     var envelope: Dictionary = {
@@ -65,6 +80,8 @@ func save_slot(slot_id: String, payload: Dictionary, summary: String = "") -> bo
 
 ## Returns {"ok": bool, "payload": Dictionary, "meta": Dictionary, "from_backup": bool, "error": String}
 func load_slot(slot_id: String) -> Dictionary:
+    if not _is_valid_slot_id(slot_id):
+        return {"ok": false, "error": "Invalid save slot."}
     var path: String = slot_path(slot_id)
     var env: Dictionary = _read_envelope(path)
     var from_backup := false
@@ -77,7 +94,10 @@ func load_slot(slot_id: String) -> Dictionary:
     var version: int = int(meta.get("save_version", 1))
     if version > SAVE_VERSION:
         return {"ok": false, "error": "Save was made by a newer version of the game."}
-    var parsed: Variant = JSON.parse_string(str(env["payload"]))
+    var payload_parser := JSON.new()
+    if payload_parser.parse(str(env["payload"])) != OK:
+        return {"ok": false, "error": "Save payload is invalid."}
+    var parsed: Variant = payload_parser.data
     if typeof(parsed) != TYPE_DICTIONARY:
         return {"ok": false, "error": "Save payload is invalid."}
     var payload: Dictionary = migrate(parsed, version)
@@ -126,9 +146,13 @@ static func _migrate_2_to_3(payload: Dictionary) -> Dictionary:
 ## v4 adds per-character loyalty; old members begin at a neutral 50 without losing campaign data.
 static func _migrate_3_to_4(payload: Dictionary) -> Dictionary:
     var data: Dictionary = payload.duplicate(true)
-    var party: Dictionary = data.get("party", {})
-    var sheets: Dictionary = party.get("sheets", {})
+    var party_value: Variant = data.get("party", {})
+    var party: Dictionary = party_value if typeof(party_value) == TYPE_DICTIONARY else {}
+    var sheets_value: Variant = party.get("sheets", {})
+    var sheets: Dictionary = sheets_value if typeof(sheets_value) == TYPE_DICTIONARY else {}
     for id in sheets.keys():
+        if typeof(sheets[id]) != TYPE_DICTIONARY:
+            continue
         var member: Dictionary = sheets[id]
         if not member.has("loyalty"):
             member["loyalty"] = 50
@@ -139,6 +163,8 @@ static func _migrate_3_to_4(payload: Dictionary) -> Dictionary:
 
 
 func slot_info(slot_id: String) -> Dictionary:
+    if not _is_valid_slot_id(slot_id):
+        return {"exists": false, "summary": "Empty", "saved_at": "", "unix": 0.0}
     var env: Dictionary = _read_envelope(slot_path(slot_id))
     if env.is_empty():
         env = _read_envelope(slot_path(slot_id) + ".bak")
@@ -149,6 +175,8 @@ func slot_info(slot_id: String) -> Dictionary:
 
 
 func delete_slot(slot_id: String) -> void:
+    if not _is_valid_slot_id(slot_id):
+        return
     var path: String = slot_path(slot_id)
     for suffix in ["", ".bak", ".tmp"]:
         if FileAccess.file_exists(path + str(suffix)):
@@ -173,16 +201,19 @@ func autosave(payload: Dictionary, summary: String = "") -> bool:
 
 
 func _read_envelope(path: String) -> Dictionary:
-    if not FileAccess.file_exists(path):
+    if path.is_empty() or not FileAccess.file_exists(path):
         return {}
     var file := FileAccess.open(path, FileAccess.READ)
     if file == null:
         return {}
-    var parsed: Variant = JSON.parse_string(file.get_as_text())
+    var envelope_parser := JSON.new()
+    if envelope_parser.parse(file.get_as_text()) != OK:
+        return {}
+    var parsed: Variant = envelope_parser.data
     if typeof(parsed) != TYPE_DICTIONARY:
         return {}
     var env: Dictionary = parsed
-    if not (env.has("payload") and env.has("checksum") and env.has("meta")):
+    if typeof(env.get("payload")) != TYPE_STRING or typeof(env.get("checksum")) != TYPE_STRING or typeof(env.get("meta")) != TYPE_DICTIONARY:
         return {}
     if checksum_of(str(env["payload"])) != str(env["checksum"]):
         return {}
