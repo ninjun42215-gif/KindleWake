@@ -343,3 +343,134 @@ The post-campaign era should explore the tension between **inheritance and stewa
 - A family can preserve its name through adoption, a cadet branch or a chosen successor when direct descendants are absent.
 
 Each generation should inherit both assets and unresolved consequences. The family chronicle is a record of obligations as much as prestige.
+
+
+---
+
+## 15. Full campaign story treatment — chapter, choice and companion canon
+
+**Status:** Expanded narrative blueprint for future authoring. It is not a claim that these chapters, scenes, dialogue, cinematics or branches are already playable. The existing prologue/five-act/epilogue structure remains intact; this section expands it into a production-ready sequence while preserving established characters, places and constitutional canon.
+
+### 15.1 Narrative rules and state variables
+
+The story is about the cost of rebuilding trust, not a binary good/evil morality test. Every major choice should have at least two defensible motives, an immediate consequence, a delayed consequence and a human witness who remembers it. Avoid hidden morality points that silently decide the ending.
+
+Track the following narrative state through named, explainable flags:
+- **Company cohesion:** whether companions can disagree without abandoning one another.
+- **Public trust:** how settlements judge the protagonist's conduct, especially food, justice, protection and civilian harm.
+- **House legitimacy:** evidence supporting Dunmarrow's legal and political claims; distinct from popularity.
+- **Covenant evidence:** which seals, records, witnesses and original clauses have been verified.
+- **House commitments:** each of the Seven Houses' explicit promises, conditions and unresolved grievances.
+- **Maelor's settlement channel:** whether communication and credible negotiation remain possible.
+- **Companion arc outcomes:** personal quest resolutions and relationship changes, not a single universal approval score.
+- **Concord ratification:** which realms and institutions consent to the post-imperial compact.
+
+A branch may alter allies, resources, mission routes, casualties, testimony, council composition or the wording of a settlement. It must not contradict fixed canon without a clearly authored alternate-history explanation. The Last Emperor route is a specific true-ending branch, not the only emotionally valid ending.
+
+### 15.2 Prologue — Smoke on the Wind
+
+**Opening scene: The last evening at Kaer Dunmarrow.** Torren is introduced through ordinary duties: checking the gate, speaking to household staff, training with a companion and hearing Edmer argue with a messenger behind a closed door. The player sees affection and tension before the catastrophe. Edmer refuses to explain the sealed packet, but asks Torren to remember that a house is measured by whom it protects.
+
+**Chapter P1 — The Ash Alarm.** The estate is attacked and set alight. The tutorial teaches movement, interaction, defence and retreat while the player navigates smoke, collapsing passages and separated household members. The player must choose a first rescue priority: the trapped household, the stable yard where the wounded gather, or the record room. The chosen route determines who can be saved immediately; a later rescue attempt may recover another group at a cost. Do not present the choice as a simple “save people versus save a book” moral trap.
+
+**Chapter P2 — The Broken Road.** Survivors flee through the outer grounds. Bram Vosk holds a narrow passage; Sela Wrenfield identifies a safe route; Brother Wystan tends the injured. The player chooses whether to pursue a masked officer, protect the retreat, or send a witness ahead. Pursuit yields identifying evidence but risks casualties; protecting the retreat preserves people but loses the trail; sending the witness creates a later testimony thread.
+
+**Chapter P3 — The First Account.** At a ruined waystation, the group compares memories. No one has the whole truth. A burned dispatch bears a Crownlands seal, but the order's author is unclear. The first journal entry distinguishes confirmed facts, testimony and speculation. End with Torren choosing whether to swear publicly to restore House Dunmarrow, discover the truth, or protect the survivors first. These are priorities, not exclusive quest locks.
+
+### 15.3 Act I — Cold Hearth
+
+**Chapter I.1 — Sallow Crossing.** The company reaches a winter settlement whose granary is threatened by armed raiders. Investigation reveals the raiders were paid to seize a ledger hidden among the grain tallies. The player can negotiate, ambush the raiders, evacuate families or defend the storehouse. Combat objectives and civilian safety depend on preparation.
+
+**Chapter I.2 — The Winter Measure.** Food is insufficient for every claimant. The player hears from the reeve, an injured patrol, displaced families and a nearby miller. Distribution can prioritise need, preserve seed grain, honour an existing contract or divide stores under public oversight. No option feeds everyone; the aftermath records who bears the cost and whether the decision was transparent.
+
+**Chapter I.3 — Names in the Ledger.** The recovered ledger links payments to intermediaries rather than directly to Maelor. A local official offers to destroy it in exchange for amnesty. The player can preserve the original, make a public copy, or use it to bargain for the release of detained villagers. Each route affects the reliability and reach of the evidence.
+
+**Chapter I.4 — A Keep Worth Returning To.** The company returns to Kaer Sethorn, establishes a defensible refuge and meets local workers who distrust the Dunmarrow name. The player chooses the first visible repair: shelter, infirmary, stores or training yard. The choice changes dialogue and practical services, not the overall availability of core campaign systems. Act I closes when the company accepts that survival now requires a community.
+
+### 15.4 Act II — Broken Seals
+
+**Chapter II.1 — The Orrowen Hearing.** The company seeks a hearing from an Orrowen representative. The public Covenant is invoked by both reformers and traditionalists. The player must distinguish the ancient compact from the later secret organisation that appropriated its name. Evidence is presented in a hearing where procedure, witnesses and local grievances matter as much as rhetoric.
+
+**Chapter II.2 — The Witness's Price.** A witness recants after threats against their family. The player can expose the coercion, relocate the family, accept a narrower statement or proceed without the witness. A forced public confession is not treated as reliable proof. Sela's arc is foregrounded: she knows how survival distorts testimony and challenges Torren to protect the witness without owning their story.
+
+**Chapter II.3 — The Road of Three Banners.** During a diplomatic escort, three armed groups claim lawful authority over the same road. The mission can be resolved by identifying forged orders, securing a local arbitration or defeating the group that attacks civilians. A victory by force can clear the road but undermine the hearing if the company ignores local law.
+
+**Chapter II.4 — The First Flame.** The company secures a Covenant seal or a verified record associated with it. The object does not cast a convenient spell or reveal all truth. It authenticates a specific oath and points toward the next custodian. The act ends with the discovery that each House preserved a different part of the compact and has reasons to distrust the others.
+
+### 15.5 Act III — The River Campaign
+
+**Chapter III.1 — A River Divided.** A bridge and its surrounding villages are contested. The player surveys ferries, flood levels, supply stores and civilian routes before choosing an approach. The campaign map should communicate time and supply consequences before commitment.
+
+**Chapter III.2 — The False Banner.** An apparent enemy convoy is carrying refugees under a borrowed military banner. The player can halt and inspect it, escort it, divert it through a dangerous route or attack after a mistaken identification. The scene tests intelligence and restraint; the consequences must be legible rather than sprung as an arbitrary punishment.
+
+**Chapter III.3 — The Bridge at Redwater.** A multi-stage operation combines reconnaissance, control of the riverbank and a tactical battle with an objective beyond eliminating every enemy. Possible objectives include holding the crossing until civilians pass, disabling siege equipment or capturing the quartermaster alive. The chosen objective affects later supply and testimony.
+
+**Chapter III.4 — The Price of Passage.** A local commander offers safe passage in return for a levy on the villages. The player can refuse, negotiate a time-limited toll, accept under public accounting or expose the commander's private profiteering. The act closes with a message that the Quillon archive contains a version of the Codicil that contradicts Edmer's account.
+
+### 15.6 Act IV — Winter of Knives
+
+**Chapter IV.1 — The Quillon Archive.** The company enters the archive through invitation, legal petition, covert access or a negotiated exchange. Each route has a distinct cost. The archive is not a simple dungeon full of interchangeable enemies: its librarians, custodians and records embody competing interpretations of lawful preservation.
+
+**Chapter IV.2 — The Missing Clause.** The Codicil reveals that Edmer concealed one clause to protect a person or community from retaliation. The hidden clause must be authored as a concrete obligation, not a vague twist. Edmer's choice saved someone in the short term but deprived the Houses of information needed to hold him accountable. Torren must decide whether to publish the full record, redact identifying details or submit it first to independent custodians.
+
+**Chapter IV.3 — The Company Divided.** Companions disagree about the next step. Bram favours a defensible military position; Sela insists that witnesses must retain control of their testimony; Wystan argues that mercy without restitution is only another form of silence. The player can mediate, choose a temporary plan or allow a companion to lead a mission according to their expertise. Disagreement should not trigger arbitrary betrayal.
+
+**Chapter IV.4 — The Regent's Offer.** Maelor sends a credible offer: a limited amnesty, food and security guarantees, and a lawful hearing, in exchange for surrendering the Codicil and abandoning the claim to expose his role. The offer can save lives but risks burying the public compact again. The player can accept talks, reject them publicly, demand neutral witnesses or use the meeting to learn what Maelor fears most. Maelor's argument—that sudden disclosure may cause famine and civil war—must be heard in its strongest form before the player judges his methods.
+
+### 15.7 Act V — The Kindling
+
+**Chapter V.1 — Seven Tables.** Representatives of the Seven Houses gather, but not all arrive with equal authority or willingness. The Crownlands monarchy remains a separate royal institution. House Ysmark's seat must not be invented or assigned to Brinegate; Brinegate is the Tidebound Assembly's seat. The player builds an agenda around verified clauses, food obligations, conscription limits, sanctuary and the common towns' right of appeal.
+
+**Chapter V.2 — The City Under Strain.** Aurelmont faces a multi-front crisis: armed loyalists, frightened residents, disrupted food routes and opportunists using the secret Covenant faction's name. The player chooses whether to prioritise evacuation, secure the granaries, protect the hearing chamber or disable the command network. A tactical victory that harms civilians can damage the legitimacy of the settlement.
+
+**Chapter V.3 — The Last Audience.** Torren meets Maelor. The confrontation is personal but also constitutional. Maelor admits what he ordered and explains what he believed he prevented. He may stand trial, accept exile, negotiate a lawful surrender or die in battle depending on prior state and the player's actions. No branch should quietly absolve him of responsibility. If he survives, his testimony is evidence, not automatic forgiveness.
+
+**Chapter V.4 — The Council of Seven.** The Houses and recognised communities decide whether the Hidden Codicil is authentic and how its obligations should be restored. The Crownlands' single-crown authority transfers to a Council of the Seven Houses only after the required lawful ratifications. The Council's powers, limits, representation and accountability are stated in the settlement. A failed ratification produces a contested or fractured ending rather than an instant global government.
+
+**Chapter V.5 — The Shape of Peace.** The player chooses the political settlement available from accumulated evidence and commitments:
+- **Council settlement:** the Council governs the Crownlands under a written charter, with public oversight and defined limits.
+- **Plural compact:** willing realms enter a looser agreement while others retain distance or neutrality.
+- **Restoration settlement:** a lawful Crownlands monarchy survives under binding Covenant reforms; this is a valid non-true ending if supported by the campaign state.
+- **Fractured settlement:** the crisis ends militarily or through a narrow pact, but unresolved Houses and regions remain in dispute.
+
+Only the designated true-ending route proceeds to the temporary Last Emperor office. It requires the Council of Seven to be constituted, the necessary house/realm ratifications, verified Codicil evidence and a settlement that authorises the dormant imperial charter solely to complete dissolution. The protagonist is not crowned through conquest or personal ambition.
+
+### 15.8 True ending — The Last Ember
+
+**The Investiture.** The Council invests Torren as Last Emperor under the dormant constitutional office. The ceremony is deliberately restrained: no triumphant world-conquest coronation. The mandate is narrow, time-limited and publicly recorded. The protagonist accepts it as a burden to end the old imperial claim, not as a prize.
+
+**The Dissolution Charter.** The player confirms the clauses that dissolve the imperial office, central claim and remaining imperial institutions. Each signatory realm retains its own laws. Realms that refuse the Concord remain outside it; their choice is recorded rather than overwritten. The charter prevents ordinary inheritance, purchase or revival of the Emperor title.
+
+**The Concord of Free Realms.** The successor compact is founded through willing ratification. It establishes mutual aid, dispute arbitration, protection of travel and sanctuary, famine obligations and limits on coercive levies. It does not create a secret empire under another name. The player sees which promises were accepted, qualified or refused.
+
+**The Late Years.** A sequence of authored vignettes advances through the protagonist's later life. Torren visits Kaer Sethorn, receives former companions, hears disputes among signatories and sees both successes and failures of the Concord. The player can choose how to spend the remaining years: public mediation, rebuilding, private life, mentoring successors or documenting the truth. These scenes should show age through changed movement, voice and relationships, not merely a number.
+
+**Natural Death and Founder Chronicle.** Only after the late-life epilogue is complete and the protagonist dies naturally of old age is the Founder Chronicle sealed. The scene should be quiet and personal. The game records the exact ending, dissolution charter, Concord signatories, companions, surviving relationships, deeds, unresolved obligations and cause of death. This event unlocks Chronicle of Houses. Battle death, sacrifice, defeat, retirement, skipped epilogue or any other ending does not satisfy the gate.
+
+### 15.9 Companion arcs and resolution beats
+
+These arcs are intended to be woven into the chapters above. Their outcomes depend on choices and personal quests; no companion is guaranteed to agree with the protagonist.
+
+- **Bram Vosk — The Weight of the Shield.** Begins believing that safety comes from obedience and a strong defensive line. His personal quest follows a former unit whose orders caused civilian deaths. The player can help him testify, seek restitution or suppress the record to preserve military cohesion. Resolution: Bram learns that loyalty can include refusing an unlawful order. Depending on choices, he may remain as commander, become a trainer at Kaer Sethorn, leave to make amends or refuse a political office.
+- **Sela Wrenfield — The Witness Who Chooses.** Begins distrustful of official accounts and protective of informants. Her quest follows a network of displaced families who carry pieces of the truth. The player must protect their agency rather than use them as evidence. Resolution: Sela may become an independent investigator, a public recorder for the Council, a scout captain or leave the company if Torren repeatedly compromises witnesses.
+- **Brother Wystan — Mercy and the Measure of Justice.** Begins faithful but uncertain that powerful people speak for the Covenant. His quest concerns a sanctuary whose protection has been abused by armed fugitives and denied to innocent families. The player balances mercy, safety and restitution. Resolution: Wystan may establish a sanctuary, serve as an independent mediator, return to a religious community or step away from public life.
+- **Edmer Dunmarrow — The Inheritance of Silence.** Edmer appears through letters, testimony and memory rather than as a companion who can be restored. His record gradually reveals courage and culpable concealment. The final judgment of Edmer should remain contested among survivors; Torren may honour his sacrifice without declaring every decision correct.
+- **Maelor Brennhallow — The Necessary Tyrant's Argument.** Maelor's arc is not redemption by a single speech. His choices, orders, victims and willingness to accept lawful judgment determine whether he is captured, tried, exiled, killed or remains an unrepentant fugitive. His fear of collapse is credible; the harm he caused remains real.
+- **Captain Ilyra Venn and pilot Maren Vey — The Beacon and the Tide.** Their Thalassar/Brinegate Coast storyline should remain regionally grounded. Ilyra's leadership and Maren's knowledge of routes expose how maritime communities interpret the public Covenant and the secret faction's appropriation of its name. Their choices can earn the company passage, witnesses or a maritime alliance; they do not make Brinegate House Ysmark's seat.
+
+### 15.10 Ending matrix and continuity safeguards
+
+The campaign should support endings that feel complete even when they do not unlock the generational mode:
+1. **The Restored Crown:** a reformed Crownlands monarchy survives under enforceable Covenant limits. The protagonist may secure justice for Dunmarrow but does not become Last Emperor.
+2. **The Council of Houses:** the Crownlands transfers authority to a functioning Council, but the dormant imperial office is not reconstituted or the required dissolution terms are not completed.
+3. **The Concord of Free Realms — True Ending:** Council and realm ratifications authorise the Last Emperor's temporary mandate; the Empire is formally abolished; the Concord is founded; late-life epilogue concludes; natural old-age death seals the Founder Chronicle and unlocks Chronicle of Houses.
+4. **The Fractured Peace:** a military or negotiated end stops immediate conflict but leaves Houses or regions outside a stable settlement. The protagonist's fate and companions' outcomes reflect the route.
+5. **The Ashen Victory:** the protagonist defeats Maelor but uses coercive methods that undermine public trust and the Covenant's obligations. Victory is real but politically brittle.
+
+No ending should be labelled “good” solely because more territory is controlled or more companions survive. The true ending is defined by constitutional completion and the strict unlock sequence, not by a perfect approval score. The post-campaign family simulation begins only after natural old-age death in that true-ending route.
+
+### 15.11 Production and implementation guidance
+
+For each chapter, author a scene packet containing: entry conditions; location and cast; opening dialogue intent; objectives; optional objectives; encounter and non-combat routes; choice IDs; state changes; failure/recovery paths; companion reactions; journal updates; exit conditions; and continuity references. Every major choice needs a later callback or a recorded reason why it did not recur.
+
+Use stable IDs for chapters, quests, decisions, flags and endings. Keep prose/dialogue separate from logic. Avoid branching every scene into an unmaintainable tree: prefer a shared chapter spine with state-dependent scenes, alternate mission approaches and variable aftermath. Preserve offline operation and existing save compatibility. Do not claim any story chapter is playable until implemented and tested in Godot.
