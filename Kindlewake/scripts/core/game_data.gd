@@ -7,7 +7,7 @@ const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 
 const DATA_DIR := "res://data/"
 ## Listed explicitly (instead of scanning the folder) so it also works inside exported builds.
-const BATTLE_FILES := ["battle_01", "battle_hollowroot", "battle_bell", "battle_catacombs", "battle_tideglass", "battle_northstar_wreck"]
+const BATTLE_FILES := ["battle_01", "battle_hollowroot", "battle_bell", "battle_catacombs", "battle_tideglass", "battle_northstar_wreck", "battle_boss_hollow_hart", "battle_boss_drowned_crown", "battle_boss_ash_regent", "battle_boss_pale_matriarch", "battle_boss_briar_sovereign", "battle_boss_star_eater", "battle_boss_last_cantor", "battle_holding_siege"]
 
 var classes: Dictionary = {}
 var terrain: Dictionary = {}
@@ -62,6 +62,8 @@ func reload() -> void:
     continents = _load_json("continents.json")
     factions = _load_json("factions.json")
     companion_quests = _load_json("companion_quests.json").get("quests", {})
+    world_expansion = _load_json("world_expansion_catalog.json")
+    regional_boss_encounters = _load_json("regional_boss_encounters.json").get("encounters", {})
     locations = _load_json("locations.json")
     character_creation = _load_json("character_creation.json")
     battles.clear()
@@ -104,7 +106,14 @@ func party_db() -> Dictionary:
 
 
 func battle_def(battle_id: String) -> Dictionary:
-    return battles.get(battle_id, {})
+    var result: Dictionary = (battles.get(battle_id, {}) as Dictionary).duplicate(true)
+    var boss_id := str(result.get("boss_encounter_id", ""))
+    if boss_id != "" and regional_boss_encounters.has(boss_id):
+        var encounter: Dictionary = regional_boss_encounters[boss_id]
+        result["boss_phases"] = (encounter.get("phases", []) as Array).duplicate(true)
+        result["boss_name"] = str(encounter.get("name", result.get("title", "Regional Guardian")))
+        result["boss_counterplay"] = str(encounter.get("counterplay", ""))
+    return result
 
 
 ## Resolve the campaign region without mutating the canonical Eldrimar world data.
