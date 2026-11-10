@@ -2069,9 +2069,19 @@ func _test_campaign_save_semantic_backup_fallback() -> void:
     var slot := "kw_semantic_recovery_test"
     ss.delete_slot(slot)
     check(ss.save_slot(slot, valid_payload, "valid campaign fixture"), "valid campaign fixture is saved")
+    check(ss.save_slot(slot, valid_payload, "rotate valid campaign backup"), "second valid campaign save preserves a verified backup")
     var invalid_primary: Dictionary = valid_payload.duplicate(true)
     invalid_primary["party"]["sheets"]["torren"]["personality"] = []
-    check(ss.save_slot(slot, invalid_primary, "newer malformed campaign"), "malformed campaign fixture is written for recovery")
+    var invalid_payload_text: String = JSON.stringify(invalid_primary)
+    var invalid_envelope := {
+        "meta": {"save_version": 4, "game_version": "0.12.0", "unix": Time.get_unix_time_from_system()},
+        "payload": invalid_payload_text,
+        "checksum": ss.checksum_of(invalid_payload_text)
+    }
+    var invalid_file := FileAccess.open(ss.slot_path(slot), FileAccess.WRITE)
+    invalid_file.store_string(JSON.stringify(invalid_envelope))
+    invalid_file.close()
+    check(not ss.load_slot(slot).get("ok", false), "checksum-valid but semantically invalid primary is detected")
     var recovered: Dictionary = ss.load_slot(slot)
     check(bool(recovered.get("ok", false)) and bool(recovered.get("from_backup", false)), "checksum-valid but semantically invalid primary falls back to valid backup")
     check(RegionSaveState.is_valid_campaign_payload(recovered.get("payload", {})), "semantic backup recovery returns a structurally valid campaign")
