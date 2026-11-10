@@ -103,7 +103,7 @@ func compute_reach(start: Vector2i, move_points: int, jump: int, enemy_cells: Di
             var n: Vector2i = cur + d
             if not in_bounds(n):
                 continue
-            if enemy_cells.has(n):
+            if enemy_cells.has(n) or (block_ally_cells and ally_cells.has(n)):
                 continue
             var step: int = move_cost(n)
             if step < 0:
