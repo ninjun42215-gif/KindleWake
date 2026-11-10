@@ -139,15 +139,23 @@ func _resolve_fire(fire: String, response: String) -> void:
  if _apply(System.resolve_fire(GameState.world_flags,fire,response)):
   _render()
 func _audience(decision: String) -> void:
- if not _apply(System.resolve_audience(GameState.world_flags,decision)):
+ var result: Dictionary = System.resolve_audience(GameState.world_flags,decision)
+ if not bool(result.get("ok",false)):
+  status_label.text = str(result.get("reason","The final audience could not be recorded."))
   return
+ var previous_flags: Dictionary = GameState.world_flags.duplicate(true)
+ var previous_chronicle: Dictionary = GameState.chronicle_state.duplicate(true)
+ GameState.world_flags = result.world_flags
  var milestones := ["campaign_completed","became_last_emperor","empire_dissolved"]
  for milestone in milestones:
+  if bool(GameState.chronicle_state.get("milestones",{}).get(milestone,false)):
+   continue
   if not GameState.record_chronicle_milestone(milestone):
-   status_label.text = "The ending was saved, but the founder chronology rejected milestone: " + milestone
-   GameState.save_campaign("auto_a")
-   _render()
+   GameState.world_flags = previous_flags
+   GameState.chronicle_state = previous_chronicle
+   status_label.text = "The ending could not be committed to the founder chronology: " + milestone
    return
+ status_label.text = str(result.get("text",""))
  GameState.save_campaign("auto_a")
  _render()
 func _end(message: String) -> void:
