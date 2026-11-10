@@ -210,6 +210,17 @@
         25
       ],
       "text": "A salt-stained envoy waits beside the old road marker. The Tidebound Assembly has heard that House Dunmarrow's company survived the burning estate. The envoy carries a sealed passage charter."
+    },
+    {
+      "id": "tarnholt",
+      "name": "Tarnholt Chapter House",
+      "kind": "village",
+      "cell": [
+        57,
+        39
+      ],
+      "town": "tarnholt",
+      "text": "A hilltop settlement of House Tarnholt, where the order's chapter house stands beside a public guest hall. Its doors are open to travellers, but its vows are now under scrutiny."
     }
   ],
   "roads": [
@@ -280,11 +291,16 @@
     [
       "crossing",
       "tidebound_envoy"
+    ],
+    [
+      "cindermead",
+      "tarnholt"
     ]
   ],
   "region_notes": {
     "orrowen": "Orrowen Weald: ancient forest roads, ranger settlements and the Bell Under Leaves.",
-    "vessmoor": "Vessmoor Plains: open horse country, market towns and the Kingsroad Catacombs."
+    "vessmoor": "Vessmoor Plains: open horse country, market towns and the Kingsroad Catacombs.",
+    "tarnholt": "Tarnholt: a hilltop settlement and chapter house where House Tarnholt's order is being pressed to make its vows transparent and voluntary."
   },
   "wrap_world": true
 }
