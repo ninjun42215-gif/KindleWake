@@ -97,16 +97,35 @@ func dismiss_province_governor(province_id: String) -> bool:
     return EmpireSystem.dismiss_governor(empire_state, province_id)
 
 
+func player_controlled_provinces() -> Array:
+    var owned: Array = []
+    var territories: Dictionary = faction_state.get("territories", {})
+    for province_id in territories.keys():
+        var territory: Dictionary = territories[province_id]
+        if str(territory.get("owner", "")) in ["house_dunmarrow", "crownlands"]:
+            owned.append(str(province_id))
+    owned.sort()
+    return owned
+
+
 func appoint_province_governor(province_id: String, character_id: String) -> bool:
-    if not party.sheets.has(character_id):
+    if not party.sheets.has(character_id) or not player_controlled_provinces().has(province_id):
         return false
-    return EmpireSystem.appoint_governor(empire_state, province_id, character_id, GameData.factions.get("regions", {}).keys())
+    return EmpireSystem.appoint_governor(empire_state, province_id, character_id, player_controlled_provinces())
+
+
+func dismiss_province_governor(province_id: String) -> bool:
+    if not player_controlled_provinces().has(province_id):
+        return false
+    return EmpireSystem.dismiss_governor(empire_state, province_id)
+
 
 func construct_province_building(province_id: String, building_id: String) -> bool:
-    return EmpireSystem.construct(empire_state, province_id, building_id, GameData.factions.get("regions", {}).keys())
+    return EmpireSystem.construct(empire_state, province_id, building_id, player_controlled_provinces())
+
 
 func advance_empire_season() -> Dictionary:
-    return EmpireSystem.advance_season(empire_state, GameData.factions.get("regions", {}).keys())
+    return EmpireSystem.advance_season(empire_state, player_controlled_provinces())
 
 ## Battle database with the party's current sheets (level, stats, equipment) substituted in.
 func battle_db() -> Dictionary:
