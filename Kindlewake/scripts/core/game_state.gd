@@ -6,6 +6,7 @@ const CharacterCreationScript = preload("res://scripts/core/character_creation.g
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
 const EmpireEconomySystem = preload("res://scripts/core/empire_economy_system.gd")
+const EmpireDevelopmentSystem = preload("res://scripts/core/empire_development_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
 
@@ -76,6 +77,38 @@ func advance_empire_turn(holding_definitions: Array) -> Dictionary:
     world_flags["empire_turn"] = int(world_flags.get("empire_turn", 0)) + 1
     world_flags["empire_last_report"] = result.get("reports", []).duplicate(true)
     return result
+
+
+## Spend treasury and materials to improve a player-administered holding.
+func upgrade_holding_building(holding_id: String, building_id: String) -> Dictionary:
+    var result: Dictionary = EmpireDevelopmentSystem.upgrade_building(holding_id, building_id, world_flags, party.gold)
+    if bool(result.get("ok", false)):
+        party.gold = int(result.treasury_after)
+    return result
+
+
+## Recruit a strategic troop stack at a player-administered holding.
+func recruit_holding_troops(holding_id: String, troop_id: String, amount: int = 1) -> Dictionary:
+    var result: Dictionary = EmpireDevelopmentSystem.recruit(holding_id, troop_id, amount, world_flags, party.gold)
+    if bool(result.get("ok", false)):
+        party.gold = int(result.treasury_after)
+    return result
+
+
+func assign_recruits_to_holding_garrison(holding_id: String, troop_id: String, amount: int) -> Dictionary:
+    return EmpireDevelopmentSystem.assign_recruits_to_garrison(holding_id, troop_id, amount, world_flags)
+
+
+func begin_holding_siege(holding_id: String, objective_id: String, required_progress: int = 3) -> Dictionary:
+    return EmpireDevelopmentSystem.start_siege(holding_id, objective_id, required_progress, world_flags)
+
+
+func advance_siege_objective(objective_id: String, progress: int = 1) -> Dictionary:
+    return EmpireDevelopmentSystem.progress_siege(objective_id, progress, world_flags)
+
+
+func resolve_siege_objective(objective_id: String, won: bool) -> Dictionary:
+    return EmpireDevelopmentSystem.resolve_siege(objective_id, won, world_flags)
 
 
 ## Change diplomatic standing after an authored campaign event.
