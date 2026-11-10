@@ -213,7 +213,9 @@ func _test_companion_quests() -> void:
         "q_companion_willem_last_challenge": {"cindermead": "challenge_received", "cindermead_inn": "duel_record_verified", "cindermead_market": "rematch_resolved"},
         "q_companion_ysolde_names_in_salt": {"brinegate": "salt_register_found", "saltmere": "family_names_verified", "lantern_quay": "wharf_hearing_resolved"},
         "q_companion_garrick_spared_enemy": {"sethorn": "prisoner_request_received", "sethorn_hall": "witnesses_escorted", "sethorn_barracks": "commander_captured_or_surrendered"},
-        "q_companion_corwin_heirless_seal": {"cindermead": "seal_forgery_found", "cindermead_inn": "charter_authority_audited", "cindermead_market": "retainers_heard"}
+        "q_companion_corwin_heirless_seal": {"cindermead": "seal_forgery_found", "cindermead_inn": "charter_authority_audited", "cindermead_market": "retainers_heard"},
+        "q_companion_ilyan_silent_tower": {"dungeon_bell": "missing_page_found", "dungeon_hollowroot": "rune_experiment_contained", "dungeon_catacombs": "apprentice_reached"},
+        "q_companion_maren_tideglass_wake": {"brinegate": "ledger_page_found", "saltmere": "safe_route_plotted", "dungeon_tideglass": "wreck_manifest_recovered"}
     }
     var authored_hooks_ok := true
     for authored_quest_id in authored_quest_maps.keys():
@@ -232,12 +234,12 @@ func _test_companion_quests() -> void:
             authored_hooks_ok = false
     check(authored_hooks_ok, "Lucan, Kestrel, Anselm, Petra, Dorian, Joss, Isaure, Verra, Tomas, Orlan, Odalys, Willem, Ysolde, Garrick and Corwin have three location hooks, valid investigation challenges and persistent outcome branches")
     var playable_summaries_ok := true
-    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal"]:
+    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal", "q_companion_ilyan_silent_tower", "q_companion_maren_tideglass_wake"]:
         if str(gd.companion_quests[playable_id].get("journal_summary", "")).length() < 30:
             playable_summaries_ok = false
-    check(playable_summaries_ok, "all eighteen authored companion quest routes have journal summaries")
+    check(playable_summaries_ok, "all twenty authored companion quest routes have journal summaries")
     var playable_flags_ok := true
-    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal"]:
+    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal", "q_companion_ilyan_silent_tower", "q_companion_maren_tideglass_wake"]:
         var playable_definition: Dictionary = gd.companion_quests[playable_id]
         var playable_flags: Dictionary = playable_definition.get("outcome_flags", {})
         if playable_flags.size() != (playable_definition.get("outcomes", []) as Array).size():
