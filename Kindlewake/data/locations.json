@@ -3023,24 +3023,6 @@
           "companion_quest_id": "q_companion_maren_tideglass_wake",
           "companion_quest_milestone": "ledger_page_found",
           "companion_quest_text": "Maren recognises the ship's notation, but this page records passengers under temporary names and omits the cargo lien. Compare the date, seal and passenger marks with the restored Northstar log before accepting the harbour office's account."
-        },
-        {
-          "cell": [
-            7,
-            12
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "The Beacon Charter Hearing",
-          "tint": [
-            0.84,
-            0.78,
-            0.68
-          ],
-          "text": "The Tidebound Assembly has convened a hearing on who maintains the second beacon and protects its rescue passage.",
-          "companion_quest_id": "q_companion_neris_light_kept",
-          "companion_quest_milestone": "beacon_charter_heard",
-          "companion_quest_text": "Present the keeper ledger and independent pilot accounts. Neris asks the Assembly to recognise local rescue duties while preventing private tolls or unilateral control of the warning lights."
         }
       ]
     },
@@ -3214,35 +3196,6 @@
             "success_text": "The soundings and beacon record agree on a sheltered landing. The families can travel without exposing their identities to the harbour brokers.",
             "failure_text": "The exposed shoal or premature public disclosure would place the families at risk. Compare the tide marks with the pilot's sounding and protect their names."
           }
-        },
-        {
-          "cell": [
-            7,
-            12
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "The Pilot Watch",
-          "tint": [
-            0.72,
-            0.82,
-            0.88
-          ],
-          "text": "Two pilots disagree about who should maintain the beacon and who may use its rescue signal.",
-          "companion_quest_id": "q_companion_neris_light_kept",
-          "companion_quest_milestone": "pilot_watch_verified",
-          "companion_quest_text": "Interview the pilots separately and verify the watch rota against the rescue log. A safe passage depends on a reliable signal and a trained keeper, not on which faction owns the chart.",
-          "companion_quest_challenge": {
-            "prompt": "Which arrangement keeps the beacon reliable while preventing any one faction from monopolising the rescue route?",
-            "options": [
-              "Use a published rotating watch, independent maintenance checks and a guaranteed rescue call for all local boats",
-              "Give exclusive control to the merchant who offers the highest fee",
-              "Allow each pilot to change the beacon signal without recording it"
-            ],
-            "correct_option": "Use a published rotating watch, independent maintenance checks and a guaranteed rescue call for all local boats",
-            "success_text": "The rotating watch and independent checks preserve the rescue signal without granting a toll monopoly.",
-            "failure_text": "Exclusive paid control or unrecorded signal changes would make the passage unreliable and unsafe."
-          }
         }
       ]
     },
@@ -3385,24 +3338,6 @@
             9,
             5
           ]
-        },
-        {
-          "cell": [
-            2,
-            12
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "The Keeper's Lantern Ledger",
-          "tint": [
-            0.78,
-            0.82,
-            0.9
-          ],
-          "text": "A retired keeper brings a water-stained maintenance ledger to the quay steps.",
-          "companion_quest_id": "q_companion_neris_light_kept",
-          "companion_quest_milestone": "keeper_ledger_recovered",
-          "companion_quest_text": "The second beacon's chart is now in use, but its upkeep has no agreed custodian. Recover the keeper ledger and compare lamp oil, repair shifts and emergency calls with the Assembly's account."
         }
       ]
     },
