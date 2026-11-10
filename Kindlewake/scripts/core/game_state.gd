@@ -123,7 +123,7 @@ func continent_for_region(region_id: String) -> String:
 ## Regional guardians become challengeable after the player secures a local holding.
 func regional_boss_available(region_id: String) -> bool:
     var continent_id := continent_for_region(region_id)
-    if continent_id == "":
+    if continent_id == "" or bool(world_flags.get("regional_boss_" + continent_id + "_cleared", false)):
         return false
     for holding in GameData.world_expansion.get("capturable_locations", []):
         if str(holding.get("region", "")) == region_id:
