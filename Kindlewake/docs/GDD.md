@@ -923,3 +923,15 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - Exposes GameState methods for story, quest and battle systems to adjust relations, set diplomatic states and transfer known atlas regions. No automatic wars, random coups, fabricated quest consequences or player-facing diplomacy screen are introduced in this foundation.
 
 **Validation:** code head `f7b31035e4651a4a6854cc5ad644beff88c2148b` passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 447 strict checks / 0 failures, balance report and signed Android APK export (arm64-v8a + armeabi-v7a; no requested permissions). Version Sync #188, Workflow YAML Lint #666 and Project Health Audit #458 passed. APK artifact `13733346417`; test logs `13732869336`. Any later documentation-only head still requires the repository's exact-head gate. Physical Android QA remains separate and unperformed. Future work: player-facing diplomacy UI, faction missions, treaties with authored costs, war campaigns, recruitment consequences and strategic territory operations.
+
+
+## 21. Realm governance and territorial administration foundation
+
+**Implementation branch:** `feature/territorial-governance-current-main` (review and CI pending). This is a deterministic runtime foundation, not yet a player-facing kingdom-management screen.
+
+- Adds a persistent realm treasury, bounded tax rate, stability and legitimacy values, regional governor appointments, and four one-time policies: public granaries, royal road works, seasonal tax relief and regional garrisons.
+- Monthly settlement derives income and upkeep only from regions held by the ruler faction. Tax levels, stability and active policies affect the result; a unique month token prevents duplicate settlement rewards.
+- Governor appointments require an eligible party member and a region held by the ruler. Policy purchases validate the treasury and cannot be repeated.
+- GameState stores the optional realm payload and exposes controls only after the authored `empire_management_unlocked` world flag. Legacy saves receive safe defaults; save schema remains unchanged.
+- The feature does not start wars, transfer territories, or simulate AI faction turns. Authored story/battle outcomes remain responsible for territorial changes.
+
