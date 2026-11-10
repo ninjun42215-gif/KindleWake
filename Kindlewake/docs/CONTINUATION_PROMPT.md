@@ -275,11 +275,16 @@ Next work:
 1. Run exact-head Godot import and fix every parse/runtime error.
 2. Run strict tests, scene smoke test, balance report, static checker, Android offline preflight and Android export; fix regressions before merge.
 3. Wire the unlock into the appropriate authored narrative milestone only after the campaign scenario is approved.
-4. Improve council effects using existing character traits/skills and add an at-a-glance projected seasonal ledger.
-5. Add destructible fort gates/walls and dedicated ballista/trebuchet units, then trade routes, faction AI, rebellion warnings and negotiated peace.
+4. The seasonal forecast and companion-trait council effects are implemented; balance them and expand traits/skills only after validation.
+5. Validate trade routes, deterministic faction diplomacy, rebellion relief, council trait effects, negotiated peace and the advanced siege battle profiles on an exact Godot head.
 6. Keep all screens responsive on portrait Android and landscape, with no new permissions or schema/version changes unless necessary and documented.
 
 
 ## FIELD ARMY IMPLEMENTATION STATUS
 
-The field army layer now includes depot-based connected supply, forward supply checks, morale and attrition, seasonal sieges and assaults, war exhaustion, and a strategic-to-tactical roster/result contract. It now launches BattleController encounters with generated regional garrisons and applies cohort casualties back to the strategic army. Additional destructible wall segments and ballista/trebuchet units remain future work. Army movement is strategic and follows only authored atlas region links. Current tests are authored but require exact-head Godot validation. The branch is diverged from `main` and one commit behind; reconcile before merge and require all exact-head CI gates.
+The field army layer now includes depot-based connected supply, forward supply checks, morale and attrition, seasonal sieges and assaults, war exhaustion, and a strategic-to-tactical roster/result contract. It now launches BattleController encounters with generated regional garrisons and applies cohort casualties back to the strategic army. Siege assaults now deploy destructible walls, gate tower, battering ram, ballista, trebuchet and siege engineer passive support. Army movement is strategic and follows only authored atlas region links. Current tests are authored but require exact-head Godot validation. The branch is diverged from `main` and one commit behind; reconcile before merge and require all exact-head CI gates.
+
+
+## STRATEGIC EXPANSION UPDATE
+
+Trade charters, pure seasonal forecasts, 23 companion trait profiles, role/trait council modifiers, rebellion risk warnings and funded relief, deterministic NPC diplomacy, a player Diplomacy tab, negotiated peace offers and tactical siege artillery/wall/engineer support are implemented on the feature branch. The narrative unlock API is GameState.complete_story_milestone("crown_authority_granted"); do not substitute the sea charter or any other unrelated milestone. The approved story event still needs to call it. Tests are authored but not run; Godot is unavailable. Reconcile the branch before merge and require exact-head CI and Android QA.
