@@ -64,3 +64,38 @@ No siege can transfer an entire atlas region unless a separate authored faction-
 - Ownership is checked every turn; lost or non-player holdings produce no player income or upkeep.
 - Economy reports are deterministic and can be surfaced in a future Empire screen.
 - The regional bosses above remain marked as expansion targets until their unique battle data and maps exist.
+
+
+## Development, recruitment and garrison reserves
+
+Player-administered holdings can now spend treasury and materials on three-tier local improvements:
+- **Granary farms:** +3 provisions per tier and empire turn.
+- **Civic workshops:** +2 gold per tier and empire turn.
+- **Chartered trade posts:** +5 gold per tier and empire turn.
+- **Stone fortifications:** +2 stability per tier and empire turn.
+
+Upgrade costs scale with the next tier. The first tier uses the base cost; each later tier multiplies the base gold and materials cost by the next tier number. A failed affordability check changes neither treasury nor the building tier.
+
+Recruitment is purchased from a holding reserve and consumes both treasury and provisions:
+- Frontier Levy: 18 gold and 3 provisions.
+- March Archer: 32 gold and 4 provisions.
+- Household Knight: 65 gold and 7 provisions.
+
+Recruitment currently creates strategic reserve stacks. The player may assign reserve troops to that holding's garrison; those assigned soldiers are included in the existing per-turn garrison upkeep. This is a campaign management layer and does not yet create tactical battle units or move army stacks between regions.
+
+## Objective-based siege progression
+
+The campaign state now supports a persistent siege objective lifecycle: stage an objective from a player holding, advance it in explicit progress steps, require objective completion before encounter resolution, and record whether the assault was resolved or repelled. Progress history is retained in `world_flags`. This is the objective/state foundation for siege missions; it is not yet a tactical siege map, gate interaction, AI siege turn or battle scene.
+
+## Seven bespoke regional boss encounter briefs
+
+`data/regional_boss_encounters.json` is loaded by GameData and contains a unique arena, three phase objectives, telegraphed hazards and counterplay for each continent:
+- Eldrimar — The Hollow Hart
+- Thalassar — Admiral Veyr, the Drowned Crown
+- Varakhan — Kharzug the Ash Regent
+- Nhalor — The Pale Matriarch
+- Veyrwood — The Briar Sovereign
+- Asterreach — The Star-Eater
+- Ilyr — The Last Cantor
+
+These are validated encounter briefs, not yet playable battle definitions. Each still needs a compatible tactical map, battle roster using existing character/unit IDs, phase-trigger scripting, hazard resolution and victory/aftermath integration before it can be launched as a boss fight.
