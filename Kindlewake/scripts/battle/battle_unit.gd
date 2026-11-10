@@ -23,6 +23,7 @@ var armor_res: int = 0
 var skills: Array[String] = []
 var is_protagonist: bool = false
 var is_commander: bool = false
+var boss_phase_index: int = 0       # next phase to trigger; persisted with the battle
 var move: int = 4
 var jump: int = 1
 var ctb: float = 0.0                 # time until next turn (Charge-Time system)
@@ -89,7 +90,7 @@ func to_dict() -> Dictionary:
         "class_id": class_id, "level": level, "cell": [cell.x, cell.y], "facing": facing,
         "stats": stats.duplicate(), "hp": hp, "mp": mp, "morale": morale, "fatigue": fatigue,
         "weapon_id": weapon_id, "armor_def": armor_def, "armor_res": armor_res,
-        "skills": skills.duplicate(), "is_protagonist": is_protagonist, "is_commander": is_commander,
+        "skills": skills.duplicate(), "is_protagonist": is_protagonist, "is_commander": is_commander, "boss_phase_index": boss_phase_index,
         "move": move, "jump": jump, "ctb": ctb, "has_moved": has_moved, "has_acted": has_acted,
         "statuses": statuses.duplicate(true), "kills": kills, "kill_exp": kill_exp,
         "skill_mods": skill_mods.duplicate(), "reward": reward.duplicate(),
@@ -122,6 +123,7 @@ static func from_dict(d: Dictionary) -> BattleUnit:
         u.skills.append(str(x))
     u.is_protagonist = bool(d.get("is_protagonist", false))
     u.is_commander = bool(d.get("is_commander", false))
+    u.boss_phase_index = maxi(0, int(d.get("boss_phase_index", 0)))
     u.move = int(d.get("move", 4))
     u.jump = int(d.get("jump", 1))
     u.ctb = float(d.get("ctb", 0.0))
