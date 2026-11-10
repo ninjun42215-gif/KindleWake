@@ -1563,6 +1563,29 @@ func _test_trait_system() -> void:
     print("[trait and personality system]")
     var defs: Dictionary = gd.traits
     check(defs.size() >= 60, "data-driven trait catalogue loads a broad initial library")
+    var categories: Dictionary = {}
+    var valid_trait_links := true
+    for trait_id in defs:
+        if str(trait_id) == "_synergies":
+            continue
+        var trait_def: Dictionary = defs[trait_id]
+        categories[str(trait_def.get("category", ""))] = true
+        for conflict_id in trait_def.get("conflicts", []):
+            if not defs.has(str(conflict_id)):
+                valid_trait_links = false
+        var evolution_id := str(trait_def.get("evolves_to", ""))
+        if evolution_id != "" and not defs.has(evolution_id):
+            valid_trait_links = false
+    for category_id in ["personality", "intelligence", "combat", "social", "physical", "psychological", "leadership", "lifestyle", "morality", "magical"]:
+        check(categories.has(category_id), "trait catalogue includes " + category_id + " category")
+    check(valid_trait_links, "all opposing and evolution links resolve to defined traits")
+    var valid_event_awards := true
+    for event_id in gd.trait_events:
+        var event_def: Dictionary = gd.trait_events[event_id]
+        for award_id in event_def.get("trait_awards", []):
+            if not defs.has(str(award_id)):
+                valid_event_awards = false
+    check(valid_event_awards, "all event trait awards resolve to defined trait IDs")
     check(defs.has("brave") and defs.has("scholar") and defs.has("battle_trauma") and defs.has("magical_affinity"), "catalogue covers personality, knowledge, psychological and rare magical traits")
     var sheet := CharacterSheet.from_def("trait_test", {"name":"Test Hero","class_id":"swordsman","level":1,"stats":{"hp":20,"mp":5,"str":5,"dex":5,"int":5,"vit":5,"spd":5,"lck":5,"acc":70,"eva":5,"ldr":5,"mor":50}})
     var base: Dictionary = sheet.base_stats.duplicate(true)
