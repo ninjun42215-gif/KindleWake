@@ -9,6 +9,7 @@ const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
 const HoldingSystem = preload("res://scripts/core/holding_system.gd")
+const EmpireEconomySystem = preload("res://scripts/core/empire_economy_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -47,6 +48,7 @@ func _initialize() -> void:
     _test_world_atlas()
     _test_world_expansion()
     _test_holding_system()
+    _test_empire_economy()
     _test_dungeon_mechanisms()
     _test_secret_passages()
     _test_faction_politics()
@@ -177,6 +179,26 @@ func _test_holding_system() -> void:
     check(not bool(beacon_locked.get("available", true)), "Veyhaven Beacon remains unclaimable until Stormwell is restored")
     flags["dungeon_stormwell_cleared"] = true
     check(bool(HoldingSystem.inspect(beacon, flags).get("available", false)), "defeating Stormwell guardian unlocks the beacon stewardship claim")
+
+
+func _test_empire_economy() -> void:
+    print("[empire economy]")
+    var flags := {"holding_claimed_keep": true, "holding_owner_keep": "house_dunmarrow", "holding_status_keep": "provisional", "holding_stability_keep": 35, "holding_governance_keep": "appointed_warden"}
+    var assigned: Dictionary = EmpireEconomySystem.assign_garrison("keep", 3, flags)
+    check(bool(assigned.get("ok", false)) and int(flags.get("holding_garrison_keep", 0)) == 3, "garrison can be assigned only to a player-held location")
+    var invalid: Dictionary = EmpireEconomySystem.assign_garrison("unknown", 2, flags)
+    check(not bool(invalid.get("ok", true)), "unclaimed locations reject garrison assignments")
+    var governance: Dictionary = EmpireEconomySystem.set_governance("keep", "local_compact", flags)
+    check(bool(governance.get("ok", false)), "valid local governance can be appointed")
+    check(not bool(EmpireEconomySystem.set_governance("keep", "tyranny", flags).get("ok", true)), "unknown governance models are rejected")
+    var definitions: Array = [{"id":"keep","turn_income":20,"garrison_upkeep":2,"recommended_garrison":2}]
+    var turn: Dictionary = EmpireEconomySystem.advance_turn(definitions, flags, 100)
+    check(bool(turn.get("ok", false)) and int(turn.get("income", 0)) == 20 and int(turn.get("upkeep", 0)) == 4, "empire turn calculates holding income, fixed upkeep and garrison upkeep")
+    check(int(turn.get("treasury_after", 0)) == 116 and int(flags.get("holding_stability_keep", 0)) > 35, "turn pays net income and a sufficient garrison improves stability")
+    flags["holding_owner_keep"] = "foreign_house"
+    var lost: Dictionary = EmpireEconomySystem.advance_turn(definitions, flags, 100)
+    check(int(lost.get("holdings_processed", -1)) == 0 and int(lost.get("treasury_after", 0)) == 100, "foreign-held locations stop producing player income and upkeep")
+    check(EmpireEconomySystem.stability_label(10) == "Unrest" and EmpireEconomySystem.stability_label(80) == "Secure", "holding stability exposes clear unrest and security states")
 
 
 func _test_dungeon_mechanisms() -> void:
