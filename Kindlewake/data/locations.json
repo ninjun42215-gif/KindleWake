@@ -89,6 +89,25 @@
             "'The watchtower bell rings when the wind is from the north. Last night it rang with no wind at all.'",
             "'If you find a brass token in the mud, don't spend it. The old road wardens used those to open the sealed storehouse.'"
           ]
+        },
+        {
+          "cell": [
+            11,
+            8
+          ],
+          "kind": "story",
+          "story_id": "last_convoy",
+          "npc": true,
+          "name": "Carter Wen, Convoy Master",
+          "tint": [
+            0.9,
+            0.76,
+            0.54
+          ],
+          "text": "Carter Wen has returned to Sallow Crossing with mud to his knees and a torn convoy ribbon in his hand. “The last wagons are still out there. We cannot save everything. We can decide who gets home.”",
+          "dialogue": [
+            "“The manifest lists flour, lamp oil, and twelve families. The ridge has been watched by men who wear no house colours.”"
+          ]
         }
       ]
     },
@@ -237,7 +256,7 @@
             5,
             3
           ],
-          "kind": "text",
+          "kind": "story",
           "npc": true,
           "name": "Elder Hale",
           "tint": [
@@ -245,7 +264,11 @@
             0.85,
             0.95
           ],
-          "text": "House Dunmarrow held these roads for three hundred years. Torren, the keep is yours to rebuild. Start with the road to Eldrimar."
+          "text": "Elder Hale unlocks a narrow chest beneath the table. Inside lies the old toll book, its last pages stained by river water.",
+          "story_id": "toll_book",
+          "dialogue": [
+            "“I kept this because the names mattered. The convoy manifest may show which entries were false — and who was made to vanish from the road.”"
+          ]
         }
       ]
     },
@@ -306,6 +329,44 @@
             1
           ],
           "text": "The walls are cracked, but they hold. Steward Brannoch is waiting in the great hall."
+        },
+        {
+          "cell": [
+            8,
+            5
+          ],
+          "kind": "story",
+          "story_id": "blocked_well",
+          "npc": true,
+          "name": "Mira, the Wellkeeper",
+          "tint": [
+            0.55,
+            0.78,
+            0.9
+          ],
+          "text": "Mira keeps a strip of clean linen tied around her wrist. “I can make a bucket last three days. I cannot make a well out of rubble.”",
+          "dialogue": [
+            "“The old shaft was built before the keep's western wall. If we clear it, test it, and keep the first water for the sick, we can stay.”"
+          ]
+        },
+        {
+          "cell": [
+            13,
+            6
+          ],
+          "kind": "story",
+          "story_id": "roof_before_banner",
+          "npc": true,
+          "name": "Hobb, the Carpenter",
+          "tint": [
+            0.72,
+            0.58,
+            0.38
+          ],
+          "text": "Hobb studies the torn rafters and the folded house banner. “A banner is cloth. A roof keeps people alive.”",
+          "dialogue": [
+            "“The stable collapsed in the last winter. Some of its beams are sound. We can salvage them before the next storm.”"
+          ]
         }
       ]
     },
@@ -344,7 +405,7 @@
             7,
             2
           ],
-          "kind": "text",
+          "kind": "story",
           "npc": true,
           "name": "Steward Brannoch",
           "tint": [
@@ -352,12 +413,12 @@
             0.8,
             0.5
           ],
-          "text": "The road is open, my lord, but it is not safe. Train the company, forge sigils, and clear the Roadwolf Camp.",
+          "text": "Steward Brannoch has summoned the household to the great hall. He will not ask for an oath until the keep's people and the road have been accounted for.",
           "dialogue": [
-            "'Your house held this valley by oath, not by walls. Walls can be raised again; trust takes longer.'",
-            "'The quartermaster has sent word of a smith at the lower gate. He can temper any weapon or piece of armor to +15, though the price rises with every strike.'",
-            "'The old families kept heirloom runes apart from common stock. They are not merchandise. They choose their bearer.'"
-          ]
+            "“A house is not restored when its doors open. It is restored when people know what its word is worth.”",
+            "“Bring me the wellkeeper's report, the carpenter's word, Carter's convoy manifest and Elder Hale's toll record. Then we will speak of the first oath.”"
+          ],
+          "story_id": "first_oath"
         },
         {
           "cell": [
