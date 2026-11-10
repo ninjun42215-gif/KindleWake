@@ -5,6 +5,7 @@ const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 const RelationshipSystemScript = preload("res://scripts/core/relationship_system.gd")
 const CompanionBehaviorScript = preload("res://scripts/core/companion_behavior_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
+const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
@@ -50,6 +51,7 @@ func _initialize() -> void:
     _test_companion_relationships()
     _test_companion_behavior()
     _test_recruitment()
+    _test_companion_quests()
     _test_prologue()
     _test_escape_mission()
     _test_escape_ui_layout()
@@ -158,6 +160,166 @@ func _test_art_assets() -> void:
                 check(final_frame == frame_count - 1, "%s one-shot animation clamps at its final frame" % anim)
             else:
                 check(final_frame >= 0 and final_frame < frame_count, "%s looping animation remains inside its frame range" % anim)
+
+
+func _test_companion_quests() -> void:
+    print("[companion quests]")
+    var catalog := {"quests": gd.companion_quests, "world_flags": {}}
+    check(gd.companion_quests.size() == 21, "all 21 recruitable companion quest definitions load")
+    var ids_ok := true
+    var recruited_ids: Array[String] = []
+    for character_id in gd.characters.keys():
+        var character: Dictionary = gd.characters[character_id]
+        if typeof(character.get("recruit", null)) == TYPE_DICTIONARY:
+            recruited_ids.append(str(character_id))
+    var covered_ids: Array[String] = []
+    for quest_id in gd.companion_quests.keys():
+        var definition: Dictionary = gd.companion_quests[quest_id]
+        var companion_id := str(definition.get("companion_id", ""))
+        if not gd.characters.has(companion_id) or typeof(gd.characters[companion_id].get("recruit", null)) != TYPE_DICTIONARY:
+            ids_ok = false
+        covered_ids.append(companion_id)
+        if (definition.get("milestones", []) as Array).size() < 3 or (definition.get("outcomes", []) as Array).size() < 2:
+            ids_ok = false
+        var reward: Dictionary = definition.get("completion_reward", {})
+        if int(reward.get("gold", 0)) <= 0:
+            ids_ok = false
+        var labels: Dictionary = definition.get("outcome_labels", {})
+        for outcome in definition.get("outcomes", []):
+            if labels.has(str(outcome)) and str(labels[str(outcome)]).strip_edges().is_empty():
+                ids_ok = false
+    check(ids_ok and recruited_ids.size() == covered_ids.size() and recruited_ids.all(func(id): return covered_ids.has(id)), "every currently recruitable character has exactly one quest definition")
+    check(ids_ok, "every quest resolves to a recruitable character and has milestones and outcomes")
+    var state: Dictionary = {}
+    var quest_id := "q_companion_brisa_hearth_of_names"
+    var locked := CompanionQuestSystem.start(state, quest_id, ["torren"], catalog)
+    check(not bool(locked.get("ok", false)) and state.is_empty(), "a companion quest cannot start before its ally is recruited")
+    var started := CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog)
+    check(bool(started.get("ok", false)) and CompanionQuestSystem.status(state, quest_id) == "active", "recruited ally can start their personal quest")
+    check(not bool(CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog).get("ok", false)), "a companion quest cannot be started twice")
+    var maren_locked_state: Dictionary = {}
+    var maren_locked := CompanionQuestSystem.start(maren_locked_state, "q_companion_maren_tideglass_wake", ["torren", "maren_vey"], catalog)
+    check(not bool(maren_locked.get("ok", false)) and maren_locked_state.is_empty(), "Maren's companion follow-up stays locked until her Northstar signal quest is complete")
+    var maren_catalog := {"quests": gd.companion_quests, "world_flags": {"maren_signal_completed": true}}
+    var maren_started := CompanionQuestSystem.start(maren_locked_state, "q_companion_maren_tideglass_wake", ["torren", "maren_vey"], maren_catalog)
+    check(bool(maren_started.get("ok", false)), "Maren's follow-up unlocks after the existing Northstar quest resolves")
+    check(not bool(CompanionQuestSystem.advance(state, quest_id, "families_contacted", catalog).get("ok", false)), "out-of-order milestones are rejected")
+    check(bool(CompanionQuestSystem.advance(state, quest_id, "ledger_recovered", catalog).get("ok", false)), "first companion quest milestone advances")
+    check(bool(CompanionQuestSystem.advance(state, quest_id, "families_contacted", catalog).get("ok", false)), "second companion quest milestone advances")
+    check(not bool(CompanionQuestSystem.resolve(state, quest_id, "keep_infirmary", catalog).get("ok", false)), "quest cannot resolve before all milestones")
+    check(bool(CompanionQuestSystem.advance(state, quest_id, "care_network_secured", catalog).get("ok", false)) and CompanionQuestSystem.status(state, quest_id) == "ready", "final milestone marks the quest ready for resolution")
+    check(not bool(CompanionQuestSystem.resolve(state, quest_id, "unknown_outcome", catalog).get("ok", false)), "unknown companion quest outcomes are rejected")
+    check(bool(CompanionQuestSystem.resolve(state, quest_id, "community_network", catalog).get("ok", false)), "valid companion quest resolution is recorded")
+    check(CompanionQuestSystem.status(state, quest_id) == "complete", "resolved companion quest is marked complete")
+    var restored := CompanionQuestSystem.normalize_state(state, catalog)
+    check(restored == state, "companion quest progress survives normalization for save/load")
+    var malformed := CompanionQuestSystem.normalize_state({"unknown_quest": {"status": "complete"}, quest_id: {"status": "invalid"}}, catalog)
+    check(malformed.is_empty(), "unknown and malformed companion quest states are discarded safely")
+    var maps: Dictionary = gd.locations.get("maps", {})
+    var brisa_spots := {
+        "foxglove": "ledger_recovered",
+        "foxglove_inn": "families_contacted",
+        "foxglove_market": "care_network_secured"
+    }
+    var world_hooks_ok := true
+    for map_id in brisa_spots.keys():
+        var map_def: Dictionary = maps.get(map_id, {})
+        var found := false
+        for spot in map_def.get("spots", []):
+            if str(spot.get("companion_quest_id", "")) == quest_id and str(spot.get("companion_quest_milestone", "")) == str(brisa_spots[map_id]):
+                found = true
+        if not found:
+            world_hooks_ok = false
+    check(world_hooks_ok, "Brisa's three ordered quest milestones are connected to Foxglove town, inn and market interactions")
+
+    var additional_quest_hooks := {
+        "q_companion_edda_iron_and_ash": {
+            "foxglove_recruit": "tools_accounted",
+            "foxglove_inn": "worker_claims_verified",
+            "sethorn_hall": "furnace_bargain_resolved"
+        },
+        "q_companion_bram_cullen_broken_chain": {
+            "foxglove_recruit": "debt_transfer_found",
+            "crossing": "contracts_audited",
+            "crossing_inn": "debtors_freed"
+        }
+    }
+    var additional_hooks_ok := true
+    for quest_key in additional_quest_hooks.keys():
+        for map_key in additional_quest_hooks[quest_key].keys():
+            var found_hook := false
+            for hook_spot in maps.get(map_key, {}).get("spots", []):
+                if str(hook_spot.get("companion_quest_id", "")) == quest_key and str(hook_spot.get("companion_quest_milestone", "")) == str(additional_quest_hooks[quest_key][map_key]):
+                    found_hook = true
+            if not found_hook:
+                additional_hooks_ok = false
+    check(additional_hooks_ok, "Edda and Bram Cullen each have three ordered world interactions in their authored regions")
+
+
+    var authored_quest_maps := {
+        "q_companion_brisa_hearth_of_names": {"foxglove": "ledger_recovered", "foxglove_inn": "families_contacted", "foxglove_market": "care_network_secured"},
+        "q_companion_edda_iron_and_ash": {"foxglove_recruit": "tools_accounted", "foxglove_inn": "worker_claims_verified", "sethorn_hall": "furnace_bargain_resolved"},
+        "q_companion_bram_cullen_broken_chain": {"foxglove_recruit": "debt_transfer_found", "crossing": "contracts_audited", "crossing_inn": "debtors_freed"},
+        "q_companion_lucan_last_flight": {"thornmere": "signal_found", "thornmere_inn": "patrol_traced", "thornmere_market": "witness_heard"},
+        "q_companion_kestrel_no_master": {"elderbough": "coded_mark_found", "elderbough_inn": "safehouse_investigated", "elderbough_market": "witness_protected"},
+        "q_companion_anselm_line_to_hold": {"crossing": "muster_notice_read", "crossing_elder": "drill_ground_examined", "sethorn_hall": "soldiers_resolved"},
+        "q_companion_petra_bitter_draught": {"foxglove_market": "ward_ledger_found", "foxglove_inn": "treatment_verified", "foxglove_recruit": "triage_decided"},
+        "q_companion_dorian_unspent_bolt": {"thornmere": "convoy_identified", "thornmere_inn": "shot_reconstructed", "thornmere_market": "quartermaster_confronted"},
+        "q_companion_joss_debt_of_silence": {"thornmere": "purse_recognised", "thornmere_inn": "smuggling_ledger_found", "thornmere_market": "debtors_rescued"},
+        "q_companion_isaure_two_oaths": {"elderbough": "summons_received", "elderbough_inn": "household_muster_examined", "elderbough_market": "mentor_challenge_resolved"},
+        "q_companion_verra_song_without_seal": {"brinegate": "borrowed_verse_heard", "saltmere": "singers_copy_recovered", "lantern_quay": "public_performance_resolved"},
+        "q_companion_tomas_far_marker": {"crossing": "fen_marker_recognised", "crossing_inn": "scout_trail_reconstructed", "crossing_elder": "homeward_choice_made"},
+        "q_companion_orlan_margin_of_truth": {"milefort": "misbound_volume_found", "milefort_inn": "source_provenance_verified", "milefort_market": "archive_access_resolved"},
+        "q_companion_odaly_open_door": {"redwater": "sanctuary_bell_answered", "redwater_inn": "shelter_rules_agreed", "redwater_market": "threshold_defended"},
+        "q_companion_willem_last_challenge": {"cindermead": "challenge_received", "cindermead_inn": "duel_record_verified", "cindermead_market": "rematch_resolved"},
+        "q_companion_ysolde_names_in_salt": {"brinegate": "salt_register_found", "saltmere": "family_names_verified", "lantern_quay": "wharf_hearing_resolved"},
+        "q_companion_garrick_spared_enemy": {"sethorn": "prisoner_request_received", "sethorn_hall": "witnesses_escorted", "sethorn_barracks": "commander_captured_or_surrendered"},
+        "q_companion_corwin_heirless_seal": {"cindermead": "seal_forgery_found", "cindermead_inn": "charter_authority_audited", "cindermead_market": "retainers_heard"},
+        "q_companion_ilyan_silent_tower": {"dungeon_bell": "missing_page_found", "dungeon_hollowroot": "rune_experiment_contained", "dungeon_catacombs": "apprentice_reached"},
+        "q_companion_maren_tideglass_wake": {"brinegate": "ledger_page_found", "saltmere": "safe_route_plotted", "dungeon_northstar_wreck": "wreck_manifest_recovered"},
+        "q_companion_seraphine_measure_of_oaths": {"tarnholt": "unread_oath_found", "tarnholt_inn": "order_records_examined", "tarnholt_chapter_house": "chapter_house_heard"}
+    }
+    var authored_hooks_ok := true
+    for authored_quest_id in authored_quest_maps.keys():
+        var found_milestones := 0
+        for map_id in authored_quest_maps[authored_quest_id].keys():
+            var found_hook := false
+            for authored_spot in maps.get(map_id, {}).get("spots", []):
+                if str(authored_spot.get("companion_quest_id", "")) == authored_quest_id and str(authored_spot.get("companion_quest_milestone", "")) == str(authored_quest_maps[authored_quest_id][map_id]):
+                    found_hook = true
+                    found_milestones += 1
+                    var hook_cell: Array = authored_spot.get("cell", [])
+                    var map_rows: Array = maps.get(map_id, {}).get("rows", [])
+                    if hook_cell.size() < 2 or int(hook_cell[1]) < 0 or int(hook_cell[1]) >= map_rows.size():
+                        authored_hooks_ok = false
+                    else:
+                        var hook_row := str(map_rows[int(hook_cell[1])])
+                        var hook_x := int(hook_cell[0])
+                        if hook_x < 0 or hook_x >= hook_row.length() or "#TF~rbwBSKXHUPNC".contains(hook_row.substr(hook_x, 1)):
+                            authored_hooks_ok = false
+                    var challenge: Dictionary = authored_spot.get("companion_quest_challenge", {})
+                    if not challenge.is_empty() and (not (challenge.get("options", []) as Array).has(str(challenge.get("correct_option", ""))) or (challenge.get("options", []) as Array).size() < 2):
+                        authored_hooks_ok = false
+            if not found_hook:
+                authored_hooks_ok = false
+        if found_milestones != (gd.companion_quests[authored_quest_id].get("milestones", []) as Array).size():
+            authored_hooks_ok = false
+        var outcome_flags: Dictionary = gd.companion_quests[authored_quest_id].get("outcome_flags", {})
+        if outcome_flags.size() != (gd.companion_quests[authored_quest_id].get("outcomes", []) as Array).size():
+            authored_hooks_ok = false
+    check(authored_hooks_ok, "all twenty-one authored routes have three location hooks on walkable tiles, valid investigation challenges and persistent outcome branches")
+    var playable_summaries_ok := true
+    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal", "q_companion_ilyan_silent_tower", "q_companion_maren_tideglass_wake", "q_companion_seraphine_measure_of_oaths"]:
+        if str(gd.companion_quests[playable_id].get("journal_summary", "")).length() < 30:
+            playable_summaries_ok = false
+    check(playable_summaries_ok, "all twenty-one authored companion quest routes have journal summaries")
+    var playable_flags_ok := true
+    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal", "q_companion_ilyan_silent_tower", "q_companion_maren_tideglass_wake", "q_companion_seraphine_measure_of_oaths"]:
+        var playable_definition: Dictionary = gd.companion_quests[playable_id]
+        var playable_flags: Dictionary = playable_definition.get("outcome_flags", {})
+        if playable_flags.size() != (playable_definition.get("outcomes", []) as Array).size():
+            playable_flags_ok = false
+    check(playable_flags_ok, "all twenty-one authored companion quest routes persist every distinct resolution outcome")
 
 
 func _test_prologue() -> void:
@@ -902,6 +1064,7 @@ func _test_world() -> void:
             if not gd.locations.get("maps", {}).has(dungeon_id) or gd.battle_def(boss_battle).is_empty():
                 regional_ok = false
     check(regional_ok and w1.connected(w1.place_cell("crossing"), w1.place_cell("thornmere")) and w1.connected(w1.place_cell("crossing"), w1.place_cell("cindermead")), "Orrowen and Vessmoor roads connect to Sallow Crossing with playable dungeon entries")
+    check(w1.connected(w1.start_cell, w1.place_cell("tarnholt")) and gd.locations.get("maps", {}).has("tarnholt"), "Tarnholt is connected to the frontier and opens its authored chapter-house map")
     var skirmish: Dictionary = EncounterBuilder.build_skirmish(gd.encounters, gd.battles, rng_for_tests())
     check(not skirmish.is_empty() and str(skirmish.get("id", "")) == "skirmish", "an ambush can build a skirmish battle")
 
