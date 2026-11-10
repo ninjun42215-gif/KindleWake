@@ -149,8 +149,9 @@ Working branch: `feature/empire-management-system`.
 - Added after the field army layer: supply depots, connected supply networks across controlled atlas links, forward supply to adjacent hostile frontier regions, morale recovery/loss, and deterministic troop attrition after a one-season isolation grace period.
 - Added seasonal siege progression, breach state, deterministic assault casualties, explicit faction-transfer confirmation after victory, and siege history.
 - Added war exhaustion from tactical losses and siege assaults; at 70+ it reduces stability and public order each season. A player-facing armistice action reduces exhaustion.
-- Added a strategic-to-tactical contract: field army composition exports a deployment roster and tactical battle results/casualties can be applied back to the army. This does not yet automatically launch BattleController encounters or author enemy formations.
-- Still not complete: authored story unlock integration, projected budget preview, council trait/skill impact, direct BattleController encounter launch, siege engines, trade routes, autonomous faction AI, rebellions, full war declarations and negotiated peace.
+- Integrated the contract with BattleController: field armies launch generated tactical encounters against faction-specific regional garrisons. Tactical army cohorts use class-specific infantry/archer/cavalry combat profiles; assigned party commanders are deployed, and cohort HP/deaths convert back to individual strategic troop losses.
+- Fortified/highland regions field larger and tougher garrisons. Breached sieges launch a tactical assault with a durable battering-ram support unit; victory marks the siege captured, defeat reduces progress. Occupation still requires explicit faction territory transfer.
+- Still not complete: authored story unlock integration, projected budget preview, council trait/skill impact, destructible siege walls, ballista/trebuchet units, trade routes, autonomous faction AI, rebellions, full war declarations and negotiated peace.
 - Validation is pending exact-head Godot import, strict tests, scene smoke, balance report, Android export, version sync, workflow lint and project health audit. Godot is not installed in the current implementation environment; tests are authored but not run. Do not merge until required gates pass; physical Android QA is a separate release gate.
 
 
@@ -161,5 +162,5 @@ Working branch: `feature/empire-management-system`.
 - Strategic movement follows only region-to-region links authored in `continents.json`; non-adjacent moves and more than one move per season are rejected.
 - Field armies outside player-controlled provinces are unsupplied. Seasonal advancement charges upkeep/rations for both garrisons and deployed armies, recalculates supply and refreshes movement.
 - Added regression coverage for mobilization, garrison transfer, invalid troop types, adjacency, one-move limit, supply refresh and save normalization. Tests are not executed yet.
-- Next: integrate the deployment contract with BattleController using authored troop unit definitions and battlefield spawn rules; add defender garrisons/fort formations and siege engines; then trade routes, faction AI, rebellion warnings and negotiated peace. Keep the dynasty/family mode post-campaign only.
+- Next: add destructible fort gates/walls and dedicated ballista/trebuchet units; then trade routes, faction AI, rebellion warnings and negotiated peace. Keep the dynasty/family mode post-campaign only.
 - Branch remains one commit behind `main`; reconcile before merge. No current exact-head validation is claimed.
