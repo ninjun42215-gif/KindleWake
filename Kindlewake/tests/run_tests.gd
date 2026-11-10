@@ -953,6 +953,10 @@ func _test_thalassar_region() -> void:
     check(bool(RecruitmentSystem.inspect(neris_party, "neris_quell", neris_definition, neris_flags).get("available", false)), "Neris becomes recruitable after the Northstar Wreck is cleared and the log recovered")
     var neris_recruit: Dictionary = RecruitmentSystem.recruit(neris_party, "neris_quell", neris_definition, neris_flags)
     check(bool(neris_recruit.get("ok", false)) and neris_party.roster.has("neris_quell"), "recruiting Neris adds her to the company without a gold fee")
+    var neris_bonds: Dictionary = {}
+    check(RecruitmentSystem.apply_relationship_on_join(neris_bonds, "torren", "neris_quell", neris_definition) == 2, "Neris's authored recruitment scene establishes trust and respect")
+    var neris_bond: Dictionary = RelationshipSystemScript.get_relationship(neris_bonds, "torren", "neris_quell")
+    check(int(neris_bond.get("trust", 0)) == 5 and int(neris_bond.get("respect", 0)) == 4, "Neris's first bond values are distinct from loyalty")
 
     var recruit_party: PartyState = PartyState.new_game(gd.start, gd.characters)
     var maren: Dictionary = gd.character_def("maren_vey")
