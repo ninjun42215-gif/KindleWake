@@ -424,7 +424,11 @@ func _apply_companion_quest_consequences(quest_id: String, outcome: String, defi
     var all_effects: Dictionary = definition.get("relationship_effects", {})
     var effects: Dictionary = all_effects.get(outcome, {})
     var companion_id := str(definition.get("companion_id", ""))
-    var leader_id := str(GameState.party.roster[0]) if not GameState.party.roster.is_empty() else ""
+    var leader_id := ""
+    if GameState.party.roster.has("torren"):
+        leader_id = "torren"
+    elif not GameState.party.roster.is_empty():
+        leader_id = str(GameState.party.roster[0])
     if leader_id != "" and companion_id != "" and leader_id != companion_id:
         for dimension in ["trust", "respect"]:
             var amount := int(effects.get(dimension, 0))
