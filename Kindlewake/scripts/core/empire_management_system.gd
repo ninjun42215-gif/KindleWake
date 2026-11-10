@@ -769,3 +769,86 @@ static func _record(state: Dictionary, kind: String, details: Dictionary) -> voi
 	var history: Array = state.get("history", [])
 	history.append({"kind": kind, "turn": int(state.get("turn", 0)), "details": details.duplicate(true)})
 	state["history"] = history.slice(maxi(0, history.size() - HISTORY_LIMIT))
+
+## Paid direct trade links between controlled atlas regions produce seasonal treasury income.
+static func establish_trade_route(state: Dictionary, origin: String, destination: String, controlled: Array, adjacency: Dictionary) -> bool:
+	if not bool(state.get("unlocked", false)) or origin == destination:
+		return false
+	if not controlled.has(origin) or not controlled.has(destination) or not adjacency.get(origin, []).has(destination):
+		return false
+	var route_id := origin + "|" + destination if origin < destination else destination + "|" + origin
+	if state.get("trade_routes", {}).has(route_id) or int(state.get("treasury", 0)) < 100:
+		return false
+	state["treasury"] = int(state["treasury"]) - 100
+	state["trade_routes"][route_id] = {"origin": origin, "destination": destination, "income": 20}
+	_record(state, "trade_route_established", {"route": route_id})
+	return true
+
+static func close_trade_route(state: Dictionary, route_id: String) -> bool:
+	if not state.get("trade_routes", {}).has(route_id):
+		return false
+	state["trade_routes"].erase(route_id)
+	_record(state, "trade_route_closed", {"route": route_id})
+	return true
+
+## NPC diplomacy is deterministic and excludes the player faction; it never transfers territory.
+static func advance_faction_ai(faction_state: Dictionary, faction_ids: Array, player_faction: String = "house_dunmarrow") -> Dictionary:
+	var declarations: Array = []
+	var treaties: Array = []
+	for i in range(faction_ids.size()):
+		for j in range(i + 1, faction_ids.size()):
+			var a := str(faction_ids[i])
+			var b := str(faction_ids[j])
+			if a == player_faction or b == player_faction:
+				continue
+			var relation_value := FactionSystem.relation(faction_state, a, b)
+			var key := a + "|" + b if a < b else b + "|" + a
+			var current := str(faction_state.get("diplomacy", {}).get(key, "neutral"))
+			if relation_value <= -80 and current != "war":
+				if FactionSystem.set_diplomatic_state(faction_state, a, b, "war"):
+					declarations.append({"from": a, "against": b, "relation": relation_value})
+			elif relation_value >= 70 and current == "neutral":
+				if FactionSystem.set_diplomatic_state(faction_state, a, b, "trade_pact"):
+					treaties.append({"factions": [a, b], "relation": relation_value})
+	return {"declarations": declarations, "treaties": treaties}
+
+## Office bonuses are deterministic; known trait tags add role-specific benefits.
+static func council_effects(state: Dictionary, character_profiles: Dictionary = {}) -> Dictionary:
+	var effects := {"income": 0, "food": 0, "stability": 0, "public_order": 0, "war_exhaustion": 0}
+	var role_bonus := {"steward": {"income": 8}, "marshal": {"war_exhaustion": -2}, "spymaster": {"public_order": 1}, "chancellor": {"stability": 2}, "high_priest": {"food": 2, "public_order": 1}}
+	for role in state.get("council", {}).keys():
+		var profile: Dictionary = character_profiles.get(str(state["council"][role]), {})
+		var traits: Array = profile.get("traits", [])
+		for trait_variant in traits:
+			var trait_id := str(trait_variant).to_lower()
+			if trait_id in ["administrator", "scholar", "diligent"] and role == "steward":
+				effects["income"] += 5
+			elif trait_id in ["strategist", "brave", "disciplined"] and role == "marshal":
+				effects["war_exhaustion"] -= 2
+			elif trait_id in ["silver_tongued", "diplomat", "charismatic"] and role == "chancellor":
+				effects["stability"] += 2
+			elif trait_id in ["devout", "compassionate"] and role == "high_priest":
+				effects["public_order"] += 2
+			elif trait_id in ["cunning", "observant"] and role == "spymaster":
+				effects["public_order"] += 2
+		for stat in role_bonus.get(role, {}).keys():
+			effects[stat] += int(role_bonus[role][stat])
+	return effects
+
+static func rebellion_assessment(state: Dictionary, controlled: Array) -> Dictionary:
+	var pressure := 0
+	if int(state.get("public_order", 0)) < 35:
+		pressure += int((35 - int(state["public_order"])) / 2)
+	if int(state.get("stability", 0)) < 30:
+		pressure += int((30 - int(state["stability"])) / 2)
+	if int(state.get("legitimacy", 0)) < 25:
+		pressure += int((25 - int(state["legitimacy"])) / 3)
+	state["rebellion_risk"] = clampi(int(state.get("rebellion_risk", 0)) + pressure - (3 if pressure == 0 else 0), 0, 100)
+	var alerts: Array = []
+	if int(state["rebellion_risk"]) >= 60 and not controlled.is_empty():
+		var candidates := controlled.duplicate()
+		candidates.sort()
+		var candidate := str(candidates[int(state.get("turn", 0)) % candidates.size()])
+		alerts.append({"province": candidate, "risk": int(state["rebellion_risk"]), "status": "unrest"})
+	state["rebellion_alerts"] = alerts
+	return {"risk": int(state["rebellion_risk"]), "alerts": alerts}
