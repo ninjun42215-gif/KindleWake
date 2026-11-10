@@ -1780,6 +1780,13 @@ func _test_campaign_restore_validation() -> void:
     var malformed_behavior: Dictionary = payload.duplicate(true)
     malformed_behavior["party"]["sheets"]["torren"]["personality"] = {"memories": [], "behavior": [], "ambition": {}}
     check(not RegionSaveState.is_valid_campaign_payload(malformed_behavior), "campaign restore rejects malformed personality behavior data")
+    var malformed_optional_relationships: Dictionary = payload.duplicate(true)
+    malformed_optional_relationships["companion_relationships"] = {
+        "torren|wystan": {"metrics": "corrupt", "history": false, "seen_evidence": "corrupt"}
+    }
+    check(RegionSaveState.is_valid_campaign_payload(malformed_optional_relationships), "valid campaign data remains recoverable when optional relationship data is malformed")
+    var recovered_relationships: Dictionary = RelationshipSystemScript.normalize_state(malformed_optional_relationships["companion_relationships"])
+    check(int(RelationshipSystemScript.get_relationship(recovered_relationships, "torren", "wystan").get("friendship", -1)) == 0, "malformed optional relationship data recovers to neutral defaults without blocking campaign restore")
 
 func _test_save_system() -> void:
     print("[save system]")
