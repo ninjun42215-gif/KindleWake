@@ -15,6 +15,8 @@ const GAME_VERSION := "0.12.0"
 const AUTOSAVE_SLOTS := ["auto_a", "auto_b"]
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 
+var _test_save_directory: String = ""
+
 
 func _is_valid_slot_id(slot_id: String) -> bool:
     if slot_id.is_empty() or slot_id.length() > 32:
@@ -27,10 +29,23 @@ func _is_valid_slot_id(slot_id: String) -> bool:
     return true
 
 
+func set_test_save_directory(path: String) -> bool:
+    # Only the headless/debug test harness may redirect its own SaveSystem instance.
+    # The live autoload never calls this, so player saves remain under user://saves/.
+    if not OS.is_debug_build() or not path.begins_with("user://") or path.contains(".."):
+        return false
+    _test_save_directory = path if path.ends_with("/") else path + "/"
+    return true
+
+
+func _save_directory() -> String:
+    return _test_save_directory if _test_save_directory != "" else SAVE_DIR
+
+
 func slot_path(slot_id: String) -> String:
     if not _is_valid_slot_id(slot_id):
         return ""
-    return SAVE_DIR + "slot_" + slot_id + ".save"
+    return _save_directory() + "slot_" + slot_id + ".save"
 
 
 func checksum_of(text: String) -> String:
@@ -43,7 +58,7 @@ func checksum_of(text: String) -> String:
 func save_slot(slot_id: String, payload: Dictionary, summary: String = "") -> bool:
     if not _is_valid_slot_id(slot_id):
         return false
-    DirAccess.make_dir_recursive_absolute(SAVE_DIR)
+    DirAccess.make_dir_recursive_absolute(_save_directory())
     var payload_text: String = JSON.stringify(payload)
     var envelope: Dictionary = {
         "meta": {
