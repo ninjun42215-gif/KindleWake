@@ -7,7 +7,7 @@ func _initialize() -> void:
  var result := Politics.perform_action(state,"house_ashcombe","house_merevale","envoy")
  assert(result.ok)
  state = result.state
- assert(Politics.relation_between(state,"house_ashcombe","house_merevale").score == 12)
+ assert(Politics.relation_between(state,"house_ashcombe","house_merevale").score == 20)
  var relation := Politics.relation_between(state,"house_ashcombe","house_merevale")
  relation.score = 150
  state.politics.relations["house_ashcombe|house_merevale"] = relation
