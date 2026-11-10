@@ -913,6 +913,15 @@ func _test_faction_politics() -> void:
     check(restored == state, "faction diplomacy and territorial ownership survive state normalization")
     var legacy: Dictionary = FactionSystem.normalize_state({}, definitions)
     check(legacy.get("territories", {}).size() == atlas_region_ids.size(), "legacy saves receive safe default political state for all atlas regions")
+    var war_state: Dictionary = FactionSystem.new_campaign_state(definitions)
+    FactionSystem.adjust_relation(war_state, "house_orrowen", "house_quillon", -100, "border dispute")
+    var ai_adjacency := {"orrowen_weald": ["quillon_heights"], "quillon_heights": ["orrowen_weald"]}
+    var ai_report: Dictionary = EmpireSystem.advance_faction_ai(war_state, ["house_orrowen", "house_quillon", "house_dunmarrow"], "house_dunmarrow", ai_adjacency)
+    check(not ai_report.get("declarations", []).is_empty(), "hostile NPC factions can declare deterministic AI wars")
+    check(str(war_state.get("claims", {}).get("quillon_heights", "")) == "house_orrowen", "a belligerent NPC faction can claim an adjacent enemy frontier")
+    var claim_restore: Dictionary = FactionSystem.normalize_state(war_state, definitions)
+    check(claim_restore.get("claims", {}).get("quillon_heights", "") == "house_orrowen", "frontier claims persist through faction save normalization")
+    check(FactionSystem.transfer_region(war_state, "quillon_heights", "house_orrowen", "AI campaign victory") and not war_state.get("claims", {}).has("quillon_heights"), "a resolved territorial transfer clears the fulfilled frontier claim")
 
 
 
