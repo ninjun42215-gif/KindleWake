@@ -284,7 +284,7 @@ func resolve_field_army_battle(battle: Dictionary, units: Array, won: bool) -> D
 		if lost > 0:
 			var troop_type := str(cohort.get("troop_type", "infantry"))
 			casualties[troop_type] = int(casualties.get(troop_type, 0)) + lost
-	var army_result_ok := apply_field_army_battle_result(army_id, casualties, won)
+	var army_result_ok := EmpireSystem.resolve_tactical_battle(empire_state, str(battle.get("id", "")), army_id, casualties, won)
 	if not army_result_ok:
 		return {"ok": false, "reason": "army_result_rejected"}
 	var effective_win := won and empire_state.get("field_armies", {}).has(army_id)
