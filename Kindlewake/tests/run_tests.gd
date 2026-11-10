@@ -1052,7 +1052,8 @@ func _test_strategic_battle_integration() -> void:
             commander_deployed = true
     check(commander_deployed, "the appointed party commander receives the tactical commander role")
     var db: Dictionary = EmpireSystem.tactical_battle_database(gd.as_db(), battle_def, gd.strategic_warfare, 75)
-    check(db.get("characters", {}).has("strategic_army_1_infantry_0") and db.get("characters", {}).has("strategic_defender_infantry_0"), "authored troop profiles populate the tactical battle database")
+    var strategic_unit_id := "strategic_%s_infantry_0" % army_id
+    check(db.get("characters", {}).has(strategic_unit_id) and db.get("characters", {}).has("strategic_defender_infantry_0"), "authored troop profiles populate the tactical battle database")
     check(db.get("classes", {}).has("swordsman") and db.get("classes", {}).has("archer"), "tactical cohort profiles resolve through existing combat classes")
     var controller := BattleController.new()
     controller.setup(battle_def, db, 9191)
