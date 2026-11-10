@@ -1358,6 +1358,37 @@
         "mor": 82
       },
       "loyalty": 0
+    },
+    "quillon_warden": {
+      "name": "Quillon Warden",
+      "reward": {
+        "exp": 300,
+        "ap": 45,
+        "gold": 180
+      },
+      "class_id": "roadreaver",
+      "level": 7,
+      "house": "none",
+      "weapon_id": "arming_sword",
+      "armor_def": 6,
+      "armor_res": 0,
+      "skills": [
+        "power_strike"
+      ],
+      "stats": {
+        "hp": 132,
+        "mp": 18,
+        "str": 21,
+        "dex": 13,
+        "int": 7,
+        "vit": 20,
+        "spd": 9,
+        "lck": 8,
+        "acc": 88,
+        "eva": 14,
+        "ldr": 15,
+        "mor": 90
+      }
     }
   }
 }
