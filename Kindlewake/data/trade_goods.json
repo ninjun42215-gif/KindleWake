@@ -1,0 +1,352 @@
+{
+  "version": 1,
+  "currency": "gold",
+  "cargo_capacity": 120,
+  "max_transaction_quantity": 99,
+  "goods": {
+    "grain": {
+      "name": "Frontier Grain",
+      "category": "food",
+      "base_price": 8,
+      "weight": 1,
+      "description": "Hardy sacks of wheat and barley."
+    },
+    "salt": {
+      "name": "White Salt",
+      "category": "provisions",
+      "base_price": 14,
+      "weight": 1,
+      "description": "Preserving salt from the coastal pans."
+    },
+    "dried_fish": {
+      "name": "Dried Fish",
+      "category": "food",
+      "base_price": 12,
+      "weight": 1,
+      "description": "A durable coastal staple."
+    },
+    "timber": {
+      "name": "Oak Timber",
+      "category": "materials",
+      "base_price": 18,
+      "weight": 3,
+      "description": "Cut timber for repairs and construction."
+    },
+    "iron_ore": {
+      "name": "Iron Ore",
+      "category": "materials",
+      "base_price": 26,
+      "weight": 3,
+      "description": "Raw ore used by smithies and foundries."
+    },
+    "herbs": {
+      "name": "Medicinal Herbs",
+      "category": "medicine",
+      "base_price": 20,
+      "weight": 1,
+      "description": "Wild herbs gathered by frontier apothecaries."
+    },
+    "wool": {
+      "name": "Fine Wool",
+      "category": "textiles",
+      "base_price": 16,
+      "weight": 1,
+      "description": "Washed fleece from upland sheep farms."
+    },
+    "dyestuff": {
+      "name": "Blue Dyestuff",
+      "category": "luxuries",
+      "base_price": 32,
+      "weight": 1,
+      "description": "Rare plant dye sought by clothiers and nobles.",
+      "exclusive_guild": "weald_factors"
+    },
+    "leather": {
+      "name": "Tanned Leather",
+      "category": "materials",
+      "base_price": 22,
+      "weight": 2,
+      "description": "Treated hides used for armour and saddlery."
+    },
+    "honey": {
+      "name": "Forest Honey",
+      "category": "food",
+      "base_price": 19,
+      "weight": 1,
+      "description": "Sweet honey from woodland apiaries."
+    },
+    "amber": {
+      "name": "River Amber",
+      "category": "luxuries",
+      "base_price": 48,
+      "weight": 1,
+      "description": "Polished amber traded along eastern rivers.",
+      "exclusive_guild": "coastal_merchants"
+    },
+    "pearls": {
+      "name": "Brinegate Pearls",
+      "category": "luxuries",
+      "base_price": 65,
+      "weight": 1,
+      "description": "Lustrous pearls harvested from sheltered reefs.",
+      "exclusive_guild": "coastal_merchants"
+    },
+    "glassware": {
+      "name": "Blown Glassware",
+      "category": "crafts",
+      "base_price": 38,
+      "weight": 2,
+      "description": "Fragile glass vessels from coastal workshops."
+    },
+    "spices": {
+      "name": "Imported Spices",
+      "category": "luxuries",
+      "base_price": 54,
+      "weight": 1,
+      "description": "Aromatic spices brought through distant sea lanes."
+    },
+    "wine": {
+      "name": "Elderbough Wine",
+      "category": "provisions",
+      "base_price": 28,
+      "weight": 2,
+      "description": "A prized woodland vintage."
+    },
+    "horseshoes": {
+      "name": "Smith-forged Horseshoes",
+      "category": "crafts",
+      "base_price": 24,
+      "weight": 1,
+      "description": "Iron shoes and fittings for merchants' mounts."
+    },
+    "weapons_parts": {
+      "name": "Weapon Components",
+      "category": "materials",
+      "base_price": 34,
+      "weight": 2,
+      "description": "Prepared steel fittings and components.",
+      "exclusive_guild": "iron_compact"
+    },
+    "rune_dust": {
+      "name": "Resonant Rune Dust",
+      "category": "arcane",
+      "base_price": 72,
+      "weight": 1,
+      "description": "Volatile powder used by rune specialists.",
+      "exclusive_guild": "coastal_merchants"
+    }
+  },
+  "markets": {
+    "sethmarch": {
+      "name": "Sethmarch Crossroads",
+      "price_modifiers": {
+        "grain": 0.85,
+        "salt": 1.1,
+        "timber": 1,
+        "iron_ore": 1.1,
+        "herbs": 0.95,
+        "wool": 1,
+        "leather": 1,
+        "honey": 0.9,
+        "horseshoes": 0.95
+      },
+      "initial_stock": 30
+    },
+    "brinegate_coast": {
+      "name": "Brinegate Coast",
+      "price_modifiers": {
+        "salt": 0.7,
+        "dried_fish": 0.65,
+        "pearls": 0.8,
+        "glassware": 0.85,
+        "spices": 0.95,
+        "grain": 1.25,
+        "timber": 1.15
+      },
+      "initial_stock": 24
+    },
+    "thornmere": {
+      "name": "Thornmere Farms",
+      "price_modifiers": {
+        "grain": 0.65,
+        "wool": 0.75,
+        "honey": 0.9,
+        "dried_fish": 1.25,
+        "salt": 1.2,
+        "spices": 1.15
+      },
+      "initial_stock": 36
+    },
+    "foxglove": {
+      "name": "Foxglove Crossing",
+      "price_modifiers": {
+        "herbs": 0.7,
+        "leather": 0.85,
+        "honey": 0.8,
+        "grain": 1.1,
+        "iron_ore": 1.15,
+        "pearls": 1.1
+      },
+      "initial_stock": 24
+    },
+    "elderbough": {
+      "name": "Elderbough Weald",
+      "price_modifiers": {
+        "timber": 0.65,
+        "honey": 0.7,
+        "wine": 0.75,
+        "herbs": 0.8,
+        "grain": 1.15,
+        "salt": 1.2,
+        "dyestuff": 0.9
+      },
+      "initial_stock": 30
+    },
+    "cindermead": {
+      "name": "Cindermead Foundries",
+      "price_modifiers": {
+        "iron_ore": 0.65,
+        "weapons_parts": 0.7,
+        "horseshoes": 0.75,
+        "leather": 1.15,
+        "timber": 1.2,
+        "grain": 1.1
+      },
+      "initial_stock": 28
+    },
+    "redwater": {
+      "name": "Redwater Riverport",
+      "price_modifiers": {
+        "amber": 0.75,
+        "pearls": 1.05,
+        "salt": 0.9,
+        "dyestuff": 0.8,
+        "grain": 1.15,
+        "iron_ore": 1.2,
+        "dried_fish": 0.9
+      },
+      "initial_stock": 25
+    },
+    "milefort": {
+      "name": "Milefort Garrison",
+      "price_modifiers": {
+        "horseshoes": 0.8,
+        "leather": 0.85,
+        "weapons_parts": 0.9,
+        "grain": 1.2,
+        "wine": 1.15,
+        "spices": 1.1,
+        "rune_dust": 1
+      },
+      "initial_stock": 22
+    }
+  },
+  "economy": {
+    "default_tariff": 0.05,
+    "max_active_contracts": 3
+  },
+  "caravan": {
+    "purchase_cost": 1800,
+    "upgrade_base_cost": 900,
+    "guard_cost": 250,
+    "max_level": 3,
+    "max_guards": 8
+  },
+  "guilds": {
+    "coastal_merchants": {
+      "name": "Brinegate Maritime Exchange",
+      "reputation_required": 30,
+      "standing_cost": 500,
+      "description": "Controls sea-lane cargo, pearls and imported luxuries."
+    },
+    "iron_compact": {
+      "name": "Cindermead Iron Compact",
+      "reputation_required": 50,
+      "standing_cost": 750,
+      "description": "Certifies refined metal, weapon components and foundry contracts."
+    },
+    "weald_factors": {
+      "name": "Elderbough Weald Factors",
+      "reputation_required": 20,
+      "standing_cost": 400,
+      "description": "A woodland trading charter for timber, wine and rare botanical goods."
+    }
+  },
+  "contracts": {
+    "thornmere_grain_run": {
+      "name": "Granary Relief",
+      "good": "grain",
+      "quantity": 12,
+      "reward": 260,
+      "reputation": 15,
+      "guild": "",
+      "destination": "sethmarch"
+    },
+    "brinegate_salt_charter": {
+      "name": "Salt Charter",
+      "good": "salt",
+      "quantity": 10,
+      "reward": 310,
+      "reputation": 20,
+      "guild": "coastal_merchants",
+      "destination": "sethmarch"
+    },
+    "cindermead_iron_order": {
+      "name": "Foundry Components Order",
+      "good": "weapons_parts",
+      "quantity": 6,
+      "reward": 420,
+      "reputation": 25,
+      "guild": "iron_compact",
+      "destination": "milefort"
+    },
+    "elderbough_herbalist": {
+      "name": "Apothecary Supply",
+      "good": "herbs",
+      "quantity": 8,
+      "reward": 300,
+      "reputation": 18,
+      "guild": "weald_factors",
+      "destination": "foxglove"
+    },
+    "redwater_amber_courier": {
+      "name": "Amber House Delivery",
+      "good": "amber",
+      "quantity": 4,
+      "reward": 500,
+      "reputation": 30,
+      "guild": "coastal_merchants",
+      "destination": "milefort"
+    }
+  },
+  "routes": {
+    "sethmarch_brinegate": {
+      "name": "Saltwind Road",
+      "from": "sethmarch",
+      "to": "brinegate_coast",
+      "base_toll": 40,
+      "base_risk": 0.25
+    },
+    "thornmere_sethmarch": {
+      "name": "Granary King's Road",
+      "from": "thornmere",
+      "to": "sethmarch",
+      "base_toll": 25,
+      "base_risk": 0.18
+    },
+    "elderbough_cindermead": {
+      "name": "Timber and Iron Road",
+      "from": "elderbough",
+      "to": "cindermead",
+      "base_toll": 55,
+      "base_risk": 0.32
+    },
+    "redwater_milefort": {
+      "name": "Riverwatch Supply Route",
+      "from": "redwater",
+      "to": "milefort",
+      "base_toll": 35,
+      "base_risk": 0.22
+    }
+  }
+}

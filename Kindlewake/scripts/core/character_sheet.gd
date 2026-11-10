@@ -188,7 +188,7 @@ func derived(db: Dictionary) -> Dictionary:
 ## A throw-away copy of this character wearing `item_id` in `slot` (pass "" to take the slot's item off).
 ## Used by the party screen to preview what a change would do; the original sheet is never touched.
 func with_item(slot: String, item_id: String, items: Dictionary) -> CharacterSheet:
-    var copy: CharacterSheet = CharacterSheet.from_dict(to_dict())
+    var copy = load("res://scripts/core/character_sheet.gd").from_dict(to_dict())
     copy.equipment[slot] = item_id
     copy.fit_sockets(items)
     return copy
