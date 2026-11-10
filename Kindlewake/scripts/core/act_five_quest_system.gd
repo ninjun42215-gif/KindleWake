@@ -89,6 +89,7 @@ static func resolve_audience(flags_in: Dictionary, decision: String) -> Dictiona
  var flags := flags_in.duplicate(true)
  flags["act5_final_decision"] = decision
  flags["act5_ending_profile"] = decision
+ flags["act5_ending_context"] = {"route":str(flags.get("act5_route","")),"route_action":str(flags.get("act5_route_action","")),"evidence_count":int(flags.get("act5_evidence_count",0)),"food_security":str(flags.get("act5_food_security","unrecorded")),"public_record":str(flags.get("act5_public_record","unrecorded")),"civilian_safety":str(flags.get("act5_civilian_safety","unrecorded")),"archive_custody":str(flags.get("act4_custodian_trust","unknown")),"witness_agency_respected":bool(flags.get("act4_witness_agency_respected",false))}
  flags["campaign_completed"] = true
  flags["became_last_emperor"] = true
  flags["empire_dissolved"] = true
