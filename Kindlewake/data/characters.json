@@ -1232,6 +1232,64 @@
         "ldr": 3,
         "mor": 48
       }
+    },
+    "hask_convoy_champion": {
+      "name": "Hask Gravelteeth, Roadwolf Captain",
+      "reward": {
+        "exp": 220,
+        "ap": 32,
+        "gold": 120
+      },
+      "class_id": "roadreaver",
+      "level": 6,
+      "house": "none",
+      "weapon_id": "battle_axe",
+      "armor_def": 8,
+      "armor_res": 1,
+      "skills": [],
+      "stats": {
+        "hp": 92,
+        "mp": 0,
+        "str": 18,
+        "dex": 6,
+        "int": 3,
+        "vit": 16,
+        "spd": 6,
+        "lck": 5,
+        "acc": 84,
+        "eva": 8,
+        "ldr": 12,
+        "mor": 90
+      }
+    },
+    "ash_bailiff": {
+      "name": "The Ash Bailiff",
+      "class_id": "roadreaver",
+      "level": 7,
+      "house": "none",
+      "weapon_id": "war_hammer",
+      "armor_def": 9,
+      "armor_res": 1,
+      "skills": [],
+      "reward": {
+        "exp": 260,
+        "ap": 38,
+        "gold": 150
+      },
+      "stats": {
+        "hp": 108,
+        "mp": 0,
+        "str": 19,
+        "dex": 6,
+        "int": 3,
+        "vit": 18,
+        "spd": 6,
+        "lck": 6,
+        "acc": 84,
+        "eva": 12,
+        "ldr": 15,
+        "mor": 90
+      }
     }
   }
 }
