@@ -43,7 +43,7 @@ const CHALLENGES := {
         "steps": [
             {"scene":"The manifest says the south road was closed on the 12th. The toll book records a convoy passing on the 14th. What does that establish?","options":[["The toll entry cannot be accepted as proof of passage","right"],["The families must have travelled through the closed road","wrong"],["The manifest should be destroyed","wrong"]],"success":"The date mismatch establishes that the entry is false or forged."},
             {"scene":"The toll mark belongs to an office whose seal was retired before the 12th. What is the strongest conclusion?","options":[["Someone used an obsolete authority to legitimise the charge","right"],["The retired office automatically regained authority","wrong"],["The missing families never existed","wrong"]],"success":"The retired seal links the false entry to an unauthorised order."},
-            {"scene":"The names identify living families who may be targeted. What is the responsible next step?","options":[["Publish every name without warning","wrong"],["Preserve the original, corroborate the entries and protect the families","right"],["Alter the book to make the case simpler","wrong"]],"success":"The evidence is authenticated without exposing the families to immediate retaliation."}
+            {"scene":"The evidence is sound, but the families may be targeted. How should the authenticated record be handled?","options":[["Read the names publicly after warning and protecting the families","public"],["Seal the names while preserving the original evidence","seal"]],"success":"The evidence is authenticated. The final decision determines when the names become public."}
         ]
     },
     "first_oath": {
@@ -140,6 +140,9 @@ func _choose(result: String) -> void:
         feedback_label.text = "That choice puts the crew at risk. Reconsider the evidence and try again."
         progress_label.text = "STAGE %d / %d     MISSTEPS: %d" % [step + 1, CHALLENGES[quest_id].steps.size(), mistakes]
         return
+    if quest_id == "toll_book" and (result == "public" or result == "seal"):
+        GameState.world_flags["toll_book_public"] = result == "public"
+        GameState.world_flags["toll_book_sealed"] = result == "seal"
     if quest_id == "first_oath" and (result == "people" or result == "law"):
         GameState.world_flags["chapter_1_oath_choice"] = "oath_people" if result == "people" else "oath_law"
         GameState.world_flags["sethmarch_people_first"] = result == "people"
@@ -177,8 +180,6 @@ func _complete_quest() -> void:
         "toll_book":
             GameState.world_flags["toll_book_reviewed"] = true
             GameState.world_flags["toll_book_evidence_authenticated"] = true
-            GameState.world_flags["toll_book_sealed"] = true
-            GameState.world_flags["toll_book_public"] = false
         "first_oath":
             GameState.world_flags["chapter_1_first_oath"] = true
             GameState.world_flags["chapter_1_complete"] = true
