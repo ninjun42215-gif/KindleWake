@@ -266,6 +266,10 @@ func battle_db_for_battle(battle: Dictionary) -> Dictionary:
 	var chars: Dictionary = db.get("characters", {}).duplicate(true)
 	var classes: Dictionary = db.get("classes", {}).duplicate(true)
 	var troop_data: Dictionary = battle.get("strategic_units", {})
+	var warfare: Dictionary = GameData.strategic_warfare
+	var troop_templates: Dictionary = warfare.get("troops", {})
+	var engine_templates: Dictionary = warfare.get("siege_engines", {})
+	var garrison_rules: Dictionary = warfare.get("garrisons", {})
 	var morale := 75
 	var army_id := str(battle.get("strategic_army_id", ""))
 	if empire_state.get("field_armies", {}).has(army_id):
@@ -285,32 +289,27 @@ func battle_db_for_battle(battle: Dictionary) -> Dictionary:
 			var parts := character_id.split("_")
 			troop_type = str(parts[2]) if parts.size() > 2 else "infantry"
 		if character_id == "strategic_siege_engine":
-			classes["siege_engine"] = {"name": "Battering Ram", "move": 2, "jump": 0}
-			chars[character_id] = {"name": "Battering Ram", "class_id": "siege_engine", "level": 1, "weapon_id": "battle_axe", "armor_def": 8, "armor_res": 2, "skills": [], "stats": {"hp": 70, "mp": 0, "str": 12, "dex": 3, "int": 1, "vit": 14, "spd": 2, "lck": 1, "acc": 70, "eva": 0, "ldr": 0, "mor": 100}}
+			var ram: Dictionary = engine_templates.get("battering_ram", {"name": "Battering Ram", "class_id": "siege_engine", "weapon_id": "battle_axe", "armor_def": 8, "armor_res": 2, "class_def": {"name": "Battering Ram", "move": 2, "jump": 0}, "stats": {"hp": 70, "mp": 0, "str": 12, "dex": 3, "int": 1, "vit": 14, "spd": 2, "lck": 1, "acc": 70, "eva": 0, "ldr": 0, "mor": 100}})
+			var ram_class_id := str(ram.get("class_id", "siege_engine"))
+			classes[ram_class_id] = (ram.get("class_def", {"name": "Battering Ram", "move": 2, "jump": 0}) as Dictionary).duplicate(true)
+			chars[character_id] = {"name": str(ram.get("name", "Battering Ram")), "class_id": ram_class_id, "level": 1, "weapon_id": str(ram.get("weapon_id", "battle_axe")), "armor_def": int(ram.get("armor_def", 8)), "armor_res": int(ram.get("armor_res", 2)), "skills": [], "stats": (ram.get("stats", {}) as Dictionary).duplicate(true)}
 			continue
-		var class_id := "swordsman"
-		var weapon_id := "arming_sword"
-		var stats := {"hp": 30, "mp": 0, "str": 8, "dex": 7, "int": 2, "vit": 8, "spd": 6, "lck": 3, "acc": 78, "eva": 10, "ldr": 2, "mor": morale}
-		if troop_type == "archers":
-			class_id = "archer"
-			weapon_id = "short_bow"
-			stats = {"hp": 24, "mp": 0, "str": 5, "dex": 10, "int": 2, "vit": 5, "spd": 8, "lck": 4, "acc": 88, "eva": 16, "ldr": 2, "mor": morale}
-		elif troop_type == "cavalry":
-			class_id = "knight"
-			weapon_id = "spear"
-			stats = {"hp": 36, "mp": 0, "str": 10, "dex": 7, "int": 2, "vit": 9, "spd": 8, "lck": 3, "acc": 80, "eva": 13, "ldr": 3, "mor": morale}
-		var armour := 2
+		var template: Dictionary = troop_templates.get(troop_type, troop_templates.get("infantry", {}))
+		var class_id := str(template.get("class_id", "swordsman"))
+		var weapon_id := str(template.get("weapon_id", "arming_sword"))
+		var stats: Dictionary = template.get("stats", {"hp": 30, "mp": 0, "str": 8, "dex": 7, "int": 2, "vit": 8, "spd": 6, "lck": 3, "acc": 78, "eva": 10, "ldr": 2, "mor": morale}).duplicate(true)
+		stats["mor"] = 65 if is_defender else morale
+		var armour := int(template.get("armor_def", 2))
+		var resistance := int(template.get("armor_res", 1))
 		if is_defender:
-			var fort_bonus := int(battle.get("strategic_fort_level", 0)) * 2
+			var fort_bonus := int(battle.get("strategic_fort_level", 0)) * int(garrison_rules.get("fort_level_armor", 2))
 			armour += fort_bonus
-			stats["hp"] = int(stats["hp"]) + fort_bonus * 2
-			stats["vit"] = int(stats["vit"]) + fort_bonus
-			stats["mor"] = 65
-		chars[character_id] = {"name": str(spawn.get("name", troop_type.capitalize())), "class_id": class_id, "level": 1, "weapon_id": weapon_id, "armor_def": armour, "armor_res": 1, "skills": [], "stats": stats}
+			stats["hp"] = int(stats.get("hp", 1)) + fort_bonus * int(garrison_rules.get("fort_level_hp", 2))
+			stats["vit"] = int(stats.get("vit", 0)) + fort_bonus
+		chars[character_id] = {"name": str(spawn.get("name", template.get("name", troop_type.capitalize()))), "class_id": class_id, "level": 1, "weapon_id": weapon_id, "armor_def": armour, "armor_res": resistance, "skills": [], "stats": stats}
 	db["characters"] = chars
 	db["classes"] = classes
 	return db
-
 
 ## Battle database with the party's current sheets (level, stats, equipment) substituted in.
 func battle_db() -> Dictionary:
