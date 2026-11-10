@@ -5,6 +5,7 @@ const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const EmpireSystemScript = preload("res://scripts/core/empire_system.gd")
 const EmpireEconomySystem = preload("res://scripts/core/empire_economy_system.gd")
 const EmpireDevelopmentSystem = preload("res://scripts/core/empire_development_system.gd")
 const RelationshipSystem = preload("res://scripts/core/relationship_system.gd")
@@ -27,6 +28,7 @@ var pending_location: String = ""        # town map the location scene opens nex
 var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored with battle saves
 var campaign_slot: String = ""
 var faction_state: Dictionary = {}
+var empire_state: Dictionary = EmpireSystemScript.new_campaign_state("house_dunmarrow")
 var companion_relationships: Dictionary = {}
 var companion_quests: Dictionary = {}
 var chronicle_state: Dictionary = ChronicleSystem.new_state()
@@ -62,6 +64,7 @@ func new_game(profile: Dictionary = {}) -> void:
     world_flags = {}
     pending_location = ""
     faction_state = FactionSystem.new_campaign_state(GameData.factions)
+    empire_state = EmpireSystemScript.new_campaign_state("house_dunmarrow")
     companion_relationships = {}
     companion_quests = {}
     chronicle_state = ChronicleSystem.new_state()
@@ -81,10 +84,81 @@ func advance_empire_turn(holding_definitions: Array) -> Dictionary:
     var result: Dictionary = EmpireEconomySystem.advance_turn(holding_definitions, world_flags, party.gold)
     if not bool(result.get("ok", false)):
         return result
-    party.gold = int(result.get("treasury_after", party.gold))
+    if empire_management_unlocked():
+        var next_turn := int(world_flags.get("empire_turn", 0)) + 1
+        var month_token := "empire-turn-" + str(next_turn)
+        var realm_result: Dictionary = EmpireSystemScript.advance_month(
+            empire_state, faction_state, month_token,
+            int(result.get("income", 0)), int(result.get("upkeep", 0)), party.gold
+        )
+        if bool(realm_result.get("ok", false)):
+            party.gold = int(realm_result.get("treasury_after", party.gold))
+            world_flags["empire_realm_last_report"] = realm_result.duplicate(true)
+            result["realm"] = realm_result.duplicate(true)
+        else:
+            # Keep the existing holding settlement safe if a malformed legacy month token is encountered.
+            party.gold = int(result.get("treasury_after", party.gold))
+            result["realm_warning"] = str(realm_result.get("reason", "Realm settlement was skipped."))
+    else:
+        party.gold = int(result.get("treasury_after", party.gold))
     world_flags["empire_turn"] = int(world_flags.get("empire_turn", 0)) + 1
     world_flags["empire_last_report"] = result.get("reports", []).duplicate(true)
     return result
+
+
+## Realm administration unlock is an authored campaign event; the party's gold remains the one treasury.
+func empire_management_unlocked() -> bool:
+    return bool(world_flags.get("empire_management_unlocked", false))
+
+
+func unlock_empire_management() -> bool:
+    if empire_management_unlocked():
+        return false
+    world_flags["empire_management_unlocked"] = true
+    if empire_state.is_empty():
+        empire_state = EmpireSystemScript.new_campaign_state("house_dunmarrow")
+    return true
+
+
+func empire_summary() -> Dictionary:
+    if not empire_management_unlocked():
+        return {"unlocked":false}
+    var last: Dictionary = world_flags.get("empire_realm_last_report", {})
+    var summary := EmpireSystemScript.realm_summary(
+        empire_state, faction_state, party.gold,
+        int(last.get("income", 0)), int(last.get("upkeep", 0))
+    )
+    summary["unlocked"] = true
+    return summary
+
+
+func set_empire_tax_rate(next_rate: float) -> bool:
+    if not empire_management_unlocked():
+        return false
+    return EmpireSystemScript.set_tax_rate(empire_state, next_rate)
+
+
+func appoint_empire_governor(region_id: String, character_id: String) -> bool:
+    if not empire_management_unlocked():
+        return false
+    return EmpireSystemScript.appoint_governor(empire_state, faction_state, region_id, character_id, party.roster)
+
+
+func enact_empire_policy(policy_id: String) -> Dictionary:
+    if not empire_management_unlocked():
+        return {"ok":false,"reason":"Empire management is not unlocked."}
+    var result: Dictionary = EmpireSystemScript.enact_policy(empire_state, policy_id, party.gold)
+    if bool(result.get("ok", false)):
+        party.gold = int(result.get("treasury_after", party.gold))
+    return result
+
+
+func _faction_ids() -> Array:
+    var ids: Array = []
+    for entry in GameData.factions.get("factions", []):
+        if typeof(entry) == TYPE_DICTIONARY:
+            ids.append(str(entry.get("id", "")))
+    return ids
 
 
 func upgrade_holding_building(holding_id: String, building_id: String) -> Dictionary:
@@ -352,6 +426,7 @@ func campaign_payload() -> Dictionary:
         "world_flags": world_flags.duplicate(true),
         "pending_location": pending_location,
         "faction_state": faction_state.duplicate(true),
+        "empire_state": empire_state.duplicate(true),
         "companion_relationships": companion_relationships.duplicate(true),
         "companion_quests": companion_quests.duplicate(true),
         "chronicle_state": chronicle_state.duplicate(true),
@@ -381,6 +456,7 @@ func load_campaign(slot_id: String) -> bool:
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
     faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
+    empire_state = EmpireSystemScript.normalize_state(payload.get("empire_state", {}), _faction_ids())
     companion_relationships = RelationshipSystem.normalize_state(payload.get("companion_relationships", {}))
     companion_quests = CompanionQuestSystem.normalize_state(payload.get("companion_quests", {}), {"quests": GameData.companion_quests})
     chronicle_state = ChronicleSystem.normalize_state(payload.get("chronicle_state", {}))
