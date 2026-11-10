@@ -451,9 +451,9 @@ static func _advance_sieges(state: Dictionary, controlled_provinces: Array) -> D
 			continue
 		var army_id := str(siege.get("army_id", ""))
 		if not state.get("field_armies", {}).has(army_id):
-			 siege["status"] = "abandoned"
-			 siege["progress"] = 0
-			 sieges[region] = siege
+			siege["status"] = "abandoned"
+			siege["progress"] = 0
+			sieges[region] = siege
 			 continue
 		var army: Dictionary = state["field_armies"][army_id]
 		var strength := _troop_total(army.get("troops", {}))
