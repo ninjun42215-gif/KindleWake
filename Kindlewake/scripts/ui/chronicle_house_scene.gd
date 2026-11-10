@@ -97,6 +97,8 @@ func _build() -> void:
  trait_picker = OptionButton.new()
  for trait_id in Dynasty.TRAITS.keys():
   trait_picker.add_item(str(trait_id).replace("_"," ").capitalize())
+ if trait_picker.item_count > 0:
+  trait_picker.select(0)
  col.add_child(trait_picker)
  col.add_child(_button("Add selected trait",_add_trait))
  col.add_child(_button("Remove selected trait",_remove_trait))
@@ -107,6 +109,8 @@ func _build() -> void:
  title_rank_picker = OptionButton.new()
  for rank in Dynasty.RANKS:
   title_rank_picker.add_item(str(rank.name))
+ if title_rank_picker.item_count > 0:
+  title_rank_picker.select(0)
  col.add_child(title_rank_picker)
  title_name = LineEdit.new()
  title_name.placeholder_text = "New title name"
@@ -119,6 +123,8 @@ func _build() -> void:
  policy_picker = OptionButton.new()
  for policy in Dynasty.SUCCESSION_POLICIES:
   policy_picker.add_item(str(policy).replace("_"," ").capitalize())
+ if policy_picker.item_count > 0:
+  policy_picker.select(0)
  col.add_child(policy_picker)
  col.add_child(_button("Set succession law",_set_policy))
  _section(col,"DOMAIN STEWARDSHIP")
@@ -151,7 +157,11 @@ func _button(text_value: String, callback: Callable) -> Button:
  return button
 
 func _refresh() -> void:
- summary.text = "%s • Year %d • Law: %s\nThe Concord recognises titles as duties under review, not a claim to imperial sovereignty." % [str(state.house_name),int(state.year),str(state.succession_policy).replace("_"," ").capitalize()]
+ var domain_lines: Array[String] = []
+ for domain_id in state.domains.keys():
+  var domain: Dictionary = state.domains[domain_id]
+  domain_lines.append("%s — food %d / security %d / prosperity %d / legitimacy %d" % [str(domain.name),int(domain.food),int(domain.security),int(domain.prosperity),int(domain.legitimacy)])
+ summary.text = "%s • Year %d • Law: %s\nThe Concord recognises titles as duties under review, not a claim to imperial sovereignty.\n%s" % [str(state.house_name),int(state.year),str(state.succession_policy).replace("_"," ").capitalize(),"\n".join(domain_lines)]
  for child in members_box.get_children():
   members_box.remove_child(child)
   child.queue_free()
