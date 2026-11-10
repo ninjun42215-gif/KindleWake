@@ -1,3 +1,7 @@
+> **LIVE IMPLEMENTATION CHECKPOINT — 2026-11-10 (trait/personality foundation in review):** Branch `feature/trait-personality-progression` adds a data-driven 69-trait catalogue, five non-stacking trait synergies, 16 contextual event templates, event-driven stress/memory/behavior tracking, ambition progress state, CharacterSheet persistence, derived stat effects, and a PartyScreen character-sheet display. Save schema remains 4; old character records default safely. This is an initial foundation, not the full 300-trait / 200-event target. See [TRAIT_PERSONALITY_SYSTEM.md](TRAIT_PERSONALITY_SYSTEM.md) for exact scope, APIs and remaining work. Tests were extended but have not yet been executed in Godot in this environment; wait for exact-head CI before claiming validation. No portrait/sprite mappings or unverified character personalities were invented. Do not merge until CI and code review pass.
+
+---
+
 > **LIVE PROJECT CHECKPOINT — 2026-11-10 (post-merge):** Canonical repository `ninjun42215-gif/KindleWake`; default branch `main`. PR #28 (v0.12.0 world expansion), PR #30 (Chapter I + creator fixes), PR #31 (verified CI handoff) and PR #32 (final post-merge handoff state) are merged. There is no active implementation branch for this milestone; inspect the live `main` ref before starting new work.
 >
 > **Project state:** Godot 4.2 / GL Compatibility, game and Android version `0.12.0`, Android version code `1200`, save schema `4`. Preserve all existing systems, JSON data and saves. No version/schema change was needed.
