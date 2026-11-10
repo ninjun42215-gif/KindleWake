@@ -4,8 +4,8 @@ var checks := 0
 var failures := 0
 
 func _initialize() -> void:
- var founder := {"protagonist_id":"torren","age_at_death":87,"cause":"old_age","ending_id":"open_concord"}
- var state := Dynasty.new_house(founder,"Torren Vale","House Vale")
+ var founder := {"protagonist_id":"torren","age_at_death":87,"cause":"old_age","ending_id":"open_concord","recorded":true}
+ check(Dynasty.new_house({"protagonist_id":"forged","age_at_death":30,"cause":"battle","recorded":false},"Forged").is_empty(),"unverified or non-natural founder record cannot seed Chronicle mode")\n var state := Dynasty.new_house(founder,"Torren Vale","House Vale")
  check(not state.is_empty(),"house initializes from verified founder record")
  check(state.people.has("heir_1") and state.people.has("heir_2"),"founder has two recorded successor branches")
  check(state.titles.has("founder_barony") and state.domains.has("kaer_sethorn"),"founding barony and Kaer Sethorn domain are established")
