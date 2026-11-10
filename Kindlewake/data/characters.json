@@ -1326,6 +1326,38 @@
         "ldr": 11,
         "mor": 75
       }
+    },
+    "river_marshal": {
+      "name": "River Marshal Edrik Vane",
+      "reward": {
+        "exp": 180,
+        "ap": 28,
+        "gold": 85
+      },
+      "class_id": "roadreaver",
+      "level": 7,
+      "house": "none",
+      "weapon_id": "arming_sword",
+      "armor_def": 6,
+      "armor_res": 0,
+      "skills": [
+        "power_strike"
+      ],
+      "stats": {
+        "hp": 126,
+        "mp": 18,
+        "str": 20,
+        "dex": 13,
+        "int": 7,
+        "vit": 19,
+        "spd": 9,
+        "lck": 6,
+        "acc": 84,
+        "eva": 12,
+        "ldr": 11,
+        "mor": 82
+      },
+      "loyalty": 0
     }
   }
 }
