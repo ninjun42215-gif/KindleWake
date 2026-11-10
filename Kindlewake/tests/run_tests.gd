@@ -1,6 +1,7 @@
 extends SceneTree
 
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
+const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
@@ -1596,7 +1597,7 @@ func _test_trait_system() -> void:
     check(int(trait_stats.get("mor", 0)) == int(base.get("mor", 0)) + 2, "trait stat effects are applied through derived stats")
     var synergy_sheet := CharacterSheet.from_def("synergy_test", {"name":"Synergy Hero","class_id":"knight","level":1,"traits":["brave","battle_hardened"],"stats":{"hp":20,"mp":5,"str":5,"dex":5,"int":5,"vit":5,"spd":5,"lck":5,"acc":70,"eva":5,"ldr":5,"mor":50}})
     var synergy_stats: Dictionary = synergy_sheet.total_stats({}, {}, defs)
-    check(int(synergy_stats.get("mor", 0)) == 54 and TraitSystem.active_synergies(synergy_sheet.traits, defs).size() == 1, "compatible traits unlock a derived synergy without adding a duplicate trait")
+    check(int(synergy_stats.get("mor", 0)) == 54 and TraitSystemScript.active_synergies(synergy_sheet.traits, defs).size() == 1, "compatible traits unlock a derived synergy without adding a duplicate trait")
     var conflict: Dictionary = sheet.acquire_trait("cowardly", "unit_test", defs)
     check(not bool(conflict.get("ok", false)) and sheet.traits.has("brave"), "opposing traits cannot be acquired together")
     var duplicate: Dictionary = sheet.acquire_trait("brave", "unit_test", defs)
