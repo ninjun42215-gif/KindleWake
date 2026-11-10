@@ -5,6 +5,7 @@ const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const PartyStateScript = preload("res://scripts/core/party_state.gd")
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const PersonalitySystemScript = preload("res://scripts/core/personality_system.gd")
+const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 ## Full-screen party management in one touch UI (v0.8.0 layout): a compact top bar, a roster of cards, a character
 ## sheet made of stat tiles, and a right panel with three tabs: Equipment, Sigils and Shop.
 ## It owns no rules: every action goes through PartyStateScript / CharacterSheetScript / ShopSystem, the same code paths the
@@ -631,6 +632,13 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
                 trait_box.add_child(_label("Effects  " + "  ·  ".join(effect_parts), 13, COL_GOOD))
             trait_card.add_child(trait_box)
             box.add_child(trait_card)
+    var active_synergies: Array = TraitSystemScript.active_synergies(sh.traits, trait_defs)
+    if not active_synergies.is_empty():
+        _add_section(box, "Trait synergies")
+        for synergy in active_synergies:
+            var synergy_def: Dictionary = synergy
+            box.add_child(_label(str(synergy_def.get("name", "Synergy")), 16, COL_GOLD))
+            box.add_child(_label("Combined strengths grant a derived bonus; no extra trait slot is consumed.", 13, COL_DIM))
     _add_section(box, "Inner life")
     var stress_colour: Color = COL_GOOD if sh.stress < 40 else (COL_GOLD if sh.stress < 70 else COL_BAD)
     box.add_child(_tile("Stress · %s" % PersonalitySystemScript.stress_band(sh.stress), "%d / 100" % sh.stress, stress_colour, 19))
