@@ -156,9 +156,10 @@ func advance_empire_season() -> Dictionary:
     var faction_ids: Array = []
     for faction in GameData.factions.get("factions", []):
         faction_ids.append(str(faction.get("id", "")))
-    var diplomacy_report: Dictionary = EmpireSystem.advance_faction_ai(faction_state, faction_ids, "house_dunmarrow")
+    var diplomacy_report: Dictionary = EmpireSystem.advance_faction_ai(faction_state, faction_ids, "house_dunmarrow", atlas_region_adjacency())
     report["faction_declarations"] = diplomacy_report.get("declarations", [])
     report["faction_treaties"] = diplomacy_report.get("treaties", [])
+    report["faction_claims"] = diplomacy_report.get("claims", [])
     return report
 
 func recruit_provincial_troops(province_id: String, troop_type: String, amount: int) -> bool:
