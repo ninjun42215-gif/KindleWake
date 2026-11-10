@@ -11,8 +11,6 @@ const OpeningActOneQuestSystem = preload("res://scripts/core/opening_act_one_que
 const ActTwoQuestSystem = preload("res://scripts/core/act_two_quest_system.gd")
 const ActThreeQuestSystem = preload("res://scripts/core/act_three_quest_system.gd")
 const ActFourQuestSystem = preload("res://scripts/core/act_four_quest_system.gd")
-const ActTwoQuestChallenge = preload("res://scripts/ui/act_two_quest_challenge.gd")
-const ActOneQuestChallenge = preload("res://scripts/ui/act_one_quest_challenge.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const MarenQuestSystem = preload("res://scripts/core/maren_quest_system.gd")
@@ -621,21 +619,27 @@ func _test_act_one_challenge_content() -> void:
     var expected := ["blocked_well", "roof_before_banner", "last_convoy", "toll_book", "first_oath"]
     var distinct_stage_counts := {}
     for quest_id in expected:
-        check(ActOneQuestChallenge.CHALLENGES.has(quest_id), "playable challenge exists: " + quest_id)
-        var challenge: Dictionary = ActOneQuestChallenge.CHALLENGES.get(quest_id, {})
+        check(OpeningActOneQuestSystem.CHALLENGES.has(quest_id), "playable challenge exists: " + quest_id)
+        var challenge: Dictionary = OpeningActOneQuestSystem.CHALLENGES.get(quest_id, {})
         var stages: Array = challenge.get("steps", [])
         check(stages.size() >= 2, quest_id + " has multiple interactive stages")
         distinct_stage_counts[stages.size()] = true
+        var meaningful_choice_stages := 0
         for stage in stages:
             var options: Array = stage.get("options", [])
-            check(options.size() >= 2, quest_id + " stage offers meaningful choices")
+            if stage.has("battle_id"):
+                check(str(stage.get("battle_id", "")) != "", quest_id + " cinematic stage links a tactical encounter")
+            else:
+                check(options.size() >= 2, quest_id + " stage offers meaningful choices")
+                meaningful_choice_stages += 1
+        check(meaningful_choice_stages >= 2, quest_id + " offers meaningful decisions around tactical scenes")
     check(distinct_stage_counts.size() >= 2, "Act I quests use different challenge lengths and pacing")
-    check(str(ActOneQuestChallenge.CHALLENGES["last_convoy"].steps[2].scene).contains("boss"), "Last Convoy includes a cinematic boss confrontation")
-    check(str(ActOneQuestChallenge.CHALLENGES["first_oath"].steps[1].scene).contains("boss"), "First Oath includes a cinematic boss confrontation")
-    var toll_options: Array = ActOneQuestChallenge.CHALLENGES["toll_book"].steps[2].options
+    check(str(OpeningActOneQuestSystem.CHALLENGES["last_convoy"].steps[2].scene).contains("boss"), "Last Convoy includes a cinematic boss confrontation")
+    check(str(OpeningActOneQuestSystem.CHALLENGES["first_oath"].steps[1].scene).contains("boss"), "First Oath includes a cinematic boss confrontation")
+    var toll_options: Array = OpeningActOneQuestSystem.CHALLENGES["toll_book"].steps[2].options
     check(toll_options.has(["Publish the names after protecting the families", "public"]) or toll_options.any(func(option): return str(option[1]) == "public"), "Toll Book preserves the public disclosure branch")
     check(toll_options.any(func(option): return str(option[1]) == "seal"), "Toll Book preserves the sealed evidence branch")
-    var oath_options: Array = ActOneQuestChallenge.CHALLENGES["first_oath"].steps[2].options
+    var oath_options: Array = OpeningActOneQuestSystem.CHALLENGES["first_oath"].steps[2].options
     check(oath_options.any(func(option): return str(option[1]) == "people") and oath_options.any(func(option): return str(option[1]) == "law"), "First Oath preserves both political promise branches")
 
 
@@ -746,8 +750,8 @@ func _test_act_two_broken_seals() -> void:
     check(not bool(ActTwoQuestSystem.apply_escort(alternate, "invalid").get("ok", true)), "unknown Act II decisions are rejected")
     var expected := ["boundary_tree", "orrowen_hearing", "changed_escort"]
     for quest_id in expected:
-        check(ActTwoQuestChallenge.CHALLENGES.has(quest_id), "playable Act II challenge exists: " + quest_id)
-        var stages: Array = ActTwoQuestChallenge.CHALLENGES[quest_id].steps
+        check(ActTwoQuestSystem.CHALLENGES.has(quest_id), "playable Act II challenge exists: " + quest_id)
+        var stages: Array = ActTwoQuestSystem.CHALLENGES[quest_id].steps
         check(stages.size() >= 3, quest_id + " has multiple distinct interactive stages")
     var escort: Dictionary = gd.battle_def("act2_changed_escort")
     check(not escort.is_empty(), "Act II escort battle is registered in GameData")
