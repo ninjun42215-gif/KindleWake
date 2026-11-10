@@ -5,6 +5,7 @@ const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
 
@@ -22,6 +23,7 @@ var pending_location: String = ""        # town map the location scene opens nex
 var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored with battle saves
 var campaign_slot: String = ""
 var faction_state: Dictionary = {}
+var companion_quests: Dictionary = {}  # quest id -> persistent progression state
 
 
 
@@ -54,6 +56,22 @@ func new_game(profile: Dictionary = {}) -> void:
     world_flags = {}
     pending_location = ""
     faction_state = FactionSystem.new_campaign_state(GameData.factions)
+    companion_quests = {}
+
+
+## Start a personal quest only after its companion has joined the roster.
+func start_companion_quest(quest_id: String) -> Dictionary:
+    return CompanionQuestSystem.start(companion_quests, quest_id, party.roster, {"quests": GameData.companion_quests})
+
+
+## Record the next authored objective in a companion quest.
+func advance_companion_quest(quest_id: String, milestone_id: String) -> Dictionary:
+    return CompanionQuestSystem.advance(companion_quests, quest_id, milestone_id, {"quests": GameData.companion_quests})
+
+
+## Record the companion's chosen resolution after all quest milestones are complete.
+func resolve_companion_quest(quest_id: String, outcome: String) -> Dictionary:
+    return CompanionQuestSystem.resolve(companion_quests, quest_id, outcome, {"quests": GameData.companion_quests})
 
 
 ## Change diplomatic standing after an authored campaign event.
@@ -121,6 +139,7 @@ func campaign_payload() -> Dictionary:
         "world_positions": world_positions.duplicate(true),
         "world_flags": world_flags.duplicate(true),
         "faction_state": faction_state.duplicate(true),
+        "companion_quests": companion_quests.duplicate(true),
         "from_world": true
     }
 
@@ -147,6 +166,7 @@ func load_campaign(slot_id: String) -> bool:
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
     faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
+    companion_quests = CompanionQuestSystem.normalize_state(payload.get("companion_quests", {}), {"quests": GameData.companion_quests})
     world_pos = region_state["world_pos"]
     active_region_id = str(region_state["active_region_id"])
     world_positions = region_state["world_positions"]
