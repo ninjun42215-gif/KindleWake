@@ -971,3 +971,12 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 
 - Mobile HUD polish: the five world actions (Company, Save, World Atlas, Realm, Bosses) are now in one vertical top-right stack rather than diagonally anchored controls that could overlap or leave the phone viewport. The EmpireScreen uses vertical Holdings/Realm tabs and stacked market/admin cards.
 - Governor assignments are unique per companion; ownership transfer removes an outgoing governor, and save normalization drops appointments outside currently held regions or the active roster.
+
+
+## Revision log — mobile realm administration release candidate (2026-11-10)
+
+- PR #128 refactors the existing EmpireScreen into mobile-first Holdings and Realm tabs. The Realm tab exposes the shared treasury, tax rate, stability, legitimacy, held regions, governor selectors and four royal policies.
+- Realm authority unlocks when the first external stronghold is claimed through its authored objective. The world HUD actions are now stacked vertically to prevent phone-screen overlap.
+- Governor assignments are unique per companion, cleared when a region leaves House Dunmarrow, and pruned against held regions/current roster during save normalization. Existing holding governance, garrison, development, recruitment and siege controls remain available.
+- Governor-specific stat bonuses and actual Android viewport/touch QA remain future work. No version or save-schema bump was needed.
+- Main commit `68523bbbd78b5aa780ae15b2d06c47262536f0bc` passed 18 scene loads, 948 strict checks / 0 failures, campaign/Chronicle checks, balance simulation and signed Android export.
