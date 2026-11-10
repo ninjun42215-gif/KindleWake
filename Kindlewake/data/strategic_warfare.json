@@ -365,5 +365,70 @@
         "breach_charge"
       ]
     }
+  },
+  "regional_resources": {
+    "sethmarch": {
+      "id": "grain",
+      "name": "Sethmarch Grain",
+      "income": 0,
+      "food": 10,
+      "manpower": 0,
+      "public_order": 0,
+      "stability": 0
+    },
+    "orrowen_weald": {
+      "id": "timber",
+      "name": "Orrowen Timber",
+      "income": 6,
+      "food": 0,
+      "manpower": 0,
+      "public_order": 0,
+      "stability": 0
+    },
+    "vessmoor_plains": {
+      "id": "horses",
+      "name": "Vessmoor Horses",
+      "income": 0,
+      "food": 2,
+      "manpower": 5,
+      "public_order": 0,
+      "stability": 0
+    },
+    "quillon_heights": {
+      "id": "crystal",
+      "name": "Quillon Crystal",
+      "income": 9,
+      "food": 0,
+      "manpower": 0,
+      "public_order": 0,
+      "stability": 0
+    },
+    "tarnholt_cloisters": {
+      "id": "incense",
+      "name": "Tarnholt Incense",
+      "income": 2,
+      "food": 0,
+      "manpower": 0,
+      "public_order": 2,
+      "stability": 1
+    },
+    "brennhallow_highlands": {
+      "id": "iron",
+      "name": "Brennhallow Iron",
+      "income": 7,
+      "food": 0,
+      "manpower": 0,
+      "public_order": 0,
+      "stability": 0
+    },
+    "aurelmont": {
+      "id": "royal_crafts",
+      "name": "Aurelmont Royal Crafts",
+      "income": 10,
+      "food": 0,
+      "manpower": 0,
+      "public_order": 0,
+      "stability": 0
+    }
   }
 }
