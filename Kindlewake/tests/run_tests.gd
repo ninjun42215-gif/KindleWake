@@ -1220,7 +1220,7 @@ func _test_auto_battle() -> void:
         if str(spawn.get("team", "")) == "enemy":
             corridor_enemy_id = str(spawn.get("character_id", ""))
             break
-    var corridor_setup_ok := not corridor_enemy_id.is_empty() and gd.characters.has("torren") and gd.characters.has("bram")
+    var corridor_setup_ok: bool = not corridor_enemy_id.is_empty() and gd.characters.has("torren") and gd.characters.has("bram")
     if corridor_setup_ok:
         corridor_def["units"] = [
             {"character_id": "torren", "team": "player", "cell": [0, 1], "facing": 1},
