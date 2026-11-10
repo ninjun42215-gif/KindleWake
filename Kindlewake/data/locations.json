@@ -102,6 +102,30 @@
           "companion_quest_id": "q_companion_bram_cullen_broken_chain",
           "companion_quest_milestone": "contracts_audited",
           "companion_quest_text": "A former inmate shows Bram a contract with fees compounded after release and a signature copied from a dead witness. Compare the clauses and testimony: some debts are real, but these transfers are not lawful proof of what the prisoners owe."
+        },
+        {
+          "cell": [
+            7,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Muster Clerk",
+          "text": "A clerk has hidden an order beneath the town's old levy register.",
+          "companion_quest_id": "q_companion_anselm_line_to_hold",
+          "companion_quest_milestone": "muster_notice_read",
+          "companion_quest_text": "Anselm recognises the seal on a muster order dated after the ceasefire. Compare its authority and date before accepting the clerk's claim that the soldiers volunteered.",
+          "companion_quest_challenge": {
+            "prompt": "Which detail proves the order cannot be treated as a lawful volunteer muster?",
+            "options": [
+              "The order bears a campaign seal",
+              "The order is dated after the ceasefire and lacks a renewed levy warrant",
+              "The ink is faded"
+            ],
+            "correct_option": "The order is dated after the ceasefire and lacks a renewed levy warrant",
+            "success_text": "The dates and missing warrant establish that the unit was recalled without lawful authority.",
+            "failure_text": "The campaign seal alone does not establish authority after the ceasefire."
+          }
         }
       ]
     },
@@ -272,6 +296,30 @@
             0.95
           ],
           "text": "House Dunmarrow held these roads for three hundred years. Torren, the keep is yours to rebuild. Start with the road to Eldrimar."
+        },
+        {
+          "cell": [
+            2,
+            2
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Drill Sergeant",
+          "text": "A retired sergeant keeps a tally of the men who were ordered back to the yard.",
+          "companion_quest_id": "q_companion_anselm_line_to_hold",
+          "companion_quest_milestone": "drill_ground_examined",
+          "companion_quest_text": "The drill tally lists men marked absent even when they were on approved leave. Anselm asks you to compare the muster column with the leave marks.",
+          "companion_quest_challenge": {
+            "prompt": "Which record best confirms that the roll was falsified?",
+            "options": [
+              "A matching leave mark beside a man recorded absent",
+              "A missing boot from the rack",
+              "A second copy of the same tally"
+            ],
+            "correct_option": "A matching leave mark beside a man recorded absent",
+            "success_text": "The approved leave marks contradict the absent entries and expose the false count.",
+            "failure_text": "A second copy may repeat the same error; it does not independently verify the men."
+          }
         }
       ]
     },
@@ -433,6 +481,30 @@
           "companion_quest_id": "q_companion_edda_iron_and_ash",
           "companion_quest_milestone": "furnace_bargain_resolved",
           "companion_quest_text": "The former employer offers Edda the workshop if she signs away the workers' claims. With the tool register and wage testimony in hand, she can reject the bargain, establish shared rules, or take ownership only with binding worker protections."
+        },
+        {
+          "cell": [
+            3,
+            2
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Former Spearman",
+          "text": "A former soldier waits beside the hall's public notice board.",
+          "companion_quest_id": "q_companion_anselm_line_to_hold",
+          "companion_quest_milestone": "soldiers_resolved",
+          "companion_quest_text": "The men confirm they were threatened with forfeited pay if they refused the recalled muster. Hear their account before deciding whether Anselm should testify, offer a lawful compact or refuse to rebuild the unit.",
+          "companion_quest_challenge": {
+            "prompt": "What makes the soldiers' testimony credible?",
+            "options": [
+              "Every account repeats the same exact phrase",
+              "Their separate pay records and leave marks corroborate the threat",
+              "The officer says the order was routine"
+            ],
+            "correct_option": "Their separate pay records and leave marks corroborate the threat",
+            "success_text": "Independent records support the soldiers' accounts and establish a pattern of coercion.",
+            "failure_text": "A repeated phrase can be coached, and the officer's assertion is not evidence."
+          }
         }
       ]
     },
@@ -553,6 +625,30 @@
           "companion_quest_id": "q_companion_lucan_last_flight",
           "companion_quest_milestone": "signal_found",
           "companion_quest_text": "Lucan recognises the Orrowen signal code. Someone used the old flight pattern after the garrison was supposedly disbanded. He asks you to preserve the plate before the patrol clerk removes it."
+        },
+        {
+          "cell": [
+            11,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Convoy Survivor",
+          "text": "A survivor carries a splintered bolt recovered from the convoy road.",
+          "companion_quest_id": "q_companion_dorian_unspent_bolt",
+          "companion_quest_milestone": "convoy_identified",
+          "companion_quest_text": "Dorian recognises the fletching on the bolt. Compare its maker's mark with the convoy inventory to establish which shipment was attacked.",
+          "companion_quest_challenge": {
+            "prompt": "Which clue reliably identifies the diverted convoy?",
+            "options": [
+              "The maker's mark matched to the dated quartermaster inventory",
+              "The survivor's guess about the weather",
+              "A generic military stamp"
+            ],
+            "correct_option": "The maker's mark matched to the dated quartermaster inventory",
+            "success_text": "The maker's mark links the bolt to a specific issue batch in the convoy inventory.",
+            "failure_text": "Weather and a generic stamp cannot identify a particular shipment."
+          }
         }
       ]
     },
@@ -621,6 +717,30 @@
             "success_text": "The timings and lack of hoofprints match a foot patrol on the west ridge. Lucan marks the route and identifies the deserters' likely passage.",
             "failure_text": "That route conflicts with either the signal timing or the missing hoofprints. Compare both clues before choosing."
           }
+        },
+        {
+          "cell": [
+            3,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Roadside Fletcher",
+          "text": "A fletcher remembers repairing the same bolt pattern before the ambush.",
+          "companion_quest_id": "q_companion_dorian_unspent_bolt",
+          "companion_quest_milestone": "shot_reconstructed",
+          "companion_quest_text": "The fletcher's repair record and the road's impact marks allow Dorian to reconstruct the shot. Determine which trajectory matches the physical evidence.",
+          "companion_quest_challenge": {
+            "prompt": "Which reconstruction fits the recovered evidence?",
+            "options": [
+              "A shot from the raised western bank matching the impact angle",
+              "A shot fired straight down from the road",
+              "A bolt launched from inside the convoy wagon"
+            ],
+            "correct_option": "A shot from the raised western bank matching the impact angle",
+            "success_text": "The angle and recovered splinter pattern point to the raised western bank.",
+            "failure_text": "The other trajectories contradict the impact angle and wood damage."
+          }
         }
       ]
     },
@@ -678,6 +798,30 @@
           "companion_quest_id": "q_companion_lucan_last_flight",
           "companion_quest_milestone": "witness_heard",
           "companion_quest_text": "The clerk confirms that the deserters carried the pay chest away, but also names a family who sheltered them under threat. Lucan asks you to hear the witness without turning their fear into another accusation."
+        },
+        {
+          "cell": [
+            3,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Quartermaster's Runner",
+          "text": "A runner has a duplicate tally of the missing convoy supplies.",
+          "companion_quest_id": "q_companion_dorian_unspent_bolt",
+          "companion_quest_milestone": "quartermaster_confronted",
+          "companion_quest_text": "The duplicate tally shows that the quartermaster removed supplies before the ambush. Dorian must confront him with the record and decide whether to testify, make restitution or decline public absolution.",
+          "companion_quest_challenge": {
+            "prompt": "Which record ties the quartermaster to the diversion?",
+            "options": [
+              "A signed issue-and-return tally with a false return entry",
+              "An unsigned market rumour",
+              "A damaged wagon wheel"
+            ],
+            "correct_option": "A signed issue-and-return tally with a false return entry",
+            "success_text": "The signed tally records the quartermaster's custody and the false return.",
+            "failure_text": "The rumour and damaged wheel do not establish who diverted the supplies."
+          }
         }
       ]
     },
@@ -878,6 +1022,30 @@
           "companion_quest_id": "q_companion_edda_iron_and_ash",
           "companion_quest_milestone": "worker_claims_verified",
           "companion_quest_text": "The foundry hand names the workers who paid for the missing tools through withheld wages. Edda listens to each account and separates verified claims from rumour. The workers want their names and wages recorded before anyone bargains over the furnace."
+        },
+        {
+          "cell": [
+            3,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Recovered Patient",
+          "text": "A patient remembers the date the ward changed its draught.",
+          "companion_quest_id": "q_companion_petra_bitter_draught",
+          "companion_quest_milestone": "treatment_verified",
+          "companion_quest_text": "Petra checks the patient's account against the surviving sample and the apothecary's dated batch notes. Verify which evidence confirms the treatment was diluted.",
+          "companion_quest_challenge": {
+            "prompt": "What verifies the patient's account without relying on memory alone?",
+            "options": [
+              "A matching batch note and a sealed sample analysis",
+              "A rumour repeated by another patient",
+              "The ward's painted sign"
+            ],
+            "correct_option": "A matching batch note and a sealed sample analysis",
+            "success_text": "The dated batch note and sealed sample independently corroborate the patient's recollection.",
+            "failure_text": "A repeated rumour and a sign cannot verify the contents of a batch."
+          }
         }
       ]
     },
@@ -920,6 +1088,30 @@
           "companion_quest_id": "q_companion_brisa_hearth_of_names",
           "companion_quest_milestone": "care_network_secured",
           "companion_quest_text": "The market factor offers a practical solution: a rotating care network, with supplies shared between households. Brisa asks you to choose how Foxglove will remember and care for its displaced families."
+        },
+        {
+          "cell": [
+            3,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Apothecary's Ledger Keeper",
+          "text": "A ledger keeper has kept a copy of the ward's medicine receipts.",
+          "companion_quest_id": "q_companion_petra_bitter_draught",
+          "companion_quest_milestone": "ward_ledger_found",
+          "companion_quest_text": "Petra finds a discrepancy between the ward's full-strength medicine charges and the diluted doses patients received. Identify the record that can establish the discrepancy.",
+          "companion_quest_challenge": {
+            "prompt": "Which comparison is the strongest evidence of false billing?",
+            "options": [
+              "The invoice quantities against the signed dispensing register",
+              "The colour of the medicine bottle",
+              "The ward's public donation board"
+            ],
+            "correct_option": "The invoice quantities against the signed dispensing register",
+            "success_text": "The signed dispensing register shows what was actually issued, allowing the invoices to be checked.",
+            "failure_text": "Bottle colour and donation totals do not establish the medicine dispensed."
+          }
         }
       ]
     },
@@ -1008,6 +1200,30 @@
           "companion_quest_id": "q_companion_bram_cullen_broken_chain",
           "companion_quest_milestone": "debt_transfer_found",
           "companion_quest_text": "Bram Cullen recognises the jailer's mark on the transfer notice. His prison debt has been sold to a private company, along with claims against several other inmates. He asks you to trace the contract before the company can move them."
+        },
+        {
+          "cell": [
+            10,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Ward's Former Steward",
+          "text": "The former steward offers Petra the last page of the triage register.",
+          "companion_quest_id": "q_companion_petra_bitter_draught",
+          "companion_quest_milestone": "triage_decided",
+          "companion_quest_text": "The triage register confirms that vulnerable patients were given priority only on paper. Petra must decide how to expose the error while protecting those who could be harmed by public disclosure.",
+          "companion_quest_challenge": {
+            "prompt": "Which approach preserves accountability while minimising harm to patients?",
+            "options": [
+              "Publish every patient's name",
+              "Destroy the register",
+              "Publish verified treatment records with patient identities redacted"
+            ],
+            "correct_option": "Publish verified treatment records with patient identities redacted",
+            "success_text": "A redacted record preserves the evidence while protecting patients' identities.",
+            "failure_text": "Publishing names risks further harm; destroying the register removes the proof."
+          }
         }
       ]
     },
