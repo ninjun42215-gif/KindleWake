@@ -1317,12 +1317,6 @@
       },
       "loyalty": 66,
       "roster_wave": 2,
-      "traits": [
-        "observant",
-        "survivalist",
-        "agile",
-        "independent"
-      ],
       "recruit": {
         "wave": 2,
         "method": "northstar_wreck_rescue",
@@ -1337,7 +1331,13 @@
         "relationship_on_join": {
           "trust": 5,
           "respect": 4
-        }
+        },
+        "traits_on_join": [
+          "observant",
+          "survivalist",
+          "agile",
+          "independent"
+        ]
       }
     }
   }
