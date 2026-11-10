@@ -19,6 +19,7 @@ const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
 const EmpireEconomySystem = preload("res://scripts/core/empire_economy_system.gd")
 const EmpireDevelopmentSystem = preload("res://scripts/core/empire_development_system.gd")
+const EmpireSystemScript = preload("res://scripts/core/empire_system.gd")
 const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 const ArtScript = preload("res://scripts/ui/art.gd")
@@ -82,6 +83,7 @@ func _initialize() -> void:
     _test_regional_boss_battles()
     _test_holding_system()
     _test_empire_economy()
+    _test_empire_realm_administration()
     _test_empire_development()
     _test_dungeon_mechanisms()
     _test_secret_passages()
@@ -518,6 +520,41 @@ func _test_empire_economy() -> void:
     var lost: Dictionary = EmpireEconomySystem.advance_turn(definitions, flags, 100)
     check(int(lost.get("holdings_processed", -1)) == 0 and int(lost.get("treasury_after", 0)) == 100, "foreign-held locations stop producing player income and upkeep")
     check(EmpireEconomySystem.stability_label(10) == "Unrest" and EmpireEconomySystem.stability_label(80) == "Secure", "holding stability exposes clear unrest and security states")
+
+
+func _test_empire_realm_administration() -> void:
+    print("[realm administration]")
+    var state: Dictionary = EmpireSystemScript.new_campaign_state("house_dunmarrow")
+    var factions := {
+        "territories": {
+            "sethmarch": {"owner":"house_dunmarrow","status":"held"},
+            "thalassar": {"owner":"house_dunmarrow","status":"contested"},
+            "elyria": {"owner":"house_ysmark","status":"held"}
+        }
+    }
+    check(not state.has("treasury"), "realm policy state does not create a second gold treasury")
+    check(not EmpireSystemScript.set_tax_rate(state, 0.30) and EmpireSystemScript.set_tax_rate(state, 0.15), "realm tax rate rejects values outside its safe range")
+    check(EmpireSystemScript.appoint_governor(state, factions, "sethmarch", "torren", ["torren"]), "a recruited eligible companion can govern a player-held region")
+    check(not EmpireSystemScript.appoint_governor(state, factions, "thalassar", "bram", ["bram"]), "a contested region cannot receive a governor")
+    check(not EmpireSystemScript.appoint_governor(state, factions, "sethmarch", "unknown", ["torren"]), "only a roster member can be appointed governor")
+    var poor_policy: Dictionary = EmpireSystemScript.enact_policy(state, "road_works", 100)
+    var policy: Dictionary = EmpireSystemScript.enact_policy(state, "road_works", 500)
+    check(not bool(poor_policy.get("ok", true)) and bool(policy.get("ok", false)) and int(policy.get("treasury_after", 0)) == 100, "realm policies spend the shared party treasury exactly once")
+    check(not bool(EmpireSystemScript.enact_policy(state, "road_works", 500).get("ok", true)), "an active realm policy cannot be purchased twice")
+    var finance: Dictionary = EmpireSystemScript.estimate_monthly_finances(state, factions, 20, 4)
+    check(int(finance.get("income", 0)) == 23 and int(finance.get("upkeep", 0)) == 4 and int(finance.get("net", 0)) == 19, "realm tax and road policy modify the existing holding settlement rather than creating separate income")
+    var settled: Dictionary = EmpireSystemScript.advance_month(state, factions, "empire-turn-1", 20, 4, 100)
+    check(bool(settled.get("ok", false)) and int(settled.get("treasury_after", 0)) == 119 and int(settled.get("month_index", 0)) == 1, "realm month applies the adjusted holding net to the shared treasury")
+    check(not bool(EmpireSystemScript.advance_month(state, factions, "empire-turn-1", 20, 4, 119).get("ok", true)), "realm month settlement is idempotent")
+    var summary: Dictionary = EmpireSystemScript.realm_summary(state, factions, 119, 20, 4)
+    check(int(summary.get("treasury", 0)) == 119 and int(summary.get("owned_regions", []).size()) == 1 and int(summary.get("governor_count", 0)) == 1, "realm summary reads the shared treasury and canonical faction ownership")
+    var normalized: Dictionary = EmpireSystemScript.normalize_state({
+        "ruler_faction":"missing_house","tax_rate":0.9,"stability":140,"legitimacy":-5,
+        "policies":{"granaries":true,"unknown_policy":true},"processed_months":["m1","m1",""],
+        "history":[{"month_token":"m1"}]
+    }, ["house_dunmarrow"])
+    check(str(normalized.get("ruler_faction", "x")) == "" and float(normalized.get("tax_rate", 0.0)) == 0.25 and int(normalized.get("stability", 0)) == 100 and int(normalized.get("legitimacy", 0)) == 0, "legacy realm state is clamped and unknown rulers are rejected")
+    check(normalized.get("policies", {}).size() == 1 and normalized.get("processed_months", []).size() == 1 and not normalized.has("treasury"), "realm save normalization filters policies and duplicate month tokens without duplicating gold")
 
 
 func _test_empire_development() -> void:

@@ -105,3 +105,10 @@ Branch `fix/headless-resource-cleanup-current-main` is based on main `0785d76c86
 ## Tactical AI pathfinding follow-up — 2026-11-10
 
 PR #123 merged a change that passed ally cells to `BattleMap.compute_reach`, but that function intentionally ignored its fifth argument; its test checked only destination occupancy, not the route. Follow-up branch `fix/ai-block-allies-in-approach-paths` adds an explicit opt-in blocker flag and uses it only for AI reach/approach planning, preserving ordinary player ally pass-through. The corridor regression asserts both behaviors. This branch is pending exact-head CI; do not merge until all gates pass.
+
+
+## Empire-management architecture decision — 2026-11-10
+
+Current main already has `FactionSystem` for region ownership, `EmpireEconomySystem` for holding-level income/upkeep and `EmpireDevelopmentSystem` for buildings, recruitment and siege objectives. The earlier realm-governance PR #91 introduced a second treasury and a separate region-count income calculation; PR #87 introduced another mutable territory-owner map. Both approaches risk divergent state and duplicate accounting. Review comments were added to those PRs.
+
+Branch `feat/unified-realm-administration` takes the compatible slice: realm tax/stability/legitimacy, governors and policies are stored in optional `empire_state`; region ownership remains in `FactionSystem`; holding economy and the one shared `party.gold` treasury remain in `EmpireEconomySystem`. Realm modifiers are applied to the existing holding settlement only after an authored unlock. This is a backend foundation, not a complete player-facing empire-management feature; the administration UI and story unlock event remain future milestones. Exact-head CI is pending.
