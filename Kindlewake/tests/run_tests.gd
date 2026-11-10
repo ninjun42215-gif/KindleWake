@@ -261,6 +261,7 @@ func _test_act_two_broken_seals() -> void:
     print("[Act II: Broken Seals]")
     var flags: Dictionary = {}
     check(not bool(ActTwoQuestSystem.inspect("boundary_tree", flags).get("available", false)), "Act II remains locked before the Sethmarch oath")
+    check(not bool(ActTwoQuestSystem.apply_boundary(flags, "shared_stewardship").get("ok", true)), "boundary settlement API independently enforces the Act I gate")
     flags["chapter_1_complete"] = true
     check(bool(ActTwoQuestSystem.inspect("boundary_tree", flags).get("available", false)), "Boundary Tree opens after Act I")
     check(not bool(ActTwoQuestSystem.inspect("orrowen_hearing", flags).get("available", true)), "Orrowen hearing waits for boundary evidence")
