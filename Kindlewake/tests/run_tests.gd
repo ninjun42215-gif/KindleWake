@@ -129,6 +129,13 @@ func _test_companion_quests() -> void:
         covered_ids.append(companion_id)
         if (definition.get("milestones", []) as Array).size() < 3 or (definition.get("outcomes", []) as Array).size() < 2:
             ids_ok = false
+        var reward: Dictionary = definition.get("completion_reward", {})
+        if int(reward.get("gold", 0)) <= 0:
+            ids_ok = false
+        var labels: Dictionary = definition.get("outcome_labels", {})
+        for outcome in definition.get("outcomes", []):
+            if labels.has(str(outcome)) and str(labels[str(outcome)]).strip_edges().is_empty():
+                ids_ok = false
     check(ids_ok and recruited_ids.size() == covered_ids.size() and recruited_ids.all(func(id): return covered_ids.has(id)), "every currently recruitable character has exactly one quest definition")
     check(ids_ok, "every quest resolves to a recruitable character and has milestones and outcomes")
     var state: Dictionary = {}
