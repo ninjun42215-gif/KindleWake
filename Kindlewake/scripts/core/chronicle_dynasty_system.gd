@@ -140,6 +140,17 @@ static func add_child(raw: Dictionary, parent_id: String, child_name: String, ag
  return {"ok":true,"state":state,"person_id":child_id}
 
 
+static func add_house_member(raw: Dictionary, name: String, age: int, traits: Array = []) -> Dictionary:
+ var state := normalize_state(raw)
+ if state.is_empty() or name.strip_edges().length() < 2 or age < ADULT_AGE or age > 80:
+  return {"ok":false,"reason":"An unrelated adult house member needs a name and an age from 18 to 80."}
+ var person_id := "person_%04d" % int(state.next_person_number)
+ state.next_person_number = int(state.next_person_number) + 1
+ state.people[person_id] = _person(person_id,name.strip_edges(),age,"allied_member",[],_valid_traits(traits),true)
+ _log(state,"house_member_recorded",{"person":person_id})
+ return {"ok":true,"state":state,"person_id":person_id}
+
+
 static func set_spouse(raw: Dictionary, person_a: String, person_b: String) -> Dictionary:
  var state := normalize_state(raw)
  if not state.people.has(person_a) or not state.people.has(person_b) or person_a == person_b:
