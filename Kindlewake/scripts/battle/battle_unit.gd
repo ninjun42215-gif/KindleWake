@@ -54,8 +54,8 @@ func effective_spd() -> float:
     return maxf(1.0, float(stat("spd")) * penalty)
 
 
-static func create(p_id: int, char_id: String, char_def: Dictionary, class_def: Dictionary, p_team: String, p_cell: Vector2i, p_facing: int) -> BattleUnit:
-    var u := BattleUnit.new()
+static func create(p_id: int, char_id: String, char_def: Dictionary, class_def: Dictionary, p_team: String, p_cell: Vector2i, p_facing: int) -> Variant:
+    var u = load("res://scripts/battle/battle_unit.gd").new()
     u.id = p_id
     u.character_id = char_id
     u.display_name = str(char_def.get("name", char_id))
@@ -96,7 +96,7 @@ func to_dict() -> Dictionary:
     }
 
 
-static func from_dict(d: Dictionary) -> BattleUnit:
+static func from_dict(d: Dictionary) -> Variant:
     var u := BattleUnit.new()
     u.id = int(d.get("id", 0))
     u.character_id = str(d.get("character_id", ""))
