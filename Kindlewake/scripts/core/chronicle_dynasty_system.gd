@@ -317,6 +317,10 @@ static func assign_title(raw: Dictionary, title_id: String, person_id: String) -
  title["holder"] = person_id
  state.titles[title_id] = title
  var person: Dictionary = state.people[person_id]
+ var person_titles: Array = person.get("title_ids",[])
+ if not person_titles.has(title_id):
+  person_titles.append(title_id)
+ person["title_ids"] = person_titles
  person["title_id"] = title_id
  state.people[person_id] = person
  _log(state,"title_granted",{"title":title_id,"holder":person_id})
@@ -364,7 +368,10 @@ static func create_title(raw: Dictionary, rank_id: String, name: String, holder_
  var title_id := "title_%02d" % (state.titles.size()+1)
  state.titles[title_id] = {"id":title_id,"rank_id":rank_id,"name":name.strip_edges(),"holder":holder_id,"domain_id":domain_id,"jurisdiction":str(rank.jurisdiction),"obligations":[str(rank.duties)],"legitimacy":40}
  var person: Dictionary = state.people[holder_id]
- person.title_id = title_id
+ var person_titles: Array = person.get("title_ids",[])
+ person_titles.append(title_id)
+ person["title_ids"] = person_titles
+ person["title_id"] = title_id
  state.people[holder_id] = person
  _log(state,"title_established",{"title":title_id,"rank":rank_id,"holder":holder_id})
  return {"ok":true,"state":state,"title_id":title_id}
@@ -408,13 +415,19 @@ static func _inherit_titles(state: Dictionary, deceased_id: String) -> void:
    continue
   var heir := _select_heir(state,deceased_id)
   var former: Dictionary = state.people[deceased_id]
-  if str(former.get("title_id","")) == title_id:
-   former["title_id"] = ""
-   state.people[deceased_id] = former
+  var former_titles: Array = former.get("title_ids",[])
+  former_titles.erase(title_id)
+  former["title_ids"] = former_titles
+  former["title_id"] = str(former_titles.back()) if not former_titles.is_empty() else ""
+  state.people[deceased_id] = former
   title["holder"] = heir
   titles[title_id] = title
   if heir != "":
    var p: Dictionary = state.people[heir]
+   var inherited_titles: Array = p.get("title_ids",[])
+   if not inherited_titles.has(title_id):
+    inherited_titles.append(title_id)
+   p["title_ids"] = inherited_titles
    p["title_id"] = title_id
    state.people[heir] = p
   state.last_succession = {"title_id":title_id,"from":deceased_id,"to":heir,"policy":state.succession_policy,"year":state.year}
