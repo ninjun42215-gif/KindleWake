@@ -277,6 +277,8 @@ Use these detailed references rather than relying on this summary alone:
 
 ## 15. Post-campaign generational dynasty system — locked until the true ending
 
+**Canon dependencies:** The political terms and timeline are defined in LORE_BIBLE.md §2.1 and §13. Osric IV is King of the Crownlands, not Emperor; the old Eldrimar Empire is historically fragmented and its imperial office is dormant at campaign start. The protagonist becomes Last Emperor only through the ratified true-ending settlement, solely to enact dissolution. The secret-order faction covenant_seven_flames is distinct from the public historical Covenant compact. Brinegate belongs to the Tidebound Assembly; House Ysmark's seat remains unconfirmed.
+
 **Status: DESIGNED / REQUESTED. Not verified implemented.** This is a distinct post-campaign mode. It must not be folded into the main campaign character progression or unlocked early.
 
 ### 15.1 Exact unlock gate and state transition
