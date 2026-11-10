@@ -131,3 +131,19 @@
 - Current scope is backend foundation only. No diplomacy screen, automatic war simulation, AI faction turns or strategic battle layer is claimed complete.
 - Validation on code head `f7b31035e4651a4a6854cc5ad644beff88c2148b`: Build Android APK run #683 passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 447 strict checks / 0 failures, balance report and signed APK export for arm64-v8a + armeabi-v7a with no requested Android permissions. APK artifact `13733346417` (~41.0 MB); test logs artifact `13732869336`. Version Sync #188, Workflow YAML Lint #666 and Project Health Audit #458 also passed on that exact code head. The first CI attempt caught a missing `GameData.factions` declaration and a strict-test type inference error; both were fixed before the successful rerun. Documentation commits after that code head require a fresh exact-head gate. Physical Android QA remains outstanding.
 - Next implementation slice after this foundation: connect authored quests/choices to relation changes, then add a compact faction dossier UI before enabling player-initiated treaty/war actions. Preserve offline-only architecture, existing saves and schema 4.
+
+
+
+## 2026-11-10 — Royal Administration implementation (PR #46, in review)
+
+Working branch: `feature/empire-management-system`.
+
+- Added the deterministic realm rules and optional campaign-save persistence.
+- Added the touch-first Royal Administration overlay with Realm, Council, Provinces, Economy and Chronicle tabs, mounted from the overworld's Royal Court button.
+- The entry button is unlock-gated. Story/quest code must call `GameState.unlock_empire_management()` only when the protagonist is legitimately granted governing authority; the feature intentionally does not unlock at the start of the campaign.
+- Council appointments use the current party roster. Governors and construction are limited to territories currently held by House Dunmarrow or the Crownlands; economy seasons use only those controlled provinces.
+- Added dismissal/recall, construction, tax, edict and seasonal report interactions. Every action persists through the existing campaign save.
+- Added strict regression tests. They are authored but have not been executed in Godot on this branch.
+- No app version or save schema change. No network access, accounts or new permissions.
+- Not complete: authored story unlock integration, projected budget preview, council trait/skill impact, military command/garrisons/supply, trade routes, autonomous faction AI, rebellions and war campaigns.
+- Validation is pending exact-head Godot import, strict tests, scene smoke, balance report, Android export, version sync, workflow lint and project health audit. Do not merge until required gates pass; physical Android QA is a separate release gate.
