@@ -239,7 +239,6 @@ func _build_council() -> void:
 
 func _build_provinces() -> void:
     _section("PROVINCES OF THE KNOWN ATLAS")
-    var regions: Dictionary = GameState.empire_state.get("provinces", {})
     var territories: Dictionary = GameState.faction_state.get("territories", {})
     var region_ids: Array = GameData.factions.get("regions", {}).keys()
     region_ids.sort()
@@ -248,33 +247,41 @@ func _build_provinces() -> void:
     for id_variant in region_ids:
         var id := str(id_variant)
         var territory: Dictionary = territories.get(id, {})
-        var owner := str(territory.get("owner", "Unclaimed"))
+        var owner_id := str(territory.get("owner", ""))
+        var owner := _faction_name(owner_id)
         var title := id.replace("_", " ").capitalize()
         var is_selected := id == selected_province
-        body.add_child(_button(("%s   ·   %s" % [title, owner]) , _select_province.bind(id), is_selected))
+        body.add_child(_button("%s   ·   %s" % [title, owner], _select_province.bind(id), is_selected))
     if selected_province == "":
         return
     var province := selected_province
     _section(province.replace("_", " ").capitalize() + " — Administration")
     var governor := str(GameState.empire_state.get("governors", {}).get(province, ""))
+    var controlled := GameState.player_controlled_provinces().has(province)
     body.add_child(_label("Governor: " + (_character_name(governor) if governor != "" else "Unappointed"), 16))
+    if not controlled:
+        body.add_child(_label("This province is not under your authority. Secure it through campaign events before appointing officials or commissioning works.", 15, C_RED))
     var picker := OptionButton.new()
     picker.add_item("Choose governor")
     for id in GameState.party.roster:
         picker.add_item(_character_name(id))
         picker.set_item_metadata(picker.item_count - 1, id)
     body.add_child(picker)
-    var appoint_button := _button("Appoint governor", _appoint_governor.bind(province, picker))\n    appoint_button.disabled = not controlled\n    body.add_child(appoint_button)
+    var appoint_button := _button("Appoint governor", _appoint_governor.bind(province, picker))
+    appoint_button.disabled = not controlled
+    body.add_child(appoint_button)
     if governor != "":
-        body.add_child(_button("Recall governor", _recall_governor.bind(province)))
+        var recall_button := _button("Recall governor", _recall_governor.bind(province))
+        recall_button.disabled = not controlled
+        body.add_child(recall_button)
     _section("CONSTRUCTION")
     var built: Dictionary = GameState.empire_state.get("buildings", {})
     for building_id in BUILDINGS.keys():
         var key := province + ":" + building_id
         var exists := built.has(key)
-        body.add_child(_button(("Built  ·  " if exists else "Construct  ·  ") + str(BUILDINGS[building_id]), _construct.bind(province, building_id), not exists))
-        if exists:
-            (body.get_child(body.get_child_count() - 1) as Button).disabled = true
+        var build_button := _button(("Built  ·  " if exists else "Construct  ·  ") + str(BUILDINGS[building_id]), _construct.bind(province, building_id), not exists)
+        build_button.disabled = exists or not controlled
+        body.add_child(build_button)
 
 
 func _build_economy() -> void:
@@ -381,8 +388,8 @@ func _set_message(text: String, good: bool) -> void:
     _rebuild()
 
 
-func _faction_name(id: String) -> String:\n    for faction in GameData.factions.get("factions", []):\n        if str(faction.get("id", "")) == id:\n            return str(faction.get("name", id))\n    return "Unclaimed" if id == "" else id.replace("_", " ").capitalize()\n\n\nfunc _character_name(id: String) -> String:
-    if id == "":
-        return "Vacant"
-    var sh = GameState.party.sheet(id)
-    return sh.display_name if sh != null else id.capitalize()
+func _faction_name(id: String) -> String:
+    for faction in GameData.factions.get("factions", []):
+        if str(faction.get("id", "")) == id:
+            return str(faction.get("name", id))
+    return "Unclaimed" if id == "" else id.replace("_", " ").capitalize()
