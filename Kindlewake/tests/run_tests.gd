@@ -939,7 +939,7 @@ func _test_empire_management() -> void:
     var field_id := EmpireSystem.mobilize_army(state, "sethmarch", {"infantry": 5}, known_regions, "torren")
     check(field_id != "", "a field army can be mobilized from an existing provincial garrison")
     check(int(state["armies"]["sethmarch"]["infantry"]) == 3, "mobilization removes the dispatched soldiers from the garrison")
-    check(not EmpireSystem.mobilize_army(state, "sethmarch", {"cavalry": 1}, known_regions).is_empty(), "remaining manpower can be mobilized only when the garrison actually contains the troop type")
+    check(EmpireSystem.mobilize_army(state, "sethmarch", {"cavalry": 1}, known_regions).is_empty(), "mobilization rejects troop types absent from the provincial garrison")
     var routes := {"sethmarch": ["orrowen_weald"], "orrowen_weald": ["sethmarch"]}
     check(not EmpireSystem.move_field_army(state, field_id, "vessmoor_plains", routes, known_regions), "field armies cannot teleport across unlinked atlas regions")
     check(EmpireSystem.move_field_army(state, field_id, "orrowen_weald", routes, known_regions), "field armies can march along a defined atlas region link")
