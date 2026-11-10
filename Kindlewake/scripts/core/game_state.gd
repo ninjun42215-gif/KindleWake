@@ -142,9 +142,11 @@ func resolve_province_siege(target_region: String, defender_strength: int, fort_
 func confirm_siege_occupation(target_region: String, new_owner: String = "house_dunmarrow") -> bool:
 	if not faction_state.get("territories", {}).has(target_region):
 		return false
-	if not EmpireSystem.complete_siege_transfer(empire_state, target_region):
+	if not empire_state.get("sieges", {}).has(target_region) or not bool(empire_state["sieges"][target_region].get("captured", false)):
 		return false
-	return FactionSystem.transfer_region(faction_state, target_region, new_owner, "strategic siege occupation")
+	if not FactionSystem.transfer_region(faction_state, target_region, new_owner, "strategic siege occupation"):
+		return false
+	return EmpireSystem.complete_siege_transfer(empire_state, target_region)
 
 
 func field_army_battle_deployment(army_id: String) -> Dictionary:
