@@ -999,6 +999,7 @@ func _test_supply_siege_and_tactical_bridge() -> void:
     check(EmpireSystem.recruit_troops(state, "sethmarch", "infantry", 20, regions), "siege test recruits a field army")
     var army_id: String = EmpireSystem.mobilize_army(state, "sethmarch", {"infantry": 20}, regions)
     check(EmpireSystem.move_field_army(state, army_id, "orrowen_weald", adjacency, controlled), "field army can move to the frontier")
+    check(bool(state["field_armies"][army_id].get("supplied", false)), "field army receives connected depot supply immediately after moving to the frontier")
     var deployment: Dictionary = EmpireSystem.tactical_deployment(state, army_id)
     check(bool(deployment.get("ok", false)) and int(deployment.get("roster", [])[0].get("count", 0)) == 20, "strategic troop composition exports a tactical deployment roster")
     check(EmpireSystem.apply_tactical_result(state, army_id, {"infantry": 2}, true), "tactical battle casualties can be returned to the strategic army")
