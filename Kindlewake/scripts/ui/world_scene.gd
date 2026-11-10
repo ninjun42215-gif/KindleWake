@@ -2,6 +2,7 @@ extends Node2D
 
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
+const EmpireAdministrationScript = preload("res://scripts/ui/empire_administration.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
@@ -53,6 +54,8 @@ var place_text: Label
 var place_buttons: VBoxContainer
 var banner: PanelContainer
 var banner_label: Label
+var empire_btn: Button
+var empire_screen: EmpireAdministrationScript
 var party_screen: PartyScreenScript
 var minimap_dot: ColorRect
 var campaign_save_timer: float = 0.0
@@ -129,7 +132,7 @@ func cell_of(pos: Vector2) -> Vector2i:
 # ------------------------------------------------------------------ input and movement
 
 func _unhandled_input(event: InputEvent) -> void:
-    if panel_open or party_screen.visible or ambush_timer >= 0.0:
+    if panel_open or party_screen.visible or (empire_screen != null and empire_screen.visible) or ambush_timer >= 0.0:
         return
     if event is InputEventMouseButton:
         var mb := event as InputEventMouseButton
@@ -156,7 +159,7 @@ func _free_at(p: Vector2) -> bool:
 
 func _process(delta: float) -> void:
     campaign_save_timer += delta
-    if campaign_save_timer >= 25.0 and not panel_open and not party_screen.visible:
+    if campaign_save_timer >= 25.0 and not panel_open and not party_screen.visible and not (empire_screen != null and empire_screen.visible):
         campaign_save_timer = 0.0
         GameState.world_pos = wmap.wrap_position(player_pos)
         GameState.save_campaign("auto_a")
@@ -166,7 +169,7 @@ func _process(delta: float) -> void:
             _launch_ambush()
         queue_redraw()
         return
-    if not panel_open and not party_screen.visible:
+    if not panel_open and not party_screen.visible and not (empire_screen != null and empire_screen.visible):
         moving_vector = ExplorationControls.movement_vector()
         if move_stick != null and move_stick.value.length() > moving_vector.length():
             moving_vector = move_stick.value
@@ -845,7 +848,7 @@ func _build_ui() -> void:
 
 
 func _open_world_atlas() -> void:
-    if panel_open or party_screen.visible or ambush_timer >= 0.0:
+    if panel_open or party_screen.visible or (empire_screen != null and empire_screen.visible) or ambush_timer >= 0.0:
         return
     has_target = false
     pressing = false
