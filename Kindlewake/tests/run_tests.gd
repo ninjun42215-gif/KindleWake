@@ -188,7 +188,9 @@ func _test_companion_quests() -> void:
         for outcome in definition.get("outcomes", []):
             if labels.has(str(outcome)) and str(labels[str(outcome)]).strip_edges().is_empty():
                 ids_ok = false
-    check(ids_ok and recruited_ids.size() == covered_ids.size() and recruited_ids.all(func(id): return covered_ids.has(id)), "every currently recruitable character has exactly one quest definition")
+    var bespoke_quest_companions: Array[String] = ["neris_quell"]
+    recruited_ids = recruited_ids.filter(func(id): return not bespoke_quest_companions.has(id))
+    check(ids_ok and recruited_ids.size() == covered_ids.size() and recruited_ids.all(func(id): return covered_ids.has(id)), "every recruitable companion without a dedicated quest system has exactly one catalogue quest; Neris uses her existing bespoke route")
     check(ids_ok, "every quest resolves to a recruitable character and has milestones and outcomes")
     var state: Dictionary = {}
     var quest_id := "q_companion_brisa_hearth_of_names"
