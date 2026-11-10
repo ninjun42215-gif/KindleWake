@@ -5,6 +5,7 @@ const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const EmpireSystemScript = preload("res://scripts/core/empire_system.gd")
 const RelationshipSystem = preload("res://scripts/core/relationship_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
@@ -23,6 +24,7 @@ var pending_location: String = ""        # town map the location scene opens nex
 var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored with battle saves
 var campaign_slot: String = ""
 var faction_state: Dictionary = {}
+var empire_state: Dictionary = EmpireSystemScript.new_campaign_state("house_dunmarrow", 0)
 var companion_relationships: Dictionary = {}
 
 
@@ -56,7 +58,51 @@ func new_game(profile: Dictionary = {}) -> void:
     world_flags = {}
     pending_location = ""
     faction_state = FactionSystem.new_campaign_state(GameData.factions)
+    empire_state = EmpireSystemScript.new_campaign_state("house_dunmarrow", 0)
     companion_relationships = {}
+
+
+## Empire controls are available only after the authored campaign unlock.
+func empire_management_unlocked() -> bool:
+    return bool(world_flags.get("empire_management_unlocked", false))
+
+
+func empire_summary() -> Dictionary:
+    if not empire_management_unlocked():
+        return {"unlocked":false}
+    var summary := EmpireSystemScript.realm_summary(empire_state, faction_state)
+    summary["unlocked"] = true
+    return summary
+
+
+func set_empire_tax_rate(rate: float) -> bool:
+    return empire_management_unlocked() and EmpireSystemScript.set_tax_rate(empire_state, rate)
+
+
+func appoint_empire_governor(region_id: String, character_id: String) -> bool:
+    if not empire_management_unlocked():
+        return false
+    return EmpireSystemScript.appoint_governor(empire_state, faction_state, region_id, character_id, party.roster)
+
+
+func enact_empire_policy(policy_id: String) -> Dictionary:
+    if not empire_management_unlocked():
+        return {"ok":false, "reason":"Empire management is not unlocked."}
+    return EmpireSystemScript.enact_policy(empire_state, policy_id)
+
+
+func settle_empire_month(month_token: String) -> Dictionary:
+    if not empire_management_unlocked():
+        return {"ok":false, "reason":"Empire management is not unlocked."}
+    return EmpireSystemScript.advance_month(empire_state, faction_state, month_token)
+
+
+func _faction_ids() -> Array:
+    var ids: Array = []
+    for entry in GameData.factions.get("factions", []):
+        if typeof(entry) == TYPE_DICTIONARY:
+            ids.append(str(entry.get("id", "")))
+    return ids
 
 
 ## Change diplomatic standing after an authored campaign event.
@@ -176,6 +222,7 @@ func campaign_payload() -> Dictionary:
         "world_positions": world_positions.duplicate(true),
         "world_flags": world_flags.duplicate(true),
         "faction_state": faction_state.duplicate(true),
+        "empire_state": empire_state.duplicate(true),
         "companion_relationships": companion_relationships.duplicate(true),
         "from_world": true
     }
@@ -203,6 +250,7 @@ func load_campaign(slot_id: String) -> bool:
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
     faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
+    empire_state = EmpireSystemScript.normalize_state(payload.get("empire_state", {}), _faction_ids())
     companion_relationships = RelationshipSystem.normalize_state(payload.get("companion_relationships", {}))
     world_pos = region_state["world_pos"]
     active_region_id = str(region_state["active_region_id"])
