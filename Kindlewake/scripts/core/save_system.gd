@@ -58,6 +58,20 @@ func checksum_of(text: String) -> String:
 func save_slot(slot_id: String, payload: Dictionary, summary: String = "") -> bool:
     if not _is_valid_slot_id(slot_id):
         return false
+    if bool(payload.get("campaign", false)) and not RegionSaveState.is_valid_campaign_payload(payload):
+        push_warning("SaveSystem: refusing to overwrite a slot with an invalid campaign payload.")
+        return false
+
+    var final_path: String = slot_path(slot_id)
+    var tmp_path: String = final_path + ".tmp"
+    var bak_path: String = final_path + ".bak"
+    var primary_env: Dictionary = _read_envelope(final_path)
+    if not primary_env.is_empty():
+        var primary_result: Dictionary = _decode_envelope(primary_env)
+        if str(primary_result.get("error", "")) == "Save was made by a newer version of the game.":
+            push_warning("SaveSystem: refusing to overwrite a save from a newer game version.")
+            return false
+
     DirAccess.make_dir_recursive_absolute(_save_directory())
     var payload_text: String = JSON.stringify(payload)
     var envelope: Dictionary = {
@@ -71,9 +85,6 @@ func save_slot(slot_id: String, payload: Dictionary, summary: String = "") -> bo
         "payload": payload_text,
         "checksum": checksum_of(payload_text),
     }
-    var final_path: String = slot_path(slot_id)
-    var tmp_path: String = final_path + ".tmp"
-    var bak_path: String = final_path + ".bak"
     var file := FileAccess.open(tmp_path, FileAccess.WRITE)
     if file == null:
         push_error("SaveSystem: cannot write " + tmp_path)
@@ -84,9 +95,17 @@ func save_slot(slot_id: String, payload: Dictionary, summary: String = "") -> bo
         DirAccess.remove_absolute(tmp_path)
         push_error("SaveSystem: verification of the temporary save failed")
         return false
+
+    # Only promote a verified primary to backup. If primary is corrupt or semantically
+    # invalid, leave an existing valid backup untouched.
     if FileAccess.file_exists(final_path):
-        DirAccess.copy_absolute(final_path, bak_path)
-        DirAccess.remove_absolute(final_path)
+        var primary_is_valid := not primary_env.is_empty() and bool(_decode_envelope(primary_env).get("ok", false))
+        if primary_is_valid:
+            var backup_copy_error: int = DirAccess.copy_absolute(final_path, bak_path)
+            if backup_copy_error != OK:
+                DirAccess.remove_absolute(tmp_path)
+                push_error("SaveSystem: could not preserve the previous valid save as backup.")
+                return false
     var err: int = DirAccess.rename_absolute(tmp_path, final_path)
     if err != OK:
         push_error("SaveSystem: rename failed (" + str(err) + ")")
