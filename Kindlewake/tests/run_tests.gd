@@ -1665,3 +1665,11 @@ func _test_merchant_expansion() -> void:
     smuggle_rng.seed = 7
     var smuggle := TradeSystem.smuggle_sell(party, state, "sethmarch", "grain", 1, goods, smuggle_rng)
     check(smuggle.has("ok") and (bool(smuggle["ok"]) or bool(smuggle.get("caught", false))), "smuggling resolves to success or customs seizure")
+    var unlicensed_state := TradeSystem.new_state()
+    var unlicensed_party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    unlicensed_party.add_item("amber", 2)
+    var rejected_smuggle := TradeSystem.smuggle_sell(unlicensed_party, unlicensed_state, "redwater", "amber", 1, goods, smuggle_rng)
+    check(not bool(rejected_smuggle.get("ok", false)) and str(rejected_smuggle.get("message", "")).contains("guild license"), "smuggling cannot bypass exclusive-goods guild licenses")
+    check(unlicensed_party.item_count("amber") == 2, "rejected unlicensed smuggling preserves cargo")
+    var oversized_smuggle := TradeSystem.smuggle_sell(party, state, "sethmarch", "grain", 100, goods, smuggle_rng)
+    check(not bool(oversized_smuggle.get("ok", false)) and party.item_count("grain") >= 1, "smuggling obeys the configured transaction quantity cap")
