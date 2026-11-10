@@ -5,6 +5,8 @@ const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const OpeningChapterSystem = preload("res://scripts/core/opening_chapter_system.gd")
 const OpeningActOneQuestSystem = preload("res://scripts/core/opening_act_one_quest_system.gd")
+const ActTwoQuestSystem = preload("res://scripts/core/act_two_quest_system.gd")
+const ActTwoQuestChallenge = preload("res://scripts/ui/act_two_quest_challenge.gd")
 const ActOneQuestChallenge = preload("res://scripts/ui/act_one_quest_challenge.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
@@ -43,6 +45,7 @@ func _initialize() -> void:
     _test_act_one_challenge_content()
     _test_act_one_tactical_bosses()
     _test_boss_phase_transitions()
+    _test_act_two_broken_seals()
     _test_escape_mission()
     _test_escape_ui_layout()
     _test_sigils()
@@ -253,6 +256,51 @@ func _test_boss_phase_transitions() -> void:
         boss.hp = 1
         check(not ctl.evaluate_boss_phase(boss), str(entry.boss) + " has no duplicate phase at critical HP")
 
+
+func _test_act_two_broken_seals() -> void:
+    print("[Act II: Broken Seals]")
+    var flags: Dictionary = {}
+    check(not bool(ActTwoQuestSystem.inspect("boundary_tree", flags).get("available", false)), "Act II remains locked before the Sethmarch oath")
+    flags["chapter_1_complete"] = true
+    check(bool(ActTwoQuestSystem.inspect("boundary_tree", flags).get("available", false)), "Boundary Tree opens after Act I")
+    check(not bool(ActTwoQuestSystem.inspect("orrowen_hearing", flags).get("available", true)), "Orrowen hearing waits for boundary evidence")
+    var result: Dictionary = ActTwoQuestSystem.apply_boundary(flags, "shared_stewardship")
+    check(bool(result.get("ok", false)), "shared stewardship settlement is accepted")
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(flags.get("act2_boundary_resolved", false)) and bool(flags.get("orrowen_shared_stewardship", false)), "boundary evidence and settlement persist")
+    check(not bool(ActTwoQuestSystem.apply_boundary(flags, "temporary_survey").get("ok", true)), "boundary settlement cannot be silently overwritten")
+    check(bool(ActTwoQuestSystem.inspect("orrowen_hearing", flags).get("available", false)), "hearing opens after boundary settlement")
+    result = ActTwoQuestSystem.apply_hearing(flags, "protect_witness")
+    check(bool(result.get("ok", false)), "hearing can protect a vulnerable witness")
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(flags.get("act2_witness_protected", false)) and bool(flags.get("act2_orrowen_testimony_verified", false)), "witness protection and verified testimony are recorded separately")
+    check(bool(ActTwoQuestSystem.inspect("changed_escort", flags).get("available", false)), "escort opens after the hearing")
+    check(not bool(ActTwoQuestSystem.apply_escort(flags, "grant_sanctuary").get("ok", true)), "escort outcome is blocked until the crossing is secured")
+    flags["act2_escort_captain_defeated"] = true
+    result = ActTwoQuestSystem.apply_escort(flags, "negotiate_passage")
+    check(bool(result.get("ok", false)), "negotiated passage can be recorded after tactical victory")
+    flags = result.get("world_flags", {}) as Dictionary
+    check(bool(flags.get("chapter_2_complete", false)) and bool(flags.get("act2_political_debt_orrowen", false)), "Act II completion and political debt persist")
+    check(not bool(ActTwoQuestSystem.apply_escort(flags, "grant_sanctuary").get("ok", true)), "escort resolution is immutable after chronicle entry")
+    var expected := ["boundary_tree", "orrowen_hearing", "changed_escort"]
+    for quest_id in expected:
+        check(ActTwoQuestChallenge.CHALLENGES.has(quest_id), "playable Act II challenge exists: " + quest_id)
+        var stages: Array = ActTwoQuestChallenge.CHALLENGES[quest_id].steps
+        check(stages.size() >= 3, quest_id + " has multiple distinct interactive stages")
+    var escort: Dictionary = gd.battle_def("act2_changed_escort")
+    check(not escort.is_empty(), "Act II escort battle is registered in GameData")
+    check(str(escort.get("world_flag_on_victory", "")) == "act2_escort_captain_defeated", "escort tactical victory sets its campaign gate")
+    check(str(escort.get("return_scene", "")) == "res://ActTwoQuestChallenge.tscn", "escort battle returns to the Act II challenge")
+    var has_commander := false
+    for spawn in escort.get("units", []):
+        if str((spawn as Dictionary).get("character_id", "")) == "checkpoint_sergeant":
+            has_commander = bool((spawn as Dictionary).get("commander", false))
+    check(has_commander and gd.characters.has("checkpoint_sergeant"), "Odran Vale is an authored commander encounter")
+    var location_maps: Dictionary = gd.locations.get("maps", {})
+    check(location_maps.has("thornmere") and location_maps.has("elderbough") and location_maps.has("crossing"), "Act II scenario locations use existing walkable regional maps")
+    check(location_maps["thornmere"].spots.any(func(s): return str(s.get("story_id", "")) == "boundary_tree"), "Boundary Tree is placed in Thornmere")
+    check(location_maps["elderbough"].spots.any(func(s): return str(s.get("story_id", "")) == "orrowen_hearing"), "Orrowen hearing is placed in Elderbough")
+    check(location_maps["crossing"].spots.any(func(s): return str(s.get("story_id", "")) == "changed_escort"), "Changed Escort is placed at Sallow Crossing")
 
 func _test_escape_mission() -> void:
     print("[escape mission]")
