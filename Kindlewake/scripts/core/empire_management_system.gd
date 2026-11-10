@@ -389,8 +389,8 @@ static func advance_season(state: Dictionary, province_ids: Array, adjacency: Di
 	return report
 
 
-## A connected supply network begins at owned depots. Roads make the network cheaper to extend;
-## a field army on a hostile region can draw supply only when it borders the connected network.
+## A connected supply network begins at owned depots and follows controlled atlas-region links;
+## a field army on a hostile region can draw supply when it borders the connected network.
 static func supply_network(state: Dictionary, controlled_provinces: Array, adjacency: Dictionary) -> Array:
 	var network: Array[String] = []
 	var frontier: Array[String] = []
