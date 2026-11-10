@@ -318,7 +318,36 @@ func _build_military() -> void:
         for child in actions.get_children():
             child.disabled = not controlled or (child.text.begins_with("Disband") and int(garrison.get(troop_type, 0)) < 5)
         body.add_child(actions)
-    body.add_child(_label("Garrisons are local defensive forces, not movable field armies. Every soldier consumes seasonal provisions and treasury upkeep. Barracks add 100 local garrison capacity.", 14, C_DIM))
+    if controlled and int(garrison.get("infantry", 0)) >= 5:
+        body.add_child(_button("Mobilize 5 Infantry into Field Army", _mobilize_field_army.bind(selected_province, {"infantry": 5}), true))
+    body.add_child(_label("Garrisons defend their province. Mobilized field armies travel one atlas region-link per strategic move. Armies outside controlled territory are unsupplied.", 14, C_DIM))
+    _section("FIELD ARMIES")
+    var field_armies: Dictionary = GameState.empire_state.get("field_armies", {})
+    var adjacency: Dictionary = GameState.atlas_region_adjacency()
+    if field_armies.is_empty():
+        body.add_child(_label("No field armies have been mobilized.", 15, C_DIM))
+    for army_id in field_armies.keys():
+        var army: Dictionary = field_armies[army_id]
+        var location := str(army.get("location", ""))
+        var composition: Dictionary = army.get("troops", {})
+        var total := 0
+        for amount in composition.values():
+            total += int(amount)
+        _metric(str(army.get("name", army_id)), "%d soldiers · %s" % [total, location.replace("_", " ").capitalize()], "Commander: %s · %s" % [str(army.get("commander", "Unassigned")) if str(army.get("commander", "")) != "" else "Unassigned", "Supplied" if bool(army.get("supplied", false)) else "Unsupplied"])
+        for destination in adjacency.get(location, []):
+            body.add_child(_button("March to " + str(destination).replace("_", " ").capitalize(), _move_field_army.bind(str(army_id), str(destination)), true))
+
+
+func _mobilize_field_army(province: String, composition: Dictionary) -> void:
+    var army_id := GameState.mobilize_field_army(province, composition)
+    _set_message("Mobilized %s from %s." % [army_id, province] if army_id != "" else "Mobilization rejected: check garrison strength and province control.", army_id != "")
+    GameState.save_campaign("auto_a")
+
+
+func _move_field_army(army_id: String, destination: String) -> void:
+    var ok := GameState.move_field_army(army_id, destination)
+    _set_message("Army marched to %s." % destination.replace("_", " ").capitalize() if ok else "March rejected: destination is not linked or the army has already moved.", ok)
+    GameState.save_campaign("auto_a")
 
 
 func _recruit_troops(province: String, troop_type: String, amount: int) -> void:
