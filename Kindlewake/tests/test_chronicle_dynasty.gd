@@ -67,6 +67,7 @@ func _initialize() -> void:
  check(str(year.state.last_succession.get("to","")) == "heir_1","title succession resolves to eligible heir under configured law")
  check(year.state.people["heir_1"].title_ids.size() >= 2,"succession preserves multiple titles held by the same heir")
  check(int(year.state.year) == 2,"house chronicle advances its calendar")
+ check(int(year.state.domains["kaer_sethorn"].food) == 54 and int(year.state.domains["kaer_sethorn"].prosperity) == 51,"annual domain economy consumes food and improves stable holdings")
  check(year.state.chronicle.size() > 0,"yearly and family events enter the house chronicle")
  var partition_state := Dynasty.new_house(founder,"Torren Vale","House Vale")
  var first_child := Dynasty.add_child(partition_state,"heir_1","First Child",20)
