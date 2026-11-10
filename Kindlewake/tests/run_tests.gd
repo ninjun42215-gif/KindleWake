@@ -10,6 +10,7 @@ const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
 const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 const EmpireEconomySystem = preload("res://scripts/core/empire_economy_system.gd")
+const EmpireDevelopmentSystem = preload("res://scripts/core/empire_development_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -49,6 +50,7 @@ func _initialize() -> void:
     _test_world_expansion()
     _test_holding_system()
     _test_empire_economy()
+    _test_empire_development()
     _test_dungeon_mechanisms()
     _test_secret_passages()
     _test_faction_politics()
@@ -201,6 +203,33 @@ func _test_empire_economy() -> void:
     check(int(lost.get("holdings_processed", -1)) == 0 and int(lost.get("treasury_after", 0)) == 100, "foreign-held locations stop producing player income and upkeep")
     check(EmpireEconomySystem.stability_label(10) == "Unrest" and EmpireEconomySystem.stability_label(80) == "Secure", "holding stability exposes clear unrest and security states")
 
+
+func _test_empire_development() -> void:
+    print("[empire development]")
+    var flags := {
+        "holding_claimed_keep":true,
+        "holding_owner_keep":"house_dunmarrow",
+        "empire_stockpile_materials":30,
+        "empire_stockpile_provisions":40
+    }
+    var upgrade := EmpireDevelopmentSystem.upgrade_building("keep", "farm", flags, 200)
+    check(bool(upgrade.get("ok", false)) and int(upgrade.get("tier", 0)) == 1 and int(flags.get("empire_stockpile_materials", 0)) == 26, "holding farm upgrades consume materials and advance one tier")
+    var insufficient := EmpireDevelopmentSystem.upgrade_building("keep", "farm", flags, 10)
+    check(not bool(insufficient.get("ok", true)) and int(flags.get("holding_building_keep_farm", 0)) == 1, "unaffordable building upgrades leave the holding unchanged")
+    var recruited := EmpireDevelopmentSystem.recruit("keep", "archer", 2, flags, 100)
+    check(bool(recruited.get("ok", false)) and int(recruited.get("recruited", 0)) == 2 and int(flags.get("empire_stockpile_provisions", 0)) == 32, "recruitment spends gold and provisions and stores a troop reserve")
+    var assigned := EmpireDevelopmentSystem.assign_recruits_to_garrison("keep", "archer", 1, flags)
+    check(bool(assigned.get("ok", false)) and int(flags.get("holding_garrison_keep", 0)) == 1 and int(flags["holding_recruits_keep"]["archer"]) == 1, "recruited troops can be assigned from reserve to the holding garrison")
+    var siege := EmpireDevelopmentSystem.start_siege("keep", "siege_test", 2, flags)
+    check(bool(siege.get("ok", false)), "a player holding can stage an objective-based siege")
+    var progress := EmpireDevelopmentSystem.progress_siege("siege_test", 1, flags)
+    check(bool(progress.get("ok", false)) and not bool(progress.get("completed", true)), "siege objectives preserve incremental progress")
+    var completed := EmpireDevelopmentSystem.progress_siege("siege_test", 1, flags)
+    check(bool(completed.get("completed", false)), "siege objective completes at its required progress")
+    var premature := EmpireDevelopmentSystem.resolve_siege("siege_test", true, flags)
+    check(bool(premature.get("ok", false)) and str(premature.get("status", "")) == "resolved", "a completed siege objective can be resolved after its encounter")
+    var foreign_flags := {"holding_claimed_keep":true,"holding_owner_keep":"foreign_house"}
+    check(not bool(EmpireDevelopmentSystem.recruit("keep", "levy", 1, foreign_flags, 100).get("ok", true)), "foreign holdings cannot recruit for the player")
 
 func _test_dungeon_mechanisms() -> void:
     print("[dungeon mechanisms]")
