@@ -21,7 +21,7 @@ static func apply_bridges(flags_in: Dictionary) -> Dictionary:
     flags["act3_bridges_resolved"] = true
     flags["act3_ford_secured"] = true
     flags["act3_evacuation_bridge_held"] = true
-    flags["act3_storehouse_saved"] = bool(flags.get("act3_storehouse_saved_in_battle", false))
+    flags["act3_storehouse_saved"] = true
     flags["act3_bram_bridge_command"] = true
     flags["act3_sela_recon_intelligence"] = true
     flags["act3_regional_control_river_road"] = "contested_secure"
