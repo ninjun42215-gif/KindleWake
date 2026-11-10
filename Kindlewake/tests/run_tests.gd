@@ -174,7 +174,7 @@ func _test_art_assets() -> void:
 
 func _test_companion_quests() -> void:
     print("[companion quests]")
-    var catalog := {"quests": gd.companion_quests}
+    var catalog := {"quests": gd.companion_quests, "world_flags": {}}
     check(gd.companion_quests.size() == 21, "all 21 recruitable companion quest definitions load")
     var ids_ok := true
     var recruited_ids: Array[String] = []
@@ -209,6 +209,13 @@ func _test_companion_quests() -> void:
     var started := CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog)
     check(bool(started.get("ok", false)) and CompanionQuestSystem.status(state, quest_id) == "active", "recruited ally can start their personal quest")
     check(not bool(CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog).get("ok", false)), "a companion quest cannot be started twice")
+    check(str(gd.companion_quests["q_companion_maren_tideglass_wake"].get("required_flags_all", [])[0]) == MarenQuestSystem.COMPLETE_FLAG, "Maren's catalogue sequel uses the existing Northstar quest completion flag")
+    var maren_locked_state: Dictionary = {}
+    var maren_locked := CompanionQuestSystem.start(maren_locked_state, "q_companion_maren_tideglass_wake", ["torren", "maren_vey"], catalog)
+    check(not bool(maren_locked.get("ok", false)) and maren_locked_state.is_empty(), "Maren's companion follow-up stays locked until her Northstar signal quest is complete")
+    var maren_catalog := {"quests": gd.companion_quests, "world_flags": {MarenQuestSystem.COMPLETE_FLAG: true}}
+    var maren_started := CompanionQuestSystem.start(maren_locked_state, "q_companion_maren_tideglass_wake", ["torren", "maren_vey"], maren_catalog)
+    check(bool(maren_started.get("ok", false)), "Maren's follow-up unlocks after the existing Northstar quest resolves")
     check(not bool(CompanionQuestSystem.advance(state, quest_id, "families_contacted", catalog).get("ok", false)), "out-of-order milestones are rejected")
     check(bool(CompanionQuestSystem.advance(state, quest_id, "ledger_recovered", catalog).get("ok", false)), "first companion quest milestone advances")
     check(bool(CompanionQuestSystem.advance(state, quest_id, "families_contacted", catalog).get("ok", false)), "second companion quest milestone advances")
@@ -282,7 +289,7 @@ func _test_companion_quests() -> void:
         "q_companion_garrick_spared_enemy": {"sethorn": "prisoner_request_received", "sethorn_hall": "witnesses_escorted", "sethorn_barracks": "commander_captured_or_surrendered"},
         "q_companion_corwin_heirless_seal": {"cindermead": "seal_forgery_found", "cindermead_inn": "charter_authority_audited", "cindermead_market": "retainers_heard"},
         "q_companion_ilyan_silent_tower": {"dungeon_bell": "missing_page_found", "dungeon_hollowroot": "rune_experiment_contained", "dungeon_catacombs": "apprentice_reached"},
-        "q_companion_maren_tideglass_wake": {"brinegate": "ledger_page_found", "saltmere": "safe_route_plotted", "dungeon_tideglass": "wreck_manifest_recovered"},
+        "q_companion_maren_tideglass_wake": {"brinegate": "ledger_page_found", "saltmere": "safe_route_plotted", "dungeon_northstar_wreck": "wreck_manifest_recovered"},
         "q_companion_seraphine_measure_of_oaths": {"tarnholt": "unread_oath_found", "tarnholt_inn": "order_records_examined", "tarnholt_chapter_house": "chapter_house_heard"}
     }
     var authored_hooks_ok := true
@@ -2449,6 +2456,13 @@ func _test_campaign_save_semantic_backup_fallback() -> void:
         "faction_state": {},
         "companion_relationships": {}
     }
+    check(RegionSaveState.is_valid_campaign_payload(valid_payload), "campaign save fixture remains valid with optional companion quest data omitted")
+    var valid_quest_payload: Dictionary = valid_payload.duplicate(true)
+    valid_quest_payload["companion_quests"] = {"q_companion_brisa_hearth_of_names": {"status": "active", "progress": 1}}
+    check(RegionSaveState.is_valid_campaign_payload(valid_quest_payload), "campaign saves accept companion quest progress as an optional dictionary")
+    var malformed_quest_payload: Dictionary = valid_payload.duplicate(true)
+    malformed_quest_payload["companion_quests"] = ["invalid"]
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_quest_payload), "campaign restore rejects malformed companion quest containers")
 
     var malformed_history: Dictionary = valid_payload.duplicate(true)
     malformed_history["party"]["sheets"]["torren"]["trait_history"] = ["bad-entry"]
