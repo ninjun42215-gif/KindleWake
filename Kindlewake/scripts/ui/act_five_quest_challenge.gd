@@ -106,6 +106,7 @@ func _render() -> void:
  title_label.text = "THE LAST EMPEROR"
  body_label.text = "The Empire is dissolved. The Concord of Free Realms stands, imperfect and answerable to those who must live beneath it. The Chronicle of Houses remains sealed until the founder's late-life epilogue and natural death."
  status_label.text = "Ending: " + str(f.get("act5_ending_profile",""))
+ _add("Begin the founder's late-life epilogue", _begin_founder_epilogue)
  _add("Return to Aurelmont", _return_to_location)
 func _add(label: String, callback: Callable) -> void:
  var b := Button.new()
@@ -158,3 +159,11 @@ func _return_to_location() -> void:
   GameState.pending_location = "aurelmont"
  GameState.save_campaign("auto_a")
  get_tree().change_scene_to_file("res://Location.tscn")
+
+func _begin_founder_epilogue() -> void:
+ if not bool(GameState.world_flags.get("chapter_5_complete", false)) or not bool(GameState.chronicle_state.get("milestones", {}).get("empire_dissolved", false)):
+  status_label.text = "The founder's epilogue remains sealed until the Empire is formally dissolved."
+  return
+ GameState.pending_location = ""
+ GameState.save_campaign("auto_a")
+ get_tree().change_scene_to_file("res://ChronicleEpilogue.tscn")
