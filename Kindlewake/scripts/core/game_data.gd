@@ -15,6 +15,7 @@ var weapons: Dictionary = {}
 var skills: Dictionary = {}
 var characters: Dictionary = {}
 var traits: Dictionary = {}
+var trait_events: Dictionary = {}
 var items: Dictionary = {}
 var item_rarities: Array = []
 var runes: Dictionary = {}
@@ -41,6 +42,7 @@ func reload() -> void:
     skills = _load_json("skills.json").get("skills", {})
     characters = _load_json("characters.json").get("characters", {})
     traits = TraitSystemScript.definitions_from_json(_load_json("traits.json"))
+    trait_events = (_load_json("trait_events.json").get("events", {}) as Dictionary).duplicate(true)
     var item_data: Dictionary = _load_json("items.json")
     items = item_data.get("items", {})
     item_rarities = item_data.get("rarities", [])
@@ -87,12 +89,12 @@ func as_db() -> Dictionary:
 
 ## The small database PartyState needs to pay rewards (classes for level-ups, items and sigils for bonuses).
 func rules_db() -> Dictionary:
-    return {"classes": classes, "items": items, "runes": runes, "sigils": runes, "traits": traits}
+    return {"classes": classes, "items": items, "runes": runes, "sigils": runes, "traits": traits, "trait_events": trait_events}
 
 
 ## Everything the party screen needs to compute and describe gear, sigils and skills.
 func party_db() -> Dictionary:
-    return {"classes": classes, "weapons": weapons, "items": items, "runes": runes, "sigils": runes, "skills": skills, "traits": traits}
+    return {"classes": classes, "weapons": weapons, "items": items, "runes": runes, "sigils": runes, "skills": skills, "traits": traits, "trait_events": trait_events}
 
 
 func battle_def(battle_id: String) -> Dictionary:
