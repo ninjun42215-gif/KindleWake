@@ -4,6 +4,11 @@ const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const MarenQuestSystem = preload("res://scripts/core/maren_quest_system.gd")
 const NerisQuestSystem = preload("res://scripts/core/neris_quest_system.gd")
+const OpeningActOneQuestSystem = preload("res://scripts/core/opening_act_one_quest_system.gd")
+const ActTwoQuestSystem = preload("res://scripts/core/act_two_quest_system.gd")
+const ActThreeQuestSystem = preload("res://scripts/core/act_three_quest_system.gd")
+const ActFourQuestSystem = preload("res://scripts/core/act_four_quest_system.gd")
+const ActFiveQuestSystem = preload("res://scripts/core/act_five_quest_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
@@ -270,6 +275,18 @@ func _on_prompt_pressed() -> void:
             _build_maren_quest_interaction()
         elif str(near_spot.get("quest_id", "")) == "neris_beacon":
             _build_neris_quest_interaction()
+    elif spot_kind == "story":
+        var story_id: String = str(near_spot.get("story_id", ""))
+        if story_id in ["boundary_tree", "orrowen_hearing", "changed_escort"]:
+            _render_act_two_story(near_spot)
+        elif story_id in ["three_bridges", "banner_reeds", "price_crossing"]:
+            _render_act_three_story(near_spot)
+        elif story_id in ["quillon_archive", "witness_recanted"]:
+            _render_act_four_story(near_spot)
+        elif story_id == "last_audience":
+            _render_act_five_story(near_spot)
+        else:
+            _render_opening_story(near_spot)
     elif spot_kind == "recruit":
         var cid: String = str(near_spot.get("character_id", ""))
         var definition: Dictionary = GameData.characters.get(cid, {})
@@ -416,6 +433,162 @@ func _resolve_companion_quest(quest_id: String, outcome: String) -> void:
 
 func _format_quest_label(value: String) -> String:
     return value.replace("_", " ").capitalize()
+
+func _render_opening_story(spot: Dictionary) -> void:
+    var story_id: String = str(spot.get("story_id", ""))
+    var view: Dictionary = OpeningActOneQuestSystem.inspect(story_id, GameState.world_flags)
+    spot_title.text = str(view.get("title", spot.get("name", "Story")))
+    spot_text.text = str(view.get("body", ""))
+    for child in spot_buttons.get_children():
+        spot_buttons.remove_child(child)
+        child.queue_free()
+    if not (view.get("actions", []) as Array).is_empty():
+        spot_buttons.add_child(_btn("Begin playable quest", _launch_opening_challenge.bind(story_id)))
+    else:
+        spot_text.text += "\\n\\nThis quest has been completed or is waiting for another campaign milestone."
+
+
+func _render_act_two_story(spot: Dictionary) -> void:
+    var story_id := str(spot.get("story_id", ""))
+    var view: Dictionary = ActTwoQuestSystem.inspect(story_id, GameState.world_flags)
+    spot_title.text = str(view.get("title", spot.get("name", "Story")))
+    spot_text.text = str(view.get("body", ""))
+    for child in spot_buttons.get_children():
+        spot_buttons.remove_child(child)
+        child.queue_free()
+    if bool(view.get("available", false)) and not bool(view.get("complete", false)):
+        spot_buttons.add_child(_btn("Begin playable Act II scenario", _launch_act_two_challenge.bind(story_id)))
+    elif bool(view.get("complete", false)):
+        spot_text.text += "\n\nThis scenario is recorded in the campaign chronicle."
+    else:
+        spot_text.text += "\n\nThis scenario is waiting for an earlier Act II decision."
+    spot_buttons.add_child(_btn("Close", _close_panel))
+
+
+func _launch_act_two_challenge(story_id: String) -> void:
+    var view: Dictionary = ActTwoQuestSystem.inspect(story_id, GameState.world_flags)
+    if not bool(view.get("available", false)) or bool(view.get("complete", false)):
+        spot_text.text += "\n\nThis scenario is not currently available."
+        return
+    GameState.pending_location = current_map_id
+    if str(GameState.world_flags.get("_pending_act_two_challenge", "")) != story_id:
+        GameState.world_flags["_pending_act_two_challenge"] = story_id
+        GameState.world_flags["_pending_act_two_challenge_step"] = 0
+    get_tree().change_scene_to_file("res://ActTwoQuestChallenge.tscn")
+
+func _render_act_three_story(spot: Dictionary) -> void:
+    var story_id := str(spot.get("story_id", ""))
+    var view: Dictionary = ActThreeQuestSystem.inspect(story_id, GameState.world_flags)
+    spot_title.text = str(view.get("title", spot.get("name", "Story")))
+    spot_text.text = str(view.get("body", ""))
+    for child in spot_buttons.get_children():
+        spot_buttons.remove_child(child)
+        child.queue_free()
+    if bool(view.get("available", false)) and not bool(view.get("complete", false)):
+        spot_buttons.add_child(_btn("Begin playable Act III scenario", _launch_act_three_challenge.bind(story_id)))
+    elif bool(view.get("complete", false)):
+        spot_text.text += "\n\nThis scenario is recorded in the campaign chronicle."
+    else:
+        spot_text.text += "\n\nThis scenario is waiting for an earlier Act III decision."
+    spot_buttons.add_child(_btn("Close", _close_panel))
+
+
+func _launch_act_three_challenge(story_id: String) -> void:
+    var view: Dictionary = ActThreeQuestSystem.inspect(story_id, GameState.world_flags)
+    if not bool(view.get("available", false)) or bool(view.get("complete", false)):
+        spot_text.text += "\n\nThis scenario is not currently available."
+        return
+    GameState.pending_location = current_map_id
+    if str(GameState.world_flags.get("_pending_act_three_challenge", "")) != story_id:
+        GameState.world_flags["_pending_act_three_challenge"] = story_id
+        GameState.world_flags["_pending_act_three_challenge_step"] = 0
+    get_tree().change_scene_to_file("res://ActThreeQuestChallenge.tscn")
+
+
+func _render_act_four_story(spot: Dictionary) -> void:
+    var story_id := str(spot.get("story_id", ""))
+    var view: Dictionary = ActFourQuestSystem.inspect(story_id, GameState.world_flags)
+    spot_title.text = str(view.get("title", spot.get("name", "Story")))
+    spot_text.text = str(view.get("body", ""))
+    for child in spot_buttons.get_children():
+        spot_buttons.remove_child(child)
+        child.queue_free()
+    if bool(view.get("available", false)) and not bool(view.get("complete", false)):
+        spot_buttons.add_child(_btn("Begin playable Act IV scenario", _launch_act_four_challenge.bind(story_id)))
+    elif bool(view.get("complete", false)):
+        spot_text.text += "\n\nThis scenario is recorded in the campaign chronicle."
+    else:
+        spot_text.text += "\n\nThis scenario is waiting for the previous Act IV decision."
+    spot_buttons.add_child(_btn("Close", _close_panel))
+
+
+func _launch_act_four_challenge(story_id: String) -> void:
+    var view: Dictionary = ActFourQuestSystem.inspect(story_id, GameState.world_flags)
+    if not bool(view.get("available", false)) or bool(view.get("complete", false)):
+        spot_text.text += "\n\nThis scenario is not currently available."
+        return
+    GameState.pending_location = current_map_id
+    if str(GameState.world_flags.get("_pending_act_four_challenge", "")) != story_id:
+        GameState.world_flags["_pending_act_four_challenge"] = story_id
+        GameState.world_flags["_pending_act_four_challenge_step"] = 0
+    get_tree().change_scene_to_file("res://ActFourQuestChallenge.tscn")
+
+
+
+func _render_act_five_story(spot: Dictionary) -> void:
+    var view: Dictionary = ActFiveQuestSystem.inspect(GameState.world_flags)
+    spot_title.text = str(view.get("title", spot.get("name", "The Kindling")))
+    spot_text.text = str(view.get("body", ""))
+    for child in spot_buttons.get_children():
+        spot_buttons.remove_child(child)
+        child.queue_free()
+    if bool(GameState.world_flags.get("chapter_5_complete", false)):
+        spot_text.text += "\n\nEnding recorded: " + str(GameState.world_flags.get("act5_ending_profile", ""))
+        spot_buttons.add_child(_btn("Review the final audience", _launch_act_five_challenge))
+    elif bool(view.get("available", false)):
+        spot_buttons.add_child(_btn("Continue the final campaign", _launch_act_five_challenge))
+    else:
+        spot_text.text += "\n\nThe road to Aurelmont is not yet open."
+    spot_buttons.add_child(_btn("Close", _close_panel))
+
+
+func _launch_act_five_challenge() -> void:
+    if not bool(GameState.world_flags.get("chapter_4_complete", false)):
+        spot_text.text += "\n\nThe Quillon witness decision must be completed first."
+        return
+    GameState.pending_location = current_map_id
+    GameState.world_flags["_pending_act_five_stage"] = 0
+    GameState.save_campaign("auto_a")
+    get_tree().change_scene_to_file("res://ActFiveQuestChallenge.tscn")
+
+
+func _launch_opening_challenge(story_id: String) -> void:
+    if not ["blocked_well", "roof_before_banner", "last_convoy", "toll_book", "first_oath"].has(story_id):
+        spot_text.text += "\\n\\nThis story challenge is not available."
+        return
+    GameState.pending_location = current_map_id
+    GameState.world_flags["_pending_act_one_challenge"] = story_id
+    get_tree().change_scene_to_file("res://ActOneQuestChallenge.tscn")
+
+
+func _resolve_opening_story_action(story_id: String, action_id: String) -> void:
+    var outcome: Dictionary = OpeningActOneQuestSystem.resolve(story_id, action_id, GameState.world_flags)
+    if not bool(outcome.get("ok", false)):
+        spot_text.text += "\\n\\n" + str(outcome.get("reason", "That action is unavailable."))
+        return
+    GameState.world_flags = (outcome.get("world_flags", GameState.world_flags) as Dictionary).duplicate(true)
+    GameState.save_campaign("auto_a")
+    var result_text: String = str(outcome.get("text", ""))
+    var view: Dictionary = OpeningActOneQuestSystem.inspect(story_id, GameState.world_flags)
+    spot_text.text = result_text + "\\n\\n" + str(view.get("body", ""))
+    for child in spot_buttons.get_children():
+        spot_buttons.remove_child(child)
+        child.queue_free()
+    for action in view.get("actions", []):
+        var entry: Dictionary = action
+        spot_buttons.add_child(_btn(str(entry.get("label", "Continue")), _resolve_opening_story_action.bind(story_id, str(entry.get("id", "")))))
+    spot_buttons.add_child(_btn("Close", _close_panel))
+
 
 func _resolve_brinegate_choice(choice: String) -> void:
     var outcome: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(GameState.world_flags, choice)
