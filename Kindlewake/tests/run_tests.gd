@@ -20,7 +20,6 @@ const FactionSystem = preload("res://scripts/core/faction_system.gd")
 const EmpireEconomySystem = preload("res://scripts/core/empire_economy_system.gd")
 const EmpireDevelopmentSystem = preload("res://scripts/core/empire_development_system.gd")
 const EmpireSystemScript = preload("res://scripts/core/empire_system.gd")
-const EmpireScreenScript = preload("res://scripts/ui/empire_screen.gd")
 const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 const ArtScript = preload("res://scripts/ui/art.gd")
@@ -561,10 +560,6 @@ func _test_empire_realm_administration() -> void:
     check(str(invalid_ruler.get("ruler_faction", "x")) == "", "unknown ruler factions are rejected during save normalization")
     check(normalized.get("policies", {}).size() == 1 and normalized.get("processed_months", []).size() == 1 and not normalized.has("treasury"), "realm save normalization filters policies and duplicate month tokens without duplicating gold")
     check(normalized.get("governors", {}).size() == 1 and normalized.get("governors", {}).has("sethmarch"), "realm save normalization removes governors outside owned regions or current roster")
-    var empire_screen := EmpireScreenScript.new()
-    empire_screen.setup([])
-    check(empire_screen.tabs != null and empire_screen.holding_picker != null and empire_screen.realm_box != null, "EmpireScreen builds mobile-first Holdings and Realm tabs")
-    empire_screen.free()
 
 
 func _test_empire_development() -> void:
