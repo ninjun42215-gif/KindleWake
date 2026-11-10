@@ -164,8 +164,8 @@ func _test_art_assets() -> void:
 
 func _test_companion_quests() -> void:
     print("[companion quests]")
-    var catalog := {"quests": gd.companion_quests}
-    check(gd.companion_quests.size() == 21, "all 21 recruitable companion quest definitions load")
+    var catalog := {"quests": gd.companion_quests, "world_flags": {}}
+    check(gd.companion_quests.size() == 22, "all 22 recruitable companion quest definitions load")
     var ids_ok := true
     var recruited_ids: Array[String] = []
     for character_id in gd.characters.keys():
@@ -199,6 +199,18 @@ func _test_companion_quests() -> void:
     var started := CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog)
     check(bool(started.get("ok", false)) and CompanionQuestSystem.status(state, quest_id) == "active", "recruited ally can start their personal quest")
     check(not bool(CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog).get("ok", false)), "a companion quest cannot be started twice")
+    var maren_locked_state: Dictionary = {}
+    var maren_locked := CompanionQuestSystem.start(maren_locked_state, "q_companion_maren_tideglass_wake", ["torren", "maren_vey"], catalog)
+    check(not bool(maren_locked.get("ok", false)) and maren_locked_state.is_empty(), "Maren's companion follow-up stays locked until her Northstar signal quest is complete")
+    var maren_catalog := {"quests": gd.companion_quests, "world_flags": {"maren_signal_completed": true}}
+    var maren_started := CompanionQuestSystem.start(maren_locked_state, "q_companion_maren_tideglass_wake", ["torren", "maren_vey"], maren_catalog)
+    check(bool(maren_started.get("ok", false)), "Maren's follow-up unlocks after the existing Northstar quest resolves")
+    var neris_locked_state: Dictionary = {}
+    var neris_locked := CompanionQuestSystem.start(neris_locked_state, "q_companion_neris_light_kept", ["torren", "neris_quell"], catalog)
+    check(not bool(neris_locked.get("ok", false)) and neris_locked_state.is_empty(), "Neris's keeper charter story stays locked until her second-beacon quest is complete")
+    var neris_catalog := {"quests": gd.companion_quests, "world_flags": {NerisQuestSystem.COMPLETE_FLAG: true}}
+    var neris_started := CompanionQuestSystem.start(neris_locked_state, "q_companion_neris_light_kept", ["torren", "neris_quell"], neris_catalog)
+    check(bool(neris_started.get("ok", false)), "Neris's follow-up unlocks after her existing second-beacon quest resolves")
     check(not bool(CompanionQuestSystem.advance(state, quest_id, "families_contacted", catalog).get("ok", false)), "out-of-order milestones are rejected")
     check(bool(CompanionQuestSystem.advance(state, quest_id, "ledger_recovered", catalog).get("ok", false)), "first companion quest milestone advances")
     check(bool(CompanionQuestSystem.advance(state, quest_id, "families_contacted", catalog).get("ok", false)), "second companion quest milestone advances")
@@ -272,7 +284,8 @@ func _test_companion_quests() -> void:
         "q_companion_garrick_spared_enemy": {"sethorn": "prisoner_request_received", "sethorn_hall": "witnesses_escorted", "sethorn_barracks": "commander_captured_or_surrendered"},
         "q_companion_corwin_heirless_seal": {"cindermead": "seal_forgery_found", "cindermead_inn": "charter_authority_audited", "cindermead_market": "retainers_heard"},
         "q_companion_ilyan_silent_tower": {"dungeon_bell": "missing_page_found", "dungeon_hollowroot": "rune_experiment_contained", "dungeon_catacombs": "apprentice_reached"},
-        "q_companion_maren_tideglass_wake": {"brinegate": "ledger_page_found", "saltmere": "safe_route_plotted", "dungeon_tideglass": "wreck_manifest_recovered"},
+        "q_companion_maren_tideglass_wake": {"brinegate": "ledger_page_found", "saltmere": "safe_route_plotted", "dungeon_northstar_wreck": "wreck_manifest_recovered"},
+        "q_companion_neris_light_kept": {"lantern_quay": "keeper_ledger_recovered", "saltmere": "pilot_watch_verified", "brinegate": "beacon_charter_heard"},
         "q_companion_seraphine_measure_of_oaths": {"tarnholt": "unread_oath_found", "tarnholt_inn": "order_records_examined", "tarnholt_chapter_house": "chapter_house_heard"}
     }
     var authored_hooks_ok := true
@@ -303,19 +316,19 @@ func _test_companion_quests() -> void:
         var outcome_flags: Dictionary = gd.companion_quests[authored_quest_id].get("outcome_flags", {})
         if outcome_flags.size() != (gd.companion_quests[authored_quest_id].get("outcomes", []) as Array).size():
             authored_hooks_ok = false
-    check(authored_hooks_ok, "all twenty-one authored routes have three location hooks on walkable tiles, valid investigation challenges and persistent outcome branches")
+    check(authored_hooks_ok, "all twenty-two authored routes have three location hooks on walkable tiles, valid investigation challenges and persistent outcome branches")
     var playable_summaries_ok := true
     for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal", "q_companion_ilyan_silent_tower", "q_companion_maren_tideglass_wake", "q_companion_seraphine_measure_of_oaths"]:
         if str(gd.companion_quests[playable_id].get("journal_summary", "")).length() < 30:
             playable_summaries_ok = false
-    check(playable_summaries_ok, "all twenty-one authored companion quest routes have journal summaries")
+    check(playable_summaries_ok, "all twenty-two authored companion quest routes have journal summaries")
     var playable_flags_ok := true
-    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal", "q_companion_ilyan_silent_tower", "q_companion_maren_tideglass_wake"]:
+    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal", "q_companion_ilyan_silent_tower", "q_companion_maren_tideglass_wake", "q_companion_neris_light_kept"]:
         var playable_definition: Dictionary = gd.companion_quests[playable_id]
         var playable_flags: Dictionary = playable_definition.get("outcome_flags", {})
         if playable_flags.size() != (playable_definition.get("outcomes", []) as Array).size():
             playable_flags_ok = false
-    check(playable_flags_ok, "all twenty-one authored companion quest routes persist every distinct resolution outcome")
+    check(playable_flags_ok, "all twenty-two authored companion quest routes persist every distinct resolution outcome")
 
 
 func _test_prologue() -> void:
