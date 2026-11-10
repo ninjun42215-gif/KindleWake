@@ -31,6 +31,8 @@ var thalassar_world: Dictionary = {}     # thalassar_world.json: Brinegate Coast
 var continents: Dictionary = {}          # continents.json: the seven-continent campaign atlas
 var factions: Dictionary = {}            # factions.json: political powers and regional affiliations
 var companion_quests: Dictionary = {}     # authored recruitable-ally quest definitions
+var world_expansion: Dictionary = {}      # authored dungeons and capturable locations
+var regional_boss_encounters: Dictionary = {} # regional guardian phase briefs
 var battles: Dictionary = {}
 
 
