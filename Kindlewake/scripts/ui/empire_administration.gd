@@ -146,7 +146,7 @@ func _rebuild() -> void:
     tabs = HBoxContainer.new()
     tabs.add_theme_constant_override("separation", 5)
     tab_scroll.add_child(tabs)
-    for tab in ["realm", "council", "provinces", "economy", "chronicle"]:
+    for tab in ["realm", "council", "provinces", "military", "economy", "chronicle"]:
         tabs.add_child(_button(tab.capitalize(), _select_tab.bind(tab), tab == active_tab))
     scroll = ScrollContainer.new()
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -164,6 +164,7 @@ func _rebuild() -> void:
         "realm": _build_realm()
         "council": _build_council()
         "provinces": _build_provinces()
+        "military": _build_military()
         "economy": _build_economy()
         "chronicle": _build_chronicle()
 
@@ -282,6 +283,54 @@ func _build_provinces() -> void:
         var build_button := _button(("Built  ·  " if exists else "Construct  ·  ") + str(BUILDINGS[building_id]), _construct.bind(province, building_id), not exists)
         build_button.disabled = exists or not controlled
         body.add_child(build_button)
+
+
+func _build_military() -> void:
+	_section("THE REALM'S STANDING FORCES")
+	var summary: Dictionary = GameState.empire_army_summary()
+	_metric("Troop strength", "%d soldiers" % int(summary.get("troops", 0)), "%d provincial garrisons" % int(summary.get("garrisoned_provinces", 0)))
+	_metric("Seasonal military burden", "%d gold · %d food" % [int(summary.get("upkeep", 0)), int(summary.get("food", 0))], "Readiness estimate: %d%% based on current food reserves" % int(summary.get("readiness", 100)))
+	_section("SELECT GARRISON PROVINCE")
+	var region_ids: Array = GameData.factions.get("regions", {}).keys()
+	region_ids.sort()
+	if selected_province == "" and not region_ids.is_empty():
+		selected_province = str(region_ids[0])
+	for region_variant in region_ids:
+		var province_id := str(region_variant)
+		var territory: Dictionary = GameState.faction_state.get("territories", {}).get(province_id, {})
+		var owner := _faction_name(str(territory.get("owner", "")))
+		body.add_child(_button("%s · %s" % [province_id.replace("_", " ").capitalize(), owner], _select_province.bind(province_id), selected_province == province_id))
+	if selected_province == "":
+		return
+	var controlled := GameState.player_controlled_provinces().has(selected_province)
+	var garrison: Dictionary = GameState.empire_state.get("armies", {}).get(selected_province, {})
+	_section(selected_province.replace("_", " ").capitalize() + " Garrison")
+	body.add_child(_label("Infantry: %d · Archers: %d · Cavalry: %d" % [int(garrison.get("infantry", 0)), int(garrison.get("archers", 0)), int(garrison.get("cavalry", 0))], 16))
+	if not controlled:
+		body.add_child(_label("This province is not under your authority. Recruitment and disbandment are disabled.", 15, C_RED))
+	for troop_type in ["infantry", "archers", "cavalry"]:
+		var title := {"infantry": "Levy Infantry", "archers": "March Archers", "cavalry": "Household Cavalry"}[troop_type]
+		var cost := {"infantry": "1 manpower · 4 gold", "archers": "1 manpower · 6 gold", "cavalry": "2 manpower · 12 gold"}[troop_type]
+		body.add_child(_label(title + " — " + cost + " each", 15, C_GOLD))
+		var actions := HBoxContainer.new()
+		actions.add_child(_button("Recruit 5", _recruit_troops.bind(selected_province, troop_type, 5), true))
+		actions.add_child(_button("Disband 5", _disband_troops.bind(selected_province, troop_type, 5)))
+		for child in actions.get_children():
+			child.disabled = not controlled or (child.text.begins_with("Disband") and int(garrison.get(troop_type, 0)) < 5)
+		body.add_child(actions)
+	body.add_child(_label("Garrisons are local defensive forces, not movable field armies. Every soldier consumes seasonal provisions and treasury upkeep. Barracks add 100 local garrison capacity.", 14, C_DIM))
+
+
+func _recruit_troops(province: String, troop_type: String, amount: int) -> void:
+	var ok := GameState.recruit_provincial_troops(province, troop_type, amount)
+	_set_message("Recruited %d %s." % [amount, troop_type] if ok else "Recruitment rejected: check manpower, treasury, capacity and province control.", ok)
+	GameState.save_campaign("auto_a")
+
+
+func _disband_troops(province: String, troop_type: String, amount: int) -> void:
+	var ok := GameState.disband_provincial_troops(province, troop_type, amount)
+	_set_message("Disbanded %d %s." % [amount, troop_type] if ok else "Disbandment rejected: not enough troops in this garrison.", ok)
+	GameState.save_campaign("auto_a")
 
 
 func _build_economy() -> void:
