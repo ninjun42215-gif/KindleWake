@@ -4,6 +4,7 @@ extends RefCounted
 ## primitive-shape fallback and the game still runs without the art.
 
 const WORLD_DIR := "res://assets/art/world/"
+const WORLD_VECTOR_NAMES := ["house_a", "house_b", "house_c", "hut", "keep", "tower_a", "tower_b", "tower_c"]
 const UNIT_DIR := "res://assets/art/units/"
 const PROP_ATLAS_PATH := "res://assets/art/props/field_props.svg"
 const PROP_CELLS := {"arch":Vector2i(0,0), "column":Vector2i(1,0), "rune_stone":Vector2i(2,0), "torch":Vector2i(3,0), "reeds":Vector2i(0,1), "crystals":Vector2i(1,1), "grave":Vector2i(2,1), "banner":Vector2i(3,1), "mushrooms":Vector2i(0,2), "stump":Vector2i(1,2), "barrel":Vector2i(2,2), "crate":Vector2i(3,2), "campfire":Vector2i(0,3), "frost_pine":Vector2i(1,3), "statue":Vector2i(2,3), "flower":Vector2i(3,3)}
@@ -27,6 +28,8 @@ static func _load(path: String) -> Texture2D:
 
 
 static func world(name: String) -> Texture2D:
+    if WORLD_VECTOR_NAMES.has(name):
+        return _load(WORLD_DIR + name + ".svg")
     return _load(WORLD_DIR + name + ".png")
 
 
