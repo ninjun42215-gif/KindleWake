@@ -540,9 +540,11 @@ static func build_tactical_battle(state: Dictionary, army_id: String, base_battl
 	var commander_present := false
 	for spawn in battle.get("units", []):
 		if str(spawn.get("team", "")) == "player":
-			units.append(spawn.duplicate(true))
+			var player_spawn: Dictionary = spawn.duplicate(true)
 			if str(spawn.get("character_id", "")) == commander_id:
+				player_spawn["commander"] = true
 				commander_present = true
+			units.append(player_spawn)
 	if commander_id != "" and not commander_present:
 		units.append({"character_id": commander_id, "team": "player", "cell": [6, 10], "facing": 0, "commander": true})
 	var strategic_units: Dictionary = {}
