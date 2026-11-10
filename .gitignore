@@ -1,0 +1,25 @@
+# Godot editor/import caches
+.godot/
+Kindlewake/.godot/
+*.import
+
+# Build and export output
+*.apk
+*.aab
+Kindlewake/dist/
+Kindlewake/build/
+Kindlewake/export/
+
+# Signing material and local credentials (never commit release secrets)
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+export_credentials.cfg
+.env
+.env.*
+!*.env.example
+
+# Python caches
+__pycache__/
+*.py[cod]
