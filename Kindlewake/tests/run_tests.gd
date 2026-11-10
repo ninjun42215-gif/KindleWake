@@ -1151,6 +1151,14 @@ func _test_strategic_battle_integration() -> void:
     check(army_id != "" and EmpireSystem.move_field_army(state, army_id, "orrowen_weald", adjacency, controlled), "integration test deploys its field army to a hostile region")
     var battle_def: Dictionary = EmpireSystem.build_tactical_battle(state, army_id, gd.battle_def("battle_01"), "orrowen_weald", "house_orrowen", false, 1)
     check(not battle_def.has("reward_rune") and not battle_def.has("world_flag_on_victory"), "generated garrison encounters do not inherit story rewards or flags")
+    var next_battle: Dictionary = EmpireSystem.build_tactical_battle(state, army_id, gd.battle_def("battle_01"), "orrowen_weald", "house_orrowen", false, 1)
+    check(str(battle_def.get("id", "")) != str(next_battle.get("id", "")), "repeated engagements receive unique persistent battle identities")
+    var resolution_state: Dictionary = state.duplicate(true)
+    check(EmpireSystem.resolve_tactical_battle(resolution_state, str(battle_def.get("id", "")), army_id, {"infantry": 1}, true), "a generated tactical battle records its strategic result once")
+    check(not EmpireSystem.resolve_tactical_battle(resolution_state, str(battle_def.get("id", "")), army_id, {"infantry": 1}, true), "replaying a battle result cannot duplicate casualties or war-exhaustion changes")
+    check(int(resolution_state["field_armies"][army_id]["troops"]["infantry"]) == 19 and int(resolution_state["war_exhaustion"]) == 2, "idempotent result processing applies exactly one troop loss and one exhaustion award")
+    var restored_battle_state: Dictionary = EmpireSystem.normalize_state(resolution_state)
+    check(restored_battle_state.get("resolved_battle_ids", []).has(str(battle_def.get("id", ""))), "resolved battle identities persist safely through campaign normalization")
     var commander_deployed := false
     for spawn in battle_def.get("units", []):
         if str(spawn.get("character_id", "")) == "torren" and bool(spawn.get("commander", false)):
