@@ -325,10 +325,10 @@
       "governance": "appointed_warden"
     },
     {
-      "id": "vey_rwood",
+      "id": "veyrwood",
       "name": "Veyrwood Mootstead",
       "continent": "veyrwood",
-      "region": "vey_rwood",
+      "region": "veyrwood",
       "kind": "forest_town",
       "owner": "Veyrwood Moots",
       "capture": "forest_compact_or_battle",
