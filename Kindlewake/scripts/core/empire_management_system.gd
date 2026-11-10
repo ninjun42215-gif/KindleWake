@@ -243,7 +243,7 @@ static func move_field_army(state: Dictionary, army_id: String, destination: Str
 		return false
 	army["location"] = destination
 	army["movement"] = 0
-	army["supplied"] = controlled_provinces.has(destination)
+	army["supplied"] = is_location_supplied(state, destination, controlled_provinces, adjacency)
 	army["days_unsupplied"] = 0
 	field_armies[army_id] = army
 	state["field_armies"] = field_armies
