@@ -534,6 +534,24 @@
       ],
       "completion_reward": {
         "gold": 50
+      },
+      "synopsis": "A former rival accuses Willem of winning their famous duel through a technicality. By interviewing the seconds and examining the sealed record, Willem learns the rival had been protecting a young squire from a politically arranged match. The truth forces him to decide what honour means when the law and the right thing diverge.",
+      "journal_summary": "Hear the rival's accusation, verify the sealed duel record and decide how Willem should answer the challenge without turning honour into vanity.",
+      "resolution_prompt": "The record confirms Willem's legal victory, but the circumstances were unfair. What should he do with that truth?",
+      "outcome_labels": {
+        "admit_technicality": "Admit the technicality publicly",
+        "make_restitution": "Make restitution to the squire",
+        "acknowledge_cost": "Keep the legal result and acknowledge its cost"
+      },
+      "outcome_descriptions": {
+        "admit_technicality": "Willem corrects the public record, accepting the loss of prestige so that the next generation sees that honour includes admitting an advantage gained unfairly.",
+        "make_restitution": "Willem keeps the legal result but directs his standing and prize toward the squire whose future was manipulated, making repair more important than applause.",
+        "acknowledge_cost": "Willem refuses to rewrite a lawful result, but publicly acknowledges the moral cost and commits to stricter rules for future challenges."
+      },
+      "outcome_flags": {
+        "admit_technicality": "willem_outcome_technicality_admitted",
+        "make_restitution": "willem_outcome_restitution",
+        "acknowledge_cost": "willem_outcome_cost_acknowledged"
       }
     },
     "q_companion_ysolde_names_in_salt": {
@@ -553,6 +571,24 @@
       ],
       "completion_reward": {
         "gold": 65
+      },
+      "synopsis": "Ysolde finds a coastal register that renamed families after a past levy. She compares tide tables, harbour marks and family testimony to distinguish deliberate erasure from clerical drift. At a wharf hearing, an official argues that restoring the names will disrupt trade, while evidence points to private profiteering. The families must decide how their identities return to the record.",
+      "journal_summary": "Find the altered salt register, verify family identities against tide and harbour records, then decide who controls the restoration of names.",
+      "resolution_prompt": "The records are verified, but public disclosure could expose families to old debts and political pressure. How should their names be restored?",
+      "outcome_labels": {
+        "publish_names": "Publish every verified name",
+        "sealed_testimony": "Preserve identities in sealed testimony",
+        "family_choice": "Let each family choose"
+      },
+      "outcome_descriptions": {
+        "publish_names": "Ysolde publishes the verified names with the evidence trail, making the historical erasure public and accepting the political pressure that follows.",
+        "sealed_testimony": "Ysolde deposits authenticated testimony with trusted neutral custodians, preserving proof while restricting access to vulnerable identities.",
+        "family_choice": "Ysolde gives each family control over whether and when its name is restored, creating a slower record but refusing to repeat the coercion that erased them."
+      },
+      "outcome_flags": {
+        "publish_names": "ysolde_outcome_names_published",
+        "sealed_testimony": "ysolde_outcome_sealed_testimony",
+        "family_choice": "ysolde_outcome_family_choice"
       }
     },
     "q_companion_garrick_spared_enemy": {
