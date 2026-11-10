@@ -61,6 +61,14 @@ func walkable(c: Vector2i) -> bool:
     return not BLOCKED.contains(tile_at(c))
 
 
+func set_tile(c: Vector2i, value: String) -> bool:
+    if not in_bounds(c) or value.length() != 1 or not ALLOWED.contains(value):
+        return false
+    var row := rows[c.y]
+    rows[c.y] = row.substr(0, c.x) + value + row.substr(c.x + 1)
+    return true
+
+
 func door_at(c: Vector2i) -> Dictionary:
     return doors.get(tile_at(c), {})
 
