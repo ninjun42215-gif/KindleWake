@@ -173,4 +173,7 @@ func _start_quest(quest_id: String) -> void:
 	if not bool(result.get("ok", false)):
 		status_label.text = str(result.get("reason", "This quest cannot begin yet."))
 		return
+	var saved := GameState.save_campaign("auto_a")
 	_refresh()
+	if not saved:
+		status_label.text = "The quest has begun in this session, but the autosave failed. Save again before leaving the area."
