@@ -536,16 +536,23 @@ static func build_tactical_battle(state: Dictionary, army_id: String, base_battl
 		return {}
 	var battle := base_battle.duplicate(true)
 	var units: Array = []
+	var commander_id := str(deployment.get("commander", ""))
+	var commander_present := false
 	for spawn in battle.get("units", []):
 		if str(spawn.get("team", "")) == "player":
 			units.append(spawn.duplicate(true))
+			if str(spawn.get("character_id", "")) == commander_id:
+				commander_present = true
+	if commander_id != "" and not commander_present:
+		units.append({"character_id": commander_id, "team": "player", "cell": [6, 10], "facing": 0, "commander": true})
 	var strategic_units: Dictionary = {}
 	var cells: Array[Vector2i] = []
 	for y in range(11, 14):
 		for x in range(0, 7):
+			if x == 6 and y == 13:
+				continue
 			cells.append(Vector2i(x, y))
 	var cell_index := 0
-	var commander_assigned := false
 	for entry in deployment.get("roster", []):
 		var troop_type := str(entry.get("troop_type", "infantry"))
 		var remaining := int(entry.get("count", 0))
@@ -554,12 +561,13 @@ static func build_tactical_battle(state: Dictionary, army_id: String, base_battl
 			var cohort_count := mini(5, remaining)
 			var unit_id := "strategic_%s_%s_%d" % [army_id, troop_type, cohort_index]
 			var cell: Vector2i = cells[cell_index]
-			units.append({"character_id": unit_id, "team": "player", "cell": [cell.x, cell.y], "facing": 0, "commander": not commander_assigned and str(deployment.get("commander", "")) != "", "name": "%s Cohort" % troop_type.capitalize()})
+			units.append({"character_id": unit_id, "team": "player", "cell": [cell.x, cell.y], "facing": 0, "name": "%s Cohort" % troop_type.capitalize()})
 			strategic_units[unit_id] = {"troop_type": troop_type, "count": cohort_count}
-			commander_assigned = true
 			remaining -= cohort_count
 			cohort_index += 1
 			cell_index += 1
+		if remaining > 0:
+			return {}
 	var defenders := {"infantry": 10, "archers": 5, "cavalry": 0}
 	if region_id.contains("highland") or region_id.contains("height") or region_id == "aurelmont" or region_id.contains("thorncrown") or region_id.contains("ironvale"):
 		defenders["infantry"] += 10
@@ -577,7 +585,7 @@ static func build_tactical_battle(state: Dictionary, army_id: String, base_battl
 	fort_level = clampi(fort_level, 0, 3)
 	defenders["infantry"] += fort_level * 5
 	var enemy_cells: Array[Vector2i] = []
-	for y in range(0, 5):
+	for y in range(0, 4):
 		for x in range(12, 20):
 			enemy_cells.append(Vector2i(x, y))
 	var enemy_index := 0
@@ -593,7 +601,7 @@ static func build_tactical_battle(state: Dictionary, army_id: String, base_battl
 			cohort_index += 1
 			enemy_index += 1
 	if siege_assault:
-		units.append({"character_id": "strategic_siege_engine", "team": "player", "cell": [6, 12], "facing": 0, "name": "Battering Ram"})
+		units.append({"character_id": "strategic_siege_engine", "team": "player", "cell": [6, 13], "facing": 0, "name": "Battering Ram"})
 	battle["id"] = "field_army_%s_%s" % [army_id, region_id]
 	battle["title"] = "Battle for %s" % region_id.replace("_", " ").capitalize()
 	battle["briefing"] = ("The besieging army advances behind a battering ram. Break the garrison and take the breached walls." if siege_assault else "Your field army engages the regional garrison. Keep the company and levy cohorts alive; every cohort lost weakens the standing army.")
