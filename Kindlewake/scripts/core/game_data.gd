@@ -30,6 +30,7 @@ var thalassar_world: Dictionary = {}     # thalassar_world.json: Brinegate Coast
 var continents: Dictionary = {}          # continents.json: the seven-continent campaign atlas
 var factions: Dictionary = {}            # factions.json: political powers and regional affiliations
 var world_expansion: Dictionary = {}      # authored dungeon and capturable-location catalogue
+var regional_boss_encounters: Dictionary = {} # seven bespoke encounter briefs and phase objectives
 var battles: Dictionary = {}
 
 
@@ -60,6 +61,7 @@ func reload() -> void:
     continents = _load_json("continents.json")
     factions = _load_json("factions.json")
     world_expansion = _load_json("world_expansion_catalog.json")
+    regional_boss_encounters = _load_json("regional_boss_encounters.json").get("encounters", {})
     locations = _load_json("locations.json")
     character_creation = _load_json("character_creation.json")
     battles.clear()
