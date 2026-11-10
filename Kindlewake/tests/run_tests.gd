@@ -1,7 +1,8 @@
-extends SceneTree
+extends Node
 
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
+const RecruitmentSystemResource: Script = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const OpeningChapterSystem = preload("res://scripts/core/opening_chapter_system.gd")
 const OpeningActOneQuestSystem = preload("res://scripts/core/opening_act_one_quest_system.gd")
@@ -10,6 +11,28 @@ const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const BattleUnit = preload("res://scripts/battle/battle_unit.gd")
+const BattleUnitResource: Script = preload("res://scripts/battle/battle_unit.gd")
+const BattleController = preload("res://scripts/battle/battle_controller.gd")
+const BattleMap = preload("res://scripts/battle/battle_map.gd")
+const CombatCalc = preload("res://scripts/battle/combat_calc.gd")
+const TurnQueue = preload("res://scripts/battle/turn_queue.gd")
+const TurnQueueResource: Script = preload("res://scripts/battle/turn_queue.gd")
+const BattleAI = preload("res://scripts/battle/battle_ai.gd")
+const BattleAIResource: Script = preload("res://scripts/battle/battle_ai.gd")
+const PartyState = preload("res://scripts/core/party_state.gd")
+const CharacterSheet = preload("res://scripts/core/character_sheet.gd")
+const EncounterBuilder = preload("res://scripts/core/encounter_builder.gd")
+const ShopSystem = preload("res://scripts/core/shop_system.gd")
+const ShopSystemResource: Script = preload("res://scripts/core/shop_system.gd")
+const ItemInfo = preload("res://scripts/core/item_info.gd")
+const CharacterCreation = preload("res://scripts/core/character_creation.gd")
+const WorldMap = preload("res://scripts/world/world_map.gd")
+const LocalMap = preload("res://scripts/world/local_map.gd")
+const EscapeLayout = preload("res://scripts/ui/escape_layout.gd")
+const CharacterPreview = preload("res://scripts/ui/character_preview.gd")
+const PartyScreen = preload("res://scripts/ui/party_screen.gd")
+const TapCard = preload("res://scripts/ui/tap_card.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -23,7 +46,7 @@ var screen_closed: int = 0
 var card_taps: int = 0
 
 
-func _initialize() -> void:
+func _ready() -> void:
     gd = load("res://scripts/core/game_data.gd").new()
     gd.reload()
     ss = load("res://scripts/core/save_system.gd").new()
@@ -63,7 +86,7 @@ func _initialize() -> void:
     _simulate_battles(30)
     print("")
     print("Checks: %d   Failures: %d" % [checks, failures])
-    quit(1 if failures > 0 else 0)
+    get_tree().quit(1 if failures > 0 else 0)
 
 
 func check(cond: bool, label: String) -> void:
@@ -221,7 +244,7 @@ func _test_act_one_tactical_bosses() -> void:
     for battle_id in ["act1_hask_boss", "act1_ash_bailiff_boss"]:
         var phase_def: Dictionary = gd.battles[battle_id]
         check((phase_def.get("boss_phases", []) as Array).size() == 2, battle_id + " defines two authored phases")
-        var phase_controller := BattleController.new()
+        var phase_controller: Variant = BattleController.new()
         phase_controller.setup(phase_def, gd.as_db(), 19)
         var boss: BattleUnit = null
         for unit_obj in phase_controller.units:
@@ -239,14 +262,14 @@ func _test_act_one_tactical_bosses() -> void:
             var hp_after := boss.hp
             phase_controller._check_boss_phases(boss)
             check(boss.hp == hp_after, battle_id + " phase does not retrigger")
-            var restored := BattleUnit.from_dict(boss.to_dict())
+            var restored: Variant = BattleUnitResource.call("from_dict", boss.to_dict())
             check(bool(restored.statuses.get("_boss_phase_0", false)), battle_id + " persists phase marker in battle snapshot")
 
 
 func _test_act_one_boss_ai() -> void:
     print("[Act I boss tactical AI]")
     var db: Dictionary = gd.as_db()
-    var hask_ctl := BattleController.new()
+    var hask_ctl: Variant = BattleController.new()
     hask_ctl.setup(gd.battle_def("act1_hask_boss"), db, 101)
     var hask: BattleUnit = null
     var isolated: BattleUnit = null
@@ -265,13 +288,13 @@ func _test_act_one_boss_ai() -> void:
                 support_index += 1
     if hask != null and isolated != null:
         hask_ctl.active_id = hask.id
-        var hask_plan: Dictionary = BattleAI.decide(hask, hask_ctl)
+        var hask_plan: Dictionary = BattleAIResource.call("decide", hask, hask_ctl)
         check(str(hask_plan.get("action", "")) == "skill" and str(hask_plan.get("skill_id", "")) == "power_strike", "Hask chooses Power Strike when an isolated target is in reach")
         check(hask_plan.get("target", null) == isolated, "Hask prioritizes the isolated combatant over distant support")
     else:
         check(false, "Hask boss AI test locates commander and target")
 
-    var ash_ctl := BattleController.new()
+    var ash_ctl: Variant = BattleController.new()
     ash_ctl.setup(gd.battle_def("act1_ash_bailiff_boss"), db, 103)
     var bailiff: BattleUnit = null
     var wounded_retainer: BattleUnit = null
@@ -287,7 +310,7 @@ func _test_act_one_boss_ai() -> void:
         bailiff_ctl_prepare(ash_ctl, bailiff, wounded_retainer)
         wounded_retainer.hp = maxi(1, int(wounded_retainer.max_hp() * 0.3))
         ash_ctl.active_id = bailiff.id
-        var heal_plan: Dictionary = BattleAI.decide(bailiff, ash_ctl)
+        var heal_plan: Dictionary = BattleAIResource.call("decide", bailiff, ash_ctl)
         check(str(heal_plan.get("action", "")) == "skill" and str(heal_plan.get("skill_id", "")) == "mend_ii", "Ash Bailiff heals a critically wounded retainer")
         check(heal_plan.get("target", null) == wounded_retainer, "Ash Bailiff selects the wounded retainer as his healing target")
         wounded_retainer.hp = wounded_retainer.max_hp()
@@ -295,7 +318,7 @@ func _test_act_one_boss_ai() -> void:
             var unit: BattleUnit = obj
             if unit.team == "player":
                 unit.cell = Vector2i(13, 5) if unit.id % 2 == 0 else Vector2i(14, 5)
-        var smite_plan: Dictionary = BattleAI.decide(bailiff, ash_ctl)
+        var smite_plan: Dictionary = BattleAIResource.call("decide", bailiff, ash_ctl)
         check(str(smite_plan.get("action", "")) == "skill" and str(smite_plan.get("skill_id", "")) == "holy_smite_ii", "Ash Bailiff uses Judgement when no ally needs urgent healing")
     else:
         check(false, "Ash Bailiff AI test locates commander and retainer")
@@ -317,7 +340,7 @@ func _simulate_act_one_bosses(samples_per_encounter: int) -> void:
                 var battle_def: Dictionary = gd.battle_def(battle_id).duplicate(true)
                 if mode == "generic_baseline":
                     battle_def["id"] = "baseline_" + battle_id
-                var ctl := BattleController.new()
+                var ctl: Variant = BattleController.new()
                 ctl.setup(battle_def, gd.as_db(), 81000 + sample + (1000 if battle_id == "act1_ash_bailiff_boss" else 0))
                 var boss_id := -1
                 for unit_obj in ctl.units:
@@ -397,7 +420,7 @@ func _test_escape_mission() -> void:
             enemy_count += 1
     check(spawn_ok and player_count == 4 and enemy_count == 4, "all eight escape combatants spawn within the courtyard")
     check(str(base.get("id", "")) == original_id and (base.get("units", []) as Array) == original_units, "building the escape encounter never mutates canonical battle data")
-    var controller := BattleController.new()
+    var controller: Variant = BattleController.new()
     controller.setup(battle, gd.as_db(), 77)
     check(controller.map.width == 20 and controller.map.height == 14 and controller.units.size() == 8, "escape encounter loads into the tactical battle controller")
 
@@ -594,9 +617,9 @@ func _test_turn_queue() -> void:
     print("[turn queue]")
     var fast: BattleUnit = _make_unit(1, "sela", "player", Vector2i(1, 1), 0)
     var slow: BattleUnit = _make_unit(2, "brother_wystan", "player", Vector2i(2, 2), 0)
-    fast.ctb = TurnQueue.initial_ctb(fast)
-    slow.ctb = TurnQueue.initial_ctb(slow)
-    check(TurnQueue.peek_next([fast, slow]) == fast, "faster unit acts first")
+    fast.ctb = TurnQueueResource.call("initial_ctb", fast)
+    slow.ctb = TurnQueueResource.call("initial_ctb", slow)
+    check(TurnQueueResource.call("peek_next", [fast, slow]) == fast, "faster unit acts first")
     var order: Array = TurnQueue.timeline([fast, slow], 10)
     var fast_count := 0
     for o in order:
@@ -604,12 +627,12 @@ func _test_turn_queue() -> void:
         if u.id == 1:
             fast_count += 1
     check(fast_count > 10 - fast_count, "faster unit acts more often (%d of 10)" % fast_count)
-    check(TurnQueue.delay_after_turn(fast, true, true, {}) > TurnQueue.delay_after_turn(fast, false, false, {}), "acting costs more time than waiting")
+    check(TurnQueueResource.call("delay_after_turn", fast, true, true, {}) > TurnQueueResource.call("delay_after_turn", fast, false, false, {}), "acting costs more time than waiting")
 
 
 func _test_controller() -> void:
     print("[controller]")
-    var c := BattleController.new()
+    var c: Variant = BattleController.new()
     c.setup(gd.battle_def("battle_01"), gd.as_db(), 12345)
     check(c.units.size() == 8, "8 units spawned")
     c.begin()
@@ -626,9 +649,9 @@ func _test_controller() -> void:
     check(not c.try_move(a, moves[0]), "cannot move twice in one turn")
     var json: String = JSON.stringify(c.to_dict())
     var parsed: Dictionary = JSON.parse_string(json)
-    var c2 := BattleController.new()
+    var c2: Variant = BattleController.new()
     check(c2.restore(gd.battle_def("battle_01"), gd.as_db(), parsed), "restore from JSON succeeds")
-    var same := c2.units.size() == c.units.size() and c2.active_id == c.active_id and c2.turn_count == c.turn_count
+    var same: bool = c2.units.size() == c.units.size() and c2.active_id == c.active_id and c2.turn_count == c.turn_count
     for i in range(c.units.size()):
         if c.units[i].cell != c2.units[i].cell or c.units[i].hp != c2.units[i].hp or c.units[i].has_moved != c2.units[i].has_moved:
             same = false
@@ -642,7 +665,7 @@ func _test_controller() -> void:
 ## Auto Battle = the AI plays the player's units (run_ai_turn(true)); also covers the cleric's heal logic.
 func _test_auto_battle() -> void:
     print("[auto battle]")
-    var c := BattleController.new()
+    var c: Variant = BattleController.new()
     c.setup(gd.battle_def("battle_01"), gd.as_db(), 777)
     c.begin()
     var cal: BattleUnit = null
@@ -659,10 +682,10 @@ func _test_auto_battle() -> void:
     c.active_id = cal.id
     cal.has_moved = false
     cal.has_acted = false
-    var idle_plan: Dictionary = BattleAI.decide(cal, c)
+    var idle_plan: Dictionary = BattleAIResource.call("decide", cal, c)
     check(str(idle_plan["action"]) != "skill", "cleric does not cast Mend when nobody is hurt")
     bram.hp = int(float(bram.max_hp()) * 0.3)
-    var plan: Dictionary = BattleAI.decide(cal, c)
+    var plan: Dictionary = BattleAIResource.call("decide", cal, c)
     check(str(plan["action"]) == "skill" and str(plan.get("skill_id", "")) == "mend", "cleric plans Mend for a badly hurt ally")
     check(plan["target"] == bram, "Mend is aimed at the wounded ally")
     var hp_before: int = bram.hp
@@ -675,7 +698,7 @@ func _test_auto_battle() -> void:
     check(c.turn_count == turns_before + 1, "the turn passes on after the auto turn")
 
     # Switching Auto on in the middle of a turn: a unit that already moved must not move again.
-    var c2 := BattleController.new()
+    var c2: Variant = BattleController.new()
     c2.setup(gd.battle_def("battle_01"), gd.as_db(), 4242)
     c2.begin()
     var guard := 0
@@ -692,7 +715,7 @@ func _test_auto_battle() -> void:
     check(c2.turn_count == turns2 + 1, "auto finishes the part-played turn")
 
     # Without force the AI must still refuse to play the player's side.
-    var c3 := BattleController.new()
+    var c3: Variant = BattleController.new()
     c3.setup(gd.battle_def("battle_01"), gd.as_db(), 99)
     c3.begin()
     guard = 0
@@ -772,7 +795,7 @@ func _test_progression() -> void:
     check(d.has("attack") and d.has("defense") and d.has("crit") and d.has("move"), "derived stats are produced for the sheet screen")
     check(party.equip("torren", "weapon", "fine_arming_sword", db) == "", "swap back to the Fine Arming Sword")
     var bdb: Dictionary = party.battle_db(db)
-    var bc := BattleController.new()
+    var bc: Variant = BattleController.new()
     bc.setup(gd.battle_def("battle_01"), bdb, 5)
     var torren_unit: BattleUnit = null
     for o in bc.units:
@@ -849,7 +872,7 @@ func _test_progression() -> void:
     var rules: Dictionary = {"classes": gd.classes, "items": gd.items, "runes": gd.sigils}
     var p2: PartyState = PartyState.new_game(gd.start, gd.characters)
     p2.add_member("roadreaver", gd.characters["roadreaver"])        # an undeployed bench member
-    var bc2 := BattleController.new()
+    var bc2: Variant = BattleController.new()
     bc2.setup(gd.battle_def("battle_01"), p2.battle_db(db), 6)
     for o in bc2.units:
         var u2: BattleUnit = o
@@ -880,7 +903,7 @@ func _test_progression() -> void:
     var wy: CharacterSheet = p2.sheet("brother_wystan")
     var wsig: Dictionary = wy.sigil_at("weapon", 0)
     check(int(wsig.get("ap", 0)) == 20, "Brother Wystan's equipped rune of Mending gained the AP")
-    var c3 := BattleController.new()
+    var c3: Variant = BattleController.new()
     c3.setup(gd.battle_def("battle_01"), gd.as_db(), 321)
     c3.begin()
     var guard := 0
@@ -980,7 +1003,7 @@ func _test_runes() -> void:
     var protected_party: PartyState = PartyState.new_game(gd.start, gd.characters)
     protected_party.sigil_inv = [{"id":"dragon","ap":0},{"id":"phoenix_heirloom","ap":0}]
     var protected_count: int = protected_party.sigil_inv.size()
-    check(ShopSystem.sell_sigil(protected_party, 0, gd.as_db(), gd.shop) != "" and ShopSystem.sell_sigil(protected_party, 1, gd.as_db(), gd.shop) != "" and protected_party.sigil_inv.size() == protected_count, "unique and heirloom runes cannot be sold")
+    check(ShopSystemResource.call("sell_sigil", protected_party, 0, gd.as_db(), gd.shop) != "" and ShopSystemResource.call("sell_sigil", protected_party, 1, gd.as_db(), gd.shop) != "" and protected_party.sigil_inv.size() == protected_count, "unique and heirloom runes cannot be sold")
 
 
 func _test_weapon_skills() -> void:
@@ -988,7 +1011,7 @@ func _test_weapon_skills() -> void:
     var db: Dictionary = gd.as_db()
     check(gd.skills.has("power_strike") and gd.skills.has("aimed_shot") and str(gd.skills["power_strike"]["type"]) == "strike", "Power Strike and Aimed Shot exist as strike skills")
     var ps: PartyState = PartyState.new_game(gd.start, gd.characters)
-    var bc := BattleController.new()
+    var bc: Variant = BattleController.new()
     bc.setup(gd.battle_def("battle_01"), ps.battle_db(db), 21)
     bc.begin()
     var hero: BattleUnit = null
@@ -1180,10 +1203,10 @@ func _test_thalassar_region() -> void:
     check(gd.characters.has("maren_vey"), "Maren Vey has a complete recruit character definition")
     var recruit_party: PartyState = PartyState.new_game(gd.start, gd.characters)
     var maren: Dictionary = gd.character_def("maren_vey")
-    var locked: Dictionary = RecruitmentSystem.inspect(recruit_party, "maren_vey", maren, {})
+    var locked: Dictionary = RecruitmentSystemResource.call("inspect", recruit_party, "maren_vey", maren, {})
     check(not bool(locked.get("available", true)), "Maren remains unavailable until the Tideglass ledger is recovered")
     var flags: Dictionary = {"tideglass_grotto_cleared": true, "tideglass_ledger_found": true}
-    var unlocked: Dictionary = RecruitmentSystem.inspect(recruit_party, "maren_vey", maren, flags)
+    var unlocked: Dictionary = RecruitmentSystemResource.call("inspect", recruit_party, "maren_vey", maren, flags)
     check(bool(unlocked.get("available", false)), "recovering the Tideglass ledger unlocks Maren's recruitment")
     var maps: Dictionary = LocalMap.load_all(gd.locations)
     var coast_maps_ok := maps.has("brinegate") and maps.has("saltmere") and maps.has("lantern_quay") and maps.has("dungeon_tideglass")
@@ -1317,30 +1340,30 @@ func _test_recruitment() -> void:
     var party: PartyState = PartyState.new_game(gd.start, gd.characters)
     var flags: Dictionary = {}
     var joss: Dictionary = gd.character_def("joss_harrow")
-    var joss_check: Dictionary = RecruitmentSystem.inspect(party, "joss_harrow", joss, flags)
+    var joss_check: Dictionary = RecruitmentSystemResource.call("inspect", party, "joss_harrow", joss, flags)
     check(bool(joss_check.get("available", false)) and int(joss_check.get("cost", -1)) == 50, "Joss is available at the data-defined 50-gold cost")
     party.gold = 40
-    var poor_check: Dictionary = RecruitmentSystem.inspect(party, "joss_harrow", joss, flags)
+    var poor_check: Dictionary = RecruitmentSystemResource.call("inspect", party, "joss_harrow", joss, flags)
     check(not bool(poor_check.get("available", true)) and party.roster.size() == 4 and not flags.has("recruited_joss_harrow"), "insufficient gold refuses recruitment without changing roster or flags")
     party.gold = 100
-    var joined: Dictionary = RecruitmentSystem.recruit(party, "joss_harrow", joss, flags)
+    var joined: Dictionary = RecruitmentSystemResource.call("recruit", party, "joss_harrow", joss, flags)
     check(bool(joined.get("ok", false)) and party.roster.has("joss_harrow") and party.gold == 50 and bool(flags.get("recruited_joss_harrow", false)), "successful recruitment adds the member, spends gold and records the one-time flag")
     check(party.sheet("joss_harrow").loyalty == 38, "a recruit receives their authored starting loyalty")
-    var duplicate: Dictionary = RecruitmentSystem.recruit(party, "joss_harrow", joss, flags)
+    var duplicate: Dictionary = RecruitmentSystemResource.call("recruit", party, "joss_harrow", joss, flags)
     check(not bool(duplicate.get("ok", true)) and party.gold == 50, "duplicate recruitment is refused without charging twice")
 
     party.gold = 500 # keep prerequisite tests independent from recruit affordability
     var verra: Dictionary = gd.character_def("verra_nightsong")
     var fresh_party: PartyState = PartyState.new_game(gd.start, gd.characters)
-    var locked: Dictionary = RecruitmentSystem.inspect(fresh_party, "verra_nightsong", verra, flags)
+    var locked: Dictionary = RecruitmentSystemResource.call("inspect", fresh_party, "verra_nightsong", verra, flags)
     check(not bool(locked.get("available", true)) and str(locked.get("reason", "")).contains("joss harrow"), "recruit dependencies remain locked until their companion joins")
-    var unlocked: Dictionary = RecruitmentSystem.inspect(party, "verra_nightsong", verra, flags)
+    var unlocked: Dictionary = RecruitmentSystemResource.call("inspect", party, "verra_nightsong", verra, flags)
     check(bool(unlocked.get("available", false)), "joining Joss unlocks Verra's recruitment")
     var bram: Dictionary = gd.character_def("bram_cullen")
-    var camp_locked: Dictionary = RecruitmentSystem.inspect(party, "bram_cullen", bram, flags)
+    var camp_locked: Dictionary = RecruitmentSystemResource.call("inspect", party, "bram_cullen", bram, flags)
     check(not bool(camp_locked.get("available", true)), "story-flag requirements block Bram before the camp is cleared")
     flags["camp_cleared"] = true
-    var camp_open: Dictionary = RecruitmentSystem.inspect(party, "bram_cullen", bram, flags)
+    var camp_open: Dictionary = RecruitmentSystemResource.call("inspect", party, "bram_cullen", bram, flags)
     check(bool(camp_open.get("available", false)), "clearing the camp unlocks Bram's recruitment")
 
     check(party.adjust_loyalty("joss_harrow", 90) == 100 and party.adjust_loyalty("joss_harrow", -150) == 0, "loyalty adjustments clamp safely to 0-100")
@@ -1450,7 +1473,7 @@ func _test_sigils() -> void:
     check(wy.award_ap(50, items, sdefs).is_empty(), "a mastered rune stops gaining AP")
     (wy.sigils["weapon"] as Array)[0] = {"id": "mend", "ap": 470}
     var bag2: int = ps3.sigil_inv.size()
-    var bcm := BattleController.new()
+    var bcm: Variant = BattleController.new()
     bcm.setup(gd.battle_def("battle_01"), ps3.battle_db(db), 8)
     for o in bcm.units:
         var um: BattleUnit = o
@@ -1462,7 +1485,7 @@ func _test_sigils() -> void:
     # --- offensive magic in battle
     var ps4: PartyState = PartyState.new_game(gd.start, gd.characters)
     ps4.equip_sigil("torren", "weapon", 0, _sigil_index(ps4, "ember"), db, true)
-    var bcd := BattleController.new()
+    var bcd: Variant = BattleController.new()
     bcd.setup(gd.battle_def("battle_01"), ps4.battle_db(db), 12)
     bcd.begin()
     var caster: BattleUnit = null
@@ -1497,7 +1520,7 @@ func _test_sigils() -> void:
     caster.has_acted = false
     victim.hp = victim.max_hp()
     caster.mp = 8
-    var ai_plan: Dictionary = BattleAI.decide(caster, bcd)
+    var ai_plan: Dictionary = BattleAIResource.call("decide", caster, bcd)
     check(str(ai_plan["action"]) == "skill" or str(ai_plan["action"]) == "attack", "AI plans an action with a damage skill available")
     # --- skirmish encounters
     var seen: Dictionary = {}
@@ -1522,7 +1545,7 @@ func _test_sigils() -> void:
     check(sk_ok, "every generated skirmish has the 4 heroes, 3+ known enemies and the id 'skirmish'")
     check(seen.size() >= 2, "different seeds produce different enemy groups")
     var sdef2: Dictionary = EncounterBuilder.build_skirmish(gd.encounters, gd.battles, rr)
-    var bcs := BattleController.new()
+    var bcs: Variant = BattleController.new()
     bcs.setup(sdef2, gd.as_db(), 99)
     bcs.begin()
     var g2 := 0
@@ -1591,27 +1614,27 @@ func _test_shop_and_screen() -> void:
     var arming_price: int = ShopSystem.item_price("arming_sword", db)
     check(arming_price > 0, "the Wayfarer Blade has a price")
     ps.gold = arming_price - 1
-    check(ShopSystem.buy_item(ps, "arming_sword", db, shop) == "Not enough gold." and ps.gold == arming_price - 1, "a purchase without enough gold is refused and costs nothing")
+    check(ShopSystemResource.call("buy_item", ps, "arming_sword", db, shop) == "Not enough gold." and ps.gold == arming_price - 1, "a purchase without enough gold is refused and costs nothing")
     ps.gold = arming_price + 10
     var count0: int = ps.item_count("arming_sword")
-    check(ShopSystem.buy_item(ps, "arming_sword", db, shop) == "" and ps.gold == 10 and ps.item_count("arming_sword") == count0 + 1, "buying pays the price and adds the item")
-    check(ShopSystem.buy_item(ps, "dunmarrow_signet", db, shop) == "Not for sale.", "an item the stall does not stock cannot be bought")
+    check(ShopSystemResource.call("buy_item", ps, "arming_sword", db, shop) == "" and ps.gold == 10 and ps.item_count("arming_sword") == count0 + 1, "buying pays the price and adds the item")
+    check(ShopSystemResource.call("buy_item", ps, "dunmarrow_signet", db, shop) == "Not for sale.", "an item the stall does not stock cannot be bought")
     var gold1: int = ps.gold
-    check(ShopSystem.sell_item(ps, "arming_sword", db, shop) == "" and ps.item_count("arming_sword") == count0, "selling takes the item out of the bag")
+    check(ShopSystemResource.call("sell_item", ps, "arming_sword", db, shop) == "" and ps.item_count("arming_sword") == count0, "selling takes the item out of the bag")
     check(ps.gold == gold1 + ShopSystem.sell_price(arming_price, shop), "selling pays the sell ratio of the price")
     ps.gold = 500000
     for n in range(15):
         check(ps.enhance_equipment("torren", "weapon", db, true) == "", "blacksmith enhances equipment through +%d" % (n + 1))
     check(int(ps.sheet("torren").enhancements.get("weapon|" + ps.sheet("torren").item_in("weapon"), 0)) == 15 and ps.enhance_equipment("torren", "weapon", db) != "", "equipment enhancement caps at +15")
-    check(ShopSystem.sell_item(ps, "arming_sword", db, shop) != "", "gear that is only equipped (not in the bag) cannot be sold")
-    check(ShopSystem.sell_item(ps, "dunmarrow_signet", db, shop) == "That cannot be sold.", "heirlooms cannot be sold")
+    check(ShopSystemResource.call("sell_item", ps, "arming_sword", db, shop) != "", "gear that is only equipped (not in the bag) cannot be sold")
+    check(ShopSystemResource.call("sell_item", ps, "dunmarrow_signet", db, shop) == "That cannot be sold.", "heirlooms cannot be sold")
     # Use a sigil that is actually stocked by the starter merchant.
     ps.gold = ShopSystem.sigil_price("mend", db)
     var bag0: int = ps.sigil_inv.size()
-    check(ShopSystem.buy_sigil(ps, "mend", db, shop) == "" and ps.gold == 0 and ps.sigil_inv.size() == bag0 + 1, "buying a rune puts a fresh copy into the bag")
+    check(ShopSystemResource.call("buy_sigil", ps, "mend", db, shop) == "" and ps.gold == 0 and ps.sigil_inv.size() == bag0 + 1, "buying a rune puts a fresh copy into the bag")
     check(CharacterSheet.sigil_level(ps.sigil_inv[bag0], sdefs["mend"]) == 1, "a bought rune is level 1")
-    check(ShopSystem.sell_sigil(ps, bag0, db, shop) == "" and ps.sigil_inv.size() == bag0 and ps.gold == ShopSystem.sell_price(ShopSystem.sigil_price("mend", db), shop), "selling a rune removes it and pays the sell ratio")
-    check(ShopSystem.sell_sigil(ps, 99, db, shop) != "" and ShopSystem.sell_sigil(ps, -1, db, shop) != "", "selling a rune that is not in the bag is refused")
+    check(ShopSystemResource.call("sell_sigil", ps, bag0, db, shop) == "" and ps.sigil_inv.size() == bag0 and ps.gold == ShopSystem.sell_price(ShopSystem.sigil_price("mend", db), shop), "selling a rune removes it and pays the sell ratio")
+    check(ShopSystemResource.call("sell_sigil", ps, 99, db, shop) != "" and ShopSystemResource.call("sell_sigil", ps, -1, db, shop) != "", "selling a rune that is not in the bag is refused")
     # --- gear preview
     var torren: CharacterSheet = ps.sheet("torren")
     var worn: String = torren.item_in("weapon")
@@ -1624,7 +1647,7 @@ func _test_shop_and_screen() -> void:
     check(ItemInfo.delta_text(before, after).contains("ATK +") and ItemInfo.delta_text(before, before) == "no change", "delta text lists changes and says 'no change' otherwise")
     # --- party screen (headless smoke test: it must build, react to every action and keep the rules intact)
     var screen := PartyScreen.new()
-    root.add_child(screen)
+    get_tree().root.add_child(screen)
     screen.closed.connect(_on_screen_closed)
     screen.setup(ps, db, shop, true, true, true)
     screen.open()
@@ -1831,7 +1854,7 @@ func _simulate_battles(n: int) -> void:
     var total_turns := 0
     var unfinished := 0
     for i in range(n):
-        var c := BattleController.new()
+        var c: Variant = BattleController.new()
         c.setup(gd.battle_def("battle_01"), gd.as_db(), 1000 + i)
         c.begin()
         var guard := 0

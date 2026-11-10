@@ -22,7 +22,7 @@ var sigil_inv: Array = []          # unequipped sigil instances ({"id","ap"[, "s
 
 ## `characters` is the RAW characters.json dictionary (it carries equipment blocks), not GameData.as_db().
 ## Optional protagonist_definition replaces only the `torren` entry; every companion stays data-driven.
-static func new_game(start: Dictionary, characters: Dictionary, protagonist_definition: Dictionary = {}) -> PartyState:
+static func new_game(start: Dictionary, characters: Dictionary, protagonist_definition: Dictionary = {}) -> Variant:
     var p = load("res://scripts/core/party_state.gd").new()
     p.gold = int(start.get("gold", 0))
     var ids: Array = start.get("party", [])
@@ -325,8 +325,8 @@ func to_dict() -> Dictionary:
     return {"roster": roster.duplicate(), "sheets": sd, "inventory": inventory.duplicate(), "gold": gold, "sigil_inv": sigil_inv.duplicate(true)}
 
 
-static func from_dict(d: Dictionary) -> PartyState:
-    var p: PartyState = load("res://scripts/core/party_state.gd").new()
+static func from_dict(d: Dictionary) -> Variant:
+    var p = load("res://scripts/core/party_state.gd").new()
     p.gold = int(d.get("gold", 0))
     var sd: Dictionary = d.get("sheets", {})
     var order: Array = d.get("roster", [])
