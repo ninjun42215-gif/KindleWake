@@ -1642,7 +1642,7 @@ func _test_opening_chapter() -> void:
     var well: Dictionary = OpeningChapterSystem.apply_arrival_choice(prior, "repair_well")
     var roof: Dictionary = OpeningChapterSystem.apply_arrival_choice(prior, "secure_roof")
     var ledger: Dictionary = OpeningChapterSystem.apply_arrival_choice(prior, "organize_ledger")
-    check(bool(well.get("chapter_1_arrival_complete", false)) and str(well.get("kaer_sethorn_priority", "")) == "repair_well", "well priority completes arrival and is recorded")
+    check(bool(well.get("chapter_1_arrival_complete", false)) and str(well.get("kaer_sethorn_priority", "")) == "repair_well" and bool(well.get("kaer_well_water_safe", false)), "well priority completes arrival and records safe water")
     check(bool(roof.get("kaer_roof_secured", false)) and not bool(roof.get("kaer_well_repaired", true)), "roof priority is mutually exclusive and persistent")
     check(bool(ledger.get("kaer_ledger_organized", false)) and bool(ledger.get("prologue_people_saved", false)), "ledger priority preserves earlier prologue consequences")
     check(OpeningChapterSystem.apply_arrival_choice(prior, "unknown").is_empty(), "unknown keep priorities are rejected")
