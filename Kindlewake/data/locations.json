@@ -704,7 +704,10 @@
           "kind": "text",
           "npc": true,
           "name": "Town Crier",
-          "text": "The roads east and south are open. Keep to the marked stones after dusk."
+          "text": "The roads east and south are open. Keep to the marked stones after dusk.",
+          "companion_quest_id": "q_companion_brisa_hearth_of_names",
+          "companion_quest_milestone": "ledger_recovered",
+          "companion_quest_text": "Brisa recognises the old village register beneath the crier's notices. Several displaced families were erased when the temporary infirmary closed. She asks you to recover the ledger before its names are lost."
         }
       ]
     },
@@ -743,7 +746,10 @@
           "kind": "inn",
           "npc": true,
           "name": "Innkeeper",
-          "text": "The herbwives keep a quiet room for weary travellers. Rest costs 20 gold."
+          "text": "The herbwives keep a quiet room for weary travellers. Rest costs 20 gold.",
+          "companion_quest_id": "q_companion_brisa_hearth_of_names",
+          "companion_quest_milestone": "families_contacted",
+          "companion_quest_text": "The innkeeper remembers three families who sheltered in the upper rooms. Brisa compares their accounts with the recovered ledger. Their needs differ: one needs medicine, one needs a safe room, and one needs a way home."
         }
       ]
     },
@@ -782,7 +788,10 @@
           "kind": "party",
           "npc": true,
           "name": "Market Factor",
-          "text": "Foxglove trades in herbs, bows and travel gear. The quartermaster can arrange your equipment."
+          "text": "Foxglove trades in herbs, bows and travel gear. The quartermaster can arrange your equipment.",
+          "companion_quest_id": "q_companion_brisa_hearth_of_names",
+          "companion_quest_milestone": "care_network_secured",
+          "companion_quest_text": "The market factor offers a practical solution: a rotating care network, with supplies shared between households. Brisa asks you to choose how Foxglove will remember and care for its displaced families."
         }
       ]
     },
