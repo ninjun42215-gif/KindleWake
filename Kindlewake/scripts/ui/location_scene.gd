@@ -550,7 +550,7 @@ func _draw_development_prop(prop: Dictionary) -> void:
     var center := cell_center(cell)
     var kind := str(prop.get("kind", ""))
     var tier := int(prop.get("tier", 1))
-    var scale := 1.0 + float(tier - 1) * 0.08
+    var marker_size := 1.0 + float(tier - 1) * 0.08
     match kind:
         "farm":
             draw_rect(Rect2(center + Vector2(-17, -10), Vector2(34, 20)), Color(0.34, 0.23, 0.12))
@@ -575,7 +575,7 @@ func _draw_development_prop(prop: Dictionary) -> void:
                 draw_rect(Rect2(Vector2(x, center.y - 13), Vector2(5, 26)), Color(0.47, 0.47, 0.48))
             draw_rect(Rect2(center + Vector2(-17, -5), Vector2(34, 5)), Color(0.55, 0.55, 0.56))
     if tier >= 2:
-        draw_circle(center + Vector2(0, -19), 3.0 * scale, Color(0.84, 0.69, 0.36))
+        draw_circle(center + Vector2(0, -19), 3.0 * marker_size, Color(0.84, 0.69, 0.36))
 
 
 func _shade(c: Color, cell: Vector2i, amount: float = 0.1) -> Color:
