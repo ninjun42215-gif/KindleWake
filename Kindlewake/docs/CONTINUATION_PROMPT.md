@@ -249,7 +249,7 @@ Do not claim player-facing kingdom management, AI faction simulation, full war c
 
 
 
-## CURRENT TASK — ROYAL ADMINISTRATION (2026-11-10)
+## CURRENT TASK — ROYAL ADMINISTRATION + FIELD ARMIES (2026-11-10)
 
 Working branch: `feature/empire-management-system`, PR #46.
 
@@ -258,6 +258,9 @@ Implemented in this branch:
 - Campaign persistence through optional `empire_state` payload; old schema-4 saves receive safe defaults.
 - Touch-first `scripts/ui/empire_administration.gd` overlay, mounted into `world_scene.gd` through an unlock-gated Royal Court button.
 - Realm overview, council appointment/dismissal, province ownership and administration, governor appointment/recall, construction, taxation, edicts, seasonal ledger and chronicle.
+- Provincial infantry, archer and cavalry garrisons; manpower/treasury recruitment, disbandment and capacity rules.
+- Mobilized field armies transferred from garrisons, optional party-character commanders, one-step movement along authored atlas region links, per-season movement limit, unsupplied status and seasonal movement/supply refresh.
+- Field army upkeep and rations are included in the seasonal realm ledger; military UI shows deployment and supply summaries.
 - Governors/buildings/seasons validate against provinces controlled by House Dunmarrow or the Crownlands; do not allow management of foreign territories.
 - Strict regression tests added in `tests/run_tests.gd`, not yet executed.
 
@@ -268,5 +271,10 @@ Next work:
 2. Run strict tests, scene smoke test, balance report, static checker, Android offline preflight and Android export; fix regressions before merge.
 3. Wire the unlock into the appropriate authored narrative milestone only after the campaign scenario is approved.
 4. Improve council effects using existing character traits/skills and add an at-a-glance projected seasonal ledger.
-5. Continue with army recruitment, garrisons, supply, trade, faction AI and rebellion/war systems.
+5. Continue with tactical battle deployment for field armies, attrition, connected supply-line networks, sieges, trade, faction AI and rebellion/war systems.
 6. Keep all screens responsive on portrait Android and landscape, with no new permissions or schema/version changes unless necessary and documented.
+
+
+## FIELD ARMY IMPLEMENTATION STATUS
+
+The field army layer is now present on `feature/empire-management-system`. It does not yet create tactical battle encounters or resolve battles, casualties, sieges or war declarations. Army movement is strategic and follows only authored atlas region links. Current tests are authored but require exact-head Godot validation. Branch comparison last showed it one commit behind `main`; do not merge until reconciled and all required CI gates pass.
