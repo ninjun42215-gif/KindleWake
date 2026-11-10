@@ -22,6 +22,7 @@ const EmpireDevelopmentSystem = preload("res://scripts/core/empire_development_s
 const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 const ArtScript = preload("res://scripts/ui/art.gd")
+const ChroniclePolitics = preload("res://scripts/core/chronicle_diplomacy_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -60,6 +61,7 @@ func _initialize() -> void:
     _test_companion_behavior()
     _test_recruitment()
     _test_companion_quests()
+    _test_chronicle_diplomacy()
     _test_prologue()
     _test_opening_chapter()
     _test_opening_act_one_quests()
@@ -2624,6 +2626,60 @@ func _test_save_system() -> void:
 
 
 ## AI controls BOTH sides here, so this is a smoke test (does every battle terminate?) and a rough balance probe.
+func _test_chronicle_diplomacy() -> void:
+    print("[Chronicle inter-house diplomacy]")
+    var state: Dictionary = ChroniclePolitics.initialize({"house_name":"House Test","year":1})
+    check(state.get("politics",{}).get("houses",{}).size() == 4, "Chronicle diplomacy initializes the player house and three rival houses")
+    check(state.get("politics",{}).get("relations",{}).size() == 6, "Chronicle diplomacy creates all six shared bilateral house relations")
+    var envoy: Dictionary = ChroniclePolitics.perform_action(state,"player_house","house_ashcombe","envoy")
+    check(bool(envoy.get("ok",false)) and int(envoy.state.politics.influence) == 45, "sending an envoy spends five influence and records the action")
+    state = envoy.state
+    check(int(ChroniclePolitics.relation_between(state,"player_house","house_ashcombe").get("score",0)) == 16, "envoy improves the shared relation score by eight")
+    var gift: Dictionary = ChroniclePolitics.perform_action(state,"player_house","house_ashcombe","gift")
+    check(bool(gift.get("ok",false)) and int(gift.state.politics.influence) == 42 and int(gift.state.politics.houses["player_house"].treasury) == 45 and int(gift.state.politics.houses["house_ashcombe"].treasury) == 75, "public gift transfers five treasury, spends three influence and improves relations")
+    state = gift.state
+    var improved: Dictionary = ChroniclePolitics.change_relation(state,"player_house","house_ashcombe",60,"test alliance threshold")
+    state = improved.state
+    check(bool(ChroniclePolitics.relation_between(state,"player_house","house_ashcombe").get("allied",false)), "relations reaching sixty can form an alliance")
+    var broken: Dictionary = ChroniclePolitics.perform_action(state,"player_house","house_ashcombe","break_alliance")
+    check(bool(broken.get("ok",false)) and not bool(broken.relation.get("allied",true)), "breaking an alliance ends the treaty")
+    state = broken.state
+    var feud: Dictionary = ChroniclePolitics.perform_action(state,"player_house","house_ashcombe","declare_feud")
+    check(bool(feud.get("ok",false)) and bool(feud.relation.get("feud",false)) and not bool(feud.relation.get("allied",true)), "declaring a feud cancels any alliance")
+    state = feud.state
+    var reconciled: Dictionary = ChroniclePolitics.perform_action(state,"player_house","house_ashcombe","reconcile")
+    check(bool(reconciled.get("ok",false)) and not bool(reconciled.relation.get("feud",true)), "reconciliation clears a feud")
+    var malformed: Dictionary = state.duplicate(true)
+    malformed.politics.player_house = "missing_house"
+    malformed.politics.relations["ghost|player_house"] = {"score":500}
+    malformed.politics.relations["player_house|player_house"] = "invalid"
+    malformed.politics.relations["house_ashcombe|player_house"].score = 500
+    malformed.politics.relations["house_ashcombe|player_house"].history = ["malformed"]
+    malformed.politics.relations.erase("house_merevale|player_house")
+    var normalized: Dictionary = ChroniclePolitics.normalize(malformed)
+    check(str(normalized.politics.player_house) == "player_house" and normalized.politics.relations.size() == 6, "politics normalization repairs invalid house references and restores missing pair records")
+    check(not normalized.politics.relations.has("ghost|player_house") and not normalized.politics.relations.has("player_house|player_house"), "politics normalization discards invalid and self-relation records")
+    check(int(normalized.politics.relations["house_ashcombe|player_house"].score) == 100 and normalized.politics.relations["house_ashcombe|player_house"].history.is_empty(), "politics normalization clamps relation scores and filters malformed history entries")
+    var poor: Dictionary = ChroniclePolitics.initialize({"house_name":"Poor House","year":1})
+    poor.politics.houses["house_ashcombe"].food = 10
+    var before_legitimacy: int = int(poor.politics.houses["house_ashcombe"].legitimacy)
+    var annual: Dictionary = ChroniclePolitics.advance_political_year(poor)
+    check(bool(annual.get("ok",false)) and int(annual.state.politics.year) == 2, "political year advances separately and deterministically")
+    check(int(annual.state.politics.houses["house_ashcombe"].legitimacy) == before_legitimacy - 3, "low food reduces a rival house's legitimacy")
+    var ai_state: Dictionary = ChroniclePolitics.initialize({"house_name":"AI House","year":1})
+    ai_state.politics.relations["house_ashcombe|house_dunmar"] = {"score":-70,"allied":false,"feud":false,"history":[]}
+    var ai_result: Dictionary = ChroniclePolitics.resolve_rival_decisions(ai_state)
+    check(bool(ai_result.get("ok",false)) and bool(ChroniclePolitics.relation_between(ai_result.state,"house_ashcombe","house_dunmar").get("feud",false)), "rival-house decisions deterministically escalate severe hostility into a feud")
+    var feud_events := 0
+    for event in ai_result.state.politics.events:
+        if str(event.get("event","")) == "rival_house_feud":
+            feud_events += 1
+    check(feud_events == 1, "rival-house AI resolves each bilateral pair once per annual decision pass")
+    var serialized: Dictionary = JSON.parse_string(JSON.stringify(annual.state))
+    var restored: Dictionary = ChroniclePolitics.normalize(serialized)
+    check(restored.politics.houses.size() == 4 and restored.politics.relations.size() == 6, "inter-house politics survives offline Chronicle serialization and normalization")
+
+
 func _simulate_battles(n: int) -> void:
     print("[simulation]")
     var wins := 0
