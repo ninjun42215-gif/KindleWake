@@ -330,7 +330,8 @@ func _build_maren_quest_interaction() -> void:
         else:
             var progress := int(flags.get(MarenQuestSystem.PROGRESS_FLAG, 0))
             var clues := ["First note: the harbour answered low.", "Second note: the tower answered high.", "Final note: the current rose."]
-            spot_text.text += "\n\n" + clues[mini(progress, clues.size() - 1)]
+            var clue_index := clampi(progress, 0, clues.size() - 1)
+            spot_text.text += "\n\n" + clues[clue_index]
             spot_buttons.add_child(_btn("Sound the low note", _submit_maren_signal.bind("low")))
             spot_buttons.add_child(_btn("Sound the high note", _submit_maren_signal.bind("high")))
             spot_buttons.add_child(_btn("Sound the rising note", _submit_maren_signal.bind("rising")))
@@ -360,7 +361,7 @@ func _submit_maren_signal(tone: String) -> void:
     if not correct:
         spot_text.text += "\n\nThe tones clash. Maren asks you to begin the sequence again."
     elif complete:
-        spot_text.text += "\n\nThe final note carries across the shoals. A hidden compartment opens beneath the signal post."
+        spot_text.text += "\n\nThe final note carries across the shoals. The Northstar Wreck is charted and can now be approached safely."
     else:
         spot_text.text += "\n\nThe note settles into the old pattern. One part of the sounding remains."
 
@@ -447,6 +448,7 @@ func _claim_treasure(spot: Dictionary) -> void:
         GameState.world_flags["tideglass_ledger_found"] = true
     elif current_map_id == "dungeon_northstar_wreck":
         GameState.world_flags["northstar_wreck_log_found"] = true
+    GameState.save_campaign("auto_a")
     spot_text.text += "\n\nYou recover %d gold.%s" % [reward, loot_text]
 
 
