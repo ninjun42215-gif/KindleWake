@@ -222,7 +222,8 @@ func _test_companion_quests() -> void:
     check(bool(CompanionQuestSystem.resolve(state, quest_id, "community_network", catalog).get("ok", false)), "valid companion quest resolution is recorded")
     check(CompanionQuestSystem.status(state, quest_id) == "complete", "resolved companion quest is marked complete")
     var relationship_state: Dictionary = {}
-    var sample_effects: Dictionary = gd.companion_quests[quest_id].relationship_effects["community_network"]
+    var quest_definition: Dictionary = gd.companion_quests[quest_id]
+    var sample_effects: Dictionary = quest_definition.get("relationship_effects", {}).get("community_network", {})
     var trust_evidence := "companion_quest:%s:community_network:trust" % quest_id
     var respect_evidence := "companion_quest:%s:community_network:respect" % quest_id
     check(RelationshipSystemScript.adjust(relationship_state, "torren", "old_brisa", "trust", int(sample_effects.trust), trust_evidence), "companion quest outcome applies authored trust change")
