@@ -2039,6 +2039,22 @@
             0.52
           ],
           "text": "A shuttered signal post faces the outer shoals. Its old bell can still carry a pattern across the water, if someone remembers the sequence."
+        },
+        {
+          "cell": [
+            4,
+            6
+          ],
+          "kind": "recruit",
+          "npc": true,
+          "name": "Neris Quell",
+          "character_id": "neris_quell",
+          "tint": [
+            0.52,
+            0.78,
+            0.72
+          ],
+          "text": "A young reef diver steps from the beacon storehouse. Neris Quell was forced to salvage for Blackwake, but she sabotaged their signal theft and knows the second beacon's hidden approach."
         }
       ]
     },
