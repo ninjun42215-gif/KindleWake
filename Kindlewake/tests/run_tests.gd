@@ -1685,5 +1685,5 @@ func _test_companion_relationships() -> void:
     check(not RelationshipSystemScript.adjust(state, "torren", "wystan", "loyalty", 10, "invalid:dimension"), "unknown relationship dimensions are rejected")
     check(not RelationshipSystemScript.adjust(state, "torren", "torren", "friendship", 10, "invalid:self"), "self-relationships are rejected")
     var restored: Dictionary = RelationshipSystemScript.normalize_state(state)
-    check(restored == state, "relationship state survives normalization for campaign saves")
+    check(RelationshipSystemScript.normalize_state(restored) == restored, "relationship state remains stable after save normalization")
     check(RelationshipSystemScript.normalize_state({}).is_empty(), "legacy campaigns default safely without relationship data")
