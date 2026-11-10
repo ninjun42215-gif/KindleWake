@@ -100,9 +100,9 @@ The atlas is the global layer; each playable region still needs a bounded author
 
 The first connected implementation slice is now authored in the actual Godot data files:
 
-- **24 overworld landmarks** in the Sethmarch world map, with new roads branching to Sallow Ford Keep, Elderbough Watch, Redwater Granary, the Sunken Tollhouse, Warden's Barrow and the Ashen Granary.
-- **48 local maps** in `locations.json`, including three new settlement maps, the Sallow Ford Keep hall and barracks, the Elderbough signal hall, the Redwater seed store and three separate dungeon maps.
-- **Three location-level holdings** are claimable after their authored prerequisites: clear the Roadwolf Camp before securing Sallow Ford Keep; recover the Bell Under Leaves victory flag before negotiating at Elderbough Watch; recover the Kingsroad Catacombs victory flag before signing Redwater's grain charter.
+- **24 Eldrimar overworld landmarks** in the Sethmarch world map, with new roads branching to Sallow Ford Keep, Elderbough Watch, Redwater Granary, the Sunken Tollhouse, Warden's Barrow and the Ashen Granary. Thalassar's Brinegate Coast now has **10 overworld landmarks**, including Morrowtide Exchange, Veyhaven Beacon, Stormwell and the Wreck-King's Hold.
+- **52 local maps** in `locations.json`, including three new settlement maps, the Sallow Ford Keep hall and barracks, the Elderbough signal hall, the Redwater seed store and three separate dungeon maps.
+- **Four location-level holdings** are claimable after their authored prerequisites: clear the Roadwolf Camp before securing Sallow Ford Keep; recover the Bell Under Leaves victory flag before negotiating at Elderbough Watch; recover the Kingsroad Catacombs victory flag before signing Redwater's grain charter; restore Stormwell's grounding chain before assuming the watch at Veyhaven Beacon.
 - Holding ownership is saved in campaign world flags as a location-level record. It does not transfer the entire atlas region. New claims begin as provisional with 35/100 stability and a governance appointment; a short history records the transfer.
 - Dungeon maps contain separate treasure and guardian interaction spots and return to the overworld through their exit tile. The guardian interactions currently reuse existing battle definitions; bespoke boss units and puzzle-specific dungeon mechanics remain a content pass.
 
@@ -118,6 +118,18 @@ The first connected implementation slice is now authored in the actual Godot dat
 
 ### Validation and remaining work
 
-Static validation confirms all 24 overworld place IDs are unique, all road endpoints exist, every dungeon has a local map and battle reference, and all 48 local maps have rectangular rows, valid tile symbols, walkable entries, reachable doors/spots and valid door destinations. The Godot CI workflow has been triggered for import, headless scene smoke tests, strict tests and Android export; its final result is still pending.
+Static validation confirms all 34 overworld place IDs across Eldrimar and Thalassar are unique, all road endpoints exist, every dungeon has a local map and battle reference, and all 52 local maps have rectangular rows, valid tile symbols, walkable entries, reachable doors/spots and valid door destinations. The Godot CI workflow has been triggered for import, headless scene smoke tests, strict tests and Android export; its final result is still pending.
 
 The map layouts and interactions are playable foundations, not finished bespoke dungeon minigames. Puzzle systems (sluice sequencing, ancestral inscription trials, grain/firebreak salvage), unique boss battle rosters, interior art variation, siege battle maps, settlement economy ticks, garrison upkeep and stability recovery are explicitly still outstanding. The wider 18-holding / 18-dungeon catalogue remains authored content awaiting the same regional implementation pass.
+
+
+### Thalassar coastal expansion
+
+The Brinegate Coast now extends beyond the original harbour, Saltmere, Lantern Quay and Tideglass Grotto:
+
+- **Morrowtide Exchange** is a diver-guild market for kelp dyes, medicine and salvage. Its factor records cargo ownership before trade, and the guild diver warns against unidentified lantern signals.
+- **Veyhaven Beacon** is a cliff-top signal fortress. Its keeper explains why a dark lighthouse is not a useful conquest; the beacon's watch can be assumed only after Stormwell's grounding puzzle has been solved.
+- **The Wreck-King's Hold** is a separate reef-fortress map. Its lantern console requires amber, white, then blue; a wrong signal resets the sequence. Solving it unlocks the Wreck-King guardian encounter.
+- **Stormwell** is a sea-cut lightning shaft. Its grounding chain must be grounded, insulated and released in order before the Chainbound Tempest can be challenged.
+
+The two new coastal dungeons reuse the existing Tideglass tactical battle definition as a temporary encounter hook. Distinct corsair and storm-guardian battle rosters remain a later combat-content task.
