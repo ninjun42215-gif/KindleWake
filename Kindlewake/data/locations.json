@@ -2623,6 +2623,249 @@
           "text": "The seed vault is sealed through winter. Any governor who breaks the seal without the freeholders' vote will lose the granary's support."
         }
       ]
+    },
+    "morrowtide_exchange": {
+      "name": "Morrowtide Exchange",
+      "kind": "town",
+      "entry": [
+        8,
+        10
+      ],
+      "zoom": 1.1,
+      "rows": [
+        "#################",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "########E########"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            5,
+            5
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Diver-Guild Factor",
+          "text": "The factor records salvage claims before setting a price. Medicine, kelp dyes and recovered cargo are traded here.",
+          "rune_service": false
+        },
+        {
+          "cell": [
+            11,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Guild Diver",
+          "text": "The deep beds are quiet, but the old wrecks still shift when the current turns. Never follow a lantern signal you cannot identify."
+        }
+      ]
+    },
+    "veyhaven_beacon": {
+      "name": "Veyhaven Beacon",
+      "kind": "town",
+      "entry": [
+        8,
+        10
+      ],
+      "zoom": 1.1,
+      "rows": [
+        "#################",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "########E########"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            5,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Beacon Keeper",
+          "text": "The lamp lens is clear. The grounding chain is not. Restore the Stormwell below the reef shelf, then we can light the outer signal.",
+          "dialogue": [
+            "The beacon uses three mirrored shutters and a bronze lamp cage. The keeper's book records every safe alignment.",
+            "A dark beacon is not a conquered beacon. Ships need its signal before the next storm tide."
+          ]
+        },
+        {
+          "cell": [
+            11,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Harbour Pilot",
+          "text": "The outer reefs are passable only when the beacon is lit. Until then, pilots will refuse a night crossing."
+        }
+      ]
+    },
+    "dungeon_wreck_kings_hold": {
+      "name": "The Wreck-King's Hold",
+      "kind": "dungeon",
+      "entry": [
+        8,
+        10
+      ],
+      "zoom": 1.05,
+      "rows": [
+        "#################",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "########E########"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            4,
+            4
+          ],
+          "kind": "treasure",
+          "npc": false,
+          "name": "Wreck cache",
+          "text": "The deck tilts with the swell. Three lantern colours control the signal shutters, and the wrong sequence calls the corsair skiffs. A sealed cache is wedged between the ribs of the hull.",
+          "reward_gold": 140
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "mechanism",
+          "npc": false,
+          "name": "Signal Lantern Console",
+          "text": "Break the corsair signal by setting amber, white, then blue. The false red signal calls reinforcements.",
+          "mechanism_id": "wreck_signal_code",
+          "sequence": [
+            "amber",
+            "white",
+            "blue"
+          ],
+          "options": [
+            "amber",
+            "white",
+            "blue",
+            "red"
+          ],
+          "world_flag_on_solved": "wreck_signal_solved"
+        },
+        {
+          "cell": [
+            12,
+            6
+          ],
+          "kind": "boss",
+          "npc": false,
+          "name": "The Wreck-King",
+          "text": "The deck tilts with the swell. Three lantern colours control the signal shutters, and the wrong sequence calls the corsair skiffs. The guardian blocks the final chamber.",
+          "battle_id": "battle_tideglass",
+          "world_flag_on_victory": "dungeon_wreck_kings_hold_cleared",
+          "requires_flag": "wreck_signal_solved"
+        }
+      ]
+    },
+    "dungeon_stormwell": {
+      "name": "Stormwell",
+      "kind": "dungeon",
+      "entry": [
+        8,
+        10
+      ],
+      "zoom": 1.05,
+      "rows": [
+        "#################",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "########E########"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            4,
+            4
+          ],
+          "kind": "treasure",
+          "npc": false,
+          "name": "Wreck cache",
+          "text": "Lightning crawls along the bronze conductors. The keeper's log describes grounding the chain, insulating the flooded plate and releasing the stored charge. A sealed cache is wedged between the ribs of the hull.",
+          "reward_gold": 125
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "mechanism",
+          "npc": false,
+          "name": "Grounding Chain",
+          "text": "Ground the chain, insulate the flooded plate, then release the stored charge. Reversing the order sends lightning through the floor.",
+          "mechanism_id": "stormwell_grounding",
+          "sequence": [
+            "ground",
+            "insulate",
+            "release"
+          ],
+          "options": [
+            "ground",
+            "insulate",
+            "release",
+            "short"
+          ],
+          "world_flag_on_solved": "stormwell_grounding_solved"
+        },
+        {
+          "cell": [
+            12,
+            6
+          ],
+          "kind": "boss",
+          "npc": false,
+          "name": "The Chainbound Tempest",
+          "text": "Lightning crawls along the bronze conductors. The keeper's log describes grounding the chain, insulating the flooded plate and releasing the stored charge. The guardian blocks the final chamber.",
+          "battle_id": "battle_tideglass",
+          "world_flag_on_victory": "dungeon_stormwell_cleared",
+          "requires_flag": "stormwell_grounding_solved"
+        }
+      ]
     }
   }
 }
