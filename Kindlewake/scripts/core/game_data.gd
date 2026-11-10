@@ -25,6 +25,7 @@ var character_creation: Dictionary = {}   # protagonist creator options and stat
 var world: Dictionary = {}               # world.json: the Eldrimar regional overworld
 var thalassar_world: Dictionary = {}     # thalassar_world.json: Brinegate Coast
 var continents: Dictionary = {}          # continents.json: the seven-continent campaign atlas
+var factions: Dictionary = {}            # factions.json: political powers and regional affiliations
 var battles: Dictionary = {}
 
 
