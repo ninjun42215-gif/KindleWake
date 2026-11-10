@@ -8,7 +8,7 @@ The mode continues the Concord of Free Realms. It does not restore the Empire. T
 
 ## Starting house
 
-The first Chronicle state is initialized from the founder record and current protagonist name. It records:
+The first Chronicle state is initialized only from a founder record marked as recorded, with a non-empty identity, an `old_age` cause and an age of at least 70, plus the current protagonist name. It records:
 - The deceased founder and a founder's consort.
 - Two adult successor branches, Alden and Maren, with distinct starting traits.
 - The Barony of Kaer Sethorn and its initial domain measures.
