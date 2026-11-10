@@ -665,6 +665,10 @@ static func tactical_battle_database(base_db: Dictionary, battle: Dictionary, wa
 	var garrison_rules: Dictionary = warfare_data.get("garrisons", {})
 	var fortification_templates: Dictionary = warfare_data.get("fortifications", {})
 	var engineer_templates: Dictionary = warfare_data.get("siege_engineers", {})
+	var engineer_support := false
+	for battle_spawn in battle.get("units", []):
+		if str(battle_spawn.get("character_id", "")) == "strategic_siege_engineer":
+			engineer_support = true
 	for spawn in battle.get("units", []):
 		var character_id := str(spawn.get("character_id", ""))
 		if not character_id.begins_with("strategic_") or chars.has(character_id):
@@ -685,6 +689,11 @@ static func tactical_battle_database(base_db: Dictionary, battle: Dictionary, wa
 			elif character_id == "strategic_fort_tower":
 				fort_key = "gate_tower"
 			var fort: Dictionary = fortification_templates.get(fort_key, fortification_templates.get("fort_gate", {}))
+			fort = fort.duplicate(true)
+			if engineer_support:
+				var fort_stats: Dictionary = fort.get("stats", {}).duplicate(true)
+				fort_stats["hp"] = maxi(1, int(fort_stats.get("hp", 80)) - 15)
+				fort["stats"] = fort_stats
 			var fort_class_id := str(fort.get("class_id", "fort_wall"))
 			classes[fort_class_id] = (fort.get("class_def", {"name": "Fortification", "move": 0, "jump": 0}) as Dictionary).duplicate(true)
 			chars[character_id] = {"name": str(fort.get("name", "Fortification")), "class_id": fort_class_id, "level": 1, "weapon_id": str(fort.get("weapon_id", "hand_axe")), "armor_def": int(fort.get("armor_def", 6)), "armor_res": int(fort.get("armor_res", 4)), "skills": [], "stats": (fort.get("stats", {}) as Dictionary).duplicate(true)}
@@ -703,6 +712,11 @@ static func tactical_battle_database(base_db: Dictionary, battle: Dictionary, wa
 			continue
 		if character_id == "strategic_siege_engine":
 			var ram: Dictionary = engine_templates.get("battering_ram", {"name": "Battering Ram", "class_id": "siege_engine", "weapon_id": "battle_axe", "armor_def": 8, "armor_res": 2, "class_def": {"name": "Battering Ram", "move": 2, "jump": 0}, "stats": {"hp": 70, "mp": 0, "str": 12, "dex": 3, "int": 1, "vit": 14, "spd": 2, "lck": 1, "acc": 70, "eva": 0, "ldr": 0, "mor": 100}})
+			if engineer_support:
+				ram = ram.duplicate(true)
+				var ram_stats: Dictionary = ram.get("stats", {}).duplicate(true)
+				ram_stats["hp"] = int(ram_stats.get("hp", 70)) + 10
+				ram["stats"] = ram_stats
 			var ram_class_id := str(ram.get("class_id", "siege_engine"))
 			classes[ram_class_id] = (ram.get("class_def", {"name": "Battering Ram", "move": 2, "jump": 0}) as Dictionary).duplicate(true)
 			chars[character_id] = {"name": str(ram.get("name", "Battering Ram")), "class_id": ram_class_id, "level": 1, "weapon_id": str(ram.get("weapon_id", "battle_axe")), "armor_def": int(ram.get("armor_def", 8)), "armor_res": int(ram.get("armor_res", 2)), "skills": [], "stats": (ram.get("stats", {}) as Dictionary).duplicate(true)}
