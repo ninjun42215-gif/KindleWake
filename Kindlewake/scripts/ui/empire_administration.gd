@@ -532,7 +532,7 @@ func _build_economy() -> void:
     _section("TRADE LEVIES")
     body.add_child(_label("Current tariff policy: " + str(s.get("tariff_rate", "standard")).capitalize(), 15))
     for rate in ["low", "standard", "high"]:
-        var tariff_note := "5% · lighter tolls" if rate == "low" else ("10% · balanced revenue" if rate == "standard" else "20% · higher revenue, −2 public order each season")
+        var tariff_note := "5% · lighter tolls, +1 public order" if rate == "low" else ("10% · balanced revenue" if rate == "standard" else "20% · higher revenue, −2 order and −1 legitimacy")
         body.add_child(_button(rate.capitalize() + " Tariffs · " + tariff_note, _set_tariff_rate.bind(rate), str(s.get("tariff_rate", "standard")) == rate))
     _section("TRADE NETWORK")
     var controlled: Array = GameState.player_controlled_provinces()
