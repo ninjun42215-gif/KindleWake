@@ -31,8 +31,8 @@ Catalogue counts are documented in the production audit. A data entry or feature
 
 - Physical Android reproduction and QA for issue #36 are outstanding.
 - The seven-continent atlas currently has only two distinct runtime overworld datasets wired through `GameData.world_for_region()`.
-- Main has 28 classes and 15 combat skills, but no persistent node-based class talent tree or skill-point budget yet.
-- Traits and personality have a broad initial foundation; event templates still need committed gameplay triggers.
+- Main has 28 classes and 15 combat skills, plus 12 curated character ambitions; it still has no persistent node-based class talent tree or skill-point budget.
+- Traits/personality include 69 traits, five synergies, 40 event templates and ambition progression APIs. Actual behavior-evidence triggers and ambition assignment UX still need broader gameplay integration.
 - No generic companion quest system, regional trade system, five-act playable campaign, or Chronicle founder epilogue is integrated on main.
 - No bundled music/SFX or font files are present; character sprite/portrait coverage is incomplete.
 - Android is the configured build target. iOS export/device QA is not configured.
