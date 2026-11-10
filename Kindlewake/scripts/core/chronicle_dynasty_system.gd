@@ -63,8 +63,8 @@ const RANKS = [
 ]
 
 static func new_house(founder_record: Dictionary, founder_name: String, house_name: String = "House of the Open Hand") -> Dictionary:
- var founder_id := str(founder_record.get("protagonist_id", "founder"))
- if founder_id == "":
+ var founder_id := str(founder_record.get("protagonist_id", ""))
+ if founder_id == "" or str(founder_record.get("cause","")) != "old_age" or int(founder_record.get("age_at_death",0)) < 70 or not bool(founder_record.get("recorded",false)):
   return {}
  var founder_age := maxi(NATURAL_OLD_AGE, int(founder_record.get("age_at_death", NATURAL_OLD_AGE)))
  var people := {}
@@ -103,6 +103,8 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
  var state := raw.duplicate(true)
  state["version"] = VERSION
  state["year"] = maxi(1,int(state.get("year",1)))
+ state["next_person_number"] = maxi(1,int(state.get("next_person_number",1)))
+ state["house_name"] = str(state.get("house_name","House of the Open Hand"))
  if not SUCCESSION_POLICIES.has(str(state.get("succession_policy",""))):
   state["succession_policy"] = "primogeniture"
  var people: Dictionary = state["people"]
