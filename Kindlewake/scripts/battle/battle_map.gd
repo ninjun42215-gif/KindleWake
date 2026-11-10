@@ -13,8 +13,8 @@ var terrain_ids: Dictionary = {}     # Vector2i -> String
 var heights: Dictionary = {}         # Vector2i -> int
 
 
-static func from_battle_def(def: Dictionary, p_terrain_defs: Dictionary) -> BattleMap:
-    var m := BattleMap.new()
+static func from_battle_def(def: Dictionary, p_terrain_defs: Dictionary) -> Variant:
+    var m = load("res://scripts/battle/battle_map.gd").new()
     m.terrain_defs = p_terrain_defs
     var rows: Array = def.get("terrain", [])
     var hrows: Array = def.get("heights", [])
