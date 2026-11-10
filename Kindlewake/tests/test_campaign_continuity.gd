@@ -92,6 +92,7 @@ func _initialize() -> void:
  _check(not Chronicle.is_unlocked(state),"Chronicle remains locked after imperial dissolution")
  _check(Chronicle.record_milestone(state,"epilogue_completed"),"Chronicle requires and records late-life epilogue")
  _check(not Chronicle.record_milestone(state,"natural_old_age_death",{"cause":"old_age"}),"Chronicle requires founder identity")
+ _check(not Chronicle.record_milestone(state,"natural_old_age_death",{"cause":"old_age","protagonist_id":"torren","age_at_death":69}),"Chronicle rejects death below the natural old-age threshold")
  _check(Chronicle.record_milestone(state,"natural_old_age_death",{"cause":"old_age","protagonist_id":"torren","age_at_death":87,"ending_id":"open_concord"}),"Chronicle accepts verified natural old-age death")
  _check(Chronicle.is_unlocked(state),"Chronicle unlocks only after all founder milestones")
  var serialized := JSON.parse_string(JSON.stringify(state))
