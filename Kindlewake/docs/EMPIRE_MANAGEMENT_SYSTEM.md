@@ -51,7 +51,7 @@ Each known province contributes a modest baseline tax and food yield, while popu
 
 - Province-level population, prosperity, culture and unrest.
 - Trade routes, tariffs, resource specialization and caravan/port income.
-- Destructible siege walls/gates, ballista and trebuchet battlefield units, siege engineer abilities, autonomous faction AI war declarations, full negotiated peace and trade routes.
+- Destructible siege walls/gates, ballista and trebuchet battlefield units, and siege engineer abilities.
 - Faction AI turns, claims, succession crises and negotiated peace.
 - Character traits, skills, loyalty and rivalries influencing office performance.
 - Events with clear causes, player choices and persistent consequences.
