@@ -190,6 +190,8 @@ static func _ally_under_pressure_score(target: BattleUnit, ctl) -> float:
 
 
 static func _generic_boss_approach(unit: BattleUnit, ctl) -> Dictionary:
+    if unit.has_moved:
+        return {"move_to": unit.cell, "action": "wait", "target": null}
     var reach: Dictionary = ctl.reach_for(unit)
     return {"move_to": _approach_cell(unit, ctl, reach), "action": "wait", "target": null}
 
