@@ -95,3 +95,8 @@ The PR portfolio should be re-compared against the live main SHA before any acti
 - Preserve established canon and stable IDs.
 - Never invent asset licences, playable content, test results or device QA.
 - Prefer a smaller complete, tested vertical slice over a larger unfinished feature set.
+
+
+## Follow-up maintenance candidate — 2026-11-10
+
+Branch `fix/headless-resource-cleanup` is based on main `502bee6cd43b2bb2c97c36d766b6595d01af8cb0`. It replaces deferred `queue_free()` with immediate `free()` for the temporary PartyScreen in the headless UI test, preventing a queued Node from surviving until SceneTree shutdown. It also disables Blender import because the tracked tree contains no `.blend` files, removing an unnecessary dependency/warning. This is a candidate until exact-head CI passes; it changes no gameplay, save schema, game version or permissions.
