@@ -59,4 +59,6 @@ static func is_valid_campaign_payload(payload: Dictionary) -> bool:
         return false
     if typeof(payload.get("world_positions", {})) != TYPE_DICTIONARY:
         return false
+    if typeof(payload.get("companion_quests", {})) != TYPE_DICTIONARY:
+        return false
     return true
