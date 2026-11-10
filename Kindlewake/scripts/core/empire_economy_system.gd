@@ -7,16 +7,16 @@ const MIN_STABILITY := 0
 const MAX_STABILITY := 100
 
 static func assign_garrison(holding_id: String, unit_count: int, world_flags: Dictionary) -> Dictionary:
-    if holding_id == "" or not bool(world_flags.get("holding_claimed_" + holding_id, false)):
-        return {"ok": false, "reason": "Only a claimed holding can receive a garrison."}
+    if holding_id == "" or not bool(world_flags.get("holding_claimed_" + holding_id, false)) or str(world_flags.get("holding_owner_" + holding_id, PLAYER_FACTION)) != PLAYER_FACTION:
+        return {"ok": false, "reason": "Only a player-administered holding can receive a garrison."}
     var count := clampi(unit_count, 0, 999)
     world_flags["holding_garrison_" + holding_id] = count
     return {"ok": true, "holding": holding_id, "garrison": count}
 
 
 static func set_governance(holding_id: String, governance_id: String, world_flags: Dictionary) -> Dictionary:
-    if holding_id == "" or not bool(world_flags.get("holding_claimed_" + holding_id, false)):
-        return {"ok": false, "reason": "Only a claimed holding can be administered."}
+    if holding_id == "" or not bool(world_flags.get("holding_claimed_" + holding_id, false)) or str(world_flags.get("holding_owner_" + holding_id, PLAYER_FACTION)) != PLAYER_FACTION:
+        return {"ok": false, "reason": "Only a player-administered holding can be governed."}
     if not ["appointed_warden", "merchant_council", "local_compact", "military_command"].has(governance_id):
         return {"ok": false, "reason": "Unknown governance model."}
     world_flags["holding_governance_" + holding_id] = governance_id
