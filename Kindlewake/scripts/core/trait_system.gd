@@ -83,6 +83,8 @@ static func acquire(trait_ids: Array, history: Array, trait_id: String, source: 
     return {"ok": true, "reason": "", "traits": updated, "history": log}
 
 static func remove(trait_ids: Array, history: Array, trait_id: String, reason: String, definitions: Dictionary, allow_permanent: bool = false) -> Dictionary:
+    if reason.strip_edges() == "":
+        return {"ok": false, "reason": "A meaningful story or development reason is required.", "traits": normalized_ids(trait_ids), "history": history.duplicate(true)}
     if not trait_ids.has(trait_id):
         return {"ok": false, "reason": "Trait not found.", "traits": normalized_ids(trait_ids), "history": history.duplicate(true)}
     var definition: Dictionary = definitions.get(trait_id, {})
@@ -96,13 +98,16 @@ static func remove(trait_ids: Array, history: Array, trait_id: String, reason: S
         log.pop_front()
     return {"ok": true, "reason": "", "traits": updated, "history": log}
 
-static func evolve(trait_ids: Array, history: Array, trait_id: String, definitions: Dictionary, source: String) -> Dictionary:
+static func evolve(trait_ids: Array, history: Array, trait_id: String, definitions: Dictionary, source: String, behavior: Dictionary = {}) -> Dictionary:
     var definition: Dictionary = definitions.get(trait_id, {})
     var next_id := str(definition.get("evolves_to", ""))
     if next_id == "":
         return {"ok": false, "reason": "This trait has no defined evolution.", "traits": normalized_ids(trait_ids), "history": history.duplicate(true)}
     if not trait_ids.has(trait_id):
         return {"ok": false, "reason": "The character does not have the required starting trait.", "traits": normalized_ids(trait_ids), "history": history.duplicate(true)}
+    var requirements: Dictionary = definition.get("evolution_requirements", {})
+    if not PersonalitySystem.requirements_met(requirements, behavior):
+        return {"ok": false, "reason": "The character has not yet met the evolution requirements.", "traits": normalized_ids(trait_ids), "history": history.duplicate(true)}
     var removed := remove(trait_ids, history, trait_id, "evolved:" + source, definitions, true)
     var added := acquire(removed.traits, removed.history, next_id, "evolved:" + source, definitions)
     if not bool(added.ok):
