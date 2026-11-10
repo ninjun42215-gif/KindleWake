@@ -39,7 +39,8 @@ These are catalogue/data counts, not a claim that every item is equally balanced
 | Combat skills | 15 |
 | Runes | 77 |
 | Character traits | 69 plus 5 synergies |
-| Personality event templates | 20 |
+| Personality event templates | 40 |
+| Curated character ambitions | 12 |
 | Character definitions | 36 |
 | Location/town maps | 39 |
 | Battle definitions | 6 |
@@ -93,7 +94,7 @@ Do not inflate the 15-skill catalogue by adding superficial variants. Add abilit
 
 ### 3. Traits and personality
 
-The 69 traits and five synergies are a substantial foundation. The 40 event definitions are templates, not automatic triggers. The closed, unmerged PR #99 proposed 40 templates, but that expansion is not part of main.
+The 69 traits, five synergies, 40 event templates and 12 curated ambitions are present on main, with GameState APIs and character-sheet persistence. Templates are not proof of gameplay coverage: behavior evidence has limited external call sites, and the party UI shows an ambition summary but does not provide a complete ambition-assignment workflow.
 
 Next:
 - Wire evidence to committed outcomes across battle, quests, dialogue, training, crafting, and exploration; avoid leaving behavior counters as API-only state.
@@ -101,7 +102,7 @@ Next:
 - Keep evidence IDs unique and deduplicated.
 - Never infer morality, betrayal, romance, trauma, cowardice, or consent from generic combat heuristics.
 - Add a touch-friendly trait journal with acquisition/removal history and explainable effects.
-- Integrate ambitions only after objective evidence and completion/failure consequences are playable.
+- Complete the objective evidence triggers and completion/failure consequences for the existing 12 ambitions.
 
 ### 4. Companion quests and relationships
 
