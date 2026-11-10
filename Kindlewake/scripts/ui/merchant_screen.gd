@@ -202,11 +202,11 @@ func refresh(reset_status: bool = true) -> void:
         var label := Label.new()
         label.text = "%s  •  %s → %s  •  Toll %d" % [
             str(route.get("name", route_id)), str(route.get("from", "")),
-            str(route.get("to", "")), int(route.get("base_toll", 0))
+            str(route.get("to", "")), int(route_definition.get("base_toll", 0))
         ]
         label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         row.add_child(label)
-        var travel_button := _action_button("TRAVEL", func(): _notify_result(GameState.merchant_travel_route(str(route_id))))
+        var travel_button := _action_button("TRAVEL", func(): _travel_route(str(route_id)))
         travel_button.disabled = str(route.get("from", "")) != GameState.active_region_id
         row.add_child(travel_button)
         content.add_child(row)
@@ -237,6 +237,7 @@ func refresh(reset_status: bool = true) -> void:
             ))
             content.add_child(row)
         for route_id in GameData.trade_economy.get("routes", {}).keys():
+            var route_definition: Dictionary = GameData.trade_economy["routes"][route_id]
             var row := HBoxContainer.new()
             var label := Label.new()
             label.text = "Route policy — " + str(route_id)
