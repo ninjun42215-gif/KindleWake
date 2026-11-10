@@ -1891,6 +1891,22 @@
             0.56
           ],
           "text": "A warm room above the tide stairs. The keeper serves fish stew and keeps a dry chart table."
+        },
+        {
+          "cell": [
+            9,
+            3
+          ],
+          "kind": "companion_quest",
+          "quest_id": "maren_signal",
+          "npc": true,
+          "name": "Maren's Chart Table",
+          "tint": [
+            0.68,
+            0.84,
+            0.82
+          ],
+          "text": "Maren has marked a forgotten signal route in the margin of her chart. The last sounding may reveal why the Northstar crew vanished."
         }
       ]
     },
@@ -2007,6 +2023,22 @@
             0.87
           ],
           "text": "Fresh rope, lamp oil and travel gear for the coast road."
+        },
+        {
+          "cell": [
+            9,
+            9
+          ],
+          "kind": "companion_quest",
+          "quest_id": "maren_signal",
+          "npc": true,
+          "name": "The Silent Signal Post",
+          "tint": [
+            0.9,
+            0.78,
+            0.52
+          ],
+          "text": "A shuttered signal post faces the outer shoals. Its old bell can still carry a pattern across the water, if someone remembers the sequence."
         }
       ]
     },
