@@ -959,6 +959,31 @@ func _test_empire_management() -> void:
     check(str(state["field_armies"][field_id]["location"]) == "orrowen_weald" and not bool(state["field_armies"][field_id]["supplied"]), "marching into uncontrolled territory marks the army unsupplied")
     check(not EmpireSystem.move_field_army(state, field_id, "sethmarch", routes, known_regions), "an army has one strategic move per turn")
     check(int(EmpireSystem.field_army_summary(state)["armies"]) == 1 and int(EmpireSystem.field_army_summary(state)["troops"]) == 5, "field army summary reports deployed forces")
+    state["treasury"] = 1000
+    check(EmpireSystem.establish_trade_route(state, "sethmarch", "orrowen_weald", known_regions, routes), "a direct route between controlled atlas neighbours can be chartered")
+    check(int(state["treasury"]) == 900 and state["trade_routes"].size() == 1, "trade route charter deducts its one-time cost and persists")
+    check(not EmpireSystem.establish_trade_route(state, "orrowen_weald", "sethmarch", known_regions, routes), "duplicate reverse trade routes are rejected")
+    check(EmpireSystem.appoint_councillor(state, "steward", "torren"), "steward can be appointed for trait-effect testing")
+    var council_effect: Dictionary = EmpireSystem.council_effects(state, {"torren": {"traits": ["administrator"]}})
+    check(int(council_effect.get("income", 0)) == 13, "steward office and administrator trait combine their seasonal income bonuses")
+    var unrest_state: Dictionary = EmpireSystem.new_state()
+    EmpireSystem.unlock(unrest_state)
+    unrest_state["public_order"] = 0
+    unrest_state["stability"] = 0
+    unrest_state["legitimacy"] = 0
+    var unrest: Dictionary = EmpireSystem.rebellion_assessment(unrest_state, known_regions)
+    check(int(unrest.get("risk", 0)) == 100 and not unrest.get("alerts", []).is_empty(), "severe unrest produces a persistent province warning")
+    var ai_state: Dictionary = FactionSystem.new_campaign_state(gd.factions)
+    var npc_ids: Array = []
+    for faction in gd.factions.get("factions", []):
+        var faction_id := str(faction.get("id", ""))
+        if faction_id != "house_dunmarrow":
+            npc_ids.append(faction_id)
+    check(npc_ids.size() >= 2, "faction AI has authored non-player factions to simulate")
+    if npc_ids.size() >= 2:
+        FactionSystem.adjust_relation(ai_state, str(npc_ids[0]), str(npc_ids[1]), -85, "test hostility")
+        var ai_report: Dictionary = EmpireSystem.advance_faction_ai(ai_state, npc_ids, "house_dunmarrow")
+        check(not ai_report.get("declarations", []).is_empty(), "hostile NPC factions can declare deterministic AI wars")
 
     state["buildings"] = {}
     state["food"] = 0
@@ -1033,11 +1058,27 @@ func _test_supply_siege_and_tactical_bridge() -> void:
         if str(unit.get("team", "")) == "enemy" and unit_id.begins_with("strategic_defender_"):
             has_defender = true
     check(has_ram, "siege assault battle deploys a dedicated battering ram")
+    var has_ballista := false
+    var has_trebuchet := false
+    var has_engineer := false
+    var has_wall := false
+    for unit in battle_units:
+        var siege_unit_id := str(unit.get("character_id", ""))
+        has_ballista = has_ballista or siege_unit_id == "strategic_siege_ballista"
+        has_trebuchet = has_trebuchet or siege_unit_id == "strategic_siege_trebuchet"
+        has_engineer = has_engineer or siege_unit_id == "strategic_siege_engineer"
+        has_wall = has_wall or siege_unit_id.begins_with("strategic_fort_wall_")
+    check(has_ballista and has_trebuchet, "siege assault deploys ballista and trebuchet artillery")
+    check(has_engineer and has_wall, "siege engineer support and destructible wall segments deploy")
     check(has_gate and has_gate_commander, "breached siege battle makes the fort gate the commander objective")
     check(has_defender, "hostile region garrison is generated as tactical defenders")
     var siege_db: Dictionary = EmpireSystem.tactical_battle_database(gd.as_db(), battle_def, gd.strategic_warfare, 75)
     check(siege_db.get("characters", {}).has("strategic_siege_engine") and siege_db.get("classes", {}).has("siege_engine"), "authored battering ram resolves to a dedicated tactical class")
     check(siege_db.get("characters", {}).has("strategic_fort_gate") and siege_db.get("classes", {}).has("fort_gate"), "authored fort gate resolves to a destructible tactical objective")
+    check(siege_db.get("characters", {}).has("strategic_siege_ballista") and siege_db.get("characters", {}).has("strategic_siege_trebuchet"), "authored siege artillery profiles resolve in the tactical database")
+    check(siege_db.get("characters", {}).has("strategic_siege_engineer"), "authored siege engineer profile resolves in the tactical database")
+    check(int(siege_db["characters"]["strategic_siege_engine"]["stats"]["hp"]) == 80, "siege engineer field repair improves battering-ram durability")
+    check(int(siege_db["characters"]["strategic_fort_wall_0"]["stats"]["hp"]) == 70, "siege engineer breach charges weaken destructible wall segments")
     var siege_controller := BattleController.new()
     siege_controller.setup(battle_def, siege_db, 9192)
     siege_controller.begin()
