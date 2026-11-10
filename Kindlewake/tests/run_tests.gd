@@ -198,6 +198,16 @@ func _test_companion_quests() -> void:
         for outcome in definition.get("outcomes", []):
             if labels.has(str(outcome)) and str(labels[str(outcome)]).strip_edges().is_empty():
                 ids_ok = false
+        var relationship_effects: Dictionary = definition.get("relationship_effects", {})
+        if relationship_effects.size() != (definition.get("outcomes", []) as Array).size():
+            ids_ok = false
+        for outcome in definition.get("outcomes", []):
+            var effects: Dictionary = relationship_effects.get(str(outcome), {})
+            for dimension in ["trust", "respect"]:
+                if not effects.has(dimension) or int(effects.get(dimension, 0)) < 0 or int(effects.get(dimension, 0)) > 3:
+                    ids_ok = false
+            if not effects.has("stress_delta") or int(effects.get("stress_delta", 99)) < -2 or int(effects.get("stress_delta", 99)) > 2:
+                ids_ok = false
     var bespoke_quest_companions: Array[String] = ["neris_quell"]
     recruited_ids = recruited_ids.filter(func(id): return not bespoke_quest_companions.has(id))
     check(ids_ok and recruited_ids.size() == covered_ids.size() and recruited_ids.all(func(id): return covered_ids.has(id)), "every recruitable companion without a dedicated quest system has exactly one catalogue quest; Neris uses her existing bespoke route")
@@ -208,6 +218,10 @@ func _test_companion_quests() -> void:
     check(not bool(locked.get("ok", false)) and state.is_empty(), "a companion quest cannot start before its ally is recruited")
     var started := CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog)
     check(bool(started.get("ok", false)) and CompanionQuestSystem.status(state, quest_id) == "active", "recruited ally can start their personal quest")
+    var start_only: Dictionary = {}
+    CompanionQuestSystem.start(start_only, quest_id, ["torren", "old_brisa"], catalog)
+    var start_restored := CompanionQuestSystem.normalize_state(start_only, catalog)
+    check(CompanionQuestSystem.status(start_restored, quest_id) == "active", "a newly started companion quest survives save normalization before its first objective")
     check(not bool(CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog).get("ok", false)), "a companion quest cannot be started twice")
     check(str(gd.companion_quests["q_companion_maren_tideglass_wake"].get("required_flags_all", [])[0]) == MarenQuestSystem.COMPLETE_FLAG, "Maren's catalogue sequel uses the existing Northstar quest completion flag")
     var maren_locked_state: Dictionary = {}
@@ -224,6 +238,16 @@ func _test_companion_quests() -> void:
     check(not bool(CompanionQuestSystem.resolve(state, quest_id, "unknown_outcome", catalog).get("ok", false)), "unknown companion quest outcomes are rejected")
     check(bool(CompanionQuestSystem.resolve(state, quest_id, "community_network", catalog).get("ok", false)), "valid companion quest resolution is recorded")
     check(CompanionQuestSystem.status(state, quest_id) == "complete", "resolved companion quest is marked complete")
+    var relationship_state: Dictionary = {}
+    var brisa_definition: Dictionary = gd.companion_quests[quest_id]
+    var sample_effects: Dictionary = brisa_definition.get("relationship_effects", {}).get("community_network", {})
+    var trust_evidence := "companion_quest:%s:community_network:trust" % quest_id
+    var respect_evidence := "companion_quest:%s:community_network:respect" % quest_id
+    check(RelationshipSystemScript.adjust(relationship_state, "torren", "old_brisa", "trust", int(sample_effects.get("trust", 0)), trust_evidence), "companion quest outcome applies authored trust change")
+    check(RelationshipSystemScript.adjust(relationship_state, "torren", "old_brisa", "respect", int(sample_effects.get("respect", 0)), respect_evidence), "companion quest outcome applies authored respect change")
+    check(not RelationshipSystemScript.adjust(relationship_state, "torren", "old_brisa", "trust", int(sample_effects.get("trust", 0)), trust_evidence), "companion quest relationship evidence cannot be farmed twice")
+    var bond := RelationshipSystemScript.get_relationship(relationship_state, "torren", "old_brisa")
+    check(int(bond.get("trust", 0)) == int(sample_effects.get("trust", 0)) and int(bond.get("respect", 0)) == int(sample_effects.get("respect", 0)), "companion quest bond consequences persist on the pair")
     var restored := CompanionQuestSystem.normalize_state(state, catalog)
     check(restored == state, "companion quest progress survives normalization for save/load")
     var malformed := CompanionQuestSystem.normalize_state({"unknown_quest": {"status": "complete"}, quest_id: {"status": "invalid"}}, catalog)
