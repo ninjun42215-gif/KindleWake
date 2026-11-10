@@ -445,6 +445,24 @@
             1
           ],
           "text": "The walls are cracked, but they hold. Steward Brannoch is waiting in the great hall."
+        },
+        {
+          "cell": [
+            5,
+            10
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Prisoner's Petition",
+          "tint": [
+            0.82,
+            0.76,
+            0.66
+          ],
+          "text": "A guarded messenger brings a request from the commander Garrick once spared.",
+          "companion_quest_id": "q_companion_garrick_spared_enemy",
+          "companion_quest_milestone": "prisoner_request_received",
+          "companion_quest_text": "The former commander has been accused of ordering reprisals after his release. He asks Garrick to hear him before the hearing. Garrick insists that the request be recorded, but that the witnesses must be heard independently."
         }
       ]
     },
@@ -570,6 +588,35 @@
             "success_text": "Independent records support the soldiers' accounts and establish a pattern of coercion.",
             "failure_text": "A repeated phrase can be coached, and the officer's assertion is not evidence."
           }
+        },
+        {
+          "cell": [
+            12,
+            6
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Two Witnesses",
+          "tint": [
+            0.76,
+            0.82,
+            0.78
+          ],
+          "text": "Two villagers wait beneath the hall's public notice board; one describes an order, the other remembers soldiers acting without it.",
+          "companion_quest_id": "q_companion_garrick_spared_enemy",
+          "companion_quest_milestone": "witnesses_escorted",
+          "companion_quest_text": "Escort both witnesses to safety without asking either to endorse Garrick's old decision. Their accounts conflict on whether the commander ordered the reprisals, but both deserve protection and an independent hearing.",
+          "companion_quest_challenge": {
+            "prompt": "Which approach best protects the witnesses while preserving the reliability of their testimony?",
+            "options": [
+              "Keep them together and rehearse one shared account",
+              "Escort them separately, record each account independently and preserve the differences",
+              "Choose the witness whose story supports Garrick's earlier decision"
+            ],
+            "correct_option": "Escort them separately, record each account independently and preserve the differences",
+            "success_text": "Separate escorts and independent statements protect the witnesses without forcing their memories into a single story.",
+            "failure_text": "A rehearsed or selectively chosen account would compromise the hearing and place the witnesses at risk."
+          }
         }
       ]
     },
@@ -614,6 +661,24 @@
             0.8
           ],
           "text": "Spears sharp, boots dry. Give the word and we march. Rear attacks and flanks win fights, captain. Remember it."
+        },
+        {
+          "cell": [
+            2,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Returned Commander",
+          "tint": [
+            0.84,
+            0.72,
+            0.66
+          ],
+          "text": "The accused commander waits under guard, with his sword surrendered and the hearing order on the table.",
+          "companion_quest_id": "q_companion_garrick_spared_enemy",
+          "companion_quest_milestone": "commander_captured_or_surrendered",
+          "companion_quest_text": "The commander has surrendered after his remaining soldiers were offered safe conduct, and the witnesses are secure. Compare the written order with the independent accounts before deciding what Garrick should say at the hearing."
         }
       ]
     },
@@ -1780,6 +1845,35 @@
             6,
             4
           ]
+        },
+        {
+          "cell": [
+            10,
+            7
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Unclaimed Brennhallow Seal",
+          "tint": [
+            0.82,
+            0.76,
+            0.58
+          ],
+          "text": "A clerk has found fresh orders bearing the seal of a Brennhallow successor who has not appeared in public.",
+          "companion_quest_id": "q_companion_corwin_heirless_seal",
+          "companion_quest_milestone": "seal_forgery_found",
+          "companion_quest_text": "Corwin recognises the family seal but not the impression's edge. Preserve the orders and compare the wax, date and issuing register before treating them as lawful commands.",
+          "companion_quest_challenge": {
+            "prompt": "Which detail most strongly indicates that the orders were issued under a forged or unauthorised seal?",
+            "options": [
+              "The wax is a dark red colour",
+              "The impression lacks the registered edge mark and cites an absent successor not listed in the household roll",
+              "The order is written in formal language"
+            ],
+            "correct_option": "The impression lacks the registered edge mark and cites an absent successor not listed in the household roll",
+            "success_text": "The missing registered edge and absent name show that the seal was used without verified authority.",
+            "failure_text": "Colour and formal wording do not authenticate a seal. Compare the impression and issuing register."
+          }
         }
       ]
     },
@@ -1848,6 +1942,35 @@
             6,
             3
           ]
+        },
+        {
+          "cell": [
+            8,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Charter Examiner",
+          "tint": [
+            0.76,
+            0.82,
+            0.88
+          ],
+          "text": "A retired notary keeps a copy of the Brennhallow charter and its witness schedule.",
+          "companion_quest_id": "q_companion_corwin_heirless_seal",
+          "companion_quest_milestone": "charter_authority_audited",
+          "companion_quest_text": "Audit the charter's witness names, dates and limits. A seal can authenticate a document's origin only when the issuing authority and succession conditions are also established.",
+          "companion_quest_challenge": {
+            "prompt": "What is the strongest basis for determining whether the charter grants Corwin authority now?",
+            "options": [
+              "The family seal appears on the oldest copy",
+              "The dated witness schedule, succession clause and independent household roll agree on the current authority",
+              "A retainer says Corwin has always been the most capable heir"
+            ],
+            "correct_option": "The dated witness schedule, succession clause and independent household roll agree on the current authority",
+            "success_text": "The matching records establish the charter's conditions and show that the disputed successor has no verified standing.",
+            "failure_text": "A seal or personal opinion cannot replace the charter's witness schedule and succession conditions."
+          }
         }
       ]
     },
@@ -1905,6 +2028,24 @@
             6,
             4
           ]
+        },
+        {
+          "cell": [
+            8,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Hall of Retainers",
+          "tint": [
+            0.84,
+            0.78,
+            0.68
+          ],
+          "text": "Brennhallow retainers have gathered to hear Corwin's position; several demand that the disputed orders be withdrawn.",
+          "companion_quest_id": "q_companion_corwin_heirless_seal",
+          "companion_quest_milestone": "retainers_heard",
+          "companion_quest_text": "Hear the retainers separately and publish the limits of any interim arrangement. Corwin may submit the claim, renounce personal advantage or accept only temporary custody under independent review. No outcome grants him power to bind the Seven Houses."
         }
       ]
     },
