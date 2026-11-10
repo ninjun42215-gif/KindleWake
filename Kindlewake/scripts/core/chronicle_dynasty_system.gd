@@ -205,7 +205,22 @@ static func _related(state: Dictionary, a: String, b: String) -> bool:
  var pb: Dictionary = state.people[b]
  if pa.parents.has(b) or pb.parents.has(a) or pa.siblings.has(b) or pb.siblings.has(a):
   return true
+ var ancestors_a := _ancestor_ids(state,a)
+ var ancestors_b := _ancestor_ids(state,b)
+ for ancestor_id in ancestors_a:
+  if ancestors_b.has(ancestor_id):
+   return true
  return false
+
+
+static func _ancestor_ids(state: Dictionary, person_id: String, visited: Array = []) -> Array:
+ if visited.has(person_id) or not state.people.has(person_id):
+  return visited
+ visited.append(person_id)
+ var person: Dictionary = state.people[person_id]
+ for parent_id in person.get("parents",[]):
+  _ancestor_ids(state,str(parent_id),visited)
+ return visited
 
 
 static func add_trait(raw: Dictionary, person_id: String, trait_id: String) -> Dictionary:
@@ -303,8 +318,8 @@ static func create_title(raw: Dictionary, rank_id: String, name: String, holder_
  for existing in state.titles.values():
   var existing_rank := _rank_value(str(existing.get("rank_id","")))
   highest = maxi(highest,existing_rank)
- if int(rank.rank) <= highest:
-  return {"ok":false,"reason":"New titles must follow the existing rank ladder; a higher rank requires a greater public duty."}
+ if int(rank.rank) != highest + 1:
+  return {"ok":false,"reason":"Establish each intervening rank before advancing to a higher title."}
  var title_id := "title_%02d" % (state.titles.size()+1)
  state.titles[title_id] = {"id":title_id,"rank_id":rank_id,"name":name.strip_edges(),"holder":holder_id,"domain_id":domain_id,"jurisdiction":str(rank.jurisdiction),"obligations":[str(rank.duties)],"legitimacy":40}
  var person: Dictionary = state.people[holder_id]
@@ -385,10 +400,17 @@ static func _select_heir(state: Dictionary, deceased_id: String) -> String:
   if state.people.has(child_id) and bool(state.people[child_id].alive):
    candidates.append(child_id)
  if candidates.is_empty():
-  for id in state.people.keys():
-   var p: Dictionary = state.people[id]
-   if bool(p.alive) and str(p.relation) in ["child","spouse"]:
-    candidates.append(str(id))
+  var spouse_id := str(deceased.get("spouse",""))
+  if spouse_id != "" and state.people.has(spouse_id) and bool(state.people[spouse_id].alive):
+   candidates.append(spouse_id)
+ if candidates.is_empty():
+  for sibling_id in deceased.get("siblings",[]):
+   if state.people.has(str(sibling_id)) and bool(state.people[str(sibling_id)].alive):
+    candidates.append(str(sibling_id))
+ if candidates.is_empty():
+  for parent_id in deceased.get("parents",[]):
+   if state.people.has(str(parent_id)) and bool(state.people[str(parent_id)].alive):
+    candidates.append(str(parent_id))
  if candidates.is_empty():
   return ""
  match str(state.succession_policy):
