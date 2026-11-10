@@ -373,10 +373,10 @@
       "companion_id": "verra_nightsong",
       "title": "A Song Without a Seal",
       "chapter": "II",
-      "required_region": "sethmarch",
+      "required_region": "brinegate",
       "milestones": [
-        "altered_song_heard",
-        "original_verses_verified",
+        "borrowed_verse_heard",
+        "singers_copy_recovered",
         "public_performance_resolved"
       ],
       "outcomes": [
@@ -386,6 +386,24 @@
       ],
       "completion_reward": {
         "gold": 50
+      },
+      "synopsis": "Verra hears her own song performed with altered words praising the secret Covenant. A travelling troupe has been pressured to repeat the propaganda. Recover the original verses, establish how the edits were made and help the performers choose how to answer.",
+      "journal_summary": "Trace the altered song through a travelling troupe, recover its original verses and decide how Verra will answer the Covenant's propaganda.",
+      "resolution_prompt": "The original song is recovered and the troupe can refuse the patron's demand. Should Verra publish the original with names, protect the performers by removing identifying details or write a new song?",
+      "outcome_labels": {
+        "publish_original": "Publish the original song",
+        "protect_performers": "Protect the performers",
+        "write_new_song": "Write a new song"
+      },
+      "outcome_descriptions": {
+        "publish_original": "Verra publishes the original verses and names the patron who altered them. The troupe chooses which members will testify, and the public can compare the two versions.",
+        "protect_performers": "Verra releases the original song without identifying the performers. The truth survives, while those threatened by the patron can leave without becoming public targets.",
+        "write_new_song": "Verra writes an original response that records the harm without turning the troupe into a political weapon. The performers reclaim the stage on their own terms."
+      },
+      "outcome_flags": {
+        "publish_original": "verra_outcome_original_published",
+        "protect_performers": "verra_outcome_performers_protected",
+        "write_new_song": "verra_outcome_new_song"
       }
     },
     "q_companion_tomas_far_marker": {
@@ -394,9 +412,9 @@
       "chapter": "I",
       "required_region": "sethmarch",
       "milestones": [
-        "fen_marker_found",
-        "family_trail_followed",
-        "homecoming_resolved"
+        "fen_marker_recognised",
+        "scout_trail_reconstructed",
+        "homeward_choice_made"
       ],
       "outcomes": [
         "return_openly",
@@ -405,6 +423,24 @@
       ],
       "completion_reward": {
         "gold": 35
+      },
+      "synopsis": "Tomas recognises a boundary marker from the fen settlement he fled. Following old scout signs reveals that his family sheltered deserters, but not that Tomas shared their choices. The settlement is divided over whether to protect or prosecute them.",
+      "journal_summary": "Follow Tomas's old boundary marker, reconstruct the scout trail and decide whether he should return, help his family relocate or send aid from afar.",
+      "resolution_prompt": "The settlement knows the truth about the family sheltering deserters, but Tomas is not responsible for their decisions. What future should he choose?",
+      "outcome_labels": {
+        "return_openly": "Return to the settlement openly",
+        "relocate_family": "Help the family relocate",
+        "send_aid": "Remain away and send aid"
+      },
+      "outcome_descriptions": {
+        "return_openly": "Tomas returns with witnesses and offers testimony about what he saw, not what others claim he did. The settlement agrees to a hearing instead of a reprisal.",
+        "relocate_family": "Tomas arranges a safe relocation for his family and those who fear reprisals. The settlement loses their presence, but no one is forced into a public confession.",
+        "send_aid": "Tomas remains with the company and sends supplies through a trusted route. He does not return before he is ready, and the family keeps the choice to answer the settlement later."
+      },
+      "outcome_flags": {
+        "return_openly": "tomas_outcome_returned",
+        "relocate_family": "tomas_outcome_relocated_family",
+        "send_aid": "tomas_outcome_remote_aid"
       }
     },
     "q_companion_orlan_margin_of_truth": {
