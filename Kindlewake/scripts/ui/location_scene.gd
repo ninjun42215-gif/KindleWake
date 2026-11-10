@@ -289,6 +289,12 @@ func _on_prompt_pressed() -> void:
             var options: Array = near_spot.get("options", [])
             for option in options:
                 spot_buttons.add_child(_btn("Set: " + str(option).capitalize(), _resolve_mechanism.bind(near_spot, str(option))))
+    elif spot_kind == "secret":
+        var secret_flag: String = str(near_spot.get("world_flag_on_reveal", ""))
+        if bool(GameState.world_flags.get(secret_flag, false)):
+            spot_text.text += "\n\nThe hidden passage has already been opened."
+        else:
+            spot_buttons.add_child(_btn("Search the seam and open the passage", _reveal_secret_passage.bind(near_spot)))
     spot_buttons.add_child(_btn("Close", _close_panel))
     spot_panel.visible = true
 
@@ -388,6 +394,25 @@ func _resolve_mechanism(spot: Dictionary, choice: String) -> void:
     else:
         GameState.world_flags[progress_key] = 1 if choice == str(sequence[0]) else 0
         spot_text.text += "\n\nThe mechanism shudders and resets. The sequence must begin again."
+
+
+func _reveal_secret_passage(spot: Dictionary) -> void:
+    var flag := str(spot.get("world_flag_on_reveal", ""))
+    var cell: Vector2i = lmap.spot_cell(spot)
+    if flag == "" or bool(GameState.world_flags.get(flag, false)):
+        return
+    if not lmap.set_tile(cell, "."):
+        spot_text.text += "\n\nThe stone cannot be shifted from this side."
+        return
+    var reward := maxi(0, int(spot.get("secret_reward_gold", 0)))
+    GameState.party.gold += reward
+    GameState.world_flags[flag] = true
+    spot_text.text += "\n\nThe stone gives way, revealing a narrow passage and a forgotten cache. You recover %d gold." % reward
+    GameState.save_campaign("auto_a")
+    queue_redraw()
+    for child in spot_buttons.get_children():
+        if child is Button:
+            (child as Button).disabled = true
 
 
 func _challenge_boss(spot: Dictionary) -> void:
