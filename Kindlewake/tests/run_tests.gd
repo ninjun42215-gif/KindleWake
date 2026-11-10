@@ -450,6 +450,12 @@ func _test_controller() -> void:
     var invalid_active: Dictionary = parsed.duplicate(true)
     invalid_active["active_id"] = 999
     check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), invalid_active), "restore rejects an active unit ID absent from the snapshot")
+    var malformed_status: Dictionary = parsed.duplicate(true)
+    malformed_status["units"][0]["statuses"] = {"burn": "not-a-status-dictionary"}
+    check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), malformed_status), "restore rejects malformed nested status records")
+    var malformed_status_value: Dictionary = parsed.duplicate(true)
+    malformed_status_value["units"][0]["statuses"] = {"burn": {"turns": "many", "damage": 2}}
+    check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), malformed_status_value), "restore rejects non-numeric status durations and effects")
 
 
 ## Auto Battle = the AI plays the player's units (run_ai_turn(true)); also covers the cleric's heal logic.
