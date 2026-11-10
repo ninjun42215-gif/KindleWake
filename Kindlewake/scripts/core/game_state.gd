@@ -262,7 +262,13 @@ func set_faction_diplomacy(faction_a: String, faction_b: String, next_state: Str
 
 ## Transfer a known atlas region after a battle, treaty or authored story outcome.
 func transfer_faction_region(region_id: String, new_owner: String, cause: String) -> bool:
-    return FactionSystem.transfer_region(faction_state, region_id, new_owner, cause)
+    var transferred := FactionSystem.transfer_region(faction_state, region_id, new_owner, cause)
+    if transferred:
+        var governors: Dictionary = empire_state.get("governors", {}).duplicate(true)
+        if new_owner != str(empire_state.get("ruler_faction", "")):
+            governors.erase(region_id)
+            empire_state["governors"] = governors
+    return transferred
 
 
 
