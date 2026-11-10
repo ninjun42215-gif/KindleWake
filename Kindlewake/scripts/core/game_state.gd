@@ -246,7 +246,7 @@ func resolve_field_army_battle(battle: Dictionary, units: Array, won: bool) -> D
 		var count := int(cohort.get("count", 0))
 		var lost := count
 		if unit.is_alive():
-			lost = int(ceil(float(count) * float(unit.max_hp() - unit.hp) / float(unit.max_hp())))
+			lost = int(round(float(count) * float(unit.max_hp() - unit.hp) / float(unit.max_hp())))
 		if lost > 0:
 			var troop_type := str(cohort.get("troop_type", "infantry"))
 			casualties[troop_type] = int(casualties.get(troop_type, 0)) + lost
