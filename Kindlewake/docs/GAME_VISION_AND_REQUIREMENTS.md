@@ -234,3 +234,25 @@ A feature is done only when:
 The mechanics are documented across [MECHANICS_BIBLE.md](MECHANICS_BIBLE.md), [GDD.md](GDD.md) and [GAME_BIBLES_INDEX.md](GAME_BIBLES_INDEX.md). Base44 must preserve and build on the documented tactical grid/CTB combat, shared CombatCalc rules, terrain/weather/status/morale/fatigue, character levels/classes/skills/equipment, EXP/AP/Sigil/rune systems, recruitment, platoons, army-battle design, Kaer Sethorn facilities, campaign calendar/economy and offline save architecture. The requested CK-style traits, broader human/monster bestiary, full kingdom/empire management, council appointments, strategic wars/sieges and named mini-games remain targets until confirmed in live code.
 
 The [Premium Production Bible](PREMIUM_PRODUCTION_BIBLE.md) is part of the required design package, not optional inspiration. It governs emotional quality, story delivery, art direction, audio, mobile UX, asset licensing and release guardrails. The [Master Game Bibles Index](GAME_BIBLES_INDEX.md) defines reading order and status labels.
+
+
+## 14. Post-ending dynasty campaign — explicit owner requirement
+
+The family/dynasty simulation is **not part of the main campaign**. It unlocks only after the player completes the main story, becomes the last Emperor, formally abolishes the Empire, completes the late-life epilogue and the protagonist dies naturally of old age. This is a hard progression gate, not an optional early-game toggle.
+
+After that death, control passes to an eligible descendant or lawful chosen successor. The player then continues the Chronicle of Houses across generations, inspired at a high level by the character-life-cycle and inheritance depth of Knights of Ages while using original KindleWake lore and rules.
+
+Required scope:
+- family tree, spouses, children, siblings, guardians, adoption and cadet branches;
+- character aging, education, traits, skills, injuries, retirement and natural death;
+- inherited and learned traits with individual variation;
+- noble ranks including Knight/Dame, Baron/Baroness, Viscount, Count/Earl, Marquess, Duke and culturally specific higher offices;
+- title and land grants, domain management, house treasury, food, stability, taxes, justice, infrastructure and defence;
+- marriage alliances, faction reputation, house prestige, legitimacy and local trust;
+- succession laws, inheritance previews, contested claims and meaningful roles for younger children;
+- wars, sieges, tactical battles, ransom, capture, memorials and generational chronicle;
+- a flexible political order after the Empire's abolition; no ordinary restoration of the Emperor title.
+
+The first generational release should be deliberately smaller than the full vision: unlock gate + founder chronicle, family tree, aging, one household, one barony, one succession law and a complete save/load loop. Expand only after that vertical slice is stable.
+
+Do not claim any of this is implemented until verified in Godot source, data, UI, tests and saves. Preserve offline play and the original campaign save; generational state must be separately versioned and linked to the ending record.
