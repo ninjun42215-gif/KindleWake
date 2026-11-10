@@ -120,6 +120,8 @@ func _build() -> void:
  domain_name.placeholder_text = "New holding name"
  col.add_child(domain_name)
  col.add_child(_button("Found a new holding for selected member",_create_domain))
+ domain_picker = OptionButton.new()
+ col.add_child(domain_picker)
  policy_picker = OptionButton.new()
  for policy in Dynasty.SUCCESSION_POLICIES:
   policy_picker.add_item(str(policy).replace("_"," ").capitalize())
@@ -187,6 +189,14 @@ func _refresh() -> void:
  for title_id in state.titles.keys():
   title_picker.add_item(str(state.titles[title_id].get("name",title_id)))
   title_picker.set_item_metadata(title_picker.item_count-1,str(title_id))
+ if title_picker.item_count > 0:
+  title_picker.select(0)
+ domain_picker.clear()
+ for domain_id in state.domains.keys():
+  domain_picker.add_item(str(state.domains[domain_id].get("name",domain_id)))
+  domain_picker.set_item_metadata(domain_picker.item_count-1,str(domain_id))
+ if domain_picker.item_count > 0:
+  domain_picker.select(0)
  status.text = "Selected: %s. Kinship, titles and yearly events are preserved in this house chronicle." % str(state.people.get(selected_person,{}).get("name","None"))
 
 func _fill_people_picker(picker: OptionButton, living_only: bool) -> void:
@@ -267,7 +277,7 @@ func _create_title() -> void:
   status.text = "Establish a holding before creating a title."
   return
  var rank_id := str(Dynasty.RANKS[title_rank_picker.selected].id)
- var result := Dynasty.create_title(state,rank_id,title_name.text,selected_person,str(state.domains.keys()[0]))
+ var result := Dynasty.create_title(state,rank_id,title_name.text,selected_person,_selected_id(domain_picker))
  if bool(result.get("ok",false)):
   title_name.clear()
  _apply_result(result)
@@ -293,10 +303,10 @@ func _domain_prosperity() -> void:
  _domain_change("prosperity")
 
 func _domain_change(field: String) -> void:
- if state.domains.is_empty():
+ if domain_picker.item_count == 0:
   status.text = "No holding has been recorded."
   return
- var domain_id := str(state.domains.keys()[0])
+ var domain_id := _selected_id(domain_picker)
  var value := int(state.domains[domain_id].get(field,0))+5
  _apply_result(Dynasty.update_domain(state,domain_id,field,value))
 
