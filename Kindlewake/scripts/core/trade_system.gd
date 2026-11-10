@@ -327,11 +327,17 @@ static func resolve_caravan_ambush(party: PartyState, state: Dictionary, goods: 
 
 static func smuggle_sell(party: PartyState, state: Dictionary, region_id: String, good_id: String, quantity: int,
         goods: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
-    if quantity < 1 or party.item_count(good_id) < quantity: return {"ok":false, "message":"Not enough cargo."}
-    if not goods.get("goods", {}).has(good_id): return {"ok":false, "message":"Unknown trade good."}
+    if quantity < 1 or quantity > int(goods.get("max_transaction_quantity", MAX_QUANTITY)):
+        return {"ok":false, "message":"Choose a valid quantity."}
+    var good: Dictionary = goods.get("goods", {}).get(good_id, {})
+    if good.is_empty(): return {"ok":false, "message":"Unknown trade good."}
+    if not _guild_access(state, good):
+        return {"ok":false, "message":"A merchant guild license is required for this commodity."}
+    if party.item_count(good_id) < quantity: return {"ok":false, "message":"Not enough cargo."}
     var guards := int(state.get("caravan", {}).get("guards", 0))
     var heat := int(state.get("smuggling_heat", 0))
     var chance := clampf(0.18 + _tariff_rate(region_id, state, goods) * 0.9 + float(heat) * 0.01 - float(guards) * 0.035, 0.05, 0.9)
+    state["transactions"] = int(state.get("transactions", 0)) + 1
     if rng.randf() < chance:
         party.remove_item(good_id, quantity)
         var fine := mini(party.gold, maxi(25, unit_price(region_id, good_id, goods, state) * quantity))
@@ -343,7 +349,7 @@ static func smuggle_sell(party: PartyState, state: Dictionary, region_id: String
     party.remove_item(good_id, quantity)
     party.gold += payout
     state["smuggling_heat"] = mini(100, heat + 5)
-    state["transactions"] = int(state.get("transactions", 0)) + 1
+    state["total_profit"] = int(state.get("total_profit", 0)) + payout
     add_merchant_xp(state, quantity)
     return {"ok":true, "caught":false, "payout":payout, "message":"The contraband sale succeeded."}
 
