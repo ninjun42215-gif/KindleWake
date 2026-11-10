@@ -12,6 +12,7 @@ const MarenQuestSystem = preload("res://scripts/core/maren_quest_system.gd")
 const NerisQuestSystem = preload("res://scripts/core/neris_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const TerritoryGovernance = preload("res://scripts/core/territory_governance.gd")
 const ArtScript = preload("res://scripts/ui/art.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
@@ -53,6 +54,7 @@ func _initialize() -> void:
     _test_world()
     _test_world_atlas()
     _test_faction_politics()
+    _test_territory_governance()
     _test_thalassar_region()
     _test_wraparound_world()
     _test_brinegate_quest()
@@ -1917,3 +1919,24 @@ func _test_companion_relationships() -> void:
     var restored: Dictionary = RelationshipSystemScript.normalize_state(state)
     check(RelationshipSystemScript.normalize_state(restored) == restored, "relationship state remains stable after save normalization")
     check(RelationshipSystemScript.normalize_state({}).is_empty(), "legacy campaigns default safely without relationship data")
+
+
+
+func _test_territory_governance() -> void:
+    print("[territorial governance]")
+    var state: Dictionary = TerritoryGovernance.new_state(gd.factions)
+    check(state.get("territories", {}).has("sethmarch"), "territory administration initializes every authored atlas region")
+    check(not TerritoryGovernance.set_policy(state, "sethmarch", {"tax_rate":0.2}, "house_brennhallow"), "a faction cannot administer a region it does not own")
+    check(TerritoryGovernance.set_policy(state, "sethmarch", {"tax_rate":0.25, "garrison":150, "fortification":9}, "house_dunmarrow"), "the controlling faction can set regional governance policies")
+    var managed: Dictionary = state["territories"]["sethmarch"]
+    check(float(managed["tax_rate"]) == 0.25 and int(managed["garrison"]) == 150 and int(managed["fortification"]) == 5, "taxes, garrisons and fortifications are clamped to safe limits")
+    var turn: Dictionary = TerritoryGovernance.advance_turn(state)
+    check(int(turn.get("tax_income", 0)) > 0 and int(managed["unrest"]) > 10, "governance turns calculate tax income and high-tax unrest")
+    check(TerritoryGovernance.capture(state, "sethmarch", "house_brennhallow", gd.factions, "battle:frontier-fort"), "authored conquest transfers a known region to a valid faction")
+    managed = state["territories"]["sethmarch"]
+    check(str(managed["owner"]) == "house_brennhallow" and int(managed["unrest"]) == 55 and int(managed["garrison"]) == 0, "newly captured territory begins with occupation instability")
+    check(not TerritoryGovernance.capture(state, "unknown_region", "house_brennhallow", gd.factions, "invalid"), "unknown regions cannot be captured")
+    var normalized: Dictionary = TerritoryGovernance.normalize_state({"territories":{"sethmarch":{"owner":"invalid_faction","unrest":999,"tax_rate":9.0,"garrison":-5}}}, gd.factions)
+    var safe: Dictionary = normalized["territories"]["sethmarch"]
+    check(str(safe["owner"]) == "house_dunmarrow" and int(safe["unrest"]) == 100 and float(safe["tax_rate"]) == 0.25 and int(safe["garrison"]) == 0, "territory saves reject unknown owners and clamp corrupt governance values")
+    check(TerritoryGovernance.normalize_state(normalized, gd.factions) == normalized, "territory governance normalization is stable across repeated saves")
