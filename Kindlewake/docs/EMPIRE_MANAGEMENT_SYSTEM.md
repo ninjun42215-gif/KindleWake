@@ -51,7 +51,7 @@ Each known province contributes a modest baseline tax and food yield, while popu
 
 - Province-level population, prosperity, culture and unrest.
 - Trade routes, tariffs, resource specialization and caravan/port income.
-- Supply depots and connected frontier supply, seasonal sieges and assaults, war exhaustion, and a strategic-to-tactical deployment/result API.
+- Faction AI war declarations, siege engines, defender battle formations, direct BattleController encounter launch, full negotiated peace and trade routes.
 - Faction AI turns, claims, succession crises and negotiated peace.
 - Character traits, skills, loyalty and rivalries influencing office performance.
 - Events with clear causes, player choices and persistent consequences.
