@@ -242,7 +242,7 @@ static func move_field_army(state: Dictionary, army_id: String, destination: Str
 	army["location"] = destination
 	army["movement"] = 0
 	army["supplied"] = controlled_provinces.has(destination)
-	army["days_unsupplied"] = 0 if bool(army["supplied"]) else int(army.get("days_unsupplied", 0)) + 1
+	army["days_unsupplied"] = 0
 	field_armies[army_id] = army
 	state["field_armies"] = field_armies
 	_record(state, "army_moved", {"army": army_id, "from": origin, "to": destination, "supplied": army["supplied"]})
