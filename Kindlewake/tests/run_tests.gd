@@ -205,6 +205,9 @@ func _test_empire_economy() -> void:
     var governance: Dictionary = EmpireEconomySystem.set_governance("keep", "local_compact", flags)
     check(bool(governance.get("ok", false)), "valid local governance can be appointed")
     check(not bool(EmpireEconomySystem.set_governance("keep", "tyranny", flags).get("ok", true)), "unknown governance models are rejected")
+    var foreign_admin := {"holding_claimed_keep":true,"holding_owner_keep":"foreign_house"}
+    check(not bool(EmpireEconomySystem.assign_garrison("keep", 2, foreign_admin).get("ok", true)), "foreign-held locations reject player garrison changes")
+    check(not bool(EmpireEconomySystem.set_governance("keep", "local_compact", foreign_admin).get("ok", true)), "foreign-held locations reject player governance changes")
     var definitions: Array = [{"id":"keep","turn_income":20,"garrison_upkeep":2,"recommended_garrison":2,"economy":{"gold":20,"provisions":3,"materials":2}}]
     var turn: Dictionary = EmpireEconomySystem.advance_turn(definitions, flags, 100)
     check(bool(turn.get("ok", false)) and int(turn.get("income", 0)) == 20 and int(turn.get("upkeep", 0)) == 4, "empire turn calculates holding income, fixed upkeep and garrison upkeep")
