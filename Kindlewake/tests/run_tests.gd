@@ -1098,6 +1098,7 @@ func _test_supply_siege_and_tactical_bridge() -> void:
     check(siege_db.get("characters", {}).has("strategic_siege_engine") and siege_db.get("classes", {}).has("siege_engine"), "authored battering ram resolves to a dedicated tactical class")
     check(siege_db.get("characters", {}).has("strategic_fort_gate") and siege_db.get("classes", {}).has("fort_gate"), "authored fort gate resolves to a destructible tactical objective")
     check(siege_db.get("characters", {}).has("strategic_siege_ballista") and siege_db.get("characters", {}).has("strategic_siege_trebuchet"), "authored siege artillery profiles resolve in the tactical database")
+    check(siege_db.get("classes", {}).has("siege_ballista") and siege_db.get("classes", {}).has("siege_trebuchet"), "ballista and trebuchet resolve to distinct tactical classes")
     check(siege_db.get("characters", {}).has("strategic_siege_engineer"), "authored siege engineer profile resolves in the tactical database")
     check(int(siege_db["characters"]["strategic_siege_engine"]["stats"]["hp"]) == 80, "siege engineer field repair improves battering-ram durability")
     check(int(siege_db["characters"]["strategic_fort_wall_0"]["stats"]["hp"]) == 70, "siege engineer breach charges weaken destructible wall segments")
