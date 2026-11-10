@@ -180,3 +180,5 @@ Working branch: `feature/empire-management-system`.
 - Do not merge until branch reconciliation and exact-head Godot/Android validation are complete. The hereditary family system remains post-campaign only.
 
 - Strategic battle instances now receive unique persisted IDs; resolved battle IDs are retained in campaign state and duplicate result submissions are rejected, preventing repeated casualties/war-exhaustion awards after reloads.
+
+- Siege engineer now has two tactical skills: Field Repair restores HP to a nearby allied unit (including the ram), and Breach Charge damages a nearby wall/gate or enemy. Both use the standard BattleController skill/target flow.
