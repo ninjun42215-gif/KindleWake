@@ -64,9 +64,14 @@ func _build_interface() -> void:
     style.set_content_margin_all(10 if compact else 14)
     side.add_theme_stylebox_override("panel", style)
     add_child(side)
+    var side_scroll := ScrollContainer.new()
+    side_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    side_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    side.add_child(side_scroll)
     var column := VBoxContainer.new()
-    column.add_theme_constant_override("separation", 5 if compact else 9)
-    side.add_child(column)
+    column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    column.add_theme_constant_override("separation", 4 if compact else 9)
+    side_scroll.add_child(column)
     detail_title = Label.new()
     detail_title.add_theme_font_size_override("font_size", 18 if compact else 26)
     detail_title.add_theme_color_override("font_color", Color("#f0d49a"))
@@ -110,14 +115,10 @@ func _build_interface() -> void:
     diplomacy_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     diplomacy_button.pressed.connect(_open_diplomacy)
     column.add_child(diplomacy_button)
-    var scroll := ScrollContainer.new()
-    scroll.custom_minimum_size = Vector2(0, 76 if compact else 190)
-    scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    column.add_child(scroll)
     var list := VBoxContainer.new()
     list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    list.add_theme_constant_override("separation", 5)
-    scroll.add_child(list)
+    list.add_theme_constant_override("separation", 4 if compact else 5)
+    column.add_child(list)
     var atlas: Array = GameData.continents.get("continents", [])
     for i in range(atlas.size()):
         var continent: Dictionary = atlas[i]
