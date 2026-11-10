@@ -43,6 +43,7 @@ func _initialize() -> void:
     _test_act_one_challenge_content()
     _test_act_one_tactical_bosses()
     _test_act_one_boss_ai()
+    _simulate_act_one_bosses(4)
     _test_escape_mission()
     _test_escape_ui_layout()
     _test_sigils()
@@ -303,6 +304,56 @@ func _test_act_one_boss_ai() -> void:
 func bailiff_ctl_prepare(ctl: BattleController, bailiff: BattleUnit, retainer: BattleUnit) -> void:
     bailiff.cell = Vector2i(13, 4)
     retainer.cell = Vector2i(12, 4)
+
+
+func _simulate_act_one_bosses(seed_count: int) -> void:
+    print("[Act I boss balance simulations]")
+    var encounters := [
+        {"battle_id": "act1_hask_boss", "boss_id": "hask_convoy_champion"},
+        {"battle_id": "act1_ash_bailiff_boss", "boss_id": "ash_bailiff"}
+    ]
+    for encounter in encounters:
+        var battle_id := str(encounter.battle_id)
+        var boss_id := str(encounter.boss_id)
+        var wins := 0
+        var losses := 0
+        var unfinished := 0
+        var total_turns := 0
+        var boss_skill_uses := 0
+        var boss_heals := 0
+        var boss_attacks := 0
+        for seed_index in range(seed_count):
+            var ctl := BattleController.new()
+            ctl.setup(gd.battle_def(battle_id), gd.as_db(), 8100 + seed_index)
+            ctl.begin()
+            var guard := 0
+            while ctl.result == "" and guard < 800:
+                var active: BattleUnit = ctl.active_unit()
+                if active != null and active.character_id == boss_id:
+                    var plan: Dictionary = BattleAI.decide(active, ctl)
+                    if str(plan.get("action", "")) == "skill":
+                        boss_skill_uses += 1
+                        if str(plan.get("skill_id", "")) == "mend_ii":
+                            boss_heals += 1
+                    elif str(plan.get("action", "")) == "attack":
+                        boss_attacks += 1
+                ctl.run_ai_turn(true)
+                guard += 1
+            if ctl.result == "":
+                unfinished += 1
+            elif ctl.result == "victory":
+                wins += 1
+            else:
+                losses += 1
+            total_turns += ctl.turn_count
+        print("  info  %s: player wins %d/%d, boss wins %d/%d, unfinished %d, avg turns %.1f, boss skills %d, heals %d, attacks %d" % [
+            battle_id, wins, seed_count, losses, seed_count, unfinished,
+            float(total_turns) / float(seed_count), boss_skill_uses, boss_heals, boss_attacks
+        ])
+        check(unfinished == 0, battle_id + " AI-vs-AI simulations terminate within the safety turn limit")
+        check(boss_skill_uses > 0, battle_id + " boss uses its encounter-specific skill logic during simulations")
+        if boss_id == "ash_bailiff":
+            check(boss_heals <= boss_skill_uses, "Ash Bailiff healing frequency is included in the skill-use balance report")
 
 
 func _test_escape_mission() -> void:

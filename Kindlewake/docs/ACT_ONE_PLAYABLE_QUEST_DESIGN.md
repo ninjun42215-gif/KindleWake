@@ -78,3 +78,10 @@ The two Act I commanders now receive encounter-specific plans through BattleAI; 
 - **Rules and persistence:** boss decisions still execute through BattleController.try_move, try_skill, and try_attack; the normal one-move/one-action economy, MP costs, range checks, line-of-sight rules and battle saves remain authoritative. No extra boss turn or hidden damage is granted.
 - **Scope:** behavior is keyed to the corresponding Act I battle and commander character ID. It does not change the AI of ordinary enemies, unrelated commanders, or player Auto Battle.
 - **Coverage:** headless test cases exercise Hask's isolated-target Power Strike, the Bailiff's retainer healing priority, and his offensive Judgement choice. Run the project's Godot test command before treating runtime behavior as verified.
+
+
+## Boss balance pass and simulation coverage
+
+The Bailiff's healing policy is deliberately conservative: Greater Mending is considered only when an ally is at or below 50% HP, then pressure on that ally raises its priority. This prevents the earlier 72% threshold from spending MP on routine chip damage and leaves more MP for Judgement. The boss remains free to attack when no ally meets the urgent-healing rule.
+
+The headless test suite now includes seeded AI-vs-AI simulations for both Act I boss encounters. It reports player/boss outcomes, unfinished encounters, average turn count, and the commander's offensive skill/heal/attack frequency. The simulations use the real BattleController turn/action pipeline and a bounded turn guard; they are intended as a repeatable balance diagnostic, not proof that a difficulty target has been met until the Godot test runner is executed and the reported results are reviewed.
