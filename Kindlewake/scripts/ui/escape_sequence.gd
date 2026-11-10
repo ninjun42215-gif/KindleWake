@@ -2,6 +2,7 @@ extends Control
 ## Touch-first escape traversal between the authored prologue choice and the first tactical battle.
 
 const EscapeMissionScript = preload("res://scripts/core/escape_mission.gd")
+const EscapeLayout = preload("res://scripts/ui/escape_layout.gd")
 
 var player_pos := Vector2.ZERO
 var target_pos := Vector2.ZERO
@@ -14,8 +15,6 @@ var instruction_label: Label
 var action_button: Button
 var started := false
 
-const PLAY_AREA_TOP := 168.0
-const PLAY_AREA_BOTTOM := 128.0
 const GATE_REACH_RADIUS := 120.0
 const PLAYER_SPEED := 220.0
 
@@ -32,29 +31,11 @@ func _notification(what: int) -> void:
         _layout_positions()
 
 
-static func playable_rect_for_size(viewport_size: Vector2) -> Rect2:
-    var top: float = minf(PLAY_AREA_TOP, viewport_size.y * 0.35)
-    var bottom_inset: float = minf(PLAY_AREA_BOTTOM, viewport_size.y * 0.28)
-    var bottom: float = maxf(top + 1.0, viewport_size.y - bottom_inset)
-    var side: float = minf(16.0, viewport_size.x * 0.05)
-    return Rect2(Vector2(side, top), Vector2(maxf(1.0, viewport_size.x - side * 2.0), maxf(1.0, bottom - top)))
-
-
-static func gate_position_for_size(viewport_size: Vector2) -> Vector2:
-    var playable: Rect2 = playable_rect_for_size(viewport_size)
-    var min_y: float = playable.position.y + minf(48.0, playable.size.y * 0.35)
-    var max_y: float = playable.end.y - minf(48.0, playable.size.y * 0.35)
-    return Vector2(
-        clampf(viewport_size.x * 0.84, playable.position.x + 1.0, playable.end.x - 1.0),
-        clampf(viewport_size.y * 0.30, min_y, max_y)
-    )
-
-
 func _layout_positions() -> void:
     var viewport_size: Vector2 = size
     if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
         viewport_size = get_viewport_rect().size
-    var playable: Rect2 = playable_rect_for_size(viewport_size)
+    var playable: Rect2 = EscapeLayout.playable_rect_for_size(viewport_size)
     if player_pos == Vector2.ZERO:
         player_pos = Vector2(
             clampf(viewport_size.x * 0.16, playable.position.x + 1.0, playable.end.x - 1.0),
@@ -63,7 +44,7 @@ func _layout_positions() -> void:
     else:
         player_pos = player_pos.clamp(playable.position, playable.end)
     target_pos = target_pos.clamp(playable.position, playable.end) if target_pos != Vector2.ZERO else player_pos
-    exit_pos = gate_position_for_size(viewport_size)
+    exit_pos = EscapeLayout.gate_position_for_size(viewport_size)
     queue_redraw()
 
 
@@ -177,7 +158,7 @@ func _gui_input(event: InputEvent) -> void:
         point = drag.position
 
     if should_move:
-        var playable: Rect2 = playable_rect_for_size(size)
+        var playable: Rect2 = EscapeLayout.playable_rect_for_size(size)
         if playable.has_point(point):
             target_pos = point.clamp(playable.position, playable.end)
             moving = true
