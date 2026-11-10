@@ -2340,7 +2340,7 @@
         "#...............#",
         "#...............#",
         "#...............#",
-        "#...............#",
+        "#.......#.......#",
         "#...............#",
         "#...............#",
         "########E########"
@@ -2393,6 +2393,18 @@
             "drain"
           ],
           "world_flag_on_solved": "tollhouse_sluice_solved"
+        },
+        {
+          "cell": [
+            8,
+            8
+          ],
+          "kind": "secret",
+          "npc": false,
+          "name": "Hairline seam in the masonry",
+          "text": "A narrow seam runs through the stone. A draft carries the smell of old paper from the other side.",
+          "world_flag_on_reveal": "dungeon_sunken_tollhouse_secret_passage",
+          "secret_reward_gold": 55
         }
       ]
     },
@@ -2413,7 +2425,7 @@
         "#...............#",
         "#...............#",
         "#...............#",
-        "#...............#",
+        "#.......#.......#",
         "#...............#",
         "#...............#",
         "########E########"
@@ -2466,6 +2478,18 @@
             "forgery"
           ],
           "world_flag_on_solved": "wardens_oath_trial_solved"
+        },
+        {
+          "cell": [
+            8,
+            8
+          ],
+          "kind": "secret",
+          "npc": false,
+          "name": "Hairline seam in the masonry",
+          "text": "A narrow seam runs through the stone. A draft carries the smell of old paper from the other side.",
+          "world_flag_on_reveal": "dungeon_wardens_barrow_secret_passage",
+          "secret_reward_gold": 55
         }
       ]
     },
@@ -2486,7 +2510,7 @@
         "#...............#",
         "#...............#",
         "#...............#",
-        "#...............#",
+        "#.......#.......#",
         "#...............#",
         "#...............#",
         "########E########"
@@ -2539,6 +2563,18 @@
             "seal"
           ],
           "world_flag_on_solved": "ashen_firebreak_solved"
+        },
+        {
+          "cell": [
+            8,
+            8
+          ],
+          "kind": "secret",
+          "npc": false,
+          "name": "Hairline seam in the masonry",
+          "text": "A narrow seam runs through the stone. A draft carries the smell of old paper from the other side.",
+          "world_flag_on_reveal": "dungeon_ashen_granary_secret_passage",
+          "secret_reward_gold": 55
         }
       ]
     },
@@ -2738,7 +2774,7 @@
         "#...............#",
         "#...............#",
         "#...............#",
-        "#...............#",
+        "#.......#.......#",
         "#...............#",
         "#...............#",
         "########E########"
@@ -2791,6 +2827,18 @@
           "battle_id": "battle_tideglass",
           "world_flag_on_victory": "dungeon_wreck_kings_hold_cleared",
           "requires_flag": "wreck_signal_solved"
+        },
+        {
+          "cell": [
+            8,
+            8
+          ],
+          "kind": "secret",
+          "npc": false,
+          "name": "Hairline seam in the masonry",
+          "text": "A narrow seam runs through the stone. A draft carries the smell of old paper from the other side.",
+          "world_flag_on_reveal": "dungeon_wreck_kings_hold_secret_passage",
+          "secret_reward_gold": 55
         }
       ]
     },
@@ -2811,7 +2859,7 @@
         "#...............#",
         "#...............#",
         "#...............#",
-        "#...............#",
+        "#.......#.......#",
         "#...............#",
         "#...............#",
         "########E########"
@@ -2864,6 +2912,18 @@
           "battle_id": "battle_tideglass",
           "world_flag_on_victory": "dungeon_stormwell_cleared",
           "requires_flag": "stormwell_grounding_solved"
+        },
+        {
+          "cell": [
+            8,
+            8
+          ],
+          "kind": "secret",
+          "npc": false,
+          "name": "Hairline seam in the masonry",
+          "text": "A narrow seam runs through the stone. A draft carries the smell of old paper from the other side.",
+          "world_flag_on_reveal": "dungeon_stormwell_secret_passage",
+          "secret_reward_gold": 55
         }
       ]
     }
