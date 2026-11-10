@@ -732,54 +732,6 @@
             1,
             1
           ]
-        },
-        {
-          "cell": [
-            13,
-            5
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "Fen Surveyor",
-          "text": "Tomas finds a boundary marker with his family's old trail sign. Check the survey marks against the village map before following it.",
-          "companion_quest_id": "q_companion_tomas_far_marker",
-          "companion_quest_milestone": "fen_marker_found",
-          "companion_quest_text": "Tomas finds a boundary marker with his family's old trail sign. Check the survey marks against the village map before following it.",
-          "companion_quest_challenge": {
-            "prompt": "Which mark proves this is Tomas's family's boundary marker?",
-            "options": [
-              "The old household trail sign matching the village map",
-              "A fresh merchant stamp",
-              "A random scratch"
-            ],
-            "correct_option": "The old household trail sign matching the village map",
-            "success_text": "The old trail sign matches the household record.",
-            "failure_text": "The merchant stamp and scratch do not identify the family boundary."
-          }
-        },
-        {
-          "cell": [
-            14,
-            5
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "Altered Ballad Sheet",
-          "text": "Verra recognises a workers' melody with verses praising a noble house. Compare the printed sheet with the old performance notes.",
-          "companion_quest_id": "q_companion_verra_song_without_seal",
-          "companion_quest_milestone": "altered_song_heard",
-          "companion_quest_text": "Verra recognises a workers' melody with verses praising a noble house. Compare the printed sheet with the old performance notes.",
-          "companion_quest_challenge": {
-            "prompt": "Which clue suggests the lyrics were altered?",
-            "options": [
-              "The melody matches but the verse structure and names differ from the older notes",
-              "The paper is yellow",
-              "The song is popular"
-            ],
-            "correct_option": "The melody matches but the verse structure and names differ from the older notes",
-            "success_text": "The older notes preserve a different set of verses and authors.",
-            "failure_text": "Paper age and popularity do not establish lyric alteration."
-          }
         }
       ]
     },
@@ -901,54 +853,6 @@
             1,
             1
           ]
-        },
-        {
-          "cell": [
-            2,
-            2
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "Fen Ferryman",
-          "text": "The ferryman remembers the family crossing after a false warning about the fen. Compare the ferry record with the surveyor's dated notice.",
-          "companion_quest_id": "q_companion_tomas_far_marker",
-          "companion_quest_milestone": "family_trail_followed",
-          "companion_quest_text": "The ferryman remembers the family crossing after a false warning about the fen. Compare the ferry record with the surveyor's dated notice.",
-          "companion_quest_challenge": {
-            "prompt": "Which evidence shows the warning was false?",
-            "options": [
-              "The ferry record places the family before the notice was issued",
-              "A rumour about the weather",
-              "A torn travel cloak"
-            ],
-            "correct_option": "The ferry record places the family before the notice was issued",
-            "success_text": "The dated crossing contradicts the warning's timeline.",
-            "failure_text": "Weather rumours and clothing cannot establish the notice's timeline."
-          }
-        },
-        {
-          "cell": [
-            2,
-            1
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "Old Chorus Singer",
-          "text": "An original singer remembers the workers who wrote the song. Verify the account against the earliest dated chorus book.",
-          "companion_quest_id": "q_companion_verra_song_without_seal",
-          "companion_quest_milestone": "original_verses_verified",
-          "companion_quest_text": "An original singer remembers the workers who wrote the song. Verify the account against the earliest dated chorus book.",
-          "companion_quest_challenge": {
-            "prompt": "What best verifies the original authorship?",
-            "options": [
-              "The earliest dated chorus book naming the workers",
-              "A noble's later dedication",
-              "A recent tavern performance"
-            ],
-            "correct_option": "The earliest dated chorus book naming the workers",
-            "success_text": "The earliest surviving record supports the workers' authorship.",
-            "failure_text": "Later dedications and recent performances cannot prove original authorship."
-          }
         }
       ]
     },
@@ -1059,54 +963,6 @@
             1,
             1
           ]
-        },
-        {
-          "cell": [
-            2,
-            2
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "Family's Neighbour",
-          "text": "A neighbour confirms the family's current shelter and wishes. Tomas must listen before offering a return, relocation or aid.",
-          "companion_quest_id": "q_companion_tomas_far_marker",
-          "companion_quest_milestone": "homecoming_resolved",
-          "companion_quest_text": "A neighbour confirms the family's current shelter and wishes. Tomas must listen before offering a return, relocation or aid.",
-          "companion_quest_challenge": {
-            "prompt": "What should guide Tomas's offer?",
-            "options": [
-              "The family's stated wishes and safety needs",
-              "The town's desire to restore its old population",
-              "The value of their abandoned house"
-            ],
-            "correct_option": "The family's stated wishes and safety needs",
-            "success_text": "Tomas puts his family's safety and agency first.",
-            "failure_text": "Town pride and property value do not answer what the family needs."
-          }
-        },
-        {
-          "cell": [
-            2,
-            1
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "Street Chorus",
-          "text": "The original performers fear retaliation if named. Verra must decide how to restore the song while respecting their wishes.",
-          "companion_quest_id": "q_companion_verra_song_without_seal",
-          "companion_quest_milestone": "public_performance_resolved",
-          "companion_quest_text": "The original performers fear retaliation if named. Verra must decide how to restore the song while respecting their wishes.",
-          "companion_quest_challenge": {
-            "prompt": "Which choice respects both authorship and performer safety?",
-            "options": [
-              "Let the performers choose whether their names are public",
-              "Publish their names without asking",
-              "Destroy the original chorus book"
-            ],
-            "correct_option": "Let the performers choose whether their names are public",
-            "success_text": "Verra makes the performers' consent part of the restoration.",
-            "failure_text": "Publishing names without consent risks them; destroying the book erases the evidence."
-          }
         }
       ]
     },
