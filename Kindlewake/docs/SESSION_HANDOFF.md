@@ -153,3 +153,10 @@
 - Added smuggling with customs seizure, fines and rising heat; guards reduce detection probability.
 - Added legacy trade-state normalization and strict regression assertions. Campaign save schema remains 4; game version remains 0.12.0.
 - Added the player-facing Merchant Exchange overlay to the overworld HUD and settlement scenes. It exposes regional market buy/sell, cargo weight, caravan purchase/upgrades/guards, contracts, guilds, smuggling, route travel, and unlock-gated imperial tariff/toll/protection/closure policies. Successful route travel reloads the destination world scene. Exact-head Godot import/tests/APK CI must pass before merge; physical Android QA remains separate.
+
+### Trading-system hardening follow-up
+- Smuggling now enforces the same configured per-transaction quantity ceiling as ordinary market trades.
+- Guild-exclusive commodities remain license-gated when smuggled; bypassing tariffs does not bypass guild charter restrictions.
+- Every attempted smuggling transaction is counted, and successful contraband sales contribute to merchant trade-profit totals.
+- Regression tests cover rejected unlicensed contraband, cargo preservation and oversized smuggling quantities.
+- Validation is pending for the exact updated branch head; do not treat the earlier 479-check result as validation of these follow-up commits.
