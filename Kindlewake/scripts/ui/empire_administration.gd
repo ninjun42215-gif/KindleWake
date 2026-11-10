@@ -472,8 +472,13 @@ func _build_diplomacy() -> void:
 
 
 func _set_diplomacy(faction_id: String, next_state: String) -> void:
-    var ok: bool = GameState.set_faction_diplomacy("house_dunmarrow", faction_id, next_state)
-    _set_message("Diplomatic status updated." if ok else "The diplomatic action was refused.", ok)
+    var ok: bool
+    if next_state == "neutral":
+        ok = GameState.negotiate_faction_peace(faction_id, 100)
+        _set_message("Peace terms accepted; 100 gold paid." if ok else "The peace offer was rejected or cannot be funded.", ok)
+    else:
+        ok = GameState.set_faction_diplomacy("house_dunmarrow", faction_id, next_state)
+        _set_message("Diplomatic status updated." if ok else "The diplomatic action was refused.", ok)
     _rebuild()
 
 
@@ -484,6 +489,14 @@ func _build_economy() -> void:
     _metric("Rebellion pressure", "%d / 100" % int(unrest.get("risk", 0)), "Warnings appear before unrest can become an uprising")
     for alert in unrest.get("alerts", []):
         body.add_child(_label("Unrest warning: %s · risk %d%%" % [str(alert.get("province", "")).replace("_", " ").capitalize(), int(alert.get("risk", 0))], 15, C_RED))
+    if int(unrest.get("risk", 0)) >= 20:
+        body.add_child(_button("Fund public relief · 80 gold", _suppress_unrest, true))
+    var forecast: Dictionary = GameState.preview_empire_season()
+    if bool(forecast.get("ok", false)):
+        _section("NEXT SEASON FORECAST")
+        _metric("Projected treasury", "%d gold" % int(forecast.get("treasury_after", 0)), "%+d net · %d income · %d upkeep" % [int(forecast.get("treasury_change", 0)), int(forecast.get("income", 0)), int(forecast.get("upkeep", 0))])
+        _metric("Projected provisions", "%d food" % int(forecast.get("food_after", 0)), "%+d net · %d from trade routes" % [int(forecast.get("food_change_actual", 0)), int(forecast.get("trade_income", 0))])
+        _metric("Projected manpower", "%d" % int(forecast.get("manpower_after", 0)), "%+d seasonal recovery" % int(forecast.get("manpower_change", 0)))
     _section("TAXATION")
     body.add_child(_label("Current tax policy: " + str(s.get("tax_rate", "normal")).capitalize(), 16))
     for rate in ["low", "normal", "high"]:
@@ -544,6 +557,12 @@ func _build_chronicle() -> void:
             int(entry.get("turn", 0)), str(entry.get("kind", "event")).replace("_", " ").capitalize(),
             JSON.stringify(entry.get("details", {}))
         ], 14))
+
+
+func _suppress_unrest() -> void:
+    var ok: bool = GameState.suppress_empire_unrest()
+    _set_message("Public relief reduces unrest." if ok else "There are insufficient funds or unrest is too low to justify relief.", ok)
+    _rebuild()
 
 
 func _create_trade_route(origin: String, destination: String) -> void:
