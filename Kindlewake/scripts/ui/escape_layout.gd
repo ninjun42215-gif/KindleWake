@@ -1,3 +1,4 @@
+class_name EscapeLayout
 extends RefCounted
 ## Pure responsive layout math for the Chapter I escape traversal UI.
 
