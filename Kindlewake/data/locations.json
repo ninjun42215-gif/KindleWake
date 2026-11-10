@@ -89,6 +89,61 @@
             "'The watchtower bell rings when the wind is from the north. Last night it rang with no wind at all.'",
             "'If you find a brass token in the mud, don't spend it. The old road wardens used those to open the sealed storehouse.'"
           ]
+        },
+        {
+          "cell": [
+            19,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Freed Debtor",
+          "text": "A traveller keeps a folded contract hidden beneath his coat.",
+          "companion_quest_id": "q_companion_bram_cullen_broken_chain",
+          "companion_quest_milestone": "contracts_audited",
+          "companion_quest_text": "A former inmate shows Bram a contract with fees compounded after release and a signature copied from a dead witness. Compare the clauses and testimony: some debts are real, but these transfers are not lawful proof of what the prisoners owe."
+        },
+        {
+          "cell": [
+            7,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Muster Clerk",
+          "text": "A clerk has hidden an order beneath the town's old levy register.",
+          "companion_quest_id": "q_companion_anselm_line_to_hold",
+          "companion_quest_milestone": "muster_notice_read",
+          "companion_quest_text": "Anselm recognises the seal on a muster order dated after the ceasefire. Compare its authority and date before accepting the clerk's claim that the soldiers volunteered.",
+          "companion_quest_challenge": {
+            "prompt": "Which detail proves the order cannot be treated as a lawful volunteer muster?",
+            "options": [
+              "The order bears a campaign seal",
+              "The order is dated after the ceasefire and lacks a renewed levy warrant",
+              "The ink is faded"
+            ],
+            "correct_option": "The order is dated after the ceasefire and lacks a renewed levy warrant",
+            "success_text": "The dates and missing warrant establish that the unit was recalled without lawful authority.",
+            "failure_text": "The campaign seal alone does not establish authority after the ceasefire."
+          }
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Far Marker",
+          "tint": [
+            0.68,
+            0.8,
+            0.72
+          ],
+          "text": "A weathered fen boundary stone bears a cut Tomas recognises from childhood.",
+          "companion_quest_id": "q_companion_tomas_far_marker",
+          "companion_quest_milestone": "fen_marker_recognised",
+          "companion_quest_text": "Tomas recognises the marker and admits he left the settlement without saying goodbye. He asks to follow the old scout signs before deciding whether to return.",
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -153,6 +208,48 @@
             0.75
           ],
           "text": "Heard a purse was left in the old tower, north of here. Nobody dares go. The roads are not what they were."
+        },
+        {
+          "cell": [
+            8,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Chain Yard Witness",
+          "text": "A teamster has seen debtors marched toward a guarded work yard.",
+          "companion_quest_id": "q_companion_bram_cullen_broken_chain",
+          "companion_quest_milestone": "debtors_freed",
+          "companion_quest_text": "The witness knows where the debtors are being held. Bram refuses to leave them behind. The evidence can support a public tribunal, a negotiated release that preserves the records, or the destruction of the false transfer papers before the company can use them again."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "Tracks That Turn Back",
+          "tint": [
+            0.72,
+            0.8,
+            0.76
+          ],
+          "text": "A ferryman remembers the old scout trail where tracks turn back toward the fen.",
+          "companion_quest_id": "q_companion_tomas_far_marker",
+          "companion_quest_milestone": "scout_trail_reconstructed",
+          "companion_quest_text": "The tracks show that Tomas's family sheltered deserters, but do not prove Tomas took part. Reconstruct the route from the signs and separate observation from rumour.",
+          "companion_quest_challenge": {
+            "prompt": "Which trail reading is supported by the physical evidence?",
+            "options": [
+              "The family cart turned toward the reed shelter; Tomas's bootprints continue east alone",
+              "Every bootprint belongs to Tomas and proves he led the deserters",
+              "The broken marker proves the family attacked the patrol"
+            ],
+            "correct_option": "The family cart turned toward the reed shelter; Tomas's bootprints continue east alone",
+            "success_text": "The separate tracks support the account: the family sheltered people, while Tomas continued east alone.",
+            "failure_text": "The other conclusions assign actions or motives that the tracks cannot prove."
+          },
+          "cell": [
+            2,
+            2
+          ]
         }
       ]
     },
@@ -246,6 +343,48 @@
             0.95
           ],
           "text": "House Dunmarrow held these roads for three hundred years. Torren, the keep is yours to rebuild. Start with the road to Eldrimar."
+        },
+        {
+          "cell": [
+            2,
+            2
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Drill Sergeant",
+          "text": "A retired sergeant keeps a tally of the men who were ordered back to the yard.",
+          "companion_quest_id": "q_companion_anselm_line_to_hold",
+          "companion_quest_milestone": "drill_ground_examined",
+          "companion_quest_text": "The drill tally lists men marked absent even when they were on approved leave. Anselm asks you to compare the muster column with the leave marks.",
+          "companion_quest_challenge": {
+            "prompt": "Which record best confirms that the roll was falsified?",
+            "options": [
+              "A matching leave mark beside a man recorded absent",
+              "A missing boot from the rack",
+              "A second copy of the same tally"
+            ],
+            "correct_option": "A matching leave mark beside a man recorded absent",
+            "success_text": "The approved leave marks contradict the absent entries and expose the false count.",
+            "failure_text": "A second copy may repeat the same error; it does not independently verify the men."
+          }
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Homeward Hearing",
+          "tint": [
+            0.78,
+            0.76,
+            0.66
+          ],
+          "text": "Elder Hale has received accusations against Tomas's family and asks for witnesses before the settlement acts.",
+          "companion_quest_id": "q_companion_tomas_far_marker",
+          "companion_quest_milestone": "homeward_choice_made",
+          "companion_quest_text": "The settlement is divided. Tomas may return openly, help his family relocate or remain away and send aid. No choice makes him responsible for another person's decisions.",
+          "cell": [
+            6,
+            2
+          ]
         }
       ]
     },
@@ -306,6 +445,24 @@
             1
           ],
           "text": "The walls are cracked, but they hold. Steward Brannoch is waiting in the great hall."
+        },
+        {
+          "cell": [
+            5,
+            10
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Prisoner's Petition",
+          "tint": [
+            0.82,
+            0.76,
+            0.66
+          ],
+          "text": "A guarded messenger brings a request from the commander Garrick once spared.",
+          "companion_quest_id": "q_companion_garrick_spared_enemy",
+          "companion_quest_milestone": "prisoner_request_received",
+          "companion_quest_text": "The former commander has been accused of ordering reprisals after his release. He asks Garrick to hear him before the hearing. Garrick insists that the request be recorded, but that the witnesses must be heard independently."
         }
       ]
     },
@@ -394,6 +551,72 @@
           "blacksmith": true,
           "rune_service": true,
           "shopkeeper_id": "rurik"
+        },
+        {
+          "cell": [
+            11,
+            8
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Furnace Broker",
+          "text": "A well-dressed broker waits beside a sealed crate of furnace fittings.",
+          "companion_quest_id": "q_companion_edda_iron_and_ash",
+          "companion_quest_milestone": "furnace_bargain_resolved",
+          "companion_quest_text": "The former employer offers Edda the workshop if she signs away the workers' claims. With the tool register and wage testimony in hand, she can reject the bargain, establish shared rules, or take ownership only with binding worker protections."
+        },
+        {
+          "cell": [
+            3,
+            2
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Former Spearman",
+          "text": "A former soldier waits beside the hall's public notice board.",
+          "companion_quest_id": "q_companion_anselm_line_to_hold",
+          "companion_quest_milestone": "soldiers_resolved",
+          "companion_quest_text": "The men confirm they were threatened with forfeited pay if they refused the recalled muster. Hear their account before deciding whether Anselm should testify, offer a lawful compact or refuse to rebuild the unit.",
+          "companion_quest_challenge": {
+            "prompt": "What makes the soldiers' testimony credible?",
+            "options": [
+              "Every account repeats the same exact phrase",
+              "Their separate pay records and leave marks corroborate the threat",
+              "The officer says the order was routine"
+            ],
+            "correct_option": "Their separate pay records and leave marks corroborate the threat",
+            "success_text": "Independent records support the soldiers' accounts and establish a pattern of coercion.",
+            "failure_text": "A repeated phrase can be coached, and the officer's assertion is not evidence."
+          }
+        },
+        {
+          "cell": [
+            12,
+            6
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Two Witnesses",
+          "tint": [
+            0.76,
+            0.82,
+            0.78
+          ],
+          "text": "Two villagers wait beneath the hall's public notice board; one describes an order, the other remembers soldiers acting without it.",
+          "companion_quest_id": "q_companion_garrick_spared_enemy",
+          "companion_quest_milestone": "witnesses_escorted",
+          "companion_quest_text": "Escort both witnesses to safety without asking either to endorse Garrick's old decision. Their accounts conflict on whether the commander ordered the reprisals, but both deserve protection and an independent hearing.",
+          "companion_quest_challenge": {
+            "prompt": "Which approach best protects the witnesses while preserving the reliability of their testimony?",
+            "options": [
+              "Keep them together and rehearse one shared account",
+              "Escort them separately, record each account independently and preserve the differences",
+              "Choose the witness whose story supports Garrick's earlier decision"
+            ],
+            "correct_option": "Escort them separately, record each account independently and preserve the differences",
+            "success_text": "Separate escorts and independent statements protect the witnesses without forcing their memories into a single story.",
+            "failure_text": "A rehearsed or selectively chosen account would compromise the hearing and place the witnesses at risk."
+          }
         }
       ]
     },
@@ -438,6 +661,24 @@
             0.8
           ],
           "text": "Spears sharp, boots dry. Give the word and we march. Rear attacks and flanks win fights, captain. Remember it."
+        },
+        {
+          "cell": [
+            2,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Returned Commander",
+          "tint": [
+            0.84,
+            0.72,
+            0.66
+          ],
+          "text": "The accused commander waits under guard, with his sword surrendered and the hearing order on the table.",
+          "companion_quest_id": "q_companion_garrick_spared_enemy",
+          "companion_quest_milestone": "commander_captured_or_surrendered",
+          "companion_quest_text": "The commander has surrendered after his remaining soldiers were offered safe conduct, and the witnesses are secure. Compare the written order with the independent accounts before deciding what Garrick should say at the hearing."
         }
       ]
     },
@@ -496,6 +737,66 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        },
+        {
+          "cell": [
+            3,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Signal Keeper's Assistant",
+          "tint": [
+            0.82,
+            0.78,
+            0.58
+          ],
+          "text": "A cracked brass signal plate lies beneath the old watch notice.",
+          "companion_quest_id": "q_companion_lucan_last_flight",
+          "companion_quest_milestone": "signal_found",
+          "companion_quest_text": "Lucan recognises the Orrowen signal code. Someone used the old flight pattern after the garrison was supposedly disbanded. He asks you to preserve the plate before the patrol clerk removes it."
+        },
+        {
+          "cell": [
+            11,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Convoy Survivor",
+          "text": "A survivor carries a splintered bolt recovered from the convoy road.",
+          "companion_quest_id": "q_companion_dorian_unspent_bolt",
+          "companion_quest_milestone": "convoy_identified",
+          "companion_quest_text": "Dorian recognises the fletching on the bolt. Compare its maker's mark with the convoy inventory to establish which shipment was attacked.",
+          "companion_quest_challenge": {
+            "prompt": "Which clue reliably identifies the diverted convoy?",
+            "options": [
+              "The maker's mark matched to the dated quartermaster inventory",
+              "The survivor's guess about the weather",
+              "A generic military stamp"
+            ],
+            "correct_option": "The maker's mark matched to the dated quartermaster inventory",
+            "success_text": "The maker's mark links the bolt to a specific issue batch in the convoy inventory.",
+            "failure_text": "Weather and a generic stamp cannot identify a particular shipment."
+          }
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Messenger's Purse",
+          "tint": [
+            0.82,
+            0.72,
+            0.52
+          ],
+          "text": "A courier carries a purse whose stitching Joss recognises from an old job.",
+          "companion_quest_id": "q_companion_joss_debt_of_silence",
+          "companion_quest_milestone": "purse_recognised",
+          "companion_quest_text": "Joss admits the purse came from a payment he kept after helping a child escape. He recognises the broker's knot and asks you to follow the money without frightening the courier.",
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -535,6 +836,88 @@
           "npc": true,
           "name": "Innkeeper",
           "text": "A clean bed and a hot meal cost 20 gold. Your company can recover its nerve here."
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Retired Road Scout",
+          "tint": [
+            0.72,
+            0.82,
+            0.72
+          ],
+          "text": "The scout keeps a folded route map beneath his cup.",
+          "companion_quest_id": "q_companion_lucan_last_flight",
+          "companion_quest_milestone": "patrol_traced",
+          "companion_quest_text": "The scout remembers a patrol that moved without horses and avoided the main road. Lucan lays the signal timings beside the route notes.",
+          "companion_quest_challenge": {
+            "prompt": "The signal plate records a dusk flash, then a second flash from the western ridge. The patrol left no hoofprints. Which route best fits the evidence?",
+            "options": [
+              "The west ridge footpath after dusk",
+              "The southern cart road at noon",
+              "The river ford before sunrise"
+            ],
+            "correct_option": "The west ridge footpath after dusk",
+            "success_text": "The timings and lack of hoofprints match a foot patrol on the west ridge. Lucan marks the route and identifies the deserters' likely passage.",
+            "failure_text": "That route conflicts with either the signal timing or the missing hoofprints. Compare both clues before choosing."
+          }
+        },
+        {
+          "cell": [
+            3,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Roadside Fletcher",
+          "text": "A fletcher remembers repairing the same bolt pattern before the ambush.",
+          "companion_quest_id": "q_companion_dorian_unspent_bolt",
+          "companion_quest_milestone": "shot_reconstructed",
+          "companion_quest_text": "The fletcher's repair record and the road's impact marks allow Dorian to reconstruct the shot. Determine which trajectory matches the physical evidence.",
+          "companion_quest_challenge": {
+            "prompt": "Which reconstruction fits the recovered evidence?",
+            "options": [
+              "A shot from the raised western bank matching the impact angle",
+              "A shot fired straight down from the road",
+              "A bolt launched from inside the convoy wagon"
+            ],
+            "correct_option": "A shot from the raised western bank matching the impact angle",
+            "success_text": "The angle and recovered splinter pattern point to the raised western bank.",
+            "failure_text": "The other trajectories contradict the impact angle and wood damage."
+          }
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "Cellar Ledger Broker",
+          "tint": [
+            0.72,
+            0.76,
+            0.86
+          ],
+          "text": "A cellar broker has hidden a second account book behind the cask rack.",
+          "companion_quest_id": "q_companion_joss_debt_of_silence",
+          "companion_quest_milestone": "smuggling_ledger_found",
+          "companion_quest_text": "The ledger lists debtors and displaced families as cargo. Joss asks you to identify the broker's coded entries before the book is moved.",
+          "companion_quest_challenge": {
+            "prompt": "Which entry proves the ledger is selling identities rather than recording ordinary cargo?",
+            "options": [
+              "A coded name matched to a debtor's sealed refuge receipt",
+              "A tally of empty wine casks",
+              "A list of routine inn-room charges"
+            ],
+            "correct_option": "A coded name matched to a debtor's sealed refuge receipt",
+            "success_text": "The matching code and sealed receipt show that a person's identity was being traded as leverage.",
+            "failure_text": "The other entries are ordinary trade records and do not identify a person being targeted."
+          },
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -574,6 +957,77 @@
           "npc": true,
           "name": "Market Factor",
           "text": "The Weald's best bowyers and charm-sellers trade here. Use the party counter to compare and buy equipment."
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Former Garrison Clerk",
+          "tint": [
+            0.76,
+            0.74,
+            0.86
+          ],
+          "text": "A former clerk asks for a private hearing before the market opens.",
+          "companion_quest_id": "q_companion_lucan_last_flight",
+          "companion_quest_milestone": "witness_heard",
+          "companion_quest_text": "The clerk confirms that the deserters carried the pay chest away, but also names a family who sheltered them under threat. Lucan asks you to hear the witness without turning their fear into another accusation."
+        },
+        {
+          "cell": [
+            3,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Quartermaster's Runner",
+          "text": "A runner has a duplicate tally of the missing convoy supplies.",
+          "companion_quest_id": "q_companion_dorian_unspent_bolt",
+          "companion_quest_milestone": "quartermaster_confronted",
+          "companion_quest_text": "The duplicate tally shows that the quartermaster removed supplies before the ambush. Dorian must confront him with the record and decide whether to testify, make restitution or decline public absolution.",
+          "companion_quest_challenge": {
+            "prompt": "Which record ties the quartermaster to the diversion?",
+            "options": [
+              "A signed issue-and-return tally with a false return entry",
+              "An unsigned market rumour",
+              "A damaged wagon wheel"
+            ],
+            "correct_option": "A signed issue-and-return tally with a false return entry",
+            "success_text": "The signed tally records the quartermaster's custody and the false return.",
+            "failure_text": "The rumour and damaged wheel do not establish who diverted the supplies."
+          }
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Refugee Cart",
+          "tint": [
+            0.76,
+            0.82,
+            0.72
+          ],
+          "text": "A cart waits behind the market with frightened debtors hidden beneath canvas.",
+          "companion_quest_id": "q_companion_joss_debt_of_silence",
+          "companion_quest_milestone": "debtors_rescued",
+          "companion_quest_text": "The ledger's names match the people hiding in the cart. Get them to safety before the brokers return, then let Joss decide what restitution can be offered.",
+          "companion_quest_challenge": {
+            "prompt": "The brokers are approaching. Which escape plan protects the named debtors without exposing their identities?",
+            "options": [
+              "Move the cart through the covered mill lane and leave the name list sealed",
+              "Read the names aloud to draw the brokers away",
+              "Split the group and send each debtor alone through the main gate"
+            ],
+            "correct_option": "Move the cart through the covered mill lane and leave the name list sealed",
+            "success_text": "The debtors reach shelter together and their identities remain protected.",
+            "failure_text": "That plan exposes the debtors or separates them where the brokers can intercept them."
+          },
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -704,7 +1158,10 @@
           "kind": "text",
           "npc": true,
           "name": "Town Crier",
-          "text": "The roads east and south are open. Keep to the marked stones after dusk."
+          "text": "The roads east and south are open. Keep to the marked stones after dusk.",
+          "companion_quest_id": "q_companion_brisa_hearth_of_names",
+          "companion_quest_milestone": "ledger_recovered",
+          "companion_quest_text": "Brisa recognises the old village register beneath the crier's notices. Several displaced families were erased when the temporary infirmary closed. She asks you to recover the ledger before its names are lost."
         }
       ]
     },
@@ -743,7 +1200,58 @@
           "kind": "inn",
           "npc": true,
           "name": "Innkeeper",
-          "text": "The herbwives keep a quiet room for weary travellers. Rest costs 20 gold."
+          "text": "The herbwives keep a quiet room for weary travellers. Rest costs 20 gold.",
+          "companion_quest_id": "q_companion_brisa_hearth_of_names",
+          "companion_quest_milestone": "families_contacted",
+          "companion_quest_text": "The innkeeper remembers three families who sheltered in the upper rooms. Brisa compares their accounts with the recovered ledger. Their needs differ: one needs medicine, one needs a safe room, and one needs a way home.",
+          "companion_quest_challenge": {
+            "prompt": "Brisa lays out three testimonies. Mira needs a safe room, Pell needs medicine, and Oren's family cannot travel home without an escort. Which request is specifically a medical emergency?",
+            "options": [
+              "Mira needs a safe room",
+              "Pell needs medicine",
+              "Oren needs an escort"
+            ],
+            "correct_option": "Pell needs medicine",
+            "success_text": "You match Pell's fever notes to the infirmary ledger. Brisa can now assign a healer without exposing the other families.",
+            "failure_text": "That testimony describes shelter or safe passage, not the urgent medical need. Read the three accounts again."
+          }
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Foundry Hand",
+          "text": "A soot-streaked worker warms both hands around a cup and watches the door.",
+          "companion_quest_id": "q_companion_edda_iron_and_ash",
+          "companion_quest_milestone": "worker_claims_verified",
+          "companion_quest_text": "The foundry hand names the workers who paid for the missing tools through withheld wages. Edda listens to each account and separates verified claims from rumour. The workers want their names and wages recorded before anyone bargains over the furnace."
+        },
+        {
+          "cell": [
+            3,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Recovered Patient",
+          "text": "A patient remembers the date the ward changed its draught.",
+          "companion_quest_id": "q_companion_petra_bitter_draught",
+          "companion_quest_milestone": "treatment_verified",
+          "companion_quest_text": "Petra checks the patient's account against the surviving sample and the apothecary's dated batch notes. Verify which evidence confirms the treatment was diluted.",
+          "companion_quest_challenge": {
+            "prompt": "What verifies the patient's account without relying on memory alone?",
+            "options": [
+              "A matching batch note and a sealed sample analysis",
+              "A rumour repeated by another patient",
+              "The ward's painted sign"
+            ],
+            "correct_option": "A matching batch note and a sealed sample analysis",
+            "success_text": "The dated batch note and sealed sample independently corroborate the patient's recollection.",
+            "failure_text": "A repeated rumour and a sign cannot verify the contents of a batch."
+          }
         }
       ]
     },
@@ -782,7 +1290,34 @@
           "kind": "party",
           "npc": true,
           "name": "Market Factor",
-          "text": "Foxglove trades in herbs, bows and travel gear. The quartermaster can arrange your equipment."
+          "text": "Foxglove trades in herbs, bows and travel gear. The quartermaster can arrange your equipment.",
+          "companion_quest_id": "q_companion_brisa_hearth_of_names",
+          "companion_quest_milestone": "care_network_secured",
+          "companion_quest_text": "The market factor offers a practical solution: a rotating care network, with supplies shared between households. Brisa asks you to choose how Foxglove will remember and care for its displaced families."
+        },
+        {
+          "cell": [
+            3,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Apothecary's Ledger Keeper",
+          "text": "A ledger keeper has kept a copy of the ward's medicine receipts.",
+          "companion_quest_id": "q_companion_petra_bitter_draught",
+          "companion_quest_milestone": "ward_ledger_found",
+          "companion_quest_text": "Petra finds a discrepancy between the ward's full-strength medicine charges and the diluted doses patients received. Identify the record that can establish the discrepancy.",
+          "companion_quest_challenge": {
+            "prompt": "Which comparison is the strongest evidence of false billing?",
+            "options": [
+              "The invoice quantities against the signed dispensing register",
+              "The colour of the medicine bottle",
+              "The ward's public donation board"
+            ],
+            "correct_option": "The invoice quantities against the signed dispensing register",
+            "success_text": "The signed dispensing register shows what was actually issued, allowing the invoices to be checked.",
+            "failure_text": "Bottle colour and donation totals do not establish the medicine dispensed."
+          }
         }
       ]
     },
@@ -845,6 +1380,56 @@
           "name": "Bram Cullen",
           "character_id": "bram_cullen",
           "text": "A gentle giant with a pit-fighter's scars. The camp must be cleared before he will risk joining another armed company."
+        },
+        {
+          "cell": [
+            9,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Foundry Tool Clerk",
+          "text": "A clerk keeps the foundry's tool register beneath a stack of unpaid invoices.",
+          "companion_quest_id": "q_companion_edda_iron_and_ash",
+          "companion_quest_milestone": "tools_accounted",
+          "companion_quest_text": "Edda checks the old foundry register. Several specialist tools were charged to workers who never received them; others were loaned freely and must not be counted as theft. Compare the marks and identify what is truly missing."
+        },
+        {
+          "cell": [
+            9,
+            6
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Debt Runner",
+          "text": "A frightened courier carries a transfer notice stamped by a private debt company.",
+          "companion_quest_id": "q_companion_bram_cullen_broken_chain",
+          "companion_quest_milestone": "debt_transfer_found",
+          "companion_quest_text": "Bram Cullen recognises the jailer's mark on the transfer notice. His prison debt has been sold to a private company, along with claims against several other inmates. He asks you to trace the contract before the company can move them."
+        },
+        {
+          "cell": [
+            10,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Ward's Former Steward",
+          "text": "The former steward offers Petra the last page of the triage register.",
+          "companion_quest_id": "q_companion_petra_bitter_draught",
+          "companion_quest_milestone": "triage_decided",
+          "companion_quest_text": "The triage register confirms that vulnerable patients were given priority only on paper. Petra must decide how to expose the error while protecting those who could be harmed by public disclosure.",
+          "companion_quest_challenge": {
+            "prompt": "Which approach preserves accountability while minimising harm to patients?",
+            "options": [
+              "Publish every patient's name",
+              "Destroy the register",
+              "Publish verified treatment records with patient identities redacted"
+            ],
+            "correct_option": "Publish verified treatment records with patient identities redacted",
+            "success_text": "A redacted record preserves the evidence while protecting patients' identities.",
+            "failure_text": "Publishing names risks further harm; destroying the register removes the proof."
+          }
         }
       ]
     },
@@ -903,6 +1488,42 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        },
+        {
+          "cell": [
+            3,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Carved Waystone",
+          "tint": [
+            0.72,
+            0.78,
+            0.66
+          ],
+          "text": "A tiny hooked mark has been cut into the underside of the waystone.",
+          "companion_quest_id": "q_companion_kestrel_no_master",
+          "companion_quest_milestone": "coded_mark_found",
+          "companion_quest_text": "Kestrel spots a contract mark used by their former handlers. It points to a safehouse where names were traded for patrol routes. Kestrel asks you not to touch the mark until its pattern is copied."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Sealed Vessmoor Summons",
+          "tint": [
+            0.82,
+            0.76,
+            0.58
+          ],
+          "text": "A House Vessmoor courier waits with a wax-sealed summons addressed to Isaure.",
+          "companion_quest_id": "q_companion_isaure_two_oaths",
+          "companion_quest_milestone": "summons_received",
+          "companion_quest_text": "The summons demands Isaure return and denounce the company. She recognises her relative's seal but notices the witness mark is missing.",
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -942,6 +1563,64 @@
           "npc": true,
           "name": "Innkeeper",
           "text": "The timber hall offers a dry bed and a warm fire for 20 gold."
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Safehouse Caretaker",
+          "tint": [
+            0.78,
+            0.7,
+            0.62
+          ],
+          "text": "The caretaker's ledger has been scraped clean, but the pressure marks remain.",
+          "companion_quest_id": "q_companion_kestrel_no_master",
+          "companion_quest_milestone": "safehouse_investigated",
+          "companion_quest_text": "Kestrel reconstructs the hidden entries from the paper grooves. The safehouse used three signs to warn its occupants.",
+          "companion_quest_challenge": {
+            "prompt": "The caretaker says the warning was never a spoken password. Which sign would tell a fugitive that watchers were waiting outside?",
+            "options": [
+              "A lantern turned toward the street",
+              "A shutter left open on the upper floor",
+              "A bucket placed beside the rear step"
+            ],
+            "correct_option": "A lantern turned toward the street",
+            "success_text": "The lantern mark matches the hidden ledger notation. Kestrel finds the watcher schedule and the list of names sold to the patrol.",
+            "failure_text": "The caretaker shakes their head. That sign was ordinary household business, not the warning used by the handlers."
+          }
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "Household Muster Clerk",
+          "tint": [
+            0.72,
+            0.82,
+            0.76
+          ],
+          "text": "A former Vessmoor clerk keeps a copy of the household muster.",
+          "companion_quest_id": "q_companion_isaure_two_oaths",
+          "companion_quest_milestone": "household_muster_examined",
+          "companion_quest_text": "The muster divides retainers between lawful household duty and private loyalty. Compare the orders with the seal register before deciding who was actually summoned.",
+          "companion_quest_challenge": {
+            "prompt": "Which detail exposes the mentor's forged muster order?",
+            "options": [
+              "The order uses a retired seal number absent from the current register",
+              "The parchment is folded twice",
+              "The retainers wear different colours"
+            ],
+            "correct_option": "The order uses a retired seal number absent from the current register",
+            "success_text": "The retired seal number proves the order was forged and that the retainers were misled.",
+            "failure_text": "Folds and clothing do not establish whether the household order was authorised."
+          },
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -981,6 +1660,53 @@
           "npc": true,
           "name": "Market Factor",
           "text": "Carpenters and hunters bring their wares to the square. The factor can open your company stores."
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Protected Witness",
+          "tint": [
+            0.76,
+            0.84,
+            0.78
+          ],
+          "text": "A courier waits among the timber merchants, carrying a sealed statement.",
+          "companion_quest_id": "q_companion_kestrel_no_master",
+          "companion_quest_milestone": "witness_protected",
+          "companion_quest_text": "The witness can identify the handler who sold the names, but revealing them would expose the safehouse families. Kestrel asks you to protect the witness before deciding what the records should become."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Gatehouse Challenge",
+          "tint": [
+            0.82,
+            0.7,
+            0.68
+          ],
+          "text": "A Vessmoor duelling witness carries the mentor's challenge and a copy of the original oath.",
+          "companion_quest_id": "q_companion_isaure_two_oaths",
+          "companion_quest_milestone": "mentor_challenge_resolved",
+          "companion_quest_text": "Isaure's former mentor demands a duel to settle her perceived dishonour. The witness can confirm the forged order; choose a response that protects Isaure's agency and avoids turning the challenge into a blood feud.",
+          "companion_quest_challenge": {
+            "prompt": "Which response answers the challenge while preserving a lawful path to resolution?",
+            "options": [
+              "Present the original oath and forged muster before witnesses, then offer arbitration",
+              "Accept a duel to the death without hearing the evidence",
+              "Burn both documents and accuse the retainers"
+            ],
+            "correct_option": "Present the original oath and forged muster before witnesses, then offer arbitration",
+            "success_text": "The witnesses recognise the forged order. Isaure can face her mentor without accepting his false terms.",
+            "failure_text": "The other responses either risk needless death or destroy the evidence needed for a fair hearing."
+          },
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -1101,6 +1827,53 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Challenge at Dawn",
+          "tint": [
+            0.82,
+            0.77,
+            0.68
+          ],
+          "text": "A messenger brings Willem a sealed challenge from the rival he defeated years ago.",
+          "companion_quest_id": "q_companion_willem_last_challenge",
+          "companion_quest_milestone": "challenge_received",
+          "companion_quest_text": "Willem recognises the rival's seal. Hear the accusation in full before accepting the challenge; the squire named in the letter may be the key to what happened.",
+          "cell": [
+            6,
+            4
+          ]
+        },
+        {
+          "cell": [
+            10,
+            7
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Unclaimed Brennhallow Seal",
+          "tint": [
+            0.82,
+            0.76,
+            0.58
+          ],
+          "text": "A clerk has found fresh orders bearing the seal of a Brennhallow successor who has not appeared in public.",
+          "companion_quest_id": "q_companion_corwin_heirless_seal",
+          "companion_quest_milestone": "seal_forgery_found",
+          "companion_quest_text": "Corwin recognises the family seal but not the impression's edge. Preserve the orders and compare the wax, date and issuing register before treating them as lawful commands.",
+          "companion_quest_challenge": {
+            "prompt": "Which detail most strongly indicates that the orders were issued under a forged or unauthorised seal?",
+            "options": [
+              "The wax is a dark red colour",
+              "The impression lacks the registered edge mark and cites an absent successor not listed in the household roll",
+              "The order is written in formal language"
+            ],
+            "correct_option": "The impression lacks the registered edge mark and cites an absent successor not listed in the household roll",
+            "success_text": "The missing registered edge and absent name show that the seal was used without verified authority.",
+            "failure_text": "Colour and formal wording do not authenticate a seal. Compare the impression and issuing register."
+          }
         }
       ]
     },
@@ -1140,6 +1913,64 @@
           "npc": true,
           "name": "Innkeeper",
           "text": "The Red Mare charges 20 gold for a night's rest and a stable for your mounts."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "Witnesses to Honour",
+          "tint": [
+            0.76,
+            0.82,
+            0.88
+          ],
+          "text": "Two former seconds disagree about the order of the old duel, while a retired clerk remembers a sealed amendment.",
+          "companion_quest_id": "q_companion_willem_last_challenge",
+          "companion_quest_milestone": "duel_record_verified",
+          "companion_quest_text": "Compare the seconds' testimony with the sealed record and the squire's account. A single witness cannot settle a disputed contest.",
+          "companion_quest_challenge": {
+            "prompt": "Which evidence best establishes whether the duel's result was technically lawful but unfairly obtained?",
+            "options": [
+              "The rival's accusation alone",
+              "The sealed amendment, both seconds' independent accounts and the squire's dated letter",
+              "Willem's memory of the final exchange"
+            ],
+            "correct_option": "The sealed amendment, both seconds' independent accounts and the squire's dated letter",
+            "success_text": "The independent accounts and dated record show the ruling was technically valid, while revealing why the rival accepted the disadvantage.",
+            "failure_text": "Memory or accusation alone cannot settle the record. Compare independent testimony with the sealed amendment and the squire's letter."
+          },
+          "cell": [
+            6,
+            3
+          ]
+        },
+        {
+          "cell": [
+            8,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Charter Examiner",
+          "tint": [
+            0.76,
+            0.82,
+            0.88
+          ],
+          "text": "A retired notary keeps a copy of the Brennhallow charter and its witness schedule.",
+          "companion_quest_id": "q_companion_corwin_heirless_seal",
+          "companion_quest_milestone": "charter_authority_audited",
+          "companion_quest_text": "Audit the charter's witness names, dates and limits. A seal can authenticate a document's origin only when the issuing authority and succession conditions are also established.",
+          "companion_quest_challenge": {
+            "prompt": "What is the strongest basis for determining whether the charter grants Corwin authority now?",
+            "options": [
+              "The family seal appears on the oldest copy",
+              "The dated witness schedule, succession clause and independent household roll agree on the current authority",
+              "A retainer says Corwin has always been the most capable heir"
+            ],
+            "correct_option": "The dated witness schedule, succession clause and independent household roll agree on the current authority",
+            "success_text": "The matching records establish the charter's conditions and show that the disputed successor has no verified standing.",
+            "failure_text": "A seal or personal opinion cannot replace the charter's witness schedule and succession conditions."
+          }
         }
       ]
     },
@@ -1179,6 +2010,42 @@
           "npc": true,
           "name": "Market Factor",
           "text": "The central market carries Vessmoor steel, tack and provisions. Visit the counter to manage your gear."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Unarmed Yard",
+          "tint": [
+            0.84,
+            0.75,
+            0.66
+          ],
+          "text": "The rival waits beside the old practice yard. The squire has asked that the dispute not become another public spectacle.",
+          "companion_quest_id": "q_companion_willem_last_challenge",
+          "companion_quest_milestone": "rematch_resolved",
+          "companion_quest_text": "Resolve the challenge without demanding a fight to the death. A formal rematch, a public correction or a non-lethal sparring match where the rival may yield are all possible. Then choose Willem's lasting answer.",
+          "cell": [
+            6,
+            4
+          ]
+        },
+        {
+          "cell": [
+            8,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Hall of Retainers",
+          "tint": [
+            0.84,
+            0.78,
+            0.68
+          ],
+          "text": "Brennhallow retainers have gathered to hear Corwin's position; several demand that the disputed orders be withdrawn.",
+          "companion_quest_id": "q_companion_corwin_heirless_seal",
+          "companion_quest_milestone": "retainers_heard",
+          "companion_quest_text": "Hear the retainers separately and publish the limits of any interim arrangement. Corwin may submit the claim, renounce personal advantage or accept only temporary custody under independent review. No outcome grants him power to bind the Seven Houses."
         }
       ]
     },
@@ -1299,6 +2166,24 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Sanctuary Bell",
+          "tint": [
+            0.82,
+            0.78,
+            0.68
+          ],
+          "text": "The bell at the riverside sanctuary rings for families turned away after armed fugitives exploited its protection.",
+          "companion_quest_id": "q_companion_odaly_open_door",
+          "companion_quest_milestone": "sanctuary_bell_answered",
+          "companion_quest_text": "Odalys must hear why the doors were closed before asking anyone to reopen them. The sanctuary's faith community is not the secret Covenant faction.",
+          "cell": [
+            5,
+            5
+          ]
         }
       ]
     },
@@ -1338,6 +2223,35 @@
           "npc": true,
           "name": "Innkeeper",
           "text": "The Ferry House offers a meal and a bed for 20 gold."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Rule of Shelter",
+          "tint": [
+            0.76,
+            0.84,
+            0.78
+          ],
+          "text": "A keeper, two residents and a family waiting outside each describe a different fear.",
+          "companion_quest_id": "q_companion_odaly_open_door",
+          "companion_quest_milestone": "shelter_rules_agreed",
+          "companion_quest_text": "Hear the residents, keepers and threatened families separately. Draft rules that protect people seeking refuge while allowing credible threats to be handled through due process.",
+          "companion_quest_challenge": {
+            "prompt": "Which temporary rule protects sanctuary without granting immunity for violence?",
+            "options": [
+              "Admit families, separate immediate threats, investigate specific allegations fairly and never punish a household for another person's actions",
+              "Turn away every newcomer until the armed fugitives are found",
+              "Promise that anyone inside can never be questioned or held accountable"
+            ],
+            "correct_option": "Admit families, separate immediate threats, investigate specific allegations fairly and never punish a household for another person's actions",
+            "success_text": "The rule protects families, addresses immediate danger and preserves fair process for specific allegations.",
+            "failure_text": "Blanket exclusion abandons those in need; blanket immunity leaves others unsafe. Safeguards must do both jobs."
+          },
+          "cell": [
+            8,
+            3
+          ]
         }
       ]
     },
@@ -1377,6 +2291,24 @@
           "npc": true,
           "name": "Market Factor",
           "text": "Ferry traders sell river gear and imported goods. The factor can access your party shop."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "At the Threshold",
+          "tint": [
+            0.84,
+            0.74,
+            0.66
+          ],
+          "text": "The armed pursuers reach the sanctuary road. The families are ready to move, but the keepers refuse to abandon the infirm and the elderly.",
+          "companion_quest_id": "q_companion_odaly_open_door",
+          "companion_quest_milestone": "threshold_defended",
+          "companion_quest_text": "The pursuers arrive. Odalys can negotiate a surrender, organise an escorted evacuation or defend the perimeter while keeping a clear route for civilians. Choose the refuge's lasting path after the immediate danger is contained.",
+          "cell": [
+            8,
+            3
+          ]
         }
       ]
     },
@@ -1497,6 +2429,24 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Misbound Volume",
+          "tint": [
+            0.78,
+            0.76,
+            0.88
+          ],
+          "text": "A library runner has found a catalogue entry that no longer matches the volume on its shelf.",
+          "companion_quest_id": "q_companion_orlan_margin_of_truth",
+          "companion_quest_milestone": "misbound_volume_found",
+          "companion_quest_text": "Orlan recognises a reference to a conscription-limit clause that has been removed from the public catalogue. Find the surviving volume and establish where it came from.",
+          "cell": [
+            5,
+            5
+          ]
         }
       ]
     },
@@ -1536,6 +2486,35 @@
           "npc": true,
           "name": "Innkeeper",
           "text": "The Garrison Inn provides a guarded room for 20 gold."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Marginal Hand",
+          "tint": [
+            0.76,
+            0.82,
+            0.86
+          ],
+          "text": "A bookbinder remembers repairing the disputed volume and kept a rubbing of its damaged binding.",
+          "companion_quest_id": "q_companion_orlan_margin_of_truth",
+          "companion_quest_milestone": "source_provenance_verified",
+          "companion_quest_text": "Compare the handwriting, binding marks and duplicate copies. Provenance must be established from physical evidence, not from a convenient confession.",
+          "companion_quest_challenge": {
+            "prompt": "Which combination best verifies that the annotation belongs to the original volume?",
+            "options": [
+              "Matching ink alone, without checking the book",
+              "The same hand in a dated duplicate, matching binding marks and an unbroken catalogue trail",
+              "A custodian's claim that the note looks old"
+            ],
+            "correct_option": "The same hand in a dated duplicate, matching binding marks and an unbroken catalogue trail",
+            "success_text": "The dated duplicate and matching binding marks establish a credible chain of provenance for the annotation.",
+            "failure_text": "A single visual impression or an unsupported claim cannot establish provenance. Compare independent physical records."
+          },
+          "cell": [
+            8,
+            3
+          ]
         }
       ]
     },
@@ -1575,6 +2554,24 @@
           "npc": true,
           "name": "Market Factor",
           "text": "The mile market stocks practical arms and armour for the southern road."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Archive Custodian",
+          "tint": [
+            0.82,
+            0.77,
+            0.68
+          ],
+          "text": "An archive custodian offers access to the sealed register, but asks Orlan to suppress a politically dangerous annotation.",
+          "companion_quest_id": "q_companion_orlan_margin_of_truth",
+          "companion_quest_milestone": "archive_access_resolved",
+          "companion_quest_text": "The annotation is verified. The custodian will permit access only if the record is handled responsibly; decide whether to publish, deposit independent copies or redact vulnerable names.",
+          "cell": [
+            8,
+            3
+          ]
         }
       ]
     },
@@ -1698,6 +2695,35 @@
           "text": "A former road captain has become the keeper of this den. He has chained the old tunnel doors and refuses to let the dead rest.",
           "battle_id": "battle_hollowroot",
           "world_flag_on_victory": "dungeon_hollowroot_cleared"
+        },
+        {
+          "cell": [
+            5,
+            8
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Containment Lattice",
+          "tint": [
+            0.72,
+            0.82,
+            0.9
+          ],
+          "text": "Three rune sockets surround a cracked containment ring. The apparatus is dormant but unstable.",
+          "companion_quest_id": "q_companion_ilyan_silent_tower",
+          "companion_quest_milestone": "rune_experiment_contained",
+          "companion_quest_text": "Ilyan asks you to stabilise the lattice without completing the dangerous resonance. Use the page's safety notes to ground the active rune, isolate the feedback path and leave the final socket empty.",
+          "companion_quest_challenge": {
+            "prompt": "Which sequence safely contains the lattice without triggering the unstable resonance?",
+            "options": [
+              "Ground the active rune, isolate the feedback path and leave the final socket empty",
+              "Activate all three runes at once to equalise their power",
+              "Remove the grounding rune while the feedback path remains open"
+            ],
+            "correct_option": "Ground the active rune, isolate the feedback path and leave the final socket empty",
+            "success_text": "The lattice settles. The experiment is contained, and Ilyan records the safe shutdown procedure before anyone touches the apparatus again.",
+            "failure_text": "The lattice begins to hum. Ilyan stops the attempt before it can escalate and explains why grounding and isolation must come before any further action."
+          }
         }
       ]
     },
@@ -1748,6 +2774,24 @@
           "text": "The last keeper guards the bronze bell, convinced its toll is the only thing keeping a buried plague asleep.",
           "battle_id": "battle_bell",
           "world_flag_on_victory": "dungeon_bell_cleared"
+        },
+        {
+          "cell": [
+            5,
+            2
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Missing Tower Page",
+          "tint": [
+            0.78,
+            0.78,
+            0.9
+          ],
+          "text": "A loose folio is wedged behind the bell mechanism, its edge marked with Ilyan's tower cipher.",
+          "companion_quest_id": "q_companion_ilyan_silent_tower",
+          "companion_quest_milestone": "missing_page_found",
+          "companion_quest_text": "Ilyan recognises the folio as a page removed from the Silent Tower's rune-interaction record. Preserve the original sequence and its warning annotations; the missing page explains why the experiment was halted."
         }
       ]
     },
@@ -1798,6 +2842,24 @@
           "text": "A disgraced Vessmoor reeve commands the ossuary's looters, claiming the crown still owes his family a debt.",
           "battle_id": "battle_catacombs",
           "world_flag_on_victory": "dungeon_catacombs_cleared"
+        },
+        {
+          "cell": [
+            5,
+            8
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Apprentice's Signal",
+          "tint": [
+            0.82,
+            0.78,
+            0.66
+          ],
+          "text": "A faint tapping answers from behind the sealed apparatus chamber.",
+          "companion_quest_id": "q_companion_ilyan_silent_tower",
+          "companion_quest_milestone": "apprentice_reached",
+          "companion_quest_text": "The apprentice is alive but frightened, and the apparatus is still drawing power. Reach them by negotiation, rescue or a careful shutdown; do not treat the apprentice as the enemy. The research must be secured without sacrificing a person to protect it."
         }
       ]
     },
@@ -1907,6 +2969,60 @@
             0.82
           ],
           "text": "Maren has marked a forgotten signal route in the margin of her chart. The last sounding may reveal why the Northstar crew vanished."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Borrowed Verse",
+          "tint": [
+            0.76,
+            0.7,
+            0.88
+          ],
+          "text": "A dockside singer performs a familiar melody with unfamiliar words praising the Covenant.",
+          "companion_quest_id": "q_companion_verra_song_without_seal",
+          "companion_quest_milestone": "borrowed_verse_heard",
+          "companion_quest_text": "Verra recognises a song she wrote, but the verses have been altered to praise the Covenant. Find who supplied the new copy before the troupe is forced to perform again.",
+          "cell": [
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Salt Register",
+          "tint": [
+            0.72,
+            0.82,
+            0.86
+          ],
+          "text": "A harbour clerk shows Ysolde a register whose family names change halfway through a past levy year.",
+          "companion_quest_id": "q_companion_ysolde_names_in_salt",
+          "companion_quest_milestone": "salt_register_found",
+          "companion_quest_text": "Find the original salt register and identify which entries were altered after the levy. Brinegate remains a Tidebound Assembly port; this record concerns families across the coast, not a claim to the city's sovereignty.",
+          "cell": [
+            9,
+            5
+          ]
+        },
+        {
+          "cell": [
+            7,
+            9
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Ledger's Missing Page",
+          "tint": [
+            0.76,
+            0.82,
+            0.88
+          ],
+          "text": "A ledger keeper has hidden a torn Tideglass page among routine harbour manifests.",
+          "companion_quest_id": "q_companion_maren_tideglass_wake",
+          "companion_quest_milestone": "ledger_page_found",
+          "companion_quest_text": "Maren recognises the voyage notation but not the cargo seal. Compare the page with the public harbour register and preserve the original before the missing voyage is dismissed as a clerical error."
         }
       ]
     },
@@ -1993,6 +3109,93 @@
           "shopkeeper_id": "saltmere_factor",
           "name": "Saltmere Reef Market",
           "text": "A sheltered market where coastal traders exchange supplies and reef goods. Its stock depends on which route the company has opened."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Troupe's Copybook",
+          "tint": [
+            0.78,
+            0.75,
+            0.88
+          ],
+          "text": "A travelling troupe keeps its song sheets locked in a damp instrument case.",
+          "companion_quest_id": "q_companion_verra_song_without_seal",
+          "companion_quest_milestone": "singers_copy_recovered",
+          "companion_quest_text": "Compare the troupe's copy with Verra's remembered refrain. This text-based rhythm puzzle is accessible without audio.",
+          "companion_quest_challenge": {
+            "prompt": "The original refrain follows a repeated pattern. Which written cue sequence matches Verra's first version?",
+            "options": [
+              "Lantern — river — lantern — home",
+              "Crown — sword — crown — throne",
+              "Ash — flame — ash — silence"
+            ],
+            "correct_option": "Lantern — river — lantern — home",
+            "success_text": "The repeated lantern cue and river return match Verra's original refrain. The altered copy inserts the Covenant's crown imagery.",
+            "failure_text": "Compare the repeated image and the returning final line; the other sequences do not match."
+          },
+          "cell": [
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "Tide Marks",
+          "tint": [
+            0.76,
+            0.84,
+            0.82
+          ],
+          "text": "Net-menders and record keepers bring tide tables, harbour marks and family testimony to a shared table.",
+          "companion_quest_id": "q_companion_ysolde_names_in_salt",
+          "companion_quest_milestone": "family_names_verified",
+          "companion_quest_text": "Reconcile the tide tables with harbour marks and family testimony. Separate deliberate name changes from ordinary clerical drift before making any identity public.",
+          "companion_quest_challenge": {
+            "prompt": "Which set of evidence best verifies the altered family entries?",
+            "options": [
+              "A single family's memory, without dates",
+              "Matching tide-table dates, harbour marks on the levy copies and independent family testimony",
+              "The harbour official's assurance that the register is correct"
+            ],
+            "correct_option": "Matching tide-table dates, harbour marks on the levy copies and independent family testimony",
+            "success_text": "The dated tide tables and harbour marks align with independent testimony, confirming the pattern of altered names.",
+            "failure_text": "A single account or official assurance is not enough. Verify dates and marks against several families' testimony."
+          },
+          "cell": [
+            8,
+            5
+          ]
+        },
+        {
+          "cell": [
+            13,
+            9
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Soundings at Low Tide",
+          "tint": [
+            0.68,
+            0.82,
+            0.88
+          ],
+          "text": "A local pilot has marked the shoals on a chart, but the tide has shifted since the last safe passage.",
+          "companion_quest_id": "q_companion_maren_tideglass_wake",
+          "companion_quest_milestone": "safe_route_plotted",
+          "companion_quest_text": "Plot a safe approach using the tide marks, pilot testimony and damaged chart. The paid chart is only one source; verify it against the waterline and the pilot's independent soundings.",
+          "companion_quest_challenge": {
+            "prompt": "Which route uses the available evidence while avoiding the newly exposed shoal?",
+            "options": [
+              "Follow the old chart's straight channel without checking the tide",
+              "Take the western channel at ebb because the waterline and pilot's sounding agree on its depth",
+              "Choose the deepest-looking water by colour alone"
+            ],
+            "correct_option": "Take the western channel at ebb because the waterline and pilot's sounding agree on its depth",
+            "success_text": "The combined tide marks and pilot sounding reveal the safe western channel. Maren plots the approach without requiring a paid chart.",
+            "failure_text": "A chart alone or water colour cannot confirm depth. Compare the current tide marks with the pilot's independent sounding."
+          }
         }
       ]
     },
@@ -2099,6 +3302,42 @@
             0.76
           ],
           "text": "Neris has drawn a second route across the shoals, one that does not appear on any Tidebound map. She is ready to show you where the hidden beacon lies."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Public Stage",
+          "tint": [
+            0.84,
+            0.72,
+            0.62
+          ],
+          "text": "The troupe is expected to perform the altered song at the quay gathering.",
+          "companion_quest_id": "q_companion_verra_song_without_seal",
+          "companion_quest_milestone": "public_performance_resolved",
+          "companion_quest_text": "The patron's agents are watching the stage. Verra can present the original, protect the performers or write a new response, but the troupe must be allowed to refuse.",
+          "cell": [
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Wharf Hearing",
+          "tint": [
+            0.84,
+            0.78,
+            0.68
+          ],
+          "text": "A harbour official argues that restoring the names will unsettle trade. A ledger suggests the official profited from the old levy.",
+          "companion_quest_id": "q_companion_ysolde_names_in_salt",
+          "companion_quest_milestone": "wharf_hearing_resolved",
+          "companion_quest_text": "Present the verified record at the wharf hearing. Negotiate phased disclosure, protect vulnerable families or expose the official's private profiteering. Let the families decide how their identities should be restored.",
+          "cell": [
+            9,
+            5
+          ]
         }
       ]
     },
@@ -2148,6 +3387,24 @@
           "text": "A former beacon guard stands between you and the outer chamber. He has been ordered to keep the ledger buried, but his hands shake when he sees the seal.",
           "battle_id": "battle_tideglass",
           "world_flag_on_victory": "tideglass_grotto_cleared"
+        },
+        {
+          "cell": [
+            5,
+            8
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Wreck's Sealed Manifest",
+          "tint": [
+            0.74,
+            0.82,
+            0.9
+          ],
+          "text": "A watertight case remains trapped beneath a collapsed beam in the wreck.",
+          "companion_quest_id": "q_companion_maren_tideglass_wake",
+          "companion_quest_milestone": "wreck_manifest_recovered",
+          "companion_quest_text": "Recover the sealed manifest and compare its cargo marks with the missing ledger page. The crew diverted the ship to evade a blockade, but the cargo owner later profited from the disappearance. Keep the surviving crew's safety in view as Maren chooses what to reveal."
         }
       ]
     },
@@ -2197,6 +3454,200 @@
           "text": "The salvage captain has stripped the wreck and kept its log as leverage. Maren recognizes the ship's brass compass on his belt.",
           "battle_id": "battle_northstar_wreck",
           "world_flag_on_victory": "northstar_wreck_cleared"
+        }
+      ]
+    },
+    "tarnholt": {
+      "name": "Tarnholt",
+      "kind": "town",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.15,
+      "rows": [
+        "################",
+        "#..............#",
+        "#..1......2....#",
+        "#..............#",
+        "#....3.........#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#######E########"
+      ],
+      "doors": {
+        "1": {
+          "to": "tarnholt_inn",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "2": {
+          "to": "tarnholt_chapter_house",
+          "spawn": [
+            7,
+            9
+          ]
+        },
+        "3": {
+          "to": "tarnholt_chapter_house",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            6,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Unread Oath",
+          "tint": [
+            0.82,
+            0.76,
+            0.66
+          ],
+          "text": "A young initiate carries an oath sheet whose lines were covered before the ceremony.",
+          "companion_quest_id": "q_companion_seraphine_measure_of_oaths",
+          "companion_quest_milestone": "unread_oath_found",
+          "companion_quest_text": "Seraphine recognises the chapter's seal, but the initiate was asked to swear before being allowed to read the text. Preserve the original sheet and record the recruit's account without pressuring them to withdraw their oath."
+        }
+      ]
+    },
+    "tarnholt_inn": {
+      "name": "Tarnholt Guest Hall",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "tarnholt",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "inn",
+          "npc": true,
+          "name": "Guest Hall Keeper",
+          "text": "The keeper offers beds to travellers and members who need a quiet place away from the chapter."
+        },
+        {
+          "cell": [
+            8,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Quiet Chapter Records",
+          "tint": [
+            0.76,
+            0.82,
+            0.88
+          ],
+          "text": "A former scribe keeps a duplicate register of the order's admission ceremonies.",
+          "companion_quest_id": "q_companion_seraphine_measure_of_oaths",
+          "companion_quest_milestone": "order_records_examined",
+          "companion_quest_text": "Compare the ceremony register with separate member testimony. Determine whether the unread oath was a single lapse or a repeated practice, and protect the names of members who fear expulsion.",
+          "companion_quest_challenge": {
+            "prompt": "Which evidence best establishes that the unread oath was an institutional practice rather than one scribe's mistake?",
+            "options": [
+              "A single unsigned complaint",
+              "Matching ceremony entries across several dates, corroborated by separate member accounts",
+              "The chapter leader's assurance that the practice was harmless"
+            ],
+            "correct_option": "Matching ceremony entries across several dates, corroborated by separate member accounts",
+            "success_text": "The repeated entries and independent accounts establish a pattern while protecting the identities of vulnerable members.",
+            "failure_text": "One complaint or an unsupported assurance cannot establish whether the practice was repeated. Compare dated records with separate testimony."
+          }
+        }
+      ]
+    },
+    "tarnholt_chapter_house": {
+      "name": "Tarnholt Chapter House",
+      "kind": "interior",
+      "entry": [
+        7,
+        9
+      ],
+      "rows": [
+        "#####N####N#####",
+        "#=H====++====H=#",
+        "#======++======#",
+        "#====P=++=P====#",
+        "#======XX======#",
+        "#======++======#",
+        "#====P=++=P====#",
+        "#======++======#",
+        "#U=====++=====U#",
+        "#U=====++======#",
+        "#######1########"
+      ],
+      "doors": {
+        "1": {
+          "to": "tarnholt",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            7,
+            2
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Chapter's Hearing",
+          "tint": [
+            0.84,
+            0.78,
+            0.68
+          ],
+          "text": "The chapter officers have gathered with members who were never shown the oath they signed.",
+          "companion_quest_id": "q_companion_seraphine_measure_of_oaths",
+          "companion_quest_milestone": "chapter_house_heard",
+          "companion_quest_text": "Present the verified records and let members speak without being forced to remain or leave. The order must distinguish informed consent from obedience. Keep the public Covenant compact separate from any secret organisation that borrows its name."
+        },
+        {
+          "cell": [
+            7,
+            4
+          ],
+          "kind": "party",
+          "npc": false,
+          "name": "Chapter Council Table",
+          "text": "The council table is reserved for the chapter's formal hearing."
         }
       ]
     }
