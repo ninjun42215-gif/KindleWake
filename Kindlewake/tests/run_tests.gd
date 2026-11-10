@@ -1476,6 +1476,12 @@ func _test_shop_and_screen() -> void:
     check(price_order_ok, "rare through mythical equipment uses premium price bands")
     var regional_stock: Dictionary = shop.get("regional_stocks", {})
     check(regional_stock.has("crossing_shop") and regional_stock.has("milefort_market") and not (regional_stock["crossing_shop"]["items"] as Array).has("mythical_arming_sword"), "regional merchants have distinct gated stock")
+    check(not ShopSystem.market_available(shop, "saltmere", {}) and ShopSystem.market_available(shop, "saltmere", {"saltmere_trade_route_open": true}) and ShopSystem.market_available(shop, "saltmere", {"saltmere_fishers_route_open": true}), "Saltmere's market unlocks only when one of Neris's routes is established")
+    var merchant_stock: Dictionary = ShopSystem.regional_stock(shop, "saltmere", {"saltmere_trade_route_open": true})
+    var fisher_stock: Dictionary = ShopSystem.regional_stock(shop, "saltmere", {"saltmere_fishers_route_open": true})
+    check((merchant_stock.get("items", []) as Array).has("deepwater_spice") and not (merchant_stock.get("items", []) as Array).has("reef_salt"), "the public route unlocks merchant-only trade goods")
+    check((fisher_stock.get("items", []) as Array).has("reef_salt") and not (fisher_stock.get("items", []) as Array).has("deepwater_spice"), "the private route unlocks fisher-only trade goods")
+    check(ItemInfo.slot_name("trade_good") == "Trade good" and ItemInfo.item_line("deepwater_spice", items, db["weapons"]).contains("Trade good"), "trade goods are identified clearly in the shop and inventory")
     check(gd.skills.has("frost_shard") and gd.skills.has("frost_lance") and str(gd.skills["frost_shard"]["type"]) == "damage", "Frost skills exist as damage spells")
     check(CharacterSheet.sigil_skills_at(sdefs["frost"], 1).has("frost_shard") and CharacterSheet.sigil_skills_at(sdefs["frost"], 3).has("frost_lance"), "the rune of Frost teaches Frost Shard at level 1 and Frost Lance at level 3")
     # --- text helpers
@@ -1506,6 +1512,11 @@ func _test_shop_and_screen() -> void:
     var count0: int = ps.item_count("arming_sword")
     check(ShopSystem.buy_item(ps, "arming_sword", db, shop) == "" and ps.gold == 10 and ps.item_count("arming_sword") == count0 + 1, "buying pays the price and adds the item")
     check(ShopSystem.buy_item(ps, "dunmarrow_signet", db, shop) == "Not for sale.", "an item the stall does not stock cannot be bought")
+    var saltmere_market: Dictionary = ShopSystem.regional_stock(shop, "saltmere", {"saltmere_trade_route_open": true})
+    var spice_price: int = ShopSystem.item_price("deepwater_spice", db)
+    ps.gold = spice_price
+    check(ShopSystem.buy_item(ps, "deepwater_spice", db, saltmere_market) == "" and ps.item_count("deepwater_spice") == 1 and ps.gold == 0, "the open merchant passage allows the company to buy regional trade goods")
+    check(ShopSystem.sell_item(ps, "deepwater_spice", db, saltmere_market) == "" and ps.gold == ShopSystem.sell_price(spice_price, saltmere_market), "regional trade goods can be resold at the local market's sell ratio")
     var gold1: int = ps.gold
     check(ShopSystem.sell_item(ps, "arming_sword", db, shop) == "" and ps.item_count("arming_sword") == count0, "selling takes the item out of the bag")
     check(ps.gold == gold1 + ShopSystem.sell_price(arming_price, shop), "selling pays the sell ratio of the price")
