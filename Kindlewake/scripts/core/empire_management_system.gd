@@ -530,7 +530,7 @@ static func reduce_war_exhaustion(state: Dictionary, amount: int = 15) -> bool:
 	return true
 
 
-static func build_tactical_battle(state: Dictionary, army_id: String, base_battle: Dictionary, region_id: String, defender_owner: String, siege_assault: bool = false, fort_level: int = 0) -> Dictionary:
+static func build_tactical_battle(state: Dictionary, army_id: String, base_battle: Dictionary, region_id: String, defender_owner: String, siege_assault: bool = false, fort_level: int = 0, warfare_data: Dictionary = {}) -> Dictionary:
 	var deployment := tactical_deployment(state, army_id)
 	if not bool(deployment.get("ok", false)) or base_battle.is_empty():
 		return {}
@@ -570,22 +570,26 @@ static func build_tactical_battle(state: Dictionary, army_id: String, base_battl
 			cell_index += 1
 		if remaining > 0:
 			return {}
-	var defenders := {"infantry": 10, "archers": 5, "cavalry": 0}
-	if region_id.contains("highland") or region_id.contains("height") or region_id == "aurelmont" or region_id.contains("thorncrown") or region_id.contains("ironvale"):
-		defenders["infantry"] += 10
-		defenders["archers"] += 5
-		defenders["cavalry"] += 5
-	if defender_owner == "tidebound_assembly":
-		defenders["archers"] += 5
-	elif defender_owner == "nine_wells_compact":
-		defenders["cavalry"] += 5
-	elif defender_owner == "hearthfjord_jarldoms":
-		defenders["infantry"] += 5
-		defenders["cavalry"] += 5
-	elif defender_owner == "lantern_synod":
-		defenders["archers"] += 5
+	var garrison_rules: Dictionary = warfare_data.get("garrisons", {})
+	var defenders: Dictionary = garrison_rules.get("default", {"infantry": 10, "archers": 5, "cavalry": 0}).duplicate(true)
+	var fortified_regions: Array = garrison_rules.get("fortified_regions", ["brennhallow_highlands", "quillon_heights", "aurelmont", "thorncrown", "ironvale"])
+	if fortified_regions.has(region_id):
+		var fortified_bonus: Dictionary = garrison_rules.get("fortified_bonus", {"infantry": 10, "archers": 5, "cavalry": 5})
+		for troop_type in ["infantry", "archers", "cavalry"]:
+			defenders[troop_type] = int(defenders.get(troop_type, 0)) + int(fortified_bonus.get(troop_type, 0))
+	var faction_bonuses: Dictionary = garrison_rules.get("faction_bonus", {
+		"tidebound_assembly": {"archers": 5},
+		"nine_wells_compact": {"cavalry": 5},
+		"hearthfjord_jarldoms": {"infantry": 5, "cavalry": 5},
+		"lantern_synod": {"archers": 5}
+	})
+	var faction_bonus: Dictionary = faction_bonuses.get(defender_owner, {})
+	for troop_type in ["infantry", "archers", "cavalry"]:
+		defenders[troop_type] = int(defenders.get(troop_type, 0)) + int(faction_bonus.get(troop_type, 0))
 	fort_level = clampi(fort_level, 0, 3)
-	defenders["infantry"] += fort_level * 5
+	var fort_level_bonus: Dictionary = garrison_rules.get("fort_level_bonus", {"infantry": 5, "archers": 0, "cavalry": 0})
+	for troop_type in ["infantry", "archers", "cavalry"]:
+		defenders[troop_type] = int(defenders.get(troop_type, 0)) + int(fort_level_bonus.get(troop_type, 0)) * fort_level
 	var enemy_cells: Array[Vector2i] = []
 	for y in range(0, 4):
 		for x in range(12, 20):
