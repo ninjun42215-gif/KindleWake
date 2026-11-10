@@ -63,7 +63,7 @@ static func cargo_capacity(goods: Dictionary, state: Dictionary = {}) -> int:
     return maxi(1, int(goods.get("cargo_capacity", DEFAULT_CARGO_CAPACITY)) +
         int(rank.get("capacity", 0)) + int(caravan.get("level", 0)) * 50)
 
-static func cargo_weight(party: PartyState, goods: Dictionary) -> int:
+static func cargo_weight(party: Variant, goods: Dictionary) -> int:
     var total := 0
     for id in goods.get("goods", {}).keys():
         total += party.item_count(str(id)) * int(goods["goods"][id].get("weight", 1))
@@ -122,7 +122,7 @@ static func _fee_multiplier(state: Dictionary) -> float:
     return 1.02 - discount
 
 
-static func buy(party: PartyState, region_id: String, good_id: String, quantity: int, goods: Dictionary, state: Dictionary) -> String:
+static func buy(party: Variant, region_id: String, good_id: String, quantity: int, goods: Dictionary, state: Dictionary) -> String:
     if quantity < 1 or quantity > int(goods.get("max_transaction_quantity", MAX_QUANTITY)): return "Choose a valid quantity."
     var good: Dictionary = goods.get("goods", {}).get(good_id, {})
     if good.is_empty(): return "Unknown trade good."
@@ -145,7 +145,7 @@ static func buy(party: PartyState, region_id: String, good_id: String, quantity:
     add_merchant_xp(state, maxi(1, quantity))
     return ""
 
-static func sell(party: PartyState, region_id: String, good_id: String, quantity: int, goods: Dictionary, state: Dictionary) -> String:
+static func sell(party: Variant, region_id: String, good_id: String, quantity: int, goods: Dictionary, state: Dictionary) -> String:
     if quantity < 1 or quantity > int(goods.get("max_transaction_quantity", MAX_QUANTITY)): return "Choose a valid quantity."
     var good: Dictionary = goods.get("goods", {}).get(good_id, {})
     if good.is_empty(): return "Unknown trade good."
@@ -179,7 +179,7 @@ static func _record_contract_delivery(state: Dictionary, good_id: String, quanti
         active["deliveries"] = deliveries
         active["last_region"] = region_id
 
-static func purchase_caravan(party: PartyState, state: Dictionary, goods: Dictionary) -> String:
+static func purchase_caravan(party: Variant, state: Dictionary, goods: Dictionary) -> String:
     var caravan: Dictionary = state.get("caravan", {})
     if bool(caravan.get("owned", false)): return "You already own a caravan."
     var cost := int(goods.get("caravan", {}).get("purchase_cost", 1800))
@@ -190,7 +190,7 @@ static func purchase_caravan(party: PartyState, state: Dictionary, goods: Dictio
     add_merchant_xp(state, 25)
     return ""
 
-static func upgrade_caravan(party: PartyState, state: Dictionary, goods: Dictionary) -> String:
+static func upgrade_caravan(party: Variant, state: Dictionary, goods: Dictionary) -> String:
     var caravan: Dictionary = state.get("caravan", {})
     if not bool(caravan.get("owned", false)): return "Purchase a caravan first."
     var level := int(caravan.get("level", 0))
@@ -202,7 +202,7 @@ static func upgrade_caravan(party: PartyState, state: Dictionary, goods: Diction
     state["caravan"] = caravan
     return ""
 
-static func hire_caravan_guard(party: PartyState, state: Dictionary, goods: Dictionary) -> String:
+static func hire_caravan_guard(party: Variant, state: Dictionary, goods: Dictionary) -> String:
     var caravan: Dictionary = state.get("caravan", {})
     if not bool(caravan.get("owned", false)): return "Purchase a caravan first."
     var guards := int(caravan.get("guards", 0))
@@ -224,7 +224,7 @@ static func join_guild(state: Dictionary, guild_id: String, goods: Dictionary) -
     state["guilds"] = memberships
     return ""
 
-static func guild_contribute(party: PartyState, state: Dictionary, guild_id: String, amount: int, goods: Dictionary) -> String:
+static func guild_contribute(party: Variant, state: Dictionary, guild_id: String, amount: int, goods: Dictionary) -> String:
     if amount < 1: return "Choose a positive contribution."
     var guild: Dictionary = state.get("guilds", {}).get(guild_id, {})
     if not bool(guild.get("joined", false)): return "Join this guild before contributing."
@@ -244,7 +244,7 @@ static func accept_contract(state: Dictionary, contract_id: String, goods: Dicti
     state["active_contracts"].append({"id":contract_id, "deliveries":{}})
     return ""
 
-static func complete_contract(party: PartyState, state: Dictionary, contract_id: String, goods: Dictionary) -> String:
+static func complete_contract(party: Variant, state: Dictionary, contract_id: String, goods: Dictionary) -> String:
     var definition: Dictionary = goods.get("contracts", {}).get(contract_id, {})
     if definition.is_empty(): return "Unknown trade contract."
     var index := -1
@@ -283,7 +283,7 @@ static func route_quote(route_id: String, goods: Dictionary, state: Dictionary) 
         "open":bool(policy.get("open", true)), "protected":bool(policy.get("protected", false)),
         "toll":int(policy.get("toll", route.get("base_toll", 0)))}
 
-static func travel_route(party: PartyState, state: Dictionary, route_id: String, goods: Dictionary) -> String:
+static func travel_route(party: Variant, state: Dictionary, route_id: String, goods: Dictionary) -> String:
     var route := route_quote(route_id, goods, state)
     if route.is_empty(): return "Unknown trade route."
     if not bool(route["open"]): return "This trade route is closed by local authorities."
@@ -301,7 +301,7 @@ static func should_trigger_ambush(state: Dictionary, goods: Dictionary, route_id
     return rng.randf() < clampf(base_risk - float(guards) * 0.025 - float(level) * 0.03, 0.02, 0.8)
 
 
-static func resolve_caravan_ambush(party: PartyState, state: Dictionary, goods: Dictionary, rng: RandomNumberGenerator, route_id: String = "") -> Dictionary:
+static func resolve_caravan_ambush(party: Variant, state: Dictionary, goods: Dictionary, rng: RandomNumberGenerator, route_id: String = "") -> Dictionary:
     var caravan: Dictionary = state.get("caravan", {})
     if not bool(caravan.get("owned", false)): return {"status":"no_caravan"}
     var route := route_quote(route_id, goods, state) if route_id != "" else {}
@@ -325,7 +325,7 @@ static func resolve_caravan_ambush(party: PartyState, state: Dictionary, goods: 
     state["caravan"] = caravan
     return {"status":"raided", "good_id":stolen_id, "cargo_lost":stolen, "guards_lost":casualties}
 
-static func smuggle_sell(party: PartyState, state: Dictionary, region_id: String, good_id: String, quantity: int,
+static func smuggle_sell(party: Variant, state: Dictionary, region_id: String, good_id: String, quantity: int,
         goods: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
     if quantity < 1 or quantity > int(goods.get("max_transaction_quantity", MAX_QUANTITY)):
         return {"ok":false, "message":"Choose a valid quantity."}
