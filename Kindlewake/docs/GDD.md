@@ -912,3 +912,14 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - `tests/run_tests.gd` covers gate placement and tap-bound clamping at 360×800, 390×844, 1280×720 and 800×360. `tests/scene_smoke_test.gd` loads every authored `.tscn` resource headlessly; the APK builder runs it after editor import and before gameplay tests/export.
 
 **CI evidence:** run #633 passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 427 strict checks with 0 failures, balance report and signed 40.8 MB APK export with no Android permissions. APK artifact `13724652587`. The first editor import scan still logs transient global-class registration errors before its clean retry; ObjectDB/resource-cleanup warnings remain non-failing. **QA still required:** verify creator and Chapter I gameplay on a 20:9 Android phone in portrait and landscape. CI does not replace device QA.
+## 19. Campaign factions, diplomacy and territorial state (next playable-system foundation)
+
+**Implementation branch:** `feature/campaign-factions-diplomacy` (PR pending). This is a data/runtime foundation, not a finished kingdom-management UI or a claim that the player can already wage a full strategic war.
+
+- Adds authored political factions for the seven-continent setting: the Crownlands and six Eldrimar houses (including the fallen House Dunmarrow and House Ysmark), the Tidebound Assembly, Nine Wells Compact, Hearthfjord Jarldoms, Lantern Synod, Thorn Courts, Free Ranger Lodges, Meridian League, Independent Sky Monasteries and Covenant of the Seven Flames.
+- Adds a region-to-faction starting affiliation for every named atlas region. Sethmarch is explicitly marked contested under the Dunmarrow claim; affiliations remain data-driven and can be changed by authored campaign outcomes.
+- Adds bounded faction relations (-100 to +100), neutral/non-aggression/trade-pact/alliance/war diplomatic states, a trust threshold for alliances, validated territory transfers and a bounded campaign event history.
+- New campaigns initialize political state. Campaign saves persist it as an optional payload field; older schema-4 saves receive safe defaults on load. Save schema and project version remain unchanged.
+- Exposes GameState methods for story, quest and battle systems to adjust relations, set diplomatic states and transfer known atlas regions. No automatic wars, random coups, fabricated quest consequences or player-facing diplomacy screen are introduced in this foundation.
+
+**Validation required:** Godot 4.2.2 import, strict tests, scene smoke tests, balance report, Android export, version sync, YAML lint and project health audit on the exact PR head. Add physical Android QA separately. Future work: player-facing diplomacy UI, faction missions, treaties with authored costs, war campaigns, recruitment consequences and strategic territory operations.
