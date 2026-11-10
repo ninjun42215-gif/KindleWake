@@ -278,6 +278,300 @@
       "requirements": {},
       "trait_awards": [],
       "cooldown_days": 0
+    },
+    "defended_the_fallen": {
+      "name": "Defended the Fallen",
+      "category": "combat",
+      "description": "A companion held position to protect wounded allies instead of pursuing an easy victory.",
+      "stress_delta": -3,
+      "memory_type": "relationship",
+      "memory": "Held the line so wounded companions could survive.",
+      "requirements": {
+        "ally_protection": 2,
+        "major_battles_survived": 1
+      },
+      "trait_awards": [
+        "protective"
+      ],
+      "cooldown_days": 0
+    },
+    "spared_a_defeated_enemy": {
+      "name": "Mercy After Victory",
+      "category": "morality",
+      "description": "A companion deliberately spared a defeated foe when execution was possible.",
+      "stress_delta": -2,
+      "memory_type": "achievement",
+      "memory": "Chose mercy when the defeated enemy could no longer fight.",
+      "requirements": {
+        "spared_enemies": 2
+      },
+      "trait_awards": [
+        "merciful"
+      ],
+      "cooldown_days": 0
+    },
+    "executed_a_surrendered_foe": {
+      "name": "Blood on the Surrendered",
+      "category": "morality",
+      "description": "A companion knowingly executed a surrendered enemy. The story must establish that the character had a genuine choice.",
+      "stress_delta": 6,
+      "memory_type": "personal",
+      "memory": "Carried the memory of executing a foe who had surrendered.",
+      "requirements": {
+        "executed_surrendered": 1
+      },
+      "trait_awards": [],
+      "cooldown_days": 0
+    },
+    "taught_a_companion": {
+      "name": "Passing on Hard-Won Knowledge",
+      "category": "intelligence",
+      "description": "A companion patiently mentored another character through a meaningful training milestone.",
+      "stress_delta": -2,
+      "memory_type": "achievement",
+      "memory": "Shared hard-won knowledge with a companion.",
+      "requirements": {
+        "mentorship_sessions": 3
+      },
+      "trait_awards": [
+        "scholar"
+      ],
+      "cooldown_days": 0
+    },
+    "mastered_a_difficult_skill": {
+      "name": "Mastered a Difficult Skill",
+      "category": "combat",
+      "description": "A companion repeatedly practised and successfully used a demanding combat technique.",
+      "stress_delta": -2,
+      "memory_type": "achievement",
+      "memory": "Turned difficult practice into reliable battlefield skill.",
+      "requirements": {
+        "advanced_skill_uses": 12
+      },
+      "trait_awards": [
+        "skilled_swordsman"
+      ],
+      "cooldown_days": 0
+    },
+    "stood_against_superior_force": {
+      "name": "Stood Against Superior Numbers",
+      "category": "combat",
+      "description": "A companion held against a substantially stronger force and survived through deliberate action.",
+      "stress_delta": -4,
+      "memory_type": "achievement",
+      "memory": "Held their ground against superior numbers.",
+      "requirements": {
+        "outnumbered_victories": 2
+      },
+      "trait_awards": [
+        "battle_hardened"
+      ],
+      "cooldown_days": 0
+    },
+    "repeatedly_abandoned_allies": {
+      "name": "Left Behind",
+      "category": "social",
+      "description": "A companion repeatedly abandoned allies in avoidable danger. A tactical retreat or obeyed command never qualifies.",
+      "stress_delta": 8,
+      "memory_type": "relationship",
+      "memory": "Remembered leaving companions in danger when help was possible.",
+      "requirements": {
+        "avoidable_abandonments": 2
+      },
+      "trait_awards": [],
+      "cooldown_days": 0
+    },
+    "kept_a_dangerous_secret": {
+      "name": "The Weight of a Secret",
+      "category": "social",
+      "description": "A companion deliberately kept a consequential secret to protect another person or the company.",
+      "stress_delta": 3,
+      "memory_type": "personal",
+      "memory": "Carried a difficult secret for the sake of someone else.",
+      "requirements": {
+        "kept_dangerous_secrets": 1
+      },
+      "trait_awards": [],
+      "cooldown_days": 0
+    },
+    "resolved_a_faction_dispute": {
+      "name": "Brokered a Difficult Peace",
+      "category": "leadership",
+      "description": "A companion helped resolve a serious dispute between factions without coercion.",
+      "stress_delta": -5,
+      "memory_type": "achievement",
+      "memory": "Helped prevent a conflict through patient negotiation.",
+      "requirements": {
+        "peaceful_faction_resolutions": 2
+      },
+      "trait_awards": [
+        "diplomatic"
+      ],
+      "cooldown_days": 0
+    },
+    "led_a_successful_expedition": {
+      "name": "Led the Expedition Home",
+      "category": "leadership",
+      "description": "A companion successfully led multiple dangerous expeditions while keeping the company supplied.",
+      "stress_delta": -3,
+      "memory_type": "achievement",
+      "memory": "Brought the company safely through a difficult expedition.",
+      "requirements": {
+        "expeditions_led": 3,
+        "supply_crises_resolved": 1
+      },
+      "trait_awards": [
+        "inspiring_commander"
+      ],
+      "cooldown_days": 0
+    },
+    "completed_a_masterwork": {
+      "name": "A Masterwork Forged",
+      "category": "lifestyle",
+      "description": "A companion completed a demanding craft project using rare materials and a proven design.",
+      "stress_delta": -3,
+      "memory_type": "achievement",
+      "memory": "Completed a piece of work worthy of lasting recognition.",
+      "requirements": {
+        "masterwork_crafts": 1
+      },
+      "trait_awards": [
+        "blacksmith"
+      ],
+      "cooldown_days": 0
+    },
+    "discovered_a_lost_route": {
+      "name": "Found the Forgotten Road",
+      "category": "exploration",
+      "description": "A companion mapped and verified a previously unknown route through dangerous territory.",
+      "stress_delta": -3,
+      "memory_type": "achievement",
+      "memory": "Found a safe passage through country few dared to cross.",
+      "requirements": {
+        "routes_discovered": 2
+      },
+      "trait_awards": [
+        "curious"
+      ],
+      "cooldown_days": 0
+    },
+    "survived_a_magical_catastrophe": {
+      "name": "Survived the Arcane Rupture",
+      "category": "magical",
+      "description": "A companion survived direct exposure to a dangerous magical event. This requires an authored supernatural encounter.",
+      "stress_delta": 8,
+      "memory_type": "traumatic",
+      "memory": "Survived a violent rupture in the natural order.",
+      "requirements": {
+        "arcane_catastrophes_survived": 1
+      },
+      "trait_awards": [
+        "mana_instability"
+      ],
+      "cooldown_days": 0
+    },
+    "purified_a_cursed_relic": {
+      "name": "Purified a Cursed Relic",
+      "category": "magical",
+      "description": "A companion helped cleanse a cursed relic through an authored ritual and meaningful sacrifice.",
+      "stress_delta": -6,
+      "memory_type": "achievement",
+      "memory": "Helped cleanse a relic without surrendering to its corruption.",
+      "requirements": {
+        "cursed_relics_purified": 1
+      },
+      "trait_awards": [
+        "honorable"
+      ],
+      "cooldown_days": 0
+    },
+    "resisted_forbidden_pact": {
+      "name": "Refused the Forbidden Pact",
+      "category": "psychological",
+      "description": "A companion rejected an offer of power that threatened their principles or another person's safety.",
+      "stress_delta": -5,
+      "memory_type": "achievement",
+      "memory": "Refused power that demanded too high a price.",
+      "requirements": {
+        "forbidden_pacts_refused": 1
+      },
+      "trait_awards": [
+        "disciplined"
+      ],
+      "cooldown_days": 0
+    },
+    "accepted_forbidden_pact": {
+      "name": "Accepted the Forbidden Pact",
+      "category": "magical",
+      "description": "A companion knowingly accepted a dangerous supernatural bargain. The consequence must be authored, not inferred.",
+      "stress_delta": 10,
+      "memory_type": "personal",
+      "memory": "Accepted a bargain whose consequences remain uncertain.",
+      "requirements": {
+        "forbidden_pacts_accepted": 1
+      },
+      "trait_awards": [],
+      "cooldown_days": 0
+    },
+    "recovered_from_trauma": {
+      "name": "A Step Toward Healing",
+      "category": "psychological",
+      "description": "A companion made meaningful progress recovering after a traumatic event through supported story content.",
+      "stress_delta": -12,
+      "memory_type": "achievement",
+      "memory": "Took a difficult step toward healing with the support of trusted companions.",
+      "requirements": {
+        "trauma_recovery_milestones": 2
+      },
+      "trait_awards": [
+        "mentally_resilient"
+      ],
+      "cooldown_days": 0
+    },
+    "accepted_responsibility": {
+      "name": "Accepted Responsibility",
+      "category": "leadership",
+      "description": "A companion acknowledged a consequential mistake and took responsibility for repairing its harm.",
+      "stress_delta": -4,
+      "memory_type": "personal",
+      "memory": "Chose accountability instead of shifting blame.",
+      "requirements": {
+        "accepted_responsibility": 2
+      },
+      "trait_awards": [
+        "honest"
+      ],
+      "cooldown_days": 0
+    },
+    "betrayed_a_trusted_companion": {
+      "name": "Betrayal of Trust",
+      "category": "social",
+      "description": "A companion knowingly betrayed someone who had placed meaningful trust in them.",
+      "stress_delta": 7,
+      "memory_type": "betrayal",
+      "memory": "Broke the trust of someone who had relied on them.",
+      "requirements": {
+        "betrayals_committed": 1
+      },
+      "trait_awards": [
+        "deceitful"
+      ],
+      "cooldown_days": 0
+    },
+    "kept_company_through_hardship": {
+      "name": "Stayed Through Hardship",
+      "category": "social",
+      "description": "A companion remained beside an ally through repeated danger and personal cost.",
+      "stress_delta": -4,
+      "memory_type": "relationship",
+      "memory": "Stayed beside a companion when leaving would have been easier.",
+      "requirements": {
+        "stood_by_companions": 3
+      },
+      "trait_awards": [
+        "loyal"
+      ],
+      "cooldown_days": 0
     }
   }
 }
