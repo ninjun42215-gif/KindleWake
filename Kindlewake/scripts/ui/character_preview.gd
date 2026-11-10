@@ -27,8 +27,16 @@ func _draw() -> void:
     draw_rect(Rect2(Vector2(2, 2), size - Vector2(4, 4)), Color("#34404b"), false, 2.0)
     # Restrained vignette and a quiet heraldic backdrop; no cartoon outlines or oversized features.
     draw_rect(Rect2(Vector2(8, 8), size - Vector2(16, 16)), Color("#18222d"), true)
+    # Draw the portrait in a fixed 240x360 composition, uniformly scaled to
+    # the available control. Fixed anatomy proportions prevent a floating head
+    # on short/tall phone layouts and keep the neck seated inside the collar.
+    var scale_factor: float = minf(w / 240.0, h / 360.0)
+    var offset := Vector2((w - 240.0 * scale_factor) * 0.5, (h - 360.0 * scale_factor) * 0.5)
+    draw_set_transform(offset, 0.0, Vector2.ONE * scale_factor)
+    w = 240.0
+    h = 360.0
     var cx: float = w * 0.5
-    var head_y: float = h * 0.29
+    var head_y: float = 102.0
     var skin: Color = _skin_color(str(profile.get("skin", "warm")))
     var hair: Color = _hair_color(str(profile.get("hair", "short_dark")))
     var coat: Color = _coat_color(str(profile.get("origin", "fallen_heir")))
@@ -38,10 +46,12 @@ func _draw() -> void:
         body_w = 108.0
     elif build_id == "sturdy":
         body_w = 154.0
-    var body_top: float = h * 0.55
+    var body_top: float = 198.0
     # Neck and layered travelling coat.
-    draw_rect(Rect2(Vector2(cx - 19.0, head_y + 42.0), Vector2(38.0, 62.0)), skin, true)
-    draw_rect(Rect2(Vector2(cx - 15.0, head_y + 46.0), Vector2(30.0, 54.0)), skin.darkened(0.12), true)
+    # The neck deliberately overlaps both jaw and collar, so the silhouette
+    # reads as one connected bust rather than a head floating above shoulders.
+    draw_rect(Rect2(Vector2(cx - 20.0, head_y + 42.0), Vector2(40.0, 105.0)), skin.darkened(0.10), true)
+    draw_rect(Rect2(Vector2(cx - 14.0, head_y + 49.0), Vector2(28.0, 94.0)), skin, true)
     draw_colored_polygon(PackedVector2Array([
         Vector2(cx - body_w * 0.5, h), Vector2(cx - body_w * 0.43, body_top + 20.0),
         Vector2(cx - 39.0, body_top - 2.0), Vector2(cx + 39.0, body_top - 2.0),
@@ -58,6 +68,9 @@ func _draw() -> void:
     draw_line(Vector2(cx - body_w * 0.34, body_top + 24), Vector2(cx + body_w * 0.30, h - 8), Color("#342d29"), 5.0)
     draw_circle(Vector2(cx + 2.0, body_top + 52.0), 5.0, Color("#c3a66b"))
     draw_circle(Vector2(cx + 2.0, body_top + 52.0), 2.0, Color("#51412e"))
+    # Subtle shoulder highlights and cloth folds add depth without cartoon outlines.
+    draw_line(Vector2(cx - body_w * 0.39, body_top + 28.0), Vector2(cx - 46.0, h - 8.0), coat.lightened(0.16), 2.0)
+    draw_line(Vector2(cx + body_w * 0.39, body_top + 28.0), Vector2(cx + 46.0, h - 8.0), coat.darkened(0.20), 2.0)
     _draw_head(cx, head_y, skin, jaw_ratio_for_presentation(str(profile.get("presentation", "androgynous"))))
     _draw_hair(cx, head_y, hair, str(profile.get("hair", "short_dark")))
     # Eyes sit beneath brows; smaller iris and subtle catchlight keep the face grounded.
@@ -72,6 +85,11 @@ func _draw() -> void:
     draw_line(Vector2(cx - 5.0, head_y + 28.0), Vector2(cx + 4.0, head_y + 29.0), skin.darkened(0.3), 1.5)
     draw_line(Vector2(cx - 7.0, head_y + 39.0), Vector2(cx + 7.0, head_y + 39.0), Color("#704c43"), 1.8)
     draw_line(Vector2(cx - 5.0, head_y + 43.0), Vector2(cx + 5.0, head_y + 43.0), skin.lightened(0.12), 1.2)
+    # Soft cheek planes and a restrained lower-face shadow give the portrait a
+    # more mature, sculpted read at phone scale.
+    draw_arc(Vector2(cx, head_y + 10.0), 36.0, 0.22, PI - 0.22, 24, skin.darkened(0.13), 1.8)
+    draw_line(Vector2(cx - 20.0, head_y + 34.0), Vector2(cx - 8.0, head_y + 39.0), skin.darkened(0.12), 1.2)
+    draw_line(Vector2(cx + 8.0, head_y + 39.0), Vector2(cx + 20.0, head_y + 34.0), skin.darkened(0.12), 1.2)
     _draw_face_details(cx, head_y, str(profile.get("face", "weathered")))
     # Ear shadows and cheek planes.
     draw_arc(Vector2(cx - 46.0, head_y + 14.0), 8.0, -PI * 0.5, PI * 0.5, 12, skin.darkened(0.22), 2.0)
