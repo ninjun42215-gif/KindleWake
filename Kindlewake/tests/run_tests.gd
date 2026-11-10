@@ -1895,6 +1895,19 @@ func _test_trait_system() -> void:
     print("[trait and personality system]")
     var defs: Dictionary = gd.traits
     check(defs.size() >= 60, "data-driven trait catalogue loads a broad initial library")
+    var ambition_data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/ambitions.json"))
+    var ambition_defs: Dictionary = ambition_data.get("ambitions", {})
+    check(ambition_defs.size() >= 12, "curated ambition catalogue loads from local JSON")
+    var valid_ambitions := true
+    for ambition_id in ambition_defs:
+        var ambition_def: Dictionary = ambition_defs[ambition_id]
+        var objective: Dictionary = ambition_def.get("objective", {})
+        if str(ambition_def.get("name", "")).is_empty() or str(objective.get("behavior", "")).is_empty() or int(objective.get("target", 0)) <= 0:
+            valid_ambitions = false
+        var reward_trait := str(ambition_def.get("completion_trait", ""))
+        if reward_trait != "" and not defs.has(reward_trait):
+            valid_ambitions = false
+    check(valid_ambitions, "ambition objectives and completion rewards reference valid definitions")
     var categories: Dictionary = {}
     var valid_trait_links := true
     for trait_id in defs:
@@ -1911,6 +1924,13 @@ func _test_trait_system() -> void:
     for category_id in ["personality", "intelligence", "combat", "social", "physical", "psychological", "leadership", "lifestyle", "morality", "magical"]:
         check(categories.has(category_id), "trait catalogue includes " + category_id + " category")
     check(valid_trait_links, "all opposing and evolution links resolve to defined traits")
+    check(gd.trait_events.size() >= 40, "personality event catalogue includes the expanded authored event library")
+    var valid_event_schema := true
+    for event_id in gd.trait_events:
+        var event_def: Dictionary = gd.trait_events[event_id]
+        if str(event_id).strip_edges() == "" or str(event_def.get("name", "")).strip_edges() == "" or str(event_def.get("description", "")).strip_edges() == "" or typeof(event_def.get("requirements", {})) != TYPE_DICTIONARY or typeof(event_def.get("trait_awards", [])) != TYPE_ARRAY:
+            valid_event_schema = false
+    check(valid_event_schema, "all personality events have stable IDs and complete reusable template fields")
     var valid_event_awards := true
     for event_id in gd.trait_events:
         var event_def: Dictionary = gd.trait_events[event_id]
