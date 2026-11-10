@@ -1,3 +1,5 @@
+> **LEGACY SNAPSHOT — DO NOT USE AS THE CURRENT GDD.** This root-level document is an archived v0.7.11 design snapshot. The authoritative, current design document is [Kindlewake/docs/GDD.md](Kindlewake/docs/GDD.md), currently aligned to game version 0.12.0. The current source implements a level cap of 250; historical values and implementation notes in this snapshot may be obsolete.
+
 # KINDLEWAKE: THE SUNDERED VOW — Game Design Document
 Version 0.7.11 repository import completed (gameplay checkpoint v0.7.9) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
 
