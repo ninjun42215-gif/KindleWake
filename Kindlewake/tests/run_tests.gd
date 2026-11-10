@@ -48,6 +48,7 @@ func _initialize() -> void:
     _test_world_expansion()
     _test_holding_system()
     _test_dungeon_mechanisms()
+    _test_secret_passages()
     _test_faction_politics()
     _test_thalassar_region()
     _test_wraparound_world()
@@ -208,6 +209,25 @@ func _test_dungeon_mechanisms() -> void:
         if str(mechanism.get("world_flag_on_solved", "")) != str(expected[map_id]) or str(boss.get("requires_flag", "")) != str(expected[map_id]):
             valid = false
     check(valid, "five dungeons have unique multi-step mechanisms that gate their guardian encounters")
+
+
+func _test_secret_passages() -> void:
+    print("[secret passages]")
+    var maps: Dictionary = gd.locations.get("maps", {})
+    var expected := ["dungeon_sunken_tollhouse", "dungeon_wardens_barrow", "dungeon_ashen_granary", "dungeon_wreck_kings_hold", "dungeon_stormwell"]
+    var valid := true
+    for map_id in expected:
+        if not maps.has(map_id):
+            valid = false
+            continue
+        var found := false
+        for spot in maps[map_id].get("spots", []):
+            if str(spot.get("kind", "")) == "secret" and str(spot.get("world_flag_on_reveal", "")) != "":
+                found = true
+        if not found:
+            valid = false
+    var sample := LocalMap.from_def("secret_test", {"kind":"dungeon","entry":[1,1],"rows":["#####","#...#","#.#.#","#...E","#####"],"spots":[]})
+    check(valid and sample.set_tile(Vector2i(2,2), "." ) and sample.tile_at(Vector2i(2,2)) == ".", "five dungeons contain persistent hidden passages and the map runtime can reveal blocked tiles")
 
 
 func _test_prologue() -> void:
