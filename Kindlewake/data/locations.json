@@ -3315,6 +3315,200 @@
           "companion_quest_text": "Recover the sealed manifest and compare its cargo marks with the missing ledger page. The crew diverted the ship to evade a blockade, but the cargo owner later profited from the disappearance. Keep the surviving crew's safety in view as Maren chooses what to reveal."
         }
       ]
+    },
+    "tarnholt": {
+      "name": "Tarnholt",
+      "kind": "town",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.15,
+      "rows": [
+        "################",
+        "#..............#",
+        "#..1......2....#",
+        "#..............#",
+        "#....3.........#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#..............#",
+        "#######E########"
+      ],
+      "doors": {
+        "1": {
+          "to": "tarnholt_inn",
+          "spawn": [
+            5,
+            6
+          ]
+        },
+        "2": {
+          "to": "tarnholt_chapter_house",
+          "spawn": [
+            7,
+            9
+          ]
+        },
+        "3": {
+          "to": "tarnholt_chapter_house",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            6,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Unread Oath",
+          "tint": [
+            0.82,
+            0.76,
+            0.66
+          ],
+          "text": "A young initiate carries an oath sheet whose lines were covered before the ceremony.",
+          "companion_quest_id": "q_companion_seraphine_measure_of_oaths",
+          "companion_quest_milestone": "unread_oath_found",
+          "companion_quest_text": "Seraphine recognises the chapter's seal, but the initiate was asked to swear before being allowed to read the text. Preserve the original sheet and record the recruit's account without pressuring them to withdraw their oath."
+        }
+      ]
+    },
+    "tarnholt_inn": {
+      "name": "Tarnholt Guest Hall",
+      "kind": "interior",
+      "entry": [
+        5,
+        6
+      ],
+      "rows": [
+        "############",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#..........#",
+        "#####1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "tarnholt",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            3
+          ],
+          "kind": "inn",
+          "npc": true,
+          "name": "Guest Hall Keeper",
+          "text": "The keeper offers beds to travellers and members who need a quiet place away from the chapter."
+        },
+        {
+          "cell": [
+            8,
+            4
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Quiet Chapter Records",
+          "tint": [
+            0.76,
+            0.82,
+            0.88
+          ],
+          "text": "A former scribe keeps a duplicate register of the order's admission ceremonies.",
+          "companion_quest_id": "q_companion_seraphine_measure_of_oaths",
+          "companion_quest_milestone": "order_records_examined",
+          "companion_quest_text": "Compare the ceremony register with separate member testimony. Determine whether the unread oath was a single lapse or a repeated practice, and protect the names of members who fear expulsion.",
+          "companion_quest_challenge": {
+            "prompt": "Which evidence best establishes that the unread oath was an institutional practice rather than one scribe's mistake?",
+            "options": [
+              "A single unsigned complaint",
+              "Matching ceremony entries across several dates, corroborated by separate member accounts",
+              "The chapter leader's assurance that the practice was harmless"
+            ],
+            "correct_option": "Matching ceremony entries across several dates, corroborated by separate member accounts",
+            "success_text": "The repeated entries and independent accounts establish a pattern while protecting the identities of vulnerable members.",
+            "failure_text": "One complaint or an unsupported assurance cannot establish whether the practice was repeated. Compare dated records with separate testimony."
+          }
+        }
+      ]
+    },
+    "tarnholt_chapter_house": {
+      "name": "Tarnholt Chapter House",
+      "kind": "interior",
+      "entry": [
+        7,
+        9
+      ],
+      "rows": [
+        "#####N####N#####",
+        "#=H====++====H=#",
+        "#======++======#",
+        "#====P=++=P====#",
+        "#======XX======#",
+        "#======++======#",
+        "#====P=++=P====#",
+        "#======++======#",
+        "#U=====++=====U#",
+        "#U=====++======#",
+        "#######1########"
+      ],
+      "doors": {
+        "1": {
+          "to": "tarnholt",
+          "spawn": [
+            7,
+            9
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            7,
+            2
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Chapter's Hearing",
+          "tint": [
+            0.84,
+            0.78,
+            0.68
+          ],
+          "text": "The chapter officers have gathered with members who were never shown the oath they signed.",
+          "companion_quest_id": "q_companion_seraphine_measure_of_oaths",
+          "companion_quest_milestone": "chapter_house_heard",
+          "companion_quest_text": "Present the verified records and let members speak without being forced to remain or leave. The order must distinguish informed consent from obedience. Keep the public Covenant compact separate from any secret organisation that borrows its name."
+        },
+        {
+          "cell": [
+            7,
+            4
+          ],
+          "kind": "party",
+          "npc": false,
+          "name": "Chapter Council Table",
+          "text": "The council table is reserved for the chapter's formal hearing."
+        }
+      ]
     }
   }
 }
