@@ -11,7 +11,8 @@ const BUILDINGS := {
 	"barracks": {"cost": 220, "food": 0, "tax": 0, "manpower": 15, "name": "Barracks"},
 	"roads": {"cost": 160, "food": 0, "tax": 5, "name": "Road Network"},
 	"fort": {"cost": 260, "food": 0, "tax": 0, "defence": 12, "name": "Border Keep"},
-	"aqueduct": {"cost": 240, "food": 10, "tax": 0, "stability": 2, "name": "Aqueduct"}
+	"aqueduct": {"cost": 240, "food": 10, "tax": 0, "stability": 2, "name": "Aqueduct"},
+	"depot": {"cost": 210, "food": 0, "tax": 0, "supply": 1, "name": "Supply Depot"}
 }
 const TAX_RATES := ["low", "normal", "high"]
 const COUNCIL_ROLES := ["steward", "marshal", "spymaster", "chancellor", "high_priest"]
@@ -24,7 +25,7 @@ static func new_state() -> Dictionary:
 		"treasury": 500, "food": 300, "manpower": 100, "stability": 60,
 		"legitimacy": 45, "public_order": 60, "tax_rate": "normal",
 		"policies": [], "council": {}, "governors": {}, "provinces": {},
-		"buildings": {}, "armies": {}, "field_armies": {}, "next_army_id": 1, "turn": 0, "history": []
+		"buildings": {}, "armies": {}, "field_armies": {}, "sieges": {}, "war_exhaustion": 0, "next_army_id": 1, "turn": 0, "history": []
 	}
 
 
@@ -34,6 +35,7 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
 		if raw.has(key):
 			state[key] = raw[key]
 	state["next_army_id"] = maxi(1, int(raw.get("next_army_id", 1)))
+	state["war_exhaustion"] = clampi(int(raw.get("war_exhaustion", 0)), 0, 100)
 	for stat in ["treasury", "food", "manpower", "turn"]:
 		state[stat] = maxi(0, int(state[stat]))
 	for stat in ["stability", "legitimacy", "public_order"]:
@@ -41,7 +43,7 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
 	state["tax_rate"] = str(raw.get("tax_rate", "normal"))
 	if not TAX_RATES.has(state["tax_rate"]):
 		state["tax_rate"] = "normal"
-	for key in ["policies", "council", "governors", "provinces", "buildings", "armies", "field_armies"]:
+	for key in ["policies", "council", "governors", "provinces", "buildings", "armies", "field_armies", "sieges"]:
 		if typeof(raw.get(key, {})) == TYPE_DICTIONARY:
 			state[key] = (raw[key] as Dictionary).duplicate(true)
 	if typeof(raw.get("policies", [])) == TYPE_ARRAY:
@@ -293,7 +295,7 @@ static func army_summary(state: Dictionary) -> Dictionary:
 
 
 ## Advance one strategic season. The caller controls when story time advances.
-static func advance_season(state: Dictionary, province_ids: Array) -> Dictionary:
+static func advance_season(state: Dictionary, province_ids: Array, adjacency: Dictionary = {}) -> Dictionary:
 	if not bool(state.get("unlocked", false)):
 		return {"ok": false, "reason": "realm_locked"}
 	var tax_rate := str(state.get("tax_rate", "normal"))
@@ -327,7 +329,7 @@ static func advance_season(state: Dictionary, province_ids: Array) -> Dictionary
 	for army_id in deployed.keys():
 		var field_army: Dictionary = deployed[army_id]
 		field_army["movement"] = 1
-		field_army["supplied"] = province_ids.has(str(field_army.get("location", "")))
+		field_army["supplied"] = is_location_supplied(state, str(field_army.get("location", "")), province_ids, adjacency)
 		if bool(field_army["supplied"]):
 			field_army["days_unsupplied"] = 0
 			field_army["morale"] = mini(100, int(field_army.get("morale", 100)) + 6)
@@ -378,9 +380,204 @@ static func advance_season(state: Dictionary, province_ids: Array) -> Dictionary
 	if state["policies"].has("tolerance"):
 		state["stability"] = mini(100, int(state["stability"]) + 2)
 	state["turn"] = int(state["turn"]) + 1
-	var report := {"ok": true, "season": state["turn"], "income": income, "upkeep": upkeep, "food_change": food_gain - province_ids.size() * 8 - military_food, "defence": defence, "military_upkeep": int(military["upkeep"]), "military_food": military_food, "troops": int(military["troops"]), "supply_losses": supply_losses, "food_shortage": food_shortage}
+	var siege_report := _advance_sieges(state, province_ids)
+	var report := {"ok": true, "season": state["turn"], "sieges_advanced": siege_report["advanced"], "sieges_completed": siege_report["completed"], "war_exhaustion": int(state.get("war_exhaustion", 0)), "income": income, "upkeep": upkeep, "food_change": food_gain - province_ids.size() * 8 - military_food, "defence": defence, "military_upkeep": int(military["upkeep"]), "military_food": military_food, "troops": int(military["troops"]), "supply_losses": supply_losses, "food_shortage": food_shortage}
 	_record(state, "season", report)
 	return report
+
+
+## A connected supply network begins at owned depots. Roads make the network cheaper to extend;
+## a field army on a hostile region can draw supply only when it borders the connected network.
+static func supply_network(state: Dictionary, controlled_provinces: Array, adjacency: Dictionary) -> Array:
+	var network: Array[String] = []
+	var frontier: Array[String] = []
+	for province in controlled_provinces:
+		if state.get("buildings", {}).has(str(province) + ":depot"):
+			frontier.append(str(province))
+	while not frontier.is_empty():
+		var current: String = frontier.pop_front()
+		if network.has(current) or not controlled_provinces.has(current):
+			continue
+		network.append(current)
+		for neighbor in adjacency.get(current, []):
+			if controlled_provinces.has(str(neighbor)) and not network.has(str(neighbor)) and not frontier.has(str(neighbor)):
+				frontier.append(str(neighbor))
+	return network
+
+
+static func is_location_supplied(state: Dictionary, location: String, controlled_provinces: Array, adjacency: Dictionary) -> bool:
+	if controlled_provinces.has(location):
+		return true
+	if adjacency.is_empty():
+		return false
+	var network := supply_network(state, controlled_provinces, adjacency)
+	for neighbor in adjacency.get(location, []):
+		if network.has(str(neighbor)):
+			return true
+	return false
+
+
+static func start_siege(state: Dictionary, army_id: String, target_region: String, controlled_provinces: Array, adjacency: Dictionary) -> bool:
+	if not bool(state.get("unlocked", false)) or not state.get("field_armies", {}).has(army_id):
+		return false
+	if controlled_provinces.has(target_region) or state.get("sieges", {}).has(target_region):
+		return false
+	var army: Dictionary = state["field_armies"][army_id]
+	if str(army.get("location", "")) != target_region:
+		return false
+	var total := _troop_total(army.get("troops", {}))
+	if total <= 0:
+		return false
+	var adjacent_controlled := false
+	for neighbor in adjacency.get(target_region, []):
+		if controlled_provinces.has(str(neighbor)):
+			adjacent_controlled = true
+			break
+	if not adjacent_controlled:
+		return false
+	state["sieges"][target_region] = {"region": target_region, "army_id": army_id, "progress": 0, "defence": 20, "started_turn": int(state.get("turn", 0)), "status": "besieging"}
+	_record(state, "siege_started", {"region": target_region, "army": army_id})
+	return true
+
+
+static func _advance_sieges(state: Dictionary, controlled_provinces: Array) -> Dictionary:
+	var advanced := 0
+	var completed := 0
+	var sieges: Dictionary = state.get("sieges", {})
+	for region in sieges.keys():
+		var siege: Dictionary = sieges[region]
+		if controlled_provinces.has(str(region)):
+			sieges.erase(region)
+			continue
+		var army_id := str(siege.get("army_id", ""))
+		if not state.get("field_armies", {}).has(army_id):
+			 siege["status"] = "abandoned"
+			 siege["progress"] = 0
+			 sieges[region] = siege
+			 continue
+		var army: Dictionary = state["field_armies"][army_id]
+		var strength := _troop_total(army.get("troops", {}))
+		if strength <= 0:
+			continue
+		var supplied := bool(army.get("supplied", false))
+		var gain := 1
+		if strength >= int(siege.get("defence", 20)) * 2:
+			gain += 1
+		if supplied:
+			gain += 1
+		var progress := mini(4, int(siege.get("progress", 0)) + gain)
+		siege["progress"] = progress
+		siege["status"] = "breached" if progress >= 4 else "besieging"
+		sieges[region] = siege
+		advanced += 1
+		if progress >= 4:
+			completed += 1
+			_record(state, "siege_breached", {"region": str(region), "army": army_id})
+	state["sieges"] = sieges
+	return {"advanced": advanced, "completed": completed}
+
+
+static func resolve_siege_assault(state: Dictionary, target_region: String, defender_strength: int, fort_level: int = 0) -> Dictionary:
+	if not state.get("sieges", {}).has(target_region):
+		return {"ok": false, "reason": "no_siege"}
+	var siege: Dictionary = state["sieges"][target_region]
+	if int(siege.get("progress", 0)) < 4:
+		return {"ok": false, "reason": "defences_not_breached"}
+	var army_id := str(siege.get("army_id", ""))
+	if not state.get("field_armies", {}).has(army_id):
+		return {"ok": false, "reason": "army_missing"}
+	var army: Dictionary = state["field_armies"][army_id]
+	var attackers := _troop_total(army.get("troops", {}))
+	var effective_defence := maxi(1, defender_strength + maxi(0, fort_level) * 10)
+	var won := attackers >= effective_defence
+	var casualties := mini(attackers, maxi(1, int(ceil(float(attackers) * (0.10 if won else 0.25)))))
+	_apply_army_losses(army, casualties)
+	state["field_armies"][army_id] = army
+	state["war_exhaustion"] = clampi(int(state.get("war_exhaustion", 0)) + (8 if won else 14), 0, 100)
+	if won:
+		siege["status"] = "captured_pending_transfer"
+		siege["assault_casualties"] = casualties
+		siege["captured"] = true
+		state["sieges"][target_region] = siege
+	else:
+		siege["progress"] = 2
+		siege["status"] = "repulsed"
+		state["sieges"][target_region] = siege
+	_record(state, "siege_assault", {"region": target_region, "won": won, "casualties": casualties, "war_exhaustion": state["war_exhaustion"]})
+	return {"ok": true, "won": won, "casualties": casualties, "remaining": _troop_total(army.get("troops", {})), "war_exhaustion": int(state["war_exhaustion"]), "territory_transfer_required": won}
+
+
+static func complete_siege_transfer(state: Dictionary, target_region: String) -> bool:
+	if not state.get("sieges", {}).has(target_region) or not bool(state["sieges"][target_region].get("captured", false)):
+		return false
+	state["sieges"].erase(target_region)
+	_record(state, "siege_occupation_confirmed", {"region": target_region})
+	return true
+
+
+static func reduce_war_exhaustion(state: Dictionary, amount: int = 15) -> bool:
+	if amount <= 0 or int(state.get("war_exhaustion", 0)) <= 0:
+		return false
+	state["war_exhaustion"] = maxi(0, int(state["war_exhaustion"]) - amount)
+	_record(state, "war_exhaustion_reduced", {"amount": amount, "remaining": state["war_exhaustion"]})
+	return true
+
+
+static func tactical_deployment(state: Dictionary, army_id: String) -> Dictionary:
+	if not state.get("field_armies", {}).has(army_id):
+		return {"ok": false, "reason": "army_missing"}
+	var army: Dictionary = state["field_armies"][army_id]
+	var roster: Array[Dictionary] = []
+	for troop_type in TROOP_TYPES.keys():
+		var count := maxi(0, int(army.get("troops", {}).get(troop_type, 0)))
+		if count > 0:
+			roster.append({"troop_type": troop_type, "count": count, "unit_id": "strategic_%s_%s" % [army_id, troop_type]})
+	return {"ok": true, "army_id": army_id, "commander": str(army.get("commander", "")), "morale": int(army.get("morale", 100)), "supplied": bool(army.get("supplied", false)), "roster": roster}
+
+
+static func apply_tactical_result(state: Dictionary, army_id: String, casualties: Dictionary, won: bool) -> bool:
+	if not state.get("field_armies", {}).has(army_id):
+		return false
+	var army: Dictionary = state["field_armies"][army_id]
+	var total_losses := 0
+	for troop_type in casualties.keys():
+		if not TROOP_TYPES.has(str(troop_type)):
+			return false
+		var amount := int(casualties[troop_type])
+		if amount < 0 or amount > int(army.get("troops", {}).get(troop_type, 0)):
+			return false
+		total_losses += amount
+	for troop_type in casualties.keys():
+		army["troops"][troop_type] = int(army["troops"].get(troop_type, 0)) - int(casualties[troop_type])
+		if int(army["troops"][troop_type]) == 0:
+			army["troops"].erase(troop_type)
+	army["morale"] = clampi(int(army.get("morale", 100)) + (8 if won else -15), 0, 100)
+	state["war_exhaustion"] = clampi(int(state.get("war_exhaustion", 0)) + (2 if won else 7), 0, 100)
+	if _troop_total(army.get("troops", {})) <= 0:
+		state["field_armies"].erase(army_id)
+	else:
+		state["field_armies"][army_id] = army
+	_record(state, "tactical_battle_result", {"army": army_id, "won": won, "casualties": total_losses, "war_exhaustion": state["war_exhaustion"]})
+	return true
+
+
+static func _troop_total(composition: Dictionary) -> int:
+	var total := 0
+	for amount in composition.values():
+		total += maxi(0, int(amount))
+	return total
+
+
+static func _apply_army_losses(army: Dictionary, amount: int) -> void:
+	var remaining := amount
+	for troop_type in ["cavalry", "archers", "infantry"]:
+		var available := int(army.get("troops", {}).get(troop_type, 0))
+		var lost := mini(available, remaining)
+		if lost > 0:
+			army["troops"][troop_type] = available - lost
+			remaining -= lost
+		if remaining <= 0:
+			break
 
 
 static func _record(state: Dictionary, kind: String, details: Dictionary) -> void:
