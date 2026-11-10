@@ -30,6 +30,12 @@ func _initialize() -> void:
     gd = load("res://scripts/core/game_data.gd").new()
     gd.reload()
     ss = load("res://scripts/core/save_system.gd").new()
+    var isolated_test_dir := "user://kindlewake_tests_%d/" % OS.get_process_id()
+    if not ss.set_test_save_directory(isolated_test_dir):
+        push_error("Could not isolate SaveSystem tests from player save data.")
+        quit(1)
+        return
+    check(ss.slot_path("auto_a").begins_with(isolated_test_dir), "save-system tests use an isolated per-process directory")
     _test_data()
     _test_art_assets()
     _test_class_tree()
@@ -63,6 +69,7 @@ func _initialize() -> void:
     _test_shop_and_screen()
     _test_save_system()
     _test_campaign_restore_validation()
+    _test_campaign_save_semantic_backup_fallback()
     _simulate_battles(30)
     print("")
     print("Checks: %d   Failures: %d" % [checks, failures])
@@ -2010,3 +2017,78 @@ func _test_companion_relationships() -> void:
     check((sanitized["torren|wystan"]["metrics"] as Dictionary).size() == RelationshipSystemScript.DIMENSIONS.size(), "relationship normalization replaces malformed metrics with safe defaults")
     check((sanitized["torren|wystan"]["history"] as Array).is_empty() and (sanitized["torren|wystan"]["seen_evidence"] as Array).is_empty(), "relationship normalization replaces malformed history and evidence with empty arrays")
     check(int(RelationshipSystemScript.get_relationship(sanitized, "torren", "sela").get("friendship", -1)) == 0, "malformed relationship pairs normalize to neutral zero values")
+
+func _test_campaign_save_semantic_backup_fallback() -> void:
+    print("[campaign semantic backup fallback]")
+    var member := {
+        "character_id": "torren",
+        "base_stats": {"hp": 100, "str": 10},
+        "skills": [],
+        "equipment": {},
+        "sigils": {},
+        "traits": [],
+        "trait_history": [],
+        "enhancements": {},
+        "reward": {},
+        "personality": {"stress": 0, "memories": [], "behavior": {}, "ambition": {}}
+    }
+    var valid_payload := {
+        "campaign": true,
+        "party": {
+            "roster": ["torren"],
+            "sheets": {"torren": member},
+            "inventory": {"potion": 2},
+            "gold": 25,
+            "sigil_inv": []
+        },
+        "creation_profile": {},
+        "world_flags": {},
+        "world_pos": [0.0, 0.0],
+        "world_positions": {},
+        "active_region_id": "sethmarch",
+        "faction_state": {},
+        "companion_relationships": {}
+    }
+
+    var malformed_history: Dictionary = valid_payload.duplicate(true)
+    malformed_history["party"]["sheets"]["torren"]["trait_history"] = ["bad-entry"]
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_history), "campaign validation rejects malformed trait-history entries")
+    var malformed_memory: Dictionary = valid_payload.duplicate(true)
+    malformed_memory["party"]["sheets"]["torren"]["personality"]["memories"] = ["bad-entry"]
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_memory), "campaign validation rejects malformed individual memory entries")
+    var malformed_evidence: Dictionary = valid_payload.duplicate(true)
+    malformed_evidence["party"]["sheets"]["torren"]["personality"]["behavior"]["seen_evidence"] = false
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_evidence), "campaign validation rejects malformed deduplication evidence")
+    var malformed_gold: Dictionary = valid_payload.duplicate(true)
+    malformed_gold["party"]["gold"] = "a lot"
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_gold), "campaign validation rejects non-numeric currency")
+    var malformed_inventory: Dictionary = valid_payload.duplicate(true)
+    malformed_inventory["party"]["inventory"]["potion"] = -1
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_inventory), "campaign validation rejects negative inventory counts")
+
+    var slot := "kw_semantic_recovery_test"
+    ss.delete_slot(slot)
+    check(ss.save_slot(slot, valid_payload, "valid campaign fixture"), "valid campaign fixture is saved")
+    var invalid_primary: Dictionary = valid_payload.duplicate(true)
+    invalid_primary["party"]["sheets"]["torren"]["personality"] = []
+    check(ss.save_slot(slot, invalid_primary, "newer malformed campaign"), "malformed campaign fixture is written for recovery")
+    var recovered: Dictionary = ss.load_slot(slot)
+    check(bool(recovered.get("ok", false)) and bool(recovered.get("from_backup", false)), "checksum-valid but semantically invalid primary falls back to valid backup")
+    check(RegionSaveState.is_valid_campaign_payload(recovered.get("payload", {})), "semantic backup recovery returns a structurally valid campaign")
+    ss.delete_slot(slot)
+
+    var future_slot := "kw_future_recovery_test"
+    ss.delete_slot(future_slot)
+    check(ss.save_slot(future_slot, valid_payload, "older compatible campaign"), "compatible backup fixture is saved")
+    var future_payload_text := JSON.stringify(valid_payload)
+    var future_envelope := {
+        "meta": {"save_version": 99, "game_version": "99.0.0", "unix": Time.get_unix_time_from_system()},
+        "payload": future_payload_text,
+        "checksum": ss.checksum_of(future_payload_text)
+    }
+    var future_file := FileAccess.open(ss.slot_path(future_slot), FileAccess.WRITE)
+    future_file.store_string(JSON.stringify(future_envelope))
+    future_file.close()
+    var future_result: Dictionary = ss.load_slot(future_slot)
+    check(not bool(future_result.get("ok", false)) and str(future_result.get("error", "")).contains("newer version"), "future-version primary is never silently downgraded to an older backup")
+    ss.delete_slot(future_slot)
