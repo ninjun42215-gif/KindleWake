@@ -598,6 +598,38 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
     var bond_colour: Color = COL_BAD if sh.loyalty < 30 else (COL_GOOD if sh.loyalty >= 75 else COL_GOLD)
     var bond_label: String = "Fractured" if sh.loyalty < 25 else ("Steadfast" if sh.loyalty >= 80 else ("Wary" if sh.loyalty < 50 else "Committed"))
     box.add_child(_tile("Loyalty", "%d / 100 · %s" % [sh.loyalty, bond_label], bond_colour, 20))
+    # Enduring traits: shown separately from temporary battle conditions.
+    _add_section(box, "Traits & personality")
+    var trait_defs: Dictionary = db.get("traits", {})
+    if sh.traits.is_empty():
+        box.add_child(_label("No defining traits recorded yet. Traits are earned through meaningful story choices, training and shared experiences.", 15, COL_DIM))
+    else:
+        for trait_id in sh.traits:
+            var trait_def: Dictionary = trait_defs.get(trait_id, {})
+            if trait_def.is_empty():
+                continue
+            var trait_card := PanelContainer.new()
+            trait_card.add_theme_stylebox_override("panel", _style(COL_TILE, COL_BORDER_DIM, 1, 6, 8.0))
+            var trait_box := VBoxContainer.new()
+            trait_box.add_theme_constant_override("separation", 2)
+            var trait_head := HBoxContainer.new()
+            var trait_name := _label(str(trait_def.get("name", trait_id)), 18, COL_GOLD)
+            trait_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+            trait_head.add_child(trait_name)
+            trait_head.add_child(_text(str(trait_def.get("rarity", "common")).capitalize(), 13, COL_DIM))
+            trait_box.add_child(trait_head)
+            trait_box.add_child(_label(str(trait_def.get("description", "")), 14, COL_DIM))
+            var trait_effects: Dictionary = trait_def.get("effects", {})
+            if not trait_effects.is_empty():
+                var effect_parts: PackedStringArray = []
+                var effect_keys: Array = trait_effects.keys()
+                effect_keys.sort()
+                for effect_key in effect_keys:
+                    var amount := int(trait_effects[effect_key])
+                    effect_parts.append("%s %s" % [str(effect_key).to_upper(), ItemInfo.signed(amount)])
+                trait_box.add_child(_label("Effects  " + "  ·  ".join(effect_parts), 13, COL_GOOD))
+            trait_card.add_child(trait_box)
+            box.add_child(trait_card)
     # skills
     var mods: Dictionary = sh.skill_mods(items, sdefs)
     var known: Array[String] = sh.all_skills(items, sdefs, classes)
