@@ -53,3 +53,8 @@ Before changing anything:
 6. Update the current-state report and handoff with exact facts, commit SHA, test evidence and known limitations.
 
 **Never use Base44's own backend, authentication, hosting or cloud database as a replacement for the existing Godot/offline architecture.** Base44 is the assistant/development basis, not a reason to convert the game into an online web service.
+
+
+## Expanded game-bible reading requirement
+
+Before any gameplay implementation, also read the [Master Game Bibles Index](GAME_BIBLES_INDEX.md) and [Game Mechanics Bible](MECHANICS_BIBLE.md). The mechanics bible consolidates the intended rules and cross-system contracts; the full [GDD](GDD.md) remains the detailed reference for formulas, class/progression rules, recruitment, platoons, army battles, headquarters, story, world, UI and offline architecture. The [Premium Production Bible](PREMIUM_PRODUCTION_BIBLE.md) is mandatory for creative quality, visual/audio direction, UX and production standards. Do not treat any bible as proof of implementation: verify source, data, tests and current CI.
