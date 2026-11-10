@@ -1099,19 +1099,7 @@ func _battle_sprite_tint(u: BattleUnitScript, is_player: bool) -> Color:
             "roadreaver": return Color(0.92, 0.76, 0.58)
             _: return Color.WHITE
     var key: String = (u.character_id + " " + u.display_name).to_lower()
-    if u.character_id == "hask_convoy_champion":
-        var rage := 0.65 + 0.25 * sin(time * 7.0)
-        draw_arc(p + Vector2(0, -29), 27.0 + rage * 3.0, PI * 1.05, PI * 1.95, 24, Color(1.0, 0.24, 0.08, rage), 3.0)
-        draw_colored_polygon(PackedVector2Array([p + Vector2(-19, -47), p + Vector2(-13, -67), p + Vector2(-5, -50), p + Vector2(2, -62), p + Vector2(8, -49), p + Vector2(17, -65), p + Vector2(20, -44)]), Color(0.30, 0.10, 0.08, 0.98))
-        draw_line(p + Vector2(-14, -27), p + Vector2(14, -27), Color(1.0, 0.68, 0.22, rage), 3.0)
-    elif u.character_id == "ash_bailiff":
-        var seal_glow := 0.62 + 0.28 * sin(time * 4.5)
-        draw_arc(p + Vector2(0, -31), 25.0, 0.0, TAU, 32, Color(0.94, 0.75, 0.34, seal_glow), 2.0)
-        draw_arc(p + Vector2(0, -31), 19.0, PI * 0.15, PI * 1.15, 18, Color(1.0, 0.94, 0.72, seal_glow), 1.5)
-        draw_line(p + Vector2(-10, -31), p + Vector2(10, -31), Color(1.0, 0.88, 0.52, seal_glow), 2.0)
-        draw_line(p + Vector2(0, -42), p + Vector2(0, -20), Color(1.0, 0.88, 0.52, seal_glow), 2.0)
-        draw_circle(p + Vector2(0, -31), 4.0, Color(0.30, 0.19, 0.08, seal_glow))
-    elif key.contains("hask") or key.contains("boss") or key.contains("chieftain"):
+    if key.contains("hask") or key.contains("boss") or key.contains("chieftain"):
         return Color(1.0, 0.72, 0.52)
     if key.contains("bow") or key.contains("archer") or key.contains("scout"):
         return Color(0.78, 0.92, 0.62)
@@ -1124,7 +1112,6 @@ func _battle_sprite_tint(u: BattleUnitScript, is_player: bool) -> Color:
     if key.contains("brute") or key.contains("ogre") or key.contains("troll"):
         return Color(1.0, 0.70, 0.58)
     return Color(0.88, 1.0, 0.82)
-
 
 ## Small class/archetype accents sit in screen space above the shared animated base sprite.
 func _draw_sprite_identity_marks(u: BattleUnitScript, p: Vector2, is_player: bool, sprite_scale: float, time: float) -> void:
@@ -1172,7 +1159,19 @@ func _draw_sprite_identity_marks(u: BattleUnitScript, p: Vector2, is_player: boo
                 draw_line(p + Vector2(15, -36), p + Vector2(18, -7), leather, 2.5)
         return
     var key: String = (u.character_id + " " + u.display_name).to_lower()
-    if key.contains("hask") or key.contains("boss") or key.contains("chieftain"):
+    if u.character_id == "hask_convoy_champion":
+        var rage := 0.65 + 0.25 * sin(time * 7.0)
+        draw_arc(p + Vector2(0, -29), 27.0 + rage * 3.0, PI * 1.05, PI * 1.95, 24, Color(1.0, 0.24, 0.08, rage), 3.0)
+        draw_colored_polygon(PackedVector2Array([p + Vector2(-19, -47), p + Vector2(-13, -67), p + Vector2(-5, -50), p + Vector2(2, -62), p + Vector2(8, -49), p + Vector2(17, -65), p + Vector2(20, -44)]), Color(0.30, 0.10, 0.08, 0.98))
+        draw_line(p + Vector2(-14, -27), p + Vector2(14, -27), Color(1.0, 0.68, 0.22, rage), 3.0)
+    elif u.character_id == "ash_bailiff":
+        var seal_glow := 0.62 + 0.28 * sin(time * 4.5)
+        draw_arc(p + Vector2(0, -31), 25.0, 0.0, TAU, 32, Color(0.94, 0.75, 0.34, seal_glow), 2.0)
+        draw_arc(p + Vector2(0, -31), 19.0, PI * 0.15, PI * 1.15, 18, Color(1.0, 0.94, 0.72, seal_glow), 1.5)
+        draw_line(p + Vector2(-10, -31), p + Vector2(10, -31), Color(1.0, 0.88, 0.52, seal_glow), 2.0)
+        draw_line(p + Vector2(0, -42), p + Vector2(0, -20), Color(1.0, 0.88, 0.52, seal_glow), 2.0)
+        draw_circle(p + Vector2(0, -31), 4.0, Color(0.30, 0.19, 0.08, seal_glow))
+    elif key.contains("hask") or key.contains("boss") or key.contains("chieftain"):
         draw_colored_polygon(PackedVector2Array([p + Vector2(-17, -47), p + Vector2(-12, -61), p + Vector2(-5, -48), p + Vector2(0, -55), p + Vector2(6, -47), p + Vector2(14, -60), p + Vector2(17, -44)]), Color(0.42, 0.18, 0.12, 0.95))
         draw_line(p + Vector2(-9, -25), p + Vector2(9, -25), Color(1.0, 0.72, 0.28, 0.9), 2.5)
         draw_arc(p + Vector2(0, -34), 28.0, PI * 1.08, PI * 1.92, 16, Color(0.95, 0.28, 0.16, 0.72), 2.0)
