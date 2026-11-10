@@ -310,19 +310,19 @@ func _test_companion_quests() -> void:
         var outcome_flags: Dictionary = gd.companion_quests[authored_quest_id].get("outcome_flags", {})
         if outcome_flags.size() != (gd.companion_quests[authored_quest_id].get("outcomes", []) as Array).size():
             authored_hooks_ok = false
-    check(authored_hooks_ok, "all twenty-two authored routes have three location hooks on walkable tiles, valid investigation challenges and persistent outcome branches")
+    check(authored_hooks_ok, "all twenty-one authored routes have three location hooks on walkable tiles, valid investigation challenges and persistent outcome branches")
     var playable_summaries_ok := true
     for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal", "q_companion_ilyan_silent_tower", "q_companion_maren_tideglass_wake", "q_companion_seraphine_measure_of_oaths"]:
         if str(gd.companion_quests[playable_id].get("journal_summary", "")).length() < 30:
             playable_summaries_ok = false
-    check(playable_summaries_ok, "all twenty-two authored companion quest routes have journal summaries")
+    check(playable_summaries_ok, "all twenty-one authored companion quest routes have journal summaries")
     var playable_flags_ok := true
-    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal", "q_companion_ilyan_silent_tower", "q_companion_maren_tideglass_wake"]:
+    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal", "q_companion_ilyan_silent_tower", "q_companion_maren_tideglass_wake", "q_companion_seraphine_measure_of_oaths"]:
         var playable_definition: Dictionary = gd.companion_quests[playable_id]
         var playable_flags: Dictionary = playable_definition.get("outcome_flags", {})
         if playable_flags.size() != (playable_definition.get("outcomes", []) as Array).size():
             playable_flags_ok = false
-    check(playable_flags_ok, "all twenty-two authored companion quest routes persist every distinct resolution outcome")
+    check(playable_flags_ok, "all twenty-one authored companion quest routes persist every distinct resolution outcome")
 
 
 func _test_prologue() -> void:
