@@ -362,7 +362,7 @@ func _open_place(p: Dictionary, extra: String = "") -> void:
             text += "\n\nCONTROL: %s • STATUS: %s • STABILITY: %d/100" % [str(holding.get("owner", "unknown")), str(holding.get("status", "provisional")).to_upper(), int(GameState.world_flags.get("holding_stability_" + id, 35))]
         elif bool(holding.get("available", false)):
             var method: String = str(p.get("capture_method", "occupation"))
-            var action: String = "Negotiate the stewardship compact" if method == "forest_stewardship_compact" else ("Sign the grain charter" if method == "grain_charter" else "Secure the keep and establish a garrison")
+            var action: String = "Negotiate the stewardship compact" if method == "forest_stewardship_compact" else ("Sign the grain charter" if method == "grain_charter" else ("Restore the beacon and assume the watch" if method == "beacon_restoration" else "Secure the keep and establish a garrison"))
             place_buttons.add_child(_btn(action, _claim_holding.bind(p), 24))
         else:
             text += "\n\nSOVEREIGNTY UNRESOLVED: " + str(holding.get("reason", "The local objective remains unresolved."))
