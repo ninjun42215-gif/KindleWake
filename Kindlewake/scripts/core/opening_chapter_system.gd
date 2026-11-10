@@ -16,6 +16,7 @@ static func apply_arrival_choice(existing_flags: Dictionary, choice_id: String) 
     flags["chapter_1_arrival_complete"] = true
     flags["kaer_sethorn_priority"] = choice_id
     flags["kaer_well_repaired"] = choice_id == "repair_well"
+    flags["kaer_well_water_safe"] = choice_id == "repair_well"
     flags["kaer_roof_secured"] = choice_id == "secure_roof"
     flags["kaer_ledger_organized"] = choice_id == "organize_ledger"
     flags["chapter"] = "I"
