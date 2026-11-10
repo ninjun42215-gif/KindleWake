@@ -104,7 +104,14 @@ func party_db() -> Dictionary:
 
 
 func battle_def(battle_id: String) -> Dictionary:
-    return battles.get(battle_id, {})
+    var result: Dictionary = battles.get(battle_id, {}).duplicate(true)
+    var boss_id := str(result.get("boss_encounter_id", ""))
+    if boss_id != "" and regional_boss_encounters.has(boss_id):
+        var encounter: Dictionary = regional_boss_encounters[boss_id]
+        result["boss_phases"] = (encounter.get("phases", []) as Array).duplicate(true)
+        result["boss_name"] = str(encounter.get("name", result.get("title", "Regional Guardian")))
+        result["boss_counterplay"] = str(encounter.get("counterplay", ""))
+    return result
 
 
 ## Resolve the campaign region without mutating the canonical Eldrimar world data.
