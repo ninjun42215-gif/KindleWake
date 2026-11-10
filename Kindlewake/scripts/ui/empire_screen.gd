@@ -204,7 +204,10 @@ func _refresh_detail() -> void:
     detail_box.add_child(_label(str(d.get("name", id)), 26, GOLD))
     detail_box.add_child(_label("%s  •  %s  •  %s" % [str(d.get("continent", "" )).capitalize(), str(d.get("region", "")).replace("_", " ").capitalize(), str(d.get("kind", "")).replace("_", " ").capitalize()], 14, DIM))
     detail_box.add_child(_label(str(d.get("description", "")), 16))
-    detail_box.add_child(_label("STRATEGIC VALUE\n• " + "\n• ".join(d.get("strategic_value", [])), 15, DIM))
+    var strategic_lines := PackedStringArray()
+    for value in d.get("strategic_value", []):
+        strategic_lines.append(str(value))
+    detail_box.add_child(_label("STRATEGIC VALUE\n• " + "\n• ".join(strategic_lines), 15, DIM))
     detail_box.add_child(_label("LOCAL OUTPUT  •  %d GOLD  /  %d PROVISIONS  /  %d MATERIALS" % [int(economy.get("gold", 0)), int(economy.get("provisions", 0)), int(economy.get("materials", 0))], 15, GOLD))
     if not claimed:
         detail_box.add_child(_label("This location is not under your administration. Its capture must be resolved through the authored world objective, battle, or treaty. Remote holdings cannot be claimed from this screen.", 16, DIM))
