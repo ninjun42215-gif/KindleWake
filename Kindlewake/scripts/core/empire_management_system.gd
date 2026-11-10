@@ -24,7 +24,7 @@ static func new_state() -> Dictionary:
 		"treasury": 500, "food": 300, "manpower": 100, "stability": 60,
 		"legitimacy": 45, "public_order": 60, "tax_rate": "normal",
 		"policies": [], "council": {}, "governors": {}, "provinces": {},
-		"buildings": {}, "turn": 0, "history": []
+		"buildings": {}, "armies": {}, "turn": 0, "history": []
 	}
 
 
@@ -40,7 +40,7 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
 	state["tax_rate"] = str(raw.get("tax_rate", "normal"))
 	if not TAX_RATES.has(state["tax_rate"]):
 		state["tax_rate"] = "normal"
-	for key in ["policies", "council", "governors", "provinces", "buildings"]:
+	for key in ["policies", "council", "governors", "provinces", "buildings", "armies"]:
 		if typeof(raw.get(key, {})) == TYPE_DICTIONARY:
 			state[key] = (raw[key] as Dictionary).duplicate(true)
 	if typeof(raw.get("policies", [])) == TYPE_ARRAY:
@@ -131,6 +131,87 @@ static func construct(state: Dictionary, province_id: String, building_id: Strin
 	return true
 
 
+
+
+const TROOP_TYPES := {
+	"infantry": {"name": "Levy Infantry", "manpower": 1, "cost": 4, "upkeep": 1, "food": 1},
+	"archers": {"name": "March Archers", "manpower": 1, "cost": 6, "upkeep": 1, "food": 1},
+	"cavalry": {"name": "Household Cavalry", "manpower": 2, "cost": 12, "upkeep": 2, "food": 2}
+}
+
+
+## Recruit a standing force into a controlled province. Barracks increase local capacity.
+static func recruit_troops(state: Dictionary, province_id: String, troop_type: String, amount: int, known_provinces: Array) -> bool:
+	if not bool(state.get("unlocked", false)) or not known_provinces.has(province_id) or not TROOP_TYPES.has(troop_type) or amount <= 0:
+		return false
+	var definition: Dictionary = TROOP_TYPES[troop_type]
+	var armies: Dictionary = state.get("armies", {})
+	var garrison: Dictionary = armies.get(province_id, {})
+	var current_total := 0
+	for count in garrison.values():
+		current_total += maxi(0, int(count))
+	var capacity := 50
+	if state.get("buildings", {}).has(province_id + ":barracks"):
+		capacity += 100
+	if current_total + amount > capacity:
+		return false
+	var manpower_cost := int(definition["manpower"]) * amount
+	var treasury_cost := int(definition["cost"]) * amount
+	if int(state["manpower"]) < manpower_cost or int(state["treasury"]) < treasury_cost:
+		return false
+	state["manpower"] = int(state["manpower"]) - manpower_cost
+	state["treasury"] = int(state["treasury"]) - treasury_cost
+	garrison[troop_type] = int(garrison.get(troop_type, 0)) + amount
+	armies[province_id] = garrison
+	state["armies"] = armies
+	_record(state, "recruitment", {"province": province_id, "type": troop_type, "amount": amount, "cost": treasury_cost})
+	return true
+
+
+## Disband troops and return a portion of their manpower to the realm pool.
+static func disband_troops(state: Dictionary, province_id: String, troop_type: String, amount: int, known_provinces: Array) -> bool:
+	if not bool(state.get("unlocked", false)) or not known_provinces.has(province_id) or not TROOP_TYPES.has(troop_type) or amount <= 0:
+		return false
+	var armies: Dictionary = state.get("armies", {})
+	if not armies.has(province_id):
+		return false
+	var garrison: Dictionary = armies[province_id]
+	var current := int(garrison.get(troop_type, 0))
+	if current < amount:
+		return false
+	garrison[troop_type] = current - amount
+	if int(garrison[troop_type]) == 0:
+		garrison.erase(troop_type)
+	if garrison.is_empty():
+		armies.erase(province_id)
+	else:
+		armies[province_id] = garrison
+	state["armies"] = armies
+	var returned := int(floor(float(amount) * 0.75))
+	state["manpower"] = mini(999999, int(state["manpower"]) + returned)
+	_record(state, "disbandment", {"province": province_id, "type": troop_type, "amount": amount, "manpower_returned": returned})
+	return true
+
+
+static func army_summary(state: Dictionary) -> Dictionary:
+	var total := 0
+	var upkeep := 0
+	var food := 0
+	var provinces := 0
+	for garrison in state.get("armies", {}).values():
+		if typeof(garrison) != TYPE_DICTIONARY:
+			continue
+		if not garrison.is_empty():
+			provinces += 1
+		for troop_type in garrison.keys():
+			var amount := maxi(0, int(garrison[troop_type]))
+			var definition: Dictionary = TROOP_TYPES.get(str(troop_type), {})
+			total += amount
+			upkeep += amount * int(definition.get("upkeep", 0))
+			food += amount * int(definition.get("food", 0))
+	return {"troops": total, "upkeep": upkeep, "food": food, "garrisoned_provinces": provinces, "readiness": 100 if total == 0 else clampi(int(state.get("food", 0) * 100 / maxi(1, food)), 0, 100)}
+
+
 ## Advance one strategic season. The caller controls when story time advances.
 static func advance_season(state: Dictionary, province_ids: Array) -> Dictionary:
 	if not bool(state.get("unlocked", false)):
@@ -157,6 +238,9 @@ static func advance_season(state: Dictionary, province_ids: Array) -> Dictionary
 	upkeep += int(state["council"].size()) * 3
 	if state["policies"].has("relief"):
 		upkeep += 15
+	var military := army_summary(state)
+	upkeep += int(military["upkeep"])
+	var military_food := int(military["food"])
 	if state["policies"].has("conscription"):
 		state["manpower"] = mini(999999, int(state["manpower"]) + 12)
 	else:
@@ -164,7 +248,7 @@ static func advance_season(state: Dictionary, province_ids: Array) -> Dictionary
 	if state["policies"].has("mercantile"):
 		income += 15
 	state["treasury"] = maxi(0, int(state["treasury"]) + income - upkeep)
-	state["food"] = maxi(0, int(state["food"]) + food_gain - province_ids.size() * 8)
+	state["food"] = maxi(0, int(state["food"]) + food_gain - province_ids.size() * 8 - military_food)
 	var food_shortage := int(state["food"]) == 0
 	if food_shortage:
 		state["stability"] = maxi(0, int(state["stability"]) - 12)
@@ -179,7 +263,7 @@ static func advance_season(state: Dictionary, province_ids: Array) -> Dictionary
 	if state["policies"].has("tolerance"):
 		state["stability"] = mini(100, int(state["stability"]) + 2)
 	state["turn"] = int(state["turn"]) + 1
-	var report := {"ok": true, "season": state["turn"], "income": income, "upkeep": upkeep, "food_change": food_gain - province_ids.size() * 8, "defence": defence, "food_shortage": food_shortage}
+	var report := {"ok": true, "season": state["turn"], "income": income, "upkeep": upkeep, "food_change": food_gain - province_ids.size() * 8 - military_food, "defence": defence, "military_upkeep": int(military["upkeep"]), "military_food": military_food, "troops": int(military["troops"]), "food_shortage": food_shortage}
 	_record(state, "season", report)
 	return report
 
