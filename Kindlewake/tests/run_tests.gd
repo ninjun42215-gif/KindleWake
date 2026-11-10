@@ -1812,7 +1812,7 @@ func _test_save_system() -> void:
     malformed_file.close()
     check(not bool(ss.load_slot("bad_meta").get("ok", false)), "save loader rejects a checksum-valid envelope with malformed metadata")
     ss.delete_slot("bad_meta")
-    var malformed_migration := ss.migrate({"party": ["not", "a", "dictionary"]}, 3)
+    var malformed_migration: Dictionary = ss.migrate({"party": {"sheets": ["not", "a", "dictionary"]}}, 3)
     check(typeof(malformed_migration.get("party")) == TYPE_DICTIONARY, "legacy migration safely normalizes malformed nested party data")
     ss.delete_slot("auto_a")
     ss.delete_slot("auto_b")
