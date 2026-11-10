@@ -10,7 +10,9 @@ godot --headless --path . --script res://tests/test_campaign_continuity.gd
 The dedicated test walks the rule systems in campaign order: Act I quest actions; Act II boundary, hearing and escort; Act III bridge victory, banner and crossing; Act IV archive access, record and witness; Act V route, evidence board, three crises and final audience. It also exercises the Chronicle founder gate and JSON normalization.
 
 ## Persistence integration
-- `GameState.campaign_payload()` now includes the Chronicle state alongside `world_flags`.
+- `GameState.campaign_payload()` now includes Chronicle state and the current story location alongside `world_flags`.
+- Aurelmont is an authored town map with a persistent Last Audience story spot. Leaving the Act V challenge returns to Aurelmont without discarding route, evidence or crisis progress.
+- Continue/Load resumes the last saved town/interior when a pending story location exists; legacy saves default to the overworld.
 - `GameState.load_campaign()` normalizes the Chronicle state from the save. Older campaign saves without this key start with a locked Chronicle.
 - The Act V final audience records the first three Chronicle milestones in order: campaign completed, became last Emperor, Empire dissolved.
 - The late-life epilogue and natural old-age death remain separate future gameplay milestones. They are not fabricated at the Act V ending, and battle death cannot unlock the Chronicle.
