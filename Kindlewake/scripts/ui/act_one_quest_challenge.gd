@@ -152,7 +152,8 @@ func _launch_tactical_boss(battle_id: String) -> void:
         return
     GameState.world_flags["_pending_act_one_challenge"] = quest_id
     GameState.world_flags["_pending_act_one_challenge_step"] = step
-    GameState.start_battle_from_world(definition)
+    GameState.pending_battle = definition
+    GameState.from_world = false
     get_tree().change_scene_to_file("res://Main.tscn")
 
 func _choose(result: String) -> void:
