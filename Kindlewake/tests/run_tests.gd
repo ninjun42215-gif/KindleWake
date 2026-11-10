@@ -1033,6 +1033,16 @@ func _test_supply_siege_and_tactical_bridge() -> void:
     check(EmpireSystem.resolve_siege_battle(state, "orrowen_weald", true) and bool(state["sieges"]["orrowen_weald"].get("captured", false)), "winning the tactical siege assault breaches the occupation objective")
     check(int(state["war_exhaustion"]) > 2 and EmpireSystem.reduce_war_exhaustion(state, 5), "war exhaustion rises after an assault and can be reduced by a peace action")
     check(EmpireSystem.complete_siege_transfer(state, "orrowen_weald") and not state["sieges"].has("orrowen_weald"), "completed occupation closes the siege record")
+    var abandoned_state: Dictionary = EmpireSystem.new_state()
+    EmpireSystem.unlock(abandoned_state)
+    abandoned_state["treasury"] = 10000
+    check(EmpireSystem.recruit_troops(abandoned_state, "sethmarch", "infantry", 5, controlled), "abandoned siege test recruits a small force")
+    var abandoned_army: String = EmpireSystem.mobilize_army(abandoned_state, "sethmarch", {"infantry": 5}, controlled)
+    check(EmpireSystem.move_field_army(abandoned_state, abandoned_army, "orrowen_weald", adjacency, controlled) and EmpireSystem.start_siege(abandoned_state, abandoned_army, "orrowen_weald", controlled, adjacency), "a field army establishes a second siege for withdrawal testing")
+    abandoned_state["field_armies"][abandoned_army]["movement"] = 1
+    check(EmpireSystem.move_field_army(abandoned_state, abandoned_army, "sethmarch", adjacency, controlled), "a besieging army can withdraw to friendly territory")
+    EmpireSystem.advance_season(abandoned_state, controlled, adjacency)
+    check(abandoned_state["sieges"].is_empty(), "a siege is abandoned when its field army moves away")
     state["war_exhaustion"] = 75
     var stability_before_exhaustion: int = int(state["stability"])
     var order_before_exhaustion: int = int(state["public_order"])
