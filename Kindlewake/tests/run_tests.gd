@@ -9,6 +9,7 @@ const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const MarenQuestSystem = preload("res://scripts/core/maren_quest_system.gd")
+const NerisQuestSystem = preload("res://scripts/core/neris_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
@@ -54,6 +55,7 @@ func _initialize() -> void:
     _test_wraparound_world()
     _test_brinegate_quest()
     _test_maren_companion_quest()
+    _test_neris_companion_quest()
     _test_region_save_compatibility()
     _test_locations()
     _test_shop_and_screen()
@@ -1079,6 +1081,46 @@ func _test_maren_companion_quest() -> void:
             if str((spot as Dictionary).get("quest_id", "")) == "maren_signal":
                 has_maren_quest = true
     check(has_maren_quest, "Maren's personal quest is reachable from Brinegate and Lantern Quay")
+
+
+func _test_neris_companion_quest() -> void:
+    print("[Neris Quell companion quest]")
+    check(not NerisQuestSystem.start_quest({}, ["torren", "neris_quell"]).get("ok", false), "Neris's second-beacon quest stays locked until Maren's quest is resolved")
+    check(not NerisQuestSystem.start_quest({"maren_signal_completed": true}, ["torren"]).get("ok", false), "Neris's second-beacon quest requires Neris to be recruited")
+    var started: Dictionary = NerisQuestSystem.start_quest({"maren_signal_completed": true}, ["torren", "neris_quell"])
+    check(bool(started.get("ok", false)), "Neris can begin charting the second beacon after joining the company")
+    var flags: Dictionary = started.get("world_flags", {})
+    check(not bool(NerisQuestSystem.resolve_quest(flags, "publish_route").get("ok", true)), "Neris's route cannot be resolved before the charting sequence is complete")
+    var wrong: Dictionary = NerisQuestSystem.submit_route(flags, "west")
+    check(bool(wrong.get("ok", false)) and not bool(wrong.get("correct", true)) and int(wrong.world_flags.get(NerisQuestSystem.PROGRESS_FLAG, -1)) == 0, "an incorrect bearing resets the route without consuming resources")
+    flags = NerisQuestSystem.submit_route(wrong.world_flags, "east").world_flags
+    flags = NerisQuestSystem.submit_route(flags, "south").world_flags
+    var final_bearing: Dictionary = NerisQuestSystem.submit_route(flags, "east")
+    check(bool(final_bearing.get("complete", false)), "east-south-east bearings chart the hidden second beacon")
+    flags = final_bearing.get("world_flags", {})
+    var published: Dictionary = NerisQuestSystem.resolve_quest(flags, "publish_route")
+    check(bool(published.get("ok", false)) and int(published.get("gold", 0)) == 100, "publishing the route opens the merchant passage and rewards the company")
+    check(not bool(NerisQuestSystem.resolve_quest(published.get("world_flags", {}), "keep_private").get("ok", true)), "Neris's route can only be resolved once")
+    var private_flags: Dictionary = final_bearing.get("world_flags", {})
+    var private_result: Dictionary = NerisQuestSystem.resolve_quest(private_flags, "keep_private")
+    check(bool(private_result.get("ok", false)) and bool(private_result.world_flags.get("saltmere_fishers_route_open", false)), "keeping the route private reserves it for local fishers")
+    var public_bonds: Dictionary = {}
+    RelationshipSystemScript.adjust(public_bonds, "torren", "neris_quell", "trust", 20, "setup:existing-trust")
+    check(NerisQuestSystem.apply_relationships(public_bonds, "torren", ["torren", "neris_quell"], gd.characters, "publish_route") == 2, "publishing the route applies Neris's authored respect and trust consequences")
+    var public_bond: Dictionary = RelationshipSystemScript.get_relationship(public_bonds, "torren", "neris_quell")
+    check(int(public_bond.get("respect", 0)) == 8 and int(public_bond.get("trust", 0)) == 16, "public charting trades some trust for respect")
+    var private_bonds: Dictionary = {}
+    check(NerisQuestSystem.apply_relationships(private_bonds, "torren", ["torren", "neris_quell"], gd.characters, "keep_private") == 3, "keeping the route private applies Neris's authored friendship, trust and affection")
+    var private_bond: Dictionary = RelationshipSystemScript.get_relationship(private_bonds, "torren", "neris_quell")
+    check(int(private_bond.get("friendship", 0)) == 8 and int(private_bond.get("trust", 0)) == 10 and int(private_bond.get("affection", 0)) == 3, "the private route strengthens Neris's personal bond")
+    check(NerisQuestSystem.apply_relationships(private_bonds, "torren", ["torren", "neris_quell"], gd.characters, "keep_private") == 0, "Neris's quest relationship rewards cannot be farmed")
+    var maps: Dictionary = LocalMap.load_all(gd.locations)
+    var quest_markers := 0
+    for map_id in ["lantern_quay", "saltmere"]:
+        for spot in (maps[map_id] as LocalMap).spots:
+            if str((spot as Dictionary).get("quest_id", "")) == "neris_beacon":
+                quest_markers += 1
+    check(quest_markers == 2, "Neris's second-beacon quest connects Lantern Quay and Saltmere")
 
 
 func _test_region_save_compatibility() -> void:

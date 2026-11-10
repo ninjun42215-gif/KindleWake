@@ -27,3 +27,18 @@ After restoring the Lantern Quay signal, the company can chart and enter the Nor
 ## Neris Quell — Lantern Quay recruit
 
 Neris is a former Blackwake reef diver freed after the Northstar Wreck battle. She becomes recruitable at Lantern Quay only after the signal is restored, the salvage captain is defeated and the logbook is recovered. She joins without a gold fee and begins with authored trust and respect toward the company lead. Her scout profile emphasizes observation, survival and agility.
+
+
+## Neris Quell — The Second Beacon
+
+**Unlock:** Recruit Neris and resolve Maren's Northstar quest.
+
+**Start:** Speak with Neris at Lantern Quay. She reveals a hidden beacon route omitted from the Tidebound charts.
+
+**Quest mechanic:** Chart three reef bearings at Saltmere: east with the outgoing tide, south around the black reef, then east toward the unlit beacon. Incorrect bearings reset the sequence without resource loss.
+
+**Resolution:**
+- **Publish the route to the Assembly:** opens a merchant passage and rewards 100 gold. Neris gains respect but loses some trust, and remembers making the route public.
+- **Keep the route private for local fishers:** reserves the route for the coast's fishing families. Neris gains friendship, trust and affection, and her stress eases.
+
+Both outcomes record a one-time campaign flag, a distinct memory and authored relationship evidence. No save schema change is required.

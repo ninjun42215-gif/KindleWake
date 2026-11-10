@@ -256,6 +256,28 @@
       "requirements": {},
       "trait_awards": [],
       "cooldown_days": 0
+    },
+    "neris_route_published": {
+      "name": "The Second Beacon Published",
+      "category": "personal",
+      "description": "Neris allowed the hidden route to be shared with the Tidebound Assembly.",
+      "stress_delta": 4,
+      "memory_type": "personal",
+      "memory": "Published the hidden beacon route so merchant ships could use it.",
+      "requirements": {},
+      "trait_awards": [],
+      "cooldown_days": 0
+    },
+    "neris_route_private": {
+      "name": "A Route Kept for the Coast",
+      "category": "relationship",
+      "description": "Neris kept the hidden route for the local fishers rather than the Assembly.",
+      "stress_delta": -5,
+      "memory_type": "relationship",
+      "memory": "Kept the second beacon route for the fishers who protected the coast.",
+      "requirements": {},
+      "trait_awards": [],
+      "cooldown_days": 0
     }
   }
 }

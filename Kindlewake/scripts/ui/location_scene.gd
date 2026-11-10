@@ -3,6 +3,7 @@ extends Node2D
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const MarenQuestSystem = preload("res://scripts/core/maren_quest_system.gd")
+const NerisQuestSystem = preload("res://scripts/core/neris_quest_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
@@ -257,6 +258,8 @@ func _on_prompt_pressed() -> void:
     elif spot_kind == "companion_quest":
         if str(near_spot.get("quest_id", "")) == "maren_signal":
             _build_maren_quest_interaction()
+        elif str(near_spot.get("quest_id", "")) == "neris_beacon":
+            _build_neris_quest_interaction()
     elif spot_kind == "recruit":
         var cid: String = str(near_spot.get("character_id", ""))
         var definition: Dictionary = GameData.characters.get(cid, {})
@@ -385,6 +388,84 @@ func _resolve_maren_quest(choice: String) -> void:
 func _refresh_spot_panel() -> void:
     if panel_open:
         _on_prompt_pressed()
+
+
+func _build_neris_quest_interaction() -> void:
+    var flags: Dictionary = GameState.world_flags
+    if not GameState.party.roster.has("neris_quell"):
+        spot_text.text += "\n\nNeris must join the company before she can chart this hidden route."
+        return
+    if not bool(flags.get(NerisQuestSystem.MAREN_QUEST_FLAG, false)):
+        spot_text.text += "\n\nNeris wants to hear Maren's decision about the Northstar before revealing the second beacon."
+        return
+    if current_map_id == "lantern_quay":
+        if not bool(flags.get(NerisQuestSystem.START_FLAG, false)):
+            spot_buttons.add_child(_btn("Ask Neris to chart the second beacon", _start_neris_quest))
+        elif bool(flags.get(NerisQuestSystem.SOLVED_FLAG, false)) and not bool(flags.get(NerisQuestSystem.COMPLETE_FLAG, false)):
+            spot_text.text += "\n\nThe hidden route is mapped. Neris asks whether the Assembly should receive it or whether it should remain with the coast."
+            spot_buttons.add_child(_btn("Publish the route to the Assembly", _resolve_neris_quest.bind("publish_route")))
+            spot_buttons.add_child(_btn("Keep the route private for local fishers", _resolve_neris_quest.bind("keep_private")))
+        elif bool(flags.get(NerisQuestSystem.COMPLETE_FLAG, false)):
+            spot_text.text += "\n\nNeris's second-beacon route is settled. The coast knows which ships may safely pass."
+        else:
+            spot_text.text += "\n\nNeris asks you to chart the three reef markers at Saltmere."
+    elif current_map_id == "saltmere":
+        if not bool(flags.get(NerisQuestSystem.START_FLAG, false)):
+            spot_text.text += "\n\nNeris has not yet asked you to chart this route."
+        elif bool(flags.get(NerisQuestSystem.SOLVED_FLAG, false)):
+            spot_text.text += "\n\nThe route is charted. Return to Lantern Quay and decide who should receive it."
+        else:
+            var progress := clampi(int(flags.get(NerisQuestSystem.PROGRESS_FLAG, 0)), 0, NerisQuestSystem.ROUTE_SEQUENCE.size() - 1)
+            var clues := ["First bearing: follow the outgoing tide east.", "Second bearing: turn south around the black reef.", "Final bearing: head east toward the unlit beacon."]
+            spot_text.text += "\n\n" + clues[progress]
+            spot_buttons.add_child(_btn("Set course east", _submit_neris_route.bind("east")))
+            spot_buttons.add_child(_btn("Set course south", _submit_neris_route.bind("south")))
+            spot_buttons.add_child(_btn("Set course west", _submit_neris_route.bind("west")))
+
+
+func _start_neris_quest() -> void:
+    var result: Dictionary = NerisQuestSystem.start_quest(GameState.world_flags, GameState.party.roster)
+    if not bool(result.get("ok", false)):
+        spot_text.text += "\n\n" + str(result.get("reason", "Neris is not ready to chart the route."))
+        return
+    GameState.world_flags = result.get("world_flags", GameState.world_flags).duplicate(true)
+    GameState.save_campaign("auto_a")
+    _refresh_spot_panel()
+    spot_text.text += "\n\nNeris marks the course: east with the outgoing tide, south around the black reef, then east toward the unlit beacon."
+
+
+func _submit_neris_route(direction: String) -> void:
+    var result: Dictionary = NerisQuestSystem.submit_route(GameState.world_flags, direction)
+    if not bool(result.get("ok", false)):
+        spot_text.text += "\n\n" + str(result.get("reason", "The route cannot be charted yet."))
+        return
+    GameState.world_flags = result.get("world_flags", GameState.world_flags).duplicate(true)
+    GameState.save_campaign("auto_a")
+    var correct := bool(result.get("correct", false))
+    var complete := bool(result.get("complete", false))
+    _refresh_spot_panel()
+    if not correct:
+        spot_text.text += "\n\nThe current carries the marker off course. Neris resets the chart and asks you to try again."
+    elif complete:
+        spot_text.text += "\n\nThe three bearings align. The hidden second beacon is now marked on Neris's chart."
+    else:
+        spot_text.text += "\n\nThe bearing matches the reef marks. One part of the route remains."
+
+
+func _resolve_neris_quest(choice: String) -> void:
+    var result: Dictionary = NerisQuestSystem.resolve_quest(GameState.world_flags, choice)
+    if not bool(result.get("ok", false)):
+        spot_text.text += "\n\n" + str(result.get("reason", "Neris's route cannot be resolved yet."))
+        return
+    GameState.world_flags = result.get("world_flags", GameState.world_flags).duplicate(true)
+    GameState.party.gold += int(result.get("gold", 0))
+    var leader_id := str(GameState.party.roster[0]) if not GameState.party.roster.is_empty() else ""
+    NerisQuestSystem.apply_relationships(GameState.companion_relationships, leader_id, GameState.party.roster, GameData.characters, choice)
+    var event_id := "neris_route_published" if choice == "publish_route" else "neris_route_private"
+    GameState.resolve_character_event("neris_quell", event_id, "companion_quest", "neris-second-beacon:" + choice)
+    GameState.save_campaign("auto_a")
+    _refresh_spot_panel()
+    spot_text.text += "\n\n" + str(result.get("text", ""))
 
 
 func _close_panel() -> void:

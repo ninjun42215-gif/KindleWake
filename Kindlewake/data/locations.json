@@ -1965,6 +1965,22 @@
             0.59
           ],
           "text": "The keeper offers a dry bed and a bowl of hot shellfish broth."
+        },
+        {
+          "cell": [
+            10,
+            5
+          ],
+          "kind": "companion_quest",
+          "quest_id": "neris_beacon",
+          "npc": true,
+          "name": "The Hidden Reef Marker",
+          "tint": [
+            0.64,
+            0.82,
+            0.77
+          ],
+          "text": "Three old stone marks rise from the tide pools. Their positions form a route through the reef teeth, but only in the right order."
         }
       ]
     },
@@ -2055,6 +2071,22 @@
             0.72
           ],
           "text": "A young reef diver steps from the beacon storehouse. Neris Quell was forced to salvage for Blackwake, but she sabotaged their signal theft and knows the second beacon's hidden approach."
+        },
+        {
+          "cell": [
+            6,
+            7
+          ],
+          "kind": "companion_quest",
+          "quest_id": "neris_beacon",
+          "npc": true,
+          "name": "Neris's Chart",
+          "tint": [
+            0.58,
+            0.82,
+            0.76
+          ],
+          "text": "Neris has drawn a second route across the shoals, one that does not appear on any Tidebound map. She is ready to show you where the hidden beacon lies."
         }
       ]
     },
