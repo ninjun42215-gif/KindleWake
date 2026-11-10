@@ -2462,7 +2462,8 @@ func _test_shop_and_screen() -> void:
     tcard.free()
     screen.close()
     check(not screen.visible and screen_closed == 1, "Close hides the screen and emits closed")
-    screen.queue_free()
+    # The headless test exits immediately; free synchronously instead of leaving a queued Node at shutdown.
+    screen.free()
 
 
 func rng_for_tests() -> RandomNumberGenerator:
