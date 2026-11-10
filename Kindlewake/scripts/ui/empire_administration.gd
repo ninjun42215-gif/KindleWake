@@ -342,6 +342,7 @@ func _build_military() -> void:
         body.add_child(commander_picker)
         body.add_child(_button("Mobilize 5 Infantry into Field Army", _mobilize_field_army.bind(selected_province, {"infantry": 5}), true))
     body.add_child(_label("Garrisons defend their province. Mobilized field armies travel one atlas region-link per strategic move. Supply depots project a connected network through controlled regions; exposed armies suffer morale loss and attrition.", 14, C_DIM))
+    body.add_child(_label("Engage garrison launches a tactical BattleController encounter. Strategic cohorts fight beside your company; casualties persist to the field army. Breached sieges launch a battering-ram assault.", 14, C_GOLD))
     _section("FIELD ARMIES")
     var field_armies: Dictionary = GameState.empire_state.get("field_armies", {})
     var adjacency: Dictionary = GameState.atlas_region_adjacency()
