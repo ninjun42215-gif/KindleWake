@@ -312,7 +312,8 @@ func _build_companion_quest_actions(spot: Dictionary) -> void:
         spot_text.text += "\\n\\n" + prompt
         var labels: Dictionary = definition.get("outcome_labels", {})
         for outcome in outcomes:
-            spot_buttons.add_child(_btn(str(labels.get(str(outcome), _format_quest_label(str(outcome)))), _resolve_companion_quest.bind(quest_id, str(outcome)))
+            var outcome_label := str(labels.get(str(outcome), _format_quest_label(str(outcome))))
+            spot_buttons.add_child(_btn(outcome_label, _resolve_companion_quest.bind(quest_id, str(outcome))))
         return
     if status == "ready":
         spot_text.text += "\\n\\nAll objectives are recorded. Return to the companion's designated story contact to make the concluding choice."
