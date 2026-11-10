@@ -7,6 +7,12 @@ var scene_paths: Array[String] = []
 
 
 func _initialize() -> void:
+    var kw_script: Script = load("res://scripts/core/kw.gd") as Script
+    if kw_script == null:
+        failures += 1
+        push_error("Could not parse the KW premium UX autoload script")
+    else:
+        print("  ok    premium UX autoload script parses")
     _collect_scenes("res://")
     scene_paths.sort()
     print("[scene smoke] Loading %d scenes" % scene_paths.size())
