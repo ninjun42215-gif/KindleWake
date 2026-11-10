@@ -933,3 +933,10 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 
 
 - **Headless cleanup candidate (2026-11-10, rebased PR pending):** the PartyScreen smoke test frees its temporary Control synchronously and drains deferred child nodes before the test tree exits; the standalone balance report frees its GameData Node; Blender source import is disabled because no `.blend` files are tracked. No gameplay, version or save-schema change. Exact-head validation is pending.
+
+
+## Revision log — post-cleanup main verification (2026-11-10)
+
+- PR #121 adds persistent Chronicle inter-house diplomacy and its player-facing decision panel; it is merged into main.
+- PR #122 releases the temporary PartyScreen and balance-report GameData resources before headless shutdown, and disables Blender import because the tracked project has no `.blend` files. The previous ObjectDB/resource and Blender importer warnings are absent from the verified main log.
+- Main commit `84da6e400b7991d753bcc2cddeb02d854702b547` passed 18 scene loads, 929 strict checks / 0 failures, balance simulation and signed Android export. Version remains 0.12.0; save schema remains 4. Physical Android QA remains outstanding.
