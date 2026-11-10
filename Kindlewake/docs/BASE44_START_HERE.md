@@ -37,7 +37,7 @@ KindleWake: **The Sundered Vow** is an offline-first, character-driven medieval 
 
 ## Main campaign narrative implementation reference
 
-Before implementing or revising campaign quests, read [STORY_QUEST_SPECIFICATIONS.md](STORY_QUEST_SPECIFICATIONS.md) together with [LORE_BIBLE.md §15](LORE_BIBLE.md) and [GDD.md §10](GDD.md). The quest specification defines proposed stable IDs, entry/exit conditions, evidence provenance, choice/state contracts, companion arcs, encounter requirements, save compatibility and implementation slices. Audit existing quest/scene/data IDs before adding anything; reuse the current Godot architecture and do not treat a specification as a shipped feature.
+Before implementing or revising campaign quests, read [STORY_QUEST_SPECIFICATIONS.md](STORY_QUEST_SPECIFICATIONS.md), [COMPANION_QUEST_EXPANSION.md](COMPANION_QUEST_EXPANSION.md), [LORE_BIBLE.md §15](LORE_BIBLE.md) and [GDD.md §10](GDD.md). The quest specifications define proposed stable IDs, entry/exit conditions, evidence provenance, choice/state contracts, recruitable companion arcs, encounter requirements, save compatibility and implementation slices. Audit the live roster and all quest/scene/data IDs before adding anything; reuse the current Godot architecture and do not treat a specification as a shipped feature.
 
 ## Required reading by task
 
