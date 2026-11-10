@@ -2636,7 +2636,7 @@ func _test_chronicle_diplomacy() -> void:
     state = envoy.state
     check(int(ChroniclePolitics.relation_between(state,"player_house","house_ashcombe").get("score",0)) == 16, "envoy improves the shared relation score by eight")
     var gift: Dictionary = ChroniclePolitics.perform_action(state,"player_house","house_ashcombe","gift")
-    check(bool(gift.get("ok",false)) and int(gift.state.politics.influence) == 42 and int(gift.state.politics.houses["house_ashcombe"].treasury) == 75, "public gift spends three influence and adds five treasury to its recipient")
+    check(bool(gift.get("ok",false)) and int(gift.state.politics.influence) == 42 and int(gift.state.politics.houses["player_house"].treasury) == 45 and int(gift.state.politics.houses["house_ashcombe"].treasury) == 75, "public gift transfers five treasury, spends three influence and improves relations")
     state = gift.state
     var improved: Dictionary = ChroniclePolitics.change_relation(state,"player_house","house_ashcombe",60,"test alliance threshold")
     state = improved.state
