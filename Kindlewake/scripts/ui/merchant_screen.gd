@@ -198,7 +198,9 @@ func refresh(reset_status: bool = true) -> void:
         ]
         label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         row.add_child(label)
-        row.add_child(_action_button("TRAVEL", func(): _notify_result(GameState.merchant_travel_route(str(route_id)))))
+        var travel_button := _action_button("TRAVEL", func(): _notify_result(GameState.merchant_travel_route(str(route_id))))
+        travel_button.disabled = str(route.get("from", "")) != GameState.active_region_id
+        row.add_child(travel_button)
         content.add_child(row)
 
     var travel_event: Dictionary = GameState.merchant_last_travel_event()
