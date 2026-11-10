@@ -1569,7 +1569,7 @@ func _test_trait_system() -> void:
     var gained: Dictionary = sheet.acquire_trait("brave", "unit_test", defs)
     check(bool(gained.get("ok", false)) and sheet.traits.has("brave"), "valid trait acquisition records an enduring trait")
     check(int(sheet.base_stats.get("mor", 0)) == int(base.get("mor", 0)), "trait effects never mutate permanent base stats")
-    var trait_stats: Dictionary = sheet.total_stats({}, {})
+    var trait_stats: Dictionary = sheet.total_stats({}, {}, defs)
     check(int(trait_stats.get("mor", 0)) == int(base.get("mor", 0)) + 2, "trait stat effects are applied through derived stats")
     var conflict: Dictionary = sheet.acquire_trait("cowardly", "unit_test", defs)
     check(not bool(conflict.get("ok", false)) and sheet.traits.has("brave"), "opposing traits cannot be acquired together")
