@@ -589,6 +589,7 @@ static func build_tactical_battle(state: Dictionary, army_id: String, base_battl
 		for x in range(12, 20):
 			enemy_cells.append(Vector2i(x, y))
 	var enemy_index := 0
+	var enemy_commander_assigned := false
 	for troop_type in ["infantry", "archers", "cavalry"]:
 		var remaining := int(defenders[troop_type])
 		var cohort_index := 0
@@ -596,7 +597,9 @@ static func build_tactical_battle(state: Dictionary, army_id: String, base_battl
 			var cohort_count := mini(5, remaining)
 			var unit_id := "strategic_defender_%s_%d" % [troop_type, cohort_index]
 			var cell: Vector2i = enemy_cells[enemy_index]
-			units.append({"character_id": unit_id, "team": "enemy", "cell": [cell.x, cell.y], "facing": 2, "name": "%s Garrison" % troop_type.capitalize()})
+			units.append({"character_id": unit_id, "team": "enemy", "cell": [cell.x, cell.y], "facing": 2, "commander": not enemy_commander_assigned and troop_type == "infantry", "name": "%s Garrison" % troop_type.capitalize()})
+			if troop_type == "infantry":
+				enemy_commander_assigned = true
 			remaining -= cohort_count
 			cohort_index += 1
 			enemy_index += 1
