@@ -1,42 +1,67 @@
 class_name EncounterBuilder
 extends RefCounted
-## Builds repeatable random fights (data/encounters.json). Pure and static, so tests and the balance report
-## can use it without autoloads.
-
+## Builds repeatable regional fights from data/bestiary.json. Pure and deterministic for tests.
 
 static func group_count(encounters: Dictionary) -> int:
     var cfg: Dictionary = encounters.get("skirmish", {})
     return (cfg.get("groups", []) as Array).size()
 
 
-## A battle definition with id "skirmish" for enemy group number `group_index`: the base story map, the player's
-## spawn points from it and that group's enemies placed on the encounter's enemy cells. {} when the data is missing.
 static func build_group(encounters: Dictionary, battles: Dictionary, group_index: int) -> Dictionary:
-    var cfg: Dictionary = encounters.get("skirmish", {})
-    var base: Dictionary = (battles.get(str(cfg.get("base_battle", "battle_01")), {}) as Dictionary).duplicate(true)
+    return _build_config_group(encounters.get("skirmish", {}) as Dictionary, battles, group_index, "Skirmish")
+
+
+static func build_regional_skirmish(bestiary: Dictionary, region_id: String, battles: Dictionary, rand: RandomNumberGenerator) -> Dictionary:
+    var regions: Dictionary = bestiary.get("regions", {})
+    var cfg: Dictionary = regions.get(region_id, {})
+    if cfg.is_empty():
+        return {}
+    var groups: Array = cfg.get("groups", [])
+    if groups.is_empty():
+        return {}
+    var total := 0
+    for entry in groups:
+        total += maxi(0, int((entry as Dictionary).get("weight", 1)))
+    if total <= 0:
+        return {}
+    var roll: int = rand.randi_range(1, total)
+    var selected := 0
+    for i in range(groups.size()):
+        roll -= maxi(0, int((groups[i] as Dictionary).get("weight", 1)))
+        if roll <= 0:
+            selected = i
+            break
+    return _build_config_group(cfg, battles, selected, str(cfg.get("title", "Regional Encounter")))
+
+
+static func _build_config_group(cfg: Dictionary, battles: Dictionary, group_index: int, fallback_title: String) -> Dictionary:
+    var base_id := str(cfg.get("base_battle", "battle_01"))
+    var base: Dictionary = (battles.get(base_id, {}) as Dictionary).duplicate(true)
     var groups: Array = cfg.get("groups", [])
     if base.is_empty() or group_index < 0 or group_index >= groups.size():
         return {}
     var chosen: Dictionary = groups[group_index]
     var spawns: Array = []
-    for u in (base.get("units", []) as Array):
-        if str((u as Dictionary).get("team", "")) == "player":
-            spawns.append(u)
+    for unit in (base.get("units", []) as Array):
+        if str((unit as Dictionary).get("team", "")) == "player":
+            spawns.append((unit as Dictionary).duplicate(true))
     var cells: Array = cfg.get("enemy_cells", [])
     var members: Array = chosen.get("units", [])
-    for i in range(mini(members.size(), cells.size())):
-        var entry: Dictionary = {"character_id": str(members[i]), "team": "enemy", "cell": cells[i], "facing": 2}
-        if str(chosen.get("commander", "")) == str(members[i]):
+    if members.is_empty() or members.size() > cells.size():
+        return {}
+    for i in range(members.size()):
+        var enemy_id := str(members[i])
+        var entry: Dictionary = {"character_id": enemy_id, "team": "enemy", "cell": cells[i], "facing": 2}
+        if str(chosen.get("commander", "")) == enemy_id:
             entry["commander"] = true
         spawns.append(entry)
     base["units"] = spawns
-    base["id"] = "skirmish"
-    base["title"] = str(cfg.get("title", "Skirmish"))
-    base["briefing"] = str(cfg.get("briefing", ""))
+    base["id"] = "regional_skirmish_" + str(cfg.get("region_id", "field"))
+    base["title"] = str(cfg.get("title", fallback_title))
+    base["briefing"] = str(cfg.get("briefing", "A hostile force blocks the road ahead."))
     return base
 
 
-## Picks a group by weight (data "weight") and builds it.
 static func build_skirmish(encounters: Dictionary, battles: Dictionary, rand: RandomNumberGenerator) -> Dictionary:
     var cfg: Dictionary = encounters.get("skirmish", {})
     var groups: Array = cfg.get("groups", [])
@@ -52,4 +77,4 @@ static func build_skirmish(encounters: Dictionary, battles: Dictionary, rand: Ra
         if roll <= 0:
             index = i
             break
-    return build_group(encounters, battles, index)
+    return _build_config_group(cfg, battles, index, str(cfg.get("title", "Skirmish")))
