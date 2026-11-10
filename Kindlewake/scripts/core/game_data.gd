@@ -16,6 +16,7 @@ var skills: Dictionary = {}
 var characters: Dictionary = {}
 var traits: Dictionary = {}
 var trait_events: Dictionary = {}
+var ambitions: Dictionary = {}
 var items: Dictionary = {}
 var item_rarities: Array = []
 var runes: Dictionary = {}
@@ -44,6 +45,7 @@ func reload() -> void:
     characters = _load_json("characters.json").get("characters", {})
     traits = TraitSystemScript.definitions_from_json(_load_json("traits.json"))
     trait_events = (_load_json("trait_events.json").get("events", {}) as Dictionary).duplicate(true)
+    ambitions = (_load_json("ambitions.json").get("ambitions", {}) as Dictionary).duplicate(true)
     var item_data: Dictionary = _load_json("items.json")
     items = item_data.get("items", {})
     item_rarities = item_data.get("rarities", [])
