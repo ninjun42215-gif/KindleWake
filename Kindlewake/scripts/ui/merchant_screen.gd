@@ -1,4 +1,6 @@
 extends Control
+
+const TradeSystemScript = preload("res://scripts/core/trade_system.gd")
 ## Player-facing merchant ledger. All transactions delegate to the offline TradeSystem APIs.
 
 signal closed
@@ -104,15 +106,15 @@ func refresh(reset_status: bool = true) -> void:
     var profile: Dictionary = GameState.merchant_profile()
     var rank: Dictionary = profile.get("rank", {})
     var caravan: Dictionary = state.get("caravan", {})
-    var capacity := TradeSystem.cargo_capacity(GameData.trade_economy, state)
-    var weight := TradeSystem.cargo_weight(GameState.party, GameData.trade_economy)
+    var capacity := TradeSystemScript.cargo_capacity(GameData.trade_economy, state)
+    var weight := TradeSystemScript.cargo_weight(GameState.party, GameData.trade_economy)
     if reset_status:
         status_label.text = "%s  •  Reputation %d  •  XP %d\n%s  •  Gold %d  •  Cargo %d/%d" % [
             str(rank.get("name", "Novice Trader")), int(profile.get("reputation", 0)),
             int(profile.get("xp", 0)), GameState.active_region_id, GameState.party.gold, weight, capacity
         ]
 
-    _section("REGIONAL MARKET — " + TradeSystem.market_name(GameState.active_region_id, GameData.trade_economy))
+    _section("REGIONAL MARKET — " + TradeSystemScript.market_name(GameState.active_region_id, GameData.trade_economy))
     for quote in GameState.trade_quotes():
         var id := str(quote.get("id", ""))
         var row := HBoxContainer.new()
