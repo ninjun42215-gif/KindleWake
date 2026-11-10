@@ -1948,3 +1948,11 @@ func _test_companion_relationships() -> void:
     var restored: Dictionary = RelationshipSystemScript.normalize_state(state)
     check(RelationshipSystemScript.normalize_state(restored) == restored, "relationship state remains stable after save normalization")
     check(RelationshipSystemScript.normalize_state({}).is_empty(), "legacy campaigns default safely without relationship data")
+    var malformed_state: Dictionary = {
+        "torren|wystan": {"metrics": "not-a-dictionary", "history": "not-an-array", "seen_evidence": false},
+        "torren|sela": "not-a-pair-dictionary"
+    }
+    var sanitized: Dictionary = RelationshipSystemScript.normalize_state(malformed_state)
+    check((sanitized["torren|wystan"]["metrics"] as Dictionary).size() == RelationshipSystemScript.DIMENSIONS.size(), "relationship normalization replaces malformed metrics with safe defaults")
+    check((sanitized["torren|wystan"]["history"] as Array).is_empty() and (sanitized["torren|wystan"]["seen_evidence"] as Array).is_empty(), "relationship normalization replaces malformed history and evidence with empty arrays")
+    check(int(RelationshipSystemScript.get_relationship(sanitized, "torren", "sela").get("friendship", -1)) == 0, "malformed relationship pairs normalize to neutral zero values")
