@@ -346,7 +346,15 @@ func _resolve_companion_quest(quest_id: String, outcome: String) -> void:
     var definition: Dictionary = GameData.companion_quests.get(quest_id, {})
     var descriptions: Dictionary = definition.get("outcome_descriptions", {})
     var description := str(descriptions.get(outcome, "The companion's decision is recorded. This outcome can now be referenced by later story events."))
+    var reward_flag := "companion_quest_rewarded_" + quest_id
+    var reward: Dictionary = definition.get("completion_reward", {})
+    var gold_reward := maxi(0, int(reward.get("gold", 0)))
+    if not bool(GameState.world_flags.get(reward_flag, false)):
+        GameState.party.gold += gold_reward
+        GameState.world_flags[reward_flag] = true
     GameState.save_campaign("auto_a")
+    if gold_reward > 0:
+        description += "\\n\\nReceived %d gold for completing this personal quest." % gold_reward
     spot_text.text += "\\n\\n" + description
     for child in spot_buttons.get_children():
         if child is Button and (child as Button).text != "Close":
