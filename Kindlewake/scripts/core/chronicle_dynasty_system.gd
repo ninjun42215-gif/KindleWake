@@ -341,8 +341,9 @@ static func assign_education(raw: Dictionary, child_id: String, focus: String) -
  if not state.people.has(child_id) or not EDUCATION_FOCUSES.has(focus):
   return {"ok":false,"reason":"Choose a recorded child and a valid education focus."}
  var child: Dictionary = state.people[child_id]
- if not child.alive or int(child.age) < 6 or int(child.age) > 15 or str(child.get("guardian_id","")) == "":
-  return {"ok":false,"reason":"A living child aged 6 to 15 needs an appointed guardian before education begins."}
+ var guardian_id := str(child.get("guardian_id",""))
+ if not child.alive or int(child.age) < 6 or int(child.age) > 15 or not state.people.has(guardian_id) or not bool(state.people[guardian_id].alive) or int(state.people[guardian_id].age) < ADULT_AGE:
+  return {"ok":false,"reason":"A living child aged 6 to 15 needs a living adult guardian before education begins."}
  child["education"] = {"focus":focus,"guardian_id":str(child.guardian_id),"started_year":int(state.year),"completed":false}
  state.people[child_id] = child
  _log(state,"education_started",{"child":child_id,"focus":focus,"guardian":child.guardian_id})
