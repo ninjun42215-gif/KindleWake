@@ -75,6 +75,59 @@
       ],
       "reward_gold": 55,
       "text": "A merchant hull split against the reef. The cargo is gone, but a brass chart tube remains wedged beneath the ribs."
+    },
+    {
+      "id": "morrowtide_exchange",
+      "name": "Morrowtide Exchange",
+      "kind": "village",
+      "cell": [
+        45,
+        27
+      ],
+      "town": "morrowtide_exchange",
+      "text": "A stilt-built exchange above the kelp beds. Diver guilds trade dyes, medicines and salvage beneath a roof of patched sailcloth. Every recovered cargo is entered in the guild ledger; a buyer who ignores salvage rights will find the piers empty."
+    },
+    {
+      "id": "veyhaven_beacon",
+      "name": "Veyhaven Beacon",
+      "kind": "stronghold",
+      "cell": [
+        60,
+        5
+      ],
+      "town": "veyhaven_beacon",
+      "owner": "tidebound_assembly",
+      "capture_method": "beacon_restoration",
+      "claim_requires_flag": "stormwell_grounding_solved",
+      "claim_requirement_text": "Restore the Stormwell grounding chain before the beacon keepers will transfer the watch.",
+      "governance": "beacon_warden",
+      "text": "A cliff-top signal fortress links the outer islands by fire and mirror. Its lamp room is intact, but the signal chain has failed. Ships without the beacon's warning risk the reefs, so restoring the light matters more than merely occupying its walls."
+    },
+    {
+      "id": "wreck_kings_hold_dungeon",
+      "name": "The Wreck-King's Hold",
+      "kind": "dungeon",
+      "cell": [
+        56,
+        40
+      ],
+      "town": "dungeon_wreck_kings_hold",
+      "battle": "battle_tideglass",
+      "world_flag_on_victory": "dungeon_wreck_kings_hold_cleared",
+      "text": "A fortress assembled from lashed ship hulls on a reef shelf. Corridors tilt with the swell, and signal lanterns summon reinforcements from nearby wrecks. Disrupt the corsair code before challenging the Wreck-King."
+    },
+    {
+      "id": "stormwell_dungeon",
+      "name": "Stormwell",
+      "kind": "dungeon",
+      "cell": [
+        8,
+        8
+      ],
+      "town": "dungeon_stormwell",
+      "battle": "battle_tideglass",
+      "world_flag_on_victory": "dungeon_stormwell_cleared",
+      "text": "A sea-cut shaft draws lightning into a ring of bronze conductors. A damaged grounding chain sends the charge through the flooded floor. The old keeper's log describes a safe sequence for insulating and releasing the stored storm."
     }
   ],
   "roads": [
@@ -97,10 +150,38 @@
     [
       "lantern_quay",
       "northstar_wreck"
+    ],
+    [
+      "saltmere",
+      "morrowtide_exchange"
+    ],
+    [
+      "morrowtide_exchange",
+      "lantern_quay"
+    ],
+    [
+      "lantern_quay",
+      "veyhaven_beacon"
+    ],
+    [
+      "northstar_wreck",
+      "veyhaven_beacon"
+    ],
+    [
+      "saltmere",
+      "wreck_kings_hold_dungeon"
+    ],
+    [
+      "brinegate",
+      "stormwell_dungeon"
+    ],
+    [
+      "old_beacon_vault",
+      "stormwell_dungeon"
     ]
   ],
   "region_notes": {
-    "brinegate_coast": "The Brinegate Coast: harbour politics, darkened beacons, tidal caves and the first evidence that the Covenant's sea-lanes were deliberately unbound."
+    "brinegate_coast": "The Brinegate Coast: harbour politics, darkened beacons, tidal caves and the first evidence that the Covenant's sea-lanes were deliberately unbound. Morrowtide Exchange, Veyhaven Beacon, Stormwell and the Wreck-King's Hold extend the island routes into the outer reef."
   },
   "wrap_world": true
 }
