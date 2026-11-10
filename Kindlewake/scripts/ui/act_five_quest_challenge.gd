@@ -128,6 +128,8 @@ func _choose_route(route: String) -> void:
   _render()
 func _route_action(action: String) -> void:
  if _apply(System.resolve_route_action(GameState.world_flags,action)):
+  GameState.pending_location = "aurelmont"
+  GameState.save_campaign("auto_a")
   _render()
 func _convene() -> void:
  if _apply(System.evidence_board(GameState.world_flags)):
@@ -152,6 +154,7 @@ func _end(message: String) -> void:
  body_label.text = message
  _add("Return", _return_to_location)
 func _return_to_location() -> void:
- GameState.world_flags.erase("_pending_act_five_stage")
+ if GameState.pending_location == "":
+  GameState.pending_location = "aurelmont"
  GameState.save_campaign("auto_a")
  get_tree().change_scene_to_file("res://Location.tscn")
