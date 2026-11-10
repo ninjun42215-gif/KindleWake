@@ -125,7 +125,7 @@ func _start_battle() -> void:
         battle_def = GameState.take_pending_battle()
     if battle_def.is_empty():
         battle_def = GameData.battle_def(BATTLE_ID)
-    controller.setup(battle_def, GameState.battle_db())
+    controller.setup(battle_def, GameState.battle_db_for_battle(battle_def))
     _center_camera()
     for o in controller.units:
         var u: BattleUnitScript = o
@@ -142,7 +142,7 @@ func _show_prep() -> void:
     prep_title.text = str(battle_def.get("title", "Battle"))
     var lines: Array[String] = [str(battle_def.get("briefing", "")), "", "Gold: %d" % GameState.party.gold]
     prep_text.text = "\n".join(PackedStringArray(lines))
-    btn_flee.visible = GameState.from_world and str(battle_def.get("id", "")) != "east_gallery_escape"
+    btn_flee.visible = GameState.from_world and not battle_def.has("strategic_army_id") and str(battle_def.get("id", "")) != "east_gallery_escape"
     prep_panel.visible = true
     _refresh_ui()
     queue_redraw()
@@ -450,7 +450,7 @@ func _on_world_pressed() -> void:
 func _all_company_members_fallen() -> bool:
     for unit_obj in controller.units:
         var unit: BattleUnitScript = unit_obj
-        if unit.team == "player" and unit.is_alive():
+        if unit.team == "player" and GameState.party.roster.has(unit.character_id) and unit.is_alive():
             return false
     return true
 
@@ -572,6 +572,15 @@ func _show_result() -> void:
             GameState.world_flags[clear_flag] = true
     if not exp_awarded:
         exp_awarded = true
+        if battle_def.has("strategic_army_id"):
+            var strategic_report: Dictionary = GameState.resolve_field_army_battle(battle_def, controller.units, won)
+            if bool(strategic_report.get("ok", false)):
+                var losses: Dictionary = strategic_report.get("casualties", {})
+                result_text.text += "\n\nField army casualties — Infantry %d · Archers %d · Cavalry %d." % [int(losses.get("infantry", 0)), int(losses.get("archers", 0)), int(losses.get("cavalry", 0))]
+                if bool(battle_def.get("strategic_siege_assault", false)):
+                    result_text.text += "\n" + ("The breached walls are taken. Confirm occupation in Royal Administration." if bool(strategic_report.get("won", false)) else "The defenders repulse the assault. The siege must recover before another attempt.")
+            else:
+                result_text.text += "\n\nStrategic army report could not be recorded: " + str(strategic_report.get("reason", "unknown"))
         battle_rewards = GameState.award_battle(controller.units, controller.result)
         var reward_rune: String = str(battle_def.get("reward_rune", ""))
         if won and reward_rune != "" and GameData.runes.has(reward_rune):
