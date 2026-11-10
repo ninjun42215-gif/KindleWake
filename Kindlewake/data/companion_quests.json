@@ -682,6 +682,24 @@
       ],
       "completion_reward": {
         "gold": 80
+      },
+      "synopsis": "Seraphine discovers that new members of the Tarnholt order have been asked to swear to an oath they were never allowed to read. She traces the practice through chapter records and listens to members who fear expulsion. The evidence shows that the custom has become institutional rather than an isolated mistake. Seraphine must choose reform, refusal or transparent oversight without confusing the public Covenant compact with any secret faction that borrows its name.",
+      "journal_summary": "Recover the unread oath, examine the chapter's records and hear the members affected by the practice. Decide whether Seraphine should reform the order, refuse its authority or remain under transparent oversight.",
+      "resolution_prompt": "The chapter has heard the evidence. Seraphine can renew a revised oath, refuse the institution's authority or remain while demanding transparent oversight and protection for members who leave.",
+      "outcome_labels": {
+        "revise_oath": "Renew a revised and readable oath",
+        "refuse_authority": "Refuse the order's authority",
+        "demand_oversight": "Remain and demand oversight"
+      },
+      "outcome_descriptions": {
+        "revise_oath": "Seraphine helps the chapter adopt an oath that every member can read before consenting. The revised text protects freedom of conscience and makes the order answerable for its promises.",
+        "refuse_authority": "Seraphine refuses to lend her standing to an institution that will not honour informed consent. She becomes an independent protector for members who choose to leave, without declaring every believer complicit.",
+        "demand_oversight": "Seraphine remains as a lay mediator under a public review charter, with independent complaints, published rules and protection against retaliation. The chapter must demonstrate reform rather than claim it."
+      },
+      "outcome_flags": {
+        "revise_oath": "seraphine_outcome_oath_revised",
+        "refuse_authority": "seraphine_outcome_authority_refused",
+        "demand_oversight": "seraphine_outcome_oversight_demanded"
       }
     },
     "q_companion_ilyan_silent_tower": {
