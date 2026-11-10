@@ -4,6 +4,7 @@ extends RefCounted
 ## This system does not simulate families or titles; it protects the transition into that mode.
 
 const VERSION := 1
+const MIN_FOUNDER_DEATH_AGE := 70
 const REQUIRED_MILESTONES := [
     "campaign_completed",
     "became_last_emperor",
@@ -41,7 +42,7 @@ static func _apply_milestone(state: Dictionary, milestone: String, details: Dict
     if index > 0 and not bool(milestones.get(REQUIRED_MILESTONES[index - 1], false)):
         return false
     if milestone == "natural_old_age_death":
-        if str(details.get("cause", "")) != "old_age" or str(details.get("protagonist_id", "")) == "":
+        if str(details.get("cause", "")) != "old_age" or str(details.get("protagonist_id", "")) == "" or int(details.get("age_at_death", 0)) < MIN_FOUNDER_DEATH_AGE:
             return false
     milestones[milestone] = true
     state["milestones"] = milestones
