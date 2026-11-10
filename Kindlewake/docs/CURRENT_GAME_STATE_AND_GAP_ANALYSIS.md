@@ -135,3 +135,10 @@ For each feature, update this document with:
 - remaining limitations and next action.
 
 Do not mark a feature as implemented based on a plan, prompt, code scaffold or documentation alone.
+
+
+## Mechanics and game-bible audit addendum (2026-11-10)
+
+The project has a detailed [GDD](GDD.md), a [Premium Production Bible](PREMIUM_PRODUCTION_BIBLE.md), and the new consolidated [Mechanics Bible](MECHANICS_BIBLE.md) plus [Master Game Bibles Index](GAME_BIBLES_INDEX.md). The GDD includes dedicated design sections for tactical combat, character progression, recruitment, platoons, large-scale army battles, Kaer Sethorn, legacy mode, story, world/factions, roster, sprites, mobile UI and offline architecture. The mechanics bible maps those systems and highlights dependencies; it does not supersede the full GDD.
+
+The following must not be represented as fully playable without source verification: full platoon/army battle loop, generational Legacy Mode, full kingdom/empire management, council/governance UI, automatic faction turns/wars, sieges, complete CK-style trait simulation and the six proposed mini-games. The faction backend described in the session handoff is a foundation only; it is not a complete player-facing diplomacy or war system. Existing tactical formulas and data counts are documented baselines; verify the current source and tests before adding, balancing or claiming them.
