@@ -1,6 +1,7 @@
 extends Node
 
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
+const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 ## Read-only content database (autoload "GameData"). Loads every local JSON file in res://data.
 ## No network, no external services. Content is data-driven so new heroes/maps cost data, not code.
 
@@ -13,6 +14,7 @@ var terrain: Dictionary = {}
 var weapons: Dictionary = {}
 var skills: Dictionary = {}
 var characters: Dictionary = {}
+var traits: Dictionary = {}
 var items: Dictionary = {}
 var item_rarities: Array = []
 var runes: Dictionary = {}
@@ -38,6 +40,7 @@ func reload() -> void:
     weapons = _load_json("weapons.json").get("weapons", {})
     skills = _load_json("skills.json").get("skills", {})
     characters = _load_json("characters.json").get("characters", {})
+    traits = TraitSystemScript.definitions_from_json(_load_json("traits.json"))
     var item_data: Dictionary = _load_json("items.json")
     items = item_data.get("items", {})
     item_rarities = item_data.get("rarities", [])
@@ -71,6 +74,7 @@ func as_db() -> Dictionary:
         "items": items,
         "runes": runes,
         "sigils": runes,
+        "traits": traits,
     }
     var resolved: Dictionary = {}
     for k in characters.keys():
@@ -83,12 +87,12 @@ func as_db() -> Dictionary:
 
 ## The small database PartyState needs to pay rewards (classes for level-ups, items and sigils for bonuses).
 func rules_db() -> Dictionary:
-    return {"classes": classes, "items": items, "runes": runes, "sigils": runes}
+    return {"classes": classes, "items": items, "runes": runes, "sigils": runes, "traits": traits}
 
 
 ## Everything the party screen needs to compute and describe gear, sigils and skills.
 func party_db() -> Dictionary:
-    return {"classes": classes, "weapons": weapons, "items": items, "runes": runes, "sigils": runes, "skills": skills}
+    return {"classes": classes, "weapons": weapons, "items": items, "runes": runes, "sigils": runes, "skills": skills, "traits": traits}
 
 
 func battle_def(battle_id: String) -> Dictionary:
