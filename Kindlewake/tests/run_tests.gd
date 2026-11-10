@@ -173,6 +173,26 @@ func _test_companion_quests() -> void:
         if not found:
             world_hooks_ok = false
     check(world_hooks_ok, "Brisa's three ordered quest milestones are connected to Foxglove town, inn and market interactions")
+    var authored_quest_maps := {
+        "q_companion_lucan_last_flight": {"thornmere": "signal_found", "thornmere_inn": "patrol_traced", "thornmere_market": "witness_heard"},
+        "q_companion_kestrel_no_master": {"elderbough": "coded_mark_found", "elderbough_inn": "safehouse_investigated", "elderbough_market": "witness_protected"}
+    }
+    var authored_hooks_ok := true
+    for authored_quest_id in authored_quest_maps.keys():
+        for map_id in authored_quest_maps[authored_quest_id].keys():
+            var found_hook := false
+            for authored_spot in maps.get(map_id, {}).get("spots", []):
+                if str(authored_spot.get("companion_quest_id", "")) == authored_quest_id and str(authored_spot.get("companion_quest_milestone", "")) == str(authored_quest_maps[authored_quest_id][map_id]):
+                    found_hook = true
+                    var challenge: Dictionary = authored_spot.get("companion_quest_challenge", {})
+                    if not challenge.is_empty() and (not (challenge.get("options", []) as Array).has(str(challenge.get("correct_option", ""))) or (challenge.get("options", []) as Array).size() < 2):
+                        authored_hooks_ok = false
+            if not found_hook:
+                authored_hooks_ok = false
+        var outcome_flags: Dictionary = gd.companion_quests[authored_quest_id].get("outcome_flags", {})
+        if outcome_flags.size() != (gd.companion_quests[authored_quest_id].get("outcomes", []) as Array).size():
+            authored_hooks_ok = false
+    check(authored_hooks_ok, "Lucan and Kestrel have three ordered location hooks, valid investigation challenges and persistent outcome branches")
 
 
 func _test_prologue() -> void:
