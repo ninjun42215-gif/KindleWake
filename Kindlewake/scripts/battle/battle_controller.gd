@@ -337,6 +337,8 @@ func _cast_damage(unit: BattleUnit, skill_id: String, sk: Dictionary, target: Ba
         unit.kills += 1
         unit.kill_exp += CombatCalc.kill_exp(target)
         _apply_kill_morale(unit, target)
+    else:
+        evaluate_boss_phase(target)
     _check_end()
     state_changed.emit()
     return true
