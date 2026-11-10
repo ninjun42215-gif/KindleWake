@@ -928,7 +928,7 @@ func _test_empire_management() -> void:
     check(EmpireSystem.construct(state, "orrowen_weald", "fort", known_regions), "known province accepts a valid fort construction")
     state["food"] = 0
     var before_order: int = int(state["public_order"])
-    var report: Dictionary = EmpireSystem.advance_season(state, ["sethmarch"])
+    var report: Dictionary = EmpireSystem.advance_season(state, [])
     check(bool(report.get("ok", false)) and int(report.get("season", 0)) == 1, "season advancement produces a dated report")
     check(bool(report.get("food_shortage", false)) and int(state["public_order"]) < before_order, "food shortage causes a public-order penalty")
     var restored: Dictionary = EmpireSystem.normalize_state(state)
