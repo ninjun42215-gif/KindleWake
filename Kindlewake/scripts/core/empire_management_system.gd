@@ -1,4 +1,6 @@
 extends RefCounted
+
+const FactionSystem = preload("res://scripts/core/faction_system.gd")
 ## Offline realm-administration rules. Story systems decide when the player gains authority.
 ## All mutations are deterministic and serializable; no background simulation or network service.
 
