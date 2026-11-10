@@ -39,10 +39,10 @@ func _initialize() -> void:
  check(bool(domain.ok),"new domain can be founded under a living steward")
  state = domain.state
  check(not Dynasty.create_domain(state,"","heir_2").ok,"unnamed domain is rejected")
- var title := Dynasty.create_title(state,"count","Count of the Western Orchards","heir_2",str(domain.domain_id))
- check(bool(title.ok),"higher noble title can be established with jurisdiction and duties")
+ var title := Dynasty.create_title(state,"viscount","Viscount of the Western Orchards","heir_2",str(domain.domain_id))
+ check(bool(title.ok),"next noble rank can be established with jurisdiction and duties")
  state = title.state
- check(not Dynasty.create_title(state,"knight","Knight of Nowhere","heir_2",str(domain.domain_id)).ok,"title rank cannot move backwards")
+ check(not Dynasty.create_title(state,"count","Count of Nowhere","heir_2",str(domain.domain_id)).ok,"title rank cannot skip the intervening viscount rank")
  check(bool(Dynasty.assign_title(state,"founder_barony","heir_2").ok),"existing title can be granted to a living family member")
  var saved := JSON.parse_string(JSON.stringify(state))
  var restored := Dynasty.normalize_state(saved)
