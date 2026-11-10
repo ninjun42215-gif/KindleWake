@@ -535,19 +535,23 @@ func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
             return
         if bool(res["hit"]):
             var crit: bool = bool(res["crit"])
-            _add_battle_vfx(target, "slash", Color(1.0, 0.82, 0.42) if crit else Color(0.85, 0.92, 1.0))
+            var attacker: BattleUnitScript = controller.unit_by_id(unit_id)
+            var attack_effect := "hask_strike" if attacker != null and attacker.character_id == "hask_convoy_champion" else "slash"
+            _add_battle_vfx(target, attack_effect, Color(1.0, 0.42, 0.18) if attack_effect == "hask_strike" else (Color(1.0, 0.82, 0.42) if crit else Color(0.85, 0.92, 1.0)))
             _add_popup(target, str(res["damage"]) + ("!" if crit else ""), Color(1.0, 0.85, 0.3) if crit else Color.WHITE)
         else:
             _add_popup(target, "Miss", Color(0.75, 0.75, 0.75))
     elif kind == "skill_damage":
         var hit_target: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
         if hit_target != null:
-            var skill_color := Color(1.0, 0.48, 0.24)
+            var caster: BattleUnitScript = controller.unit_by_id(unit_id)
+            var bailiff_cast := caster != null and caster.character_id == "ash_bailiff"
+            var skill_color := Color(0.96, 0.76, 0.32) if bailiff_cast else Color(1.0, 0.48, 0.24)
             var rune_status: String = str(data.get("status", ""))
             if rune_status == "chill": skill_color = Color(0.42, 0.78, 1.0)
             elif rune_status == "shock": skill_color = Color(1.0, 0.92, 0.32)
             elif rune_status == "exposed": skill_color = Color(0.82, 0.52, 1.0)
-            _add_battle_vfx(hit_target, "burst", skill_color)
+            _add_battle_vfx(hit_target, "bailiff_judgement" if bailiff_cast else "burst", skill_color)
             _add_popup(hit_target, str(data["damage"]) + "*", Color(1.0, 0.55, 0.25))
             if rune_status != "":
                 var effect_color := Color(1.0, 0.4, 0.2)
@@ -872,6 +876,19 @@ func _draw_battle_vfx() -> void:
                 var ray_end := center + Vector2(cos(angle), sin(angle) * 0.55) * (radius + 8.0) + Vector2(0, -27)
                 draw_line(ray_start, ray_end, col.lightened(0.2), 3.0 * (1.0 - t) + 0.5)
             draw_circle(center + Vector2(0, -27), 7.0 * (1.0 - t), Color(1.0, 0.82, 0.48, col.a))
+        elif kind == "hask_strike":
+            var sweep := 34.0 * (1.0 - t)
+            draw_line(center + Vector2(-sweep, -47.0), center + Vector2(sweep, -7.0), col, 5.0 * (1.0 - t) + 1.0)
+            draw_line(center + Vector2(sweep * 0.65, -48.0), center + Vector2(-sweep * 0.65, -12.0), col.lightened(0.35), 2.5 * (1.0 - t) + 0.5)
+            draw_arc(center + Vector2(0, -27), 12.0 + t * 22.0, -PI * 0.9, PI * 0.25, 20, col, 3.0 * (1.0 - t) + 0.5)
+        elif kind == "bailiff_judgement":
+            var radius := 10.0 + t * 38.0
+            draw_arc(center + Vector2(0, -28), radius, 0.0, TAU, 36, col, 4.0 * (1.0 - t) + 0.8)
+            draw_line(center + Vector2(0, -66.0 - t * 8.0), center + Vector2(0, -3.0), col.lightened(0.35), 4.0 * (1.0 - t) + 0.5)
+            for k in range(4):
+                var side := -1.0 if k % 2 == 0 else 1.0
+                var yoff := float(k / 2) * 15.0
+                draw_line(center + Vector2(side * 5.0, -48.0 + yoff), center + Vector2(side * radius, -28.0 + yoff), col, 2.0 * (1.0 - t) + 0.5)
         elif kind == "phase_bailiff":
             var radius := 13.0 + t * 48.0
             draw_arc(center + Vector2(0, -28), radius, 0.0, TAU, 36, col, 3.5 * (1.0 - t) + 0.8)
