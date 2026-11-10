@@ -124,15 +124,15 @@ func advance_empire_season() -> Dictionary:
     return EmpireSystem.advance_season(empire_state, player_controlled_provinces())
 
 func recruit_provincial_troops(province_id: String, troop_type: String, amount: int) -> bool:
-	return EmpireSystem.recruit_troops(empire_state, province_id, troop_type, amount, player_controlled_provinces())
+    return EmpireSystem.recruit_troops(empire_state, province_id, troop_type, amount, player_controlled_provinces())
 
 
 func disband_provincial_troops(province_id: String, troop_type: String, amount: int) -> bool:
-	return EmpireSystem.disband_troops(empire_state, province_id, troop_type, amount, player_controlled_provinces())
+    return EmpireSystem.disband_troops(empire_state, province_id, troop_type, amount, player_controlled_provinces())
 
 
 func empire_army_summary() -> Dictionary:
-	return EmpireSystem.army_summary(empire_state)
+    return EmpireSystem.army_summary(empire_state)
 
 
 ## Battle database with the party's current sheets (level, stats, equipment) substituted in.
