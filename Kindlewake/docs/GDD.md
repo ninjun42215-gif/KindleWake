@@ -951,3 +951,7 @@ Trade, diplomacy, rebellion and budget features are persistent and deterministic
 - Strategic battle instances now receive unique persisted IDs; resolved battle IDs are retained in campaign state and duplicate result submissions are rejected, preventing repeated casualties/war-exhaustion awards after reloads.
 
 - Siege engineer now has two tactical skills: Field Repair restores HP to a nearby allied unit (including the ram), and Breach Charge damages a nearby wall/gate or enemy. Both use the standard BattleController skill/target flow.
+
+- Added low/standard/high trade tariff policies (5%/10%/20% of route turnover); high tariffs increase revenue but reduce public order and legitimacy, while low tariffs improve order.
+- Added authored resource specializations for the seven Crown Continent regions: Sethmarch grain, Orrowen timber, Vessmoor horses, Quillon crystal, Tarnholt incense, Brennhallow iron and Aurelmont royal crafts. Controlled regions contribute seasonal income, food, manpower, stability or public-order yields.
+- Council effects now account for companion loyalty as well as traits and office: low loyalty creates stability/order strain and war exhaustion; high loyalty grants a modest role-specific bonus.
