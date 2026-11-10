@@ -410,9 +410,12 @@ func _claim_holding(p: Dictionary) -> void:
     if not bool(result.get("ok", false)):
         _open_place(p, str(result.get("reason", "The holding cannot be secured.")))
         return
+    var realm_unlocked := GameState.unlock_empire_management()
     GameState.save_campaign("auto_a")
     var method: String = str(p.get("capture_method", "occupation"))
     var consequence: String = "A provisional garrison is sworn in. The holding is yours to administer, but stability must be earned through food, safety, fair levies and respect for local custom."
+    if realm_unlocked:
+        consequence += "\n\nYour first external stronghold is secured. The war room can now coordinate realm administration: tax policy, regional governors and royal decrees. The Realm screen is available from the world HUD."
     if method == "forest_stewardship_compact":
         consequence = "The wardens accept a stewardship compact. The watch remains under local law, and the old-growth grove is placed under protection."
     elif method == "grain_charter":
@@ -818,7 +821,7 @@ func _build_ui() -> void:
     root.add_child(global_atlas_btn)
     global_atlas_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 144)
     global_atlas_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-    empire_btn = _btn("HOLDINGS", _open_empire, 17)
+    empire_btn = _btn("REALM", _open_empire, 17)
     empire_btn.custom_minimum_size = Vector2(190, 48)
     root.add_child(empire_btn)
     empire_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 204)
