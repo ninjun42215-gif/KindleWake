@@ -12,6 +12,10 @@ static func decide(unit: BattleUnit, ctl) -> Dictionary:
     var plan: Dictionary = {"move_to": unit.cell, "action": "wait", "target": null}
     if unit.morale <= 0 or unit.has_acted:
         return plan
+    if unit.is_commander and unit.character_id == "hask_convoy_champion" and str(ctl.def.get("id", "")) == "act1_hask_boss":
+        return _decide_hask(unit, ctl)
+    if unit.is_commander and unit.character_id == "ash_bailiff" and str(ctl.def.get("id", "")) == "act1_ash_bailiff_boss":
+        return _decide_ash_bailiff(unit, ctl)
     var reach: Dictionary = ctl.reach_for(unit)
     var cost: Dictionary = reach["cost"]
     var origin: Vector2i = unit.cell
@@ -57,6 +61,137 @@ static func decide(unit: BattleUnit, ctl) -> Dictionary:
     if not unit.has_moved:
         plan["move_to"] = _approach_cell(unit, ctl, reach)
     return plan
+
+
+
+
+## Hask is a formation-breaker: he prefers exposed targets and spends his limited MP on a
+## Power Strike only when it improves the attack from a legal reachable cell.
+static func _decide_hask(unit: BattleUnit, ctl) -> Dictionary:
+    var candidates := _candidate_cells(unit, ctl)
+    var origin: Vector2i = unit.cell
+    var best: Dictionary = {}
+    var best_score := -1.0e9
+    for candidate in candidates:
+        unit.cell = candidate
+        var targets: Array[BattleUnit] = ctl.skill_targets(unit, "power_strike")
+        for target in targets:
+            var preview: Dictionary = CombatCalc.skill_preview(unit, target, ctl.skills.get("power_strike", {}), "power_strike", ctl.weapon_of(unit))
+            var average := (float(preview.get("dmg_min", 0)) + float(preview.get("dmg_max", 0))) * 0.5
+            var score := average + _isolation_score(target, ctl) * 7.0
+            score += 22.0 if float(preview.get("dmg_max", 0)) >= float(target.hp) else 0.0
+            score += 9.0 if target.is_protagonist else 0.0
+            score += 6.0 if target.is_commander else 0.0
+            score += float(ctl.map.cover_at(candidate)) * 0.15
+            score -= 1.5 * _threat_at(unit, candidate, ctl)
+            score -= 0.6 * float(BattleMap.manhattan(origin, candidate))
+            if score > best_score:
+                best_score = score
+                best = {"move_to": candidate, "action": "skill", "skill_id": "power_strike", "target": target}
+        for target in ctl.attack_targets(unit, candidate):
+            var score := _score_attack(unit, target, candidate, ctl) + _isolation_score(target, ctl) * 5.0
+            score += 8.0 if target.is_protagonist else 0.0
+            if score > best_score:
+                best_score = score
+                best = {"move_to": candidate, "action": "attack", "target": target}
+    unit.cell = origin
+    if not best.is_empty():
+        return best
+    return _generic_boss_approach(unit, ctl)
+
+
+## The Bailiff protects his retainers, heals a badly wounded ally, then judges enemies
+## threatening the formation. All choices still pass through BattleController actions.
+static func _decide_ash_bailiff(unit: BattleUnit, ctl) -> Dictionary:
+    var candidates := _candidate_cells(unit, ctl)
+    var origin: Vector2i = unit.cell
+    var best_heal: Dictionary = {}
+    var heal_score := -1.0e9
+    for candidate in candidates:
+        unit.cell = candidate
+        if unit.skills.has("mend_ii"):
+            for ally in ctl.skill_targets(unit, "mend_ii"):
+                var ratio := float(ally.hp) / float(ally.max_hp())
+                if ratio > 0.72:
+                    continue
+                var score := (1.0 - ratio) * 95.0
+                score += _ally_under_pressure_score(ally, ctl) * 5.0
+                score += 8.0 if ally.character_id != "ash_bailiff" else 0.0
+                score += float(ctl.map.cover_at(candidate)) * 0.2
+                score -= 1.5 * _threat_at(unit, candidate, ctl)
+                score -= 0.5 * float(BattleMap.manhattan(origin, candidate))
+                if score > heal_score:
+                    heal_score = score
+                    best_heal = {"move_to": candidate, "action": "skill", "skill_id": "mend_ii", "target": ally}
+    unit.cell = origin
+    if not best_heal.is_empty() and heal_score >= 28.0:
+        return best_heal
+
+    var smite := _best_bolt(unit, ctl, candidates)
+    if not smite.is_empty() and str(smite.get("skill_id", "")) == "holy_smite_ii":
+        var target: BattleUnit = smite["target"]
+        smite["score"] = float(smite["score"]) + _ally_under_pressure_score(target, ctl) * 4.0
+        smite["score"] += 10.0 if target.is_protagonist else 0.0
+        var attack_plan := _best_weapon_attack(unit, ctl, candidates)
+        if attack_plan.is_empty() or float(smite["score"]) >= float(attack_plan.get("score", -1.0e9)):
+            return {"move_to": smite["cell"], "action": "skill", "skill_id": "holy_smite_ii", "target": target}
+        return {"move_to": attack_plan["cell"], "action": "attack", "target": attack_plan["target"]}
+    var fallback := _best_weapon_attack(unit, ctl, candidates)
+    if not fallback.is_empty():
+        return {"move_to": fallback["cell"], "action": "attack", "target": fallback["target"]}
+    return _generic_boss_approach(unit, ctl)
+
+
+static func _candidate_cells(unit: BattleUnit, ctl) -> Array[Vector2i]:
+    var out: Array[Vector2i] = [unit.cell]
+    if unit.has_moved:
+        return out
+    var reach: Dictionary = ctl.reach_for(unit)
+    var costs: Dictionary = reach.get("cost", {})
+    for key in costs.keys():
+        var cell: Vector2i = key
+        if cell != unit.cell and ctl.unit_at(cell) == null:
+            out.append(cell)
+    return out
+
+
+static func _best_weapon_attack(unit: BattleUnit, ctl, candidates: Array[Vector2i]) -> Dictionary:
+    var origin: Vector2i = unit.cell
+    var best: Dictionary = {}
+    var best_score := -1.0e9
+    for candidate in candidates:
+        unit.cell = candidate
+        for target in ctl.attack_targets(unit, candidate):
+            var score := _score_attack(unit, target, candidate, ctl) + _ally_under_pressure_score(target, ctl) * 3.0
+            if score > best_score:
+                best_score = score
+                best = {"cell": candidate, "target": target, "score": score}
+    unit.cell = origin
+    return best
+
+
+static func _isolation_score(target: BattleUnit, ctl) -> float:
+    var nearby_support := 0
+    for other in ctl.units:
+        if other.is_alive() and other.team == target.team and other.id != target.id and BattleMap.manhattan(other.cell, target.cell) <= 2:
+            nearby_support += 1
+    return 3.0 - float(mini(3, nearby_support))
+
+
+static func _ally_under_pressure_score(target: BattleUnit, ctl) -> float:
+    var pressure := 0.0
+    for other in ctl.units:
+        if not other.is_alive() or other.team == target.team:
+            continue
+        var distance := BattleMap.manhattan(other.cell, target.cell)
+        if distance <= other.move + int(ctl.weapon_of(other).get("range_max", 1)):
+            pressure += 1.0
+    return pressure
+
+
+static func _generic_boss_approach(unit: BattleUnit, ctl) -> Dictionary:
+    var reach: Dictionary = ctl.reach_for(unit)
+    return {"move_to": _approach_cell(unit, ctl, reach), "action": "wait", "target": null}
 
 
 ## Support behaviour: a unit with a heal skill tops up a badly hurt ally (at or below 50% HP) before fighting.
