@@ -119,3 +119,16 @@ Siege progression is an explicit objective state machine. A player holding can s
 ## Seven regional boss encounter briefs
 
 `data/regional_boss_encounters.json` is now loaded by GameData and contains a three-phase encounter brief for each continent. Each brief defines its arena, hazards, phase objectives and counterplay. These are authored encounter specifications, not yet fully playable boss battle scenes or battle rosters. The data validation test checks all seven records and their phase structure.
+
+
+## Playable regional guardian and siege encounters
+
+The seven regional boss records now have matching tactical battle definitions and combatant character sheets. Each is registered in GameData, with its authored phase hazards, objective text and counterplay attached to the battle definition. The tactical controller announces the opening phase and advances the boss phase when its commander HP crosses the authored thresholds. Phase progress is included in the battle snapshot.
+
+The overworld exposes a Regional Guardian challenge in a region after the player secures at least one holding there. The challenge loads the corresponding continent guardian battle. This is a regional gate based on local holding ownership, not an unrestricted global boss selector.
+
+The Holdings screen also launches a siege battlefield from a player-administered holding. The battle result resolves the associated siege record as secured or repelled; a repelled siege can be attempted again. The current siege battlefield is a reusable assault scenario, not yet a unique authored map for every enemy holding. Siege victories do not automatically transfer sovereignty.
+
+## Current tactical scope
+
+The guardian fights are playable with their own commander units, enemy escorts, maps, and health-threshold phase transitions. Phase-specific hazard and objective text is surfaced to the battle log. The next combat pass should turn those announced objectives into distinct interactive battlefield mechanics (for example, destructible signal drums, ward pylons, root anchors, lens controls and safe-tile rotations) rather than treating every phase as a commander-health encounter.
