@@ -49,6 +49,7 @@ var company_btn: Button
 var manual_save_btn: Button
 var global_atlas_btn: Button
 var empire_btn: Button
+var boss_btn: Button
 var empire_screen: EmpireScreenScript
 var prompt_btn: Button
 var place_panel: PanelContainer
@@ -815,6 +816,11 @@ func _build_ui() -> void:
     root.add_child(empire_btn)
     empire_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 204)
     empire_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    boss_btn = _btn("REGIONAL GUARDIAN", _challenge_regional_boss, 17)
+    boss_btn.custom_minimum_size = Vector2(190, 48)
+    root.add_child(boss_btn)
+    boss_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 264)
+    boss_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 
     # Top-centre: ambush banner
     banner = _hud_panel(0.95)
@@ -886,6 +892,14 @@ func _build_ui() -> void:
     empire_screen.visible = false
     empire_screen.closed.connect(_on_empire_closed)
 
+
+
+func _challenge_regional_boss() -> void:
+    if panel_open or ambush_timer >= 0.0 or not GameState.regional_boss_available(GameState.active_region_id):
+        return
+    GameState.world_pos = wmap.wrap_position(player_pos)
+    if GameState.start_regional_boss_for_region(GameState.active_region_id):
+        _go_to_battle(GameState.take_pending_battle())
 
 
 func _open_empire() -> void:
@@ -1006,6 +1020,8 @@ func _region_name_at(cell: Vector2i) -> String:
 
 
 func _update_hud() -> void:
+    if boss_btn != null:
+        boss_btn.visible = GameState.regional_boss_available(GameState.active_region_id) and not panel_open
     var cell: Vector2i = cell_of(player_pos)
     var txt: String = "%s  •  %s%s\nGOLD  %d" % [_region_name_at(cell), wmap.terrain_name(cell), "  •  SAFE" if _in_safe_zone(cell) else "", GameState.party.gold]
     if txt != hud_text:
