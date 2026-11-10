@@ -2,7 +2,6 @@ extends Control
 ## Touch-first escape traversal between the authored prologue choice and the first tactical battle.
 
 const EscapeMissionScript = preload("res://scripts/core/escape_mission.gd")
-const EscapeLayout = preload("res://scripts/ui/escape_layout.gd")
 
 var player_pos := Vector2.ZERO
 var target_pos := Vector2.ZERO
