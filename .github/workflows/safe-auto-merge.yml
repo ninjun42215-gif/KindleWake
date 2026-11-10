@@ -160,6 +160,6 @@ jobs:
           jq -e --arg sha "${SHA}" --arg base "${DEFAULT_BRANCH}" \
             '.isDraft == false and .mergeable == "MERGEABLE" and .headRefOid == $sha and .baseRefName == $base' final-pr.json >/dev/null
 
-          response="$(gh api --repo "${GH_REPO}" --method PUT "repos/${GH_REPO}/pulls/${PR_NUMBER}/merge" \
+          response="$(gh api --method PUT "repos/${GH_REPO}/pulls/${PR_NUMBER}/merge" \
             -f sha="${SHA}" -f merge_method=squash)"
           jq -e '.merged == true' <<< "${response}" >/dev/null
