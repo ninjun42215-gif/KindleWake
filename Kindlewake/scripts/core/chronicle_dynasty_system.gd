@@ -132,9 +132,18 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
   var adoptive_parent_id := str(person.get("adoptive_parent_id",""))
   person["adoptive_parent_id"] = adoptive_parent_id if people.has(adoptive_parent_id) else ""
   var education: Variant = person.get("education",{})
-  person["education"] = education.duplicate(true) if typeof(education) == TYPE_DICTIONARY else {}
+  var clean_education: Dictionary = education.duplicate(true) if typeof(education) == TYPE_DICTIONARY else {}
+  var focus := str(clean_education.get("focus",""))
+  clean_education["focus"] = focus if EDUCATION_FOCUSES.has(focus) else ""
+  clean_education["completed"] = bool(clean_education.get("completed",false))
+  person["education"] = clean_education
   var claims: Variant = person.get("claims",[])
-  person["claims"] = claims.duplicate(true) if typeof(claims) == TYPE_ARRAY else []
+  var clean_claims: Array = []
+  if typeof(claims) == TYPE_ARRAY:
+   for claim in claims:
+    if typeof(claim) == TYPE_DICTIONARY:
+     clean_claims.append(claim.duplicate(true))
+  person["claims"] = clean_claims
   person["alive"] = bool(person.get("alive",false))
   people[id] = person
  state["people"] = people
@@ -356,7 +365,7 @@ static func complete_education(raw: Dictionary, child_id: String) -> Dictionary:
   return {"ok":false,"reason":"Unknown student."}
  var child: Dictionary = state.people[child_id]
  var education: Dictionary = child.get("education",{})
- if not child.alive or int(child.age) < 16 or str(education.get("focus","")) == "" or bool(education.get("completed",false)):
+ if not child.alive or int(child.age) < 16 or not EDUCATION_FOCUSES.has(str(education.get("focus",""))) or bool(education.get("completed",false)):
   return {"ok":false,"reason":"Education completes once, after age 16, for a living student with an assigned focus."}
  var trait_by_focus := {"martial":"brave","stewardship":"diligent","diplomacy":"diplomatic","learning":"scholarly","arts":"witty"}
  var earned_trait := str(trait_by_focus[str(education.focus)])
