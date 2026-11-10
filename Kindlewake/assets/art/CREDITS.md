@@ -3,7 +3,7 @@
 | Folder / file | Source | Licence | Status |
 |---|---|---|---|
 | `world/tree_*, pine_*, dead_*, twisted_*, rock_*, mountain_*` (rendered from OBJ) | Stylized Nature MegaKit (Standard) by Quaternius ([official pack page](https://quaternius.com/packs/stylizednaturemegakit.html)) | CC0 1.0 (`LICENSE_Quaternius_Nature_CC0.txt`; official page also identifies CC0 and commercial use) | Confirmed. |
-| `world/keep, house_*, tower_*, hut` (rendered from OBJ) | Voxel building packs (Large/Small/Tall/Tiny Building), author not named in the zips | **No licence file in the zips** | **Unverified: confirm the licence before any public or commercial release.** |
+| `world/house_a.svg`, `house_b.svg`, `house_c.svg`, `hut.svg`, `keep.svg`, `tower_a.svg`, `tower_b.svg`, `tower_c.svg` | Original KindleWake vector art | Original project content | Verified project-authored assets. Legacy voxel PNGs remain in the repository but are no longer loaded in-game. |
 | `units/soldier_*, orc_*, arrow.png` | Tiny RPG Character Asset Pack 01 v2.0 — Free Soldier & Orc subset by Zerie ([official pack page](https://zerie.itch.io/tiny-rpg-character-asset-pack)) | Author-published terms: personal and commercial game use and modification permitted; standalone redistribution/resale prohibited; credit appreciated but not required. | **Verified from the author’s official page** (checked 2026-11-10). Keep the original pack out of standalone redistribution. |
 | `props/field_props.svg` | Original KindleWake vector art, authored for this project | CC0 / project-created | Added: 16 environment props (ruins, rune stone, torch, reeds, crystals, grave, banner, mushrooms, stump, barrel, crate, campfire, frost pine, statue, flower, arch). |
 | not used: `Modern_Interiors_Free_v2_2.zip` | LimeZu | Free version is **non-commercial only and forbids editing the sprites**; modern setting | Left out on purpose. |
@@ -18,3 +18,8 @@ Reference images supplied by the project owner (screenshots and sprite sheets fr
 
 
 Structured machine-readable inventory: `Kindlewake/data/asset_provenance.json`. Keep this ledger synchronized with the table above; used packs marked unverified block public/commercial release.
+
+
+## 2026-11-10 visual asset upgrade
+
+Eight original vector settlement illustrations now replace the legacy unverified voxel-building sprites at runtime. The artwork uses a shared stone, timber, warm-window and muted roof palette, with distinct silhouettes for houses, frontier huts, keeps and towers. `scripts/ui/art.gd` routes these named assets to SVG textures. The legacy PNG files are retained only as historical source files and are not used by the game.
