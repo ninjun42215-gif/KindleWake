@@ -66,6 +66,8 @@ PR #99 and #101 were closed without merge; however, current main contains 40 eve
 
 ---
 
+> **ARCHIVED HISTORICAL CHECKPOINTS BELOW:** These entries preserve prior-session evidence only. Their SHAs, branch names, PR states, version values, and release blockers are superseded by the current checkpoint above.
+
 > **LIVE PROJECT CHECKPOINT — 2026-11-10 (post-merge):** Canonical repository `ninjun42215-gif/KindleWake`; default branch `main`. PR #28 (v0.12.0 world expansion), PR #30 (Chapter I + creator fixes), PR #31 (verified CI handoff) and PR #32 (final post-merge handoff state) are merged. There is no active implementation branch for this milestone; inspect the live `main` ref before starting new work.
 >
 > **Project state:** Godot 4.2 / GL Compatibility, game and Android version `0.12.0`, Android version code `1200`, save schema `4`. Preserve all existing systems, JSON data and saves. No version/schema change was needed.
