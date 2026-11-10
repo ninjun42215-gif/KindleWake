@@ -57,3 +57,11 @@ Do not seed traits onto the existing named cast merely from class or combat stat
 - Romance is never inferred from friendship or affection: it requires explicit authored romance evidence and sufficient trust. No automatic attraction, random drift, or forced pairing is introduced.
 - Pair state, bounded history, and evidence IDs are persisted in the campaign payload. Existing schema-4 saves without this optional field normalize to an empty relationship map.
 - This is a persistent rules/API foundation. Existing loyalty remains separate; a player-facing relationship journal, companion-specific story scenes, dialogue checks, and AI behavior hooks remain follow-up integration work.
+
+
+## Authored recruitment relationship event
+
+- Recruitment supports optional `recruit.relationship_on_join` dimensions. The effect is applied only after the roster transaction succeeds, using the first roster member as company lead.
+- Maren Vey's Tideglass recruitment records a modest trust (+6) and respect (+8) bond with the company lead because the party completed the ledger expedition required for her to sail with them.
+- Stable evidence IDs prevent repeated recruitment UI interactions from farming the same relationship reward. This remains separate from starting loyalty and does not imply romance.
+- The shared recruitment helper is covered by regression tests; recruits without authored relationship metadata receive no automatic relationship bonus.
