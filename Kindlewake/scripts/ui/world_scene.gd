@@ -3,6 +3,7 @@ extends Node2D
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
+const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
@@ -355,6 +356,16 @@ func _open_place(p: Dictionary, extra: String = "") -> void:
             text += "\n\nThe palisade burns. The raiders are gone."
         else:
             place_buttons.add_child(_btn("Attack the camp", _on_attack_camp.bind(p), 24))
+    elif kind == "stronghold":
+        var holding: Dictionary = HoldingSystem.inspect(p, GameState.world_flags)
+        if bool(holding.get("claimed", false)):
+            text += "\n\nCONTROL: %s • STATUS: %s • STABILITY: %d/100" % [str(holding.get("owner", "unknown")), str(holding.get("status", "provisional")).to_upper(), int(GameState.world_flags.get("holding_stability_" + id, 35))]
+        elif bool(holding.get("available", false)):
+            var method: String = str(p.get("capture_method", "occupation"))
+            var action: String = "Negotiate the stewardship compact" if method == "forest_stewardship_compact" else ("Sign the grain charter" if method == "grain_charter" else "Secure the keep and establish a garrison")
+            place_buttons.add_child(_btn(action, _claim_holding.bind(p), 24))
+        else:
+            text += "\n\nSOVEREIGNTY UNRESOLVED: " + str(holding.get("reason", "The local objective remains unresolved."))
     if extra != "":
         text += "\n\n" + extra
     place_text.text = text
@@ -381,6 +392,21 @@ func _pass_gate(p: Dictionary) -> void:
     GameState.world_flags[flag] = true
     var region: String = "Orrowen Weald" if str(p.get("id", "")) == "orrowen_gate" else "Vessmoor Plains"
     _open_place(p, "The company passes into %s. The road remains open behind you." % region)
+
+
+func _claim_holding(p: Dictionary) -> void:
+    var result: Dictionary = HoldingSystem.claim(p, GameState.world_flags)
+    if not bool(result.get("ok", false)):
+        _open_place(p, str(result.get("reason", "The holding cannot be secured.")))
+        return
+    GameState.save_campaign("auto_a")
+    var method: String = str(p.get("capture_method", "occupation"))
+    var consequence: String = "A provisional garrison is sworn in. The holding is yours to administer, but stability must be earned through food, safety, fair levies and respect for local custom."
+    if method == "forest_stewardship_compact":
+        consequence = "The wardens accept a stewardship compact. The watch remains under local law, and the old-growth grove is placed under protection."
+    elif method == "grain_charter":
+        consequence = "The freeholders sign a grain charter. Seed stores and winter reserves are protected before any military requisition."
+    _open_place(p, consequence)
 
 
 ## Walk into a town: the location scene opens the town map; leaving it puts us back just south of the place.
@@ -536,7 +562,7 @@ func _draw_place(p: Dictionary) -> void:
     var c: Vector2 = p.get("_render_pos", cell_center(wmap.place_cell(id)))
     draw_circle(c + Vector2(0, 14), 26.0, Color(0, 0, 0, 0.22))
     var top: float = 60.0
-    if kind == "keep":
+    if kind == "keep" or kind == "stronghold":
         Art.draw_world(self, "keep", c + Vector2(0, 26), 0.85)
         top = 100.0
     elif kind == "port":
