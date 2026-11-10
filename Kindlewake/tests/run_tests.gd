@@ -42,6 +42,7 @@ func _initialize() -> void:
     _test_opening_act_one_quests()
     _test_act_one_challenge_content()
     _test_act_one_tactical_bosses()
+    _test_act_one_boss_ai()
     _test_escape_mission()
     _test_escape_ui_layout()
     _test_sigils()
@@ -239,6 +240,69 @@ func _test_act_one_tactical_bosses() -> void:
             check(boss.hp == hp_after, battle_id + " phase does not retrigger")
             var restored := BattleUnit.from_dict(boss.to_dict())
             check(bool(restored.statuses.get("_boss_phase_0", false)), battle_id + " persists phase marker in battle snapshot")
+
+
+func _test_act_one_boss_ai() -> void:
+    print("[Act I boss tactical AI]")
+    var db: Dictionary = gd.as_db()
+    var hask_ctl := BattleController.new()
+    hask_ctl.setup(gd.battle_def("act1_hask_boss"), db, 101)
+    var hask: BattleUnit = null
+    var isolated: BattleUnit = null
+    var distant_support: Array[Vector2i] = [Vector2i(2, 10), Vector2i(3, 10), Vector2i(4, 10)]
+    var support_index := 0
+    for obj in hask_ctl.units:
+        var unit: BattleUnit = obj
+        if unit.character_id == "hask_convoy_champion":
+            hask = unit
+        elif unit.team == "player":
+            if isolated == null:
+                isolated = unit
+                unit.cell = Vector2i(12, 4)
+            else:
+                unit.cell = distant_support[support_index]
+                support_index += 1
+    if hask != null and isolated != null:
+        hask_ctl.active_id = hask.id
+        var hask_plan: Dictionary = BattleAI.decide(hask, hask_ctl)
+        check(str(hask_plan.get("action", "")) == "skill" and str(hask_plan.get("skill_id", "")) == "power_strike", "Hask chooses Power Strike when an isolated target is in reach")
+        check(hask_plan.get("target", null) == isolated, "Hask prioritizes the isolated combatant over distant support")
+    else:
+        check(false, "Hask boss AI test locates commander and target")
+
+    var ash_ctl := BattleController.new()
+    ash_ctl.setup(gd.battle_def("act1_ash_bailiff_boss"), db, 103)
+    var bailiff: BattleUnit = null
+    var wounded_retainer: BattleUnit = null
+    for obj in ash_ctl.units:
+        var unit: BattleUnit = obj
+        if unit.character_id == "ash_bailiff":
+            bailiff = unit
+        elif unit.team == "enemy" and wounded_retainer == null:
+            wounded_retainer = unit
+        elif unit.team == "player":
+            unit.cell = Vector2i(18, 11)
+    if bailiff != null and wounded_retainer != null:
+        bailiff_ctl_prepare(ash_ctl, bailiff, wounded_retainer)
+        wounded_retainer.hp = maxi(1, int(wounded_retainer.max_hp() * 0.3))
+        ash_ctl.active_id = bailiff.id
+        var heal_plan: Dictionary = BattleAI.decide(bailiff, ash_ctl)
+        check(str(heal_plan.get("action", "")) == "skill" and str(heal_plan.get("skill_id", "")) == "mend_ii", "Ash Bailiff heals a critically wounded retainer")
+        check(heal_plan.get("target", null) == wounded_retainer, "Ash Bailiff selects the wounded retainer as his healing target")
+        wounded_retainer.hp = wounded_retainer.max_hp()
+        for obj in ash_ctl.units:
+            var unit: BattleUnit = obj
+            if unit.team == "player":
+                unit.cell = Vector2i(13, 5) if unit.id % 2 == 0 else Vector2i(14, 5)
+        var smite_plan: Dictionary = BattleAI.decide(bailiff, ash_ctl)
+        check(str(smite_plan.get("action", "")) == "skill" and str(smite_plan.get("skill_id", "")) == "holy_smite_ii", "Ash Bailiff uses Judgement when no ally needs urgent healing")
+    else:
+        check(false, "Ash Bailiff AI test locates commander and retainer")
+
+
+func bailiff_ctl_prepare(ctl: BattleController, bailiff: BattleUnit, retainer: BattleUnit) -> void:
+    bailiff.cell = Vector2i(13, 4)
+    retainer.cell = Vector2i(12, 4)
 
 
 func _test_escape_mission() -> void:
