@@ -6,7 +6,7 @@ This is the first runtime implementation slice of the KindleWake trait/personali
 
 - `data/traits.json`: 69 enduring trait definitions across personality, psychological, intelligence, combat, social, physical, leadership, lifestyle, morality, and magical categories, plus five derived synergies.
 - `scripts/core/trait_system.gd`: trait validation, opposing-trait checks, acquisition/removal history, permanent-trait protection, evolution chains, additive stat effects, and non-stacking synergies.
-- `data/trait_events.json`: 16 reusable event definitions covering courage, protection, study, oaths, sharing, healing, expeditions, combat milestones, betrayal, failure, reconciliation, and loss.
+- `data/trait_events.json`: 40 reusable event definitions covering courage, protection, study, oaths, sharing, healing, expeditions, combat milestones, betrayal, failure, reconciliation, and loss.
 - `scripts/core/personality_system.gd`: bounded stress, stress bands, bounded memories, deduplicated behavior evidence, contextual event requirements, and event-driven trait awards.
 - `CharacterSheet`: traits, trait history, stress, memories, behavior evidence, and ambition state are stored with the character. Trait bonuses are calculated from base stats + equipment + runes + traits and never written back into base stats.
 - `GameData` and `GameState`: load the catalogue and expose campaign APIs for recording evidence, resolving authored character events, and progressing ambitions.
@@ -37,7 +37,7 @@ CharacterSheet also exposes `begin_ambition`, `advance_ambition`, and `adjust_st
 
 ## Explicitly not complete yet
 
-This branch is a working foundation, not the entire long-term design target. It does **not** claim to deliver the proposed 300-trait encyclopedia or 200-event library. The initial library is 69 traits and 16 event templates. Further work is required for:
+This branch is a working foundation, not the entire long-term design target. It does **not** claim to deliver the proposed 300-trait encyclopedia or 200-event library. The initial library is 69 traits and 40 event templates. Further work is required for:
 
 1. Expanding and balancing the full 300-trait catalogue with category quotas and no duplicates.
 2. Expanding event templates toward 200 and connecting real campaign, combat, training, exploration, crafting, and dialogue outcomes to evidence IDs.
@@ -83,3 +83,37 @@ The harbour-ledger decision applies relationship changes only for recruited comp
 ### Companion tactical personality
 
 Party battle definitions now carry each deployed character's enduring traits, stress, recent memory types, active ambition focus and authored bonds with other deployed companions. BattleUnit treats these as optional transient context and serializes them with safe defaults for older battle snapshots. The tactical AI uses explicit `battle_behavior` metadata on traits to adjust risk tolerance and support priority; high stress and recent traumatic/betrayal memories increase caution. An ambition affects tactics only when story code explicitly assigns `combat_focus` as `aggressive` or `support`. Healing decisions modestly favor trusted companions, while the existing HP threshold, tactical range and damage calculations remain authoritative.
+
+
+## Personality event catalogue expansion — integration phase
+
+The event library now contains 40 reusable definitions. The second set adds authored templates for defending wounded allies, sparing or executing surrendered foes, mentorship, advanced combat practice, standing against superior numbers, betrayal, difficult secrets, faction peace, expedition leadership, masterwork crafting, route discovery, supernatural catastrophe, relic purification, forbidden-pact choices, supported trauma recovery, accountability, and loyalty under hardship.
+
+These are **data templates, not automatic triggers**. Campaign, battle, crafting, exploration, and dialogue systems must supply their own unique evidence IDs and call the existing GameState character-development APIs only after the player-visible outcome is committed. A template with no trait award may still record a memory and stress change for an explicitly authored story event. No generic combat heuristic should infer a moral choice, betrayal, romance, trauma diagnosis, or cowardice.
+
+The strict test harness now checks that the expanded event library has at least 40 entries and that every template has a stable ID, name, description, requirements dictionary, and trait-award array. Trait award IDs are also checked against the loaded catalogue.
+
+### Remaining integration work
+
+- Connect the event IDs to real committed outcomes in existing quest, battle, training, crafting, exploration, and dialogue flows; never award evidence from a UI preview or an action that later fails.
+- Add a data-driven ambition catalogue with eligibility, objective evidence, completion/failure outcomes, and rewards that already exist in the game.
+- Expand the trait encyclopedia in curated, balanced batches; do not reach the 300 target by cloning effects or inventing unsupported professions/magic.
+- Add a dedicated touch-friendly trait journal with filters, acquisition history, and detail views without disturbing the existing Company equipment/rune/shop navigation.
+- Validate portrait references against each character's actual sprite identity before adding portrait art.
+
+
+## Curated ambition progression
+
+A new `data/ambitions.json` catalogue defines 12 ambitions with stable IDs, descriptive objectives, behavior evidence requirements, completion traits where appropriate, and stress recovery. GameData loads the catalogue from an explicit local JSON path so it is included in exported offline builds.
+
+GameState exposes `assign_character_ambition(character_id, ambition_id)`. Assignment rejects unknown definitions, invalid objectives, and characters who already have an active ambition. The existing `record_character_behavior` API advances a matching active ambition only when new, non-duplicate behavior evidence is accepted. Completion can award the authored trait, reduce stress by the definition's stress reward, and append a bounded achievement memory. Duplicate evidence and unrelated behavior do not grant progress.
+
+The ambition system intentionally does not invent gold, items, quests, romance, or faction outcomes. Future ambitions should reference only mechanics and authored evidence that exist in the game.
+
+## Remaining integration
+
+- Connect the 40 event templates to committed campaign, battle, training, crafting, exploration, and dialogue outcomes with unique evidence IDs.
+- Add ambition failure/deadline handling only where the campaign has a reliable calendar and authored failure consequences.
+- Expand the trait encyclopedia in curated, balanced batches; do not reach the 300 target by cloning effects or inventing unsupported mechanics.
+- Add a dedicated touch-friendly trait journal without disturbing Company equipment, rune, or shop navigation.
+- Validate every future portrait against the exact character sprite identity.
