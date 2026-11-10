@@ -148,7 +148,7 @@ func _continue_game() -> void:
     if slot == "" or not GameState.load_campaign(slot):
         status_label.text = "No valid campaign save was found."
         return
-    get_tree().change_scene_to_file("res://World.tscn")
+    get_tree().change_scene_to_file("res://Location.tscn" if GameState.pending_location != "" else "res://World.tscn")
 
 
 func _new_game() -> void:
@@ -203,7 +203,7 @@ func _show_load() -> void:
 
 func _load_slot(slot: String) -> void:
     if GameState.load_campaign(slot):
-        get_tree().change_scene_to_file("res://World.tscn")
+        get_tree().change_scene_to_file("res://Location.tscn" if GameState.pending_location != "" else "res://World.tscn")
     else:
         status_label.text = "That save is not a valid campaign."
 
