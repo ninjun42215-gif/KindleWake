@@ -195,6 +195,7 @@ func _finish(success: bool, message: String) -> void:
   GameState.save_campaign("auto_a")
  if success and quest_id == "witness_recanted" and bool(GameState.world_flags.get("chapter_4_complete", false)):
   GameState.world_flags["_pending_act_five_stage"] = 0
+  GameState.pending_location = "aurelmont"
   GameState.save_campaign("auto_a")
   get_tree().change_scene_to_file("res://ActFiveQuestChallenge.tscn")
   return
