@@ -954,9 +954,10 @@ func _test_empire_management() -> void:
     check(bool(report.get("ok", false)) and int(report.get("season", 0)) == 1, "season advancement produces a dated report")
     check(bool(report.get("food_shortage", false)) and int(state["public_order"]) < before_order, "food shortage causes a public-order penalty")
     check(int(report.get("troops", 0)) == 13 and int(report.get("military_upkeep", 0)) == 13 and int(report.get("military_food", 0)) == 13, "seasonal ledger includes standing-army upkeep and ration consumption")
+    check(int(state["field_armies"][field_id]["movement"]) == 1 and bool(state["field_armies"][field_id]["supplied"]), "season advancement refreshes field army movement and supply in controlled territory")
     var restored: Dictionary = EmpireSystem.normalize_state(state)
     check(bool(restored.get("unlocked", false)) and int(restored.get("turn", 0)) == 1, "empire state survives normalization")
-    check(int(EmpireSystem.army_summary(restored).get("troops", 0)) == 8, "provincial garrisons survive campaign normalization and save restoration")
+    check(int(EmpireSystem.army_summary(restored).get("troops", 0)) == 13, "provincial garrisons survive campaign normalization and save restoration")
     check(int(EmpireSystem.field_army_summary(restored).get("troops", 0)) == 5, "field armies survive campaign normalization and save restoration")
     check(not bool(EmpireSystem.normalize_state({}).get("unlocked", false)), "legacy saves without empire state remain locked and loadable")
 
