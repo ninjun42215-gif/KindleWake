@@ -144,53 +144,6 @@
             1,
             1
           ]
-        },
-        {
-          "kind": "text",
-          "npc": true,
-          "name": "Tracks That Turn Back",
-          "tint": [
-            0.72,
-            0.8,
-            0.76
-          ],
-          "text": "A ferryman remembers the old scout trail where tracks turn back toward the fen.",
-          "companion_quest_id": "q_companion_tomas_far_marker",
-          "companion_quest_milestone": "scout_trail_reconstructed",
-          "companion_quest_text": "The tracks show that Tomas's family sheltered deserters, but do not prove Tomas took part. Reconstruct the route from the signs and separate observation from rumour.",
-          "companion_quest_challenge": {
-            "prompt": "Which trail reading is supported by the physical evidence?",
-            "options": [
-              "The family cart turned toward the reed shelter; Tomas's bootprints continue east alone",
-              "Every bootprint belongs to Tomas and proves he led the deserters",
-              "The broken marker proves the family attacked the patrol"
-            ],
-            "correct_option": "The family cart turned toward the reed shelter; Tomas's bootprints continue east alone",
-            "success_text": "The separate tracks support the account: the family sheltered people, while Tomas continued east alone.",
-            "failure_text": "The other conclusions assign actions or motives that the tracks cannot prove."
-          },
-          "cell": [
-            2,
-            1
-          ]
-        },
-        {
-          "kind": "text",
-          "npc": true,
-          "name": "The Homeward Hearing",
-          "tint": [
-            0.78,
-            0.76,
-            0.66
-          ],
-          "text": "Elder Hale has received accusations against Tomas's family and asks for witnesses before the settlement acts.",
-          "companion_quest_id": "q_companion_tomas_far_marker",
-          "companion_quest_milestone": "homeward_choice_made",
-          "companion_quest_text": "The settlement is divided. Tomas may return openly, help his family relocate or remain away and send aid. No choice makes him responsible for another person's decisions.",
-          "cell": [
-            3,
-            1
-          ]
         }
       ]
     },
@@ -268,6 +221,35 @@
           "companion_quest_id": "q_companion_bram_cullen_broken_chain",
           "companion_quest_milestone": "debtors_freed",
           "companion_quest_text": "The witness knows where the debtors are being held. Bram refuses to leave them behind. The evidence can support a public tribunal, a negotiated release that preserves the records, or the destruction of the false transfer papers before the company can use them again."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "Tracks That Turn Back",
+          "tint": [
+            0.72,
+            0.8,
+            0.76
+          ],
+          "text": "A ferryman remembers the old scout trail where tracks turn back toward the fen.",
+          "companion_quest_id": "q_companion_tomas_far_marker",
+          "companion_quest_milestone": "scout_trail_reconstructed",
+          "companion_quest_text": "The tracks show that Tomas's family sheltered deserters, but do not prove Tomas took part. Reconstruct the route from the signs and separate observation from rumour.",
+          "companion_quest_challenge": {
+            "prompt": "Which trail reading is supported by the physical evidence?",
+            "options": [
+              "The family cart turned toward the reed shelter; Tomas's bootprints continue east alone",
+              "Every bootprint belongs to Tomas and proves he led the deserters",
+              "The broken marker proves the family attacked the patrol"
+            ],
+            "correct_option": "The family cart turned toward the reed shelter; Tomas's bootprints continue east alone",
+            "success_text": "The separate tracks support the account: the family sheltered people, while Tomas continued east alone.",
+            "failure_text": "The other conclusions assign actions or motives that the tracks cannot prove."
+          },
+          "cell": [
+            2,
+            2
+          ]
         }
       ]
     },
@@ -385,6 +367,24 @@
             "success_text": "The approved leave marks contradict the absent entries and expose the false count.",
             "failure_text": "A second copy may repeat the same error; it does not independently verify the men."
           }
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Homeward Hearing",
+          "tint": [
+            0.78,
+            0.76,
+            0.66
+          ],
+          "text": "Elder Hale has received accusations against Tomas's family and asks for witnesses before the settlement acts.",
+          "companion_quest_id": "q_companion_tomas_far_marker",
+          "companion_quest_milestone": "homeward_choice_made",
+          "companion_quest_text": "The settlement is divided. Tomas may return openly, help his family relocate or remain away and send aid. No choice makes him responsible for another person's decisions.",
+          "cell": [
+            6,
+            2
+          ]
         }
       ]
     },
