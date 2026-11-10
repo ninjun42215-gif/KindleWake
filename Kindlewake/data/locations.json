@@ -549,30 +549,6 @@
             0.8
           ],
           "text": "Spears sharp, boots dry. Give the word and we march. Rear attacks and flanks win fights, captain. Remember it."
-        },
-        {
-          "cell": [
-            7,
-            3
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "Drill Sergeant",
-          "text": "A sergeant has chalked retreat lanes onto the old drill-ground floor.",
-          "companion_quest_id": "q_companion_anselm_line_to_hold",
-          "companion_quest_milestone": "drill_ground_examined",
-          "companion_quest_text": "Anselm reconstructs the drill that the former commander used to pressure the soldiers. The formation must cover the retreat lane and leave a clear path for the wounded. Choose the plan that protects the line without trapping its own people.",
-          "companion_quest_challenge": {
-            "prompt": "Which formation protects the retreat lane while keeping a clear route for wounded soldiers?",
-            "options": [
-              "Hold the centre and leave the rear lane open",
-              "Charge beyond the marked line",
-              "Close ranks across the only exit"
-            ],
-            "correct_option": "Hold the centre and leave the rear lane open",
-            "success_text": "Anselm approves the formation. The soldiers can withdraw in order, and the drill record confirms the commander's false account.",
-            "failure_text": "That formation either abandons the lane or traps the wounded. Reconsider the retreat route."
-          }
         }
       ]
     },
@@ -1569,19 +1545,6 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
-        },
-        {
-          "cell": [
-            7,
-            6
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "Muster Clerk",
-          "text": "A clerk has pinned a late muster notice over the town's grain tally.",
-          "companion_quest_id": "q_companion_anselm_line_to_hold",
-          "companion_quest_milestone": "muster_notice_read",
-          "companion_quest_text": "Anselm recognises his old unit's seal on a muster notice issued after the fighting ended. The order demands unpaid service and threatens to seize grain from anyone who refuses. Read the names and dates before the notice is withdrawn."
         }
       ]
     },
@@ -1660,19 +1623,6 @@
           "npc": true,
           "name": "Market Factor",
           "text": "The central market carries Vessmoor steel, tack and provisions. Visit the counter to manage your gear."
-        },
-        {
-          "cell": [
-            7,
-            4
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "Veterans' Advocate",
-          "text": "A veterans' advocate waits beside a board of unpaid wages.",
-          "companion_quest_id": "q_companion_anselm_line_to_hold",
-          "companion_quest_milestone": "soldiers_resolved",
-          "companion_quest_text": "The muster order is proven unlawful, but the soldiers still need a future. Anselm refuses to decide their fate without hearing what they want. The company can support testimony, a voluntary and time-limited service compact, or a return to civilian work."
         }
       ]
     },
@@ -1793,19 +1743,6 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
-        },
-        {
-          "cell": [
-            7,
-            6
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "Ward Registrar",
-          "text": "A clerk keeps the fever ward's treatment ledger under a brass weight.",
-          "companion_quest_id": "q_companion_petra_bitter_draught",
-          "companion_quest_milestone": "ward_ledger_found",
-          "companion_quest_text": "Petra finds that the ward ledger records full-strength doses even when the supply receipts show a cheaper dilution. The patient names are coded, but the quantities and dates can still be checked. Recover the original page before the clerk destroys it."
         }
       ]
     },
@@ -1845,30 +1782,6 @@
           "npc": true,
           "name": "Innkeeper",
           "text": "The Ferry House offers a meal and a bed for 20 gold."
-        },
-        {
-          "cell": [
-            3,
-            4
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "Recovering Patient",
-          "text": "A patient rests by the window with three empty medicine bottles.",
-          "companion_quest_id": "q_companion_petra_bitter_draught",
-          "companion_quest_milestone": "treatment_verified",
-          "companion_quest_text": "Petra compares the bottles, delivery labels and the patient's symptoms. One bottle was diluted, one was correctly prepared, and one was stored too long. Identify the unsafe treatment without guessing which patient received it.",
-          "companion_quest_challenge": {
-            "prompt": "The ledger shows the full-strength dose was billed, but the bottle label lists half the active ingredient. Which conclusion is supported by the physical evidence?",
-            "options": [
-              "The ward received a diluted batch",
-              "The patient refused every dose",
-              "The medicine was stored too long"
-            ],
-            "correct_option": "The ward received a diluted batch",
-            "success_text": "Petra matches the batch number to the supply receipt. The false treatment entry is proven without exposing the patient's identity.",
-            "failure_text": "That conclusion is not supported by the batch number and ingredient label. Compare the physical evidence again."
-          }
         }
       ]
     },
@@ -1908,19 +1821,6 @@
           "npc": true,
           "name": "Market Factor",
           "text": "Ferry traders sell river gear and imported goods. The factor can access your party shop."
-        },
-        {
-          "cell": [
-            7,
-            4
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "Healer's Representative",
-          "text": "An independent healer waits beside a locked medicine chest.",
-          "companion_quest_id": "q_companion_petra_bitter_draught",
-          "companion_quest_milestone": "triage_decided",
-          "companion_quest_text": "The ward's false accounts are proven, but exposing every name could harm patients and the informant. Petra asks you to weigh public accountability against the safety and privacy of the people who trusted the ward."
         }
       ]
     },
