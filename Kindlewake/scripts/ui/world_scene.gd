@@ -56,6 +56,7 @@ var banner: PanelContainer
 var banner_label: Label
 var party_screen: PartyScreenScript
 var merchant_screen: Control
+var merchant_origin_region: String = ""
 var minimap_dot: ColorRect
 var campaign_save_timer: float = 0.0
 var creator_screen: Control
@@ -427,11 +428,15 @@ func _open_merchant() -> void:
     has_target = false
     pressing = false
     GameState.world_pos = wmap.wrap_position(player_pos)
+    merchant_origin_region = GameState.active_region_id
     merchant_screen.call("open_exchange")
 
 
 func _on_merchant_closed() -> void:
     hud_text = ""
+    if merchant_origin_region != GameState.active_region_id:
+        get_tree().change_scene_to_file("res://World.tscn")
+        return
     GameState.save_campaign("auto_a")
 
 
