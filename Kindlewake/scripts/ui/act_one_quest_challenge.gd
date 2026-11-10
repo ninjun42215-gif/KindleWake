@@ -58,6 +58,8 @@ const CHALLENGES := {
 }
 
 func _ready() -> void:
+    quest_id = str(GameState.world_flags.get("_pending_act_one_challenge", ""))
+    GameState.world_flags.erase("_pending_act_one_challenge")
     _build_ui()
     if not CHALLENGES.has(quest_id):
         _finish(false, "The challenge could not be loaded.")
