@@ -117,6 +117,11 @@ static func _guild_access(state: Dictionary, good: Dictionary) -> bool:
 static func _tariff_rate(region_id: String, state: Dictionary, goods: Dictionary) -> float:
     return clampf(float(state.get("tariffs", {}).get(region_id, goods.get("economy", {}).get("default_tariff", 0.05))), 0.0, 0.5)
 
+static func _fee_multiplier(state: Dictionary) -> float:
+    var discount := float(_rank_for_xp(int(state.get("merchant_xp", 0))).get("fee_discount", 0.0))
+    return 1.02 - discount
+
+
 static func buy(party: PartyState, region_id: String, good_id: String, quantity: int, goods: Dictionary, state: Dictionary) -> String:
     if quantity < 1 or quantity > int(goods.get("max_transaction_quantity", MAX_QUANTITY)): return "Choose a valid quantity."
     var good: Dictionary = goods.get("goods", {}).get(good_id, {})
@@ -128,7 +133,7 @@ static func buy(party: PartyState, region_id: String, good_id: String, quantity:
     if cargo_weight(party, goods) + int(good.get("weight", 1)) * quantity > cargo_capacity(goods, state): return "Your cargo capacity is full."
     var unit := unit_price(region_id, good_id, goods, state)
     var tariff := _tariff_rate(region_id, state, goods)
-    var total := roundi(float(unit * quantity) * (1.0 + tariff))
+    var total := roundi(float(unit * quantity) * (1.0 + tariff) * _fee_multiplier(state))
     if party.gold < total: return "Not enough gold, including local tariffs."
     party.gold -= total
     party.add_item(good_id, quantity)
@@ -149,7 +154,8 @@ static func sell(party: PartyState, region_id: String, good_id: String, quantity
     var local := market_state(state, region_id, goods)
     var gross := unit_price(region_id, good_id, goods, state) * quantity
     var tax := roundi(float(gross) * _tariff_rate(region_id, state, goods))
-    var payout := maxi(0, gross - tax)
+    var service_fee := roundi(float(gross) * maxf(0.0, _fee_multiplier(state) - 1.0))
+    var payout := maxi(0, gross - tax - service_fee)
     if not party.remove_item(good_id, quantity): return "You do not have enough cargo."
     party.gold += payout
     var stock: Dictionary = local["stock"]
@@ -160,15 +166,18 @@ static func sell(party: PartyState, region_id: String, good_id: String, quantity
     state["total_profit"] = int(state.get("total_profit", 0)) + payout
     state["tax_paid"] = int(state.get("tax_paid", 0)) + tax
     add_merchant_xp(state, maxi(2, quantity * 2))
-    _record_contract_delivery(state, good_id, quantity, region_id)
+    _record_contract_delivery(state, good_id, quantity, region_id, goods)
     return ""
 
-static func _record_contract_delivery(state: Dictionary, good_id: String, quantity: int, region_id: String) -> void:
-    for contract in state.get("active_contracts", []):
-        var deliveries: Dictionary = contract.get("deliveries", {})
+static func _record_contract_delivery(state: Dictionary, good_id: String, quantity: int, region_id: String, goods: Dictionary) -> void:
+    for active in state.get("active_contracts", []):
+        var definition: Dictionary = goods.get("contracts", {}).get(str(active.get("id", "")), {})
+        var destination := str(definition.get("destination", ""))
+        if destination != "" and destination != region_id: continue
+        var deliveries: Dictionary = active.get("deliveries", {})
         deliveries[good_id] = int(deliveries.get(good_id, 0)) + quantity
-        contract["deliveries"] = deliveries
-        contract["last_region"] = region_id
+        active["deliveries"] = deliveries
+        active["last_region"] = region_id
 
 static func purchase_caravan(party: PartyState, state: Dictionary, goods: Dictionary) -> String:
     var caravan: Dictionary = state.get("caravan", {})
@@ -282,6 +291,15 @@ static func travel_route(party: PartyState, state: Dictionary, route_id: String,
     if party.gold < int(route["toll"]): return "Not enough gold to pay the route toll."
     party.gold -= int(route["toll"])
     return ""
+
+static func should_trigger_ambush(state: Dictionary, goods: Dictionary, route_id: String, rng: RandomNumberGenerator) -> bool:
+    var route := route_quote(route_id, goods, state)
+    if route.is_empty() or not bool(route.get("open", true)) or bool(route.get("protected", false)): return false
+    var base_risk := float(goods.get("routes", {}).get(route_id, {}).get("base_risk", 0.2))
+    var guards := int(state.get("caravan", {}).get("guards", 0))
+    var level := int(state.get("caravan", {}).get("level", 0))
+    return rng.randf() < clampf(base_risk - float(guards) * 0.025 - float(level) * 0.03, 0.02, 0.8)
+
 
 static func resolve_caravan_ambush(party: PartyState, state: Dictionary, goods: Dictionary, rng: RandomNumberGenerator, route_id: String = "") -> Dictionary:
     var caravan: Dictionary = state.get("caravan", {})
