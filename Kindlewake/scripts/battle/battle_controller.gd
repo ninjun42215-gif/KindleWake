@@ -88,19 +88,72 @@ func to_dict() -> Dictionary:
     }
 
 
+func _valid_saved_unit(value: Variant, candidate_map: BattleMap, seen_ids: Dictionary) -> bool:
+    if typeof(value) != TYPE_DICTIONARY:
+        return false
+    var data: Dictionary = value
+    var uid := int(data.get("id", 0))
+    if uid <= 0 or seen_ids.has(uid):
+        return false
+    var team := str(data.get("team", ""))
+    if team != "player" and team != "enemy":
+        return false
+    var cell_value: Variant = data.get("cell", null)
+    if typeof(cell_value) != TYPE_ARRAY:
+        return false
+    var cell_data: Array = cell_value
+    if cell_data.size() != 2:
+        return false
+    if (typeof(cell_data[0]) != TYPE_INT and typeof(cell_data[0]) != TYPE_FLOAT) or (typeof(cell_data[1]) != TYPE_INT and typeof(cell_data[1]) != TYPE_FLOAT):
+        return false
+    var cell := Vector2i(int(cell_data[0]), int(cell_data[1]))
+    if not candidate_map.in_bounds(cell):
+        return false
+    var facing := int(data.get("facing", 0))
+    if facing < 0 or facing >= BattleMap.DIRS.size():
+        return false
+    for key in ["stats", "statuses", "skill_mods", "reward", "personality", "companion_bonds"]:
+        if typeof(data.get(key, {})) != TYPE_DICTIONARY:
+            return false
+    for key in ["skills", "traits"]:
+        if typeof(data.get(key, [])) != TYPE_ARRAY:
+            return false
+    seen_ids[uid] = true
+    return true
+
+
 func restore(battle_def: Dictionary, database: Dictionary, saved: Dictionary) -> bool:
     if not saved.has("units") or str(saved.get("battle_id", "")) != str(battle_def.get("id", "")):
         return false
+    if typeof(saved["units"]) != TYPE_ARRAY:
+        return false
+    var candidate_map := BattleMap.from_battle_def(battle_def, database.get("terrain", {}))
+    var arr: Array = saved["units"]
+    var seen_ids: Dictionary = {}
+    for value in arr:
+        if not _valid_saved_unit(value, candidate_map, seen_ids):
+            return false
+    var restored_active_id := int(saved.get("active_id", -1))
+    if restored_active_id != -1 and not seen_ids.has(restored_active_id):
+        return false
+    var restored_next_id := int(saved.get("next_unit_id", seen_ids.size() + 1))
+    if restored_next_id <= 0:
+        return false
+    for uid in seen_ids.keys():
+        if restored_next_id <= int(uid):
+            return false
+    var restored_result := str(saved.get("result", ""))
+    if restored_result != "" and restored_result != "victory" and restored_result != "defeat":
+        return false
+
     _init_static(battle_def, database)
     units.clear()
-    var arr: Array = saved["units"]
-    for d in arr:
-        var ud: Dictionary = d
-        units.append(BattleUnit.from_dict(ud))
-    active_id = int(saved.get("active_id", -1))
-    turn_count = int(saved.get("turn_count", 0))
-    next_unit_id = int(saved.get("next_unit_id", units.size() + 1))
-    result = str(saved.get("result", ""))
+    for value in arr:
+        units.append(BattleUnit.from_dict(value))
+    active_id = restored_active_id
+    turn_count = maxi(0, int(saved.get("turn_count", 0)))
+    next_unit_id = restored_next_id
+    result = restored_result
     rng.seed = str(saved.get("rng_seed", "1")).to_int()
     rng.state = str(saved.get("rng_state", "1")).to_int()
     _skip_guard = 0

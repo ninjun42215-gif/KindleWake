@@ -430,9 +430,17 @@ func _test_controller() -> void:
             same = false
     check(same, "restored state equals saved state")
     check(c.rng.randi() == c2.rng.randi(), "RNG state restored exactly")
-    var bad: Dictionary = parsed.duplicate()
+    var bad: Dictionary = parsed.duplicate(true)
     bad["battle_id"] = "other"
     check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), bad), "restore rejects a different battle id")
+    var malformed: Dictionary = parsed.duplicate(true)
+    malformed["units"][0]["cell"] = [0]
+    var old_unit_count := c2.units.size()
+    check(not c2.restore(gd.battle_def("battle_01"), gd.as_db(), malformed), "restore rejects malformed unit coordinates")
+    check(c2.units.size() == old_unit_count, "failed battle restore leaves the current battle untouched")
+    var duplicate_ids: Dictionary = parsed.duplicate(true)
+    duplicate_ids["units"][1]["id"] = duplicate_ids["units"][0]["id"]
+    check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), duplicate_ids), "restore rejects duplicate unit IDs")
 
 
 ## Auto Battle = the AI plays the player's units (run_ai_turn(true)); also covers the cleric's heal logic.
