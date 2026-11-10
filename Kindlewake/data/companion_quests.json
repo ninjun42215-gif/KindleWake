@@ -757,9 +757,9 @@
       "completion_reward": {
         "gold": 65
       },
-      "synopsis": "Maren discovers that the Tideglass Ledger omits a voyage carrying refugees and sealed cargo. She plots a safe approach through shoals by comparing tide marks, local pilot testimony and a damaged chart, then reaches the wreck and recovers its manifest. The evidence shows the crew diverted the vessel to evade a blockade, while the cargo's owner later profited from the disappearance. The story keeps Ilyra Venn's leadership distinct and Brinegate under the Tidebound Assembly.",
-      "journal_summary": "Recover the missing Tideglass Ledger page, plot a safe route through the shoals and retrieve the wreck's sealed manifest. Decide how to protect the surviving crew and expose the voyage's disappearance.",
-      "resolution_prompt": "The manifest proves what happened, but publishing it could expose the surviving crew. Should Maren publish the record, protect the crew through neutral custodians or negotiate reparations?",
+      "synopsis": "After the Northstar signal is restored and its captain's log recovered, Maren discovers that the Tideglass Ledger's final leaf conceals a passenger transfer and cargo lien. She compares the harbour copy with family testimony and the ship's final manifest to identify who profited from the disappearance. The surviving crew's safety remains central, and Brinegate remains under the Tidebound Assembly.",
+      "journal_summary": "After Maren's Northstar signal quest, verify the hidden passenger transfer, trace the affected families and audit the cargo lien in the wreck's manifest. Decide how to restore the record without endangering survivors.",
+      "resolution_prompt": "The final manifest and passenger evidence now agree. Publishing may expose the surviving crew; sealed testimony protects them but delays public accountability. How should Maren resolve the record?",
       "outcome_labels": {
         "publish_manifest": "Publish the manifest",
         "protect_crew": "Protect the surviving crew",
@@ -774,6 +774,54 @@
         "publish_manifest": "maren_outcome_manifest_published",
         "protect_crew": "maren_outcome_crew_protected",
         "negotiate_reparations": "maren_outcome_reparations"
+      },
+      "required_flags_all": [
+        "maren_signal_completed"
+      ],
+      "unlock_hint": "Complete Maren's Northstar signal quest first. This personal story follows the restored signal and recovered logbook."
+    },
+    "q_companion_neris_light_kept": {
+      "id": "q_companion_neris_light_kept",
+      "companion_id": "neris_quell",
+      "title": "A Light Kept",
+      "chapter": 4,
+      "required_region": "brinegate_coast",
+      "required_flags_all": [
+        "neris_beacon_completed"
+      ],
+      "unlock_hint": "Complete Neris's second-beacon quest first. This story follows the route she has already charted.",
+      "synopsis": "After Neris charts the second beacon, keepers and fishers ask who will maintain the warning lights and control access to the newly safe passage. A damaged maintenance ledger, separate pilot accounts and an Assembly hearing reveal that no single faction can safely own the coast's rescue network. Neris must choose between a public charter, local custody or shared oversight without allowing the route to become a toll monopoly.",
+      "journal_summary": "After Neris's second-beacon quest, recover the keeper ledger, verify the pilot watch and bring the maintenance charter before the Assembly. Decide who should maintain the warning lights and protect the passage.",
+      "milestones": [
+        "keeper_ledger_recovered",
+        "pilot_watch_verified",
+        "beacon_charter_heard"
+      ],
+      "outcomes": [
+        "public_charter",
+        "local_custody",
+        "shared_watch"
+      ],
+      "resolution_prompt": "The beacon keepers and fishers have given their accounts. Should the maintenance charter be public, remain in local hands or be shared with independent oversight?",
+      "outcome_labels": {
+        "public_charter": "Publish the keeper charter",
+        "local_custody": "Keep custody with local fishers",
+        "shared_watch": "Create a shared watch"
+      },
+      "outcome_descriptions": {
+        "public_charter": "Neris publishes a keeper charter with clear maintenance duties, rescue priority and open passage rules. The Assembly may inspect the accounts, but cannot turn the warning lights into a private toll gate.",
+        "local_custody": "Neris entrusts day-to-day custody to Saltmere's fishers under a public rescue obligation. The chart remains restricted to protect the shoals, while the Assembly receives emergency access and annual safety reports.",
+        "shared_watch": "Neris creates a shared watch between local keepers and the Tidebound Assembly, with independent audits and a rotating rescue rota. No single office can close the passage or claim its beacon fees."
+      },
+      "outcome_flags": {
+        "public_charter": "neris_outcome_public_charter",
+        "local_custody": "neris_outcome_local_custody",
+        "shared_watch": "neris_outcome_shared_watch"
+      },
+      "completion_reward": {
+        "gold": 90,
+        "exp": 0,
+        "ap": 0
       }
     }
   }
