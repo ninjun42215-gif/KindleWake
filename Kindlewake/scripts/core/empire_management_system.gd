@@ -457,7 +457,7 @@ static func _advance_sieges(state: Dictionary, controlled_provinces: Array) -> D
 			siege["status"] = "abandoned"
 			siege["progress"] = 0
 			sieges[region] = siege
-			 continue
+			continue
 		var army: Dictionary = state["field_armies"][army_id]
 		var strength := _troop_total(army.get("troops", {}))
 		if strength <= 0:
@@ -495,7 +495,10 @@ static func resolve_siege_assault(state: Dictionary, target_region: String, defe
 	var won := attackers >= effective_defence
 	var casualties := mini(attackers, maxi(1, int(ceil(float(attackers) * (0.10 if won else 0.25)))))
 	_apply_army_losses(army, casualties)
-	state["field_armies"][army_id] = army
+	if _troop_total(army.get("troops", {})) <= 0:
+		state["field_armies"].erase(army_id)
+	else:
+		state["field_armies"][army_id] = army
 	state["war_exhaustion"] = clampi(int(state.get("war_exhaustion", 0)) + (8 if won else 14), 0, 100)
 	if won:
 		siege["status"] = "captured_pending_transfer"
