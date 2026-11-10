@@ -65,6 +65,7 @@ func _initialize() -> void:
  var year := Dynasty.advance_year(aged)
  check(bool(year.ok) and year.state.people["heir_2"].alive == false,"natural old-age death is recorded by yearly simulation")
  check(str(year.state.last_succession.get("to","")) == "heir_1","title succession resolves to eligible heir under configured law")
+ check(year.state.people["heir_1"].title_ids.size() >= 2,"succession preserves multiple titles held by the same heir")
  check(int(year.state.year) == 2,"house chronicle advances its calendar")
  check(year.state.chronicle.size() > 0,"yearly and family events enter the house chronicle")
  var partition_state := Dynasty.new_house(founder,"Torren Vale","House Vale")
