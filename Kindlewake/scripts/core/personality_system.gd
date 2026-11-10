@@ -1,5 +1,7 @@
 class_name PersonalitySystem
 extends RefCounted
+
+const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 ## Campaign-level character development. Event-driven only: no per-frame stress drift or random permanent traits.
 ## Memories are bounded; behavior evidence is keyed by unique event IDs to prevent duplicate farming.
 
@@ -94,7 +96,7 @@ static func apply_event(state: Dictionary, event_id: String, event_definitions: 
     var gained: Array[String] = []
     if requirements_met(definition.get("requirements", {}), behavior):
         for trait_id in definition.get("trait_awards", []):
-            var result: Dictionary = TraitSystem.acquire(traits, history, str(trait_id), memory_instance, trait_definitions)
+            var result: Dictionary = TraitSystemScript.acquire(traits, history, str(trait_id), memory_instance, trait_definitions)
             if bool(result.get("ok", false)):
                 traits = result.traits
                 history = result.history
