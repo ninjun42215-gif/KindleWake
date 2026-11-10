@@ -1157,6 +1157,17 @@
             "trust": -4,
             "respect": -2
           }
+        },
+        "relationship_on_companion_quest": {
+          "return_log": {
+            "friendship": 8,
+            "trust": 10,
+            "affection": 4
+          },
+          "publish_log": {
+            "respect": 8,
+            "trust": -5
+          }
         }
       }
     },

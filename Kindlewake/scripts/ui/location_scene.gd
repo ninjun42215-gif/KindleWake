@@ -2,6 +2,7 @@ extends Node2D
 
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
+const MarenQuestSystem = preload("res://scripts/core/maren_quest_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
@@ -253,6 +254,9 @@ func _on_prompt_pressed() -> void:
         else:
             spot_buttons.add_child(_btn("Present the ledger publicly", _resolve_brinegate_choice.bind("public")))
             spot_buttons.add_child(_btn("Keep the Codicil seal private", _resolve_brinegate_choice.bind("private")))
+    elif spot_kind == "companion_quest":
+        if str(near_spot.get("quest_id", "")) == "maren_signal":
+            _build_maren_quest_interaction()
     elif spot_kind == "recruit":
         var cid: String = str(near_spot.get("character_id", ""))
         var definition: Dictionary = GameData.characters.get(cid, {})
@@ -295,6 +299,89 @@ func _resolve_brinegate_choice(choice: String) -> void:
     for child in spot_buttons.get_children():
         if child is Button and ((child as Button).text.begins_with("Present") or (child as Button).text.begins_with("Keep")):
             (child as Button).disabled = true
+
+func _build_maren_quest_interaction() -> void:
+    var flags: Dictionary = GameState.world_flags
+    if not GameState.party.roster.has("maren_vey"):
+        spot_text.text += "\n\nMaren must first join the company before this personal chart can be followed."
+        return
+    if not bool(flags.get("brinegate_ledger_decision", false)):
+        spot_text.text += "\n\nMaren will not revisit the Northstar's last voyage until the Tideglass ledger decision is settled."
+        return
+    if current_map_id == "brinegate":
+        if not bool(flags.get(MarenQuestSystem.START_FLAG, false)):
+            spot_buttons.add_child(_btn("Ask Maren about the last sounding", _start_maren_quest))
+        elif bool(flags.get(MarenQuestSystem.SOLVED_FLAG, false)) and not bool(flags.get(MarenQuestSystem.COMPLETE_FLAG, false)):
+            spot_text.text += "\n\nThe signal pattern is restored. Maren is ready to decide what should become of the recovered log."
+            spot_buttons.add_child(_btn("Return the log to Maren", _resolve_maren_quest.bind("return_log")))
+            spot_buttons.add_child(_btn("Publish the log for the beacon crews", _resolve_maren_quest.bind("publish_log")))
+        elif bool(flags.get(MarenQuestSystem.COMPLETE_FLAG, false)):
+            spot_text.text += "\n\nMaren's chart now bears the Northstar's final sounding. She keeps the memory close."
+        else:
+            spot_text.text += "\n\nMaren asks you to restore the old signal at Lantern Quay before the log can be understood."
+    elif current_map_id == "lantern_quay":
+        if not bool(flags.get(MarenQuestSystem.START_FLAG, false)):
+            spot_text.text += "\n\nMaren has not yet asked the company to work this signal route."
+        elif bool(flags.get(MarenQuestSystem.SOLVED_FLAG, false)):
+            spot_text.text += "\n\nThe signal rings true. Return to Brinegate and speak with Maren."
+        else:
+            var progress := int(flags.get(MarenQuestSystem.PROGRESS_FLAG, 0))
+            var clues := ["First note: the harbour answered low.", "Second note: the tower answered high.", "Final note: the current rose."]
+            spot_text.text += "\n\n" + clues[mini(progress, clues.size() - 1)]
+            spot_buttons.add_child(_btn("Sound the low note", _submit_maren_signal.bind("low")))
+            spot_buttons.add_child(_btn("Sound the high note", _submit_maren_signal.bind("high")))
+            spot_buttons.add_child(_btn("Sound the rising note", _submit_maren_signal.bind("rising")))
+
+
+func _start_maren_quest() -> void:
+    var result: Dictionary = MarenQuestSystem.start_quest(GameState.world_flags, GameState.party.roster)
+    if not bool(result.get("ok", false)):
+        spot_text.text += "\n\n" + str(result.get("reason", "Maren is not ready to sail this memory."))
+        return
+    GameState.world_flags = result.get("world_flags", GameState.world_flags).duplicate(true)
+    GameState.save_campaign("auto_a")
+    _refresh_spot_panel()
+    spot_text.text += "\n\nMaren gives you the old signal pattern: low from the harbour, high from the tower, then rising with the current."
+
+
+func _submit_maren_signal(tone: String) -> void:
+    var result: Dictionary = MarenQuestSystem.submit_signal(GameState.world_flags, tone)
+    if not bool(result.get("ok", false)):
+        spot_text.text += "\n\n" + str(result.get("reason", "The signal cannot be read yet."))
+        return
+    GameState.world_flags = result.get("world_flags", GameState.world_flags).duplicate(true)
+    GameState.save_campaign("auto_a")
+    var correct := bool(result.get("correct", false))
+    var complete := bool(result.get("complete", false))
+    _refresh_spot_panel()
+    if not correct:
+        spot_text.text += "\n\nThe tones clash. Maren asks you to begin the sequence again."
+    elif complete:
+        spot_text.text += "\n\nThe final note carries across the shoals. A hidden compartment opens beneath the signal post."
+    else:
+        spot_text.text += "\n\nThe note settles into the old pattern. One part of the sounding remains."
+
+
+func _resolve_maren_quest(choice: String) -> void:
+    var result: Dictionary = MarenQuestSystem.resolve_quest(GameState.world_flags, choice)
+    if not bool(result.get("ok", false)):
+        spot_text.text += "\n\n" + str(result.get("reason", "Maren's quest cannot be resolved yet."))
+        return
+    GameState.world_flags = result.get("world_flags", GameState.world_flags).duplicate(true)
+    GameState.party.gold += int(result.get("gold", 0))
+    var leader_id := str(GameState.party.roster[0]) if not GameState.party.roster.is_empty() else ""
+    MarenQuestSystem.apply_relationships(GameState.companion_relationships, leader_id, GameState.party.roster, GameData.characters, choice)
+    var event_id := "maren_returned_log" if choice == "return_log" else "maren_published_log"
+    GameState.resolve_character_event("maren_vey", event_id, "companion_quest", "maren-signal:" + choice)
+    GameState.save_campaign("auto_a")
+    _refresh_spot_panel()
+    spot_text.text += "\n\n" + str(result.get("text", ""))
+
+
+func _refresh_spot_panel() -> void:
+    if panel_open:
+        _on_prompt_pressed()
+
 
 func _close_panel() -> void:
     panel_open = false
