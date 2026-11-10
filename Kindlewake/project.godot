@@ -28,6 +28,11 @@ window/handheld/orientation=4
 
 pointing/emulate_mouse_from_touch=true
 
+[filesystem]
+
+; No .blend source files are present; avoid requiring a local Blender executable for imports.
+import/blender/enabled=false
+
 [rendering]
 
 textures/vram_compression/import_etc2_astc=true
