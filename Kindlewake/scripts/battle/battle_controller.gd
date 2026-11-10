@@ -331,7 +331,7 @@ func _cast_damage(unit: BattleUnit, skill_id: String, sk: Dictionary, target: Ba
     unit.has_acted = true
     unit.facing = BattleMap.facing_from_delta(target.cell - unit.cell)
     log_message.emit("%s uses %s on %s for %d." % [unit.display_name, str(sk.get("name", skill_id)), target.display_name, int(res["damage"])])
-    unit_acted.emit(unit.id, "skill_damage", {"target_id": target.id, "damage": int(res["damage"]), "killed": bool(res["killed"]), "status": applied_status})
+    unit_acted.emit(unit.id, "skill_damage", {"target_id": target.id, "damage": int(res["damage"]), "killed": bool(res["killed"]), "status": applied_status, "skill_id": skill_id})
     if bool(res["killed"]):
         log_message.emit("%s is defeated!" % target.display_name)
         unit.kills += 1
