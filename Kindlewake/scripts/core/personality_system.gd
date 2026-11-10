@@ -40,6 +40,8 @@ static func record_behavior(behavior: Dictionary, behavior_id: String, amount: i
     if behavior_id == "" or evidence_id == "":
         return behavior.duplicate(true)
     var result := behavior.duplicate(true)
+    if amount <= 0:
+        return result
     var seen: Array = result.get("seen_evidence", [])
     if seen.has(evidence_id):
         return result
@@ -61,14 +63,16 @@ static func requirements_met(requirements: Dictionary, behavior: Dictionary) -> 
             return false
     return true
 
-static func apply_event(state: Dictionary, event_id: String, event_definitions: Dictionary, trait_definitions: Dictionary, source: String = "campaign_event") -> Dictionary:
+static func apply_event(state: Dictionary, event_id: String, event_definitions: Dictionary, trait_definitions: Dictionary, source: String = "campaign_event", instance_id: String = "") -> Dictionary:
     var definition: Dictionary = event_definitions.get(event_id, {})
     if definition.is_empty():
         return {"ok": false, "reason": "Unknown personality event.", "state": state.duplicate(true), "traits_gained": []}
     var next := state.duplicate(true)
     var memories: Array = next.get("memories", [])
+    var memory_instance := instance_id if instance_id != "" else event_id + ":" + source
     var memory := {
-        "event_id": event_id,
+        "event_id": memory_instance,
+        "event_type": event_id,
         "type": str(definition.get("memory_type", "personal")),
         "summary": str(definition.get("memory", definition.get("description", definition.get("name", event_id)))),
         "timestamp": int(Time.get_unix_time_from_system()),
@@ -80,14 +84,14 @@ static func apply_event(state: Dictionary, event_id: String, event_definitions: 
     var behavior: Dictionary = next.get("behavior", {})
     var evidence: Dictionary = definition.get("evidence", {})
     for behavior_id in evidence:
-        behavior = record_behavior(behavior, str(behavior_id), int(evidence[behavior_id]), event_id + ":" + str(behavior_id))
+        behavior = record_behavior(behavior, str(behavior_id), int(evidence[behavior_id]), memory_instance + ":" + str(behavior_id))
     next["behavior"] = behavior
     var traits: Array = next.get("traits", [])
     var history: Array = next.get("trait_history", [])
     var gained: Array[String] = []
     if requirements_met(definition.get("requirements", {}), behavior):
         for trait_id in definition.get("trait_awards", []):
-            var result: Dictionary = TraitSystem.acquire(traits, history, str(trait_id), event_id, trait_definitions)
+            var result: Dictionary = TraitSystem.acquire(traits, history, str(trait_id), memory_instance, trait_definitions)
             if bool(result.get("ok", false)):
                 traits = result.traits
                 history = result.history
