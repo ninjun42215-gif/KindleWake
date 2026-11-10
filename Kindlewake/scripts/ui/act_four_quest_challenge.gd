@@ -81,7 +81,13 @@ func _show_step() -> void:
    GameState.save_campaign("auto_a")
    _show_step()
   elif bool(data.get("optional_battle",false)):
-   _show_optional_battle_prompt(data)
+   if bool(GameState.world_flags.get("act4_archive_breach", false)):
+    _show_optional_battle_prompt(data)
+   else:
+    step += 1
+    GameState.world_flags["_pending_act_four_challenge_step"] = step
+    GameState.save_campaign("auto_a")
+    _show_step()
   else:
    _launch_battle(str(data.get("battle_id","")))
   return
