@@ -146,8 +146,12 @@ Working branch: `feature/empire-management-system`.
 - Added strict regression tests. They are authored but have not been executed in Godot on this branch.
 - No app version or save schema change. No network access, accounts or new permissions.
 - Implemented after the initial administration pass: provincial infantry/archer/cavalry recruitment, garrisons, manpower recovery on disbandment, field army mobilization from garrisons, party-character commander assignment, one-step movement along authored seven-continent region links, unsupplied-state tracking, seasonal movement refresh, and treasury/food upkeep for both garrisons and field armies. The military tab exposes these controls and deployment status.
-- Still not complete: authored story unlock integration, projected budget preview, council trait/skill impact, tactical battle deployment, attrition and connected supply-line networks, sieges, trade routes, autonomous faction AI, rebellions and war campaigns.
-- Validation is pending exact-head Godot import, strict tests, scene smoke, balance report, Android export, version sync, workflow lint and project health audit. Do not merge until required gates pass; physical Android QA is a separate release gate.
+- Added after the field army layer: supply depots, connected supply networks across controlled atlas links, forward supply to adjacent hostile frontier regions, morale recovery/loss, and deterministic troop attrition after a one-season isolation grace period.
+- Added seasonal siege progression, breach state, deterministic assault casualties, explicit faction-transfer confirmation after victory, and siege history.
+- Added war exhaustion from tactical losses and siege assaults; at 70+ it reduces stability and public order each season. A player-facing armistice action reduces exhaustion.
+- Added a strategic-to-tactical contract: field army composition exports a deployment roster and tactical battle results/casualties can be applied back to the army. This does not yet automatically launch BattleController encounters or author enemy formations.
+- Still not complete: authored story unlock integration, projected budget preview, council trait/skill impact, direct BattleController encounter launch, siege engines, trade routes, autonomous faction AI, rebellions, full war declarations and negotiated peace.
+- Validation is pending exact-head Godot import, strict tests, scene smoke, balance report, Android export, version sync, workflow lint and project health audit. Godot is not installed in the current implementation environment; tests are authored but not run. Do not merge until required gates pass; physical Android QA is a separate release gate.
 
 
 ## 2026-11-10 — Field Army Layer
@@ -157,5 +161,5 @@ Working branch: `feature/empire-management-system`.
 - Strategic movement follows only region-to-region links authored in `continents.json`; non-adjacent moves and more than one move per season are rejected.
 - Field armies outside player-controlled provinces are unsupplied. Seasonal advancement charges upkeep/rations for both garrisons and deployed armies, recalculates supply and refreshes movement.
 - Added regression coverage for mobilization, garrison transfer, invalid troop types, adjacency, one-move limit, supply refresh and save normalization. Tests are not executed yet.
-- Next: tactical encounter integration, field army attrition and connected supply routes; then siege/war systems. Keep the dynasty/family mode post-campaign only.
+- Next: integrate the deployment contract with BattleController using authored troop unit definitions and battlefield spawn rules; add defender garrisons/fort formations and siege engines; then trade routes, faction AI, rebellion warnings and negotiated peace. Keep the dynasty/family mode post-campaign only.
 - Branch remains one commit behind `main`; reconcile before merge. No current exact-head validation is claimed.
