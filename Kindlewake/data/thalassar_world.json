@@ -73,8 +73,7 @@
         57,
         7
       ],
-      "reward_gold": 55,
-      "text": "A merchant hull split against the reef. The cargo is gone, but a brass chart tube remains wedged beneath the ribs.",
+      "text": "A merchant hull split against the reef. Blackwake salvagers have stripped its cargo, but the captain's waterproof log case may still be aboard.",
       "town": "dungeon_northstar_wreck",
       "battle": "battle_northstar_wreck",
       "world_flag_on_victory": "northstar_wreck_cleared"
