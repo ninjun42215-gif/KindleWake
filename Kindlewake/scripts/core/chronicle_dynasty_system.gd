@@ -75,6 +75,11 @@ static func new_house(founder_record: Dictionary, founder_name: String, house_na
  people["heir_2"] = _person("heir_2", "Maren", 41, "child", [founder_id], ["kind","shrewd"], true)
  people["consort"] = _person("consort", "The Founder's Consort", 67, "spouse", [], ["patient"], false)
  people[founder_id]["children"] = ["heir_1","heir_2"]
+ people[founder_id]["spouse"] = "consort"
+ people["consort"]["spouse"] = founder_id
+ people["consort"]["children"] = ["heir_1","heir_2"]
+ people["heir_1"]["parents"] = [founder_id,"consort"]
+ people["heir_2"]["parents"] = [founder_id,"consort"]
  people["heir_1"]["siblings"] = ["heir_2"]
  people["heir_2"]["siblings"] = ["heir_1"]
  people["heir_1"]["designated_heir"] = true
@@ -102,17 +107,39 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
   state["succession_policy"] = "primogeniture"
  var people: Dictionary = state["people"]
  for id in people.keys():
+  if typeof(people[id]) != TYPE_DICTIONARY:
+   people.erase(id)
+   continue
   var person: Dictionary = people[id]
   person["id"] = str(id)
   person["age"] = maxi(0,int(person.get("age",0)))
   person["traits"] = _valid_traits(person.get("traits",[]))
   person["children"] = _valid_ids(person.get("children",[]),people)
   person["parents"] = _valid_ids(person.get("parents",[]),people)
+  person["siblings"] = _valid_ids(person.get("siblings",[]),people)
+  var spouse_id := str(person.get("spouse",""))
+  person["spouse"] = spouse_id if people.has(spouse_id) else ""
   person["alive"] = bool(person.get("alive",false))
   people[id] = person
  state["people"] = people
- state["titles"] = state.get("titles",{}).duplicate(true)
- state["domains"] = state.get("domains",{}).duplicate(true)
+ var saved_titles: Variant = state.get("titles",{})
+ var saved_domains: Variant = state.get("domains",{})
+ state["titles"] = saved_titles.duplicate(true) if typeof(saved_titles) == TYPE_DICTIONARY else {}
+ state["domains"] = saved_domains.duplicate(true) if typeof(saved_domains) == TYPE_DICTIONARY else {}
+ for title_id in state["titles"].keys():
+  var title: Dictionary = state["titles"][title_id]
+  if not people.has(str(title.get("holder",""))):
+   title["holder"] = ""
+  if not state["domains"].has(str(title.get("domain_id",""))):
+   title["domain_id"] = ""
+  state["titles"][title_id] = title
+ for domain_id in state["domains"].keys():
+  var domain: Dictionary = state["domains"][domain_id]
+  if not people.has(str(domain.get("steward",""))):
+   domain["steward"] = ""
+  state["domains"][domain_id] = domain
+ if typeof(state.get("chronicle",[])) != TYPE_ARRAY:
+  state["chronicle"] = []
  return state
 
 
