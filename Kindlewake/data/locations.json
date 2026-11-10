@@ -2368,7 +2368,31 @@
           "name": "Dungeon guardian",
           "text": "The tide presses against the old toll vault. Sluice marks on the walls show the sequence used to drain the lower floor. The guardian blocks the final chamber.",
           "battle_id": "battle_catacombs",
-          "world_flag_on_victory": "dungeon_sunken_tollhouse_cleared"
+          "world_flag_on_victory": "dungeon_sunken_tollhouse_cleared",
+          "requires_flag": "tollhouse_sluice_solved"
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "mechanism",
+          "npc": false,
+          "name": "Sluice Control Wheel",
+          "text": "The flood marks show the sequence used to drain the vault. Set the north gate, then the west gate, then open the drain. A wrong turn resets the wheel.",
+          "mechanism_id": "tollhouse_sluice",
+          "sequence": [
+            "north",
+            "west",
+            "drain"
+          ],
+          "options": [
+            "north",
+            "east",
+            "west",
+            "drain"
+          ],
+          "world_flag_on_solved": "tollhouse_sluice_solved"
         }
       ]
     },
@@ -2417,7 +2441,31 @@
           "name": "Dungeon guardian",
           "text": "The burial halls are carved with oaths, boundary maps and later corrections. The oldest inscription is hidden behind a loose stone. The guardian blocks the final chamber.",
           "battle_id": "battle_hollowroot",
-          "world_flag_on_victory": "dungeon_wardens_barrow_cleared"
+          "world_flag_on_victory": "dungeon_wardens_barrow_cleared",
+          "requires_flag": "wardens_oath_trial_solved"
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "mechanism",
+          "npc": false,
+          "name": "The Boundary Inscription",
+          "text": "Three inscriptions must be placed in their proper order: the sworn oath, the living custom, then the boundary it protects. The forged claim does not belong in the sequence.",
+          "mechanism_id": "wardens_oath_trial",
+          "sequence": [
+            "oath",
+            "custom",
+            "boundary"
+          ],
+          "options": [
+            "oath",
+            "custom",
+            "boundary",
+            "forgery"
+          ],
+          "world_flag_on_solved": "wardens_oath_trial_solved"
         }
       ]
     },
@@ -2466,7 +2514,31 @@
           "name": "Dungeon guardian",
           "text": "Ash fills the loft stairs, but the root cellar is sealed behind a firebreak door. A levy order lies beneath the grain scale. The guardian blocks the final chamber.",
           "battle_id": "battle_catacombs",
-          "world_flag_on_victory": "dungeon_ashen_granary_cleared"
+          "world_flag_on_victory": "dungeon_ashen_granary_cleared",
+          "requires_flag": "ashen_firebreak_solved"
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "mechanism",
+          "npc": false,
+          "name": "Firebreak Lever Array",
+          "text": "The grain loft can be isolated only by routing the firebreak west, then north, then sealing the root cellar. Sending the draft east feeds the flames.",
+          "mechanism_id": "ashen_firebreak",
+          "sequence": [
+            "west",
+            "north",
+            "seal"
+          ],
+          "options": [
+            "west",
+            "north",
+            "east",
+            "seal"
+          ],
+          "world_flag_on_solved": "ashen_firebreak_solved"
         }
       ]
     },
