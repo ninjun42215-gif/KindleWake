@@ -327,6 +327,13 @@ func _recruit(spot: Dictionary) -> void:
         return
     var member: CharacterSheet = GameState.party.sheet(cid)
     spot_text.text += "\n\n" + str(spot.get("name", "The traveller")) + " has joined the company. Loyalty: %d/100." % member.loyalty
+    if not GameState.party.roster.is_empty():
+        var leader_id: String = str(GameState.party.roster[0])
+        var relationship_changes: int = RecruitmentSystem.apply_relationship_on_join(
+            GameState.companion_relationships, leader_id, cid, definition
+        )
+        if relationship_changes > 0:
+            spot_text.text += "\n\nThe journey that brought you together has earned the company lead's trust and respect."
     for c in spot_buttons.get_children():
         if c is Button and (c as Button).text.begins_with("Invite"):
             (c as Button).disabled = true

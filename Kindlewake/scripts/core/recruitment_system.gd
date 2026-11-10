@@ -1,6 +1,8 @@
 extends RefCounted
 ## Data-driven recruitment checks and atomic roster/flag/gold updates.
 
+const RelationshipSystem = preload("res://scripts/core/relationship_system.gd")
+
 static func inspect(party: PartyState, character_id: String, definition: Dictionary, world_flags: Dictionary, spot: Dictionary = {}) -> Dictionary:
     if character_id == "" or definition.is_empty():
         return {"available": false, "cost": 0, "reason": "There is no available recruit."}
@@ -39,3 +41,20 @@ static func recruit(party: PartyState, character_id: String, definition: Diction
     availability["ok"] = true
     availability["loyalty"] = party.sheet(character_id).loyalty
     return availability
+
+
+## Apply optional, authored relationship effects when a recruit joins the company.
+## The first roster member is supplied as the company lead; evidence keys are stable and cannot be farmed.
+static func apply_relationship_on_join(state: Dictionary, leader_id: String, character_id: String, definition: Dictionary) -> int:
+    if leader_id.strip_edges() == "" or character_id.strip_edges() == "" or leader_id == character_id:
+        return 0
+    var recruit_data: Dictionary = definition.get("recruit", {})
+    var effects: Dictionary = recruit_data.get("relationship_on_join", {})
+    var applied := 0
+    for raw_dimension in effects.keys():
+        var dimension := str(raw_dimension)
+        var amount := int(effects[raw_dimension])
+        var evidence_id := "recruit:%s:%s" % [character_id, dimension]
+        if RelationshipSystem.adjust(state, leader_id, character_id, dimension, amount, evidence_id):
+            applied += 1
+    return applied

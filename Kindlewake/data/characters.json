@@ -1143,6 +1143,10 @@
             "tideglass_grotto_cleared",
             "tideglass_ledger_found"
           ]
+        },
+        "relationship_on_join": {
+          "trust": 6,
+          "respect": 8
         }
       }
     },
