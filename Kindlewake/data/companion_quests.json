@@ -275,6 +275,24 @@
       ],
       "completion_reward": {
         "gold": 50
+      },
+      "synopsis": "Joss recognises a purse from a job that saved a child but admits he kept the remaining payment. The trail leads to a smuggling ledger that prices the identities of debtors and refugees. The company must get the named people out safely before deciding what Joss owes.",
+      "journal_summary": "Trace the stolen purse to a smuggling ledger, rescue the people whose names are being sold and decide how Joss should make restitution.",
+      "resolution_prompt": "The debtors are safe and the ledger is secure. Joss can return what he kept, trade the ledger for safe passage or expose the network. What should he do?",
+      "outcome_labels": {
+        "return_money": "Return the stolen money",
+        "trade_ledger": "Trade the ledger for safe passage",
+        "expose_network": "Expose the smuggling network"
+      },
+      "outcome_descriptions": {
+        "return_money": "Joss returns the money to the people he wronged and accepts a restitution agreement. The ledger remains sealed with the company so the rescued debtors are not exposed again.",
+        "trade_ledger": "Joss trades the ledger to secure safe passage for the remaining debtors. The network loses its leverage over them, though its wider leadership escapes the hearing.",
+        "expose_network": "Joss gives the ledger to the authorities and names the brokers who sold identities. Some victims refuse his apology, but the network can no longer operate openly."
+      },
+      "outcome_flags": {
+        "return_money": "joss_outcome_restitution",
+        "trade_ledger": "joss_outcome_safe_passage",
+        "expose_network": "joss_outcome_network_exposed"
       }
     },
     "q_companion_isaure_two_oaths": {
@@ -294,6 +312,24 @@
       ],
       "completion_reward": {
         "gold": 50
+      },
+      "synopsis": "A sealed summons demands that Isaure return to House Vessmoor and denounce the company. At a Vessmoor household outpost, she discovers retainers divided between lawful duty and private loyalty. Her former mentor then challenges her honour, forcing her to define what an oath can demand.",
+      "journal_summary": "Answer the sealed Vessmoor summons, examine the household muster and resolve Isaure's challenge with her former mentor.",
+      "resolution_prompt": "The forged order has been exposed and Isaure has faced her mentor. Which future should she choose without surrendering the company's independence?",
+      "outcome_labels": {
+        "renew_limited_oath": "Renew a limited House oath",
+        "renounce_command": "Renounce the claim to command",
+        "service_compact": "Negotiate a written service compact"
+      },
+      "outcome_descriptions": {
+        "renew_limited_oath": "Isaure renews a narrow oath to protect Vessmoor's people, not to obey every demand of its ruling household. She becomes a diplomatic cavalry envoy while remaining free to refuse unlawful orders.",
+        "renounce_command": "Isaure publicly renounces her claim to command and returns the household seal. She remains with the company as a free agent, no longer bound by inherited authority.",
+        "service_compact": "Isaure signs a time-limited service compact with clear duties, wages and the right to withdraw. Vessmoor retainers acknowledge her choice without granting the company control of the House."
+      },
+      "outcome_flags": {
+        "renew_limited_oath": "isaure_outcome_limited_oath",
+        "renounce_command": "isaure_outcome_renounced_command",
+        "service_compact": "isaure_outcome_service_compact"
       }
     },
     "q_companion_bram_cullen_broken_chain": {
