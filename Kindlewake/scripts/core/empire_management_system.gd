@@ -629,8 +629,14 @@ static func build_tactical_battle(state: Dictionary, army_id: String, base_battl
 			cohort_index += 1
 			enemy_index += 1
 	if siege_assault:
+		units.append({"character_id": "strategic_fort_wall_0", "team": "enemy", "cell": [17, 3], "facing": 2, "name": "Outer Wall"})
+		units.append({"character_id": "strategic_fort_wall_1", "team": "enemy", "cell": [17, 7], "facing": 2, "name": "Inner Wall"})
+		units.append({"character_id": "strategic_fort_tower", "team": "enemy", "cell": [17, 11], "facing": 2, "name": "Gate Tower"})
 		units.append({"character_id": "strategic_fort_gate", "team": "enemy", "cell": [19, 3], "facing": 2, "commander": true, "name": "Fort Gate"})
 		units.append({"character_id": "strategic_siege_engine", "team": "player", "cell": [6, 13], "facing": 0, "name": "Battering Ram"})
+		units.append({"character_id": "strategic_siege_ballista", "team": "player", "cell": [3, 14], "facing": 0, "name": "Field Ballista"})
+		units.append({"character_id": "strategic_siege_trebuchet", "team": "player", "cell": [1, 16], "facing": 0, "name": "Counterweight Trebuchet"})
+		units.append({"character_id": "strategic_siege_engineer", "team": "player", "cell": [5, 15], "facing": 0, "name": "Siege Engineer"})
 	battle["id"] = "field_army_%s_%s" % [army_id, region_id]
 	battle.erase("reward_rune")
 	battle.erase("reward_item")
@@ -658,6 +664,7 @@ static func tactical_battle_database(base_db: Dictionary, battle: Dictionary, wa
 	var engine_templates: Dictionary = warfare_data.get("siege_engines", {})
 	var garrison_rules: Dictionary = warfare_data.get("garrisons", {})
 	var fortification_templates: Dictionary = warfare_data.get("fortifications", {})
+	var engineer_templates: Dictionary = warfare_data.get("siege_engineers", {})
 	for spawn in battle.get("units", []):
 		var character_id := str(spawn.get("character_id", ""))
 		if not character_id.begins_with("strategic_") or chars.has(character_id):
@@ -669,11 +676,30 @@ static func tactical_battle_database(base_db: Dictionary, battle: Dictionary, wa
 		elif is_defender:
 			var parts := character_id.split("_")
 			troop_type = str(parts[2]) if parts.size() > 2 else "infantry"
-		if character_id == "strategic_fort_gate":
-			var gate: Dictionary = fortification_templates.get("fort_gate", {"name": "Fort Gate", "class_id": "fort_gate", "weapon_id": "hand_axe", "armor_def": 6, "armor_res": 4, "class_def": {"name": "Fort Gate", "move": 0, "jump": 0}, "stats": {"hp": 100, "mp": 0, "str": 0, "dex": 0, "int": 0, "vit": 8, "spd": 1, "lck": 0, "acc": 0, "eva": 0, "ldr": 0, "mor": 0}})
-			var gate_class_id := str(gate.get("class_id", "fort_gate"))
-			classes[gate_class_id] = (gate.get("class_def", {"name": "Fort Gate", "move": 0, "jump": 0}) as Dictionary).duplicate(true)
-			chars[character_id] = {"name": str(gate.get("name", "Fort Gate")), "class_id": gate_class_id, "level": 1, "weapon_id": str(gate.get("weapon_id", "hand_axe")), "armor_def": int(gate.get("armor_def", 6)), "armor_res": int(gate.get("armor_res", 4)), "skills": [], "stats": (gate.get("stats", {}) as Dictionary).duplicate(true)}
+		if character_id.begins_with("strategic_fort_"):
+			var fort_key := "fort_gate"
+			if character_id == "strategic_fort_wall_0":
+				fort_key = "outer_wall"
+			elif character_id == "strategic_fort_wall_1":
+				fort_key = "inner_wall"
+			elif character_id == "strategic_fort_tower":
+				fort_key = "gate_tower"
+			var fort: Dictionary = fortification_templates.get(fort_key, fortification_templates.get("fort_gate", {}))
+			var fort_class_id := str(fort.get("class_id", "fort_wall"))
+			classes[fort_class_id] = (fort.get("class_def", {"name": "Fortification", "move": 0, "jump": 0}) as Dictionary).duplicate(true)
+			chars[character_id] = {"name": str(fort.get("name", "Fortification")), "class_id": fort_class_id, "level": 1, "weapon_id": str(fort.get("weapon_id", "hand_axe")), "armor_def": int(fort.get("armor_def", 6)), "armor_res": int(fort.get("armor_res", 4)), "skills": [], "stats": (fort.get("stats", {}) as Dictionary).duplicate(true)}
+			continue
+		if character_id == "strategic_siege_engineer":
+			var engineer: Dictionary = engineer_templates.get("siege_engineer", {})
+			var engineer_class_id := str(engineer.get("class_id", "swordsman"))
+			chars[character_id] = {"name": str(engineer.get("name", "Siege Engineer")), "class_id": engineer_class_id, "level": 1, "weapon_id": str(engineer.get("weapon_id", "arming_sword")), "armor_def": int(engineer.get("armor_def", 2)), "armor_res": int(engineer.get("armor_res", 2)), "skills": [], "stats": (engineer.get("stats", {}) as Dictionary).duplicate(true)}
+			continue
+		if character_id.begins_with("strategic_siege_") and character_id != "strategic_siege_engine":
+			var engine_key := character_id.trim_prefix("strategic_siege_")
+			var engine: Dictionary = engine_templates.get(engine_key, {})
+			var engine_class_id := str(engine.get("class_id", "siege_engine"))
+			classes[engine_class_id] = (engine.get("class_def", {"name": "Siege Engine", "move": 1, "jump": 0}) as Dictionary).duplicate(true)
+			chars[character_id] = {"name": str(engine.get("name", "Siege Engine")), "class_id": engine_class_id, "level": 1, "weapon_id": str(engine.get("weapon_id", "battle_axe")), "armor_def": int(engine.get("armor_def", 4)), "armor_res": int(engine.get("armor_res", 2)), "skills": [], "stats": (engine.get("stats", {}) as Dictionary).duplicate(true)}
 			continue
 		if character_id == "strategic_siege_engine":
 			var ram: Dictionary = engine_templates.get("battering_ram", {"name": "Battering Ram", "class_id": "siege_engine", "weapon_id": "battle_axe", "armor_def": 8, "armor_res": 2, "class_def": {"name": "Battering Ram", "move": 2, "jump": 0}, "stats": {"hp": 70, "mp": 0, "str": 12, "dex": 3, "int": 1, "vit": 14, "spd": 2, "lck": 1, "acc": 70, "eva": 0, "ldr": 0, "mor": 100}})
