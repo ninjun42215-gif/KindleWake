@@ -89,6 +89,19 @@
             "'The watchtower bell rings when the wind is from the north. Last night it rang with no wind at all.'",
             "'If you find a brass token in the mud, don't spend it. The old road wardens used those to open the sealed storehouse.'"
           ]
+        },
+        {
+          "cell": [
+            19,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Freed Debtor",
+          "text": "A traveller keeps a folded contract hidden beneath his coat.",
+          "companion_quest_id": "q_companion_bram_cullen_broken_chain",
+          "companion_quest_milestone": "contracts_audited",
+          "companion_quest_text": "A former inmate shows Bram a contract with fees compounded after release and a signature copied from a dead witness. Compare the clauses and testimony: some debts are real, but these transfers are not lawful proof of what the prisoners owe."
         }
       ]
     },
@@ -153,6 +166,19 @@
             0.75
           ],
           "text": "Heard a purse was left in the old tower, north of here. Nobody dares go. The roads are not what they were."
+        },
+        {
+          "cell": [
+            8,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Chain Yard Witness",
+          "text": "A teamster has seen debtors marched toward a guarded work yard.",
+          "companion_quest_id": "q_companion_bram_cullen_broken_chain",
+          "companion_quest_milestone": "debtors_freed",
+          "companion_quest_text": "The witness knows where the debtors are being held. Bram refuses to leave them behind. The evidence can support a public tribunal, a negotiated release that preserves the records, or the destruction of the false transfer papers before the company can use them again."
         }
       ]
     },
@@ -394,6 +420,19 @@
           "blacksmith": true,
           "rune_service": true,
           "shopkeeper_id": "rurik"
+        },
+        {
+          "cell": [
+            11,
+            8
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Furnace Broker",
+          "text": "A well-dressed broker waits beside a sealed crate of furnace fittings.",
+          "companion_quest_id": "q_companion_edda_iron_and_ash",
+          "companion_quest_milestone": "furnace_bargain_resolved",
+          "companion_quest_text": "The former employer offers Edda the workshop if she signs away the workers' claims. With the tool register and wage testimony in hand, she can reject the bargain, establish shared rules, or take ownership only with binding worker protections."
         }
       ]
     },
@@ -826,6 +865,19 @@
             "success_text": "You match Pell's fever notes to the infirmary ledger. Brisa can now assign a healer without exposing the other families.",
             "failure_text": "That testimony describes shelter or safe passage, not the urgent medical need. Read the three accounts again."
           }
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Foundry Hand",
+          "text": "A soot-streaked worker warms both hands around a cup and watches the door.",
+          "companion_quest_id": "q_companion_edda_iron_and_ash",
+          "companion_quest_milestone": "worker_claims_verified",
+          "companion_quest_text": "The foundry hand names the workers who paid for the missing tools through withheld wages. Edda listens to each account and separates verified claims from rumour. The workers want their names and wages recorded before anyone bargains over the furnace."
         }
       ]
     },
@@ -930,6 +982,32 @@
           "name": "Bram Cullen",
           "character_id": "bram_cullen",
           "text": "A gentle giant with a pit-fighter's scars. The camp must be cleared before he will risk joining another armed company."
+        },
+        {
+          "cell": [
+            9,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Foundry Tool Clerk",
+          "text": "A clerk keeps the foundry's tool register beneath a stack of unpaid invoices.",
+          "companion_quest_id": "q_companion_edda_iron_and_ash",
+          "companion_quest_milestone": "tools_accounted",
+          "companion_quest_text": "Edda checks the old foundry register. Several specialist tools were charged to workers who never received them; others were loaned freely and must not be counted as theft. Compare the marks and identify what is truly missing."
+        },
+        {
+          "cell": [
+            9,
+            6
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Debt Runner",
+          "text": "A frightened courier carries a transfer notice stamped by a private debt company.",
+          "companion_quest_id": "q_companion_bram_cullen_broken_chain",
+          "companion_quest_milestone": "debt_transfer_found",
+          "companion_quest_text": "Bram Cullen recognises the jailer's mark on the transfer notice. His prison debt has been sold to a private company, along with claims against several other inmates. He asks you to trace the contract before the company can move them."
         }
       ]
     },
