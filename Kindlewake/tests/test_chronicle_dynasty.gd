@@ -23,14 +23,14 @@ func _initialize() -> void:
  state = marriage.state
  check(str(state.people["heir_1"].spouse) == str(outsider.person_id),"marriage is reciprocal")
  check(not Dynasty.set_spouse(state,"heir_1","heir_2").ok,"close relatives cannot be married")
- var trait := Dynasty.add_trait(state,"heir_1","brave")
+ var trait := Dynasty.add_trait(state,"heir_1","curious")
  check(bool(trait.ok),"positive or negative traits can be acquired")
  state = trait.state
- check(not Dynasty.add_trait(state,"heir_1","brave").ok,"duplicate trait is rejected")
- var removed := Dynasty.remove_trait(state,"heir_1","brave")
- check(bool(removed.ok) and not removed.state.people["heir_1"].traits.has("brave"),"traits can be removed")
+ check(not Dynasty.add_trait(state,"heir_1","curious").ok,"duplicate trait is rejected")
+ var removed := Dynasty.remove_trait(state,"heir_1","curious")
+ check(bool(removed.ok) and not removed.state.people["heir_1"].traits.has("curious"),"traits can be removed")
  state = removed.state
- check(not Dynasty.remove_trait(state,"heir_1","brave").ok,"missing trait removal is rejected")
+ check(not Dynasty.remove_trait(state,"heir_1","curious").ok,"missing trait removal is rejected")
  var policy := Dynasty.set_succession_policy(state,"designated_heir","heir_2")
  check(bool(policy.ok) and str(policy.state.designated_heir) == "heir_2","designated heir succession can be configured")
  state = policy.state
