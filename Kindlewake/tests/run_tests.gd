@@ -203,7 +203,9 @@ func _test_companion_quests() -> void:
         "q_companion_kestrel_no_master": {"elderbough": "coded_mark_found", "elderbough_inn": "safehouse_investigated", "elderbough_market": "witness_protected"},
         "q_companion_anselm_line_to_hold": {"crossing": "muster_notice_read", "crossing_elder": "drill_ground_examined", "sethorn_hall": "soldiers_resolved"},
         "q_companion_petra_bitter_draught": {"foxglove_market": "ward_ledger_found", "foxglove_inn": "treatment_verified", "foxglove_recruit": "triage_decided"},
-        "q_companion_dorian_unspent_bolt": {"thornmere": "convoy_identified", "thornmere_inn": "shot_reconstructed", "thornmere_market": "quartermaster_confronted"}
+        "q_companion_dorian_unspent_bolt": {"thornmere": "convoy_identified", "thornmere_inn": "shot_reconstructed", "thornmere_market": "quartermaster_confronted"},
+        "q_companion_joss_debt_of_silence": {"thornmere": "purse_recognised", "thornmere_inn": "smuggling_ledger_found", "thornmere_market": "debtors_rescued"},
+        "q_companion_isaure_two_oaths": {"elderbough": "summons_received", "elderbough_inn": "household_muster_examined", "elderbough_market": "mentor_challenge_resolved"}
     }
     var authored_hooks_ok := true
     for authored_quest_id in authored_quest_maps.keys():
@@ -220,19 +222,19 @@ func _test_companion_quests() -> void:
         var outcome_flags: Dictionary = gd.companion_quests[authored_quest_id].get("outcome_flags", {})
         if outcome_flags.size() != (gd.companion_quests[authored_quest_id].get("outcomes", []) as Array).size():
             authored_hooks_ok = false
-    check(authored_hooks_ok, "Lucan, Kestrel, Anselm, Petra and Dorian have three ordered location hooks, valid investigation challenges and persistent outcome branches")
+    check(authored_hooks_ok, "Lucan, Kestrel, Anselm, Petra, Dorian, Joss and Isaure have three ordered location hooks, valid investigation challenges and persistent outcome branches")
     var playable_summaries_ok := true
-    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt"]:
+    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths"]:
         if str(gd.companion_quests[playable_id].get("journal_summary", "")).length() < 30:
             playable_summaries_ok = false
-    check(playable_summaries_ok, "all eight authored companion quest routes have journal summaries")
+    check(playable_summaries_ok, "all ten authored companion quest routes have journal summaries")
     var playable_flags_ok := true
-    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt"]:
+    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths"]:
         var playable_definition: Dictionary = gd.companion_quests[playable_id]
         var playable_flags: Dictionary = playable_definition.get("outcome_flags", {})
         if playable_flags.size() != (playable_definition.get("outcomes", []) as Array).size():
             playable_flags_ok = false
-    check(playable_flags_ok, "all eight authored companion quest routes persist every distinct resolution outcome")
+    check(playable_flags_ok, "all ten authored companion quest routes persist every distinct resolution outcome")
 
 
 func _test_prologue() -> void:
