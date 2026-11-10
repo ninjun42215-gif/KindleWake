@@ -62,7 +62,7 @@ Each known province contributes a modest baseline tax and food yield, while popu
 - Never make a single tax rate or policy universally optimal.
 - No random rebellion without readable warning signals and player agency.
 - Every recurring cost and yield must be visible before committing.
-- A season advances only through an explicit game-time/story action.
+- A season advances only through an explicit game-time/story action. War exhaustion above 70 applies a small visible political penalty; it never triggers an unannounced game-over.
 - Preserve offline-first operation, no account/server dependency and no Android INTERNET permission.
 - Keep old schema-4 saves loadable; test both missing and populated empire payloads.
 - Do not describe backend APIs as a finished UI or playable empire campaign until screens and story integration are implemented and tested.
