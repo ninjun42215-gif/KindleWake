@@ -289,6 +289,7 @@ func _add_child() -> void:
  child_name.clear()
  _save()
  _refresh()
+ status.text = "Child recorded in the family tree."
 
 func _add_member() -> void:
  var result := Dynasty.add_house_member(state,member_name.text,int(member_age.value),[])
@@ -300,6 +301,7 @@ func _add_member() -> void:
  member_name.clear()
  _save()
  _refresh()
+ status.text = "Allied adult recorded."
 
 func _marry() -> void:
  var result := Dynasty.set_spouse(state,_selected_id(spouse_a),_selected_id(spouse_b))
@@ -309,6 +311,7 @@ func _marry() -> void:
  state = result.state
  _save()
  _refresh()
+ status.text = "Marriage recorded."
 
 func _assign_guardian() -> void:
  _apply_result(Dynasty.assign_guardian(state,selected_person,_selected_id(guardian_picker)))
@@ -408,9 +411,10 @@ func _advance_year() -> void:
   return
  state = result.state
  var deaths: Array = result.get("deaths",[])
- status.text = "Year %d recorded. Natural deaths: %s. Succession is resolved under %s." % [int(state.year),", ".join(deaths) if not deaths.is_empty() else "none",str(state.succession_policy)]
+ var result_text := "Year %d recorded. Natural deaths: %s. Succession is resolved under %s." % [int(state.year),", ".join(deaths) if not deaths.is_empty() else "none",str(state.succession_policy)]
  _save()
  _refresh()
+ status.text = result_text
 
 func _apply_result(result: Dictionary) -> void:
  if not bool(result.get("ok",false)):
@@ -419,6 +423,7 @@ func _apply_result(result: Dictionary) -> void:
  state = result.state
  _save()
  _refresh()
+ status.text = "Change recorded in the house chronicle."
 
 func _save() -> void:
  if state.is_empty():
