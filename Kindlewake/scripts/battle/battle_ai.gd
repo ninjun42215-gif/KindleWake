@@ -112,11 +112,11 @@ static func _decide_ash_bailiff(unit: BattleUnit, ctl) -> Dictionary:
         if unit.skills.has("mend_ii"):
             for ally in ctl.skill_targets(unit, "mend_ii"):
                 var ratio := float(ally.hp) / float(ally.max_hp())
-                if ratio > 0.72:
+                if ratio > 0.50:
                     continue
-                var score := (1.0 - ratio) * 95.0
-                score += _ally_under_pressure_score(ally, ctl) * 5.0
-                score += 8.0 if ally.character_id != "ash_bailiff" else 0.0
+                var score := (1.0 - ratio) * 100.0
+                score += _ally_under_pressure_score(ally, ctl) * 8.0
+                score += 6.0 if ally.character_id != "ash_bailiff" else 0.0
                 score += float(ctl.map.cover_at(candidate)) * 0.2
                 score -= 1.5 * _threat_at(unit, candidate, ctl)
                 score -= 0.5 * float(BattleMap.manhattan(origin, candidate))
@@ -124,7 +124,7 @@ static func _decide_ash_bailiff(unit: BattleUnit, ctl) -> Dictionary:
                     heal_score = score
                     best_heal = {"move_to": candidate, "action": "skill", "skill_id": "mend_ii", "target": ally}
     unit.cell = origin
-    if not best_heal.is_empty() and heal_score >= 28.0:
+    if not best_heal.is_empty() and heal_score >= 48.0:
         return best_heal
 
     var smite := _best_bolt(unit, ctl, candidates)
