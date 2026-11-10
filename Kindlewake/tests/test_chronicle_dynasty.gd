@@ -57,6 +57,8 @@ func _initialize() -> void:
  var saved := JSON.parse_string(JSON.stringify(state))
  var restored := Dynasty.normalize_state(saved)
  check(not restored.is_empty() and restored.people.size() == state.people.size(),"family and relationship state survives JSON save normalization")
+ var corrupt := Dynasty.normalize_state({"founder_id":"missing","people":{"bad":"not a person"},"titles":{"broken":"not a title"},"domains":[]})
+ check(corrupt.is_empty(),"corrupted family saves without a founder anchor are rejected safely")
  var aged := restored.duplicate(true)
  aged.people["heir_2"].age = Dynasty.NATURAL_OLD_AGE-1
  var year := Dynasty.advance_year(aged)
