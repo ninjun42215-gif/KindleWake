@@ -32,6 +32,7 @@ func _initialize() -> void:
     _test_controller()
     _test_auto_battle()
     _test_progression()
+    _test_trait_system()
     _test_recruitment()
     _test_prologue()
     _test_escape_mission()
@@ -1556,3 +1557,30 @@ func _simulate_battles(n: int) -> void:
         total_turns += c.turn_count
     check(unfinished == 0, "all %d simulated battles reach a result" % n)
     print("  info  AI vs AI: player side won %d/%d, average %.1f turns per battle" % [wins, n, float(total_turns) / float(n)])
+
+
+func _test_trait_system() -> void:
+    print("[trait and personality system]")
+    var defs: Dictionary = gd.traits
+    check(defs.size() >= 35, "data-driven trait catalogue loads a broad initial library")
+    check(defs.has("brave") and defs.has("scholar") and defs.has("battle_trauma") and defs.has("magical_affinity"), "catalogue covers personality, knowledge, psychological and rare magical traits")
+    var sheet := CharacterSheet.from_def("trait_test", {"name":"Test Hero","class_id":"swordsman","level":1,"stats":{"hp":20,"mp":5,"str":5,"dex":5,"int":5,"vit":5,"spd":5,"lck":5,"acc":70,"eva":5,"ldr":5,"mor":50}})
+    var base: Dictionary = sheet.base_stats.duplicate(true)
+    var gained: Dictionary = sheet.acquire_trait("brave", "unit_test", defs)
+    check(bool(gained.get("ok", false)) and sheet.traits.has("brave"), "valid trait acquisition records an enduring trait")
+    check(int(sheet.base_stats.get("mor", 0)) == int(base.get("mor", 0)), "trait effects never mutate permanent base stats")
+    var trait_stats: Dictionary = sheet.total_stats({}, {})
+    check(int(trait_stats.get("mor", 0)) == int(base.get("mor", 0)) + 2, "trait stat effects are applied through derived stats")
+    var conflict: Dictionary = sheet.acquire_trait("cowardly", "unit_test", defs)
+    check(not bool(conflict.get("ok", false)) and sheet.traits.has("brave"), "opposing traits cannot be acquired together")
+    var duplicate: Dictionary = sheet.acquire_trait("brave", "unit_test", defs)
+    check(not bool(duplicate.get("ok", false)), "duplicate trait acquisition is rejected")
+    var evolve: Dictionary = sheet.evolve_trait("brave", defs, "unit_test")
+    check(bool(evolve.get("ok", false)) and sheet.traits.has("fearless") and not sheet.traits.has("brave"), "eligible traits evolve without stacking their predecessor")
+    var permanent: Dictionary = sheet.acquire_trait("magical_affinity", "unit_test", defs)
+    var blocked: Dictionary = sheet.remove_trait("magical_affinity", "unit_test", defs)
+    check(bool(permanent.get("ok", false)) and not bool(blocked.get("ok", false)), "permanent traits require an explicit story-resolution override to remove")
+    var restored := CharacterSheet.from_dict(sheet.to_dict())
+    check(restored.traits == sheet.traits and restored.trait_history.size() == sheet.trait_history.size(), "trait IDs and history survive character serialization")
+    var legacy := CharacterSheet.from_dict({"character_id":"legacy","name":"Legacy","class_id":"swordsman","level":1,"base_stats":{"hp":10,"str":4},"skills":[],"equipment":{}})
+    check(legacy.traits.is_empty() and legacy.trait_history.is_empty(), "legacy character saves load safely without trait fields")
