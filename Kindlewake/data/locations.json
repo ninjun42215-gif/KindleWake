@@ -496,6 +496,24 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        },
+        {
+          "cell": [
+            3,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Signal Keeper's Assistant",
+          "tint": [
+            0.82,
+            0.78,
+            0.58
+          ],
+          "text": "A cracked brass signal plate lies beneath the old watch notice.",
+          "companion_quest_id": "q_companion_lucan_last_flight",
+          "companion_quest_milestone": "signal_found",
+          "companion_quest_text": "Lucan recognises the Orrowen signal code. Someone used the old flight pattern after the garrison was supposedly disbanded. He asks you to preserve the plate before the patrol clerk removes it."
         }
       ]
     },
@@ -535,6 +553,35 @@
           "npc": true,
           "name": "Innkeeper",
           "text": "A clean bed and a hot meal cost 20 gold. Your company can recover its nerve here."
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Retired Road Scout",
+          "tint": [
+            0.72,
+            0.82,
+            0.72
+          ],
+          "text": "The scout keeps a folded route map beneath his cup.",
+          "companion_quest_id": "q_companion_lucan_last_flight",
+          "companion_quest_milestone": "patrol_traced",
+          "companion_quest_text": "The scout remembers a patrol that moved without horses and avoided the main road. Lucan lays the signal timings beside the route notes.",
+          "companion_quest_challenge": {
+            "prompt": "The signal plate records a dusk flash, then a second flash from the western ridge. The patrol left no hoofprints. Which route best fits the evidence?",
+            "options": [
+              "The west ridge footpath after dusk",
+              "The southern cart road at noon",
+              "The river ford before sunrise"
+            ],
+            "correct_option": "The west ridge footpath after dusk",
+            "success_text": "The timings and lack of hoofprints match a foot patrol on the west ridge. Lucan marks the route and identifies the deserters' likely passage.",
+            "failure_text": "That route conflicts with either the signal timing or the missing hoofprints. Compare both clues before choosing."
+          }
         }
       ]
     },
@@ -574,6 +621,24 @@
           "npc": true,
           "name": "Market Factor",
           "text": "The Weald's best bowyers and charm-sellers trade here. Use the party counter to compare and buy equipment."
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Former Garrison Clerk",
+          "tint": [
+            0.76,
+            0.74,
+            0.86
+          ],
+          "text": "A former clerk asks for a private hearing before the market opens.",
+          "companion_quest_id": "q_companion_lucan_last_flight",
+          "companion_quest_milestone": "witness_heard",
+          "companion_quest_text": "The clerk confirms that the deserters carried the pay chest away, but also names a family who sheltered them under threat. Lucan asks you to hear the witness without turning their fear into another accusation."
         }
       ]
     },
@@ -749,7 +814,18 @@
           "text": "The herbwives keep a quiet room for weary travellers. Rest costs 20 gold.",
           "companion_quest_id": "q_companion_brisa_hearth_of_names",
           "companion_quest_milestone": "families_contacted",
-          "companion_quest_text": "The innkeeper remembers three families who sheltered in the upper rooms. Brisa compares their accounts with the recovered ledger. Their needs differ: one needs medicine, one needs a safe room, and one needs a way home."
+          "companion_quest_text": "The innkeeper remembers three families who sheltered in the upper rooms. Brisa compares their accounts with the recovered ledger. Their needs differ: one needs medicine, one needs a safe room, and one needs a way home.",
+          "companion_quest_challenge": {
+            "prompt": "Brisa lays out three testimonies. Mira needs a safe room, Pell needs medicine, and Oren's family cannot travel home without an escort. Which request is specifically a medical emergency?",
+            "options": [
+              "Mira needs a safe room",
+              "Pell needs medicine",
+              "Oren needs an escort"
+            ],
+            "correct_option": "Pell needs medicine",
+            "success_text": "You match Pell's fever notes to the infirmary ledger. Brisa can now assign a healer without exposing the other families.",
+            "failure_text": "That testimony describes shelter or safe passage, not the urgent medical need. Read the three accounts again."
+          }
         }
       ]
     },
@@ -912,6 +988,24 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        },
+        {
+          "cell": [
+            3,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Carved Waystone",
+          "tint": [
+            0.72,
+            0.78,
+            0.66
+          ],
+          "text": "A tiny hooked mark has been cut into the underside of the waystone.",
+          "companion_quest_id": "q_companion_kestrel_no_master",
+          "companion_quest_milestone": "coded_mark_found",
+          "companion_quest_text": "Kestrel spots a contract mark used by their former handlers. It points to a safehouse where names were traded for patrol routes. Kestrel asks you not to touch the mark until its pattern is copied."
         }
       ]
     },
@@ -951,6 +1045,35 @@
           "npc": true,
           "name": "Innkeeper",
           "text": "The timber hall offers a dry bed and a warm fire for 20 gold."
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Safehouse Caretaker",
+          "tint": [
+            0.78,
+            0.7,
+            0.62
+          ],
+          "text": "The caretaker's ledger has been scraped clean, but the pressure marks remain.",
+          "companion_quest_id": "q_companion_kestrel_no_master",
+          "companion_quest_milestone": "safehouse_investigated",
+          "companion_quest_text": "Kestrel reconstructs the hidden entries from the paper grooves. The safehouse used three signs to warn its occupants.",
+          "companion_quest_challenge": {
+            "prompt": "The caretaker says the warning was never a spoken password. Which sign would tell a fugitive that watchers were waiting outside?",
+            "options": [
+              "A lantern turned toward the street",
+              "A shutter left open on the upper floor",
+              "A bucket placed beside the rear step"
+            ],
+            "correct_option": "A lantern turned toward the street",
+            "success_text": "The lantern mark matches the hidden ledger notation. Kestrel finds the watcher schedule and the list of names sold to the patrol.",
+            "failure_text": "The caretaker shakes their head. That sign was ordinary household business, not the warning used by the handlers."
+          }
         }
       ]
     },
@@ -990,6 +1113,24 @@
           "npc": true,
           "name": "Market Factor",
           "text": "Carpenters and hunters bring their wares to the square. The factor can open your company stores."
+        },
+        {
+          "cell": [
+            8,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Protected Witness",
+          "tint": [
+            0.76,
+            0.84,
+            0.78
+          ],
+          "text": "A courier waits among the timber merchants, carrying a sealed statement.",
+          "companion_quest_id": "q_companion_kestrel_no_master",
+          "companion_quest_milestone": "witness_protected",
+          "companion_quest_text": "The witness can identify the handler who sold the names, but revealing them would expose the safehouse families. Kestrel asks you to protect the witness before deciding what the records should become."
         }
       ]
     },
