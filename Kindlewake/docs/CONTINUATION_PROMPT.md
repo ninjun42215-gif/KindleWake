@@ -1,4 +1,4 @@
-> **LIVE PROJECT CHECKPOINT — 2026-11-10 (post-merge):** Canonical repository `ninjun42215-gif/KindleWake`; default branch `main`; current main commit `a156b8c5532b88cf9fa222253ab0ba1cbcf7a9c2`. PR #28 (v0.12.0 world expansion), PR #30 (Chapter I + creator fixes) and PR #31 (verified handoff docs) are merged. There is no active implementation branch for this milestone.
+> **LIVE PROJECT CHECKPOINT — 2026-11-10 (post-merge):** Canonical repository `ninjun42215-gif/KindleWake`; default branch `main`. PR #28 (v0.12.0 world expansion), PR #30 (Chapter I + creator fixes), PR #31 (verified CI handoff) and PR #32 (final post-merge handoff state) are merged. There is no active implementation branch for this milestone; inspect the live `main` ref before starting new work.
 >
 > **Project state:** Godot 4.2 / GL Compatibility, game and Android version `0.12.0`, Android version code `1200`, save schema `4`. Preserve all existing systems, JSON data and saves. No version/schema change was needed.
 >
