@@ -24,7 +24,7 @@ static func new_state() -> Dictionary:
 		"treasury": 500, "food": 300, "manpower": 100, "stability": 60,
 		"legitimacy": 45, "public_order": 60, "tax_rate": "normal",
 		"policies": [], "council": {}, "governors": {}, "provinces": {},
-		"buildings": {}, "armies": {}, "turn": 0, "history": []
+		"buildings": {}, "armies": {}, "field_armies": {}, "next_army_id": 1, "turn": 0, "history": []
 	}
 
 
@@ -33,6 +33,7 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
 	for key in ["unlocked", "realm_name", "treasury", "food", "manpower", "stability", "legitimacy", "public_order", "turn"]:
 		if raw.has(key):
 			state[key] = raw[key]
+	state["next_army_id"] = maxi(1, int(raw.get("next_army_id", 1)))
 	for stat in ["treasury", "food", "manpower", "turn"]:
 		state[stat] = maxi(0, int(state[stat]))
 	for stat in ["stability", "legitimacy", "public_order"]:
@@ -40,7 +41,7 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
 	state["tax_rate"] = str(raw.get("tax_rate", "normal"))
 	if not TAX_RATES.has(state["tax_rate"]):
 		state["tax_rate"] = "normal"
-	for key in ["policies", "council", "governors", "provinces", "buildings", "armies"]:
+	for key in ["policies", "council", "governors", "provinces", "buildings", "armies", "field_armies"]:
 		if typeof(raw.get(key, {})) == TYPE_DICTIONARY:
 			state[key] = (raw[key] as Dictionary).duplicate(true)
 	if typeof(raw.get("policies", [])) == TYPE_ARRAY:
@@ -191,6 +192,76 @@ static func disband_troops(state: Dictionary, province_id: String, troop_type: S
 	state["manpower"] = mini(999999, int(state["manpower"]) + returned)
 	_record(state, "disbandment", {"province": province_id, "type": troop_type, "amount": amount, "manpower_returned": returned})
 	return true
+
+
+
+
+## Mobilize part of a provincial garrison into a named field army.
+static func mobilize_army(state: Dictionary, province_id: String, troop_counts: Dictionary, known_provinces: Array, commander_id: String = "") -> String:
+	if not bool(state.get("unlocked", false)) or not known_provinces.has(province_id) or troop_counts.is_empty():
+		return ""
+	var garrisons: Dictionary = state.get("armies", {})
+	var garrison: Dictionary = garrisons.get(province_id, {})
+	var composition := {}
+	var total := 0
+	for troop_type in troop_counts.keys():
+		var amount := int(troop_counts[troop_type])
+		if not TROOP_TYPES.has(str(troop_type)) or amount <= 0 or int(garrison.get(troop_type, 0)) < amount:
+			return ""
+		composition[str(troop_type)] = amount
+		total += amount
+	if total <= 0:
+		return ""
+	for troop_type in composition.keys():
+		garrison[troop_type] = int(garrison[troop_type]) - int(composition[troop_type])
+		if int(garrison[troop_type]) == 0:
+			garrison.erase(troop_type)
+	if garrison.is_empty():
+		garrisons.erase(province_id)
+	else:
+		garrisons[province_id] = garrison
+	state["armies"] = garrisons
+	var army_id := "field_%04d" % int(state.get("next_army_id", 1))
+	state["next_army_id"] = int(state.get("next_army_id", 1)) + 1
+	var field_armies: Dictionary = state.get("field_armies", {})
+	field_armies[army_id] = {"id": army_id, "name": "Field Army %d" % (int(state["next_army_id"]) - 1), "location": province_id, "troops": composition, "commander": commander_id, "movement": 1, "supplied": true, "days_unsupplied": 0}
+	state["field_armies"] = field_armies
+	_record(state, "army_mobilized", {"army": army_id, "province": province_id, "troops": composition})
+	return army_id
+
+
+## Move one strategic step along a real regional link from the seven-continent atlas.
+static func move_field_army(state: Dictionary, army_id: String, destination: String, adjacency: Dictionary, controlled_provinces: Array) -> bool:
+	if not bool(state.get("unlocked", false)) or not state.get("field_armies", {}).has(army_id):
+		return false
+	var field_armies: Dictionary = state["field_armies"]
+	var army: Dictionary = field_armies[army_id]
+	var origin := str(army.get("location", ""))
+	if destination == origin or not adjacency.get(origin, []).has(destination):
+		return false
+	army["location"] = destination
+	army["movement"] = 0
+	army["supplied"] = controlled_provinces.has(destination)
+	army["days_unsupplied"] = 0 if bool(army["supplied"]) else int(army.get("days_unsupplied", 0)) + 1
+	field_armies[army_id] = army
+	state["field_armies"] = field_armies
+	_record(state, "army_moved", {"army": army_id, "from": origin, "to": destination, "supplied": army["supplied"]})
+	return true
+
+
+static func field_army_summary(state: Dictionary) -> Dictionary:
+	var count := 0
+	var troops := 0
+	var unsupplied := 0
+	for army in state.get("field_armies", {}).values():
+		if typeof(army) != TYPE_DICTIONARY:
+			continue
+		count += 1
+		if not bool(army.get("supplied", false)):
+			unsupplied += 1
+		for amount in army.get("troops", {}).values():
+			troops += maxi(0, int(amount))
+	return {"armies": count, "troops": troops, "unsupplied": unsupplied}
 
 
 static func army_summary(state: Dictionary) -> Dictionary:
