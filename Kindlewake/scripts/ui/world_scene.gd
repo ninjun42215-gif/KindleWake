@@ -6,6 +6,7 @@ const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
+const MerchantScreenScript = preload("res://scripts/ui/merchant_screen.gd")
 ## Overworld (Milestone 7, first step): walk freely over the Sallow Marches, find places, get ambushed.
 ## Touch: tap to walk to a spot, hold and drag to steer. Terrain changes speed; forests are more dangerous.
 ## All rules live in WorldMap; battles reuse the battle scene through GameState.start_battle_from_world().
@@ -54,6 +55,7 @@ var place_buttons: VBoxContainer
 var banner: PanelContainer
 var banner_label: Label
 var party_screen: PartyScreenScript
+var merchant_screen: Control
 var minimap_dot: ColorRect
 var campaign_save_timer: float = 0.0
 var creator_screen: Control
@@ -129,7 +131,7 @@ func cell_of(pos: Vector2) -> Vector2i:
 # ------------------------------------------------------------------ input and movement
 
 func _unhandled_input(event: InputEvent) -> void:
-    if panel_open or party_screen.visible or ambush_timer >= 0.0:
+    if panel_open or party_screen.visible or (merchant_screen != null and merchant_screen.visible) or ambush_timer >= 0.0:
         return
     if event is InputEventMouseButton:
         var mb := event as InputEventMouseButton
@@ -156,7 +158,7 @@ func _free_at(p: Vector2) -> bool:
 
 func _process(delta: float) -> void:
     campaign_save_timer += delta
-    if campaign_save_timer >= 25.0 and not panel_open and not party_screen.visible:
+    if campaign_save_timer >= 25.0 and not panel_open and not party_screen.visible and (merchant_screen == null or not merchant_screen.visible):
         campaign_save_timer = 0.0
         GameState.world_pos = wmap.wrap_position(player_pos)
         GameState.save_campaign("auto_a")
@@ -166,7 +168,7 @@ func _process(delta: float) -> void:
             _launch_ambush()
         queue_redraw()
         return
-    if not panel_open and not party_screen.visible:
+    if not panel_open and not party_screen.visible and (merchant_screen == null or not merchant_screen.visible):
         moving_vector = ExplorationControls.movement_vector()
         if move_stick != null and move_stick.value.length() > moving_vector.length():
             moving_vector = move_stick.value
@@ -417,6 +419,20 @@ func _open_party() -> void:
 
 func _on_party_closed() -> void:
     hud_text = ""
+
+
+func _open_merchant() -> void:
+    if panel_open or party_screen.visible or ambush_timer >= 0.0:
+        return
+    has_target = false
+    pressing = false
+    GameState.world_pos = wmap.wrap_position(player_pos)
+    merchant_screen.open_exchange()
+
+
+func _on_merchant_closed() -> void:
+    hud_text = ""
+    GameState.save_campaign("auto_a")
 
 
 # ------------------------------------------------------------------ drawing
@@ -778,6 +794,11 @@ func _build_ui() -> void:
     root.add_child(global_atlas_btn)
     global_atlas_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 144)
     global_atlas_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    var trade_btn := _btn("MERCHANT", _open_merchant, 17)
+    trade_btn.custom_minimum_size = Vector2(190, 48)
+    root.add_child(trade_btn)
+    trade_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 198)
+    trade_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 
     # Top-centre: ambush banner
     banner = _hud_panel(0.95)
@@ -841,11 +862,16 @@ func _build_ui() -> void:
     party_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     party_screen.visible = false
     party_screen.closed.connect(_on_party_closed)
+    merchant_screen = MerchantScreenScript.new()
+    root.add_child(merchant_screen)
+    merchant_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    merchant_screen.visible = false
+    merchant_screen.closed.connect(_on_merchant_closed)
 
 
 
 func _open_world_atlas() -> void:
-    if panel_open or party_screen.visible or ambush_timer >= 0.0:
+    if panel_open or party_screen.visible or (merchant_screen != null and merchant_screen.visible) or ambush_timer >= 0.0:
         return
     has_target = false
     pressing = false
