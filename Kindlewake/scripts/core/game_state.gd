@@ -182,16 +182,19 @@ func start_campaign_siege(target_holding_id: String) -> bool:
     if target.is_empty() or (bool(world_flags.get("holding_claimed_" + target_holding_id, false)) and str(world_flags.get("holding_owner_" + target_holding_id, "")) == "house_dunmarrow"):
         return false
     var source_id := ""
+    var source: Dictionary = {}
     for definition in GameData.world_expansion.get("capturable_locations", []):
         var id := str(definition.get("id", ""))
         if bool(world_flags.get("holding_claimed_" + id, false)) and str(world_flags.get("holding_owner_" + id, "")) == "house_dunmarrow" and str(definition.get("continent", "")) == str(target.get("continent", "")):
             source_id = id
+            source = definition
             break
     if source_id == "":
         for definition in GameData.world_expansion.get("capturable_locations", []):
             var id := str(definition.get("id", ""))
             if bool(world_flags.get("holding_claimed_" + id, false)) and str(world_flags.get("holding_owner_" + id, "")) == "house_dunmarrow":
                 source_id = id
+                source = definition
                 break
     if source_id == "":
         return false
