@@ -30,12 +30,11 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-    # The creator is designed for phones first. A narrow viewport gets one
-    # vertical column; desktop keeps the form and preview side by side.
+    # One continuous scroll surface: on phones the entire creator (including
+    # preview, options, attributes and actions) moves naturally as one page.
     var viewport_size: Vector2 = get_viewport_rect().size
     var narrow: bool = viewport_size.x < 900.0
-    var pin_preview: bool = narrow and viewport_size.y > viewport_size.x
-    compact_preview_summary = pin_preview
+    compact_preview_summary = false
 
     var backdrop := ColorRect.new()
     backdrop.color = Color("#080d13")
@@ -44,54 +43,99 @@ func _build_ui() -> void:
     backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
     var margin := MarginContainer.new()
-    margin.add_theme_constant_override("margin_left", 14 if narrow else 22)
-    margin.add_theme_constant_override("margin_top", 12 if narrow else 16)
-    margin.add_theme_constant_override("margin_right", 14 if narrow else 22)
-    margin.add_theme_constant_override("margin_bottom", 12 if narrow else 16)
+    margin.add_theme_constant_override("margin_left", 16 if narrow else 28)
+    margin.add_theme_constant_override("margin_top", 18 if narrow else 24)
+    margin.add_theme_constant_override("margin_right", 16 if narrow else 28)
+    margin.add_theme_constant_override("margin_bottom", 22 if narrow else 28)
     add_child(margin)
     margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-
-    var outer := VBoxContainer.new()
-    outer.add_theme_constant_override("separation", 8)
-    outer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    outer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    margin.add_child(outer)
-
-    var heading := Label.new()
-    heading.text = "BEGIN A NEW CHRONICLE"
-    heading.add_theme_font_size_override("font_size", 25 if narrow else 30)
-    heading.add_theme_color_override("font_color", Color("#e5c98d"))
-    heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    outer.add_child(heading)
-
-    var subtitle := Label.new()
-    subtitle.text = "Shape the heir who will reclaim Kaer Sethorn. Your choices affect starting stats and story flags."
-    subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    subtitle.add_theme_font_size_override("font_size", 14 if narrow else 16)
-    subtitle.add_theme_color_override("font_color", Color("#b8c2cc"))
-    outer.add_child(subtitle)
 
     var scroll := ScrollContainer.new()
     scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    scroll.size_flags_stretch_ratio = 1.0
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
     scroll.follow_focus = true
-    outer.add_child(scroll)
+    margin.add_child(scroll)
 
-    var body: Container = VBoxContainer.new() if narrow else HBoxContainer.new()
-    body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    body.add_theme_constant_override("separation", 14 if narrow else 18)
-    scroll.add_child(body)
+    var page := VBoxContainer.new()
+    page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    page.add_theme_constant_override("separation", 18 if narrow else 22)
+    scroll.add_child(page)
+
+    var heading := Label.new()
+    heading.text = "CREATE YOUR HERO"
+    heading.add_theme_font_size_override("font_size", 27 if narrow else 34)
+    heading.add_theme_color_override("font_color", Color("#e5c98d"))
+    heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    page.add_child(heading)
+
+    var subtitle := Label.new()
+    subtitle.text = "Shape the heir who will reclaim Kaer Sethorn. Every choice helps define your place in the realm."
+    subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    subtitle.add_theme_font_size_override("font_size", 14 if narrow else 16)
+    subtitle.add_theme_color_override("font_color", Color("#b8c2cc"))
+    page.add_child(subtitle)
+
+    var preview_panel := PanelContainer.new()
+    preview_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    var preview_style := StyleBoxFlat.new()
+    preview_style.bg_color = Color("#111a24")
+    preview_style.border_color = Color("#3c4855")
+    preview_style.set_border_width_all(1)
+    preview_style.set_corner_radius_all(12)
+    preview_style.content_margin_left = 12
+    preview_style.content_margin_right = 12
+    preview_style.content_margin_top = 12
+    preview_style.content_margin_bottom = 12
+    preview_panel.add_theme_stylebox_override("panel", preview_style)
+    page.add_child(preview_panel)
+
+    var preview_content := VBoxContainer.new()
+    preview_content.add_theme_constant_override("separation", 8)
+    preview_panel.add_child(preview_content)
+    var preview_title := Label.new()
+    preview_title.text = "HERO PORTRAIT"
+    preview_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    preview_title.add_theme_font_size_override("font_size", 16)
+    preview_title.add_theme_color_override("font_color", Color("#e5c98d"))
+    preview_content.add_child(preview_title)
+
+    preview = PreviewScript.new()
+    preview.custom_minimum_size = Vector2(260, 360) if narrow else Vector2(320, 400)
+    preview.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+    preview.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+    preview_content.add_child(preview)
+    preview_text = Label.new()
+    preview_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    preview_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    preview_text.add_theme_font_size_override("font_size", 14 if narrow else 15)
+    preview_text.add_theme_color_override("font_color", Color("#c8d0d8"))
+    preview_content.add_child(preview_text)
+
+    var form_panel := PanelContainer.new()
+    form_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    var form_style := StyleBoxFlat.new()
+    form_style.bg_color = Color("#0e151e")
+    form_style.border_color = Color("#293744")
+    form_style.set_border_width_all(1)
+    form_style.set_corner_radius_all(12)
+    form_style.content_margin_left = 12
+    form_style.content_margin_right = 12
+    form_style.content_margin_top = 14
+    form_style.content_margin_bottom = 14
+    form_panel.add_theme_stylebox_override("panel", form_style)
+    page.add_child(form_panel)
 
     var form := VBoxContainer.new()
     form.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    form.add_theme_constant_override("separation", 9)
-    if not narrow:
-        form.custom_minimum_size = Vector2(470, 0)
-    body.add_child(form)
+    form.add_theme_constant_override("separation", 12)
+    form_panel.add_child(form)
+    var identity_heading := Label.new()
+    identity_heading.text = "IDENTITY & BACKGROUND"
+    identity_heading.add_theme_font_size_override("font_size", 17)
+    identity_heading.add_theme_color_override("font_color", Color("#e5c98d"))
+    form.add_child(identity_heading)
 
     _add_name_field(form)
     _add_choice(form, "Presentation", "presentation", config.get("presentations", []))
@@ -100,70 +144,39 @@ func _build_ui() -> void:
     _add_choice(form, "Skin tone", "skin", config.get("skin", []))
     _add_choice(form, "Build", "build", config.get("builds", []))
     _add_choice(form, "Origin", "origin", _dictionary_options(config.get("origins", {})))
+
+    var combat_heading := Label.new()
+    combat_heading.text = "COMBAT & PERSONALITY"
+    combat_heading.add_theme_font_size_override("font_size", 17)
+    combat_heading.add_theme_color_override("font_color", Color("#e5c98d"))
+    form.add_child(combat_heading)
     _add_choice(form, "Starting discipline", "discipline", _dictionary_options(config.get("disciplines", {})))
     weapon_option = _add_choice(form, "Weapon preference", "weapon_preference", [])
     _add_choice(form, "Temperament", "temperament", _dictionary_options(config.get("temperaments", {})))
-    _add_attribute_allocation(form)
     _refresh_weapon_options()
 
-    var preview_column := VBoxContainer.new()
-    preview_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    preview_column.add_theme_constant_override("separation", 4 if pin_preview else 8)
-    if pin_preview:
-        preview_column.custom_minimum_size = Vector2(0, 0)
-        preview_column.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-    elif narrow:
-        preview_column.custom_minimum_size = Vector2(0, 0)
-    else:
-        preview_column.custom_minimum_size = Vector2(280, 0)
-        preview_column.size_flags_horizontal = Control.SIZE_SHRINK_END
-    var preview_title := Label.new()
-    preview_title.text = "PROTAGONIST PREVIEW"
-    preview_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-    preview_title.add_theme_font_size_override("font_size", 18)
-    preview_title.add_theme_color_override("font_color", Color("#e5c98d"))
-    preview_column.add_child(preview_title)
-    preview = PreviewScript.new()
-    preview.custom_minimum_size = Vector2(0, 132) if pin_preview else Vector2(0, 250) if narrow else Vector2(280, 330)
-    preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    preview.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if pin_preview else Control.SIZE_EXPAND_FILL
-    preview_column.add_child(preview)
-    preview_text = Label.new()
-    preview_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    preview_text.add_theme_font_size_override("font_size", 14 if narrow else 15)
-    preview_text.add_theme_color_override("font_color", Color("#c8d0d8"))
-    if pin_preview:
-        preview_text.custom_minimum_size = Vector2(0, 30)
-        preview_text.max_lines_visible = 2
-    preview_column.add_child(preview_text)
+    _add_attribute_allocation(form)
 
-    if pin_preview:
-        outer.add_child(preview_column)
-        outer.move_child(preview_column, 2)
-    else:
-        body.add_child(preview_column)
-
-    var footer: Container = VBoxContainer.new() if narrow else HBoxContainer.new()
-    footer.add_theme_constant_override("separation", 8)
-    outer.add_child(footer)
-
+    var actions := VBoxContainer.new()
+    actions.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    actions.add_theme_constant_override("separation", 10)
+    page.add_child(actions)
     status_label = Label.new()
     status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    status_label.custom_minimum_size = Vector2(0, 34)
     status_label.add_theme_font_size_override("font_size", 13 if narrow else 15)
-    footer.add_child(status_label)
+    actions.add_child(status_label)
 
     var button_row := HBoxContainer.new()
     button_row.add_theme_constant_override("separation", 10)
     button_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    footer.add_child(button_row)
-    var back_button := _make_button("BACK", 0 if narrow else 170)
-    back_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL if narrow else Control.SIZE_SHRINK_BEGIN
+    actions.add_child(button_row)
+    var back_button := _make_button("BACK", 0)
+    back_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     back_button.pressed.connect(_on_back)
     button_row.add_child(back_button)
-    confirm_button = _make_button("BEGIN CHRONICLE", 0 if narrow else 250)
-    confirm_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL if narrow else Control.SIZE_SHRINK_BEGIN
+    confirm_button = _make_button("BEGIN CHRONICLE", 0)
+    confirm_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     confirm_button.pressed.connect(_on_confirm)
     button_row.add_child(confirm_button)
 
