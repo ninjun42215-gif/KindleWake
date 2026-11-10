@@ -5,6 +5,7 @@ const ActThree = preload("res://scripts/core/act_three_quest_system.gd")
 const ActFour = preload("res://scripts/core/act_four_quest_system.gd")
 const ActFive = preload("res://scripts/core/act_five_quest_system.gd")
 const Chronicle = preload("res://scripts/core/chronicle_system.gd")
+const Epilogue = preload("res://scripts/core/chronicle_epilogue_system.gd")
 var failures := 0
 var checks := 0
 func _initialize() -> void:
@@ -97,6 +98,37 @@ func _initialize() -> void:
  _check(Chronicle.is_unlocked(Chronicle.normalize_state(serialized)),"Chronicle gate survives JSON save/load normalization")
  var forged := {"milestones":{},"unlocked":true,"founder_record":{"cause":"old_age","protagonist_id":"torren"}}
  _check(not Chronicle.is_unlocked(Chronicle.normalize_state(forged)),"Chronicle ignores forged unlocked flag")
+ var founder_gate := Chronicle.new_state()
+ _check(not Epilogue.record_reflection(Epilogue.new_state("torren",32,"open_concord"),"the_people","local_assemblies",founder_gate).ok,"Late-life epilogue is blocked before imperial dissolution")
+ _check(Chronicle.record_milestone(founder_gate,"campaign_completed"),"Founder gate campaign milestone")
+ _check(Chronicle.record_milestone(founder_gate,"became_last_emperor"),"Founder gate Emperor milestone")
+ _check(Chronicle.record_milestone(founder_gate,"empire_dissolved"),"Founder gate dissolution milestone")
+ var late := Epilogue.new_state("torren",32,"open_concord")
+ for reflection in Epilogue.REQUIRED_REFLECTIONS:
+  var reflection_result := Epilogue.record_reflection(late,str(reflection),"chosen_"+str(reflection),founder_gate)
+  _check(bool(reflection_result.ok),"Founder reflection: "+str(reflection))
+  if bool(reflection_result.ok):
+   late = reflection_result.state
+ var completed_epilogue := Epilogue.complete_epilogue(late,founder_gate)
+ _check(bool(completed_epilogue.ok),"Founder epilogue requires and accepts all three reflections")
+ if bool(completed_epilogue.ok):
+  late = completed_epilogue.state
+ _check(Chronicle.record_milestone(founder_gate,"epilogue_completed"),"Chronicle records completed founder epilogue")
+ _check(not Epilogue.record_natural_death(late,founder_gate).ok,"Founder cannot die by the epilogue shortcut before old age")
+ _check(not Epilogue.pass_years(late,1,founder_gate).ok,"Founder age advances only in five-year passages")
+ for passage in range(8):
+  var aged := Epilogue.pass_years(late,Epilogue.YEARS_PER_PASSAGE,founder_gate)
+  _check(bool(aged.ok),"Founder advances a natural five-year passage "+str(passage+1))
+  if bool(aged.ok):
+   late = aged.state
+ _check(int(late.current_age) == Epilogue.MINIMUM_NATURAL_DEATH_AGE,"Founder reaches the natural-life threshold without skipping years")
+ var late_serialized := JSON.parse_string(JSON.stringify(late))
+ late = Epilogue.normalize_state(late_serialized)
+ var natural_end := Epilogue.record_natural_death(late,founder_gate,"founder-epilogue-test-date")
+ _check(bool(natural_end.ok) and str(natural_end.founder_details.cause) == "old_age","Founder death record carries explicit natural old-age provenance")
+ if bool(natural_end.ok):
+  _check(Chronicle.record_milestone(founder_gate,"natural_old_age_death",natural_end.founder_details),"Chronicle accepts the verified founder death record")
+ _check(Chronicle.is_unlocked(founder_gate),"Chronicle unlocks after the complete late-life sequence")
  print("Campaign continuity checks: %d   Failures: %d" % [checks,failures])
  quit(1 if failures > 0 else 0)
 func _check(ok: bool, label: String) -> void:
