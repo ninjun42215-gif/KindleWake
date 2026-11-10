@@ -303,23 +303,26 @@ func _build_companion_quest_actions(spot: Dictionary) -> void:
         spot_text.text += "\\n\\nBegin this story from the Companion Chronicle."
         return
     if status == "complete":
-        spot_text.text += "\\n\\nBrisa's story has been resolved. The people of Foxglove remember the choice you made."
+        var descriptions: Dictionary = definition.get("outcome_descriptions", {})
+        var description := str(descriptions.get(str(quest_state.get("outcome", "")), "This companion's personal story has been resolved. Its consequences are recorded in the campaign chronicle."))
+        spot_text.text += "\\n\\n" + description
         return
     if status == "ready" and not milestones.is_empty() and milestone == str(milestones.back()):
-        spot_text.text += "\\n\\nBrisa asks how the community should preserve the names and care for those displaced."
-        var labels := ["Keep the infirmary ledger", "Return Brisa to village service", "Establish a shared care network"]
-        for i in range(mini(outcomes.size(), labels.size())):
-            spot_buttons.add_child(_btn(labels[i], _resolve_companion_quest.bind(quest_id, str(outcomes[i]))))
+        var prompt := str(definition.get("resolution_prompt", "Choose how this personal story should be resolved."))
+        spot_text.text += "\\n\\n" + prompt
+        var labels: Dictionary = definition.get("outcome_labels", {})
+        for outcome in outcomes:
+            spot_buttons.add_child(_btn(str(labels.get(str(outcome), _format_quest_label(str(outcome)))), _resolve_companion_quest.bind(quest_id, str(outcome)))
         return
     if status == "ready":
-        spot_text.text += "\\n\\nThis objective has been recorded. Visit the market factor to decide how Foxglove will organise its care network."
+        spot_text.text += "\\n\\nAll objectives are recorded. Return to the companion's designated story contact to make the concluding choice."
         return
     if progress < milestones.size() and str(milestones[progress]) == milestone:
         spot_buttons.add_child(_btn("Record this objective", _advance_companion_quest.bind(quest_id, milestone)))
     elif progress > milestones.find(milestone):
         spot_text.text += "\\n\\nThis part of the record has already been secured."
     else:
-        spot_text.text += "\\n\\nThe next step in Brisa's story lies elsewhere."
+        spot_text.text += "\\n\\nThe next step in this companion's story lies elsewhere."
 
 
 func _advance_companion_quest(quest_id: String, milestone_id: String) -> void:
@@ -328,7 +331,7 @@ func _advance_companion_quest(quest_id: String, milestone_id: String) -> void:
         spot_text.text += "\\n\\n" + str(result.get("reason", "The objective could not be recorded."))
         return
     GameState.save_campaign("auto_a")
-    spot_text.text += "\\n\\nObjective recorded. Brisa thanks you for keeping the names from being forgotten."
+    spot_text.text += "\\n\\nObjective recorded in the Companion Chronicle."
     for child in spot_buttons.get_children():
         if child is Button and (child as Button).text == "Record this objective":
             (child as Button).disabled = true
@@ -339,18 +342,21 @@ func _resolve_companion_quest(quest_id: String, outcome: String) -> void:
     if not bool(result.get("ok", false)):
         spot_text.text += "\\n\\n" + str(result.get("reason", "This resolution is not available."))
         return
-    GameState.world_flags["companion_brisa_resolution"] = outcome
+    GameState.world_flags["companion_quest_outcome_" + quest_id] = outcome
+    var definition: Dictionary = GameData.companion_quests.get(quest_id, {})
+    var descriptions: Dictionary = definition.get("outcome_descriptions", {})
+    var description := str(descriptions.get(outcome, "The companion's decision is recorded. This outcome can now be referenced by later story events."))
     GameState.save_campaign("auto_a")
-    var resolution_text := {
-        "keep_infirmary": "Foxglove keeps a permanent infirmary ledger. Brisa will help maintain it, but the village shares the work.",
-        "village_service": "Brisa returns to village service by choice, with the company funding a modest supply chest.",
-        "community_network": "A rotating care network is established. Households share supplies and no single healer carries the burden alone."
-    }
-    spot_text.text += "\\n\\n" + str(resolution_text.get(outcome, "The community records its decision."))
+    spot_text.text += "\\n\\n" + description
     for child in spot_buttons.get_children():
         if child is Button and (child as Button).text != "Close":
             (child as Button).disabled = true
 
+
+
+
+func _format_quest_label(value: String) -> String:
+    return value.replace("_", " ").capitalize()
 
 func _resolve_brinegate_choice(choice: String) -> void:
     var outcome: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(GameState.world_flags, choice)
