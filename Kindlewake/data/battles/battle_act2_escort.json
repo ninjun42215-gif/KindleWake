@@ -1,7 +1,7 @@
 {
   "id": "act2_changed_escort",
   "title": "The Escort That Changed Course",
-  "briefing": "A false banner has brought displaced families to the narrow crossing. Hold the bridge approach, defeat Writ-Captain Odran Vale and keep the refugees moving. Optional objective: preserve the sealed writ carried by the captain.",
+  "briefing": "A false banner has brought displaced families to the narrow crossing. Hold the bridge approach, defeat Writ-Captain Odran Vale and keep the refugees moving. The captain carries the sealed writ that ordered the families turned back.",
   "weather": "overcast",
   "legend": {
     ".": "grass",
