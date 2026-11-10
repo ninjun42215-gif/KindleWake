@@ -439,6 +439,10 @@ func _on_zoom_out() -> void:
 
 
 func _on_world_pressed() -> void:
+    var return_scene := str(battle_def.get("return_scene", ""))
+    if return_scene != "":
+        get_tree().change_scene_to_file(return_scene)
+        return
     if str(battle_def.get("id", "")) == "east_gallery_escape":
         if controller.result != "victory":
             get_tree().change_scene_to_file("res://Escape.tscn")
@@ -562,10 +566,10 @@ func _show_result() -> void:
     if game_over:
         result_text.text = "The company has been wiped out. This chronicle has ended. Begin a new chronicle to continue."
         result_company_button.visible = false
-        result_continue_button.text = "Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Begin New Chronicle"
+        result_continue_button.text = "Return to Story / Retry" if str(battle_def.get("return_scene", "")) != "" else ("Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Begin New Chronicle")
     else:
         result_company_button.visible = true
-        result_continue_button.text = "Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Continue Journey"
+        result_continue_button.text = "Continue Story" if str(battle_def.get("return_scene", "")) != "" else ("Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Continue Journey")
     result_text.text += "\nTurns taken: %d" % controller.turn_count
     if won:
         if str(battle_def.get("id", "")) == BATTLE_ID:
@@ -573,6 +577,8 @@ func _show_result() -> void:
         var clear_flag: String = str(battle_def.get("world_flag_on_victory", ""))
         if clear_flag != "":
             GameState.world_flags[clear_flag] = true
+        if str(battle_def.get("return_scene", "")) != "":
+            GameState.save_campaign("auto_a")
     if not exp_awarded:
         exp_awarded = true
         battle_rewards = GameState.award_battle(controller.units, controller.result)
