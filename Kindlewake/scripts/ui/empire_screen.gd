@@ -267,6 +267,9 @@ func _refresh_detail() -> void:
         troop_row.add_child(_button("GARRISON +1", _assign_recruit.bind(troop_id)))
         detail_box.add_child(troop_row)
 
+    detail_box.add_child(_label("TACTICAL OPERATIONS", 17, GOLD))
+    detail_box.add_child(_label("Launch a siege exercise from this holding. Victory or defeat is recorded in the campaign; it does not transfer territory automatically.", 14, DIM))
+    detail_box.add_child(_button("DEPLOY SIEGE ASSAULT", _launch_siege_assault))
 
 
 func _governance_changed(index: int, models: Array) -> void:
@@ -289,6 +292,14 @@ func _change_garrison(delta: int) -> void:
         GameState.save_campaign("auto_a")
     else:
         result_label.text = str(result.get("reason", "Could not assign garrison."))
+
+
+func _launch_siege_assault() -> void:
+    if not GameState.start_holding_siege_battle(selected_id):
+        result_label.text = "A siege could not be staged from this holding."
+        return
+    GameState.save_campaign("auto_a")
+    get_tree().change_scene_to_file("res://Main.tscn")
 
 
 func _develop_building(building_id: String) -> void:
