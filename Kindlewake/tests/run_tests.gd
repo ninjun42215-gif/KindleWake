@@ -1612,7 +1612,7 @@ func _test_trading() -> void:
     var upland_price := TradeSystem.unit_price("thornmere", "salt", goods, state)
     check(coast_price < upland_price, "coastal salt is cheaper than inland salt")
     check(TradeSystem.buy(party, "brinegate_coast", "salt", 5, goods, state) == "", "buying regional cargo succeeds")
-    check(party.item_count("salt") == 5 and party.gold == 10000 - coast_price * 5, "cargo purchase updates inventory and gold")
+    check(party.item_count("salt") == 5 and party.gold == 10000 - roundi(float(coast_price * 5) * 1.05), "cargo purchase updates inventory and gold")
     var before_sale := party.gold
     check(TradeSystem.sell(party, "thornmere", "salt", 5, goods, state) == "", "cargo can be sold in another market")
     check(party.item_count("salt") == 0 and party.gold > before_sale, "regional price differences allow trade profit")
