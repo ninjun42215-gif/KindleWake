@@ -158,6 +158,8 @@ func _free_at(p: Vector2) -> bool:
 
 
 func _process(delta: float) -> void:
+    if empire_btn != null:
+        empire_btn.visible = bool(GameState.empire_state.get("unlocked", false))
     campaign_save_timer += delta
     if campaign_save_timer >= 25.0 and not panel_open and not party_screen.visible and not (empire_screen != null and empire_screen.visible):
         campaign_save_timer = 0.0
