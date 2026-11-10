@@ -8,7 +8,7 @@ static func group_count(encounters: Dictionary) -> int:
 
 
 static func build_group(encounters: Dictionary, battles: Dictionary, group_index: int) -> Dictionary:
-    return _build_config_group(encounters.get("skirmish", {}) as Dictionary, battles, group_index, "Skirmish")
+    return _build_config_group(encounters.get("skirmish", {}) as Dictionary, battles, group_index, "Skirmish", "skirmish")
 
 
 static func build_regional_skirmish(bestiary: Dictionary, region_id: String, battles: Dictionary, rand: RandomNumberGenerator) -> Dictionary:
@@ -31,10 +31,10 @@ static func build_regional_skirmish(bestiary: Dictionary, region_id: String, bat
         if roll <= 0:
             selected = i
             break
-    return _build_config_group(cfg, battles, selected, str(cfg.get("title", "Regional Encounter")), region_id)
+    return _build_config_group(cfg, battles, selected, str(cfg.get("title", "Regional Encounter")), "regional_skirmish_" + region_id)
 
 
-static func _build_config_group(cfg: Dictionary, battles: Dictionary, group_index: int, fallback_title: String, region_id: String = "field") -> Dictionary:
+static func _build_config_group(cfg: Dictionary, battles: Dictionary, group_index: int, fallback_title: String, battle_id: String = "skirmish") -> Dictionary:
     var base_id := str(cfg.get("base_battle", "battle_01"))
     var base: Dictionary = (battles.get(base_id, {}) as Dictionary).duplicate(true)
     var groups: Array = cfg.get("groups", [])
@@ -56,7 +56,7 @@ static func _build_config_group(cfg: Dictionary, battles: Dictionary, group_inde
             entry["commander"] = true
         spawns.append(entry)
     base["units"] = spawns
-    base["id"] = "regional_skirmish_" + region_id
+    base["id"] = battle_id
     base["title"] = str(cfg.get("title", fallback_title))
     base["briefing"] = str(cfg.get("briefing", "A hostile force blocks the road ahead."))
     return base
