@@ -494,8 +494,8 @@ func _build_economy() -> void:
     var forecast: Dictionary = GameState.preview_empire_season()
     if bool(forecast.get("ok", false)):
         _section("NEXT SEASON FORECAST")
-        _metric("Projected treasury", "%d gold" % int(forecast.get("treasury_after", 0)), "%+d net · %d income · %d upkeep" % [int(forecast.get("treasury_change", 0)), int(forecast.get("income", 0)), int(forecast.get("upkeep", 0))])
-        _metric("Projected provisions", "%d food" % int(forecast.get("food_after", 0)), "%+d net · %d from trade routes" % [int(forecast.get("food_change_actual", 0)), int(forecast.get("trade_income", 0))])
+        _metric("Projected treasury", "%d gold" % int(forecast.get("treasury_after", 0)), "%+d net · %d income · %d upkeep · %d trade" % [int(forecast.get("treasury_change", 0)), int(forecast.get("income", 0)), int(forecast.get("upkeep", 0)), int(forecast.get("trade_income", 0))])
+        _metric("Projected provisions", "%d food" % int(forecast.get("food_after", 0)), "%+d net" % int(forecast.get("food_change_actual", 0)))
         _metric("Projected manpower", "%d" % int(forecast.get("manpower_after", 0)), "%+d seasonal recovery" % int(forecast.get("manpower_change", 0)))
     _section("TAXATION")
     body.add_child(_label("Current tax policy: " + str(s.get("tax_rate", "normal")).capitalize(), 16))
