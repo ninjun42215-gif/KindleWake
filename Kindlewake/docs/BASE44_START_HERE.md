@@ -15,6 +15,9 @@ The existing [Game Design Document](GDD.md) and [Premium Production Bible](PREMI
 - Treat **CURRENT / VERIFIED** as shipped only when confirmed in the current source tree. Treat **DESIGNED / REQUESTED / FUTURE** as requirements, not completed features.
 - If two documents conflict, prefer (1) current code and data, (2) tests and current CI, (3) the current-state report, (4) GDD and production bible, (5) older handoff notes. Report unresolved conflicts; do not silently invent a resolution.
 - Never turn a concept, suggestion, old branch note or planned scene into a claim that it exists in the game.
+- Canon reconciliation: Osric IV is King of the Crownlands, a successor monarchy of the historically fragmented Eldrimar Empire; the imperial office is dormant at campaign start. The protagonist becomes Last Emperor only in the designated ratified true-ending route and only to enact dissolution. The secret-order faction covenant_seven_flames is distinct from the public Covenant compact. Brinegate is held by the Tidebound Assembly; House Ysmark's seat is unconfirmed.
+- The older GDD's optional New Game Legacy Mode is superseded by the locked post-campaign Chronicle of Houses. Never expose playable marriage, children, inheritance or dynasty management before Last Emperor → dissolution → late-life epilogue → natural old-age death.
+
 - Do not delete or replace existing game systems to make a feature easier. Extend existing architecture and preserve existing content.
 
 ## Non-negotiable technical guardrails
@@ -30,7 +33,7 @@ The existing [Game Design Document](GDD.md) and [Premium Production Bible](PREMI
 
 ## What the game is
 
-KindleWake: **The Sundered Vow** is an offline-first, character-driven medieval fantasy tactical RPG. It is a company drama about people choosing to stand together after institutions fail them. The player-created heir of House Dunmarrow inherits a damaged legacy, a ruined keep and a mystery tied to the Covenant of Seven Flames. The campaign should grow from personal survival into a realm-wide political reckoning, with tactical battles, meaningful companions, recruitment, territorial politics and a headquarters that changes visibly.
+KindleWake: **The Sundered Vow** is an offline-first, character-driven medieval fantasy tactical RPG. It is a company drama about people choosing to stand together after institutions fail them. The player controls Torren Dunmarrow (stable protagonist ID torren), whose name and appearance are customisable through the character creator. Torren inherits a damaged legacy, a ruined keep and a mystery tied to the public Covenant of the Seven Flames. The campaign should grow from personal survival into a realm-wide political reckoning, with tactical battles, meaningful companions, recruitment, territorial politics and a headquarters that changes visibly.
 
 ## Required reading by task
 
