@@ -513,6 +513,16 @@ func _play_anim(unit_id: int, anim: String) -> void:
 
 
 func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
+    if kind == "boss_phase":
+        var boss: BattleUnitScript = controller.unit_by_id(unit_id)
+        if boss != null:
+            var phase_number := int(data.get("phase", 1))
+            var visual_kind := "phase_hask" if boss.character_id == "hask_convoy_champion" else "phase_bailiff"
+            var phase_color := Color(1.0, 0.30, 0.12) if visual_kind == "phase_hask" else Color(0.92, 0.78, 0.38)
+            _play_anim(unit_id, "attack")
+            _add_battle_vfx(boss, visual_kind, phase_color)
+            _add_popup(boss, "PHASE %d" % phase_number, phase_color)
+            _on_log("BOSS PHASE %d — %s" % [phase_number, boss.display_name])
     if kind == "attack" or kind == "skill_damage":
         _play_anim(unit_id, "attack")
         var tid: int = int(data.get("target_id", -1))
@@ -805,7 +815,9 @@ func _process(delta: float) -> void:
             dirty = true
     for i in range(battle_vfx.size() - 1, -1, -1):
         battle_vfx[i]["age"] = float(battle_vfx[i]["age"]) + delta
-        if float(battle_vfx[i]["age"]) > 0.62:
+        var effect_kind := str(battle_vfx[i].get("kind", ""))
+        var effect_lifetime := 1.28 if effect_kind.begins_with("phase_") else 0.62
+        if float(battle_vfx[i]["age"]) > effect_lifetime:
             battle_vfx.remove_at(i)
         dirty = true
     for i in range(popups.size() - 1, -1, -1):
@@ -835,11 +847,12 @@ func _add_battle_vfx(unit: BattleUnitScript, kind: String, color: Color) -> void
 func _draw_battle_vfx() -> void:
     for effect in battle_vfx:
         var age: float = float(effect["age"])
-        var t: float = clampf(age / 0.62, 0.0, 1.0)
+        var kind: String = str(effect["kind"])
+        var lifetime := 1.28 if kind.begins_with("phase_") else 0.62
+        var t: float = clampf(age / lifetime, 0.0, 1.0)
         var center: Vector2 = effect["pos"]
         var col: Color = effect["color"]
         col.a = 1.0 - t
-        var kind: String = str(effect["kind"])
         if kind == "slash":
             var spread: float = 12.0 + t * 24.0
             draw_arc(center + Vector2(0, -25), spread, -PI * 0.82, PI * 0.18, 18, col, 4.0 * (1.0 - t) + 1.0)
@@ -849,6 +862,25 @@ func _draw_battle_vfx() -> void:
                 var rise: float = age * 42.0 + float(k) * 13.0
                 draw_circle(center + Vector2(sin(age * 8.0 + float(k)) * 12.0, -20.0 - rise), 3.5 * (1.0 - t * 0.45), col)
             draw_arc(center + Vector2(0, -24), 12.0 + t * 18.0, 0.0, TAU, 20, col, 2.5)
+        elif kind == "phase_hask":
+            var radius := 15.0 + t * 58.0
+            draw_arc(center + Vector2(0, -27), radius, 0.0, TAU, 36, col, 5.0 * (1.0 - t) + 1.0)
+            draw_arc(center + Vector2(0, -27), radius * 0.68, 0.0, TAU, 28, col.lightened(0.35), 2.5 * (1.0 - t))
+            for k in range(8):
+                var angle := TAU * float(k) / 8.0 + age * 2.8
+                var ray_start := center + Vector2(cos(angle), sin(angle) * 0.55) * (radius * 0.35) + Vector2(0, -27)
+                var ray_end := center + Vector2(cos(angle), sin(angle) * 0.55) * (radius + 8.0) + Vector2(0, -27)
+                draw_line(ray_start, ray_end, col.lightened(0.2), 3.0 * (1.0 - t) + 0.5)
+            draw_circle(center + Vector2(0, -27), 7.0 * (1.0 - t), Color(1.0, 0.82, 0.48, col.a))
+        elif kind == "phase_bailiff":
+            var radius := 13.0 + t * 48.0
+            draw_arc(center + Vector2(0, -28), radius, 0.0, TAU, 36, col, 3.5 * (1.0 - t) + 0.8)
+            for k in range(6):
+                var angle := TAU * float(k) / 6.0 - age * 1.7
+                var ray := center + Vector2(cos(angle), sin(angle) * 0.62) * radius + Vector2(0, -28)
+                draw_line(center + Vector2(0, -28), ray, col.lightened(0.35), 2.0 * (1.0 - t) + 0.5)
+                draw_circle(ray, 3.0 * (1.0 - t) + 0.5, col)
+            draw_arc(center + Vector2(0, -28), radius * 0.55, -PI * 0.8, PI * 0.2, 18, Color(1.0, 0.96, 0.78, col.a), 2.0)
         else:
             var radius: float = 8.0 + t * 30.0
             draw_arc(center + Vector2(0, -25), radius, 0.0, TAU, 24, col, 3.5 * (1.0 - t) + 0.5)
@@ -1067,7 +1099,19 @@ func _battle_sprite_tint(u: BattleUnitScript, is_player: bool) -> Color:
             "roadreaver": return Color(0.92, 0.76, 0.58)
             _: return Color.WHITE
     var key: String = (u.character_id + " " + u.display_name).to_lower()
-    if key.contains("hask") or key.contains("boss") or key.contains("chieftain"):
+    if u.character_id == "hask_convoy_champion":
+        var rage := 0.65 + 0.25 * sin(time * 7.0)
+        draw_arc(p + Vector2(0, -29), 27.0 + rage * 3.0, PI * 1.05, PI * 1.95, 24, Color(1.0, 0.24, 0.08, rage), 3.0)
+        draw_colored_polygon(PackedVector2Array([p + Vector2(-19, -47), p + Vector2(-13, -67), p + Vector2(-5, -50), p + Vector2(2, -62), p + Vector2(8, -49), p + Vector2(17, -65), p + Vector2(20, -44)]), Color(0.30, 0.10, 0.08, 0.98))
+        draw_line(p + Vector2(-14, -27), p + Vector2(14, -27), Color(1.0, 0.68, 0.22, rage), 3.0)
+    elif u.character_id == "ash_bailiff":
+        var seal_glow := 0.62 + 0.28 * sin(time * 4.5)
+        draw_arc(p + Vector2(0, -31), 25.0, 0.0, TAU, 32, Color(0.94, 0.75, 0.34, seal_glow), 2.0)
+        draw_arc(p + Vector2(0, -31), 19.0, PI * 0.15, PI * 1.15, 18, Color(1.0, 0.94, 0.72, seal_glow), 1.5)
+        draw_line(p + Vector2(-10, -31), p + Vector2(10, -31), Color(1.0, 0.88, 0.52, seal_glow), 2.0)
+        draw_line(p + Vector2(0, -42), p + Vector2(0, -20), Color(1.0, 0.88, 0.52, seal_glow), 2.0)
+        draw_circle(p + Vector2(0, -31), 4.0, Color(0.30, 0.19, 0.08, seal_glow))
+    elif key.contains("hask") or key.contains("boss") or key.contains("chieftain"):
         return Color(1.0, 0.72, 0.52)
     if key.contains("bow") or key.contains("archer") or key.contains("scout"):
         return Color(0.78, 0.92, 0.62)
@@ -1194,7 +1238,10 @@ func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: V
 
 ## Compact elemental/status markers remain visible without opening the unit inspector.
 func _draw_status_pips(u: BattleUnitScript, p: Vector2) -> void:
-    var keys: Array = u.statuses.keys()
+    var keys: Array = []
+    for status_key in u.statuses.keys():
+        if not str(status_key).begins_with("_boss_phase_"):
+            keys.append(status_key)
     keys.sort()
     var shown := mini(keys.size(), 4)
     for i in range(shown):
