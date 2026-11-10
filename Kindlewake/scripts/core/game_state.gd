@@ -111,6 +111,65 @@ func resolve_siege_objective(objective_id: String, won: bool) -> Dictionary:
     return EmpireDevelopmentSystem.resolve_siege(objective_id, won, world_flags)
 
 
+## Resolve the continent for a canonical campaign region.
+func continent_for_region(region_id: String) -> String:
+    for continent in GameData.continents.get("continents", []):
+        for region in continent.get("regions", []):
+            if str(region.get("id", "")) == region_id:
+                return str(continent.get("id", ""))
+    return ""
+
+
+## Regional guardians become challengeable after the player secures a local holding.
+func regional_boss_available(region_id: String) -> bool:
+    var continent_id := continent_for_region(region_id)
+    if continent_id == "":
+        return false
+    for holding in GameData.world_expansion.get("capturable_locations", []):
+        if str(holding.get("region", "")) == region_id:
+            var id := str(holding.get("id", ""))
+            if bool(world_flags.get("holding_claimed_" + id, false)) and str(world_flags.get("holding_owner_" + id, "")) == "house_dunmarrow":
+                return true
+    return false
+
+
+func start_regional_boss_for_region(region_id: String) -> bool:
+    var continent_id := continent_for_region(region_id)
+    if continent_id == "" or not regional_boss_available(region_id):
+        return false
+    var battle_id := "battle_boss_" + {
+        "eldrimar":"hollow_hart",
+        "thalassar":"drowned_crown",
+        "varakhan":"ash_regent",
+        "nhalor":"pale_matriarch",
+        "veyrwood":"briar_sovereign",
+        "asterreach":"star_eater",
+        "ilyr":"last_cantor"
+    }.get(continent_id, "")
+    var def: Dictionary = GameData.battle_def(battle_id)
+    if def.is_empty():
+        return false
+    start_battle_from_world(def)
+    return true
+
+
+func start_holding_siege_battle(holding_id: String) -> bool:
+    if not bool(world_flags.get("holding_claimed_" + holding_id, false)) or str(world_flags.get("holding_owner_" + holding_id, "")) != "house_dunmarrow":
+        return false
+    var objective_id := "field_siege_" + holding_id
+    var staged: Dictionary = begin_holding_siege(holding_id, objective_id, 3)
+    if not bool(staged.get("ok", false)):
+        return false
+    var def: Dictionary = GameData.battle_def("battle_holding_siege")
+    if def.is_empty():
+        return false
+    def = def.duplicate(true)
+    def["siege_objective_id"] = objective_id
+    def["title"] = "Siege Exercise: " + holding_id.replace("_", " ").capitalize()
+    start_battle_from_world(def)
+    return true
+
+
 ## Change diplomatic standing after an authored campaign event.
 func adjust_faction_relation(faction_a: String, faction_b: String, amount: int, reason: String = "") -> bool:
     return FactionSystem.adjust_relation(faction_state, faction_a, faction_b, amount, reason)
