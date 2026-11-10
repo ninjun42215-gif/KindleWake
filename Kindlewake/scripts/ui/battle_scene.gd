@@ -572,6 +572,11 @@ func _show_result() -> void:
         if won:
             GameState.advance_siege_objective(siege_objective_id, 3)
         GameState.resolve_siege_objective(siege_objective_id, won)
+        var target_holding_id := str(battle_def.get("siege_target_holding_id", ""))
+        var source_holding_id := str(battle_def.get("siege_source_holding_id", battle_def.get("recruit_origin_holding", "")))
+        if won and target_holding_id != "":
+            var captured := GameState.capture_holding_after_siege(target_holding_id, source_holding_id, siege_objective_id)
+            result_text.text += "\n\nTerritorial outcome: " + ("provisional control established; stability must be secured." if captured else "the holding could not be transferred.")
         GameState.save_campaign("auto_a")
         result_text.text += "\n\nSiege record: " + ("assault objective secured." if won else "assault repelled; the holding remains hostile.")
 
