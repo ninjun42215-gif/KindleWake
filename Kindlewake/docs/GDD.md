@@ -941,3 +941,12 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - AI movement uses a separate reach calculation with allied occupied cells treated as blockers. This applies to attack-position candidate generation, long-range approach planning and the fallback movement choice.
 - A deterministic three-row corridor regression verifies that the player path may pass through the ally while the AI path routes around it and does not plan an attack from a tile reachable only by crossing that ally.
 - This follow-up corrects the incomplete allied-blocker handoff merged in PR #123; exact-head validation is pending.
+
+
+## Realm administration foundation — 2026-11-10 (candidate)
+
+- `EmpireSystem` is the realm-level policy layer: tax rate, stability, legitimacy, governors, realm policies and idempotent month history.
+- `FactionSystem` remains the sole authority for region ownership and status. `EmpireEconomySystem` remains the sole source for holding-level income/upkeep and the existing shared `party.gold` treasury. Realm policies modify that settlement result; they do not create a second treasury or a second region-owner map.
+- Realm administration is unlocked only by an authored campaign event through `GameState.unlock_empire_management()`. The campaign state is persisted as an optional `empire_state` field and normalized for older saves.
+- `GameState.advance_empire_turn()` applies realm settlement once per explicit turn after holding settlement. The backend currently has no dedicated administration UI; a player-facing screen and authored unlock event remain future work.
+- Candidate branch `feat/unified-realm-administration` refactors the earlier realm-governance proposal to avoid duplicate treasury and territory sources of truth. Exact-head validation is pending.
