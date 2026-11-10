@@ -523,7 +523,6 @@ func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
             _add_popup(boss, "PHASE %d" % int(data.get("phase", 2)), phase_color)
             _add_popup(boss, str(data.get("name", "Desperation")).to_upper(), Color.WHITE)
     if kind == "attack" or kind == "skill_damage":
-    if kind == "attack" or kind == "skill_damage":
         _play_anim(unit_id, "attack")
         var tid: int = int(data.get("target_id", -1))
         if tid >= 0 and (kind == "skill_damage" or bool((data.get("result", {}) as Dictionary).get("hit", false))):
