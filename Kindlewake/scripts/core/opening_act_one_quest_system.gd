@@ -26,7 +26,7 @@ const CHALLENGES := {
         "steps": [
             {"scene":"The ridge archers have the wagons in range. How do you move the convoy?","options":[["Send the families across the exposed ford first","wrong"],["Use the reed path to move families while shields cover the wagons","right"],["Abandon the families and chase the archers","wrong"]],"success":"The families reach cover. Bram holds the narrow path while Sela marks the ridge."},
             {"scene":"Hask charges the wagon line. What is the best counter?","options":[["Keep the line tight and draw him into the muddy bottleneck","right"],["Scatter the guards across the open bank","wrong"],["Leave the wagons unguarded to pursue him","wrong"]],"success":"Hask's charge bogs down in the ford approach. The guards hold; the captain is forced to face you."},
-            {"scene":"Cinematic transition — Hask steps into the ford, raises his axe and challenges the company. The ambush becomes a fight for the crossing.","battle_id":"act1_hask_boss","battle_flag":"act1_hask_defeated"}
+            {"scene":"Cinematic boss confrontation — Hask steps into the ford, raises his axe and challenges the company. The ambush becomes a fight for the crossing.","battle_id":"act1_hask_boss","battle_flag":"act1_hask_defeated"}
         ]
     },
     "toll_book": {
@@ -43,7 +43,7 @@ const CHALLENGES := {
         "intro": "A cinematic scene: the household gathers beneath the repaired roof. A masked toll-enforcer, the Ash Bailiff, arrives with an obsolete imperial warrant and demands the keep's obedience.",
         "steps": [
             {"scene":"The Ash Bailiff declares that the old seal grants him the right to take the grain. Brannoch asks what gives an oath its authority. What do you answer?","options":[["A seal is enough; the people must obey","wrong"],["An oath is a duty witnessed by those who must live under it","right"],["Power decides which law is true","wrong"]],"success":"The household stands with you. The Bailiff tears the warrant and draws his blade."},
-            {"scene":"The Ash Bailiff tears the warrant and draws his weapon. The hall doors close; the household must hold its ground.","battle_id":"act1_ash_bailiff_boss","battle_flag":"act1_ash_bailiff_defeated"},
+            {"scene":"Cinematic boss confrontation — the Ash Bailiff tears the warrant and draws his weapon. The hall doors close; the household must hold its ground.","battle_id":"act1_ash_bailiff_boss","battle_flag":"act1_ash_bailiff_defeated"},
             {"scene":"The hall waits for the first oath. Which promise will you bind yourself to?","options":[["Protect the people before the house","people"],["Uphold the road laws and keep honest records","law"]],"success":"The household answers one by one. Brannoch records the oath beneath the old seal."}
         ]
     }
