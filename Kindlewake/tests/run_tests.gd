@@ -945,6 +945,15 @@ func _test_thalassar_region() -> void:
     check(battle_roster_ok, "every Tideglass and Northstar combatant resolves to an authored character, class and weapon")
     check(gd.world_for_region("brinegate_coast").get("name", "") == "The Brinegate Coast" and gd.world_for_region("sethmarch").get("name", "") == gd.world.get("name", ""), "region routing selects Thalassar without mutating Sethmarch data")
     check(gd.characters.has("maren_vey"), "Maren Vey has a complete recruit character definition")
+    check(gd.characters.has("neris_quell") and gd.classes.has(str(gd.character_def("neris_quell").get("class_id", ""))) and gd.weapons.has(str(gd.character_def("neris_quell").get("weapon_id", ""))), "Neris Quell has a complete Thalassar scout character definition")
+    var neris_party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    var neris_definition: Dictionary = gd.character_def("neris_quell")
+    check(not bool(RecruitmentSystem.inspect(neris_party, "neris_quell", neris_definition, {}).get("available", true)), "Neris remains unavailable before the signal and wreck milestones")
+    var neris_flags: Dictionary = {"maren_signal_solved": true, "northstar_wreck_cleared": true, "northstar_wreck_log_found": true}
+    check(bool(RecruitmentSystem.inspect(neris_party, "neris_quell", neris_definition, neris_flags).get("available", false)), "Neris becomes recruitable after the Northstar Wreck is cleared and the log recovered")
+    var neris_recruit: Dictionary = RecruitmentSystem.recruit(neris_party, "neris_quell", neris_definition, neris_flags)
+    check(bool(neris_recruit.get("ok", false)) and neris_party.roster.has("neris_quell"), "recruiting Neris adds her to the company without a gold fee")
+
     var recruit_party: PartyState = PartyState.new_game(gd.start, gd.characters)
     var maren: Dictionary = gd.character_def("maren_vey")
     var locked: Dictionary = RecruitmentSystem.inspect(recruit_party, "maren_vey", maren, {})
@@ -957,6 +966,13 @@ func _test_thalassar_region() -> void:
     check(coast_maps_ok, "Brinegate, Saltmere, Lantern Quay, Tideglass and Northstar Wreck have playable location maps")
     if maps.has("dungeon_northstar_wreck"):
         check((maps["dungeon_northstar_wreck"] as LocalMap).kind == "dungeon", "Northstar Wreck is an explorable dungeon with a boss encounter")
+    if maps.has("lantern_quay"):
+        var quay_map: LocalMap = maps["lantern_quay"]
+        var neris_spot_found := false
+        for spot in quay_map.spots:
+            if str((spot as Dictionary).get("character_id", "")) == "neris_quell":
+                neris_spot_found = true
+        check(neris_spot_found, "Neris waits at Lantern Quay after the Northstar Wreck rescue")
     if maps.has("dungeon_tideglass"):
         check((maps["dungeon_tideglass"] as LocalMap).kind == "dungeon", "Tideglass is an explorable dungeon, not a static story panel")
 
