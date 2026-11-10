@@ -34,9 +34,9 @@ func _initialize() -> void:
  state = cousin_b.state
  check(not Dynasty.set_spouse(state,str(cousin_a.person_id),str(cousin_b.person_id)).ok,"marriage between branches with a shared ancestor is rejected")
  check(not Dynasty.set_spouse(state,"heir_1","heir_2").ok,"close relatives cannot be married")
- var trait := Dynasty.add_trait(state,"heir_1","curious")
- check(bool(trait.ok),"positive or negative traits can be acquired")
- state = trait.state
+ var trait_result: Dictionary = Dynasty.add_trait(state,"heir_1","curious")
+ check(bool(trait_result.ok),"positive or negative traits can be acquired")
+ state = trait_result.state
  check(not Dynasty.add_trait(state,"heir_1","curious").ok,"duplicate trait is rejected")
  var removed := Dynasty.remove_trait(state,"heir_1","curious")
  check(bool(removed.ok) and not removed.state.people["heir_1"].traits.has("curious"),"traits can be removed")
