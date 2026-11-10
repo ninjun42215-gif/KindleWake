@@ -250,10 +250,10 @@ func _refresh_detail() -> void:
         var building_names := {"farm":"Granary Farms","workshop":"Civic Workshop","trade_post":"Trade Post","fortifications":"Fortifications"}
         var cost_gold := {"farm":45,"workshop":60,"trade_post":75,"fortifications":65}
         var cost_materials := {"farm":4,"workshop":6,"trade_post":5,"fortifications":8}
-        var row := HBoxContainer.new()
-        row.add_child(_label("%s  •  TIER %d/3" % [str(building_names[building_id]), tier], 14))
-        row.add_child(_button("UPGRADE  %dG / %dM" % [int(cost_gold[building_id]) * (tier + 1), int(cost_materials[building_id]) * (tier + 1)], _develop_building.bind(building_id)))
-        detail_box.add_child(row)
+        var building_row := HBoxContainer.new()
+        building_row.add_child(_label("%s  •  TIER %d/3" % [str(building_names[building_id]), tier], 14))
+        building_row.add_child(_button("UPGRADE  %dG / %dM" % [int(cost_gold[building_id]) * (tier + 1), int(cost_materials[building_id]) * (tier + 1)], _develop_building.bind(building_id)))
+        detail_box.add_child(building_row)
 
     detail_box.add_child(_label("RECRUITMENT  •  GOLD + PROVISIONS", 17, GOLD))
     var recruits: Dictionary = GameState.world_flags.get("holding_recruits_" + id, {})
@@ -261,10 +261,10 @@ func _refresh_detail() -> void:
         var troop_names := {"levy":"Frontier Levy","archer":"March Archer","knight":"Household Knight"}
         var troop_cost := {"levy":18,"archer":32,"knight":65}
         var food_cost := {"levy":3,"archer":4,"knight":7}
-        var row := HBoxContainer.new()
-        row.add_child(_label("%s  •  RESERVE %d" % [str(troop_names[troop_id]), int(recruits.get(troop_id, 0))], 14))
-        row.add_child(_button("RECRUIT 1  %dG / %dP" % [int(troop_cost[troop_id]), int(food_cost[troop_id])], _recruit_troop.bind(troop_id)))
-        row.add_child(_button("GARRISON +1", _assign_recruit.bind(troop_id)))
+        var troop_row := HBoxContainer.new()
+        troop_row.add_child(_label("%s  •  RESERVE %d" % [str(troop_names[troop_id]), int(recruits.get(troop_id, 0))], 14))
+        troop_row.add_child(_button("RECRUIT 1  %dG / %dP" % [int(troop_cost[troop_id]), int(food_cost[troop_id])], _recruit_troop.bind(troop_id)))
+        troop_row.add_child(_button("GARRISON +1", _assign_recruit.bind(troop_id)))
         detail_box.add_child(row)
 
 
