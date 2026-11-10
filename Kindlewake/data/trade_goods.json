@@ -58,7 +58,8 @@
       "category": "luxuries",
       "base_price": 32,
       "weight": 1,
-      "description": "Rare plant dye sought by clothiers and nobles."
+      "description": "Rare plant dye sought by clothiers and nobles.",
+      "exclusive_guild": "weald_factors"
     },
     "leather": {
       "name": "Tanned Leather",
@@ -79,14 +80,16 @@
       "category": "luxuries",
       "base_price": 48,
       "weight": 1,
-      "description": "Polished amber traded along eastern rivers."
+      "description": "Polished amber traded along eastern rivers.",
+      "exclusive_guild": "coastal_merchants"
     },
     "pearls": {
       "name": "Brinegate Pearls",
       "category": "luxuries",
       "base_price": 65,
       "weight": 1,
-      "description": "Lustrous pearls harvested from sheltered reefs."
+      "description": "Lustrous pearls harvested from sheltered reefs.",
+      "exclusive_guild": "coastal_merchants"
     },
     "glassware": {
       "name": "Blown Glassware",
@@ -121,14 +124,16 @@
       "category": "materials",
       "base_price": 34,
       "weight": 2,
-      "description": "Prepared steel fittings and components."
+      "description": "Prepared steel fittings and components.",
+      "exclusive_guild": "iron_compact"
     },
     "rune_dust": {
       "name": "Resonant Rune Dust",
       "category": "arcane",
       "base_price": 72,
       "weight": 1,
-      "description": "Volatile powder used by rune specialists."
+      "description": "Volatile powder used by rune specialists.",
+      "exclusive_guild": "coastal_merchants"
     }
   },
   "markets": {
@@ -234,6 +239,109 @@
         "rune_dust": 1
       },
       "initial_stock": 22
+    }
+  },
+  "economy": {
+    "default_tariff": 0.05,
+    "max_active_contracts": 3
+  },
+  "caravan": {
+    "purchase_cost": 1800,
+    "upgrade_base_cost": 900,
+    "guard_cost": 250,
+    "max_level": 3,
+    "max_guards": 8
+  },
+  "guilds": {
+    "coastal_merchants": {
+      "name": "Brinegate Maritime Exchange",
+      "reputation_required": 30,
+      "standing_cost": 500,
+      "description": "Controls sea-lane cargo, pearls and imported luxuries."
+    },
+    "iron_compact": {
+      "name": "Cindermead Iron Compact",
+      "reputation_required": 50,
+      "standing_cost": 750,
+      "description": "Certifies refined metal, weapon components and foundry contracts."
+    },
+    "weald_factors": {
+      "name": "Elderbough Weald Factors",
+      "reputation_required": 20,
+      "standing_cost": 400,
+      "description": "A woodland trading charter for timber, wine and rare botanical goods."
+    }
+  },
+  "contracts": {
+    "thornmere_grain_run": {
+      "name": "Granary Relief",
+      "good": "grain",
+      "quantity": 12,
+      "reward": 260,
+      "reputation": 15,
+      "guild": ""
+    },
+    "brinegate_salt_charter": {
+      "name": "Salt Charter",
+      "good": "salt",
+      "quantity": 10,
+      "reward": 310,
+      "reputation": 20,
+      "guild": "coastal_merchants"
+    },
+    "cindermead_iron_order": {
+      "name": "Foundry Components Order",
+      "good": "weapons_parts",
+      "quantity": 6,
+      "reward": 420,
+      "reputation": 25,
+      "guild": "iron_compact"
+    },
+    "elderbough_herbalist": {
+      "name": "Apothecary Supply",
+      "good": "herbs",
+      "quantity": 8,
+      "reward": 300,
+      "reputation": 18,
+      "guild": "weald_factors"
+    },
+    "redwater_amber_courier": {
+      "name": "Amber House Delivery",
+      "good": "amber",
+      "quantity": 4,
+      "reward": 500,
+      "reputation": 30,
+      "guild": "coastal_merchants"
+    }
+  },
+  "routes": {
+    "sethmarch_brinegate": {
+      "name": "Saltwind Road",
+      "from": "sethmarch",
+      "to": "brinegate_coast",
+      "base_toll": 40,
+      "base_risk": 0.25
+    },
+    "thornmere_sethmarch": {
+      "name": "Granary King's Road",
+      "from": "thornmere",
+      "to": "sethmarch",
+      "base_toll": 25,
+      "base_risk": 0.18
+    },
+    "elderbough_cindermead": {
+      "name": "Timber and Iron Road",
+      "from": "elderbough",
+      "to": "cindermead",
+      "base_toll": 55,
+      "base_risk": 0.32
+    },
+    "redwater_milefort": {
+      "name": "Riverwatch Supply Route",
+      "from": "redwater",
+      "to": "milefort",
+      "base_toll": 35,
+      "base_risk": 0.22
     }
   }
 }
