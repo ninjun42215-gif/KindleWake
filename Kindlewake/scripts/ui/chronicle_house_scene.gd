@@ -184,7 +184,7 @@ func _build() -> void:
  diplomacy_target_picker = OptionButton.new()
  col.add_child(diplomacy_target_picker)
  col.add_child(_button("Send envoy (-5 influence, +8 relation)",_diplomacy_envoy))
- col.add_child(_button("Offer public gift (-3 influence, +12 relation)",_diplomacy_gift))
+ col.add_child(_button("Offer public gift (-5 treasury, -3 influence, +12 relation)",_diplomacy_gift))
  col.add_child(_button("Propose alliance",_diplomacy_alliance))
  col.add_child(_button("Declare feud",_diplomacy_feud))
  col.add_child(_button("Reconcile feud",_diplomacy_reconcile))
