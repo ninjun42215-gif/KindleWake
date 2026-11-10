@@ -40,6 +40,7 @@ var spot_text: Label
 var spot_buttons: VBoxContainer
 var party_screen: PartyScreen
 var merchant_screen: Control
+var merchant_origin_region: String = ""
 var merchant_button: Button
 var move_stick: VirtualStick
 var run_btn: Button
@@ -396,11 +397,15 @@ func _open_merchant() -> void:
         return
     has_target = false
     pressing = false
+    merchant_origin_region = GameState.active_region_id
     merchant_screen.call("open_exchange")
 
 
 func _on_merchant_closed() -> void:
     hud_text = ""
+    if merchant_origin_region != GameState.active_region_id:
+        get_tree().change_scene_to_file("res://World.tscn")
+        return
     GameState.save_campaign("auto_a")
 
 
