@@ -73,3 +73,8 @@ Do not seed traits onto the existing named cast merely from class or combat stat
 - Pair metrics (friendship, trust, respect, rivalry and affection), derived relationship stage, and latest authored event are displayed separately from company loyalty.
 - Both regional and settlement Party Screen entry points pass campaign relationship state explicitly. The screen remains testable and does not read global autoloads.
 - The journal is read-only: it never invents relationship gains, infers romance, or changes saved data.
+
+
+### Authored Brinegate relationship consequences
+
+The harbour-ledger decision applies relationship changes only for recruited companions with an explicit `recruit.relationship_on_ledger_choice` definition. Maren Vey gains trust and respect when the evidence is made public, and loses a smaller amount of each when it is withheld. The relationship event uses a stable quest/choice/character/dimension evidence key, so revisiting the UI or reloading a save cannot farm the reward. Companions without authored reactions are unaffected. These consequences are separate from company loyalty and do not infer romance.
