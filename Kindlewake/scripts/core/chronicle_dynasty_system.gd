@@ -450,4 +450,7 @@ static func person_summary(person: Dictionary) -> String:
  var trait_names: Array = []
  for trait_id in traits:
   trait_names.append(str(trait_id).replace("_"," ").capitalize())
- return "%s, age %d • %s • %s" % [str(person.get("name","Unnamed")),int(person.get("age",0)),"living" if bool(person.get("alive",false)) else "deceased",", ".join(trait_names)]
+ var spouse := str(person.get("spouse",""))
+ var children: Array = person.get("children",[])
+ var title_id := str(person.get("title_id",""))
+ return "%s, age %d • %s • %s • spouse: %s • children: %d • title: %s" % [str(person.get("name","Unnamed")),int(person.get("age",0)),"living" if bool(person.get("alive",false)) else "deceased",", ".join(trait_names) if not trait_names.is_empty() else "no recorded traits",spouse if spouse != "" else "none",children.size(),title_id if title_id != "" else "none"]
