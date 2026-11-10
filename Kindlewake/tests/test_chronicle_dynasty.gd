@@ -50,10 +50,10 @@ func _initialize() -> void:
  check(bool(domain.ok),"new domain can be founded under a living steward")
  state = domain.state
  check(not Dynasty.create_domain(state,"","heir_2").ok,"unnamed domain is rejected")
+ check(not Dynasty.create_title(state,"count","Count of Nowhere","heir_2",str(domain.domain_id)).ok,"title rank cannot skip the intervening viscount rank")
  var title := Dynasty.create_title(state,"viscount","Viscount of the Western Orchards","heir_2",str(domain.domain_id))
  check(bool(title.ok),"next noble rank can be established with jurisdiction and duties")
  state = title.state
- check(not Dynasty.create_title(state,"count","Count of Nowhere","heir_2",str(domain.domain_id)).ok,"title rank cannot skip the intervening viscount rank")
  check(bool(Dynasty.assign_title(state,"founder_barony","heir_2").ok),"existing title can be granted to a living family member")
  var saved: Variant = JSON.parse_string(JSON.stringify(state))
  var restored := Dynasty.normalize_state(saved)
@@ -63,6 +63,10 @@ func _initialize() -> void:
  var aged := restored.duplicate(true)
  aged.people["heir_2"].age = Dynasty.NATURAL_OLD_AGE-1
  var year := Dynasty.advance_year(aged)
+ print("DEBUG succession: ",year.state.last_succession)
+ print("DEBUG title holders: ",year.state.titles)
+ print("DEBUG heir1 title_ids: ",year.state.people["heir_1"].title_ids)
+ print("DEBUG heir2 siblings: ",aged.people["heir_2"].siblings)
  check(bool(year.ok) and year.state.people["heir_2"].alive == false,"natural old-age death is recorded by yearly simulation")
  check(str(year.state.last_succession.get("to","")) == "heir_1","title succession resolves to eligible heir under configured law")
  check(year.state.people["heir_1"].title_ids.size() >= 2,"succession preserves multiple titles held by the same heir")
