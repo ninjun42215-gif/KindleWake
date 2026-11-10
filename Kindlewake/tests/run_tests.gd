@@ -109,7 +109,7 @@ func _test_data() -> void:
 
 func _test_regional_bestiary() -> void:
     print("[regional bestiary]")
-    check(gd.bestiary.has("species") and (gd.bestiary.get("species", {}) as Dictionary).size() >= 18, "bestiary loads a broad roster of original enemy species")
+    check(gd.bestiary.has("species") and (gd.bestiary.get("species", {}) as Dictionary).size() >= 30, "bestiary loads a broad roster of original monsters and human enemies")
     var species: Dictionary = gd.bestiary.get("species", {})
     var enemy_db: Dictionary = gd.as_db().get("characters", {})
     var all_refs_valid := true
@@ -119,6 +119,12 @@ func _test_regional_bestiary() -> void:
         if not enemy_db.has(cid) or str(enemy_db[cid].get("house", "")) != "none" or not gd.classes.has(str(enemy_db[cid].get("class_id", ""))) or not gd.weapons.has(str(enemy_db[cid].get("weapon_id", ""))):
             all_refs_valid = false
     check(all_refs_valid, "every bestiary species resolves to a battle-ready enemy character")
+    var human_count := 0
+    for record in species.values():
+        if str((record as Dictionary).get("family", "")) == "human":
+            human_count += 1
+    check(human_count >= 10, "bestiary includes a broad faction-based human enemy roster")
+    check(str(species.get("dunmarrow_deserter", {}).get("faction", "")) == "Dunmarrow Remnant", "human enemies retain authored faction identity")
     var regional_rng := RandomNumberGenerator.new()
     regional_rng.seed = 417
     var regions: Dictionary = gd.bestiary.get("regions", {})
