@@ -523,7 +523,7 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
     var skills: Dictionary = db.get("skills", {})
     var classes: Dictionary = db.get("classes", {})
     var d: Dictionary = sh.derived(db)
-    var total: Dictionary = sh.total_stats(items, sdefs)
+    var total: Dictionary = sh.total_stats(items, sdefs, db.get("traits", {}))
     # name row with previous / next character buttons
     var head := HBoxContainer.new()
     head.add_theme_constant_override("separation", 8)
