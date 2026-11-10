@@ -85,3 +85,5 @@ The Realm, Council, Provinces, Military, Diplomacy, Economy and Chronicle tabs a
 - Council effects now account for companion loyalty as well as traits and office: low loyalty creates stability/order strain and war exhaustion; high loyalty grants a modest role-specific bonus.
 
 - Deterministic NPC diplomacy now generates persistent frontier claims when hostile non-player factions are at war and share a border. Claims are shown in the Diplomacy tab and are cleared only when the territory is transferred; they do not autonomously seize land.
+
+- Council cards now render the same idle soldier sprite sheet used by tactical battles through a reusable portrait control, with a fallback silhouette if the optional art asset is unavailable. The UI also displays the appointed companion's loyalty.
