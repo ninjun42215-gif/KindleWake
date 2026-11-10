@@ -17,3 +17,7 @@ Adds the first playable Act III arc after Act II completion. All progression and
 
 ## Validation
 JSON syntax and map placement can be structurally checked. Godot parser, headless suite and in-engine playtesting remain required; no runtime-tested claim is made here.
+
+
+## Current tactical limitation
+The current Three Bridges encounter uses the existing commander-defeat victory condition on a river-crossing battlefield. The three operational outcomes are recorded by the scenario layer after victory; independent capture/defend objectives, a timed storehouse fire and separate bridge-control zones are future tactical-engine work, not yet implemented as battle objectives.
