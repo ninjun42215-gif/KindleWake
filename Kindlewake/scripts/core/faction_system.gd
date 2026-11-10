@@ -4,6 +4,8 @@ extends RefCounted
 
 const MIN_RELATION := -100
 const MAX_RELATION := 100
+const NON_AGGRESSION_THRESHOLD := 20
+const TRADE_PACT_THRESHOLD := 35
 const ALLIANCE_THRESHOLD := 50
 const DIPLOMATIC_STATES := ["neutral", "non_aggression", "trade_pact", "alliance", "war"]
 const HISTORY_LIMIT := 100
@@ -110,10 +112,69 @@ static func relation_label(value: int) -> String:
     return "Trusted"
 
 
-static func can_propose_alliance(state: Dictionary, faction_a: String, faction_b: String) -> bool:
+static func treaty_threshold(treaty: String) -> int:
+    match treaty:
+        "non_aggression":
+            return NON_AGGRESSION_THRESHOLD
+        "trade_pact":
+            return TRADE_PACT_THRESHOLD
+        "alliance":
+            return ALLIANCE_THRESHOLD
+    return -1
+
+
+static func treaty_name(treaty: String) -> String:
+    match treaty:
+        "non_aggression":
+            return "Non-aggression pact"
+        "trade_pact":
+            return "Trade pact"
+        "alliance":
+            return "Alliance"
+    return "Unknown treaty"
+
+
+static func next_treaty_threshold(current_state: String) -> int:
+    match current_state:
+        "neutral":
+            return NON_AGGRESSION_THRESHOLD
+        "non_aggression":
+            return TRADE_PACT_THRESHOLD
+        "trade_pact":
+            return ALLIANCE_THRESHOLD
+    return -1
+
+
+static func can_propose_treaty(state: Dictionary, faction_a: String, faction_b: String, treaty: String) -> bool:
     var key := _pair_key(faction_a, faction_b)
     var diplomacy: Dictionary = state.get("diplomacy", {})
-    return faction_a != faction_b and diplomacy.has(key) and str(diplomacy[key]) != "war" and str(diplomacy[key]) != "alliance" and relation(state, faction_a, faction_b) >= ALLIANCE_THRESHOLD
+    if faction_a == faction_b or not diplomacy.has(key) or not ["non_aggression", "trade_pact", "alliance"].has(treaty):
+        return false
+    var current_state := str(diplomacy[key])
+    if current_state == "war" or current_state == "alliance":
+        return false
+    var tier := {"neutral": 0, "non_aggression": 1, "trade_pact": 2}
+    var target_tier := {"non_aggression": 1, "trade_pact": 2, "alliance": 3}
+    if int(target_tier.get(treaty, 0)) <= int(tier.get(current_state, 99)):
+        return false
+    return relation(state, faction_a, faction_b) >= treaty_threshold(treaty)
+
+
+static func next_proposable_treaty(state: Dictionary, faction_a: String, faction_b: String) -> String:
+    for treaty in ["non_aggression", "trade_pact", "alliance"]:
+        if can_propose_treaty(state, faction_a, faction_b, treaty):
+            return treaty
+    return ""
+
+
+static func propose_treaty(state: Dictionary, faction_a: String, faction_b: String, treaty: String) -> bool:
+    if not can_propose_treaty(state, faction_a, faction_b, treaty):
+        return false
+    return set_diplomatic_state(state, faction_a, faction_b, treaty)
+
+
+static func can_propose_alliance(state: Dictionary, faction_a: String, faction_b: String) -> bool:
+    return can_propose_treaty(state, faction_a, faction_b, "alliance")
 
 
 static func transfer_region(state: Dictionary, region_id: String, new_owner: String, cause: String) -> bool:
