@@ -1,4 +1,4 @@
-extends SceneTree
+extends Node
 
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
@@ -46,7 +46,7 @@ var screen_closed: int = 0
 var card_taps: int = 0
 
 
-func _initialize() -> void:
+func _ready() -> void:
     gd = load("res://scripts/core/game_data.gd").new()
     gd.reload()
     ss = load("res://scripts/core/save_system.gd").new()
@@ -86,7 +86,7 @@ func _initialize() -> void:
     _simulate_battles(30)
     print("")
     print("Checks: %d   Failures: %d" % [checks, failures])
-    quit(1 if failures > 0 else 0)
+    get_tree().quit(1 if failures > 0 else 0)
 
 
 func check(cond: bool, label: String) -> void:
@@ -1647,7 +1647,7 @@ func _test_shop_and_screen() -> void:
     check(ItemInfo.delta_text(before, after).contains("ATK +") and ItemInfo.delta_text(before, before) == "no change", "delta text lists changes and says 'no change' otherwise")
     # --- party screen (headless smoke test: it must build, react to every action and keep the rules intact)
     var screen := PartyScreen.new()
-    root.add_child(screen)
+    get_tree().root.add_child(screen)
     screen.closed.connect(_on_screen_closed)
     screen.setup(ps, db, shop, true, true, true)
     screen.open()
