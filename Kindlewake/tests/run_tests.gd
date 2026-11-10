@@ -1208,6 +1208,21 @@ func _test_auto_battle() -> void:
     var c := BattleController.new()
     c.setup(gd.battle_def("battle_01"), gd.as_db(), 777)
     c.begin()
+    var approach_plans_valid := true
+    var approach_plans_checked := 0
+    for unit_value in c.units:
+        var approach_unit: BattleUnit = unit_value
+        if not approach_unit.is_alive() or approach_unit.team != "player":
+            continue
+        var approach_plan: Dictionary = BattleAI.decide(approach_unit, c)
+        var approach_destination: Vector2i = approach_plan.get("move_to", approach_unit.cell)
+        if str(approach_plan.get("action", "wait")) == "wait" and approach_destination != approach_unit.cell:
+            approach_plans_checked += 1
+            var approach_reach: Dictionary = c.reach_for(approach_unit)
+            var approach_cost: Dictionary = approach_reach["cost"]
+            if not approach_cost.has(approach_destination) or c.unit_at(approach_destination) != null:
+                approach_plans_valid = false
+    check(approach_plans_checked > 0 and approach_plans_valid, "AI approach plans stop on reachable unoccupied tiles and respect allied blockers")
     var cal: BattleUnit = null
     var bram: BattleUnit = null
     for o in c.units:
