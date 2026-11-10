@@ -4,6 +4,7 @@ extends Control
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const PartyStateScript = preload("res://scripts/core/party_state.gd")
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
+const PersonalitySystemScript = preload("res://scripts/core/personality_system.gd")
 ## Full-screen party management in one touch UI (v0.8.0 layout): a compact top bar, a roster of cards, a character
 ## sheet made of stat tiles, and a right panel with three tabs: Equipment, Sigils and Shop.
 ## It owns no rules: every action goes through PartyStateScript / CharacterSheetScript / ShopSystem, the same code paths the
@@ -632,7 +633,7 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
             box.add_child(trait_card)
     _add_section(box, "Inner life")
     var stress_colour: Color = COL_GOOD if sh.stress < 40 else (COL_GOLD if sh.stress < 70 else COL_BAD)
-    box.add_child(_tile("Stress · %s" % PersonalitySystem.stress_band(sh.stress), "%d / 100" % sh.stress, stress_colour, 19))
+    box.add_child(_tile("Stress · %s" % PersonalitySystemScript.stress_band(sh.stress), "%d / 100" % sh.stress, stress_colour, 19))
     if not sh.ambition.is_empty():
         box.add_child(_label("Ambition  ·  %s" % str(sh.ambition.get("title", sh.ambition.get("id", "Unspoken"))), 16, COL_GOLD))
         box.add_child(_label(str(sh.ambition.get("description", "")), 14, COL_DIM))
