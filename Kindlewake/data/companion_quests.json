@@ -32,7 +32,18 @@
         "keep_infirmary",
         "village_service",
         "community_network"
-      ]
+      ],
+      "resolution_prompt": "Brisa asks how Foxglove should preserve the recovered names and care for the families displaced by the old infirmary's closure.",
+      "outcome_labels": {
+        "keep_infirmary": "Keep the infirmary ledger",
+        "village_service": "Return Brisa to village service",
+        "community_network": "Establish a shared care network"
+      },
+      "outcome_descriptions": {
+        "keep_infirmary": "Foxglove keeps a permanent infirmary ledger. Brisa helps maintain it, while the village shares the work.",
+        "village_service": "Brisa returns to village service by choice, with the company funding a modest supply chest.",
+        "community_network": "A rotating care network is established. Households share supplies, so no single healer carries the burden alone."
+      }
     },
     "q_companion_kestrel_no_master": {
       "companion_id": "kestrel",
