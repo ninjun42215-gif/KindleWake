@@ -967,3 +967,7 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - Realm administration unlocks when the player claims the first external stronghold through its authored world objective. The unlock is saved with the campaign; it does not grant a second treasury or alter territory ownership.
 - Governor assignments are unique per companion and normalized against currently held regions and the current roster on load. The screen retains existing holding governance, garrison, building, recruitment and siege actions.
 - Candidate branch `feat/mobile-realm-administration-ui` adds a UI smoke test. Actual Android viewport/touch QA remains pending; governor-specific gameplay bonuses are a future balance milestone.
+
+
+- Mobile HUD polish: the five world actions (Company, Save, World Atlas, Realm, Bosses) are now in one vertical top-right stack rather than diagonally anchored controls that could overlap or leave the phone viewport. The EmpireScreen uses vertical Holdings/Realm tabs and stacked market/admin cards.
+- Governor assignments are unique per companion; ownership transfer removes an outgoing governor, and save normalization drops appointments outside currently held regions or the active roster.
