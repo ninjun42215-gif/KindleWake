@@ -126,6 +126,71 @@
             "success_text": "The dates and missing warrant establish that the unit was recalled without lawful authority.",
             "failure_text": "The campaign seal alone does not establish authority after the ceasefire."
           }
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Far Marker",
+          "tint": [
+            0.68,
+            0.8,
+            0.72
+          ],
+          "text": "A weathered fen boundary stone bears a cut Tomas recognises from childhood.",
+          "companion_quest_id": "q_companion_tomas_far_marker",
+          "companion_quest_milestone": "fen_marker_recognised",
+          "companion_quest_text": "Tomas recognises the marker and admits he left the settlement without saying goodbye. He asks to follow the old scout signs before deciding whether to return.",
+          "cell": [
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "Tracks That Turn Back",
+          "tint": [
+            0.72,
+            0.8,
+            0.76
+          ],
+          "text": "A ferryman remembers the old scout trail where tracks turn back toward the fen.",
+          "companion_quest_id": "q_companion_tomas_far_marker",
+          "companion_quest_milestone": "scout_trail_reconstructed",
+          "companion_quest_text": "The tracks show that Tomas's family sheltered deserters, but do not prove Tomas took part. Reconstruct the route from the signs and separate observation from rumour.",
+          "companion_quest_challenge": {
+            "prompt": "Which trail reading is supported by the physical evidence?",
+            "options": [
+              "The family cart turned toward the reed shelter; Tomas's bootprints continue east alone",
+              "Every bootprint belongs to Tomas and proves he led the deserters",
+              "The broken marker proves the family attacked the patrol"
+            ],
+            "correct_option": "The family cart turned toward the reed shelter; Tomas's bootprints continue east alone",
+            "success_text": "The separate tracks support the account: the family sheltered people, while Tomas continued east alone.",
+            "failure_text": "The other conclusions assign actions or motives that the tracks cannot prove."
+          },
+          "cell": [
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Homeward Hearing",
+          "tint": [
+            0.78,
+            0.76,
+            0.66
+          ],
+          "text": "Elder Hale has received accusations against Tomas's family and asks for witnesses before the settlement acts.",
+          "companion_quest_id": "q_companion_tomas_far_marker",
+          "companion_quest_milestone": "homeward_choice_made",
+          "companion_quest_text": "The settlement is divided. Tomas may return openly, help his family relocate or remain away and send aid. No choice makes him responsible for another person's decisions.",
+          "cell": [
+            3,
+            1
+          ]
         }
       ]
     },
@@ -2487,6 +2552,24 @@
             0.56
           ],
           "text": "A warm room above the tide stairs. The keeper serves fish stew and keeps a dry chart table."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Borrowed Verse",
+          "tint": [
+            0.76,
+            0.7,
+            0.88
+          ],
+          "text": "A dockside singer performs a familiar melody with unfamiliar words praising the Covenant.",
+          "companion_quest_id": "q_companion_verra_song_without_seal",
+          "companion_quest_milestone": "borrowed_verse_heard",
+          "companion_quest_text": "Verra recognises a song she wrote, but the verses have been altered to praise the Covenant. Find who supplied the new copy before the troupe is forced to perform again.",
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -2545,6 +2628,35 @@
             0.59
           ],
           "text": "The keeper offers a dry bed and a bowl of hot shellfish broth."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Troupe's Copybook",
+          "tint": [
+            0.78,
+            0.75,
+            0.88
+          ],
+          "text": "A travelling troupe keeps its song sheets locked in a damp instrument case.",
+          "companion_quest_id": "q_companion_verra_song_without_seal",
+          "companion_quest_milestone": "singers_copy_recovered",
+          "companion_quest_text": "Compare the troupe's copy with Verra's remembered refrain. This text-based rhythm puzzle is accessible without audio.",
+          "companion_quest_challenge": {
+            "prompt": "The original refrain follows a repeated pattern. Which written cue sequence matches Verra's first version?",
+            "options": [
+              "Lantern — river — lantern — home",
+              "Crown — sword — crown — throne",
+              "Ash — flame — ash — silence"
+            ],
+            "correct_option": "Lantern — river — lantern — home",
+            "success_text": "The repeated lantern cue and river return match Verra's original refrain. The altered copy inserts the Covenant's crown imagery.",
+            "failure_text": "Compare the repeated image and the returning final line; the other sequences do not match."
+          },
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -2603,6 +2715,24 @@
             0.87
           ],
           "text": "Fresh rope, lamp oil and travel gear for the coast road."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Public Stage",
+          "tint": [
+            0.84,
+            0.72,
+            0.62
+          ],
+          "text": "The troupe is expected to perform the altered song at the quay gathering.",
+          "companion_quest_id": "q_companion_verra_song_without_seal",
+          "companion_quest_milestone": "public_performance_resolved",
+          "companion_quest_text": "The patron's agents are watching the stage. Verra can present the original, protect the performers or write a new response, but the troupe must be allowed to refuse.",
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
