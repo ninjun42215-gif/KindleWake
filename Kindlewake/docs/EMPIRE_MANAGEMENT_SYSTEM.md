@@ -30,15 +30,15 @@ Implemented as `scripts/core/empire_management_system.gd`, integrated with `Game
 
 Each known province contributes a modest baseline tax and food yield, while population/administration creates upkeep and food consumption. Buildings add focused benefits. Council seats incur upkeep. Food reaching zero creates a serious stability and public-order penalty. High taxes are a short-term treasury lever with visible long-term political cost. Policies create trade-offs rather than universally optimal bonuses.
 
-## Planned player-facing screens (not yet implemented)
+## Player-facing screens now implemented in the feature branch
 
-1. **Realm overview:** treasury, food, manpower, stability, legitimacy, public order, season report and alerts.
-2. **Council chamber:** character portraits, office responsibilities, appointment/removal and trait/loyalty context.
-3. **Provinces:** owner, governor, local order, buildings, construction queue and region-specific resources.
-4. **Economy:** tax policy, relief spending, development and seasonal ledger.
-5. **Military:** manpower, garrisons, forts, recruitment levies, supply and campaign readiness.
-6. **Diplomacy:** faction dossiers, relations, treaties, tribute, trade and war declarations. Actions must be authored, validated and paid for; the current faction backend does not yet simulate AI turns or wars.
-7. **Chronicle:** decisions, construction, appointments, shortages, rebellions and territorial changes.
+1. **Realm overview:** treasury, food, manpower, stability, legitimacy, public order and explicit season advancement/report.
+2. **Council chamber:** office responsibilities, roster-based appointments and dismissal. Character portrait rendering and trait/loyalty-based office effects remain future work.
+3. **Provinces:** atlas ownership, governor appointment/recall and construction. Actions are disabled outside player-controlled House Dunmarrow/Crownlands territory; local order and resource specialization remain future work.
+4. **Economy:** tax policy, edicts and seasonal ledger. A forecast/confirmation preview remains future work.
+5. **Military:** manpower is visible in the realm overview and forts contribute a defence value in the seasonal report; garrisons, recruitment levies, supply and campaign readiness are not yet implemented.
+6. **Diplomacy:** faction relations and territorial transfers remain available through the separate faction backend; a player-facing diplomacy screen, treaties, trade and war declarations are future work.
+7. **Chronicle:** current realm decisions, construction, appointments, policy changes and seasonal reports. Rebellion and territorial events will join when authored.
 
 ## Future gameplay systems
 
@@ -59,3 +59,8 @@ Each known province contributes a modest baseline tax and food yield, while popu
 - Preserve offline-first operation, no account/server dependency and no Android INTERNET permission.
 - Keep old schema-4 saves loadable; test both missing and populated empire payloads.
 - Do not describe backend APIs as a finished UI or playable empire campaign until screens and story integration are implemented and tested.
+
+
+## Current feature-branch UI status
+
+The Realm, Council, Provinces, Economy and Chronicle tabs are implemented in `scripts/ui/empire_administration.gd` and mounted from the overworld through an unlock-gated Royal Court button. Story integration is intentionally not guessed: the approved narrative milestone must call `GameState.unlock_empire_management()`. The feature branch has added strict regression tests, but no Godot/Android validation is yet confirmed.
