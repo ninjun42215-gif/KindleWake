@@ -4,13 +4,19 @@
 
 The economy is deliberately **player-advanced**, not real-time. A campaign turn is processed only when the player explicitly invokes the empire-turn action. Merely exploring, leaving the game open, or loading a save never charges upkeep.
 
-Each player-held location can define:
-- `turn_income`: base treasury income per empire turn.
+Each player-held location can define its recurring yield in the existing `economy` object:
+- `economy.gold`: base treasury income per empire turn.
+- `economy.provisions`: provisions added to the campaign stockpile per empire turn.
+- `economy.materials`: materials added to the campaign stockpile per empire turn.
+
+The authored catalogue values are recurring yields, not one-time capture rewards. The Empire screen displays the yield and the resulting stockpiles.
 - `garrison_upkeep`: fixed administrative/security cost per turn.
 - `recommended_garrison`: garrison size that stabilizes the holding.
 - `governance`: initial governance model.
 
-The economy reads existing `world_flags` holding ownership, claim, stability and governance fields. It writes per-turn income/upkeep reports and stability back to `world_flags`, so the existing campaign save format remains sufficient.
+The in-game **Holdings** screen lists the authored locations, their strategic descriptions and output, and clearly distinguishes administered holdings from locations that still require an authored world objective. It allows garrison assignment and governance changes only for player-held locations. Capture is intentionally not available from this screen.
+
+The economy reads existing `world_flags` holding ownership, claim, stability and governance fields. It writes per-turn income/upkeep reports, stability, provisions and materials stockpiles back to `world_flags`, so the existing campaign save format remains sufficient.
 
 ### Governance models
 
