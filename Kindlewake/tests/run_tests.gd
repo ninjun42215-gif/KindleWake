@@ -896,11 +896,24 @@ func _test_wraparound_world() -> void:
     check(coast.wrap_cell(Vector2i(coast.width, 7)) == Vector2i(0, 7), "east edge wraps to the west edge")
     check(coast.wrap_cell(Vector2i(7, -1)) == Vector2i(7, coast.height - 1), "north edge wraps to the south edge")
     check(coast.wrap_cell(Vector2i(7, coast.height)) == Vector2i(7, 0), "south edge wraps to the north edge")
+    check(coast.wrap_cell(Vector2i(-1, -1)) == Vector2i(coast.width - 1, coast.height - 1), "north-west corner wraps diagonally to the south-east corner")
+    check(coast.wrap_cell(Vector2i(coast.width, coast.height)) == Vector2i.ZERO, "south-east corner wraps diagonally to the north-west corner")
     check(coast.walkable(Vector2i(-1, 12)) and coast.walkable(Vector2i(coast.width, 12)), "the opposite map edges are traversable rather than blocked by a boundary wall")
     check(coast.connected(Vector2i(0, 12), Vector2i(coast.width - 1, 12)), "pathfinding connectivity crosses the horizontal world seam")
-    check(coast.wrapped_delta(Vector2i(0, 10), Vector2i(coast.width - 1, 10)) == Vector2i(-1, 0), "navigation chooses the short route across the seam")
-    check(coast.wrap_position(Vector2(-1.0, 100.0)).x >= 0.0, "world coordinates normalize safely when saved at the western edge")
-
+    check(coast.wrapped_delta(Vector2i(0, 10), Vector2i(coast.width - 1, 10)) == Vector2i(-1, 0), "navigation chooses the short route across the horizontal seam")
+    check(coast.wrapped_delta(Vector2i(0, 0), Vector2i(coast.width - 1, coast.height - 1)) == Vector2i(-1, -1), "navigation chooses the diagonal short route across both seams")
+    check(coast.terrain_at(Vector2i(-1, 12)) == coast.terrain_at(Vector2i(coast.width - 1, 12)), "terrain sampling is consistent for negative and canonical coordinates")
+    var world_size := Vector2(float(coast.width) * 48.0, float(coast.height) * 48.0)
+    var wrapped_origin := coast.wrap_position(Vector2(world_size.x, world_size.y))
+    check(wrapped_origin == Vector2.ZERO, "exact world-size coordinates normalize to the origin on both axes")
+    var wrapped_negative := coast.wrap_position(Vector2(-1.0, -1.0))
+    check(wrapped_negative.x >= 0.0 and wrapped_negative.x < world_size.x and wrapped_negative.y >= 0.0 and wrapped_negative.y < world_size.y, "negative coordinates normalize safely on both axes")
+    check(coast.wrap_position(wrapped_negative) == wrapped_negative, "canonical save coordinates remain stable when normalized more than once")
+    var enclosed_cfg: Dictionary = cfg.duplicate(true)
+    enclosed_cfg["wrap_world"] = false
+    var enclosed: WorldMap = WorldMap.generate(enclosed_cfg)
+    check(not enclosed.wrap_enabled and enclosed.wrap_cell(Vector2i(-1, 7)) == Vector2i(-1, 7), "authored non-wrapping maps retain hard boundaries")
+    check(not enclosed.walkable(Vector2i(-1, 7)) and enclosed.wrap_position(Vector2(-1.0, 100.0)) == Vector2(-1.0, 100.0), "non-wrapping maps do not normalize out-of-bounds coordinates")
 
 func _test_brinegate_quest() -> void:
     print("[Brinegate quest]")
