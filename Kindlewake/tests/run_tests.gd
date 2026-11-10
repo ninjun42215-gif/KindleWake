@@ -979,6 +979,7 @@ func _test_world() -> void:
             if not gd.locations.get("maps", {}).has(dungeon_id) or gd.battle_def(boss_battle).is_empty():
                 regional_ok = false
     check(regional_ok and w1.connected(w1.place_cell("crossing"), w1.place_cell("thornmere")) and w1.connected(w1.place_cell("crossing"), w1.place_cell("cindermead")), "Orrowen and Vessmoor roads connect to Sallow Crossing with playable dungeon entries")
+    check(w1.connected(w1.start_cell, w1.place_cell("tarnholt")) and gd.locations.get("maps", {}).has("tarnholt"), "Tarnholt is connected to the frontier and opens its authored chapter-house map")
     var skirmish: Dictionary = EncounterBuilder.build_skirmish(gd.encounters, gd.battles, rng_for_tests())
     check(not skirmish.is_empty() and str(skirmish.get("id", "")) == "skirmish", "an ambush can build a skirmish battle")
 
