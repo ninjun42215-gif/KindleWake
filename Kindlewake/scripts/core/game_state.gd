@@ -78,6 +78,13 @@ func transfer_faction_region(region_id: String, new_owner: String, cause: String
 func unlock_empire_management(realm_name: String = "The Crownlands") -> bool:
     return EmpireSystem.unlock(empire_state, realm_name)
 
+## Story scripts call this only after the authored Crown Authority milestone resolves.
+func complete_story_milestone(milestone_id: String) -> bool:
+    if milestone_id != "crown_authority_granted" or bool(empire_state.get("unlocked", false)):
+        return false
+    world_flags["crown_authority_granted"] = true
+    return unlock_empire_management("The Crownlands")
+
 func set_empire_tax_rate(rate: String) -> bool:
     return EmpireSystem.set_tax_rate(empire_state, rate)
 
@@ -120,8 +127,21 @@ func construct_province_building(province_id: String, building_id: String) -> bo
     return EmpireSystem.construct(empire_state, province_id, building_id, player_controlled_provinces())
 
 
+func establish_empire_trade_route(origin: String, destination: String) -> bool:
+    return EmpireSystem.establish_trade_route(empire_state, origin, destination, player_controlled_provinces(), atlas_region_adjacency())
+
+func close_empire_trade_route(route_id: String) -> bool:
+    return EmpireSystem.close_trade_route(empire_state, route_id)
+
 func advance_empire_season() -> Dictionary:
-    return EmpireSystem.advance_season(empire_state, player_controlled_provinces(), atlas_region_adjacency())
+    var report: Dictionary = EmpireSystem.advance_season(empire_state, player_controlled_provinces(), atlas_region_adjacency(), GameData.characters)
+    var faction_ids: Array = []
+    for faction in GameData.factions.get("factions", []):
+        faction_ids.append(str(faction.get("id", "")))
+    var diplomacy_report: Dictionary = EmpireSystem.advance_faction_ai(faction_state, faction_ids, "house_dunmarrow")
+    report["faction_declarations"] = diplomacy_report.get("declarations", [])
+    report["faction_treaties"] = diplomacy_report.get("treaties", [])
+    return report
 
 func recruit_provincial_troops(province_id: String, troop_type: String, amount: int) -> bool:
     return EmpireSystem.recruit_troops(empire_state, province_id, troop_type, amount, player_controlled_provinces())
