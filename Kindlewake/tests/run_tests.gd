@@ -1100,8 +1100,39 @@ func _test_supply_siege_and_tactical_bridge() -> void:
     check(siege_db.get("characters", {}).has("strategic_siege_ballista") and siege_db.get("characters", {}).has("strategic_siege_trebuchet"), "authored siege artillery profiles resolve in the tactical database")
     check(siege_db.get("classes", {}).has("siege_ballista") and siege_db.get("classes", {}).has("siege_trebuchet"), "ballista and trebuchet resolve to distinct tactical classes")
     check(siege_db.get("characters", {}).has("strategic_siege_engineer"), "authored siege engineer profile resolves in the tactical database")
+    check(siege_db["characters"]["strategic_siege_engineer"].get("skills", []).has("field_repair") and siege_db["characters"]["strategic_siege_engineer"].get("skills", []).has("breach_charge"), "siege engineer receives both authored active abilities")
+    check(siege_db.get("skills", {}).has("field_repair") and siege_db.get("skills", {}).has("breach_charge"), "siege engineer active ability definitions load into combat")
     check(int(siege_db["characters"]["strategic_siege_engine"]["stats"]["hp"]) == 80, "siege engineer field repair improves battering-ram durability")
     check(int(siege_db["characters"]["strategic_fort_wall_0"]["stats"]["hp"]) == 70, "siege engineer breach charges weaken destructible wall segments")
+    var engineer_skill_controller := BattleController.new()
+    engineer_skill_controller.setup(battle_def, siege_db, 9194)
+    var engineer_unit: BattleUnit = null
+    var ram_unit: BattleUnit = null
+    var gate_unit: BattleUnit = null
+    for battle_unit in engineer_skill_controller.units:
+        if battle_unit.character_id == "strategic_siege_engineer":
+            engineer_unit = battle_unit
+        elif battle_unit.character_id == "strategic_siege_engine":
+            ram_unit = battle_unit
+        elif battle_unit.character_id == "strategic_fort_gate":
+            gate_unit = battle_unit
+    var repair_works := false
+    var breach_works := false
+    if engineer_unit != null and ram_unit != null and gate_unit != null:
+        ram_unit.hp = maxi(1, ram_unit.max_hp() - 20)
+        engineer_unit.cell = ram_unit.cell + Vector2i(-1, 0)
+        engineer_skill_controller.active_id = engineer_unit.id
+        engineer_unit.has_acted = false
+        var ram_hp_before := ram_unit.hp
+        repair_works = engineer_skill_controller.try_skill(engineer_unit, "field_repair", ram_unit) and ram_unit.hp > ram_hp_before
+        gate_unit.hp = gate_unit.max_hp()
+        engineer_unit.cell = gate_unit.cell + Vector2i(-1, 0)
+        engineer_skill_controller.active_id = engineer_unit.id
+        engineer_unit.has_acted = false
+        var gate_hp_before := gate_unit.hp
+        breach_works = engineer_skill_controller.try_skill(engineer_unit, "breach_charge", gate_unit) and gate_unit.hp < gate_hp_before
+    check(repair_works, "siege engineer can actively repair a damaged allied siege engine")
+    check(breach_works, "siege engineer can actively breach a fortification with a demolition charge")
     var siege_controller := BattleController.new()
     siege_controller.setup(battle_def, siege_db, 9192)
     siege_controller.begin()
