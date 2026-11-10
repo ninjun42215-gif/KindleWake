@@ -2,6 +2,7 @@ extends SceneTree
 
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
+const RelationshipSystemScript = preload("res://scripts/core/relationship_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
@@ -35,6 +36,7 @@ func _initialize() -> void:
     _test_auto_battle()
     _test_progression()
     _test_trait_system()
+    _test_companion_relationships()
     _test_recruitment()
     _test_prologue()
     _test_escape_mission()
@@ -1668,3 +1670,20 @@ func _test_trait_system() -> void:
     check(bool(completion.completed) and str(sheet.ambition.get("status", "")) == "completed", "ambition completes exactly at its target")
     var legacy := CharacterSheet.from_dict({"character_id":"legacy","name":"Legacy","class_id":"swordsman","level":1,"base_stats":{"hp":10,"str":4},"skills":[],"equipment":{}})
     check(legacy.traits.is_empty() and legacy.trait_history.is_empty(), "legacy character saves load safely without trait fields")
+
+
+func _test_companion_relationships() -> void:
+    print("[companion relationship system]")
+    var state: Dictionary = {}
+    check(RelationshipSystemScript.adjust(state, "torren", "wystan", "friendship", 25, "quest:shared-watch"), "authored event creates a companion relationship")
+    check(int(RelationshipSystemScript.get_relationship(state, "wystan", "torren").get("friendship", 0)) == 25, "pair relationships are symmetric regardless of lookup order")
+    check(not RelationshipSystemScript.adjust(state, "torren", "wystan", "friendship", 25, "quest:shared-watch"), "duplicate evidence cannot farm relationship gains")
+    check(RelationshipSystemScript.adjust(state, "torren", "wystan", "trust", 70, "quest:kept-secret"), "trust develops independently from friendship")
+    check(str(RelationshipSystemScript.get_relationship(state, "torren", "wystan").get("stage", "")) == "Trusted Allies", "relationship stage reflects distinct trust and friendship dimensions")
+    check(RelationshipSystemScript.adjust(state, "torren", "wystan", "rivalry", 150, "duel:final"), "rivalry can be authored as a separate relationship dimension")
+    check(int(RelationshipSystemScript.get_relationship(state, "torren", "wystan").get("rivalry", 0)) == 100, "relationship dimensions are bounded at 100")
+    check(not RelationshipSystemScript.adjust(state, "torren", "wystan", "loyalty", 10, "invalid:dimension"), "unknown relationship dimensions are rejected")
+    check(not RelationshipSystemScript.adjust(state, "torren", "torren", "friendship", 10, "invalid:self"), "self-relationships are rejected")
+    var restored: Dictionary = RelationshipSystemScript.normalize_state(state)
+    check(RelationshipSystemScript.normalize_state(restored) == restored, "relationship state remains stable after save normalization")
+    check(RelationshipSystemScript.normalize_state({}).is_empty(), "legacy campaigns default safely without relationship data")

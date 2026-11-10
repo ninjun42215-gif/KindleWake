@@ -5,6 +5,7 @@ const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const RelationshipSystem = preload("res://scripts/core/relationship_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
 
@@ -22,6 +23,7 @@ var pending_location: String = ""        # town map the location scene opens nex
 var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored with battle saves
 var campaign_slot: String = ""
 var faction_state: Dictionary = {}
+var companion_relationships: Dictionary = {}
 
 
 
@@ -54,6 +56,7 @@ func new_game(profile: Dictionary = {}) -> void:
     world_flags = {}
     pending_location = ""
     faction_state = FactionSystem.new_campaign_state(GameData.factions)
+    companion_relationships = {}
 
 
 ## Change diplomatic standing after an authored campaign event.
@@ -71,6 +74,17 @@ func transfer_faction_region(region_id: String, new_owner: String, cause: String
     return FactionSystem.transfer_region(faction_state, region_id, new_owner, cause)
 
 
+
+
+## Record a consequential, authored relationship change between two companions.
+## Dimensions are bounded by RelationshipSystem; evidence IDs prevent duplicate quest/battle rewards.
+func adjust_companion_relationship(character_a: String, character_b: String, dimension: String, amount: int, evidence_id: String) -> bool:
+    return RelationshipSystem.adjust(companion_relationships, character_a, character_b, dimension, amount, evidence_id)
+
+
+## Read the current pair relationship without exposing mutable campaign state.
+func companion_relationship(character_a: String, character_b: String) -> Dictionary:
+    return RelationshipSystem.get_relationship(companion_relationships, character_a, character_b)
 
 
 ## Campaign/story systems call these methods with authored, consequential evidence; no random trait rolls occur.
@@ -146,6 +160,7 @@ func campaign_payload() -> Dictionary:
         "world_positions": world_positions.duplicate(true),
         "world_flags": world_flags.duplicate(true),
         "faction_state": faction_state.duplicate(true),
+        "companion_relationships": companion_relationships.duplicate(true),
         "from_world": true
     }
 
@@ -172,6 +187,7 @@ func load_campaign(slot_id: String) -> bool:
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
     faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
+    companion_relationships = RelationshipSystem.normalize_state(payload.get("companion_relationships", {}))
     world_pos = region_state["world_pos"]
     active_region_id = str(region_state["active_region_id"])
     world_positions = region_state["world_positions"]

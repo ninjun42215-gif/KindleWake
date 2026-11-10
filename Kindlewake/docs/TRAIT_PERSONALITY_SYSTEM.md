@@ -48,3 +48,12 @@ This branch is a working foundation, not the entire long-term design target. It 
 7. Physical-device validation on Android. Exact-head CI on `501e3abfa6877502254d8a60790f6a7818f30587` passed Godot 4.2.2 import, 8/8 scene smoke loads, 465 strict checks / 0 failures, balance report, signed Android export for both supported ABIs, Version Sync, Project Health Audit, and Workflow YAML Lint. Physical-device validation remains pending.
 
 Do not seed traits onto the existing named cast merely from class or combat stats. Starting personalities must be grounded in approved character writing and consistent with the exact sprite/portrait identity.
+
+
+## Companion relationship progression — added after the initial trait foundation
+
+- `scripts/core/relationship_system.gd` tracks symmetric pair relationships across independent friendship, trust, respect, rivalry, affection, and romance dimensions. Every value is bounded from 0 to 100.
+- `GameState.adjust_companion_relationship()` records authored changes with unique evidence IDs; duplicate evidence is rejected. `GameState.companion_relationship()` returns a safe read model and derives a relationship stage such as Acquaintances, Friendly, Mutual Respect, Trusted Allies, Close Friends, Rivals, or Romantic.
+- Romance is never inferred from friendship or affection: it requires explicit authored romance evidence and sufficient trust. No automatic attraction, random drift, or forced pairing is introduced.
+- Pair state, bounded history, and evidence IDs are persisted in the campaign payload. Existing schema-4 saves without this optional field normalize to an empty relationship map.
+- This is a persistent rules/API foundation. Existing loyalty remains separate; a player-facing relationship journal, companion-specific story scenes, dialogue checks, and AI behavior hooks remain follow-up integration work.
