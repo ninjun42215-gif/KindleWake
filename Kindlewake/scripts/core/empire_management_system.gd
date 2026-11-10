@@ -644,6 +644,7 @@ static func tactical_battle_database(base_db: Dictionary, battle: Dictionary, wa
 	var troop_templates: Dictionary = warfare_data.get("troops", {})
 	var engine_templates: Dictionary = warfare_data.get("siege_engines", {})
 	var garrison_rules: Dictionary = warfare_data.get("garrisons", {})
+	var fortification_templates: Dictionary = warfare_data.get("fortifications", {})
 	for spawn in battle.get("units", []):
 		var character_id := str(spawn.get("character_id", ""))
 		if not character_id.begins_with("strategic_") or chars.has(character_id):
@@ -655,6 +656,12 @@ static func tactical_battle_database(base_db: Dictionary, battle: Dictionary, wa
 		elif is_defender:
 			var parts := character_id.split("_")
 			troop_type = str(parts[2]) if parts.size() > 2 else "infantry"
+		if character_id == "strategic_fort_gate":
+			var gate: Dictionary = fortification_templates.get("fort_gate", {"name": "Fort Gate", "class_id": "fort_gate", "weapon_id": "hand_axe", "armor_def": 6, "armor_res": 4, "class_def": {"name": "Fort Gate", "move": 0, "jump": 0}, "stats": {"hp": 100, "mp": 0, "str": 0, "dex": 0, "int": 0, "vit": 8, "spd": 1, "lck": 0, "acc": 0, "eva": 0, "ldr": 0, "mor": 0}})
+			var gate_class_id := str(gate.get("class_id", "fort_gate"))
+			classes[gate_class_id] = (gate.get("class_def", {"name": "Fort Gate", "move": 0, "jump": 0}) as Dictionary).duplicate(true)
+			chars[character_id] = {"name": str(gate.get("name", "Fort Gate")), "class_id": gate_class_id, "level": 1, "weapon_id": str(gate.get("weapon_id", "hand_axe")), "armor_def": int(gate.get("armor_def", 6)), "armor_res": int(gate.get("armor_res", 4)), "skills": [], "stats": (gate.get("stats", {}) as Dictionary).duplicate(true)}
+			continue
 		if character_id == "strategic_siege_engine":
 			var ram: Dictionary = engine_templates.get("battering_ram", {"name": "Battering Ram", "class_id": "siege_engine", "weapon_id": "battle_axe", "armor_def": 8, "armor_res": 2, "class_def": {"name": "Battering Ram", "move": 2, "jump": 0}, "stats": {"hp": 70, "mp": 0, "str": 12, "dex": 3, "int": 1, "vit": 14, "spd": 2, "lck": 1, "acc": 70, "eva": 0, "ldr": 0, "mor": 100}})
 			var ram_class_id := str(ram.get("class_id", "siege_engine"))
