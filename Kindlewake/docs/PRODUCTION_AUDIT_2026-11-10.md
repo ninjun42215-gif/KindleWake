@@ -95,3 +95,8 @@ The PR portfolio should be re-compared against the live main SHA before any acti
 - Preserve established canon and stable IDs.
 - Never invent asset licences, playable content, test results or device QA.
 - Prefer a smaller complete, tested vertical slice over a larger unfinished feature set.
+
+
+## Follow-up maintenance candidate — rebased on current main
+
+Branch `fix/headless-resource-cleanup-current-main` is based on main `0785d76c86f6a4b1eafcec54ccb54ca3b5299acc`. It frees the temporary PartyScreen synchronously in the headless UI test, drains deferred child-node deletion over two SceneTree frames, releases the GameData Node in the standalone balance report before quitting, and disables Blender import because the tracked tree contains no `.blend` files. This candidate must pass exact-head CI on the rebased source before merge; it changes no gameplay, save schema, game version or permissions.
