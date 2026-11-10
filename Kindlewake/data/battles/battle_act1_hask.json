@@ -130,5 +130,20 @@
   "world_flag_on_victory": "act1_hask_defeated",
   "victory_text": "Hask's axe is knocked into the mud. The roadwolves scatter, and the convoy crosses under guard. The manifest is recovered.",
   "defeat_text": "The convoy line breaks. The company is driven back, but the road remains open for another attempt.",
-  "return_scene": "res://ActOneQuestChallenge.tscn"
+  "return_scene": "res://ActOneQuestChallenge.tscn",
+  "boss_phases": [
+    {
+      "trigger_below_pct": 50,
+      "name": "The Fordbreaker",
+      "message": "Hask spits blood into the ford. His restraint breaks; he swings the great axe in brutal, sweeping arcs.",
+      "strength_bonus": 5,
+      "speed_bonus": 2,
+      "armor_def_bonus": 0,
+      "heal": 10,
+      "add_skills": [
+        "fordbreaker_cleave"
+      ],
+      "vfx": "rage"
+    }
+  ]
 }
