@@ -422,32 +422,36 @@ Older GDD descriptions of age skips, marriage, heirs, Bloodline Abilities and me
 
 ## 10. Main Storyline
 
-**Setting:** Eldrimar's Crownlands, a successor monarchy that survived the fragmentation of the old Eldrimar Empire. King Osric IV has died suddenly. The Covenant of the Seven Flames is the older public compact sworn by seven great houses; the secret order using the same name in current faction data is a separate organisation. The seventh house, **Dunmarrow**, the Oath's keeper, was destroyed when Lord Edmer Dunmarrow was executed for treason weeks earlier.
+**Canonical expanded story:** see [Lore Bible §15 — Full campaign story treatment](LORE_BIBLE.md) for the chapter-by-chapter sequence, branch logic, companion arcs, ending matrix and production packet requirements. This GDD section is the concise implementation-facing summary.
 
-**The secret.** Dying and without a strong heir, Osric wrote a **Hidden Codicil** dissolving the single crown into a council of the seven houses. Edmer, the keeper, held the sealed Hidden Codicil. Lord Regent **Maelor Brennhallow**, believing only a strong crown prevents civil war, had Edmer executed and the Hidden Codicil suppressed. He is not a villain: he is trying to save the realm in a way that he knows is a lie.
+**Setting:** Eldrimar's Crownlands, a successor monarchy that survived the fragmentation of the old Eldrimar Empire. King Osric IV has died suddenly. The Covenant of the Seven Flames is the ancient public compact sworn by seven great houses; the later secret organisation using the same name is distinct. Edmer Dunmarrow, keeper of the Hidden Codicil, was executed and the Dunmarrow estate burned. Torren is the player-controlled surviving heir (stable protagonist ID: `torren`).
 
-**Structure (prologue + 5 acts + epilogue)**
-| Act | Title | Beats |
-|---|---|---|
-| Prologue | Smoke on the Wind | Torren, Bram, Sela and Brother Wystan escape the burning estate, reach Kaer Sethorn, fight roadwolves (tutorial battle). |
-| I | Cold Hearth | Rebuild the keep; first recruits; tax collectors; discover Edmer's letter naming a missing witness. |
-| II | Broken Seals | Travel to Orrowen and Ysmark; witnesses; the first army battle; join or oppose a house. |
-| III | The River Campaign | Vessmoor duel, Tarnholt trial, siege of Brinegate; war escalates; an authored campaign time skip may occur, independent of generational mode. |
-| IV | Winter of Knives | Betrayals; Quillon's library holds the Hidden Codicil's seal; loyalties tested; a beloved ally may fall. |
-| V | The Kindling | Final campaign for Aurelmont; the Hidden Codicil is read, burned, or weaponised; choose the realm's future. |
-| Epilogue | The Chronicle | Outcomes by faction reputation, loyalty, deaths and the protagonist's ending; only the Last Emperor route proceeds to the late-life dissolution epilogue. |
+**The central conflict:** Lord Regent Maelor Brennhallow suppressed the Hidden Codicil because he believes a sudden constitutional crisis will cause famine, invasion and civil war. His fear is credible; his methods and the harm they cause remain subject to judgment. The Codicil reveals the Covenant's obligations and a lawful route for transferring the Crownlands' single-crown authority to a Council of the Seven Houses. It does not automatically place all continents under a new empire.
 
-**Multiple endings**
-1. **Restored Crown:** Dunmarrow takes the throne (high Renown, Brennhallow defeated).
-2. **Council of Seven:** follow the Hidden Codicil (alliances with most houses).
-3. **Iron Regency:** side with Brennhallow (stability, cost in freedom).
-4. **Mercenary Principality:** carve out your own domain (independent route).
-5. **Embers:** destroy the Hidden Codicil and let the realm burn (dark route).
-6. **Last Emperor / Concord ending (true-ending route):** the protagonist accepts a temporary imperial mandate, abolishes the imperial office, establishes the Concord and—only after natural old-age death—unlocks the Chronicle of Houses. This replaces the old “Legacy ending” label; it is not an heir taking over before the protagonist's death.
+**Structure (prologue + five acts + epilogue):**
+| Chapter block | Story progression |
+|---|---|
+| Prologue — Smoke on the Wind | The Dunmarrow estate burns; Torren and survivors escape. Rescue priorities, evidence and the first account establish the player's values and the limits of memory. |
+| Act I — Cold Hearth | Protect Sallow Crossing's winter stores, discover the ledger behind the raid, make a costly food decision and establish Kaer Sethorn as a refuge. |
+| Act II — Broken Seals | Seek an Orrowen hearing, protect a pressured witness, escort a disputed road and authenticate the first Covenant evidence. |
+| Act III — The River Campaign | Resolve the false-banner refugee convoy, plan a river crossing, fight a multi-stage operation and negotiate the price of passage. |
+| Act IV — Winter of Knives | Enter the Quillon archive, discover Edmer's concealed clause, resolve company disagreements and hear Maelor's credible offer. |
+| Act V — The Kindling | Convene the Seven Houses, manage the Aurelmont crisis, confront Maelor, constitute the Council where ratifications permit and decide the constitutional settlement. |
+| Epilogue — The Chronicle | Show consequences for companions, settlements, Houses and signatories. Only the designated true-ending route proceeds through Last Emperor investiture, formal imperial dissolution, Concord ratification, late-life epilogue and natural old-age death. |
 
-**Antagonists are not purely evil:** Brennhallow (order at any cost), Ysmark's Lady Sabela (profit as peace), Tarnholt's Archprelate Anselm (faith used as a leash), Vessmoor's Lord Casimir (honour that kills).
+Every major chapter follows a legible rhythm: personal problem → investigation → tactical or non-combat operation → consequential choice → aftermath. Choices should have immediate and delayed callbacks; do not reduce them to hidden morality points. Use the narrative state variables and branch safeguards in Lore Bible §15.1.
 
----
+**Ending matrix:**
+1. **Restored Crown:** a reformed Crownlands monarchy survives under enforceable Covenant limits; no Last Emperor office is created.
+2. **Council of Seven:** the Crownlands' single-crown authority transfers to a lawful Council, but the dormant imperial office is not reconstituted or dissolution requirements remain incomplete.
+3. **Concord of Free Realms — True Ending:** after Council formation and required house/realm ratifications, the protagonist is temporarily invested as Last Emperor solely to dissolve the imperial office and central claim and establish the voluntary Concord. Only completion of the late-life epilogue followed by natural death of old age records the Founder Chronicle and unlocks Chronicle of Houses.
+4. **Fractured Peace:** immediate conflict ends through a narrow settlement or military outcome, but unresolved Houses or regions remain outside a stable compact.
+5. **Ashen Victory:** Maelor is defeated, but coercive conduct undermines public trust and leaves a brittle settlement.
+
+The true ending is defined by constitutional completion and the exact unlock sequence, not a perfect approval score. The older “Dunmarrow takes the throne,” “Iron Regency,” “Mercenary Principality” and “Embers” labels are superseded as canonical ending definitions; any retained route must be rewritten to fit the reconciled constitutional timeline. House Ysmark's seat remains unconfirmed; Brinegate is the Tidebound Assembly's seat, not Ysmark's.
+
+**Companion arcs:** Bram Vosk's “Weight of the Shield” challenges obedience; Sela Wrenfield's “Witness Who Chooses” protects informants' agency; Brother Wystan's “Mercy and the Measure of Justice” tests sanctuary and restitution. Edmer's legacy remains morally mixed and is revealed through evidence, not resurrection. Maelor is accountable even if he survives. Captain Ilyra Venn and pilot Maren Vey remain grounded in the Thalassar/Brinegate storyline. Full outcomes and production guidance are in Lore Bible §15.9–15.11.
+
 
 ## 11. World and Faction Design
 
