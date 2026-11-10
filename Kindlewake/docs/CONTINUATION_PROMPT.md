@@ -282,7 +282,7 @@ Next work:
 
 ## FIELD ARMY IMPLEMENTATION STATUS
 
-The field army layer now includes depot-based connected supply, forward supply checks, morale and attrition, seasonal sieges and assaults, war exhaustion, and a strategic-to-tactical roster/result contract. It now launches BattleController encounters with generated regional garrisons and applies cohort casualties back to the strategic army. Siege assaults now deploy destructible walls, gate tower, battering ram, ballista, trebuchet and siege engineer passive support. Army movement is strategic and follows only authored atlas region links. Current tests are authored but require exact-head Godot validation. The branch is diverged from `main` and five commits behind; reconcile before merge and require all exact-head CI gates.
+The field army layer now includes depot-based connected supply, forward supply checks, morale and attrition, seasonal sieges and assaults, war exhaustion, and a strategic-to-tactical roster/result contract. It now launches BattleController encounters with generated regional garrisons and applies cohort casualties back to the strategic army. Siege assaults now deploy destructible walls, gate tower, battering ram, ballista, trebuchet and a siege engineer with active Field Repair/Breach Charge skills plus passive support. Army movement is strategic and follows only authored atlas region links. Current tests are authored but require exact-head Godot validation. The branch is diverged from `main` and 18 commits behind; reconcile before merge and require all exact-head CI gates.
 
 
 ## STRATEGIC EXPANSION UPDATE
