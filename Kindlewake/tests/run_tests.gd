@@ -352,6 +352,7 @@ func _test_act_three_river_campaign() -> void:
     check(not battle.is_empty(), "Three Bridges battle is registered")
     check(str(battle.get("world_flag_on_victory", "")) == "act3_three_bridges_victory", "Three Bridges victory flag is correct")
     check(gd.characters.has("river_marshal"), "River Marshal character exists")
+    check(battle.get("units", []).any(func(unit): return str(unit.get("character_id", "")) == "river_marshal" and bool(unit.get("commander", false))), "River Marshal is the Three Bridges commander")
     check(bool(ActThreeQuestSystem.inspect("banner_reeds", {"chapter_2_complete":true}).get("available", false)) == false, "Banner in the Reeds cannot skip the bridge operation")
     var map_spots := true
     for pair in [["thornmere","three_bridges"],["elderbough","banner_reeds"],["crossing","price_crossing"]]:
