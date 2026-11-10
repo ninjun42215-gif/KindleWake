@@ -136,74 +136,11 @@ func regional_boss_available(region_id: String) -> bool:
 ## Add up to four reserve troops from a local holding to a tactical encounter.
 ## Reserves are deducted at deployment; survivors return after the battle and casualties are lost.
 func _deploy_holding_recruits(holding_id: String, battle_definition: Dictionary) -> Dictionary:
-    if not bool(world_flags.get("holding_claimed_" + holding_id, false)) or str(world_flags.get("holding_owner_" + holding_id, "")) != "house_dunmarrow":
-        return battle_definition
-    var troop_characters := {"levy":"frontier_levy", "archer":"march_archer", "knight":"household_knight"}
-    var reserves: Dictionary = (world_flags.get("holding_recruits_" + holding_id, {}) as Dictionary).duplicate(true)
-    var terrain: Array = battle_definition.get("terrain", [])
-    if terrain.is_empty():
-        return battle_definition
-    var occupied: Dictionary = {}
-    var spawns: Array = (battle_definition.get("units", []) as Array).duplicate(true)
-    for spawn in spawns:
-        var cell: Array = spawn.get("cell", [])
-        if cell.size() >= 2:
-            occupied[Vector2i(int(cell[0]), int(cell[1]))] = true
-    var deployed: Dictionary = {}
-    var added := 0
-    for troop_id in ["levy", "archer", "knight"]:
-        var available := mini(20, maxi(0, int(reserves.get(troop_id, 0))))
-        while available > 0 and added < 4:
-            var chosen := Vector2i(-1, -1)
-            for y in range(8, terrain.size()):
-                var row := str(terrain[y])
-                for x in range(3, row.length()):
-                    var cell := Vector2i(x, y)
-                    var terrain_code := row.substr(x, 1)
-                    if not occupied.has(cell) and not ["#", "~"].has(terrain_code):
-                        chosen = cell
-                        break
-                if chosen.x >= 0:
-                    break
-            if chosen.x < 0:
-                break
-            spawns.append({"character_id":str(troop_characters[troop_id]),"team":"player","cell":[chosen.x,chosen.y],"facing":0})
-            occupied[chosen] = true
-            available -= 1
-            added += 1
-            deployed[troop_id] = int(deployed.get(troop_id, 0)) + 1
-        reserves[troop_id] = available
-    if added > 0:
-        world_flags["holding_recruits_" + holding_id] = reserves
-        battle_definition["units"] = spawns
-        battle_definition["recruit_origin_holding"] = holding_id
-        battle_definition["deployed_recruit_counts"] = deployed
-    return battle_definition
+    return EmpireDevelopmentSystem.deploy_recruits_to_battle(holding_id, battle_definition, world_flags)
 
 
-## Return surviving recruited soldiers to their origin holding; defeated recruits are casualties.
 func recover_deployed_recruits(battle_units: Array, battle_definition: Dictionary) -> Dictionary:
-    var holding_id := str(battle_definition.get("recruit_origin_holding", ""))
-    if holding_id == "":
-        return {"recovered":0,"lost":0}
-    var troop_characters := {"frontier_levy":"levy", "march_archer":"archer", "household_knight":"knight"}
-    var deployed: Dictionary = battle_definition.get("deployed_recruit_counts", {})
-    var recovered: Dictionary = {}
-    for raw in battle_units:
-        var unit = raw
-        if unit.team == "player" and unit.is_alive() and troop_characters.has(unit.character_id):
-            var troop_id := str(troop_characters[unit.character_id])
-            recovered[troop_id] = int(recovered.get(troop_id, 0)) + 1
-    var reserves: Dictionary = (world_flags.get("holding_recruits_" + holding_id, {}) as Dictionary).duplicate(true)
-    var recovered_total := 0
-    var deployed_total := 0
-    for troop_id in deployed:
-        var count := int(deployed[troop_id])
-        deployed_total += count
-        reserves[troop_id] = int(reserves.get(troop_id, 0)) + int(recovered.get(troop_id, 0))
-        recovered_total += int(recovered.get(troop_id, 0))
-    world_flags["holding_recruits_" + holding_id] = reserves
-    return {"recovered":recovered_total,"lost":deployed_total-recovered_total}
+    return EmpireDevelopmentSystem.recover_deployed_recruits(battle_units, battle_definition, world_flags)
 
 
 func start_regional_boss_for_region(region_id: String) -> bool:
