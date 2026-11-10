@@ -70,6 +70,9 @@ static func apply_event(state: Dictionary, event_id: String, event_definitions: 
     var next := state.duplicate(true)
     var memories: Array = next.get("memories", [])
     var memory_instance := instance_id if instance_id != "" else event_id + ":" + source
+    for existing_memory in memories:
+        if str((existing_memory as Dictionary).get("event_id", "")) == memory_instance:
+            return {"ok": true, "reason": "", "state": next, "traits_gained": []}
     var memory := {
         "event_id": memory_instance,
         "event_type": event_id,
