@@ -70,4 +70,4 @@ Each known province contributes a modest baseline tax and food yield, while popu
 
 ## Current feature-branch UI status
 
-The Realm, Council, Provinces, Economy and Chronicle tabs are implemented in `scripts/ui/empire_administration.gd` and mounted from the overworld through an unlock-gated Royal Court button. Story integration is intentionally not guessed: the approved narrative milestone must call `GameState.unlock_empire_management()`. The feature branch has added strict regression tests, but no Godot/Android validation is yet confirmed.
+The Realm, Council, Provinces, Military, Economy and Chronicle tabs are implemented in `scripts/ui/empire_administration.gd` and mounted from the overworld through an unlock-gated Royal Court button. Story integration is intentionally not guessed: the approved narrative milestone must call `GameState.unlock_empire_management()`. The feature branch has added strict regression tests, but no Godot/Android validation is yet confirmed.
