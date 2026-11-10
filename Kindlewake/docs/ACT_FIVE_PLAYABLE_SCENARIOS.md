@@ -15,3 +15,7 @@
 
 ## Scope and validation
 The route challenges and crises are story/strategy decisions, not new tactical-engine objectives. The existing battle engine is not represented as supporting simultaneous objective tracks. Static source review and JSON-free data validation are appropriate; Godot runtime and in-engine playtesting must still be run before calling this release-ready.
+
+
+## Dedicated rules test
+Run `godot --headless --path . --script res://tests/test_act_five.gd` to exercise the Act V gates, route, evidence, crisis order, ending milestones and Chronicle lock. This test script is added separately from the existing broad suite so it can be run directly while the branch is reviewed.
