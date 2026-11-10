@@ -467,7 +467,7 @@ func _build_diplomacy() -> void:
         var alliance := _button("Alliance", _set_diplomacy.bind(faction_id, "alliance"), status == "alliance")
         alliance.disabled = relation_value < 50
         actions_two.add_child(alliance)
-        actions_two.add_child(_button("Declare war" if status != "war" else "Offer peace", _set_diplomacy.bind(faction_id, "war" if status != "war" else "neutral"), status == "war"))
+        actions_two.add_child(_button("Declare war" if status != "war" else "Offer peace · 100 gold", _set_diplomacy.bind(faction_id, "war" if status != "war" else "neutral"), status == "war"))
         body.add_child(actions_two)
 
 
