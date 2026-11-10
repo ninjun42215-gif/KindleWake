@@ -439,8 +439,15 @@ func _on_zoom_out() -> void:
 
 
 func _on_world_pressed() -> void:
-    if str(battle_def.get("id", "")) == "east_gallery_escape" and controller.result != "victory":
-        get_tree().change_scene_to_file("res://Escape.tscn")
+    var return_scene := str(battle_def.get("return_scene", ""))
+    if return_scene != "":
+        get_tree().change_scene_to_file(return_scene)
+        return
+    if str(battle_def.get("id", "")) == "east_gallery_escape":
+        if controller.result != "victory":
+            get_tree().change_scene_to_file("res://Escape.tscn")
+            return
+        get_tree().change_scene_to_file("res://KaerArrival.tscn")
         return
     if controller.result == "defeat" and _all_company_members_fallen():
         GameState.new_game()
@@ -506,6 +513,15 @@ func _play_anim(unit_id: int, anim: String) -> void:
 
 
 func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
+    if kind == "boss_phase":
+        var boss: BattleUnitScript = controller.unit_by_id(unit_id)
+        if boss != null:
+            var phase_color := Color(1.0, 0.28, 0.12)
+            if str(data.get("vfx", "")) == "judgement":
+                phase_color = Color(1.0, 0.88, 0.34)
+            _add_battle_vfx(boss, "burst", phase_color)
+            _add_popup(boss, "PHASE %d" % int(data.get("phase", 2)), phase_color)
+            _add_popup(boss, str(data.get("name", "Desperation")).to_upper(), Color.WHITE)
     if kind == "attack" or kind == "skill_damage":
         _play_anim(unit_id, "attack")
         var tid: int = int(data.get("target_id", -1))
@@ -530,7 +546,16 @@ func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
             if rune_status == "chill": skill_color = Color(0.42, 0.78, 1.0)
             elif rune_status == "shock": skill_color = Color(1.0, 0.92, 0.32)
             elif rune_status == "exposed": skill_color = Color(0.82, 0.52, 1.0)
-            _add_battle_vfx(hit_target, "burst", skill_color)
+            var skill_id: String = str(data.get("skill_id", ""))
+            var effect_kind := "burst"
+            if skill_id == "fordbreaker_cleave":
+                skill_color = Color(1.0, 0.30, 0.12)
+                effect_kind = "slash"
+                _add_popup(hit_target, "CLEAVED", skill_color)
+            elif skill_id == "final_edict":
+                skill_color = Color(1.0, 0.86, 0.30)
+                _add_popup(hit_target, "JUDGED", skill_color)
+            _add_battle_vfx(hit_target, effect_kind, skill_color)
             _add_popup(hit_target, str(data["damage"]) + "*", Color(1.0, 0.55, 0.25))
             if rune_status != "":
                 var effect_color := Color(1.0, 0.4, 0.2)
@@ -557,12 +582,15 @@ func _show_result() -> void:
     result_title.text = "VICTORY" if won else ("GAME OVER" if game_over else "DEFEAT")
     result_text.text = str(battle_def.get("victory_text", "The roadwolves are broken. The road to Eldrimar is open.")) if won else str(battle_def.get("defeat_text", "The Dunmarrow company has fallen."))
     if game_over:
-        result_text.text = "The company has been wiped out. This chronicle has ended. Begin a new chronicle to continue."
+        if str(battle_def.get("return_scene", "")) != "":
+            result_text.text = "The company is driven back from the boss encounter. Regroup and try again; your campaign and quest progress remain intact."
+        else:
+            result_text.text = "The company has been wiped out. This chronicle has ended. Begin a new chronicle to continue."
         result_company_button.visible = false
-        result_continue_button.text = "Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Begin New Chronicle"
+        result_continue_button.text = "Return to Story / Retry" if str(battle_def.get("return_scene", "")) != "" else ("Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Begin New Chronicle")
     else:
         result_company_button.visible = true
-        result_continue_button.text = "Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Continue Journey"
+        result_continue_button.text = "Continue Story" if str(battle_def.get("return_scene", "")) != "" else ("Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Continue Journey")
     result_text.text += "\nTurns taken: %d" % controller.turn_count
     var siege_objective_id := str(battle_def.get("siege_objective_id", ""))
     if siege_objective_id != "":
@@ -593,6 +621,8 @@ func _show_result() -> void:
         result_text.text += "\n\n" + _rewards_summary(battle_rewards)
     elif not won:
         result_text.text += "\nA lost battle pays no EXP, AP or gold."
+    if won and str(battle_def.get("return_scene", "")) != "":
+        GameState.save_campaign("auto_a")
     result_panel.visible = true
     _refresh_ui()
 
