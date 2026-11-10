@@ -156,10 +156,14 @@ static func perform_action(raw: Dictionary,a: String,b: String,action: String) -
    s.politics.influence -= 5
    return change_relation(s,a,b,8,"envoy")
   "gift":
-   if int(s.politics.influence) < 3 or int(s.politics.houses[b].treasury) >= 100: return {"ok":false,"reason":"The gift is unaffordable or unnecessary."}
+   var sender: Dictionary = s.politics.houses.get(a,{})
+   var recipient: Dictionary = s.politics.houses.get(b,{})
+   if int(s.politics.influence) < 3 or int(sender.get("treasury",0)) < 5 or int(recipient.get("treasury",0)) >= 100:
+    return {"ok":false,"reason":"The gift requires three influence and five treasury, and the recipient must have room."}
    s.politics.influence -= 3
-   var recipient: Dictionary = s.politics.houses[b]
+   sender.treasury = int(sender.get("treasury",0)) - 5
    recipient.treasury = mini(100,int(recipient.get("treasury",0))+5)
+   s.politics.houses[a] = sender
    s.politics.houses[b] = recipient
    return change_relation(s,a,b,12,"gift")
   "reconcile":
