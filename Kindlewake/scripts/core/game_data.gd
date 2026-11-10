@@ -6,7 +6,7 @@ const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 
 const DATA_DIR := "res://data/"
 ## Listed explicitly (instead of scanning the folder) so it also works inside exported builds.
-const BATTLE_FILES := ["battle_01", "battle_hollowroot", "battle_bell", "battle_catacombs", "battle_tideglass", "battle_act1_hask", "battle_act1_ash_bailiff"]
+const BATTLE_FILES := ["battle_01", "battle_hollowroot", "battle_bell", "battle_catacombs", "battle_tideglass", "battle_act1_hask", "battle_act1_ash_bailiff", "battle_act2_escort"]
 
 var classes: Dictionary = {}
 var terrain: Dictionary = {}
