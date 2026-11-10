@@ -3013,16 +3013,34 @@
           ],
           "kind": "text",
           "npc": true,
-          "name": "The Ledger's Missing Page",
+          "name": "The Missing Passenger Leaf",
           "tint": [
             0.76,
             0.82,
             0.88
           ],
-          "text": "A ledger keeper has hidden a torn Tideglass page among routine harbour manifests.",
+          "text": "A harbour archivist has kept a duplicate page from the Tideglass Ledger, hidden behind an outdated customs register.",
           "companion_quest_id": "q_companion_maren_tideglass_wake",
           "companion_quest_milestone": "ledger_page_found",
-          "companion_quest_text": "Maren recognises the voyage notation but not the cargo seal. Compare the page with the public harbour register and preserve the original before the missing voyage is dismissed as a clerical error."
+          "companion_quest_text": "Maren recognises the ship's notation, but this page records passengers under temporary names and omits the cargo lien. Compare the date, seal and passenger marks with the restored Northstar log before accepting the harbour office's account."
+        },
+        {
+          "cell": [
+            7,
+            12
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Beacon Charter Hearing",
+          "tint": [
+            0.84,
+            0.78,
+            0.68
+          ],
+          "text": "The Tidebound Assembly has convened a hearing on who maintains the second beacon and protects its rescue passage.",
+          "companion_quest_id": "q_companion_neris_light_kept",
+          "companion_quest_milestone": "beacon_charter_heard",
+          "companion_quest_text": "Present the keeper ledger and independent pilot accounts. Neris asks the Assembly to recognise local rescue duties while preventing private tolls or unilateral control of the warning lights."
         }
       ]
     },
@@ -3175,26 +3193,55 @@
           ],
           "kind": "text",
           "npc": true,
-          "name": "Soundings at Low Tide",
+          "name": "The Families' Safe Passage",
           "tint": [
             0.68,
             0.82,
             0.88
           ],
-          "text": "A local pilot has marked the shoals on a chart, but the tide has shifted since the last safe passage.",
+          "text": "A pilot and two displaced family members wait beside a tide-marked chart.",
           "companion_quest_id": "q_companion_maren_tideglass_wake",
           "companion_quest_milestone": "safe_route_plotted",
-          "companion_quest_text": "Plot a safe approach using the tide marks, pilot testimony and damaged chart. The paid chart is only one source; verify it against the waterline and the pilot's independent soundings.",
+          "companion_quest_text": "The passenger leaf identifies families moved under false names. Interview them separately and plot a safe return route using the tide marks, pilot soundings and beacon record. Do not make a paid chart or a family's public testimony mandatory.",
           "companion_quest_challenge": {
-            "prompt": "Which route uses the available evidence while avoiding the newly exposed shoal?",
+            "prompt": "Which route best protects the families while matching the verified tide and beacon evidence?",
             "options": [
-              "Follow the old chart's straight channel without checking the tide",
-              "Take the western channel at ebb because the waterline and pilot's sounding agree on its depth",
-              "Choose the deepest-looking water by colour alone"
+              "Use the western channel at the agreed slack tide, with a local pilot and a private landing",
+              "Send the families through the exposed eastern shoal at low water without a pilot",
+              "Publish their names and departure time before arranging passage"
             ],
-            "correct_option": "Take the western channel at ebb because the waterline and pilot's sounding agree on its depth",
-            "success_text": "The combined tide marks and pilot sounding reveal the safe western channel. Maren plots the approach without requiring a paid chart.",
-            "failure_text": "A chart alone or water colour cannot confirm depth. Compare the current tide marks with the pilot's independent sounding."
+            "correct_option": "Use the western channel at the agreed slack tide, with a local pilot and a private landing",
+            "success_text": "The soundings and beacon record agree on a sheltered landing. The families can travel without exposing their identities to the harbour brokers.",
+            "failure_text": "The exposed shoal or premature public disclosure would place the families at risk. Compare the tide marks with the pilot's sounding and protect their names."
+          }
+        },
+        {
+          "cell": [
+            7,
+            12
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Pilot Watch",
+          "tint": [
+            0.72,
+            0.82,
+            0.88
+          ],
+          "text": "Two pilots disagree about who should maintain the beacon and who may use its rescue signal.",
+          "companion_quest_id": "q_companion_neris_light_kept",
+          "companion_quest_milestone": "pilot_watch_verified",
+          "companion_quest_text": "Interview the pilots separately and verify the watch rota against the rescue log. A safe passage depends on a reliable signal and a trained keeper, not on which faction owns the chart.",
+          "companion_quest_challenge": {
+            "prompt": "Which arrangement keeps the beacon reliable while preventing any one faction from monopolising the rescue route?",
+            "options": [
+              "Use a published rotating watch, independent maintenance checks and a guaranteed rescue call for all local boats",
+              "Give exclusive control to the merchant who offers the highest fee",
+              "Allow each pilot to change the beacon signal without recording it"
+            ],
+            "correct_option": "Use a published rotating watch, independent maintenance checks and a guaranteed rescue call for all local boats",
+            "success_text": "The rotating watch and independent checks preserve the rescue signal without granting a toll monopoly.",
+            "failure_text": "Exclusive paid control or unrecorded signal changes would make the passage unreliable and unsafe."
           }
         }
       ]
@@ -3338,6 +3385,24 @@
             9,
             5
           ]
+        },
+        {
+          "cell": [
+            2,
+            12
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Keeper's Lantern Ledger",
+          "tint": [
+            0.78,
+            0.82,
+            0.9
+          ],
+          "text": "A retired keeper brings a water-stained maintenance ledger to the quay steps.",
+          "companion_quest_id": "q_companion_neris_light_kept",
+          "companion_quest_milestone": "keeper_ledger_recovered",
+          "companion_quest_text": "The second beacon's chart is now in use, but its upkeep has no agreed custodian. Recover the keeper ledger and compare lamp oil, repair shifts and emergency calls with the Assembly's account."
         }
       ]
     },
@@ -3387,24 +3452,6 @@
           "text": "A former beacon guard stands between you and the outer chamber. He has been ordered to keep the ledger buried, but his hands shake when he sees the seal.",
           "battle_id": "battle_tideglass",
           "world_flag_on_victory": "tideglass_grotto_cleared"
-        },
-        {
-          "cell": [
-            5,
-            8
-          ],
-          "kind": "text",
-          "npc": true,
-          "name": "The Wreck's Sealed Manifest",
-          "tint": [
-            0.74,
-            0.82,
-            0.9
-          ],
-          "text": "A watertight case remains trapped beneath a collapsed beam in the wreck.",
-          "companion_quest_id": "q_companion_maren_tideglass_wake",
-          "companion_quest_milestone": "wreck_manifest_recovered",
-          "companion_quest_text": "Recover the sealed manifest and compare its cargo marks with the missing ledger page. The crew diverted the ship to evade a blockade, but the cargo owner later profited from the disappearance. Keep the surviving crew's safety in view as Maren chooses what to reveal."
         }
       ]
     },
@@ -3454,6 +3501,24 @@
           "text": "The salvage captain has stripped the wreck and kept its log as leverage. Maren recognizes the ship's brass compass on his belt.",
           "battle_id": "battle_northstar_wreck",
           "world_flag_on_victory": "northstar_wreck_cleared"
+        },
+        {
+          "cell": [
+            2,
+            7
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "The Wreck's Cargo Lien",
+          "tint": [
+            0.74,
+            0.82,
+            0.9
+          ],
+          "text": "A sealed cargo case remains trapped beneath the Northstar's broken deck.",
+          "companion_quest_id": "q_companion_maren_tideglass_wake",
+          "companion_quest_milestone": "wreck_manifest_recovered",
+          "companion_quest_text": "Compare the cargo marks with the passenger leaf and the recovered captain's log. The crew diverted the ship to evade a blockade, but the cargo owner later claimed the families' property as salvage. The evidence is complete; choose how to protect the survivors while restoring the truth."
         }
       ]
     },
