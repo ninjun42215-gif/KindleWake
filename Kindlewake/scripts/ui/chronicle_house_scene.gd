@@ -240,7 +240,7 @@ func _create_domain() -> void:
 
 func _set_policy() -> void:
  var policy := Dynasty.SUCCESSION_POLICIES[policy_picker.selected]
- _apply_result(Dynasty.set_succession_policy(state,policy,selected_person if policy == "designated_heir" else ""))
+ _apply_result(Dynasty.set_succession_policy(state,policy,selected_person if policy in ["designated_heir","elective"] else ""))
 
 func _domain_food() -> void:
  _domain_change("food")
