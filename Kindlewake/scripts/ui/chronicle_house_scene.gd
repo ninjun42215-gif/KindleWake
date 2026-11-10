@@ -334,7 +334,7 @@ func _record_claim() -> void:
  if claim_title_picker.item_count == 0:
   status.text = "No title is available to claim."
   return
- var basis := ["inheritance","grant","service"][claim_basis_picker.selected]
+ var basis: String = str(["inheritance","grant","service"][claim_basis_picker.selected])
  _apply_result(Dynasty.record_title_claim(state,selected_person,str(claim_title_picker.get_item_metadata(claim_title_picker.selected)),basis))
 
 func _recognize_claim() -> void:
