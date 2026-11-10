@@ -564,7 +564,10 @@ func _show_result() -> void:
     result_title.text = "VICTORY" if won else ("GAME OVER" if game_over else "DEFEAT")
     result_text.text = str(battle_def.get("victory_text", "The roadwolves are broken. The road to Eldrimar is open.")) if won else str(battle_def.get("defeat_text", "The Dunmarrow company has fallen."))
     if game_over:
-        result_text.text = "The company has been wiped out. This chronicle has ended. Begin a new chronicle to continue."
+        if str(battle_def.get("return_scene", "")) != "":
+            result_text.text = "The company is driven back from the boss encounter. Regroup and try again; your campaign and quest progress remain intact."
+        else:
+            result_text.text = "The company has been wiped out. This chronicle has ended. Begin a new chronicle to continue."
         result_company_button.visible = false
         result_continue_button.text = "Return to Story / Retry" if str(battle_def.get("return_scene", "")) != "" else ("Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Begin New Chronicle")
     else:
