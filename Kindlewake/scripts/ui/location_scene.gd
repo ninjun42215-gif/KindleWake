@@ -414,7 +414,7 @@ func _rest_at_inn() -> void:
 func _recruit(spot: Dictionary) -> void:
     var cid: String = str(spot.get("character_id", ""))
     var definition: Dictionary = GameData.characters.get(cid, {})
-    var result: Dictionary = RecruitmentSystem.recruit(GameState.party, cid, definition, GameState.world_flags, spot)
+    var result: Dictionary = RecruitmentSystem.recruit(GameState.party, cid, definition, GameState.world_flags, spot, GameData.traits)
     if not bool(result.get("ok", false)):
         spot_text.text += "\n\n" + str(result.get("reason", "There is no available recruit."))
         return
