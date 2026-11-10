@@ -28,6 +28,10 @@ window/handheld/orientation=4
 
 pointing/emulate_mouse_from_touch=true
 
+[gui]
+
+theme/custom="res://assets/themes/kindlewake_premium.tres"
+
 [rendering]
 
 textures/vram_compression/import_etc2_astc=true
