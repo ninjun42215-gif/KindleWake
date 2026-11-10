@@ -20,7 +20,7 @@ The starting family members are authored campaign scaffolding for the first play
 
 Each person stores identity, name, age, relationship role, parents, siblings, children, spouse, living/deceased state, cause of death, traits, title and domain references. Players can record children, record unrelated adult household members and create reciprocal marriage records. Direct relatives and people sharing a recorded ancestor cannot be married through this initial ruleset.
 
-Traits can be added and removed with a persistent event record. The initial catalogue includes positive, negative and mixed traits, each with a description and polarity. Traits are narrative records at this stage; they do not yet modify combat stats, AI, diplomacy or fertility.
+Traits can be added and removed with a persistent event record. The initial catalogue contains 45 positive, negative and mixed traits, each with a description and polarity. Traits are narrative records at this stage; they do not yet modify combat stats, AI, diplomacy or fertility.
 
 ## Aging and succession
 
