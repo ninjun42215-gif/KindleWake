@@ -56,3 +56,12 @@ These are data-driven tactical encounters using existing combat systems. Unique 
 ## Multi-phase boss behavior
 
 Both Act I commanders now have two authored health-threshold transitions. They are evaluated after damage resolution and before commander-defeat checks. Hask escalates into a desperate forward surge and then a high-accuracy finishing assault. The Ash Bailiff moves from renewed conviction to a precise final-clause assault. Phase payloads adjust combat stats and morale, with a small one-time recovery on the first transition. Phase markers live in the serialized BattleUnit status dictionary, so restored battles do not replay a transition. This is combat-state and battle-log feedback only; bespoke boss animations, cinematic camera work and custom VFX assets are not included.
+
+## Boss visual presentation follow-up
+
+- Boss phase events now trigger a dedicated attack-pose beat, a floating phase callout, a battle-log announcement and an animated radial effect.
+- Hask's phase effect uses a hot, expanding impact ring with rotating outward pressure rays. His persistent identity marks emphasize a brutal iron-and-ember silhouette.
+- The Ash Bailiff's phase effect uses a restrained golden seal geometry and radial spokes. His persistent identity marks evoke the authority seal that underpins his false warrant.
+- Phase effects are drawn with the existing lightweight vector renderer; no external textures, shaders or high-cost particle nodes are required.
+- Internal boss-phase persistence markers are hidden from ordinary ailment/status pips.
+- These are implemented presentation effects using the current placeholder/sprite-sheet rendering path. They are not bespoke frame-by-frame boss sprite sheets, voice acting or cinematic camera sequences.
