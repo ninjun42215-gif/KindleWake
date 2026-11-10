@@ -9,6 +9,8 @@ func _initialize() -> void:
  check(not state.is_empty(),"house initializes from verified founder record")
  check(state.people.has("heir_1") and state.people.has("heir_2"),"founder has two recorded successor branches")
  check(state.titles.has("founder_barony") and state.domains.has("kaer_sethorn"),"founding barony and Kaer Sethorn domain are established")
+ check(state.people["torren"].spouse == "consort" and state.people["consort"].children.size() == 2,"founding consort and family links are reciprocal")
+ check(Dynasty.TRAITS.size() >= 40 and Dynasty.TRAITS.has("brave") and Dynasty.TRAITS.has("cruel"),"large positive, negative and mixed trait catalogue is available")
  var child := Dynasty.add_child(state,"heir_1","Lysa Vale",12,["kind"])
  check(bool(child.ok),"child can be recorded with a parent and trait")
  state = child.state
@@ -22,6 +24,14 @@ func _initialize() -> void:
  check(bool(marriage.ok),"marriage links two eligible unrelated adults")
  state = marriage.state
  check(str(state.people["heir_1"].spouse) == str(outsider.person_id),"marriage is reciprocal")
+ var child_with_spouse := Dynasty.add_child(state,"heir_1","Nell Vale",3)
+ check(child_with_spouse.state.people[str(child_with_spouse.person_id)].parents.has(str(outsider.person_id)),"child records both parents when a spouse is recorded")
+ state = child_with_spouse.state
+ var cousin_a := Dynasty.add_child(state,"heir_1","Branch A",20)
+ state = cousin_a.state
+ var cousin_b := Dynasty.add_child(state,"heir_2","Branch B",20)
+ state = cousin_b.state
+ check(not Dynasty.set_spouse(state,str(cousin_a.person_id),str(cousin_b.person_id)).ok,"marriage between branches with a shared ancestor is rejected")
  check(not Dynasty.set_spouse(state,"heir_1","heir_2").ok,"close relatives cannot be married")
  var trait := Dynasty.add_trait(state,"heir_1","curious")
  check(bool(trait.ok),"positive or negative traits can be acquired")
