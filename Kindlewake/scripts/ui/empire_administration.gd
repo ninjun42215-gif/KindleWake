@@ -444,7 +444,14 @@ func _disband_troops(province: String, troop_type: String, amount: int) -> void:
 
 func _build_diplomacy() -> void:
     _section("THE GREAT HOUSES AND FOREIGN POWERS")
-    body.add_child(_label("Diplomatic actions change bilateral relations. Alliances require at least +50 relations. War declarations affect strategic diplomacy but do not automatically transfer territory.", 14, C_DIM))
+    body.add_child(_label("Diplomatic actions change bilateral relations. Alliances require at least +50 relations. NPC wars can produce frontier claims, but claims do not transfer territory without a resolved campaign or treaty.", 14, C_DIM))
+    var claims: Dictionary = GameState.faction_state.get("claims", {})
+    if not claims.is_empty():
+        _section("FOREIGN FRONTIER CLAIMS")
+        var claim_regions: Array = claims.keys()
+        claim_regions.sort()
+        for region_id in claim_regions:
+            body.add_child(_label("%s claims %s" % [_faction_name(str(claims[region_id])), str(region_id).replace("_", " ").capitalize()], 14, C_GOLD))
     var faction_ids: Array = []
     for faction in GameData.factions.get("factions", []):
         var faction_id := str(faction.get("id", ""))
