@@ -44,6 +44,7 @@ func _initialize() -> void:
     _test_weapon_skills()
     _test_world()
     _test_world_atlas()
+    _test_world_expansion()
     _test_faction_politics()
     _test_thalassar_region()
     _test_wraparound_world()
@@ -108,6 +109,40 @@ func _test_data() -> void:
         var cdef: Dictionary = db["characters"][cid]
         check(db["classes"].has(str(cdef["class_id"])), "class exists for " + cid)
         check(db["weapons"].has(str(cdef["weapon_id"])), "weapon exists for " + cid)
+
+
+func _test_world_expansion() -> void:
+    print("[world expansion]")
+    var catalogue: Dictionary = gd.world_expansion
+    check(catalogue.get("schema_version", 0) == 1, "world expansion catalogue loads with supported schema")
+    var region_ids := {}
+    for continent in gd.continents.get("continents", []):
+        for region in continent.get("regions", []):
+            region_ids[str(region.get("id", ""))] = true
+    var holding_ids := {}
+    var holdings_valid := true
+    for holding in catalogue.get("capturable_locations", []):
+        var hid := str(holding.get("id", ""))
+        if hid.is_empty() or holding_ids.has(hid) or not region_ids.has(str(holding.get("region", ""))):
+            holdings_valid = false
+        holding_ids[hid] = true
+        if str(holding.get("description", "")).length() < 80 or holding.get("economy", {}).is_empty():
+            holdings_valid = false
+        if not holding.has("capture") or not holding.has("governance"):
+            holdings_valid = false
+    check(holdings_valid and holding_ids.size() >= 15, "capturable holdings have unique IDs, canonical regions, descriptions and governance")
+    var dungeon_ids := {}
+    var dungeons_valid := true
+    for dungeon in catalogue.get("dungeons", []):
+        var did := str(dungeon.get("id", ""))
+        if did.is_empty() or dungeon_ids.has(did) or not region_ids.has(str(dungeon.get("region", ""))):
+            dungeons_valid = false
+        dungeon_ids[did] = true
+        if str(dungeon.get("description", "")).length() < 80 or dungeon.get("mechanics", []).size() < 2:
+            dungeons_valid = false
+        if not dungeon.has("boss") or not dungeon.has("world_effect") or not dungeon.has("rewards"):
+            dungeons_valid = false
+    check(dungeons_valid and dungeon_ids.size() >= 15, "dungeons have unique IDs, canonical regions, mechanics, bosses, rewards and consequences")
 
 
 func _test_prologue() -> void:
