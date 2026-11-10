@@ -121,7 +121,7 @@ func construct_province_building(province_id: String, building_id: String) -> bo
 
 
 func advance_empire_season() -> Dictionary:
-    return EmpireSystem.advance_season(empire_state, player_controlled_provinces())
+    return EmpireSystem.advance_season(empire_state, player_controlled_provinces(), atlas_region_adjacency())
 
 func recruit_provincial_troops(province_id: String, troop_type: String, amount: int) -> bool:
     return EmpireSystem.recruit_troops(empire_state, province_id, troop_type, amount, player_controlled_provinces())
@@ -129,6 +129,38 @@ func recruit_provincial_troops(province_id: String, troop_type: String, amount: 
 
 func disband_provincial_troops(province_id: String, troop_type: String, amount: int) -> bool:
     return EmpireSystem.disband_troops(empire_state, province_id, troop_type, amount, player_controlled_provinces())
+
+
+func start_province_siege(army_id: String, target_region: String) -> bool:
+	return EmpireSystem.start_siege(empire_state, army_id, target_region, player_controlled_provinces(), atlas_region_adjacency())
+
+
+func resolve_province_siege(target_region: String, defender_strength: int, fort_level: int = 0) -> Dictionary:
+	return EmpireSystem.resolve_siege_assault(empire_state, target_region, defender_strength, fort_level)
+
+
+func confirm_siege_occupation(target_region: String, new_owner: String = "house_dunmarrow") -> bool:
+	if not faction_state.get("territories", {}).has(target_region):
+		return false
+	if not EmpireSystem.complete_siege_transfer(empire_state, target_region):
+		return false
+	return FactionSystem.transfer_region(faction_state, target_region, new_owner, "strategic siege occupation")
+
+
+func field_army_battle_deployment(army_id: String) -> Dictionary:
+	return EmpireSystem.tactical_deployment(empire_state, army_id)
+
+
+func apply_field_army_battle_result(army_id: String, casualties: Dictionary, won: bool) -> bool:
+	return EmpireSystem.apply_tactical_result(empire_state, army_id, casualties, won)
+
+
+func reduce_campaign_war_exhaustion(amount: int = 15) -> bool:
+	return EmpireSystem.reduce_war_exhaustion(empire_state, amount)
+
+
+func campaign_supply_network() -> Array:
+	return EmpireSystem.supply_network(empire_state, player_controlled_provinces(), atlas_region_adjacency())
 
 
 func empire_army_summary() -> Dictionary:
