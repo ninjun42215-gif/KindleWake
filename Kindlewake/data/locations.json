@@ -1762,6 +1762,24 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Challenge at Dawn",
+          "tint": [
+            0.82,
+            0.77,
+            0.68
+          ],
+          "text": "A messenger brings Willem a sealed challenge from the rival he defeated years ago.",
+          "companion_quest_id": "q_companion_willem_last_challenge",
+          "companion_quest_milestone": "challenge_received",
+          "companion_quest_text": "Willem recognises the rival's seal. Hear the accusation in full before accepting the challenge; the squire named in the letter may be the key to what happened.",
+          "cell": [
+            6,
+            4
+          ]
         }
       ]
     },
@@ -1801,6 +1819,35 @@
           "npc": true,
           "name": "Innkeeper",
           "text": "The Red Mare charges 20 gold for a night's rest and a stable for your mounts."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "Witnesses to Honour",
+          "tint": [
+            0.76,
+            0.82,
+            0.88
+          ],
+          "text": "Two former seconds disagree about the order of the old duel, while a retired clerk remembers a sealed amendment.",
+          "companion_quest_id": "q_companion_willem_last_challenge",
+          "companion_quest_milestone": "duel_record_verified",
+          "companion_quest_text": "Compare the seconds' testimony with the sealed record and the squire's account. A single witness cannot settle a disputed contest.",
+          "companion_quest_challenge": {
+            "prompt": "Which evidence best establishes whether the duel's result was technically lawful but unfairly obtained?",
+            "options": [
+              "The rival's accusation alone",
+              "The sealed amendment, both seconds' independent accounts and the squire's dated letter",
+              "Willem's memory of the final exchange"
+            ],
+            "correct_option": "The sealed amendment, both seconds' independent accounts and the squire's dated letter",
+            "success_text": "The independent accounts and dated record show the ruling was technically valid, while revealing why the rival accepted the disadvantage.",
+            "failure_text": "Memory or accusation alone cannot settle the record. Compare independent testimony with the sealed amendment and the squire's letter."
+          },
+          "cell": [
+            6,
+            3
+          ]
         }
       ]
     },
@@ -1840,6 +1887,24 @@
           "npc": true,
           "name": "Market Factor",
           "text": "The central market carries Vessmoor steel, tack and provisions. Visit the counter to manage your gear."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Unarmed Yard",
+          "tint": [
+            0.84,
+            0.75,
+            0.66
+          ],
+          "text": "The rival waits beside the old practice yard. The squire has asked that the dispute not become another public spectacle.",
+          "companion_quest_id": "q_companion_willem_last_challenge",
+          "companion_quest_milestone": "rematch_resolved",
+          "companion_quest_text": "Resolve the challenge without demanding a fight to the death. A formal rematch, a public correction or a non-lethal sparring match where the rival may yield are all possible. Then choose Willem's lasting answer.",
+          "cell": [
+            6,
+            4
+          ]
         }
       ]
     },
@@ -2700,6 +2765,24 @@
             1,
             1
           ]
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Salt Register",
+          "tint": [
+            0.72,
+            0.82,
+            0.86
+          ],
+          "text": "A harbour clerk shows Ysolde a register whose family names change halfway through a past levy year.",
+          "companion_quest_id": "q_companion_ysolde_names_in_salt",
+          "companion_quest_milestone": "salt_register_found",
+          "companion_quest_text": "Find the original salt register and identify which entries were altered after the levy. Brinegate remains a Tidebound Assembly port; this record concerns families across the coast, not a claim to the city's sovereignty.",
+          "cell": [
+            9,
+            5
+          ]
         }
       ]
     },
@@ -2787,6 +2870,35 @@
             1,
             1
           ]
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "Tide Marks",
+          "tint": [
+            0.76,
+            0.84,
+            0.82
+          ],
+          "text": "Net-menders and record keepers bring tide tables, harbour marks and family testimony to a shared table.",
+          "companion_quest_id": "q_companion_ysolde_names_in_salt",
+          "companion_quest_milestone": "family_names_verified",
+          "companion_quest_text": "Reconcile the tide tables with harbour marks and family testimony. Separate deliberate name changes from ordinary clerical drift before making any identity public.",
+          "companion_quest_challenge": {
+            "prompt": "Which set of evidence best verifies the altered family entries?",
+            "options": [
+              "A single family's memory, without dates",
+              "Matching tide-table dates, harbour marks on the levy copies and independent family testimony",
+              "The harbour official's assurance that the register is correct"
+            ],
+            "correct_option": "Matching tide-table dates, harbour marks on the levy copies and independent family testimony",
+            "success_text": "The dated tide tables and harbour marks align with independent testimony, confirming the pattern of altered names.",
+            "failure_text": "A single account or official assurance is not enough. Verify dates and marks against several families' testimony."
+          },
+          "cell": [
+            8,
+            5
+          ]
         }
       ]
     },
@@ -2862,6 +2974,24 @@
           "cell": [
             1,
             1
+          ]
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Wharf Hearing",
+          "tint": [
+            0.84,
+            0.78,
+            0.68
+          ],
+          "text": "A harbour official argues that restoring the names will unsettle trade. A ledger suggests the official profited from the old levy.",
+          "companion_quest_id": "q_companion_ysolde_names_in_salt",
+          "companion_quest_milestone": "wharf_hearing_resolved",
+          "companion_quest_text": "Present the verified record at the wharf hearing. Negotiate phased disclosure, protect vulnerable families or expose the official's private profiteering. Let the families decide how their identities should be restored.",
+          "cell": [
+            9,
+            5
           ]
         }
       ]
