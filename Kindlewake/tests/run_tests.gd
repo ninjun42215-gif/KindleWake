@@ -1046,6 +1046,7 @@ func _test_strategic_battle_integration() -> void:
     var army_id: String = EmpireSystem.mobilize_army(state, "sethmarch", {"infantry": 20}, controlled, "torren")
     check(army_id != "" and EmpireSystem.move_field_army(state, army_id, "orrowen_weald", adjacency, controlled), "integration test deploys its field army to a hostile region")
     var battle_def: Dictionary = EmpireSystem.build_tactical_battle(state, army_id, gd.battle_def("battle_01"), "orrowen_weald", "house_orrowen", false, 1)
+    check(not battle_def.has("reward_rune") and not battle_def.has("world_flag_on_victory"), "generated garrison encounters do not inherit story rewards or flags")
     var commander_deployed := false
     for spawn in battle_def.get("units", []):
         if str(spawn.get("character_id", "")) == "torren" and bool(spawn.get("commander", false)):
