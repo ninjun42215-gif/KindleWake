@@ -451,7 +451,7 @@ Older GDD descriptions of age skips, marriage, heirs, Bloodline Abilities and me
 
 ## 11. World and Faction Design
 
-**Regions:** Sethmarch (home, Kaer Sethorn) · Orrowen Weald (forest, yeomen) · Ysmark Coast (Brinegate, ports) · Vessmoor Plains (Cindermead, horse-lords) · Quillon Heights (tower-city, scholars) · Tarnholt Cloisters (monasteries, relic roads) · Brennhallow Highlands (Brennhold, fortress marches) · Aurelmont (capital).
+**Regions:** Sethmarch (home, Kaer Sethorn) · Orrowen Weald (forest, yeomen) · Brinegate Coast (Tidebound Assembly ports) · Vessmoor Plains (Cindermead, horse-lords) · Quillon Heights (tower-city, scholars) · Tarnholt Cloisters (monasteries, relic roads) · Brennhallow Highlands (Brennhold, fortress marches) · Aurelmont (Crownlands capital). House Ysmark's seat remains unconfirmed; Brinegate is not its seat.
 
 | House | Seat | Identity | Strengths | Heraldry | Recruits |
 |---|---|---|---|---|---|
