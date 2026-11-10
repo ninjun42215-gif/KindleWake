@@ -94,7 +94,7 @@
     },
     "ballista": {
       "name": "Field Ballista",
-      "class_id": "siege_engine",
+      "class_id": "siege_ballista",
       "weapon_id": "short_bow",
       "armor_def": 4,
       "armor_res": 2,
@@ -120,7 +120,7 @@
     },
     "trebuchet": {
       "name": "Counterweight Trebuchet",
-      "class_id": "siege_engine",
+      "class_id": "siege_trebuchet",
       "weapon_id": "battle_axe",
       "armor_def": 3,
       "armor_res": 1,
