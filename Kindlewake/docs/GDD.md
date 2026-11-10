@@ -933,3 +933,17 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - Cargo is stored in the existing party inventory. Market stock, demand, transaction count and trade totals are persisted as an optional campaign payload field. Existing schema-4 saves receive a clean default trade state.
 - `GameState.trade_buy()`, `trade_sell()` and `trade_quotes()` expose the active region's market rules to town/market UI. Save schema and game version remain unchanged.
 - This PR establishes the content and rules foundation. A dedicated merchant UI, caravan routes/events, tariffs, trade contracts, smuggling and merchant-guild progression remain follow-up implementation work.
+ 
+
+## 21. Merchant Profession, Caravan and Trade Governance Expansion
+
+- Merchant progression: trade actions grant merchant XP and reputation. Five ranks (Novice Trader, Peddler, Established Trader, Master Merchant, Trade Magnate) unlock carrying capacity and reduce transaction service fees.
+- Caravans: purchase a caravan, improve cargo capacity through three upgrade tiers, and hire up to eight guards. Ownership, upgrades and guard roster are campaign-persistent.
+- Road danger: authored trade corridors have risk values. Caravan travel checks whether an ambush occurs; guards and upgrades lower risk and improve defence. Failed defence can steal carried goods and may cost a guard. Government-protected routes bypass the ambush roll.
+- Contracts: accept up to three active settlement delivery contracts, deliver the required commodity at its named destination, then claim gold and reputation rewards. Guild-linked contracts can improve guild standing.
+- Merchant guilds: Brinegate Maritime Exchange, Cindermead Iron Compact and Elderbough Weald Factors require merchant reputation. Membership unlocks exclusive commodities; gold contributions improve standing up to five.
+- Tax and tariffs: regional buying and selling include tariffs. Merchant ranks reduce service fees without erasing taxes. Only authorized government APIs may set regional tariff rates.
+- Smuggling: a separate risky sale path bypasses tariffs. Detection confiscates cargo and levies a fine; repeated attempts raise heat. Caravan guards reduce detection risk. Heat can be reduced through an authored service or cooldown.
+- Empire trade governance: authorized policy controls route closure, protection and tolls. Four authored corridors connect existing regions. Caravan route travel checks the route origin, charges tolls, changes the active campaign region and records any ambush result.
+- Merchant progression, contracts, guild standing, tariffs, route policies, smuggling heat, caravan assets and market conditions are persisted in the optional campaign trade payload. Legacy saves normalize missing fields; schema 4 and game version 0.12.0 remain unchanged.
+- Rules and data APIs are implemented in this milestone. Dedicated market/merchant UI, guild hall presentation, visual caravan route map and empire policy screens still require player-facing integration and are not claimed complete.
