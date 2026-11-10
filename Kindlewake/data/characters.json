@@ -1246,10 +1246,12 @@
       "weapon_id": "battle_axe",
       "armor_def": 8,
       "armor_res": 1,
-      "skills": [],
+      "skills": [
+        "power_strike"
+      ],
       "stats": {
         "hp": 92,
-        "mp": 0,
+        "mp": 12,
         "str": 18,
         "dex": 6,
         "int": 3,
@@ -1270,7 +1272,10 @@
       "weapon_id": "battle_axe",
       "armor_def": 9,
       "armor_res": 1,
-      "skills": [],
+      "skills": [
+        "holy_smite_ii",
+        "mend_ii"
+      ],
       "reward": {
         "exp": 260,
         "ap": 38,
@@ -1278,7 +1283,7 @@
       },
       "stats": {
         "hp": 108,
-        "mp": 0,
+        "mp": 20,
         "str": 19,
         "dex": 6,
         "int": 3,
