@@ -30,6 +30,7 @@ var world: Dictionary = {}               # world.json: the Eldrimar regional ove
 var thalassar_world: Dictionary = {}     # thalassar_world.json: Brinegate Coast
 var continents: Dictionary = {}          # continents.json: the seven-continent campaign atlas
 var factions: Dictionary = {}            # factions.json: political powers and regional affiliations
+var companion_quests: Dictionary = {}     # companion_quests.json: optional personal quest catalogue
 var battles: Dictionary = {}
 
 
@@ -60,6 +61,7 @@ func reload() -> void:
     thalassar_world = _load_json("thalassar_world.json")
     continents = _load_json("continents.json")
     factions = _load_json("factions.json")
+    companion_quests = (_load_json("companion_quests.json").get("quests", {}) as Dictionary).duplicate(true)
     locations = _load_json("locations.json")
     character_creation = _load_json("character_creation.json")
     battles.clear()
