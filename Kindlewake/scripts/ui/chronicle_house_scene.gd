@@ -8,11 +8,16 @@ var members_box: VBoxContainer
 var parent_picker: OptionButton
 var child_name: LineEdit
 var child_age: SpinBox
+var member_name: LineEdit
+var member_age: SpinBox
 var spouse_a: OptionButton
 var spouse_b: OptionButton
 var trait_picker: OptionButton
 var title_picker: OptionButton
 var policy_picker: OptionButton
+var title_rank_picker: OptionButton
+var title_name: LineEdit
+var domain_name: LineEdit
 var status: Label
 
 func _ready() -> void:
@@ -72,12 +77,22 @@ func _build() -> void:
  child_age.prefix = "Age "
  col.add_child(child_age)
  col.add_child(_button("Record child",_add_child))
- _section(col,"MARRIAGE RECORD")
+ _section(col,"MARRIAGE AND HOUSEHOLD")
  spouse_a = OptionButton.new()
  spouse_b = OptionButton.new()
  col.add_child(spouse_a)
  col.add_child(spouse_b)
- col.add_child(_button("Record marriage",_marry))\n member_name = LineEdit.new()\n member_name.placeholder_text = "Unrelated adult / prospective spouse"\n col.add_child(member_name)\n member_age = SpinBox.new()\n member_age.min_value = 18\n member_age.max_value = 80\n member_age.value = 25\n member_age.prefix = "Age " \n col.add_child(member_age)\n col.add_child(_button("Record an allied adult",_add_member))
+ col.add_child(_button("Record marriage",_marry))
+ member_name = LineEdit.new()
+ member_name.placeholder_text = "Unrelated adult / prospective spouse"
+ col.add_child(member_name)
+ member_age = SpinBox.new()
+ member_age.min_value = 18
+ member_age.max_value = 80
+ member_age.value = 25
+ member_age.prefix = "Age "
+ col.add_child(member_age)
+ col.add_child(_button("Record an allied adult",_add_member))
  _section(col,"CHARACTER TRAITS")
  trait_picker = OptionButton.new()
  for trait_id in Dynasty.TRAITS.keys():
@@ -87,10 +102,20 @@ func _build() -> void:
  col.add_child(_button("Remove selected trait",_remove_trait))
  _section(col,"TITLES AND SUCCESSION")
  title_picker = OptionButton.new()
- for title_id in state.titles.keys():
-  title_picker.add_item(str(state.titles[title_id].get("name",title_id)))
  col.add_child(title_picker)
- col.add_child(_button("Grant title to selected family member",_grant_title))\n title_rank_picker = OptionButton.new()\n for rank in Dynasty.RANKS:\n  title_rank_picker.add_item(str(rank.name))\n col.add_child(title_rank_picker)\n title_name = LineEdit.new()\n title_name.placeholder_text = "New title name"\n col.add_child(title_name)\n col.add_child(_button("Establish next rank title",_create_title))\n domain_name = LineEdit.new()\n domain_name.placeholder_text = "New holding name"\n col.add_child(domain_name)\n col.add_child(_button("Found a new holding for selected member",_create_domain))
+ col.add_child(_button("Grant title to selected family member",_grant_title))
+ title_rank_picker = OptionButton.new()
+ for rank in Dynasty.RANKS:
+  title_rank_picker.add_item(str(rank.name))
+ col.add_child(title_rank_picker)
+ title_name = LineEdit.new()
+ title_name.placeholder_text = "New title name"
+ col.add_child(title_name)
+ col.add_child(_button("Establish next rank title",_create_title))
+ domain_name = LineEdit.new()
+ domain_name.placeholder_text = "New holding name"
+ col.add_child(domain_name)
+ col.add_child(_button("Found a new holding for selected member",_create_domain))
  policy_picker = OptionButton.new()
  for policy in Dynasty.SUCCESSION_POLICIES:
   policy_picker.add_item(str(policy).replace("_"," ").capitalize())
@@ -109,14 +134,13 @@ func _build() -> void:
  col.add_child(status)
  col.add_child(_button("Return to title",_return_title))
 
-func _section(parent: VBoxContainer, text: String) -> void:
+func _section(parent: VBoxContainer, text_value: String) -> void:
  var label := Label.new()
- label.text = text
+ label.text = text_value
  label.add_theme_font_size_override("font_size",21)
  label.add_theme_color_override("font_color",Color("#c09b5e"))
  parent.add_child(label)
- var line := HSeparator.new()
- parent.add_child(line)
+ parent.add_child(HSeparator.new())
 
 func _button(text_value: String, callback: Callable) -> Button:
  var button := Button.new()
@@ -135,20 +159,21 @@ func _refresh() -> void:
  ids.sort()
  for id in ids:
   var person: Dictionary = state.people[id]
-  var row := HBoxContainer.new()
   var button := Button.new()
   button.text = Dynasty.person_summary(person)
   button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
   button.custom_minimum_size.y = 54
   button.add_theme_font_size_override("font_size",15)
-  button.button_pressed = str(id) == selected_person
   button.pressed.connect(_select_person.bind(str(id)))
-  row.add_child(button)
-  members_box.add_child(row)
+  members_box.add_child(button)
  _fill_people_picker(parent_picker,true)
  _fill_people_picker(spouse_a,false)
  _fill_people_picker(spouse_b,false)
- status.text = "Selected: %s. Titles, kinship and yearly events are recorded in this house chronicle." % str(state.people.get(selected_person,{}).get("name","None"))
+ title_picker.clear()
+ for title_id in state.titles.keys():
+  title_picker.add_item(str(state.titles[title_id].get("name",title_id)))
+  title_picker.set_item_metadata(title_picker.item_count-1,str(title_id))
+ status.text = "Selected: %s. Kinship, titles and yearly events are preserved in this house chronicle." % str(state.people.get(selected_person,{}).get("name","None"))
 
 func _fill_people_picker(picker: OptionButton, living_only: bool) -> void:
  picker.clear()
@@ -177,8 +202,8 @@ func _select_person(id: String) -> void:
 
 func _add_child() -> void:
  var result := Dynasty.add_child(state,_selected_id(parent_picker),child_name.text,int(child_age.value),[])
- if not bool(result.ok):
-  status.text = str(result.reason)
+ if not bool(result.get("ok",false)):
+  status.text = str(result.get("reason","Child record rejected."))
   return
  state = result.state
  selected_person = str(result.person_id)
@@ -199,28 +224,29 @@ func _add_member() -> void:
 
 func _marry() -> void:
  var result := Dynasty.set_spouse(state,_selected_id(spouse_a),_selected_id(spouse_b))
- if not bool(result.ok):
-  status.text = str(result.reason)
+ if not bool(result.get("ok",false)):
+  status.text = str(result.get("reason","Marriage record rejected."))
   return
  state = result.state
  _save()
  _refresh()
 
 func _add_trait() -> void:
- var trait_id := str(Dynasty.TRAITS.keys()[trait_picker.selected])
- var result := Dynasty.add_trait(state,selected_person,trait_id)
- _apply_result(result)
+ var keys: Array = Dynasty.TRAITS.keys()
+ if keys.is_empty():
+  return
+ _apply_result(Dynasty.add_trait(state,selected_person,str(keys[trait_picker.selected])))
 
 func _remove_trait() -> void:
- var trait_id := str(Dynasty.TRAITS.keys()[trait_picker.selected])
- var result := Dynasty.remove_trait(state,selected_person,trait_id)
- _apply_result(result)
+ var keys: Array = Dynasty.TRAITS.keys()
+ if keys.is_empty():
+  return
+ _apply_result(Dynasty.remove_trait(state,selected_person,str(keys[trait_picker.selected])))
 
 func _grant_title() -> void:
  if title_picker.item_count == 0:
   return
- var title_id := str(title_picker.get_item_metadata(title_picker.selected))
- _apply_result(Dynasty.assign_title(state,title_id,selected_person))
+ _apply_result(Dynasty.assign_title(state,str(title_picker.get_item_metadata(title_picker.selected)),selected_person))
 
 func _create_title() -> void:
  if state.domains.is_empty():
@@ -239,25 +265,31 @@ func _create_domain() -> void:
  _apply_result(result)
 
 func _set_policy() -> void:
- var policy := Dynasty.SUCCESSION_POLICIES[policy_picker.selected]
- _apply_result(Dynasty.set_succession_policy(state,policy,selected_person if policy in ["designated_heir","elective"] else ""))
+ var policy := str(Dynasty.SUCCESSION_POLICIES[policy_picker.selected])
+ var heir := selected_person if policy in ["designated_heir","elective"] else ""
+ _apply_result(Dynasty.set_succession_policy(state,policy,heir))
 
 func _domain_food() -> void:
  _domain_change("food")
+
 func _domain_security() -> void:
  _domain_change("security")
+
 func _domain_prosperity() -> void:
  _domain_change("prosperity")
 
 func _domain_change(field: String) -> void:
+ if state.domains.is_empty():
+  status.text = "No holding has been recorded."
+  return
  var domain_id := str(state.domains.keys()[0])
  var value := int(state.domains[domain_id].get(field,0))+5
  _apply_result(Dynasty.update_domain(state,domain_id,field,value))
 
 func _advance_year() -> void:
  var result := Dynasty.advance_year(state)
- if not bool(result.ok):
-  status.text = str(result.reason)
+ if not bool(result.get("ok",false)):
+  status.text = str(result.get("reason","The year could not advance."))
   return
  state = result.state
  var deaths: Array = result.get("deaths",[])
@@ -274,6 +306,8 @@ func _apply_result(result: Dictionary) -> void:
  _refresh()
 
 func _save() -> void:
+ if state.is_empty():
+  return
  GameState.world_flags["chronicle_house_state"] = state.duplicate(true)
  GameState.save_campaign("auto_a")
 
