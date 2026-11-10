@@ -189,7 +189,12 @@ static func _approach_cell(unit: BattleUnit, ctl, reach: Dictionary) -> Vector2i
     var rmin: int = int(w.get("range_min", 1))
     var rmax: int = int(w.get("range_max", 1))
     var ranged: bool = bool(w.get("ranged", false))
-    var full: Dictionary = ctl.map.compute_reach(origin, 99, unit.jump, ctl.enemy_cell_map(unit), {})
+    var ally_cells: Dictionary = {}
+    for o in ctl.units:
+        var ally: BattleUnit = o
+        if ally.is_alive() and ally.team == unit.team and ally.id != unit.id:
+            ally_cells[ally.cell] = true
+    var full: Dictionary = ctl.map.compute_reach(origin, 99, unit.jump, ctl.enemy_cell_map(unit), ally_cells)
     var full_cost: Dictionary = full["cost"]
     var goal: Vector2i = origin
     var goal_cost := 100000
