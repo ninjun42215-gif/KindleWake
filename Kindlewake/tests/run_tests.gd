@@ -7,6 +7,7 @@ const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const TradeSystem = preload("res://scripts/core/trade_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -49,6 +50,7 @@ func _initialize() -> void:
     _test_region_save_compatibility()
     _test_locations()
     _test_shop_and_screen()
+    _test_trading()
     _test_save_system()
     _test_campaign_restore_validation()
     _simulate_battles(30)
@@ -1596,3 +1598,28 @@ func _simulate_battles(n: int) -> void:
         total_turns += c.turn_count
     check(unfinished == 0, "all %d simulated battles reach a result" % n)
     print("  info  AI vs AI: player side won %d/%d, average %.1f turns per battle" % [wins, n, float(total_turns) / float(n)])
+
+
+func _test_trading() -> void:
+    print("[regional trading]")
+    var goods: Dictionary = gd.trade_economy
+    var state: Dictionary = TradeSystem.new_state()
+    var party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    party.gold = 10000
+    check(goods.get("goods", {}).size() >= 15 and goods.get("markets", {}).size() >= 6, "trade data contains broad commodities and regional markets")
+    var coast_price := TradeSystem.unit_price("brinegate_coast", "salt", goods, state)
+    var upland_price := TradeSystem.unit_price("thornmere", "salt", goods, state)
+    check(coast_price < upland_price, "coastal salt is cheaper than inland salt")
+    check(TradeSystem.buy(party, "brinegate_coast", "salt", 5, goods, state) == "", "buying regional cargo succeeds")
+    check(party.item_count("salt") == 5 and party.gold == 10000 - coast_price * 5, "cargo purchase updates inventory and gold")
+    var before_sale := party.gold
+    check(TradeSystem.sell(party, "thornmere", "salt", 5, goods, state) == "", "cargo can be sold in another market")
+    check(party.item_count("salt") == 0 and party.gold > before_sale, "regional price differences allow trade profit")
+    check(TradeSystem.sell(party, "thornmere", "salt", 1, goods, state) == "You do not have enough cargo.", "selling unavailable cargo is refused")
+    var limited: Dictionary = goods.duplicate(true)
+    limited["cargo_capacity"] = 2
+    var capacity_state := TradeSystem.new_state()
+    check(TradeSystem.buy(party, "brinegate_coast", "timber", 1, limited, capacity_state) == "Your cargo capacity is full.", "heavy cargo respects carrying capacity")
+    var quote := TradeSystem.quote("cindermead", "iron_ore", goods, state)
+    check(int(quote.get("price", 0)) > 0 and str(quote.get("name", "")) != "", "market quotes include names and live prices")
+    check(TradeSystem.new_state().has("markets"), "new trade state has safe defaults for legacy campaigns")
