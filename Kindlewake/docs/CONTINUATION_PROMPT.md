@@ -1,20 +1,9 @@
-> **LIVE PROJECT CHECKPOINT — 2026-11-10 (post-merge):** Canonical repository `ninjun42215-gif/KindleWake`; default branch `main`. PR #28 (v0.12.0 world expansion), PR #30 (Chapter I + creator fixes), PR #31 (verified CI handoff) and PR #32 (final post-merge handoff state) are merged. There is no active implementation branch for this milestone; inspect the live `main` ref before starting new work.
->
-> **Project state:** Godot 4.2 / GL Compatibility, game and Android version `0.12.0`, Android version code `1200`, save schema `4`. Preserve all existing systems, JSON data and saves. No version/schema change was needed.
->
-> **Phase 0/1 complete:** Chapter I courtyard movement uses `Control._gui_input()` for taps and drags, responsive playable bounds, gate placement below the objective card, and a 120px reach radius. The title screen mounts the creator as a full-screen overlay; portrait preview and compact live summary stay pinned above the scrolling form on narrow portrait phones. Pure responsive-layout regression checks and an all-scene headless smoke test are in place. Root ignore rules are installed and five superseded root-level `Feature_*.zip` snapshots are removed. The canonical extracted project remains `Kindlewake/`; no root `Kindlewake_Project.zip` existed to archive.
->
-> **CI evidence:** runtime-code commit `b2598c3c8620a701d1fabd84394ec5cbb7449451` passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 427 strict checks with 0 failures, balance simulation, signed Android APK export (~40.8 MB) and zero requested Android permissions. Build run [#633](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42731540020), APK artifact `13724652587`. Version Sync #139, Project Health Audit #348 and Workflow YAML Lint #526 passed. Documentation-only PR #31 also passed Build Android APK #635, Project Health Audit #350, Version Sync #141 and Workflow YAML Lint #539 before merge. The first editor import scan still logs transient global-class registration errors before its clean retry; ObjectDB/resource-cleanup warnings remain non-failing.
->
-> **Remaining QA:** physical Android testing is not yet recorded. Verify 20:9 portrait and landscape, safe areas/notches, title → creator → BACK, Prologue → escape → battle → World, victory flag, kill/relaunch and Continue/save-load. CI is not device QA.
->
-> **Next step:** complete physical Android QA and report findings. Stop before Phase 2 (Theme/fonts/SceneRouter) until the owner approves.
->
-> **Current architecture:** JSON data remains under `Kindlewake/data/`; autoloads remain `GameData`, `SaveSystem`, and `GameState`; core rules remain under `Kindlewake/scripts/core/`; tactical rules under `Kindlewake/scripts/battle/`; UI remains code-built under `Kindlewake/scripts/ui/` with one-node scene shells. Courtyard mission rules remain in `EscapeMission`; responsive layout math is isolated in `EscapeLayout`. The creator emits the existing validated profile contract. Tests: `Kindlewake/tests/run_tests.gd` and `Kindlewake/tests/scene_smoke_test.gd`; Android build orchestration: `Kindlewake/tools/build_apk.py`. The next approved milestone after device QA is Phase 2: shared Theme, bundled OFL fonts, safe-area helper, SceneRouter, UIFX and AudioManager.
->
-> **Hard constraints:** fully offline; no accounts, servers, multiplayer or INTERNET permission. Preserve saves and schema compatibility. The unresolved third-party sprite-pack redistribution licence remains a public/commercial release blocker until verified or replaced.
+> **AUTHORITATIVE LIVE CHECKPOINT — 2026-11-10 12:16 UTC:** Canonical repository `ninjun42215-gif/KindleWake`; project directory `Kindlewake/`; default branch `main`; current main commit `830bc0273d45140a11a4038f092a4d5ee347a243` (PR #118 merged). Game/Android version `0.12.0 / 1200`; save schema `4`; Godot `4.2.2`; offline-first, no accounts, servers, multiplayer or INTERNET permission. The requested level cap of 250 is implemented and asserted in strict tests. Main CI on this exact commit passed: 18/18 scenes loaded, 912 strict checks / 0 failures, balance report, signed Android APK export, Project Health Audit, Version Sync, Workflow YAML Lint and source handoff. APK artifact `13763523117` (41,190,380-byte artifact archive); build run [#42814167185](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42814167185). Physical Android QA remains outstanding; third-party sprite/voxel asset redistribution rights remain a release blocker until verified or replaced. See [PRODUCTION_AUDIT_2026-11-10.md](PRODUCTION_AUDIT_2026-11-10.md) for the live branch/PR triage and production roadmap. Earlier checkpoint notes below are historical and must not override the live GitHub state.
 
 ---
+
+> **ARCHIVED CHECKPOINT HISTORY:** The material below is historical context. Always re-read live main, PRs and exact-head checks before starting work.
+
 
 
 
