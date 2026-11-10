@@ -16,7 +16,10 @@
         "publish_record",
         "private_restitution",
         "protected_archive"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 50
+      }
     },
     "q_companion_brisa_hearth_of_names": {
       "companion_id": "old_brisa",
@@ -43,6 +46,9 @@
         "keep_infirmary": "Foxglove keeps a permanent infirmary ledger. Brisa helps maintain it, while the village shares the work.",
         "village_service": "Brisa returns to village service by choice, with the company funding a modest supply chest.",
         "community_network": "A rotating care network is established. Households share supplies, so no single healer carries the burden alone."
+      },
+      "completion_reward": {
+        "gold": 35
       }
     },
     "q_companion_kestrel_no_master": {
@@ -59,7 +65,10 @@
         "destroy_records",
         "submit_evidence",
         "kestrel_decides"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 50
+      }
     },
     "q_companion_anselm_line_to_hold": {
       "companion_id": "anselm_pike",
@@ -75,7 +84,10 @@
         "testify",
         "lawful_service",
         "refuse_unit"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 35
+      }
     },
     "q_companion_petra_bitter_draught": {
       "companion_id": "petra_quill",
@@ -91,7 +103,10 @@
         "publish_error",
         "restorative_agreement",
         "protect_identity"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 35
+      }
     },
     "q_companion_dorian_unspent_bolt": {
       "companion_id": "dorian_vask",
@@ -107,7 +122,10 @@
         "give_testimony",
         "make_restitution",
         "decline_absolution"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 50
+      }
     },
     "q_companion_edda_iron_and_ash": {
       "companion_id": "edda_stonehand",
@@ -123,7 +141,10 @@
         "shared_workshop",
         "protected_ownership",
         "independent_guild"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 35
+      }
     },
     "q_companion_joss_debt_of_silence": {
       "companion_id": "joss_harrow",
@@ -139,7 +160,10 @@
         "return_money",
         "trade_ledger",
         "expose_network"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 50
+      }
     },
     "q_companion_isaure_two_oaths": {
       "companion_id": "isaure_vessmoor",
@@ -155,7 +179,10 @@
         "renew_limited_oath",
         "renounce_command",
         "service_compact"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 50
+      }
     },
     "q_companion_bram_cullen_broken_chain": {
       "companion_id": "bram_cullen",
@@ -171,7 +198,10 @@
         "destroy_false_records",
         "public_tribunal",
         "negotiate_release"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 50
+      }
     },
     "q_companion_verra_song_without_seal": {
       "companion_id": "verra_nightsong",
@@ -187,7 +217,10 @@
         "publish_original",
         "protect_performers",
         "write_new_song"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 50
+      }
     },
     "q_companion_tomas_far_marker": {
       "companion_id": "tomas_wren",
@@ -203,7 +236,10 @@
         "return_openly",
         "relocate_family",
         "send_aid"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 35
+      }
     },
     "q_companion_orlan_margin_of_truth": {
       "companion_id": "orlan_pike",
@@ -219,7 +255,10 @@
         "publish_source",
         "independent_custody",
         "redact_names"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 50
+      }
     },
     "q_companion_odaly_open_door": {
       "companion_id": "sister_odaly",
@@ -235,7 +274,10 @@
         "conditional_sanctuary",
         "refuge_network",
         "order_reform"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 50
+      }
     },
     "q_companion_willem_last_challenge": {
       "companion_id": "willem_roake",
@@ -251,7 +293,10 @@
         "admit_technicality",
         "make_restitution",
         "acknowledge_cost"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 50
+      }
     },
     "q_companion_ysolde_names_in_salt": {
       "companion_id": "ysolde_marrow",
@@ -267,7 +312,10 @@
         "publish_names",
         "sealed_testimony",
         "family_choice"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 65
+      }
     },
     "q_companion_garrick_spared_enemy": {
       "companion_id": "garrick_holt",
@@ -283,7 +331,10 @@
         "testify",
         "acknowledge_harm",
         "support_trial"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 50
+      }
     },
     "q_companion_corwin_heirless_seal": {
       "companion_id": "corwin_brennhallow",
@@ -299,7 +350,10 @@
         "submit_claim",
         "renounce_claim",
         "temporary_custody"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 80
+      }
     },
     "q_companion_seraphine_measure_of_oaths": {
       "companion_id": "seraphine_tarnholt",
@@ -315,7 +369,10 @@
         "revise_oath",
         "refuse_authority",
         "demand_oversight"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 80
+      }
     },
     "q_companion_ilyan_silent_tower": {
       "companion_id": "ilyan_voss",
@@ -331,7 +388,10 @@
         "destroy_research",
         "shared_oversight",
         "publish_safe_procedure"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 65
+      }
     },
     "q_companion_maren_tideglass_wake": {
       "companion_id": "maren_vey",
@@ -347,7 +407,10 @@
         "publish_manifest",
         "protect_crew",
         "negotiate_reparations"
-      ]
+      ],
+      "completion_reward": {
+        "gold": 65
+      }
     }
   }
 }
