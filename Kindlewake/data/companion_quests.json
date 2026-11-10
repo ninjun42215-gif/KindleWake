@@ -608,6 +608,24 @@
       ],
       "completion_reward": {
         "gold": 50
+      },
+      "synopsis": "Garrick is confronted by the commander he once spared, now accused of reprisals against a village. Two witnesses disagree about what the commander ordered and what his soldiers did. Garrick must face the difference between mercy, trust and accountability without turning a lawful hearing into revenge.",
+      "journal_summary": "Hear the prisoner's request, escort witnesses who disagree and bring the accused commander before a fair hearing. Decide what Garrick should say about the mercy he once showed.",
+      "resolution_prompt": "The commander is in custody and the witnesses have been heard. Garrick must decide whether to explain his earlier mercy, acknowledge the harm it enabled or support a trial without demanding vengeance.",
+      "outcome_labels": {
+        "testify": "Testify to the reasons for mercy",
+        "acknowledge_harm": "Acknowledge the harm caused",
+        "support_trial": "Support a lawful trial"
+      },
+      "outcome_descriptions": {
+        "testify": "Garrick gives a full account of why he spared the commander and makes clear that mercy was never meant to erase responsibility. His testimony becomes a record against both vengeance and impunity.",
+        "acknowledge_harm": "Garrick publicly accepts that his judgement helped place others at risk. He steps back from command duties while arranging restitution for the witnesses and families harmed.",
+        "support_trial": "Garrick asks the court to judge the commander on evidence rather than on Garrick's old decision. He remains a field veteran and refuses both personal absolution and revenge."
+      },
+      "outcome_flags": {
+        "testify": "garrick_outcome_testified",
+        "acknowledge_harm": "garrick_outcome_harm_acknowledged",
+        "support_trial": "garrick_outcome_trial_supported"
       }
     },
     "q_companion_corwin_heirless_seal": {
@@ -627,6 +645,24 @@
       ],
       "completion_reward": {
         "gold": 80
+      },
+      "synopsis": "A forged Brennhallow seal is issuing orders in the name of an absent heir. Corwin traces the seal's authority through charter witnesses and household records, then hears retainers divided over his claim. The matter concerns one House's custodial authority only; no decision can bind the Seven Houses or replace formal Council ratification.",
+      "journal_summary": "Trace the forged Brennhallow seal, audit the charter's witnesses and hear the retainers. Decide whether Corwin should submit his claim, renounce advantage or accept tightly limited temporary custody.",
+      "resolution_prompt": "The forged orders are exposed and the household has been heard. Corwin can submit his claim to neutral review, renounce personal advantage or serve briefly as a custodian under public limits.",
+      "outcome_labels": {
+        "submit_claim": "Submit the claim to neutral review",
+        "renounce_claim": "Renounce personal advantage",
+        "temporary_custody": "Accept limited temporary custody"
+      },
+      "outcome_descriptions": {
+        "submit_claim": "Corwin submits every relevant document to neutral review and accepts that the result may deny him authority. His role is that of a constitutional witness, not a self-appointed lord over other Houses.",
+        "renounce_claim": "Corwin relinquishes any personal claim arising from the disputed seal and returns to private life. The household must resolve its succession through its lawful process.",
+        "temporary_custody": "Corwin accepts a strictly temporary custodial role, limited by a published inventory, independent witnesses and a fixed review date. The arrangement cannot bind the Seven Houses or create a hereditary right."
+      },
+      "outcome_flags": {
+        "submit_claim": "corwin_outcome_claim_submitted",
+        "renounce_claim": "corwin_outcome_claim_renounced",
+        "temporary_custody": "corwin_outcome_temporary_custody"
       }
     },
     "q_companion_seraphine_measure_of_oaths": {
