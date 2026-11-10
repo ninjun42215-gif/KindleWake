@@ -19,7 +19,7 @@ Read [PRODUCTION_AUDIT_AND_ROADMAP.md](PRODUCTION_AUDIT_AND_ROADMAP.md) first. I
 
 ## Current main inventory
 
-- 28 classes, 15 combat skills, 77 runes, 69 traits, five trait synergies, 20 personality event templates and 36 character definitions.
+- 28 classes, 15 combat skills, 77 runes, 69 traits, five trait synergies, 40 personality event templates, 12 curated ambitions and 36 character definitions.
 - 39 town/interior location maps and six battle definitions.
 - Seven-continent atlas blueprint, but only two distinct overworld datasets are wired through `GameData.world_for_region()`.
 - Tactical battle, character creation, party progression, gear/runes, traits/personality, free-roam exploration, faction foundations, authored quest chains, checksummed saves and battle restore validation are present.
@@ -42,7 +42,7 @@ Recheck these branches against live main before touching them. Divergence counts
 | #88 | Founder epilogue / Chronicle | 132 ahead / 25 behind | Stacked on #83; parent must integrate first |
 | #91 | Realm governance | 5 ahead / 6 behind | Overlaps #87 and #61; consolidate to one realm model |
 
-PR #99 and #101 were closed without merge; their 40-event catalogue and ambition progression are not on main. PR #80 is stale and must not be merged wholesale.
+PR #99 and #101 were closed without merge; however, current main contains 40 event definitions and 12 ambitions with GameState APIs. Verify actual gameplay trigger coverage and ambition assignment UX before claiming the whole system is complete. PR #80 is stale and must not be merged wholesale.
 
 ## Immediate next steps
 
