@@ -7,6 +7,7 @@ const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -34,6 +35,7 @@ func _initialize() -> void:
     _test_auto_battle()
     _test_progression()
     _test_recruitment()
+    _test_companion_quests()
     _test_prologue()
     _test_escape_mission()
     _test_escape_ui_layout()
@@ -106,6 +108,40 @@ func _test_data() -> void:
         var cdef: Dictionary = db["characters"][cid]
         check(db["classes"].has(str(cdef["class_id"])), "class exists for " + cid)
         check(db["weapons"].has(str(cdef["weapon_id"])), "weapon exists for " + cid)
+
+
+func _test_companion_quests() -> void:
+    print("[companion quests]")
+    var catalog := {"quests": gd.companion_quests}
+    check(gd.companion_quests.size() == 21, "all 21 recruitable companion quest definitions load")
+    var ids_ok := true
+    for quest_id in gd.companion_quests.keys():
+        var definition: Dictionary = gd.companion_quests[quest_id]
+        var companion_id := str(definition.get("companion_id", ""))
+        if not gd.characters.has(companion_id) or not gd.characters[companion_id].has("recruit"):
+            ids_ok = false
+        if (definition.get("milestones", []) as Array).size() < 3 or (definition.get("outcomes", []) as Array).size() < 2:
+            ids_ok = false
+    check(ids_ok, "every quest resolves to a recruitable character and has milestones and outcomes")
+    var state: Dictionary = {}
+    var quest_id := "q_companion_brisa_hearth_of_names"
+    var locked := CompanionQuestSystem.start(state, quest_id, ["torren"], catalog)
+    check(not bool(locked.get("ok", false)) and state.is_empty(), "a companion quest cannot start before its ally is recruited")
+    var started := CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog)
+    check(bool(started.get("ok", false)) and CompanionQuestSystem.status(state, quest_id) == "active", "recruited ally can start their personal quest")
+    check(not bool(CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog).get("ok", false)), "a companion quest cannot be started twice")
+    check(not bool(CompanionQuestSystem.advance(state, quest_id, "families_contacted", catalog).get("ok", false)), "out-of-order milestones are rejected")
+    check(bool(CompanionQuestSystem.advance(state, quest_id, "ledger_recovered", catalog).get("ok", false)), "first companion quest milestone advances")
+    check(bool(CompanionQuestSystem.advance(state, quest_id, "families_contacted", catalog).get("ok", false)), "second companion quest milestone advances")
+    check(not bool(CompanionQuestSystem.resolve(state, quest_id, "keep_infirmary", catalog).get("ok", false)), "quest cannot resolve before all milestones")
+    check(bool(CompanionQuestSystem.advance(state, quest_id, "care_network_secured", catalog).get("ok", false)) and CompanionQuestSystem.status(state, quest_id) == "ready", "final milestone marks the quest ready for resolution")
+    check(not bool(CompanionQuestSystem.resolve(state, quest_id, "unknown_outcome", catalog).get("ok", false)), "unknown companion quest outcomes are rejected")
+    check(bool(CompanionQuestSystem.resolve(state, quest_id, "community_network", catalog).get("ok", false)), "valid companion quest resolution is recorded")
+    check(CompanionQuestSystem.status(state, quest_id) == "complete", "resolved companion quest is marked complete")
+    var restored := CompanionQuestSystem.normalize_state(state, catalog)
+    check(restored == state, "companion quest progress survives normalization for save/load")
+    var malformed := CompanionQuestSystem.normalize_state({"unknown_quest": {"status": "complete"}, quest_id: {"status": "invalid"}}, catalog)
+    check(malformed.is_empty(), "unknown and malformed companion quest states are discarded safely")
 
 
 func _test_prologue() -> void:
@@ -1520,12 +1556,13 @@ func _test_campaign_restore_validation() -> void:
 
 func _test_save_system() -> void:
     print("[save system]")
-    var payload := {"hello": "world", "n": 5, "arr": [1, 2, 3], "creation_profile": {"origin": "border_ward"}}
+    var payload := {"hello": "world", "n": 5, "arr": [1, 2, 3], "creation_profile": {"origin": "border_ward"}, "companion_quests": {"q_companion_brisa_hearth_of_names": {"status": "active", "progress": 1, "choices": {}, "outcome": ""}}}
     ss.delete_slot("test")
     check(ss.save_slot("test", payload, "unit test"), "save succeeds")
     var res: Dictionary = ss.load_slot("test")
     check(bool(res["ok"]) and int(res["payload"]["n"]) == 5 and str(res["payload"]["hello"]) == "world", "load returns the saved payload")
     check(str(res["payload"]["creation_profile"]["origin"]) == "border_ward", "creation profile survives save/load")
+    check(int(res["payload"]["companion_quests"]["q_companion_brisa_hearth_of_names"]["progress"]) == 1, "companion quest progress survives save/load")
     var legacy: Dictionary = ss.migrate({"battle": {"turn": 3}, "party": {"gold": 12}}, 1)
     check(legacy.has("creation_profile") and (legacy["creation_profile"] as Dictionary).is_empty(), "v1 saves migrate by adding an empty creation profile")
     check(int((legacy["battle"] as Dictionary)["turn"]) == 3 and int((legacy["party"] as Dictionary)["gold"]) == 12, "v1 migration preserves existing battle and party data")
