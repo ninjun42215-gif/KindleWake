@@ -16,7 +16,7 @@ Version 0.12.0 Brinegate Coast Expansion (released baseline) (data-driven protag
 4. **Choices cost something.** Political decisions, loyalty, deaths and legacy carry across the campaign.
 5. **Small phone, big depth.** Touch-first UI, short sessions (10–20 min per battle), fully offline, battery-conscious.
 
-**Target:** core RPG/strategy players on mobile. Campaign 25–35 hours; New Game+ and Legacy Mode for replay.
+**Target:** core RPG/strategy players on mobile. Campaign 25–35 hours; New Game+ is a replay target. The Chronicle of Houses is a separate post-campaign generational mode and is locked behind the Last Emperor ending, formal imperial dissolution, late-life epilogue and the protagonist's natural death from old age.
 **Tone:** dark medieval fantasy, muted palette, grounded politics, light low-magic fantasy (mages are rare and feared).
 **Orientation:** landscape (1280×720 base, scales to any aspect ratio with safe-area margins).
 
@@ -393,29 +393,36 @@ The player starts with ruins; facilities are unlocked by story chapters and Reno
 | Library | Ch. 3 | Research tree: tactics, logistics, medicine, siegecraft |
 | Mage Tower | Ch. 4 | Spell research, enchant gear, mage recruits |
 | Siege Workshop | Ch. 4 | Build ballistae/rams/trebuchets for army and siege battles |
-| Residential Quarters | Ch. 2 | Housing for family, marriage, heirs, mentors (Legacy Mode) |
+| Residential Quarters | Ch. 2 | Housing for company members, guests and mentors; family-household functions are reserved for the post-campaign Chronicle of Houses |
 
 Weekly upkeep scales with buildings and roster. Raids on the keep can occur as optional defence battles.
 
 ---
 
-## 9. Generational System (Legacy Mode — optional)
+## 9. Post-campaign generational system — Chronicle of Houses
 
-Toggle at New Game (and later in Options for future events). When off, characters do not age or die of age; battle death still follows the permadeath setting.
+**This supersedes the older optional “Legacy Mode” toggle described in archived GDD notes.** Generational family simulation is not available at New Game, during the five-act campaign, or through an Options toggle.
 
-- **Ageing:** time advances by the campaign calendar. Stats peak at ages 25–40; physical stats decline gradually after 50, INT/LDR keep rising.
-- **Marriage and children:** available to eligible characters with a high Bond and Residential Quarters. The protagonist's marriage affects house alliances.
-- **Heirs:** a child reaches age 16 after ~16 in-game years. The Chronicle chapters after Act III can skip time in jumps of 2–5 years, so the player does not wait in real time.
-- **Inheritance:** an heir receives (a) stat bonuses from both parents (~20% of parental growth), (b) up to 2 learned skills chosen from parents, (c) 1 inherited trait, (d) family relationships (loyalties and grudges), and (e) a chance at a **Bloodline Ability** unique to the family.
-- **Retire and mentor:** aged characters retire from combat but remain at HQ as **Mentors**, granting EXP/skill bonuses to a chosen student or platoon.
-- **Death and legacy:** a hero's death (battle or age) creates a **Legacy entry** (memorial in the keep's Hall, an Heirloom to pass on, relationship effects). If the protagonist dies with no heir, the campaign ends.
-- **Not mandatory:** only the Dunmarrow line and selected characters can have heirs. Non-family characters are optionally generational.
+The only valid first unlock sequence is:
+
+1. Complete the main campaign's designated true-ending route.
+2. The protagonist is invested as the **Last Emperor** under the dormant imperial settlement.
+3. The protagonist formally abolishes the imperial office and central imperial claim, signs/records the Dissolution Charter and establishes the Concord of Free Realms.
+4. Complete the authored late-life epilogue.
+5. The protagonist dies naturally of old age; the death and completed life are written to the Founder Chronicle.
+6. The game opens the Chronicle of Houses and transfers control to an eligible descendant or lawful chosen successor.
+
+Battle death, scripted sacrifice, ordinary defeat, retirement, a non-Emperor ending, or an ending without the formal dissolution does not unlock this system. The main campaign may still record companions' bonds, memorials, personal histories and the protagonist's household, but those are not a playable marriage/child/inheritance simulation.
+
+The Chronicle of Houses is a separate generational campaign with a versioned save linked to the completed campaign origin. It follows family/household relationships, aging, education, inherited and learned traits, titles, domains, succession, diplomacy and generational consequences. Use bounded inheritance with individual variation; do not use fixed parental stat percentages or guaranteed bloodline abilities. The detailed implementation contract and acceptance tests are in docs/MECHANICS_BIBLE.md §15 and the narrative canon is in docs/LORE_BIBLE.md §2.1 and §13–14.
+
+Older GDD descriptions of age skips, marriage, heirs, Bloodline Abilities and mentors are historical concepts only where they conflict with this locked post-campaign model. They must not be implemented as an early-game toggle.
 
 ---
 
 ## 10. Main Storyline
 
-**Setting:** Eldrimar, a feudal kingdom founded on the *Covenant of the Seven Flames*, sworn by seven great houses to protect the throne. King Osric IV has died suddenly. The seventh house, **Dunmarrow**, the Oath's keeper, was destroyed when Lord Edmer Dunmarrow was executed for treason weeks earlier.
+**Setting:** Eldrimar's Crownlands, a successor monarchy that survived the fragmentation of the old Eldrimar Empire. King Osric IV has died suddenly. The Covenant of the Seven Flames is the older public compact sworn by seven great houses; the secret order using the same name in current faction data is a separate organisation. The seventh house, **Dunmarrow**, the Oath's keeper, was destroyed when Lord Edmer Dunmarrow was executed for treason weeks earlier.
 
 **The secret.** Dying and without a strong heir, Osric wrote a **Hidden Codicil** dissolving the single crown into a council of the seven houses. Edmer, the keeper, held the sealed Hidden Codicil. Lord Regent **Maelor Brennhallow**, believing only a strong crown prevents civil war, had Edmer executed and the Hidden Codicil suppressed. He is not a villain: he is trying to save the realm in a way that he knows is a lie.
 
@@ -425,10 +432,10 @@ Toggle at New Game (and later in Options for future events). When off, character
 | Prologue | Smoke on the Wind | Torren, Bram, Sela and Brother Wystan escape the burning estate, reach Kaer Sethorn, fight roadwolves (tutorial battle). |
 | I | Cold Hearth | Rebuild the keep; first recruits; tax collectors; discover Edmer's letter naming a missing witness. |
 | II | Broken Seals | Travel to Orrowen and Ysmark; witnesses; the first army battle; join or oppose a house. |
-| III | The River Campaign | Vessmoor duel, Tarnholt trial, siege of Brinegate; war escalates; time skip in Legacy Mode. |
+| III | The River Campaign | Vessmoor duel, Tarnholt trial, siege of Brinegate; war escalates; an authored campaign time skip may occur, independent of generational mode. |
 | IV | Winter of Knives | Betrayals; Quillon's library holds the Hidden Codicil's seal; loyalties tested; a beloved ally may fall. |
 | V | The Kindling | Final campaign for Aurelmont; the Hidden Codicil is read, burned, or weaponised; choose the realm's future. |
-| Epilogue | The Chronicle | Outcomes by faction reputation, loyalty, deaths and heirs. |
+| Epilogue | The Chronicle | Outcomes by faction reputation, loyalty, deaths and the protagonist's ending; only the Last Emperor route proceeds to the late-life dissolution epilogue. |
 
 **Multiple endings**
 1. **Restored Crown:** Dunmarrow takes the throne (high Renown, Brennhallow defeated).
@@ -436,7 +443,7 @@ Toggle at New Game (and later in Options for future events). When off, character
 3. **Iron Regency:** side with Brennhallow (stability, cost in freedom).
 4. **Mercenary Principality:** carve out your own domain (independent route).
 5. **Embers:** destroy the Hidden Codicil and let the realm burn (dark route).
-6. **Legacy ending:** an heir completes what the protagonist could not (Legacy Mode).
+6. **Last Emperor / Concord ending (true-ending route):** the protagonist accepts a temporary imperial mandate, abolishes the imperial office, establishes the Concord and—only after natural old-age death—unlocks the Chronicle of Houses. This replaces the old “Legacy ending” label; it is not an heir taking over before the protagonist's death.
 
 **Antagonists are not purely evil:** Brennhallow (order at any cost), Ysmark's Lady Sabela (profit as peace), Tarnholt's Archprelate Anselm (faith used as a leash), Vessmoor's Lord Casimir (honour that kills).
 
@@ -449,7 +456,7 @@ Toggle at New Game (and later in Options for future events). When off, character
 | House | Seat | Identity | Strengths | Heraldry | Recruits |
 |---|---|---|---|---|---|
 | Brennhallow | Brennhold | Order, discipline, regency | Heavy knights, siege | Iron tower on black | Knights, engineers |
-| Ysmark | Brinegate | Trade, ships, money | Gold, spies, crossbows | Silver scales on blue | Bards, thieves, crossbowmen |
+| Ysmark | Unconfirmed | House identity and seat remain reserved for an authored reveal; do not conflate it with Brinegate or the Tidebound Assembly. | To be established in story | Silver scales on blue (legacy GDD motif; verify before asset production) | To be established |
 | Quillon | Quillon Tower | Knowledge, magic, secrecy | Mages, research | Open book and star on violet | Mages, scholars |
 | Vessmoor | Cindermead | Honour, horses, duels | Cavalry | Red horse on gold | Cavaliers, duelists |
 | Tarnholt | Cloisters | Faith, healing, relics | Priests, paladins | White flame on grey | Clerics, medics, paladins |
