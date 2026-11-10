@@ -564,6 +564,14 @@ func _show_result() -> void:
         result_company_button.visible = true
         result_continue_button.text = "Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Continue Journey"
     result_text.text += "\nTurns taken: %d" % controller.turn_count
+    var siege_objective_id := str(battle_def.get("siege_objective_id", ""))
+    if siege_objective_id != "":
+        if won:
+            GameState.advance_siege_objective(siege_objective_id, 3)
+        GameState.resolve_siege_objective(siege_objective_id, won)
+        GameState.save_campaign("auto_a")
+        result_text.text += "\n\nSiege record: " + ("assault objective secured." if won else "assault repelled; the holding remains hostile.")
+
     if won:
         if str(battle_def.get("id", "")) == BATTLE_ID:
             GameState.world_flags["camp_cleared"] = true
