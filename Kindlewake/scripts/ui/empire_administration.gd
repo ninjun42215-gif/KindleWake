@@ -227,6 +227,11 @@ func _build_council() -> void:
         panel.add_child(box)
         box.add_child(_label(str(ROLES[role]), 18, C_GOLD))
         box.add_child(_label("Current officeholder: " + name, 15))
+        if assigned != "":
+            var profile: Dictionary = GameData.characters.get(assigned, {})
+            var traits: Array = profile.get("traits", [])
+            if not traits.is_empty():
+                box.add_child(_label("Traits: " + ", ".join(PackedStringArray(traits)), 14, C_GOLD))
         var picker := OptionButton.new()
         picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         picker.add_item("Select a companion")
