@@ -1121,6 +1121,11 @@ func _test_neris_companion_quest() -> void:
             if str((spot as Dictionary).get("quest_id", "")) == "neris_beacon":
                 quest_markers += 1
     check(quest_markers == 2, "Neris's second-beacon quest connects Lantern Quay and Saltmere")
+    var saltmere_market_found := false
+    for spot in (maps["saltmere"] as LocalMap).spots:
+        if str((spot as Dictionary).get("shopkeeper_id", "")) == "saltmere_factor":
+            saltmere_market_found = true
+    check(saltmere_market_found, "Saltmere's route market is physically located in the settlement")
 
 
 func _test_region_save_compatibility() -> void:
@@ -1513,6 +1518,7 @@ func _test_shop_and_screen() -> void:
     check(ShopSystem.buy_item(ps, "arming_sword", db, shop) == "" and ps.gold == 10 and ps.item_count("arming_sword") == count0 + 1, "buying pays the price and adds the item")
     check(ShopSystem.buy_item(ps, "dunmarrow_signet", db, shop) == "Not for sale.", "an item the stall does not stock cannot be bought")
     var saltmere_market: Dictionary = ShopSystem.regional_stock(shop, "saltmere", {"saltmere_trade_route_open": true})
+    saltmere_market["sell_ratio"] = 0.45
     var spice_price: int = ShopSystem.item_price("deepwater_spice", db)
     ps.gold = spice_price
     check(ShopSystem.buy_item(ps, "deepwater_spice", db, saltmere_market) == "" and ps.item_count("deepwater_spice") == 1 and ps.gold == 0, "the open merchant passage allows the company to buy regional trade goods")
