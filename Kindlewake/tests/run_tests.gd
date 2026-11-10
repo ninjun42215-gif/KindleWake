@@ -42,6 +42,7 @@ func _initialize() -> void:
     _test_opening_act_one_quests()
     _test_act_one_challenge_content()
     _test_act_one_tactical_bosses()
+    _test_boss_phase_transitions()
     _test_escape_mission()
     _test_escape_ui_layout()
     _test_sigils()
@@ -200,6 +201,7 @@ func _test_act_one_tactical_bosses() -> void:
         check(gd.characters.has(boss_id), boss_id + " boss character exists")
         check(str(def.get("world_flag_on_victory", "")) == str(entry.flag), battle_id + " sets its story victory flag")
         check(str(def.get("return_scene", "")) == "res://ActOneQuestChallenge.tscn", battle_id + " returns to the active story challenge")
+        check((def.get("boss_phases", []) as Array).size() == 1, battle_id + " defines one authored phase transition")
         var commander_found := false
         var all_units_valid := true
         for spawn in def.get("units", []):
@@ -216,6 +218,40 @@ func _test_act_one_tactical_bosses() -> void:
     check(int(gd.characters["hask_convoy_champion"].stats.hp) >= 90, "Hask has dedicated boss-grade health")
     check(int(gd.characters["ash_bailiff"].stats.hp) >= 100, "Ash Bailiff has dedicated boss-grade health")
     check(str(gd.battles["act1_ash_bailiff_boss"].get("battlefield", "")) == "hall_of_ash", "Ash Bailiff uses a distinct indoor battlefield")
+
+
+func _test_boss_phase_transitions() -> void:
+    print("[boss phase transitions]")
+    var cases := [
+        {"battle":"act1_hask_boss","boss":"hask_convoy_champion","threshold":50,"skill":"fordbreaker_cleave","str_bonus":5,"def_bonus":0},
+        {"battle":"act1_ash_bailiff_boss","boss":"ash_bailiff","threshold":55,"skill":"final_edict","str_bonus":3,"def_bonus":3}
+    ]
+    for entry in cases:
+        var battle_def: Dictionary = gd.battle_def(str(entry.battle))
+        var ctl := BattleController.new()
+        ctl.setup(battle_def, gd.as_db(), 812)
+        var boss: BattleUnit = null
+        for candidate in ctl.units:
+            if candidate.character_id == str(entry.boss):
+                boss = candidate
+                break
+        check(boss != null, str(entry.boss) + " commander loads for phase test")
+        if boss == null:
+            continue
+        var base_str: int = boss.stat("str")
+        var base_def: int = boss.armor_def
+        boss.hp = int(floor(float(boss.max_hp()) * float(entry.threshold) / 100.0))
+        var triggered: bool = ctl.evaluate_boss_phase(boss)
+        check(triggered and boss.boss_phase_index == 1, str(entry.boss) + " enters phase two at its HP threshold")
+        check(boss.stat("str") == base_str + int(entry.str_bonus), str(entry.boss) + " gains its phase strength bonus")
+        check(boss.armor_def == base_def + int(entry.def_bonus), str(entry.boss) + " gains its authored defence bonus")
+        check(boss.skills.has(str(entry.skill)), str(entry.boss) + " unlocks its phase signature attack")
+        check(boss.hp > int(floor(float(boss.max_hp()) * float(entry.threshold) / 100.0)), str(entry.boss) + " receives its phase recovery")
+        check(not ctl.evaluate_boss_phase(boss) and boss.boss_phase_index == 1, str(entry.boss) + " phase transition cannot trigger twice")
+        var restored: BattleUnit = BattleUnit.from_dict(boss.to_dict())
+        check(restored.boss_phase_index == 1 and restored.skills.has(str(entry.skill)), str(entry.boss) + " phase and signature skill persist in battle saves")
+        boss.hp = 1
+        check(not ctl.evaluate_boss_phase(boss), str(entry.boss) + " has no duplicate phase at critical HP")
 
 
 func _test_escape_mission() -> void:
