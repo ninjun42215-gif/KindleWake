@@ -923,3 +923,18 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - Exposes GameState methods for story, quest and battle systems to adjust relations, set diplomatic states and transfer known atlas regions. No automatic wars, random coups, fabricated quest consequences or player-facing diplomacy screen are introduced in this foundation.
 
 **Validation:** code head `f7b31035e4651a4a6854cc5ad644beff88c2148b` passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 447 strict checks / 0 failures, balance report and signed Android APK export (arm64-v8a + armeabi-v7a; no requested permissions). Version Sync #188, Workflow YAML Lint #666 and Project Health Audit #458 passed. APK artifact `13733346417`; test logs `13732869336`. Any later documentation-only head still requires the repository's exact-head gate. Physical Android QA remains separate and unperformed. Future work: player-facing diplomacy UI, faction missions, treaties with authored costs, war campaigns, recruitment consequences and strategic territory operations.
+
+
+## 20. Regional merchant profession and caravan economy
+
+The merchant system adds an offline, data-driven economy across the existing campaign regions. It is designed to reward route knowledge and settlement relationships without introducing a network market or a separate currency.
+
+- **Regional markets:** 18 commodities across eight market definitions, with local stock, demand pressure, regional price modifiers, cargo weight, tariffs and transaction fees.
+- **Merchant progression:** XP, reputation and five ranks. Rank benefits increase carrying capacity and reduce service fees.
+- **Caravans:** purchase, three upgrade tiers and up to eight guards. Guards improve caravan defence and reduce smuggling detection risk.
+- **Trade contracts and guilds:** destination-specific deliveries, rewards and standing progression with three merchant guilds. Guild charters protect access to exclusive commodities, including on the smuggling path.
+- **Trade corridors:** four authored routes with travel costs, tolls, protection, closure policies and risk-based ambush outcomes. Travel updates the active campaign region.
+- **Smuggling:** risky tariff-avoiding sales with customs seizures, fines and persistent heat. Quantity limits and guild licensing are enforced consistently with ordinary market transactions.
+- **Persistence and access:** trade state is an optional campaign payload field and normalizes legacy saves. Imperial tariff and route-policy controls require the existing empire-management unlock.
+
+The Merchant Exchange is integrated into overworld and settlement interfaces. This remains an offline campaign feature; it does not claim multiplayer trading, live price feeds or physical-device QA.

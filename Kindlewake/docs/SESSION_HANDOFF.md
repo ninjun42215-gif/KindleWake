@@ -135,3 +135,13 @@
 - Current scope is backend foundation only. No diplomacy screen, automatic war simulation, AI faction turns or strategic battle layer is claimed complete.
 - Validation on code head `f7b31035e4651a4a6854cc5ad644beff88c2148b`: Build Android APK run #683 passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 447 strict checks / 0 failures, balance report and signed APK export for arm64-v8a + armeabi-v7a with no requested Android permissions. APK artifact `13733346417` (~41.0 MB); test logs artifact `13732869336`. Version Sync #188, Workflow YAML Lint #666 and Project Health Audit #458 also passed on that exact code head. The first CI attempt caught a missing `GameData.factions` declaration and a strict-test type inference error; both were fixed before the successful rerun. Documentation commits after that code head require a fresh exact-head gate. Physical Android QA remains outstanding.
 - Next implementation slice after this foundation: connect authored quests/choices to relation changes, then add a compact faction dossier UI before enabling player-initiated treaty/war actions. Preserve offline-only architecture, existing saves and schema 4.
+
+
+## 2026-11-10 — Regional merchant economy integration
+
+- Integrated the regional merchant profession and caravan economy on top of the current trait/personality-enabled main baseline.
+- Adds 18 trade goods, eight regional market definitions, dynamic supply/demand prices, tariffs and transaction fees; merchant XP, ranks, cargo capacity, caravan upgrades and guards; contracts, guild-exclusive goods, route policies, tolls, ambushes and smuggling.
+- Campaign trade state is persisted as an optional field and normalized for older saves. Existing faction and trait/personality state is retained.
+- Merchant Exchange is available from the overworld and settlement interfaces. Empire tariff and route governance remains gated by the existing empire-management unlock flag.
+- Regression coverage includes regional pricing, cargo limits, contracts, guild licenses, caravan travel, ambush outcomes and smuggling quantity/license safeguards.
+- Exact-head Godot tests, scene smoke and Android APK export are required before merge; physical Android QA remains separate.
