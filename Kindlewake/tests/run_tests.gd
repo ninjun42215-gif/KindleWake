@@ -216,6 +216,29 @@ func _test_act_one_tactical_bosses() -> void:
     check(int(gd.characters["hask_convoy_champion"].stats.hp) >= 90, "Hask has dedicated boss-grade health")
     check(int(gd.characters["ash_bailiff"].stats.hp) >= 100, "Ash Bailiff has dedicated boss-grade health")
     check(str(gd.battles["act1_ash_bailiff_boss"].get("battlefield", "")) == "hall_of_ash", "Ash Bailiff uses a distinct indoor battlefield")
+    for battle_id in ["act1_hask_boss", "act1_ash_bailiff_boss"]:
+        var phase_def: Dictionary = gd.battles[battle_id]
+        check((phase_def.get("boss_phases", []) as Array).size() == 2, battle_id + " defines two authored phases")
+        var phase_controller := BattleController.new()
+        phase_controller.setup(phase_def, gd.as_db(), 19)
+        var boss: BattleUnit = null
+        for unit_obj in phase_controller.units:
+            var candidate: BattleUnit = unit_obj
+            if candidate.is_commander:
+                boss = candidate
+                break
+        check(boss != null, battle_id + " phase test finds commander")
+        if boss != null:
+            var original_str := boss.stat("str")
+            var original_int := boss.stat("int")
+            boss.hp = int(ceil(float(boss.max_hp()) * 0.5))
+            phase_controller._check_boss_phases(boss)
+            check(boss.stat("str") > original_str or boss.stat("int") > original_int, battle_id + " activates first threshold payload")
+            var hp_after := boss.hp
+            phase_controller._check_boss_phases(boss)
+            check(boss.hp == hp_after, battle_id + " phase does not retrigger")
+            var restored := BattleUnit.from_dict(boss.to_dict())
+            check(bool(restored.statuses.get("_boss_phase_0", false)), battle_id + " persists phase marker in battle snapshot")
 
 
 func _test_escape_mission() -> void:
