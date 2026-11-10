@@ -198,7 +198,10 @@ func _test_companion_quests() -> void:
     check(additional_hooks_ok, "Edda and Bram Cullen each have three ordered world interactions in their authored regions")
     var authored_quest_maps := {
         "q_companion_lucan_last_flight": {"thornmere": "signal_found", "thornmere_inn": "patrol_traced", "thornmere_market": "witness_heard"},
-        "q_companion_kestrel_no_master": {"elderbough": "coded_mark_found", "elderbough_inn": "safehouse_investigated", "elderbough_market": "witness_protected"}
+        "q_companion_kestrel_no_master": {"elderbough": "coded_mark_found", "elderbough_inn": "safehouse_investigated", "elderbough_market": "witness_protected"},
+        "q_companion_anselm_line_to_hold": {"crossing": "muster_notice_read", "crossing_elder": "drill_ground_examined", "sethorn_hall": "soldiers_resolved"},
+        "q_companion_petra_bitter_draught": {"foxglove_market": "ward_ledger_found", "foxglove_inn": "treatment_verified", "foxglove_recruit": "triage_decided"},
+        "q_companion_dorian_unspent_bolt": {"thornmere": "convoy_identified", "thornmere_inn": "shot_reconstructed", "thornmere_market": "quartermaster_confronted"}
     }
     var authored_hooks_ok := true
     for authored_quest_id in authored_quest_maps.keys():
@@ -215,8 +218,12 @@ func _test_companion_quests() -> void:
         var outcome_flags: Dictionary = gd.companion_quests[authored_quest_id].get("outcome_flags", {})
         if outcome_flags.size() != (gd.companion_quests[authored_quest_id].get("outcomes", []) as Array).size():
             authored_hooks_ok = false
-    check(authored_hooks_ok, "Lucan and Kestrel have three ordered location hooks, valid investigation challenges and persistent outcome branches")
-    check(str(gd.companion_quests["q_companion_brisa_hearth_of_names"].get("journal_summary", "")).length() > 30 and str(gd.companion_quests["q_companion_lucan_last_flight"].get("journal_summary", "")).length() > 30 and str(gd.companion_quests["q_companion_kestrel_no_master"].get("journal_summary", "")).length() > 30, "the first three playable companion quests have authored journal summaries")
+    check(authored_hooks_ok, "Lucan, Kestrel, Anselm, Petra and Dorian have three ordered location hooks, valid investigation challenges and persistent outcome branches")
+    var playable_summaries_ok := true
+    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt"]:
+        if str(gd.companion_quests[playable_id].get("journal_summary", "")).length() < 30:
+            playable_summaries_ok = false
+    check(playable_summaries_ok, "all eight authored companion quest routes have journal summaries")
 
 
 func _test_prologue() -> void:
