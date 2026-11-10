@@ -473,7 +473,6 @@ func _advance_season() -> void:
         result += " Supply attrition: %d soldiers lost." % int(report.get("supply_losses", 0))
     if int(report.get("sieges_advanced", 0)) > 0:
         result += " Siege progress: %d operations advanced; %d breached." % [int(report.get("sieges_advanced", 0)), int(report.get("sieges_completed", 0))]
-        result += " Supply attrition: %d soldiers lost." % int(report.get("supply_losses", 0))
     _set_message(result, not bool(report.get("food_shortage", false)))
     GameState.save_campaign("auto_a")
 
