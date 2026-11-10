@@ -420,6 +420,8 @@ static func resolve_title_claim(raw: Dictionary, claimant_id: String, title_id: 
  if not state.people.has(claimant_id) or not state.titles.has(title_id) or not ["recognize","reject"].has(outcome):
   return {"ok":false,"reason":"Choose a valid pending claim and a lawful outcome."}
  var claimant: Dictionary = state.people[claimant_id]
+ if not bool(claimant.get("alive",false)):
+  return {"ok":false,"reason":"A deceased claimant cannot resolve a title claim."}
  var claims: Array = claimant.get("claims",[])
  var found := false
  for index in range(claims.size()):
