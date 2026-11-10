@@ -923,3 +923,23 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - Exposes GameState methods for story, quest and battle systems to adjust relations, set diplomatic states and transfer known atlas regions. No automatic wars, random coups, fabricated quest consequences or player-facing diplomacy screen are introduced in this foundation.
 
 **Validation:** code head `f7b31035e4651a4a6854cc5ad644beff88c2148b` passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 447 strict checks / 0 failures, balance report and signed Android APK export (arm64-v8a + armeabi-v7a; no requested permissions). Version Sync #188, Workflow YAML Lint #666 and Project Health Audit #458 passed. APK artifact `13733346417`; test logs `13732869336`. Any later documentation-only head still requires the repository's exact-head gate. Physical Android QA remains separate and unperformed. Future work: player-facing diplomacy UI, faction missions, treaties with authored costs, war campaigns, recruitment consequences and strategic territory operations.
+
+
+
+## 20. Royal administration and realm economy (implementation in review)
+
+The empire-management foundation adds an unlock-gated administration layer without changing the core campaign's identity or prematurely opening hereditary dynasty play.
+
+- `scripts/core/empire_management_system.gd`: deterministic, offline realm rules for treasury, food, manpower, stability, legitimacy, public order, taxation, edicts, council offices, governors, province buildings, seasonal ledgers and bounded chronicle history.
+- `scripts/ui/empire_administration.gd`: touch-first Royal Administration overlay with Realm, Council, Provinces, Economy and Chronicle tabs. It is mounted over the existing overworld and uses the existing parchment/gold visual language.
+- `world_scene.gd`: Royal Court entry appears only after the authored story layer calls `GameState.unlock_empire_management()`; it pauses exploration while open and saves campaign state after administration actions.
+- Council offices: Steward, Marshal, Spymaster, Chancellor and High Priest. Officeholders are selected from the existing party roster.
+- Province governors and construction are restricted to provinces currently controlled by House Dunmarrow or the Crownlands. The UI displays the current faction owner and disables actions in foreign provinces. Seasonal income/food simulation counts only player-controlled provinces.
+- Buildings: Granaries & Farms, Chartered Market, Barracks, Road Network, Border Keep and Aqueduct. Construction costs are charged immediately and duplicates are rejected.
+- Tax settings: low, normal and high. Edicts: relief, development, conscription, mercantile and tolerance. Seasonal advancement is explicit and never tied to real time.
+- New campaign state is locked by default. The new state is an optional campaign payload field and legacy schema-4 saves normalize safely; project version and save schema remain unchanged.
+- The post-campaign hereditary title/family simulation remains separate and locked until the Last Emperor abolishes the Empire and dies naturally of old age.
+
+**Scope boundary:** the Royal Administration screens and core interactions are now authored, but authored narrative unlock wiring, projected pre-season budget preview, advanced council trait calculations, army recruitment/garrisons/supply, trade routes, faction AI, rebellions and war campaigns remain future work.
+
+**Validation status:** strict tests were added for lock state, tax/policy validation, appointments/dismissals, province/building validation, seasonal shortage consequences and save normalization. No Godot import, test suite, scene smoke test or Android build has yet been run for this feature-branch head. Do not report this as CI-passed or production-ready until exact-head repository gates pass. Physical-device QA remains separate.
