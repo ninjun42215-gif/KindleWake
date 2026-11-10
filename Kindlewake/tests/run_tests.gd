@@ -153,6 +153,18 @@ func _test_world_expansion() -> void:
     check(dungeons_valid and dungeon_ids.size() >= 15, "dungeons have unique IDs, canonical regions, mechanics, bosses, rewards and consequences")
 
 
+    var bosses: Dictionary = gd.regional_boss_encounters
+    var boss_valid := bosses.size() == 7
+    for boss_id in bosses:
+        var boss: Dictionary = bosses[boss_id]
+        if str(boss.get("region", "")).is_empty() or str(boss.get("arena", "")).is_empty() or boss.get("phases", []).size() < 3 or str(boss.get("counterplay", "")).is_empty():
+            boss_valid = false
+        for phase in boss.get("phases", []):
+            if str(phase.get("objective", "")).is_empty() or str(phase.get("hazard", "")).is_empty():
+                boss_valid = false
+    check(boss_valid, "all seven continents load distinct boss arenas, three-phase hazards, objectives and counterplay")
+
+
 func _test_holding_system() -> void:
     print("[holding sovereignty]")
     var flags := {}
@@ -230,6 +242,10 @@ func _test_empire_development() -> void:
     check(bool(premature.get("ok", false)) and str(premature.get("status", "")) == "resolved", "a completed siege objective can be resolved after its encounter")
     var foreign_flags := {"holding_claimed_keep":true,"holding_owner_keep":"foreign_house"}
     check(not bool(EmpireDevelopmentSystem.recruit("keep", "levy", 1, foreign_flags, 100).get("ok", true)), "foreign holdings cannot recruit for the player")
+
+    var productive_flags := {"holding_claimed_keep":true,"holding_owner_keep":"house_dunmarrow","holding_building_keep_farm":1,"holding_building_keep_fortifications":1}
+    var developed_turn := EmpireEconomySystem.advance_turn([{"id":"keep","turn_income":10,"recommended_garrison":1,"economy":{"provisions":0,"materials":0}}], productive_flags, 50)
+    check(int(developed_turn.get("provisions_gained", 0)) == 3 and int(productive_flags.get("holding_stability_keep", 0)) >= 37, "farms add recurring provisions and fortifications improve stability each empire turn")
 
 func _test_dungeon_mechanisms() -> void:
     print("[dungeon mechanisms]")
