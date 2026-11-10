@@ -1232,6 +1232,209 @@
         "ldr": 3,
         "mor": 48
       }
+    },
+    "boss_hollow_hart": {
+      "name": "The Hollow Hart",
+      "class_id": "swordsman",
+      "level": 9,
+      "house": "none",
+      "weapon_id": "battle_axe",
+      "armor_def": 5,
+      "armor_res": 3,
+      "skills": [],
+      "reward": {
+        "exp": 450,
+        "ap": 80,
+        "gold": 300
+      },
+      "stats": {
+        "hp": 94,
+        "mp": 18,
+        "str": 20,
+        "dex": 12,
+        "int": 8,
+        "vit": 18,
+        "spd": 9,
+        "lck": 6,
+        "acc": 88,
+        "eva": 15,
+        "ldr": 18,
+        "mor": 90
+      }
+    },
+    "boss_drowned_crown": {
+      "name": "Admiral Veyr, the Drowned Crown",
+      "class_id": "roadreaver",
+      "level": 9,
+      "house": "none",
+      "weapon_id": "battle_axe",
+      "armor_def": 5,
+      "armor_res": 3,
+      "skills": [],
+      "reward": {
+        "exp": 450,
+        "ap": 80,
+        "gold": 300
+      },
+      "stats": {
+        "hp": 102,
+        "mp": 15,
+        "str": 19,
+        "dex": 13,
+        "int": 8,
+        "vit": 20,
+        "spd": 8,
+        "lck": 6,
+        "acc": 88,
+        "eva": 15,
+        "ldr": 18,
+        "mor": 90
+      }
+    },
+    "boss_ash_regent": {
+      "name": "Kharzug the Ash Regent",
+      "class_id": "knight",
+      "level": 9,
+      "house": "none",
+      "weapon_id": "greatsword",
+      "armor_def": 8,
+      "armor_res": 3,
+      "skills": [],
+      "reward": {
+        "exp": 450,
+        "ap": 80,
+        "gold": 300
+      },
+      "stats": {
+        "hp": 118,
+        "mp": 8,
+        "str": 22,
+        "dex": 17,
+        "int": 5,
+        "vit": 23,
+        "spd": 5,
+        "lck": 6,
+        "acc": 88,
+        "eva": 15,
+        "ldr": 18,
+        "mor": 90
+      }
+    },
+    "boss_pale_matriarch": {
+      "name": "The Pale Matriarch",
+      "class_id": "cleric",
+      "level": 9,
+      "house": "none",
+      "weapon_id": "mace",
+      "armor_def": 5,
+      "armor_res": 7,
+      "skills": [],
+      "reward": {
+        "exp": 450,
+        "ap": 80,
+        "gold": 300
+      },
+      "stats": {
+        "hp": 88,
+        "mp": 28,
+        "str": 12,
+        "dex": 11,
+        "int": 14,
+        "vit": 17,
+        "spd": 9,
+        "lck": 6,
+        "acc": 88,
+        "eva": 15,
+        "ldr": 18,
+        "mor": 90
+      }
+    },
+    "boss_briar_sovereign": {
+      "name": "The Briar Sovereign",
+      "class_id": "roadreaver",
+      "level": 9,
+      "house": "none",
+      "weapon_id": "battle_axe",
+      "armor_def": 5,
+      "armor_res": 3,
+      "skills": [],
+      "reward": {
+        "exp": 450,
+        "ap": 80,
+        "gold": 300
+      },
+      "stats": {
+        "hp": 110,
+        "mp": 12,
+        "str": 20,
+        "dex": 15,
+        "int": 8,
+        "vit": 22,
+        "spd": 7,
+        "lck": 6,
+        "acc": 88,
+        "eva": 15,
+        "ldr": 18,
+        "mor": 90
+      }
+    },
+    "boss_star_eater": {
+      "name": "The Star-Eater",
+      "class_id": "cleric",
+      "level": 9,
+      "house": "none",
+      "weapon_id": "mace",
+      "armor_def": 5,
+      "armor_res": 7,
+      "skills": [],
+      "reward": {
+        "exp": 450,
+        "ap": 80,
+        "gold": 300
+      },
+      "stats": {
+        "hp": 96,
+        "mp": 36,
+        "str": 10,
+        "dex": 12,
+        "int": 18,
+        "vit": 19,
+        "spd": 10,
+        "lck": 6,
+        "acc": 88,
+        "eva": 15,
+        "ldr": 18,
+        "mor": 90
+      }
+    },
+    "boss_last_cantor": {
+      "name": "The Last Cantor",
+      "class_id": "swordsman",
+      "level": 9,
+      "house": "none",
+      "weapon_id": "arming_sword",
+      "armor_def": 5,
+      "armor_res": 3,
+      "skills": [],
+      "reward": {
+        "exp": 450,
+        "ap": 80,
+        "gold": 300
+      },
+      "stats": {
+        "hp": 90,
+        "mp": 30,
+        "str": 14,
+        "dex": 11,
+        "int": 16,
+        "vit": 18,
+        "spd": 12,
+        "lck": 6,
+        "acc": 88,
+        "eva": 15,
+        "ldr": 18,
+        "mor": 90
+      }
     }
   }
 }
