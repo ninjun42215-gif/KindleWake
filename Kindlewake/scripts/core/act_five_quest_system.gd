@@ -1,7 +1,7 @@
 extends RefCounted
 class_name ActFiveQuestSystem
 ## The Kindling: route strategy, corroboration, simultaneous crises and the final constitutional choice.
-const ROUTES := ["river_compact", "vey rwood_canopy", "imperial_ash_road"]
+const ROUTES := ["river_compact", "veyrwood_canopy", "imperial_ash_road"]
 const ROUTE_ACTIONS := {
  "river_compact":["repair_ferry","share_rations"],
  "veyrwood_canopy":["mark_safe_trail","leave_supply_cache"],
