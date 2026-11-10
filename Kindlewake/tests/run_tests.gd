@@ -2212,6 +2212,16 @@ func _test_campaign_save_semantic_backup_fallback() -> void:
         "faction_state": {},
         "companion_relationships": {}
     }
+    check(RegionSaveState.is_valid_campaign_payload(valid_payload), "campaign restore accepts the current semantic-save fixture")
+    var legacy_without_companion_quests: Dictionary = valid_payload.duplicate(true)
+    legacy_without_companion_quests.erase("companion_quests")
+    check(RegionSaveState.is_valid_campaign_payload(legacy_without_companion_quests), "legacy campaign saves remain valid without optional companion quest progress")
+    var valid_quest_payload: Dictionary = valid_payload.duplicate(true)
+    valid_quest_payload["companion_quests"] = {"q_companion_brisa_hearth_of_names": {"status": "active", "progress": 1}}
+    check(RegionSaveState.is_valid_campaign_payload(valid_quest_payload), "campaign saves accept the optional companion quest state dictionary")
+    var malformed_quest_payload: Dictionary = valid_payload.duplicate(true)
+    malformed_quest_payload["companion_quests"] = ["not-a-dictionary"]
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_quest_payload), "campaign restore rejects a malformed companion quest state container")
 
     var malformed_history: Dictionary = valid_payload.duplicate(true)
     malformed_history["party"]["sheets"]["torren"]["trait_history"] = ["bad-entry"]
