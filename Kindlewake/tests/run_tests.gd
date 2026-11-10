@@ -3,6 +3,7 @@ extends SceneTree
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
+const OpeningChapterSystem = preload("res://scripts/core/opening_chapter_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
@@ -35,6 +36,7 @@ func _initialize() -> void:
     _test_progression()
     _test_recruitment()
     _test_prologue()
+    _test_opening_chapter()
     _test_escape_mission()
     _test_escape_ui_layout()
     _test_sigils()
@@ -1596,3 +1598,18 @@ func _simulate_battles(n: int) -> void:
         total_turns += c.turn_count
     check(unfinished == 0, "all %d simulated battles reach a result" % n)
     print("  info  AI vs AI: player side won %d/%d, average %.1f turns per battle" % [wins, n, float(total_turns) / float(n)])
+
+
+func _test_opening_chapter() -> void:
+    print("[opening chapter]")
+    var prior := {"east_gallery_escaped": true, "prologue_people_saved": true, "prologue_record_saved": false}
+    check(OpeningChapterSystem.arrival_unlocked(prior), "Kaer Sethorn arrival is gated behind escape victory")
+    check(not OpeningChapterSystem.arrival_unlocked({"prologue_complete": true}), "arrival cannot be entered before the postern escape")
+    var well: Dictionary = OpeningChapterSystem.apply_arrival_choice(prior, "repair_well")
+    var roof: Dictionary = OpeningChapterSystem.apply_arrival_choice(prior, "secure_roof")
+    var ledger: Dictionary = OpeningChapterSystem.apply_arrival_choice(prior, "organize_ledger")
+    check(bool(well.get("chapter_1_arrival_complete", false)) and str(well.get("kaer_sethorn_priority", "")) == "repair_well", "well priority completes arrival and is recorded")
+    check(bool(roof.get("kaer_roof_secured", false)) and not bool(roof.get("kaer_well_repaired", true)), "roof priority is mutually exclusive and persistent")
+    check(bool(ledger.get("kaer_ledger_organized", false)) and bool(ledger.get("prologue_people_saved", false)), "ledger priority preserves earlier prologue consequences")
+    check(OpeningChapterSystem.apply_arrival_choice(prior, "unknown").is_empty(), "unknown keep priorities are rejected")
+    check(OpeningChapterSystem.priority_acknowledgement("repair_well").contains("Clean water"), "keep priority has an authored narrative acknowledgement")
