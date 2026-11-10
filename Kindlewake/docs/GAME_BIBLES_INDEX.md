@@ -45,3 +45,13 @@ Before implementation, inspect:
 - the relevant GDD, mechanics, lore and production sections.
 
 For every change, provide a plan, modify the existing architecture, test it, preserve old saves, and update the current-state bible with exact commit and evidence.
+
+
+## New owner-locked system: post-ending Chronicle of Houses
+
+The family/dynasty mode is a separate post-campaign feature. Its exact gate and mechanics are specified in:
+- [Lore Bible §13–14](LORE_BIBLE.md) — the last Emperor, dissolution of the Empire, Concord of Free Realms and generational narrative themes.
+- [Mechanics Bible §15](MECHANICS_BIBLE.md) — unlock state machine, life cycle, family graph, inheritance, titles, domains, save rules and acceptance tests.
+- [Game Vision §14](GAME_VISION_AND_REQUIREMENTS.md) — owner requirement and first-release scope.
+
+**Critical instruction:** do not implement or expose family simulation during the main story. The only valid first unlock sequence is: main campaign complete → protagonist becomes last Emperor → Empire formally abolished → late-life epilogue → natural death from old age → Chronicle of Houses. Knights of Ages is a high-level mechanics reference only; all KindleWake lore, characters, art, terminology and implementation must be original.
