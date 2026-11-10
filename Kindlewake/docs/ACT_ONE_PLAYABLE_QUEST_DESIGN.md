@@ -37,3 +37,17 @@ This document describes the first playable gameplay pass for the five Kaer Setho
 - Completion writes the exact flags consumed by OpeningActOneQuestSystem._act_one_ready() and inspect().
 - The campaign can return to Location.tscn and resume the same town map.
 - Godot headless parsing and the project's full test command must pass before this work is considered runtime-verified.
+
+
+## Tactical boss battle follow-up
+
+The Last Convoy and The First Oath now launch dedicated tactical encounters through the existing Battle scene and BattleController.
+
+- **Hask Gravelteeth:** separate boss-grade character definition, increased health and strength, Power Strike, roadwolf retainers, and the Sallow Ford river-crossing map.
+- **The Ash Bailiff:** separate boss-grade character definition, increased health and armour, Radiant Judgement (Holy Smite II) and Greater Mending, retainers, and a distinct Hall of Ash arena with pillars for cover.
+- Both battles use the existing tactical turn queue, movement, terrain, attack, skill, enemy AI, party preparation, battle rewards and commander-defeat victory rules.
+- A successful boss defeat sets a dedicated campaign flag and saves the campaign after battle rewards are applied.
+- The battle result screen returns to the active quest challenge. The challenge resumes at its boss stage, checks the victory flag and advances to the next story beat. A defeat returns to the same challenge so the boss can be retried.
+- Boss battles are not exposed as random overworld encounters and do not show the normal overworld flee option.
+
+These are data-driven tactical encounters using existing combat systems. Unique multi-phase boss AI, bespoke animated boss sprites and custom attack VFX remain future polish work; the current boss identity comes from their dedicated stats, skills, retainers, terrain and story-specific victory conditions.
