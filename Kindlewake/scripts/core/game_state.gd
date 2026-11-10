@@ -134,6 +134,43 @@ func disband_provincial_troops(province_id: String, troop_type: String, amount: 
 func empire_army_summary() -> Dictionary:
     return EmpireSystem.army_summary(empire_state)
 
+func atlas_region_adjacency() -> Dictionary:
+    var adjacency: Dictionary = {}
+    var known: Dictionary = {}
+    for continent in GameData.continents.get("continents", []):
+        for region in continent.get("regions", []):
+            known[str(region.get("id", ""))] = true
+    for continent in GameData.continents.get("continents", []):
+        for region in continent.get("regions", []):
+            var region_id := str(region.get("id", ""))
+            adjacency[region_id] = []
+            for linked in region.get("links", []):
+                var linked_id := str(linked)
+                if known.has(linked_id) and not (adjacency[region_id] as Array).has(linked_id):
+                    adjacency[region_id].append(linked_id)
+    for region_id in adjacency.keys():
+        for linked_id in adjacency[region_id]:
+            if not adjacency.has(linked_id):
+                adjacency[linked_id] = []
+            if not (adjacency[linked_id] as Array).has(region_id):
+                adjacency[linked_id].append(region_id)
+    return adjacency
+
+
+func mobilize_field_army(province_id: String, troop_counts: Dictionary, commander_id: String = "") -> String:
+    if commander_id != "" and not party.sheets.has(commander_id):
+        return ""
+    return EmpireSystem.mobilize_army(empire_state, province_id, troop_counts, player_controlled_provinces(), commander_id)
+
+
+func move_field_army(army_id: String, destination: String) -> bool:
+    return EmpireSystem.move_field_army(empire_state, army_id, destination, atlas_region_adjacency(), player_controlled_provinces())
+
+
+func field_army_summary() -> Dictionary:
+    return EmpireSystem.field_army_summary(empire_state)
+
+
 
 ## Battle database with the party's current sheets (level, stats, equipment) substituted in.
 func battle_db() -> Dictionary:
