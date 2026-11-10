@@ -82,7 +82,7 @@ static func appoint_governor(state: Dictionary, faction_state: Dictionary, regio
     var territories: Dictionary = faction_state.get("territories", {})
     if not territories.has(region_id):
         return false
-    if str(territories[region_id].get("owner", "")) != str(state.get("ruler_faction", "")):
+    if str(territories[region_id].get("owner", "")) != str(state.get("ruler_faction", "")) or str(territories[region_id].get("status", "held")) != "held":
         return false
     state["governors"][region_id] = character_id
     _record(state, {"kind":"governor", "region":region_id, "character":character_id})
