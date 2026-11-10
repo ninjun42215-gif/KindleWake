@@ -1038,6 +1038,14 @@ func _test_supply_siege_and_tactical_bridge() -> void:
     var siege_db: Dictionary = EmpireSystem.tactical_battle_database(gd.as_db(), battle_def, gd.strategic_warfare, 75)
     check(siege_db.get("characters", {}).has("strategic_siege_engine") and siege_db.get("classes", {}).has("siege_engine"), "authored battering ram resolves to a dedicated tactical class")
     check(siege_db.get("characters", {}).has("strategic_fort_gate") and siege_db.get("classes", {}).has("fort_gate"), "authored fort gate resolves to a destructible tactical objective")
+    var siege_controller := BattleController.new()
+    siege_controller.setup(battle_def, siege_db, 9192)
+    siege_controller.begin()
+    var siege_guard := 0
+    while siege_controller.result == "" and siege_guard < 800:
+        siege_controller.run_ai_turn(true)
+        siege_guard += 1
+    check(siege_controller.result != "" and siege_guard < 800, "battering ram and garrison gate objective resolve in BattleController simulation")
     check(EmpireSystem.resolve_siege_battle(state, "orrowen_weald", true) and bool(state["sieges"]["orrowen_weald"].get("captured", false)), "winning the tactical siege assault breaches the occupation objective")
     check(int(state["war_exhaustion"]) > 2 and EmpireSystem.reduce_war_exhaustion(state, 5), "war exhaustion rises after an assault and can be reduced by a peace action")
     check(EmpireSystem.complete_siege_transfer(state, "orrowen_weald") and not state["sieges"].has("orrowen_weald"), "completed occupation closes the siege record")
