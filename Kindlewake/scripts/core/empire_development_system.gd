@@ -28,9 +28,9 @@ static func deploy_recruits_to_battle(holding_id: String, battle_definition: Dic
     var occupied: Dictionary = {}
     var spawns: Array = (battle_definition.get("units", []) as Array).duplicate(true)
     for spawn in spawns:
-        var cell: Array = spawn.get("cell", [])
-        if cell.size() >= 2:
-            occupied[Vector2i(int(cell[0]), int(cell[1]))] = true
+        var spawn_cell: Array = spawn.get("cell", [])
+        if spawn_cell.size() >= 2:
+            occupied[Vector2i(int(spawn_cell[0]), int(spawn_cell[1]))] = true
     var deployed: Dictionary = {}
     var added := 0
     for troop_id in ["levy", "archer", "knight"]:
@@ -40,10 +40,10 @@ static func deploy_recruits_to_battle(holding_id: String, battle_definition: Dic
             for y in range(8, terrain.size()):
                 var row := str(terrain[y])
                 for x in range(3, row.length()):
-                    var cell := Vector2i(x, y)
+                    var candidate_cell := Vector2i(x, y)
                     var terrain_code := row.substr(x, 1)
-                    if not occupied.has(cell) and not ["#", "~"].has(terrain_code):
-                        chosen = cell
+                    if not occupied.has(candidate_cell) and not ["#", "~"].has(terrain_code):
+                        chosen = candidate_cell
                         break
                 if chosen.x >= 0:
                     break
