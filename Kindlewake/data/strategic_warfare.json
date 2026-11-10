@@ -91,6 +91,58 @@
         "ldr": 0,
         "mor": 100
       }
+    },
+    "ballista": {
+      "name": "Field Ballista",
+      "class_id": "siege_engine",
+      "weapon_id": "short_bow",
+      "armor_def": 4,
+      "armor_res": 2,
+      "class_def": {
+        "name": "Field Ballista",
+        "move": 1,
+        "jump": 0
+      },
+      "stats": {
+        "hp": 52,
+        "mp": 0,
+        "str": 10,
+        "dex": 12,
+        "int": 2,
+        "vit": 9,
+        "spd": 3,
+        "lck": 2,
+        "acc": 90,
+        "eva": 2,
+        "ldr": 0,
+        "mor": 90
+      }
+    },
+    "trebuchet": {
+      "name": "Counterweight Trebuchet",
+      "class_id": "siege_engine",
+      "weapon_id": "battle_axe",
+      "armor_def": 3,
+      "armor_res": 1,
+      "class_def": {
+        "name": "Counterweight Trebuchet",
+        "move": 1,
+        "jump": 0
+      },
+      "stats": {
+        "hp": 60,
+        "mp": 0,
+        "str": 14,
+        "dex": 5,
+        "int": 3,
+        "vit": 12,
+        "spd": 1,
+        "lck": 1,
+        "acc": 72,
+        "eva": 0,
+        "ldr": 0,
+        "mor": 90
+      }
     }
   },
   "garrisons": {
@@ -207,6 +259,111 @@
         "ldr": 0,
         "mor": 0
       }
+    },
+    "outer_wall": {
+      "name": "Outer Wall",
+      "class_id": "fort_wall",
+      "weapon_id": "hand_axe",
+      "armor_def": 8,
+      "armor_res": 5,
+      "class_def": {
+        "name": "Outer Wall",
+        "move": 0,
+        "jump": 0
+      },
+      "stats": {
+        "hp": 85,
+        "mp": 0,
+        "str": 0,
+        "dex": 0,
+        "int": 0,
+        "vit": 10,
+        "spd": 1,
+        "lck": 0,
+        "acc": 0,
+        "eva": 0,
+        "ldr": 0,
+        "mor": 0
+      }
+    },
+    "inner_wall": {
+      "name": "Inner Wall",
+      "class_id": "fort_wall",
+      "weapon_id": "hand_axe",
+      "armor_def": 10,
+      "armor_res": 6,
+      "class_def": {
+        "name": "Inner Wall",
+        "move": 0,
+        "jump": 0
+      },
+      "stats": {
+        "hp": 110,
+        "mp": 0,
+        "str": 0,
+        "dex": 0,
+        "int": 0,
+        "vit": 12,
+        "spd": 1,
+        "lck": 0,
+        "acc": 0,
+        "eva": 0,
+        "ldr": 0,
+        "mor": 0
+      }
+    },
+    "gate_tower": {
+      "name": "Gate Tower",
+      "class_id": "fort_wall",
+      "weapon_id": "hand_axe",
+      "armor_def": 7,
+      "armor_res": 5,
+      "class_def": {
+        "name": "Gate Tower",
+        "move": 0,
+        "jump": 0
+      },
+      "stats": {
+        "hp": 75,
+        "mp": 0,
+        "str": 0,
+        "dex": 0,
+        "int": 0,
+        "vit": 9,
+        "spd": 1,
+        "lck": 0,
+        "acc": 0,
+        "eva": 0,
+        "ldr": 0,
+        "mor": 0
+      }
+    }
+  },
+  "siege_engineers": {
+    "siege_engineer": {
+      "name": "Siege Engineer",
+      "class_id": "swordsman",
+      "weapon_id": "arming_sword",
+      "armor_def": 2,
+      "armor_res": 2,
+      "stats": {
+        "hp": 28,
+        "mp": 0,
+        "str": 5,
+        "dex": 8,
+        "int": 9,
+        "vit": 6,
+        "spd": 5,
+        "lck": 4,
+        "acc": 75,
+        "eva": 8,
+        "ldr": 2,
+        "mor": 100
+      },
+      "abilities": [
+        "field_repair",
+        "breach_charge"
+      ]
     }
   }
 }
