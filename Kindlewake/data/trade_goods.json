@@ -279,7 +279,8 @@
       "quantity": 12,
       "reward": 260,
       "reputation": 15,
-      "guild": ""
+      "guild": "",
+      "destination": "sethmarch"
     },
     "brinegate_salt_charter": {
       "name": "Salt Charter",
@@ -287,7 +288,8 @@
       "quantity": 10,
       "reward": 310,
       "reputation": 20,
-      "guild": "coastal_merchants"
+      "guild": "coastal_merchants",
+      "destination": "sethmarch"
     },
     "cindermead_iron_order": {
       "name": "Foundry Components Order",
@@ -295,7 +297,8 @@
       "quantity": 6,
       "reward": 420,
       "reputation": 25,
-      "guild": "iron_compact"
+      "guild": "iron_compact",
+      "destination": "milefort"
     },
     "elderbough_herbalist": {
       "name": "Apothecary Supply",
@@ -303,7 +306,8 @@
       "quantity": 8,
       "reward": 300,
       "reputation": 18,
-      "guild": "weald_factors"
+      "guild": "weald_factors",
+      "destination": "foxglove"
     },
     "redwater_amber_courier": {
       "name": "Amber House Delivery",
@@ -311,7 +315,8 @@
       "quantity": 4,
       "reward": 500,
       "reputation": 30,
-      "guild": "coastal_merchants"
+      "guild": "coastal_merchants",
+      "destination": "milefort"
     }
   },
   "routes": {
