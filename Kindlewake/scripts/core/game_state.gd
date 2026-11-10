@@ -5,6 +5,7 @@ const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const TradeSystemScript = preload("res://scripts/core/trade_system.gd")
 const RelationshipSystem = preload("res://scripts/core/relationship_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
@@ -24,6 +25,8 @@ var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored w
 var campaign_slot: String = ""
 var faction_state: Dictionary = {}
 var companion_relationships: Dictionary = {}
+var trade_state: Dictionary = TradeSystemScript.new_state()
+var last_trade_travel_event: Dictionary = {}
 
 
 
@@ -57,6 +60,8 @@ func new_game(profile: Dictionary = {}) -> void:
     pending_location = ""
     faction_state = FactionSystem.new_campaign_state(GameData.factions)
     companion_relationships = {}
+    trade_state = TradeSystemScript.new_state()
+    last_trade_travel_event = {}
 
 
 ## Change diplomatic standing after an authored campaign event.
@@ -177,6 +182,7 @@ func campaign_payload() -> Dictionary:
         "world_flags": world_flags.duplicate(true),
         "faction_state": faction_state.duplicate(true),
         "companion_relationships": companion_relationships.duplicate(true),
+        "trade_state": trade_state.duplicate(true),
         "from_world": true
     }
 
@@ -204,6 +210,8 @@ func load_campaign(slot_id: String) -> bool:
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
     faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
     companion_relationships = RelationshipSystem.normalize_state(payload.get("companion_relationships", {}))
+    trade_state = TradeSystemScript.normalize_state(payload.get("trade_state", {}), GameData.trade_economy)
+    last_trade_travel_event = {}
     world_pos = region_state["world_pos"]
     active_region_id = str(region_state["active_region_id"])
     world_positions = region_state["world_positions"]
@@ -213,6 +221,68 @@ func load_campaign(slot_id: String) -> bool:
     campaign_slot = slot_id
     return true
 
+
+## Regional merchant economy. State is optional in older campaign saves.
+func trade_buy(good_id: String, quantity: int = 1) -> String:
+    return TradeSystemScript.buy(party, active_region_id, good_id, quantity, GameData.trade_economy, trade_state)
+
+func trade_sell(good_id: String, quantity: int = 1) -> String:
+    return TradeSystemScript.sell(party, active_region_id, good_id, quantity, GameData.trade_economy, trade_state)
+
+func trade_quotes() -> Array:
+    return TradeSystemScript.quotes(active_region_id, GameData.trade_economy, trade_state)
+
+func merchant_profile() -> Dictionary:
+    return TradeSystemScript.merchant_profile(trade_state)
+
+func merchant_buy_caravan() -> String:
+    return TradeSystemScript.purchase_caravan(party, trade_state, GameData.trade_economy)
+
+func merchant_upgrade_caravan() -> String:
+    return TradeSystemScript.upgrade_caravan(party, trade_state, GameData.trade_economy)
+
+func merchant_hire_guard() -> String:
+    return TradeSystemScript.hire_caravan_guard(party, trade_state, GameData.trade_economy)
+
+func merchant_join_guild(guild_id: String) -> String:
+    return TradeSystemScript.join_guild(trade_state, guild_id, GameData.trade_economy)
+
+func merchant_guild_contribute(guild_id: String, amount: int) -> String:
+    return TradeSystemScript.guild_contribute(party, trade_state, guild_id, amount, GameData.trade_economy)
+
+func merchant_accept_contract(contract_id: String) -> String:
+    return TradeSystemScript.accept_contract(trade_state, contract_id, GameData.trade_economy)
+
+func merchant_complete_contract(contract_id: String) -> String:
+    return TradeSystemScript.complete_contract(party, trade_state, contract_id, GameData.trade_economy)
+
+func merchant_travel_route(route_id: String) -> String:
+    var route: Dictionary = TradeSystemScript.route_quote(route_id, GameData.trade_economy, trade_state)
+    if route.is_empty():
+        return "Unknown trade route."
+    if str(route.get("from", "")) != active_region_id:
+        return "This route does not begin in your current region."
+    var result := TradeSystemScript.travel_route(party, trade_state, route_id, GameData.trade_economy)
+    if result != "":
+        return result
+    set_active_region(str(route.get("to", active_region_id)))
+    last_trade_travel_event = {"route_id":route_id, "status":"safe"}
+    if TradeSystemScript.should_trigger_ambush(trade_state, GameData.trade_economy, route_id, rng):
+        last_trade_travel_event = TradeSystemScript.resolve_caravan_ambush(party, trade_state, GameData.trade_economy, rng, route_id)
+        last_trade_travel_event["route_id"] = route_id
+    return ""
+
+func merchant_last_travel_event() -> Dictionary:
+    return last_trade_travel_event.duplicate(true)
+
+func merchant_smuggle(good_id: String, quantity: int) -> Dictionary:
+    return TradeSystemScript.smuggle_sell(party, trade_state, active_region_id, good_id, quantity, GameData.trade_economy, rng)
+
+func merchant_set_tariff(region_id: String, rate: float) -> String:
+    return TradeSystemScript.set_tariff(trade_state, region_id, rate, bool(world_flags.get("empire_management_unlocked", false)))
+
+func merchant_set_route_policy(route_id: String, policy: Dictionary) -> String:
+    return TradeSystemScript.set_route_policy(trade_state, route_id, policy, bool(world_flags.get("empire_management_unlocked", false)))
 
 func newest_campaign_slot() -> String:
     var best := ""
