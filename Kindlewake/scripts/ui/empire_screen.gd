@@ -247,7 +247,11 @@ func _refresh_detail() -> void:
 
 func _governance_changed(index: int, models: Array) -> void:
     var result: Dictionary = GameState.set_holding_governance(selected_id, str(models[index]))
-    result_label.text = "Governance updated." if bool(result.get("ok", false)) else str(result.get("reason", "Could not change governance."))
+    if bool(result.get("ok", false)):
+        result_label.text = "Governance updated and saved."
+        GameState.save_campaign("auto_a")
+    else:
+        result_label.text = str(result.get("reason", "Could not change governance."))
     _refresh()
 
 
@@ -257,7 +261,8 @@ func _change_garrison(delta: int) -> void:
     if bool(result.get("ok", false)):
         current_garrison = next_count
         garrison_label.text = "GARRISON  %d" % current_garrison
-        result_label.text = "Garrison updated. Upkeep applies on the next empire turn."
+        result_label.text = "Garrison updated and saved. Upkeep applies on the next empire turn."
+        GameState.save_campaign("auto_a")
     else:
         result_label.text = str(result.get("reason", "Could not assign garrison."))
 
