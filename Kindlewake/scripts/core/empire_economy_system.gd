@@ -27,6 +27,8 @@ static func advance_turn(definitions: Array, world_flags: Dictionary, treasury: 
     var income := 0
     var upkeep := 0
     var stability_delta := 0
+    var provisions := 0
+    var materials := 0
     var reports: Array = []
     for raw in definitions:
         if not raw is Dictionary:
@@ -38,8 +40,11 @@ static func advance_turn(definitions: Array, world_flags: Dictionary, treasury: 
         if str(world_flags.get("holding_owner_" + id, PLAYER_FACTION)) != PLAYER_FACTION:
             continue
         var status := str(world_flags.get("holding_status_" + id, "provisional"))
-        var base_income := maxi(0, int(definition.get("turn_income", 0)))
+        var economy: Dictionary = definition.get("economy", {})
+        var base_income := maxi(0, int(definition.get("turn_income", economy.get("gold", 0))))
         var base_upkeep := maxi(0, int(definition.get("garrison_upkeep", 1)))
+        var local_provisions := maxi(0, int(economy.get("provisions", definition.get("turn_provisions", 0))))
+        var local_materials := maxi(0, int(economy.get("materials", definition.get("turn_materials", 0))))
         var garrison := maxi(0, int(world_flags.get("holding_garrison_" + id, 0)))
         var local_income := base_income
         var local_upkeep := base_upkeep + garrison
@@ -71,19 +76,27 @@ static func advance_turn(definitions: Array, world_flags: Dictionary, treasury: 
         world_flags["holding_last_upkeep_" + id] = local_upkeep
         income += local_income
         upkeep += local_upkeep
+        provisions += local_provisions
+        materials += local_materials
         stability_delta += delta
         reports.append({
             "holding": id, "income": local_income, "upkeep": local_upkeep,
             "net": local_income - local_upkeep, "stability": stability,
             "stability_delta": delta, "governance": governance,
-            "garrison": garrison, "risk": "high" if stability < 25 else ("watch" if stability < 50 else "stable")
+            "garrison": garrison, "provisions": local_provisions, "materials": local_materials, "risk": "high" if stability < 25 else ("watch" if stability < 50 else "stable")
         })
     var net := income - upkeep
     var next_treasury := maxi(0, treasury + net)
+    var total_provisions := maxi(0, int(world_flags.get("empire_stockpile_provisions", 0)) + provisions)
+    var total_materials := maxi(0, int(world_flags.get("empire_stockpile_materials", 0)) + materials)
+    world_flags["empire_stockpile_provisions"] = total_provisions
+    world_flags["empire_stockpile_materials"] = total_materials
     return {
         "ok": true, "income": income, "upkeep": upkeep, "net": net,
         "treasury_before": treasury, "treasury_after": next_treasury,
-        "reports": reports, "holdings_processed": reports.size()
+        "provisions_gained": provisions, "materials_gained": materials,
+        "provisions_total": total_provisions, "materials_total": total_materials,
+        "stability_delta": stability_delta, "reports": reports, "holdings_processed": reports.size()
     }
 
 
