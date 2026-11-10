@@ -267,6 +267,34 @@ func apply_personality_event(event_id: String, event_definitions: Dictionary, tr
     return result
 
 
+
+
+func adjust_stress(amount: int) -> int:
+    stress = PersonalitySystemScript.adjust_stress(stress, amount)
+    return stress
+
+
+func begin_ambition(ambition_id: String, title: String, description: String, target: int, deadline: int = 0) -> bool:
+    if ambition_id == "" or title == "" or target <= 0:
+        return false
+    ambition = {
+        "id": ambition_id, "title": title, "description": description,
+        "progress": 0, "target": target, "deadline": deadline, "status": "active"
+    }
+    return true
+
+
+func advance_ambition(amount: int) -> Dictionary:
+    if ambition.is_empty() or str(ambition.get("status", "")) != "active" or amount <= 0:
+        return {"ok": false, "completed": false, "progress": int(ambition.get("progress", 0))}
+    var progress := mini(int(ambition.get("target", 1)), int(ambition.get("progress", 0)) + amount)
+    ambition["progress"] = progress
+    var completed := progress >= int(ambition.get("target", 1))
+    if completed:
+        ambition["status"] = "completed"
+    return {"ok": true, "completed": completed, "progress": progress}
+
+
 # ---------------------------------------------------------------- experience and levels
 
 static func exp_to_next_for(lvl: int) -> int:
