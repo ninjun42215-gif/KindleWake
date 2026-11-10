@@ -242,7 +242,7 @@ func _test_companion_quests() -> void:
         var playable_flags: Dictionary = playable_definition.get("outcome_flags", {})
         if playable_flags.size() != (playable_definition.get("outcomes", []) as Array).size():
             playable_flags_ok = false
-    check(playable_flags_ok, "all sixteen authored companion quest routes persist every distinct resolution outcome")
+    check(playable_flags_ok, "all eighteen authored companion quest routes persist every distinct resolution outcome")
 
 
 func _test_prologue() -> void:
