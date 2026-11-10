@@ -48,6 +48,7 @@ func _initialize() -> void:
     _test_world()
     _test_world_atlas()
     _test_world_expansion()
+    _test_regional_boss_battles()
     _test_holding_system()
     _test_empire_economy()
     _test_empire_development()
@@ -163,6 +164,39 @@ func _test_world_expansion() -> void:
             if str(phase.get("objective", "")).is_empty() or str(phase.get("hazard", "")).is_empty():
                 boss_valid = false
     check(boss_valid, "all seven continents load distinct boss arenas, three-phase hazards, objectives and counterplay")
+
+
+func _test_regional_boss_battles() -> void:
+    print("[regional boss battles]")
+    var boss_ids := ["hollow_hart", "drowned_crown", "ash_regent", "pale_matriarch", "briar_sovereign", "star_eater", "last_cantor"]
+    var valid := true
+    for boss_id in boss_ids:
+        var battle_id := "battle_boss_" + boss_id
+        var def: Dictionary = gd.battle_def(battle_id)
+        if def.is_empty() or def.get("boss_phases", []).size() != 3 or str(def.get("boss_encounter_id", "")) != boss_id:
+            valid = false
+            continue
+        var boss_found := false
+        for spawn in def.get("units", []):
+            if str(spawn.get("character_id", "")) == "boss_" + boss_id and str(spawn.get("team", "")) == "enemy" and bool(spawn.get("commander", false)):
+                boss_found = true
+        if not boss_found:
+            valid = false
+    check(valid, "all seven regional guardians load as playable battles with a commander and three authored phases")
+    var siege: Dictionary = gd.battle_def("battle_holding_siege")
+    check(not siege.is_empty() and siege.get("victory", []).has("defeat_commander"), "holding siege has a playable tactical battlefield and commander objective")
+    var sample: Dictionary = gd.battle_def("battle_boss_hollow_hart")
+    var controller := BattleController.new()
+    controller.setup(sample, gd.as_db(), 1234)
+    var boss: BattleUnit = null
+    for unit in controller.units:
+        if unit.is_commander and unit.team == "enemy":
+            boss = unit
+            break
+    if boss != null:
+        boss.hp = int(floor(float(boss.max_hp()) * 0.60))
+        controller._update_boss_phase(boss)
+    check(boss != null and controller.boss_phase_index == 1, "regional boss transitions into its second phase at the authored health threshold")
 
 
 func _test_holding_system() -> void:
