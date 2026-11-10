@@ -24,6 +24,7 @@ var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored w
 var campaign_slot: String = ""
 var faction_state: Dictionary = {}
 var trade_state: Dictionary = TradeSystemScript.new_state()
+var last_trade_travel_event: Dictionary = {}
 
 
 
@@ -208,7 +209,24 @@ func merchant_complete_contract(contract_id: String) -> String:
 
 
 func merchant_travel_route(route_id: String) -> String:
-    return TradeSystemScript.travel_route(party, trade_state, route_id, GameData.trade_economy)
+    var route: Dictionary = TradeSystemScript.route_quote(route_id, GameData.trade_economy, trade_state)
+    if route.is_empty():
+        return "Unknown trade route."
+    if str(route.get("from", "")) != active_region_id:
+        return "This route does not begin in your current region."
+    var result := TradeSystemScript.travel_route(party, trade_state, route_id, GameData.trade_economy)
+    if result != "":
+        return result
+    set_active_region(str(route.get("to", active_region_id)))
+    last_trade_travel_event = {"route_id":route_id, "status":"safe"}
+    if merchant_should_trigger_ambush(route_id):
+        last_trade_travel_event = TradeSystemScript.resolve_caravan_ambush(party, trade_state, GameData.trade_economy, rng, route_id)
+        last_trade_travel_event["route_id"] = route_id
+    return ""
+
+
+func merchant_last_travel_event() -> Dictionary:
+    return last_trade_travel_event.duplicate(true)
 
 
 func merchant_should_trigger_ambush(route_id: String) -> bool:
