@@ -1,4 +1,4 @@
-> **LIVE PROJECT CHECKPOINT — 2026-11-10 (empire management and tactical warfare in progress):** Canonical repository `ninjun42215-gif/KindleWake`; default branch `main`. Active implementation branch: `feature/empire-management-system`. PR #46, “Add Royal Administration and empire management system,” is open and draft: https://github.com/ninjun42215-gif/KindleWake/pull/46. The branch is diverged from `main` and behind by five commits at the latest comparison; always re-check the live comparison before merging. Do not merge before reconciling and passing exact-head validation.
+> **LIVE PROJECT CHECKPOINT — 2026-11-10 (empire management and tactical warfare in progress):** Canonical repository `ninjun42215-gif/KindleWake`; default branch `main`. Active implementation branch: `feature/empire-management-system`. PR #46, “Add Royal Administration and empire management system,” is open and draft: https://github.com/ninjun42215-gif/KindleWake/pull/46. The branch is diverged from `main` and behind by 18 commits at the latest comparison; always re-check the live comparison before merging. Do not merge before reconciling and passing exact-head validation.
 >
 > **Project state:** Godot 4.2 / GL Compatibility, game and Android version `0.12.0`, Android version code `1200`, save schema `4`. Preserve all existing systems, JSON data and saves. No version/schema change was needed.
 >
@@ -163,7 +163,7 @@ Working branch: `feature/empire-management-system`.
 - Field armies outside player-controlled provinces are unsupplied. Seasonal advancement charges upkeep/rations for both garrisons and deployed armies, recalculates supply and refreshes movement.
 - Added regression coverage for mobilization, garrison transfer, invalid troop types, adjacency, one-move limit, supply refresh and save normalization. Tests are not executed yet.
 - Next: add destructible fort gates/walls and dedicated ballista/trebuchet units; then trade routes, faction AI, rebellion warnings and negotiated peace. Keep the dynasty/family mode post-campaign only.
-- Branch is currently five commits behind `main`; reconcile before merge. No current exact-head validation is claimed.
+- Branch is currently 18 commits behind `main`; reconcile before merge. No current exact-head validation is claimed.
 
 
 ## 2026-11-10 — Trade, diplomacy, unrest and advanced siege expansion
