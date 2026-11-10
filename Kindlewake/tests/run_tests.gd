@@ -2043,26 +2043,41 @@ func _test_campaign_save_semantic_backup_fallback() -> void:
     var slot := "kw_semantic_recovery_test"
     ss.delete_slot(slot)
     check(ss.save_slot(slot, valid_payload, "valid campaign fixture"), "valid campaign fixture is saved")
-    var invalid_primary: Dictionary = valid_payload.duplicate(true)
+    var latest_valid: Dictionary = valid_payload.duplicate(true)
+    latest_valid["party"]["gold"] = 30
+    check(ss.save_slot(slot, latest_valid, "newest valid campaign"), "second valid campaign save rotates a valid backup")
+    var invalid_primary: Dictionary = latest_valid.duplicate(true)
     invalid_primary["party"]["sheets"]["torren"]["personality"] = []
-    check(ss.save_slot(slot, invalid_primary, "newer malformed campaign"), "malformed campaign fixture is written for recovery")
+    check(not ss.save_slot(slot, invalid_primary, "malformed campaign"), "save system refuses malformed campaign data before overwriting a valid save")
+    var still_valid: Dictionary = ss.load_slot(slot)
+    check(bool(still_valid.get("ok", false)) and not bool(still_valid.get("from_backup", true)) and int(still_valid["payload"]["party"]["gold"]) == 30, "rejected malformed save leaves the valid primary untouched")
+
+    check(_write_raw_save_envelope(slot, invalid_primary, ss.SAVE_VERSION), "test writes a checksum-valid malformed legacy primary")
     var recovered: Dictionary = ss.load_slot(slot)
     check(bool(recovered.get("ok", false)) and bool(recovered.get("from_backup", false)), "checksum-valid but semantically invalid primary falls back to valid backup")
-    check(RegionSaveState.is_valid_campaign_payload(recovered.get("payload", {})), "semantic backup recovery returns a structurally valid campaign")
+    check(RegionSaveState.is_valid_campaign_payload(recovered.get("payload", {})) and int(recovered["payload"]["party"]["gold"]) == 25, "semantic backup recovery returns the previous valid campaign")
     ss.delete_slot(slot)
 
     var future_slot := "kw_future_recovery_test"
     ss.delete_slot(future_slot)
     check(ss.save_slot(future_slot, valid_payload, "older compatible campaign"), "compatible backup fixture is saved")
-    var future_payload_text := JSON.stringify(valid_payload)
-    var future_envelope := {
-        "meta": {"save_version": 99, "game_version": "99.0.0", "unix": Time.get_unix_time_from_system()},
-        "payload": future_payload_text,
-        "checksum": ss.checksum_of(future_payload_text)
-    }
-    var future_file := FileAccess.open(ss.slot_path(future_slot), FileAccess.WRITE)
-    future_file.store_string(JSON.stringify(future_envelope))
-    future_file.close()
+    check(ss.save_slot(future_slot, latest_valid, "current compatible primary"), "current compatible primary is saved")
+    check(_write_raw_save_envelope(future_slot, valid_payload, 99), "test writes a checksum-valid future-version primary")
     var future_result: Dictionary = ss.load_slot(future_slot)
     check(not bool(future_result.get("ok", false)) and str(future_result.get("error", "")).contains("newer version"), "future-version primary is never silently downgraded to an older backup")
     ss.delete_slot(future_slot)
+
+
+func _write_raw_save_envelope(slot: String, payload: Dictionary, version: int) -> bool:
+    var payload_text := JSON.stringify(payload)
+    var envelope := {
+        "meta": {"save_version": version, "game_version": "test", "unix": Time.get_unix_time_from_system()},
+        "payload": payload_text,
+        "checksum": ss.checksum_of(payload_text)
+    }
+    var file := FileAccess.open(ss.slot_path(slot), FileAccess.WRITE)
+    if file == null:
+        return false
+    file.store_string(JSON.stringify(envelope))
+    file.close()
+    return true
