@@ -100,3 +100,8 @@ The PR portfolio should be re-compared against the live main SHA before any acti
 ## Follow-up maintenance candidate — rebased on current main
 
 Branch `fix/headless-resource-cleanup-current-main` is based on main `0785d76c86f6a4b1eafcec54ccb54ca3b5299acc`. It frees the temporary PartyScreen synchronously in the headless UI test, drains deferred child-node deletion over two SceneTree frames, releases the GameData Node in the standalone balance report before quitting, and disables Blender import because the tracked tree contains no `.blend` files. This candidate must pass exact-head CI on the rebased source before merge; it changes no gameplay, save schema, game version or permissions.
+
+
+## Tactical AI pathfinding follow-up — 2026-11-10
+
+PR #123 merged a change that passed ally cells to `BattleMap.compute_reach`, but that function intentionally ignored its fifth argument; its test checked only destination occupancy, not the route. Follow-up branch `fix/ai-block-allies-in-approach-paths` adds an explicit opt-in blocker flag and uses it only for AI reach/approach planning, preserving ordinary player ally pass-through. The corridor regression asserts both behaviors. This branch is pending exact-head CI; do not merge until all gates pass.
