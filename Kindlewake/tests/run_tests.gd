@@ -6,6 +6,7 @@ const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
+const FactionSystem = preload("res://scripts/core/faction_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -41,6 +42,7 @@ func _initialize() -> void:
     _test_weapon_skills()
     _test_world()
     _test_world_atlas()
+    _test_faction_politics()
     _test_thalassar_region()
     _test_wraparound_world()
     _test_brinegate_quest()
@@ -859,6 +861,43 @@ func _test_world_atlas() -> void:
     check(regions_ok, "each continent has at least four named regional territories")
     check(current_ok and str(gd.continents.get("current_continent", "")) == "eldrimar", "existing Sethmarch Frontier remains anchored to current continent Eldrimar")
     check(str(gd.continents.get("world_age", "")) != "" and str(gd.continents.get("central_mystery", "")) != "", "global atlas establishes a shared campaign-age mystery")
+
+func _test_faction_politics() -> void:
+    print("[campaign factions and diplomacy]")
+    var definitions: Dictionary = gd.factions
+    var factions: Array = definitions.get("factions", [])
+    check(factions.size() >= 15, "seven-continent faction data includes the major political powers and secret order")
+    var faction_ids: Dictionary = {}
+    for entry in factions:
+        var faction: Dictionary = entry
+        faction_ids[str(faction.get("id", ""))] = true
+    var atlas_region_ids: Dictionary = {}
+    for continent_entry in gd.continents.get("continents", []):
+        for region_entry in (continent_entry as Dictionary).get("regions", []):
+            atlas_region_ids[str((region_entry as Dictionary).get("id", ""))] = true
+    var coverage_ok := atlas_region_ids.size() == definitions.get("regions", {}).size()
+    for region_id in atlas_region_ids.keys():
+        var region: Dictionary = definitions.get("regions", {}).get(str(region_id), {})
+        if region.is_empty() or not faction_ids.has(str(region.get("owner", ""))):
+            coverage_ok = false
+    check(coverage_ok, "every authored atlas region has a valid initial political affiliation")
+    check(str(definitions.get("regions", {}).get("sethmarch", {}).get("owner", "")) == "house_dunmarrow", "Sethmarch begins under the contested Dunmarrow claim")
+    var state: Dictionary = FactionSystem.new_campaign_state(definitions)
+    check(FactionSystem.relation(state, "house_orrowen", "house_vessmoor") == 0 and FactionSystem.relation(state, "house_vessmoor", "house_orrowen") == 0, "new campaigns begin with neutral, symmetric diplomatic relations")
+    check(not FactionSystem.set_diplomatic_state(state, "house_orrowen", "house_vessmoor", "alliance"), "an alliance cannot be formed below the required trust threshold")
+    check(FactionSystem.adjust_relation(state, "house_orrowen", "house_vessmoor", 60, "shared defence"), "authored events can change faction relations")
+    check(FactionSystem.set_diplomatic_state(state, "house_vessmoor", "house_orrowen", "alliance"), "trusted factions can form an alliance regardless of argument order")
+    check(FactionSystem.set_diplomatic_state(state, "house_orrowen", "house_vessmoor", "war"), "campaign events can declare a diplomatic state of war")
+    check(FactionSystem.adjust_relation(state, "house_orrowen", "house_vessmoor", 1000, "test clamp") and FactionSystem.relation(state, "house_orrowen", "house_vessmoor") == 100, "relations clamp safely to the positive bound")
+    check(FactionSystem.transfer_region(state, "sethmarch", "crownlands", "authored succession outcome"), "authored outcomes can transfer a known atlas territory")
+    check(not FactionSystem.transfer_region(state, "unknown_region", "crownlands", "invalid"), "unknown territories cannot be created by a transfer")
+    check(not FactionSystem.transfer_region(state, "sethmarch", "invented_faction", "invalid"), "territory cannot be transferred to an unknown faction")
+    check((state.get("history", []) as Array).size() >= 5, "diplomatic and territorial changes are recorded in bounded campaign history")
+    var restored: Dictionary = FactionSystem.normalize_state(state, definitions)
+    check(restored == state, "faction diplomacy and territorial ownership survive state normalization")
+    var legacy: Dictionary = FactionSystem.normalize_state({}, definitions)
+    check(legacy.get("territories", {}).size() == atlas_region_ids.size(), "legacy saves receive safe default political state for all atlas regions")
+
 
 func _test_thalassar_region() -> void:
     print("[Thalassar / Brinegate Coast]")
