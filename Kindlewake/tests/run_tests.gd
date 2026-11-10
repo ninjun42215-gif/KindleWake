@@ -46,6 +46,7 @@ func _initialize() -> void:
     _test_faction_politics()
     _test_empire_management()
     _test_field_army_supply_attrition()
+    _test_supply_siege_and_tactical_bridge()
     _test_thalassar_region()
     _test_wraparound_world()
     _test_brinegate_quest()
@@ -978,6 +979,36 @@ func _test_field_army_supply_attrition() -> void:
     var second: Dictionary = EmpireSystem.advance_season(state, ["sethmarch"])
     check(int(second.get("supply_losses", 0)) == 1 and int(state["field_armies"][army_id]["troops"]["infantry"]) == 19, "prolonged isolation causes deterministic minimum-one troop attrition")
     check(int(state["field_armies"][army_id]["morale"]) == 80, "each unsupplied season reduces field army morale")
+
+
+func _test_supply_siege_and_tactical_bridge() -> void:
+    print("[supply, sieges and tactical deployment]")
+    var regions: Array = ["sethmarch", "orrowen_weald"]
+    var adjacency: Dictionary = {"sethmarch": ["orrowen_weald"], "orrowen_weald": ["sethmarch"]}
+    var state: Dictionary = EmpireSystem.new_state()
+    EmpireSystem.unlock(state)
+    state["treasury"] = 10000
+    check(EmpireSystem.construct(state, "sethmarch", "depot", regions), "a controlled province can build a supply depot")
+    check(EmpireSystem.supply_network(state, regions, adjacency).has("sethmarch"), "depots seed a connected supply network")
+    check(EmpireSystem.is_location_supplied(state, "orrowen_weald", regions, adjacency), "a hostile frontier adjacent to a supplied depot can receive forward supply")
+    check(EmpireSystem.recruit_troops(state, "sethmarch", "infantry", 20, regions), "siege test recruits a field army")
+    var army_id: String = EmpireSystem.mobilize_army(state, "sethmarch", {"infantry": 20}, regions)
+    check(EmpireSystem.move_field_army(state, army_id, "orrowen_weald", adjacency, regions), "field army can move to the frontier")
+    var deployment: Dictionary = EmpireSystem.tactical_deployment(state, army_id)
+    check(bool(deployment.get("ok", false)) and int(deployment.get("roster", [])[0].get("count", 0)) == 20, "strategic troop composition exports a tactical deployment roster")
+    check(EmpireSystem.apply_tactical_result(state, army_id, {"infantry": 2}, true), "tactical battle casualties can be returned to the strategic army")
+    check(int(state["field_armies"][army_id]["troops"]["infantry"]) == 18 and int(state["war_exhaustion"]) == 2, "battle casualties and war exhaustion persist")
+    check(EmpireSystem.start_siege(state, army_id, "orrowen_weald", regions, adjacency), "an army on a hostile frontier can begin a siege")
+    check(not EmpireSystem.start_siege(state, army_id, "sethmarch", regions, adjacency), "friendly provinces cannot be besieged")
+    var season_one: Dictionary = EmpireSystem.advance_season(state, regions, adjacency)
+    var season_two: Dictionary = EmpireSystem.advance_season(state, regions, adjacency)
+    check(int(state["sieges"]["orrowen_weald"]["progress"]) == 4 and int(season_one.get("sieges_advanced", 0)) == 1 and int(season_two.get("sieges_completed", 0)) == 1, "seasonal siege progress reaches a breach with supplied forces")
+    var assault: Dictionary = EmpireSystem.resolve_siege_assault(state, "orrowen_weald", 10, 0)
+    check(bool(assault.get("ok", false)) and bool(assault.get("won", false)) and bool(assault.get("territory_transfer_required", false)), "a successful assault requests an explicit faction territory transfer")
+    check(int(state["war_exhaustion"]) > 2 and EmpireSystem.reduce_war_exhaustion(state, 5), "war exhaustion rises after an assault and can be reduced by a peace action")
+    check(EmpireSystem.complete_siege_transfer(state, "orrowen_weald") and not state["sieges"].has("orrowen_weald"), "completed occupation closes the siege record")
+    var restored: Dictionary = EmpireSystem.normalize_state(state)
+    check(restored.get("sieges", {}).is_empty() and int(restored.get("war_exhaustion", 0)) >= 0, "siege and exhaustion data normalize safely for campaign saves")
 
 
 func _test_thalassar_region() -> void:
