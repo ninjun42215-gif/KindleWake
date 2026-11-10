@@ -122,6 +122,8 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
   person["alive"] = bool(person.get("alive",false))
   people[id] = person
  state["people"] = people
+ if not people.has(str(state.get("founder_id",""))):
+  return {}
  var saved_titles: Variant = state.get("titles",{})
  var saved_domains: Variant = state.get("domains",{})
  state["titles"] = saved_titles.duplicate(true) if typeof(saved_titles) == TYPE_DICTIONARY else {}
