@@ -326,8 +326,9 @@ func _launch_act_two_challenge(story_id: String) -> void:
         spot_text.text += "\n\nThis scenario is not currently available."
         return
     GameState.pending_location = current_map_id
-    GameState.world_flags["_pending_act_two_challenge"] = story_id
-    GameState.world_flags["_pending_act_two_challenge_step"] = 0
+    if str(GameState.world_flags.get("_pending_act_two_challenge", "")) != story_id:
+        GameState.world_flags["_pending_act_two_challenge"] = story_id
+        GameState.world_flags["_pending_act_two_challenge_step"] = 0
     get_tree().change_scene_to_file("res://ActTwoQuestChallenge.tscn")
 
 func _launch_opening_challenge(story_id: String) -> void:
