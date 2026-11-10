@@ -577,8 +577,6 @@ func _show_result() -> void:
         var clear_flag: String = str(battle_def.get("world_flag_on_victory", ""))
         if clear_flag != "":
             GameState.world_flags[clear_flag] = true
-        if str(battle_def.get("return_scene", "")) != "":
-            GameState.save_campaign("auto_a")
     if not exp_awarded:
         exp_awarded = true
         battle_rewards = GameState.award_battle(controller.units, controller.result)
@@ -594,6 +592,8 @@ func _show_result() -> void:
         result_text.text += "\n\n" + _rewards_summary(battle_rewards)
     elif not won:
         result_text.text += "\nA lost battle pays no EXP, AP or gold."
+    if won and str(battle_def.get("return_scene", "")) != "":
+        GameState.save_campaign("auto_a")
     result_panel.visible = true
     _refresh_ui()
 
