@@ -175,8 +175,8 @@ func _test_holding_system() -> void:
             break
     var beacon_locked: Dictionary = HoldingSystem.inspect(beacon, flags)
     check(not bool(beacon_locked.get("available", true)), "Veyhaven Beacon remains unclaimable until Stormwell is restored")
-    flags["stormwell_grounding_solved"] = true
-    check(bool(HoldingSystem.inspect(beacon, flags).get("available", false)), "restoring Stormwell unlocks the beacon stewardship claim")
+    flags["dungeon_stormwell_cleared"] = true
+    check(bool(HoldingSystem.inspect(beacon, flags).get("available", false)), "defeating Stormwell guardian unlocks the beacon stewardship claim")
 
 
 func _test_dungeon_mechanisms() -> void:
