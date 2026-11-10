@@ -5,6 +5,7 @@ const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const EmpireEconomySystem = preload("res://scripts/core/empire_economy_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
 
@@ -54,6 +55,27 @@ func new_game(profile: Dictionary = {}) -> void:
     world_flags = {}
     pending_location = ""
     faction_state = FactionSystem.new_campaign_state(GameData.factions)
+
+
+## Assign troops to a claimed holding. Garrison upkeep is charged only on an explicit empire turn.
+func assign_holding_garrison(holding_id: String, unit_count: int) -> Dictionary:
+    return EmpireEconomySystem.assign_garrison(holding_id, unit_count, world_flags)
+
+
+## Change the local administration of a claimed holding.
+func set_holding_governance(holding_id: String, governance_id: String) -> Dictionary:
+    return EmpireEconomySystem.set_governance(holding_id, governance_id, world_flags)
+
+
+## Advance one deliberate empire turn; exploration and offline time never trigger upkeep.
+func advance_empire_turn(holding_definitions: Array) -> Dictionary:
+    var result: Dictionary = EmpireEconomySystem.advance_turn(holding_definitions, world_flags, party.gold)
+    if not bool(result.get("ok", false)):
+        return result
+    party.gold = int(result.get("treasury_after", party.gold))
+    world_flags["empire_turn"] = int(world_flags.get("empire_turn", 0)) + 1
+    world_flags["empire_last_report"] = result.get("reports", []).duplicate(true)
+    return result
 
 
 ## Change diplomatic standing after an authored campaign event.
