@@ -1,6 +1,6 @@
-# Character Traits and Personality — Implementation Notes
+# Character Traits and Personality — Mainline Implementation Notes
 
-## Delivered in this branch
+## Implemented on main
 
 This is the first runtime implementation slice of the KindleWake trait/personality design. It adds a data-driven foundation without replacing the existing company, character-sheet, equipment, rune, battle, or save systems.
 
@@ -10,7 +10,7 @@ This is the first runtime implementation slice of the KindleWake trait/personali
 - `scripts/core/personality_system.gd`: bounded stress, stress bands, bounded memories, deduplicated behavior evidence, contextual event requirements, and event-driven trait awards.
 - `CharacterSheet`: traits, trait history, stress, memories, behavior evidence, and ambition state are stored with the character. Trait bonuses are calculated from base stats + equipment + runes + traits and never written back into base stats.
 - `GameData` and `GameState`: load the catalogue and expose campaign APIs for recording evidence, resolving authored character events, and progressing ambitions.
-- `PartyScreen`: shows traits and their effects, active synergies, stress band, current ambition summary, and recent memories in the existing character sheet. The current Company layout and gear/rune/shop tabs remain intact.
+- `PartyScreen`: shows traits and their effects, active synergies, stress band, current ambition summary, and recent memories in the existing character sheet. The current Company layout and gear/rune/shop tabs remain intact. Ambition summaries are visible, but a complete player-facing assignment/selection workflow and broad evidence triggers remain follow-up work.
 - `tests/run_tests.gd`: adds coverage for catalogue loading, acquisition, conflicts, duplicate prevention, derived effects, synergies, evolution, permanent-trait protection, event awards, duplicate evidence, stress bounds, ambitions, serialization, and legacy character data.
 
 ## Compatibility and safety
