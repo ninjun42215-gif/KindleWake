@@ -51,3 +51,8 @@ The Last Convoy and The First Oath now launch dedicated tactical encounters thro
 - Boss battles are not exposed as random overworld encounters and do not show the normal overworld flee option.
 
 These are data-driven tactical encounters using existing combat systems. Unique multi-phase boss AI, bespoke animated boss sprites and custom attack VFX remain future polish work; the current boss identity comes from their dedicated stats, skills, retainers, terrain and story-specific victory conditions.
+
+
+## Multi-phase boss behavior
+
+Both Act I commanders now have two authored health-threshold transitions. They are evaluated after damage resolution and before commander-defeat checks. Hask escalates into a desperate forward surge and then a high-accuracy finishing assault. The Ash Bailiff moves from renewed conviction to a precise final-clause assault. Phase payloads adjust combat stats and morale, with a small one-time recovery on the first transition. Phase markers live in the serialized BattleUnit status dictionary, so restored battles do not replay a transition. This is combat-state and battle-log feedback only; bespoke boss animations, cinematic camera work and custom VFX assets are not included.
