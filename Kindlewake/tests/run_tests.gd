@@ -951,8 +951,9 @@ func _test_thalassar_region() -> void:
     check(not bool(RecruitmentSystem.inspect(neris_party, "neris_quell", neris_definition, {}).get("available", true)), "Neris remains unavailable before the signal and wreck milestones")
     var neris_flags: Dictionary = {"maren_signal_solved": true, "northstar_wreck_cleared": true, "northstar_wreck_log_found": true}
     check(bool(RecruitmentSystem.inspect(neris_party, "neris_quell", neris_definition, neris_flags).get("available", false)), "Neris becomes recruitable after the Northstar Wreck is cleared and the log recovered")
-    var neris_recruit: Dictionary = RecruitmentSystem.recruit(neris_party, "neris_quell", neris_definition, neris_flags)
+    var neris_recruit: Dictionary = RecruitmentSystem.recruit(neris_party, "neris_quell", neris_definition, neris_flags, {}, gd.traits)
     check(bool(neris_recruit.get("ok", false)) and neris_party.roster.has("neris_quell"), "recruiting Neris adds her to the company without a gold fee")
+    check(int(neris_recruit.get("traits_applied", 0)) == 4 and neris_party.sheet("neris_quell").traits.has("observant") and neris_party.sheet("neris_quell").traits.has("survivalist"), "Neris's authored traits are acquired on recruitment rather than altering base content stats")
     var neris_bonds: Dictionary = {}
     check(RecruitmentSystem.apply_relationship_on_join(neris_bonds, "torren", "neris_quell", neris_definition) == 2, "Neris's authored recruitment scene establishes trust and respect")
     var neris_bond: Dictionary = RelationshipSystemScript.get_relationship(neris_bonds, "torren", "neris_quell")
