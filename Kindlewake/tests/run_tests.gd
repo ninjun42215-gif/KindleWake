@@ -12,6 +12,7 @@ const MarenQuestSystem = preload("res://scripts/core/maren_quest_system.gd")
 const NerisQuestSystem = preload("res://scripts/core/neris_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const EmpireSystem = preload("res://scripts/core/empire_system.gd")
 const ArtScript = preload("res://scripts/ui/art.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
@@ -53,6 +54,7 @@ func _initialize() -> void:
     _test_world()
     _test_world_atlas()
     _test_faction_politics()
+    _test_empire_governance()
     _test_thalassar_region()
     _test_wraparound_world()
     _test_brinegate_quest()
@@ -974,6 +976,38 @@ func _test_faction_politics() -> void:
     check(restored == state, "faction diplomacy and territorial ownership survive state normalization")
     var legacy: Dictionary = FactionSystem.normalize_state({}, definitions)
     check(legacy.get("territories", {}).size() == atlas_region_ids.size(), "legacy saves receive safe default political state for all atlas regions")
+
+
+func _test_empire_governance() -> void:
+    print("[empire governance]")
+    var definitions: Dictionary = gd.factions
+    var faction_state: Dictionary = FactionSystem.new_campaign_state(definitions)
+    var state: Dictionary = EmpireSystem.new_campaign_state("house_dunmarrow", 1500)
+    var summary: Dictionary = EmpireSystem.realm_summary(state, faction_state)
+    check(int(summary.get("owned_regions", 0)) == 0, "realm finance counts only territories held by the ruler")
+    check(EmpireSystem.set_tax_rate(state, 0.15) and is_equal_approx(float(state.tax_rate), 0.15), "realm tax rate accepts a valid policy setting")
+    check(not EmpireSystem.set_tax_rate(state, 0.40) and is_equal_approx(float(state.tax_rate), 0.15), "realm tax rate rejects values above the hard cap")
+    check(not EmpireSystem.appoint_governor(state, faction_state, "sethmarch", "torren", ["torren"]), "contested territories cannot receive a governor before they are secured")
+    FactionSystem.transfer_region(faction_state, "aurelmont", "house_dunmarrow", "test:territorial-recovery")
+    check(not EmpireSystem.appoint_governor(state, faction_state, "aurelmont", "unknown_companion", ["torren"]), "governors must be selected from the eligible company roster")
+    check(EmpireSystem.appoint_governor(state, faction_state, "aurelmont", "torren", ["torren"]), "the ruler can appoint an eligible companion to a held region")
+    check(not EmpireSystem.appoint_governor(state, faction_state, "brinegate_coast", "torren", ["torren"]), "governors cannot be appointed in another faction's territory")
+    var poor: Dictionary = EmpireSystem.enact_policy(EmpireSystem.new_campaign_state("house_dunmarrow", 100), "granaries")
+    check(not bool(poor.get("ok", true)), "realm policies cannot be enacted without sufficient treasury funds")
+    var policy: Dictionary = EmpireSystem.enact_policy(state, "granaries")
+    check(bool(policy.get("ok", false)) and int(state.treasury) == 1200, "enacting a policy charges its cost exactly once")
+    check(not bool(EmpireSystem.enact_policy(state, "granaries").get("ok", true)), "an active realm policy cannot be purchased twice")
+    var finances: Dictionary = EmpireSystem.estimate_monthly_finances(state, faction_state)
+    check(int(finances.get("regions", 0)) == 1 and int(finances.get("income", 0)) > int(finances.get("upkeep", 0)), "monthly finances reflect controlled regions, tax rate and active granary policy")
+    var settlement: Dictionary = EmpireSystem.advance_month(state, faction_state, "year-1-month-1")
+    check(bool(settlement.get("ok", false)) and int(settlement.get("month_index", 0)) == 1, "monthly realm settlement updates treasury and stability")
+    var treasury_after: int = int(state.treasury)
+    check(not bool(EmpireSystem.advance_month(state, faction_state, "year-1-month-1").get("ok", true)) and int(state.treasury) == treasury_after, "a month token cannot be settled twice to farm treasury")
+    check(EmpireSystem.advance_month(state, faction_state, "year-1-month-2").ok, "a new month can be settled once")
+    var restored: Dictionary = EmpireSystem.normalize_state(state, ["house_dunmarrow", "crownlands"])
+    check(restored == state, "realm treasury, governors, policies and settlement history survive normalization")
+    var legacy: Dictionary = EmpireSystem.normalize_state({})
+    check(int(legacy.get("treasury", -1)) == 1200 and int(legacy.get("stability", -1)) == 65, "legacy campaigns receive safe default realm values")
 
 
 func _test_thalassar_region() -> void:
