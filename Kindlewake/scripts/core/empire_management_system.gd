@@ -560,7 +560,7 @@ static func build_tactical_battle(state: Dictionary, army_id: String, base_battl
 		var remaining := int(entry.get("count", 0))
 		var cohort_index := 0
 		while remaining > 0 and cell_index < cells.size():
-			var cohort_count := mini(5, remaining)
+			var cohort_count := mini(8, remaining)
 			var unit_id := "strategic_%s_%s_%d" % [army_id, troop_type, cohort_index]
 			var cell: Vector2i = cells[cell_index]
 			units.append({"character_id": unit_id, "team": "player", "cell": [cell.x, cell.y], "facing": 0, "name": "%s Cohort" % troop_type.capitalize()})
