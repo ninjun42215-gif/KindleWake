@@ -48,6 +48,7 @@ func _initialize() -> void:
     _test_locations()
     _test_shop_and_screen()
     _test_save_system()
+    _test_campaign_restore_validation()
     _simulate_battles(30)
     print("")
     print("Checks: %d   Failures: %d" % [checks, failures])
@@ -1439,6 +1440,43 @@ func _sigil_index(party: PartyState, sigil_id: String) -> int:
             return i
     return -1
 
+
+
+func _test_campaign_restore_validation() -> void:
+    print("[campaign restore validation]")
+    var member := {
+        "character_id": "torren",
+        "base_stats": {"hp": 100, "str": 10},
+        "skills": [],
+        "equipment": {},
+        "sigils": {},
+    }
+    var payload := {
+        "campaign": true,
+        "party": {
+            "roster": ["torren"],
+            "sheets": {"torren": member},
+            "inventory": {},
+            "sigil_inv": [],
+        },
+        "creation_profile": {},
+        "world_flags": {},
+        "world_pos": [0.0, 0.0],
+        "world_positions": {},
+    }
+    check(GameState.is_valid_campaign_payload(payload), "a structurally valid new campaign can be restored")
+    var missing_party: Dictionary = payload.duplicate(true)
+    missing_party.erase("party")
+    check(not GameState.is_valid_campaign_payload(missing_party), "campaign restore rejects a missing party")
+    var missing_sheet: Dictionary = payload.duplicate(true)
+    missing_sheet["party"]["sheets"] = {}
+    check(not GameState.is_valid_campaign_payload(missing_sheet), "campaign restore rejects roster entries without character sheets")
+    var malformed_position: Dictionary = payload.duplicate(true)
+    malformed_position["world_pos"] = ["north", null]
+    check(not GameState.is_valid_campaign_payload(malformed_position), "campaign restore rejects malformed world coordinates")
+    var malformed_inventory: Dictionary = payload.duplicate(true)
+    malformed_inventory["party"]["inventory"] = []
+    check(not GameState.is_valid_campaign_payload(malformed_inventory), "campaign restore rejects invalid inventory structures")
 
 func _test_save_system() -> void:
     print("[save system]")
