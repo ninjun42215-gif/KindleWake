@@ -1930,8 +1930,11 @@ func _test_territory_governance() -> void:
     check(TerritoryGovernance.set_policy(state, "sethmarch", {"tax_rate":0.25, "garrison":150, "fortification":9}, "house_dunmarrow"), "the controlling faction can set regional governance policies")
     var managed: Dictionary = state["territories"]["sethmarch"]
     check(float(managed["tax_rate"]) == 0.25 and int(managed["garrison"]) == 150 and int(managed["fortification"]) == 5, "taxes, garrisons and fortifications are clamped to safe limits")
-    var turn: Dictionary = TerritoryGovernance.advance_turn(state)
+    var turn: Dictionary = TerritoryGovernance.advance_turn(state, "house_dunmarrow")
     check(int(turn.get("tax_income", 0)) > 0 and int(managed["unrest"]) > 10, "governance turns calculate tax income and high-tax unrest")
+    var foreign_before: int = int(state["territories"]["brinegate_coast"]["unrest"])
+    var foreign_turn: Dictionary = TerritoryGovernance.advance_turn(state, "house_dunmarrow")
+    check(not foreign_turn.get("unresting_regions", []).has("brinegate_coast") and int(state["territories"]["brinegate_coast"]["unrest"]) == foreign_before, "governance turns never collect taxes or change unrest in foreign-owned regions")
     check(TerritoryGovernance.capture(state, "sethmarch", "house_brennhallow", gd.factions, "battle:frontier-fort"), "authored conquest transfers a known region to a valid faction")
     managed = state["territories"]["sethmarch"]
     check(str(managed["owner"]) == "house_brennhallow" and int(managed["unrest"]) == 55 and int(managed["garrison"]) == 0, "newly captured territory begins with occupation instability")
