@@ -598,6 +598,8 @@ func _show_result() -> void:
         result_text.text += "\nA lost battle pays no EXP, AP or gold."
     result_panel.visible = true
     _refresh_ui()
+    if GameState.from_world:
+        GameState.save_campaign("auto_a")
 
 
 ## True when the AI should take this unit's turn: always for enemies, and for the player's units while Auto Battle is on.
