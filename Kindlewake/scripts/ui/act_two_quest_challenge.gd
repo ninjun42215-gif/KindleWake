@@ -156,23 +156,23 @@ func _choose(result: String) -> void:
     elif result == "formation_shield":
         flags["act2_escort_formation"] = "civilian_screen"
     elif result in ["shared_stewardship", "temporary_survey"]:
-        var outcome: Dictionary = ActTwoQuestSystem.apply_boundary(flags, result)
-        if not bool(outcome.get("ok", false)):
-            feedback_label.text = str(outcome.get("reason", "The settlement could not be recorded."))
+        var boundary_outcome: Dictionary = ActTwoQuestSystem.apply_boundary(flags, result)
+        if not bool(boundary_outcome.get("ok", false)):
+            feedback_label.text = str(boundary_outcome.get("reason", "The settlement could not be recorded."))
             return
-        flags = outcome.world_flags
+        flags = boundary_outcome.world_flags
     elif result in ["protect_witness", "publish_verified_record"]:
-        var outcome: Dictionary = ActTwoQuestSystem.apply_hearing(flags, result)
-        if not bool(outcome.get("ok", false)):
-            feedback_label.text = str(outcome.get("reason", "The hearing could not be recorded."))
+        var hearing_outcome: Dictionary = ActTwoQuestSystem.apply_hearing(flags, result)
+        if not bool(hearing_outcome.get("ok", false)):
+            feedback_label.text = str(hearing_outcome.get("reason", "The hearing could not be recorded."))
             return
-        flags = outcome.world_flags
+        flags = hearing_outcome.world_flags
     elif result in ["obey_writ", "grant_sanctuary", "negotiate_passage"]:
-        var outcome: Dictionary = ActTwoQuestSystem.apply_escort(flags, result)
-        if not bool(outcome.get("ok", false)):
-            feedback_label.text = str(outcome.get("reason", "The escort decision could not be recorded."))
+        var escort_outcome: Dictionary = ActTwoQuestSystem.apply_escort(flags, result)
+        if not bool(escort_outcome.get("ok", false)):
+            feedback_label.text = str(escort_outcome.get("reason", "The escort decision could not be recorded."))
             return
-        flags = outcome.world_flags
+        flags = escort_outcome.world_flags
     GameState.world_flags = flags
     step += 1
     GameState.world_flags["_pending_act_two_challenge_step"] = step
