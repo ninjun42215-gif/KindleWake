@@ -275,6 +275,8 @@ func try_attack(unit: BattleUnit, target: BattleUnit) -> bool:
         unit.kills += 1
         unit.kill_exp += CombatCalc.kill_exp(target)
         _apply_kill_morale(unit, target)
+    else:
+        evaluate_boss_phase(target)
     _check_end()
     state_changed.emit()
     return true
@@ -336,6 +338,49 @@ func _cast_damage(unit: BattleUnit, skill_id: String, sk: Dictionary, target: Ba
         unit.kill_exp += CombatCalc.kill_exp(target)
         _apply_kill_morale(unit, target)
     _check_end()
+    state_changed.emit()
+    return true
+
+
+## Applies the next authored boss phase once its HP threshold is crossed.
+## Phase changes are deterministic and live on BattleUnit, so saves/restores cannot retrigger them.
+func evaluate_boss_phase(unit: BattleUnit) -> bool:
+    if unit == null or not unit.is_alive() or not unit.is_commander:
+        return false
+    var phases: Array = def.get("boss_phases", [])
+    if unit.boss_phase_index >= phases.size():
+        return false
+    var phase: Dictionary = phases[unit.boss_phase_index]
+    var threshold: float = clampf(float(phase.get("trigger_below_pct", 50.0)), 1.0, 99.0)
+    var hp_pct: float = float(unit.hp) * 100.0 / float(unit.max_hp())
+    if hp_pct > threshold:
+        return false
+    var phase_number: int = unit.boss_phase_index + 2
+    unit.boss_phase_index += 1
+    var str_bonus: int = int(phase.get("strength_bonus", 0))
+    var spd_bonus: int = int(phase.get("speed_bonus", 0))
+    unit.stats["str"] = unit.stat("str") + str_bonus
+    unit.stats["spd"] = unit.stat("spd") + spd_bonus
+    unit.armor_def += int(phase.get("armor_def_bonus", 0))
+    var heal_amount: int = mini(unit.max_hp() - unit.hp, maxi(0, int(phase.get("heal", 0))))
+    unit.hp += heal_amount
+    for skill_value in phase.get("add_skills", []):
+        var skill_id := str(skill_value)
+        if skills.has(skill_id) and not unit.skills.has(skill_id):
+            unit.skills.append(skill_id)
+    var phase_name := str(phase.get("name", "Desperation"))
+    var message := str(phase.get("message", "%s enters a new phase." % unit.display_name))
+    log_message.emit(message)
+    log_message.emit("%s gains +%d STR, +%d SPD, +%d DEF and recovers %d HP." % [unit.display_name, str_bonus, spd_bonus, int(phase.get("armor_def_bonus", 0)), heal_amount])
+    unit_acted.emit(unit.id, "boss_phase", {
+        "phase": phase_number,
+        "name": phase_name,
+        "strength_bonus": str_bonus,
+        "speed_bonus": spd_bonus,
+        "armor_def_bonus": int(phase.get("armor_def_bonus", 0)),
+        "healed": heal_amount,
+        "vfx": str(phase.get("vfx", "rage")),
+    })
     state_changed.emit()
     return true
 
