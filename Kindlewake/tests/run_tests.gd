@@ -209,10 +209,13 @@ func _test_act_one_tactical_bosses() -> void:
             if not gd.characters.has(cid):
                 all_units_valid = false
         check(commander_found, battle_id + " has its boss as the commander objective")
+        var boss_skills: Array = gd.characters[boss_id].get("skills", [])
+        check(not boss_skills.is_empty(), battle_id + " boss has signature combat skills")
         check(all_units_valid, battle_id + " references only existing character data")
         check((def.get("units", []) as Array).size() >= 7, battle_id + " includes a full tactical encounter roster")
     check(int(gd.characters["hask_convoy_champion"].stats.hp) >= 90, "Hask has dedicated boss-grade health")
     check(int(gd.characters["ash_bailiff"].stats.hp) >= 100, "Ash Bailiff has dedicated boss-grade health")
+    check(str(gd.battles["act1_ash_bailiff_boss"].get("battlefield", "")) == "hall_of_ash", "Ash Bailiff uses a distinct indoor battlefield")
 
 
 func _test_escape_mission() -> void:
