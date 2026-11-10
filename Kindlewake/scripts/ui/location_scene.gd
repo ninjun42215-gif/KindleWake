@@ -319,7 +319,13 @@ func _build_companion_quest_actions(spot: Dictionary) -> void:
         spot_text.text += "\\n\\nAll objectives are recorded. Return to the companion's designated story contact to make the concluding choice."
         return
     if progress < milestones.size() and str(milestones[progress]) == milestone:
-        spot_buttons.add_child(_btn("Record this objective", _advance_companion_quest.bind(quest_id, milestone)))
+        var challenge: Dictionary = spot.get("companion_quest_challenge", {})
+        if not challenge.is_empty():
+            spot_text.text += "\\n\\n" + str(challenge.get("prompt", "Examine the evidence and choose the best conclusion."))
+            for option in challenge.get("options", []):
+                spot_buttons.add_child(_btn(str(option), _attempt_companion_quest_challenge.bind(quest_id, milestone, str(option), challenge)))
+        else:
+            spot_buttons.add_child(_btn("Record this objective", _advance_companion_quest.bind(quest_id, milestone)))
     elif progress > milestones.find(milestone):
         spot_text.text += "\\n\\nThis part of the record has already been secured."
     else:
@@ -338,6 +344,15 @@ func _advance_companion_quest(quest_id: String, milestone_id: String) -> void:
             (child as Button).disabled = true
 
 
+func _attempt_companion_quest_challenge(quest_id: String, milestone_id: String, selected_option: String, challenge: Dictionary) -> void:
+    var correct_option := str(challenge.get("correct_option", ""))
+    if correct_option == "" or selected_option != correct_option:
+        spot_text.text += "\\n\\n" + str(challenge.get("failure_text", "That interpretation does not fit the evidence. Examine the clues again."))
+        return
+    spot_text.text += "\\n\\n" + str(challenge.get("success_text", "The evidence fits. The objective is secured."))
+    _advance_companion_quest(quest_id, milestone_id)
+
+
 func _resolve_companion_quest(quest_id: String, outcome: String) -> void:
     var result: Dictionary = GameState.resolve_companion_quest(quest_id, outcome)
     if not bool(result.get("ok", false)):
@@ -347,6 +362,10 @@ func _resolve_companion_quest(quest_id: String, outcome: String) -> void:
     var definition: Dictionary = GameData.companion_quests.get(quest_id, {})
     var descriptions: Dictionary = definition.get("outcome_descriptions", {})
     var description := str(descriptions.get(outcome, "The companion's decision is recorded. This outcome can now be referenced by later story events."))
+    var outcome_flags: Dictionary = definition.get("outcome_flags", {})
+    var outcome_flag := str(outcome_flags.get(outcome, ""))
+    if outcome_flag != "":
+        GameState.world_flags[outcome_flag] = true
     var reward_flag := "companion_quest_rewarded_" + quest_id
     var reward: Dictionary = definition.get("completion_reward", {})
     var gold_reward := maxi(0, int(reward.get("gold", 0)))
