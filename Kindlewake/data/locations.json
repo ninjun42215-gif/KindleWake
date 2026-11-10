@@ -1960,6 +1960,24 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Sanctuary Bell",
+          "tint": [
+            0.82,
+            0.78,
+            0.68
+          ],
+          "text": "The bell at the riverside sanctuary rings for families turned away after armed fugitives exploited its protection.",
+          "companion_quest_id": "q_companion_odaly_open_door",
+          "companion_quest_milestone": "sanctuary_bell_answered",
+          "companion_quest_text": "Odalys must hear why the doors were closed before asking anyone to reopen them. The sanctuary's faith community is not the secret Covenant faction.",
+          "cell": [
+            5,
+            5
+          ]
         }
       ]
     },
@@ -1999,6 +2017,35 @@
           "npc": true,
           "name": "Innkeeper",
           "text": "The Ferry House offers a meal and a bed for 20 gold."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Rule of Shelter",
+          "tint": [
+            0.76,
+            0.84,
+            0.78
+          ],
+          "text": "A keeper, two residents and a family waiting outside each describe a different fear.",
+          "companion_quest_id": "q_companion_odaly_open_door",
+          "companion_quest_milestone": "shelter_rules_agreed",
+          "companion_quest_text": "Hear the residents, keepers and threatened families separately. Draft rules that protect people seeking refuge while allowing credible threats to be handled through due process.",
+          "companion_quest_challenge": {
+            "prompt": "Which temporary rule protects sanctuary without granting immunity for violence?",
+            "options": [
+              "Admit families, separate immediate threats, investigate specific allegations fairly and never punish a household for another person's actions",
+              "Turn away every newcomer until the armed fugitives are found",
+              "Promise that anyone inside can never be questioned or held accountable"
+            ],
+            "correct_option": "Admit families, separate immediate threats, investigate specific allegations fairly and never punish a household for another person's actions",
+            "success_text": "The rule protects families, addresses immediate danger and preserves fair process for specific allegations.",
+            "failure_text": "Blanket exclusion abandons those in need; blanket immunity leaves others unsafe. Safeguards must do both jobs."
+          },
+          "cell": [
+            8,
+            3
+          ]
         }
       ]
     },
@@ -2038,6 +2085,24 @@
           "npc": true,
           "name": "Market Factor",
           "text": "Ferry traders sell river gear and imported goods. The factor can access your party shop."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "At the Threshold",
+          "tint": [
+            0.84,
+            0.74,
+            0.66
+          ],
+          "text": "The armed pursuers reach the sanctuary road. The families are ready to move, but the keepers refuse to abandon the infirm and the elderly.",
+          "companion_quest_id": "q_companion_odaly_open_door",
+          "companion_quest_milestone": "threshold_defended",
+          "companion_quest_text": "The pursuers arrive. Odalys can negotiate a surrender, organise an escorted evacuation or defend the perimeter while keeping a clear route for civilians. Choose the refuge's lasting path after the immediate danger is contained.",
+          "cell": [
+            8,
+            3
+          ]
         }
       ]
     },
@@ -2158,6 +2223,24 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Misbound Volume",
+          "tint": [
+            0.78,
+            0.76,
+            0.88
+          ],
+          "text": "A library runner has found a catalogue entry that no longer matches the volume on its shelf.",
+          "companion_quest_id": "q_companion_orlan_margin_of_truth",
+          "companion_quest_milestone": "misbound_volume_found",
+          "companion_quest_text": "Orlan recognises a reference to a conscription-limit clause that has been removed from the public catalogue. Find the surviving volume and establish where it came from.",
+          "cell": [
+            5,
+            5
+          ]
         }
       ]
     },
@@ -2197,6 +2280,35 @@
           "npc": true,
           "name": "Innkeeper",
           "text": "The Garrison Inn provides a guarded room for 20 gold."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Marginal Hand",
+          "tint": [
+            0.76,
+            0.82,
+            0.86
+          ],
+          "text": "A bookbinder remembers repairing the disputed volume and kept a rubbing of its damaged binding.",
+          "companion_quest_id": "q_companion_orlan_margin_of_truth",
+          "companion_quest_milestone": "source_provenance_verified",
+          "companion_quest_text": "Compare the handwriting, binding marks and duplicate copies. Provenance must be established from physical evidence, not from a convenient confession.",
+          "companion_quest_challenge": {
+            "prompt": "Which combination best verifies that the annotation belongs to the original volume?",
+            "options": [
+              "Matching ink alone, without checking the book",
+              "The same hand in a dated duplicate, matching binding marks and an unbroken catalogue trail",
+              "A custodian's claim that the note looks old"
+            ],
+            "correct_option": "The same hand in a dated duplicate, matching binding marks and an unbroken catalogue trail",
+            "success_text": "The dated duplicate and matching binding marks establish a credible chain of provenance for the annotation.",
+            "failure_text": "A single visual impression or an unsupported claim cannot establish provenance. Compare independent physical records."
+          },
+          "cell": [
+            8,
+            3
+          ]
         }
       ]
     },
@@ -2236,6 +2348,24 @@
           "npc": true,
           "name": "Market Factor",
           "text": "The mile market stocks practical arms and armour for the southern road."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Archive Custodian",
+          "tint": [
+            0.82,
+            0.77,
+            0.68
+          ],
+          "text": "An archive custodian offers access to the sealed register, but asks Orlan to suppress a politically dangerous annotation.",
+          "companion_quest_id": "q_companion_orlan_margin_of_truth",
+          "companion_quest_milestone": "archive_access_resolved",
+          "companion_quest_text": "The annotation is verified. The custodian will permit access only if the record is handled responsibly; decide whether to publish, deposit independent copies or redact vulnerable names.",
+          "cell": [
+            8,
+            3
+          ]
         }
       ]
     },
