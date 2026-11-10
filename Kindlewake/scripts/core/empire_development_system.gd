@@ -87,6 +87,33 @@ static func recover_deployed_recruits(battle_units: Array, battle_definition: Di
     return {"recovered":recovered_total,"lost":deployed_total-recovered_total}
 
 
+static func capture_holding_after_siege(target_holding_id: String, source_holding_id: String, objective_id: String, flags: Dictionary, holding_definitions: Array) -> Dictionary:
+    var siege: Dictionary = flags.get("siege_" + objective_id, {})
+    if str(siege.get("status", "")) != "resolved" or str(siege.get("origin", "")) != source_holding_id:
+        return {"ok":false,"reason":"A resolved victory from the recorded staging holding is required."}
+    var target: Dictionary = {}
+    for definition in holding_definitions:
+        if str(definition.get("id", "")) == target_holding_id:
+            target = definition
+            break
+    if target.is_empty():
+        return {"ok":false,"reason":"Unknown holding."}
+    if bool(flags.get("holding_claimed_" + target_holding_id, false)) and str(flags.get("holding_owner_" + target_holding_id, "")) == PLAYER_FACTION:
+        return {"ok":false,"reason":"This holding is already administered by the player."}
+    var old_owner := str(flags.get("holding_owner_" + target_holding_id, target.get("owner", "unknown")))
+    flags["holding_claimed_" + target_holding_id] = true
+    flags["holding_owner_" + target_holding_id] = PLAYER_FACTION
+    flags["holding_status_" + target_holding_id] = "provisional"
+    flags["holding_stability_" + target_holding_id] = 25
+    flags["holding_governance_" + target_holding_id] = "appointed_warden"
+    flags["holding_previous_owner_" + target_holding_id] = old_owner
+    var history: Array = flags.get("holding_history", [])
+    history.append({"holding":target_holding_id,"old_owner":old_owner,"new_owner":PLAYER_FACTION,"cause":"siege_victory","source":source_holding_id,"empire_turn":int(flags.get("empire_turn", 0))})
+    flags["holding_history"] = history
+    flags["holding_captured_by_siege_" + target_holding_id] = true
+    return {"ok":true,"old_owner":old_owner,"new_owner":PLAYER_FACTION,"status":"provisional"}
+
+
 static func upgrade_building(holding_id: String, building_id: String, flags: Dictionary, treasury: int) -> Dictionary:
     if not _player_holds(holding_id, flags):
         return {"ok":false,"reason":"Only a player-administered holding can be developed."}
