@@ -85,7 +85,7 @@ func toggle_empire_policy(policy: String) -> bool:
     return EmpireSystem.toggle_policy(empire_state, policy)
 
 func appoint_empire_councillor(role: String, character_id: String) -> bool:
-    if not party.has_character(character_id):
+    if not party.sheets.has(character_id):
         return false
     return EmpireSystem.appoint_councillor(empire_state, role, character_id)
 
