@@ -12,6 +12,7 @@ const MarenQuestSystem = preload("res://scripts/core/maren_quest_system.gd")
 const NerisQuestSystem = preload("res://scripts/core/neris_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const ArtScript = preload("res://scripts/ui/art.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -30,6 +31,7 @@ func _initialize() -> void:
     gd.reload()
     ss = load("res://scripts/core/save_system.gd").new()
     _test_data()
+    _test_art_assets()
     _test_class_tree()
     _test_character_creation()
     _test_map()
@@ -116,6 +118,39 @@ func _test_data() -> void:
         var cdef: Dictionary = db["characters"][cid]
         check(db["classes"].has(str(cdef["class_id"])), "class exists for " + cid)
         check(db["weapons"].has(str(cdef["weapon_id"])), "weapon exists for " + cid)
+
+
+func _test_art_assets() -> void:
+    print("[art asset integrity]")
+    var world_names: Array = ["house_a", "house_b", "house_c", "hut", "keep", "tower_a", "tower_b", "tower_c"]
+    for asset_name in world_names:
+        var world_texture: Texture2D = ArtScript.world(str(asset_name))
+        check(world_texture != null, "world vector asset loads: " + str(asset_name))
+        if world_texture != null:
+            var world_size: Vector2 = world_texture.get_size()
+            check(world_size.x > 0.0 and world_size.y > 0.0, "world vector asset has a valid canvas: " + str(asset_name))
+
+    var prop_texture: Texture2D = load("res://assets/art/props/field_props.svg") as Texture2D
+    check(prop_texture != null, "environment prop atlas imports")
+    if prop_texture != null:
+        check(prop_texture.get_size() == Vector2(512.0, 512.0), "4x4 prop atlas matches sixteen 128px cells")
+
+    for kind in ["soldier", "orc"]:
+        for anim in ["idle", "walk", "attack", "hurt", "death"]:
+            var frame_count: int = int(ArtScript.UNIT_FRAMES.get(anim, 0))
+            var sheet: Texture2D = ArtScript.unit_sheet(kind, anim)
+            check(sheet != null, "%s %s sprite sheet loads" % [kind, anim])
+            if sheet == null:
+                continue
+            var expected_size := Vector2(float(frame_count) * ArtScript.UNIT_FRAME_SIZE, ArtScript.UNIT_FRAME_SIZE)
+            check(sheet.get_size() == expected_size, "%s %s sheet is %dx%d for %d horizontal frames" % [kind, anim, int(expected_size.x), int(expected_size.y), frame_count])
+            check(ArtScript.unit_frame(anim, 0.0) == 0, "%s animation begins at frame zero" % anim)
+            var final_frame_time: float = ArtScript.unit_duration(anim) * 4.0
+            var final_frame: int = ArtScript.unit_frame(anim, final_frame_time)
+            if anim in ["attack", "hurt", "death"]:
+                check(final_frame == frame_count - 1, "%s one-shot animation clamps at its final frame" % anim)
+            else:
+                check(final_frame >= 0 and final_frame < frame_count, "%s looping animation remains inside its frame range" % anim)
 
 
 func _test_prologue() -> void:
