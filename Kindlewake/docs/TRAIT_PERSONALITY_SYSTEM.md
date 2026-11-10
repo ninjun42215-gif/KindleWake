@@ -100,3 +100,20 @@ The strict test harness now checks that the expanded event library has at least 
 - Expand the trait encyclopedia in curated, balanced batches; do not reach the 300 target by cloning effects or inventing unsupported professions/magic.
 - Add a dedicated touch-friendly trait journal with filters, acquisition history, and detail views without disturbing the existing Company equipment/rune/shop navigation.
 - Validate portrait references against each character's actual sprite identity before adding portrait art.
+
+
+## Curated ambition progression
+
+A new `data/ambitions.json` catalogue defines 12 ambitions with stable IDs, descriptive objectives, behavior evidence requirements, completion traits where appropriate, and stress recovery. GameData loads the catalogue from an explicit local JSON path so it is included in exported offline builds.
+
+GameState exposes `assign_character_ambition(character_id, ambition_id)`. Assignment rejects unknown definitions, invalid objectives, and characters who already have an active ambition. The existing `record_character_behavior` API advances a matching active ambition only when new, non-duplicate behavior evidence is accepted. Completion can award the authored trait, reduce stress by the definition's stress reward, and append a bounded achievement memory. Duplicate evidence and unrelated behavior do not grant progress.
+
+The ambition system intentionally does not invent gold, items, quests, romance, or faction outcomes. Future ambitions should reference only mechanics and authored evidence that exist in the game.
+
+## Remaining integration
+
+- Connect the 40 event templates to committed campaign, battle, training, crafting, exploration, and dialogue outcomes with unique evidence IDs.
+- Add ambition failure/deadline handling only where the campaign has a reliable calendar and authored failure consequences.
+- Expand the trait encyclopedia in curated, balanced batches; do not reach the 300 target by cloning effects or inventing unsupported mechanics.
+- Add a dedicated touch-friendly trait journal without disturbing Company equipment, rune, or shop navigation.
+- Validate every future portrait against the exact character sprite identity.
