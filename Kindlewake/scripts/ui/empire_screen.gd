@@ -265,7 +265,7 @@ func _refresh_detail() -> void:
         troop_row.add_child(_label("%s  •  RESERVE %d" % [str(troop_names[troop_id]), int(recruits.get(troop_id, 0))], 14))
         troop_row.add_child(_button("RECRUIT 1  %dG / %dP" % [int(troop_cost[troop_id]), int(food_cost[troop_id])], _recruit_troop.bind(troop_id)))
         troop_row.add_child(_button("GARRISON +1", _assign_recruit.bind(troop_id)))
-        detail_box.add_child(row)
+        detail_box.add_child(troop_row)
 
 
 
