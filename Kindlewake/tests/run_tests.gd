@@ -5,6 +5,7 @@ const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const OpeningChapterSystem = preload("res://scripts/core/opening_chapter_system.gd")
 const OpeningActOneQuestSystem = preload("res://scripts/core/opening_act_one_quest_system.gd")
+const ActOneQuestChallenge = preload("res://scripts/ui/act_one_quest_challenge.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
@@ -39,6 +40,7 @@ func _initialize() -> void:
     _test_prologue()
     _test_opening_chapter()
     _test_opening_act_one_quests()
+    _test_act_one_challenge_content()
     _test_escape_mission()
     _test_escape_ui_layout()
     _test_sigils()
@@ -158,6 +160,24 @@ func _test_opening_act_one_quests() -> void:
     check(bool(result.get("ok", false)) and bool(flags.get("chapter_1_complete", false)) and bool(flags.get("sethmarch_people_first", false)), "people-first oath completes Act I with a persistent outcome")
     check(not bool(OpeningActOneQuestSystem.resolve("first_oath", "oath_law", flags).get("ok", true)), "first oath cannot be changed after it is witnessed")
     check(not bool(OpeningActOneQuestSystem.resolve("blocked_well", "unknown", {}).get("ok", true)), "unknown story actions are rejected")
+
+
+func _test_act_one_challenge_content() -> void:
+    print("[Act I playable challenge content]")
+    var expected := ["blocked_well", "roof_before_banner", "last_convoy", "toll_book", "first_oath"]
+    var distinct_stage_counts := {}
+    for quest_id in expected:
+        check(ActOneQuestChallenge.CHALLENGES.has(quest_id), "playable challenge exists: " + quest_id)
+        var challenge: Dictionary = ActOneQuestChallenge.CHALLENGES.get(quest_id, {})
+        var stages: Array = challenge.get("steps", [])
+        check(stages.size() >= 2, quest_id + " has multiple interactive stages")
+        distinct_stage_counts[stages.size()] = true
+        for stage in stages:
+            var options: Array = stage.get("options", [])
+            check(options.size() >= 2, quest_id + " stage offers meaningful choices")
+    check(distinct_stage_counts.size() >= 2, "Act I quests use different challenge lengths and pacing")
+    check(str(ActOneQuestChallenge.CHALLENGES["last_convoy"].steps[2].scene).contains("boss"), "Last Convoy includes a cinematic boss confrontation")
+    check(str(ActOneQuestChallenge.CHALLENGES["first_oath"].steps[1].scene).contains("boss"), "First Oath includes a cinematic boss confrontation")
 
 
 func _test_escape_mission() -> void:
