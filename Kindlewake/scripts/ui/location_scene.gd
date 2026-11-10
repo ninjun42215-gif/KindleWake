@@ -312,9 +312,12 @@ func _build_maren_quest_interaction() -> void:
         if not bool(flags.get(MarenQuestSystem.START_FLAG, false)):
             spot_buttons.add_child(_btn("Ask Maren about the last sounding", _start_maren_quest))
         elif bool(flags.get(MarenQuestSystem.SOLVED_FLAG, false)) and not bool(flags.get(MarenQuestSystem.COMPLETE_FLAG, false)):
-            spot_text.text += "\n\nThe signal pattern is restored. Maren is ready to decide what should become of the recovered log."
-            spot_buttons.add_child(_btn("Return the log to Maren", _resolve_maren_quest.bind("return_log")))
-            spot_buttons.add_child(_btn("Publish the log for the beacon crews", _resolve_maren_quest.bind("publish_log")))
+            if not bool(flags.get(MarenQuestSystem.WRECK_CLEARED_FLAG, false)) or not bool(flags.get(MarenQuestSystem.LOG_FOUND_FLAG, false)):
+                spot_text.text += "\n\nThe signal has charted a safe approach. Search the Northstar Wreck, recover its captain's logbook and defeat the salvage crew before deciding what becomes of it."
+            else:
+                spot_text.text += "\n\nThe signal is restored and the Northstar's final log recovered. Maren is ready to decide what should become of it."
+                spot_buttons.add_child(_btn("Return the log to Maren", _resolve_maren_quest.bind("return_log")))
+                spot_buttons.add_child(_btn("Publish the log for the beacon crews", _resolve_maren_quest.bind("publish_log")))
         elif bool(flags.get(MarenQuestSystem.COMPLETE_FLAG, false)):
             spot_text.text += "\n\nMaren's chart now bears the Northstar's final sounding. She keeps the memory close."
         else:
@@ -323,7 +326,7 @@ func _build_maren_quest_interaction() -> void:
         if not bool(flags.get(MarenQuestSystem.START_FLAG, false)):
             spot_text.text += "\n\nMaren has not yet asked the company to work this signal route."
         elif bool(flags.get(MarenQuestSystem.SOLVED_FLAG, false)):
-            spot_text.text += "\n\nThe signal rings true. Return to Brinegate and speak with Maren."
+            spot_text.text += "\n\nThe signal rings true. The Northstar Wreck is charted; sail there, defeat the salvage captain and recover the logbook."
         else:
             var progress := int(flags.get(MarenQuestSystem.PROGRESS_FLAG, 0))
             var clues := ["First note: the harbour answered low.", "Second note: the tower answered high.", "Final note: the current rose."]
@@ -442,6 +445,8 @@ func _claim_treasure(spot: Dictionary) -> void:
     GameState.world_flags[flag] = true
     if current_map_id == "dungeon_tideglass":
         GameState.world_flags["tideglass_ledger_found"] = true
+    elif current_map_id == "dungeon_northstar_wreck":
+        GameState.world_flags["northstar_wreck_log_found"] = true
     spot_text.text += "\n\nYou recover %d gold.%s" % [reward, loot_text]
 
 
