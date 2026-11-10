@@ -16,34 +16,37 @@ static func new_state() -> Dictionary:
     var milestones := {}
     for milestone in REQUIRED_MILESTONES:
         milestones[milestone] = false
-    return {
-        "version": VERSION,
-        "milestones": milestones,
-        "unlocked": false,
-        "founder_record": {}
-    }
+    return {"version": VERSION, "milestones": milestones, "unlocked": false, "founder_record": {}}
 
 
 ## Marks one milestone in order. Death requires explicit natural old-age provenance.
 static func record_milestone(state: Dictionary, milestone: String, details: Dictionary = {}) -> bool:
     if not REQUIRED_MILESTONES.has(milestone):
         return false
-    var normalized := normalize_state(state)
-    var index := REQUIRED_MILESTONES.find(milestone)
-    var milestones: Dictionary = normalized["milestones"]
-    if bool(milestones[milestone]):
+    var clean := normalize_state(state)
+    if not _apply_milestone(clean, milestone, details):
         return false
-    if index > 0 and not bool(milestones[REQUIRED_MILESTONES[index - 1]]):
+    state.clear()
+    state.merge(clean, true)
+    return true
+
+
+static func _apply_milestone(state: Dictionary, milestone: String, details: Dictionary) -> bool:
+    var index := REQUIRED_MILESTONES.find(milestone)
+    if index < 0:
+        return false
+    var milestones: Dictionary = state["milestones"]
+    if bool(milestones.get(milestone, false)):
+        return false
+    if index > 0 and not bool(milestones.get(REQUIRED_MILESTONES[index - 1], false)):
         return false
     if milestone == "natural_old_age_death":
-        if str(details.get("cause", "")) != "old_age":
-            return false
-        if str(details.get("protagonist_id", "")) == "":
+        if str(details.get("cause", "")) != "old_age" or str(details.get("protagonist_id", "")) == "":
             return false
     milestones[milestone] = true
-    normalized["milestones"] = milestones
+    state["milestones"] = milestones
     if milestone == "natural_old_age_death":
-        normalized["founder_record"] = {
+        state["founder_record"] = {
             "protagonist_id": str(details["protagonist_id"]),
             "cause": "old_age",
             "age_at_death": int(details.get("age_at_death", 0)),
@@ -52,9 +55,7 @@ static func record_milestone(state: Dictionary, milestone: String, details: Dict
             "ending_id": str(details.get("ending_id", "")),
             "recorded": true
         }
-        normalized["unlocked"] = true
-    state.clear()
-    state.merge(normalized, true)
+        state["unlocked"] = true
     return true
 
 
@@ -69,17 +70,14 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
     for milestone in REQUIRED_MILESTONES:
         if not bool(saved.get(milestone, false)):
             break
-        var details: Dictionary = {}
-        if milestone == "natural_old_age_death":
-            details = founder_data
-        if not record_milestone(clean, milestone, details):
+        var details: Dictionary = founder_data if milestone == "natural_old_age_death" else {}
+        if not _apply_milestone(clean, milestone, details):
             break
     return clean
 
 
 static func is_unlocked(state: Dictionary) -> bool:
-    var clean := normalize_state(state)
-    return bool(clean.get("unlocked", false))
+    return bool(normalize_state(state).get("unlocked", false))
 
 
 static func next_milestone(state: Dictionary) -> String:
