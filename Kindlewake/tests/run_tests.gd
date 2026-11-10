@@ -988,6 +988,17 @@ func _test_brinegate_quest() -> void:
     var private_result: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(ready_flags, "private")
     check(bool(public_result.get("ok", false)) and bool((public_result.get("world_flags", {}) as Dictionary).get("brinegate_ledger_shared", false)) and int(public_result.get("gold", -1)) == 0, "public disclosure records the trust outcome without a gold bribe")
     check(bool(private_result.get("ok", false)) and bool((private_result.get("world_flags", {}) as Dictionary).get("brinegate_ledger_withheld", false)) and int(private_result.get("gold", 0)) == 60, "private handling records a distinct outcome and its 60-gold payment")
+    var public_bonds: Dictionary = {}
+    var public_applied := BrinegateQuestSystem.apply_ledger_relationships(public_bonds, "torren", ["torren", "maren_vey"], gd.characters, "public")
+    check(public_applied == 2, "public Brinegate disclosure applies only Maren's authored companion reaction")
+    check(int(RelationshipSystemScript.get_relationship(public_bonds, "torren", "maren_vey").get("trust", 0)) == 5 and int(RelationshipSystemScript.get_relationship(public_bonds, "torren", "maren_vey").get("respect", 0)) == 3, "Maren gains trust and respect when the company makes the ledger public")
+    check(BrinegateQuestSystem.apply_ledger_relationships(public_bonds, "torren", ["torren", "maren_vey"], gd.characters, "public") == 0, "the same Brinegate choice cannot award relationship evidence twice")
+    var private_bonds: Dictionary = {}
+    RelationshipSystemScript.adjust(private_bonds, "torren", "maren_vey", "trust", 20, "setup:existing-trust")
+    RelationshipSystemScript.adjust(private_bonds, "torren", "maren_vey", "respect", 20, "setup:existing-respect")
+    check(BrinegateQuestSystem.apply_ledger_relationships(private_bonds, "torren", ["torren", "maren_vey"], gd.characters, "private") == 2, "private Brinegate handling applies Maren's separately authored reaction")
+    check(int(RelationshipSystemScript.get_relationship(private_bonds, "torren", "maren_vey").get("trust", 0)) == 16 and int(RelationshipSystemScript.get_relationship(private_bonds, "torren", "maren_vey").get("respect", 0)) == 18, "Maren's trust and respect respond independently to withholding the ledger")
+    check(BrinegateQuestSystem.apply_ledger_relationships({}, "torren", ["torren", "unknown_companion"], gd.characters, "public") == 0, "companions without authored reactions receive no invented relationship changes")
     var duplicate: Dictionary = BrinegateQuestSystem.resolve_ledger_choice(public_result.get("world_flags", {}), "private")
     check(not bool(duplicate.get("ok", true)), "the harbour decision can only be recorded once")
     check(not bool(BrinegateQuestSystem.resolve_ledger_choice(ready_flags, "unknown").get("ok", true)), "unknown harbour choices are rejected")

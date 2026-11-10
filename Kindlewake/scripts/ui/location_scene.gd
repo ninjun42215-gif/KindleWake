@@ -288,6 +288,8 @@ func _resolve_brinegate_choice(choice: String) -> void:
         return
     GameState.world_flags = (outcome.get("world_flags", GameState.world_flags) as Dictionary).duplicate(true)
     GameState.party.gold += int(outcome.get("gold", 0))
+    var leader_id := str(GameState.party.roster[0]) if not GameState.party.roster.is_empty() else ""
+    BrinegateQuestSystem.apply_ledger_relationships(GameState.companion_relationships, leader_id, GameState.party.roster, GameData.characters, choice)
     spot_text.text += "\n\n" + str(outcome.get("text", ""))
     GameState.save_campaign("auto_a")
     for child in spot_buttons.get_children():
