@@ -423,7 +423,8 @@ func _apply_companion_quest_consequences(quest_id: String, outcome: String, defi
             "resolved": true,
             "source": quest_id
         }
-        companion_sheet.memories = PersonalitySystemScript.add_memory(companion_sheet.memories, memory)
+        var personality_system = PersonalitySystemScript.new()
+        companion_sheet.memories = personality_system.add_memory(companion_sheet.memories, memory)
 
     GameState.world_flags[applied_flag] = true
 
