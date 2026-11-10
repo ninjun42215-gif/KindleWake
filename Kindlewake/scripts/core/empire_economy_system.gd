@@ -43,7 +43,6 @@ static func advance_turn(definitions: Array, world_flags: Dictionary, treasury: 
         var economy: Dictionary = definition.get("economy", {})
         var base_income := maxi(0, int(definition.get("turn_income", economy.get("gold", 0))))
         var base_upkeep := maxi(0, int(definition.get("garrison_upkeep", 1)))
-        var local_provisions := maxi(0, int(economy.get("provisions", definition.get("turn_provisions", 0)))) + building_provisions
         var local_materials := maxi(0, int(economy.get("materials", definition.get("turn_materials", 0))))
         var building_income := 0
         var building_provisions := 0
@@ -59,6 +58,7 @@ static func advance_turn(definitions: Array, world_flags: Dictionary, treasury: 
             building_income += int(building.get("yield_gold", 0)) * tier
             building_provisions += int(building.get("yield_provisions", 0)) * tier
             fortification += int(building.get("defense", 0)) * tier
+        var local_provisions := maxi(0, int(economy.get("provisions", definition.get("turn_provisions", 0)))) + building_provisions
         var garrison := maxi(0, int(world_flags.get("holding_garrison_" + id, 0)))
         var local_income := base_income + building_income
         var local_upkeep := base_upkeep + garrison
