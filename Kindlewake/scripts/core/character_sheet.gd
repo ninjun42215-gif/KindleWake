@@ -5,6 +5,7 @@ const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
 const RuneSystemScript = preload("res://scripts/core/rune_system.gd")
 const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
+const PersonalitySystemScript = preload("res://scripts/core/personality_system.gd")
 ## Persistent character: class, level, EXP, base stats, skills and equipment.
 ## A BattleUnitScript is a per-battle snapshot built from `to_battle_def()`; formulas stay in CombatCalcScript.
 ## `db` arguments are the dictionaries from GameData.as_db(): they need "items", "weapons" and "classes".
@@ -36,6 +37,10 @@ var enhancements: Dictionary = {}  # equipment slot -> +0..+15   # group -> Arra
 var reward: Dictionary = {}              # enemies only: {"exp","ap","gold"} paid when defeated
 var traits: Array[String] = []             # enduring trait IDs; temporary conditions stay in battle status effects
 var trait_history: Array = []               # bounded acquisition/removal history
+var stress: int = 0
+var memories: Array = []
+var behavior: Dictionary = {}
+var ambition: Dictionary = {}
 
 
 static func from_def(char_id: String, def: Dictionary) -> CharacterSheet:
@@ -48,6 +53,11 @@ static func from_def(char_id: String, def: Dictionary) -> CharacterSheet:
     s.loyalty = clampi(int(def.get("loyalty", 50)), 0, 100)
     s.traits = TraitSystemScript.normalized_ids(def.get("traits", []))
     s.trait_history = (def.get("trait_history", []) as Array).duplicate(true)
+    var personality: Dictionary = def.get("personality", {})
+    s.stress = clampi(int(personality.get("stress", 0)), 0, 100)
+    s.memories = (personality.get("memories", []) as Array).duplicate(true)
+    s.behavior = (personality.get("behavior", {}) as Dictionary).duplicate(true)
+    s.ambition = (personality.get("ambition", {}) as Dictionary).duplicate(true)
     s.xp = clampi(int(def.get("xp", 0)), 0, maxi(0, exp_to_next_for(s.level) - 1))
     if s.level >= MAX_LEVEL:
         s.xp = 0
@@ -234,6 +244,29 @@ func evolve_trait(trait_id: String, definitions: Dictionary, source: String) -> 
     return result
 
 
+
+
+func record_behavior(behavior_id: String, amount: int, evidence_id: String) -> void:
+    behavior = PersonalitySystemScript.record_behavior(behavior, behavior_id, amount, evidence_id)
+
+
+func apply_personality_event(event_id: String, event_definitions: Dictionary, trait_definitions: Dictionary, source: String = "campaign_event") -> Dictionary:
+    var state := {
+        "stress": stress, "memories": memories, "behavior": behavior,
+        "traits": traits, "trait_history": trait_history, "ambition": ambition
+    }
+    var result: Dictionary = PersonalitySystemScript.apply_event(state, event_id, event_definitions, trait_definitions, source)
+    if bool(result.get("ok", false)):
+        var updated: Dictionary = result.state
+        stress = clampi(int(updated.get("stress", stress)), 0, 100)
+        memories = (updated.get("memories", memories) as Array).duplicate(true)
+        behavior = (updated.get("behavior", behavior) as Dictionary).duplicate(true)
+        traits = TraitSystemScript.normalized_ids(updated.get("traits", traits))
+        trait_history = (updated.get("trait_history", trait_history) as Array).duplicate(true)
+        ambition = (updated.get("ambition", ambition) as Dictionary).duplicate(true)
+    return result
+
+
 # ---------------------------------------------------------------- experience and levels
 
 static func exp_to_next_for(lvl: int) -> int:
@@ -324,6 +357,7 @@ func to_dict() -> Dictionary:
         "character_id": character_id, "name": display_name, "house": house, "class_id": class_id,
         "level": level, "xp": xp, "loyalty": loyalty, "base_stats": base_stats.duplicate(), "skills": skills.duplicate(),
         "traits": traits.duplicate(), "trait_history": trait_history.duplicate(true),
+        "personality": {"stress": stress, "memories": memories.duplicate(true), "behavior": behavior.duplicate(true), "ambition": ambition.duplicate(true)},
         "equipment": equipment.duplicate(), "natural_def": natural_def, "natural_res": natural_res,
         "fallback_weapon_id": fallback_weapon_id, "sigils": sigils.duplicate(true), "enhancements": enhancements.duplicate(true), "reward": reward.duplicate(),
     }
@@ -339,6 +373,11 @@ static func from_dict(d: Dictionary) -> CharacterSheet:
     s.loyalty = clampi(int(d.get("loyalty", 50)), 0, 100)
     s.traits = TraitSystemScript.normalized_ids(d.get("traits", []))
     s.trait_history = (d.get("trait_history", []) as Array).duplicate(true)
+    var personality: Dictionary = d.get("personality", {})
+    s.stress = clampi(int(personality.get("stress", 0)), 0, 100)
+    s.memories = (personality.get("memories", []) as Array).duplicate(true)
+    s.behavior = (personality.get("behavior", {}) as Dictionary).duplicate(true)
+    s.ambition = (personality.get("ambition", {}) as Dictionary).duplicate(true)
     s.xp = clampi(int(d.get("xp", 0)), 0, maxi(0, exp_to_next_for(s.level) - 1))
     if s.level >= MAX_LEVEL:
         s.xp = 0
