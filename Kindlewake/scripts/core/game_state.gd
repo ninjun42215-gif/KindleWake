@@ -64,11 +64,11 @@ func record_character_behavior(character_id: String, behavior_id: String, amount
     return true
 
 
-func resolve_character_event(character_id: String, event_id: String, source: String = "campaign_event") -> Dictionary:
+func resolve_character_event(character_id: String, event_id: String, source: String = "campaign_event", instance_id: String = "") -> Dictionary:
     var member = party.sheet(character_id)
     if member == null:
         return {"ok": false, "reason": "Unknown character.", "traits_gained": []}
-    return member.apply_personality_event(event_id, GameData.trait_events, GameData.traits, source)
+    return member.apply_personality_event(event_id, GameData.trait_events, GameData.traits, source, instance_id)
 
 
 func progress_character_ambition(character_id: String, amount: int) -> Dictionary:
