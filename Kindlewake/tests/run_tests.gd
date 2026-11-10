@@ -936,6 +936,16 @@ func _test_empire_management() -> void:
     check(EmpireSystem.disband_troops(state, "sethmarch", "infantry", 2, known_regions), "garrison units can be disbanded")
     check(int(EmpireSystem.army_summary(state)["troops"]) == 13 and int(state["manpower"]) == 86, "disbanding returns 75 percent of spent manpower")
     check(not EmpireSystem.disband_troops(state, "sethmarch", "infantry", 999, known_regions), "disbanding cannot exceed the current garrison")
+    var field_id := EmpireSystem.mobilize_army(state, "sethmarch", {"infantry": 5}, known_regions, "torren")
+    check(field_id != "", "a field army can be mobilized from an existing provincial garrison")
+    check(int(state["armies"]["sethmarch"]["infantry"]) == 3, "mobilization removes the dispatched soldiers from the garrison")
+    check(not EmpireSystem.mobilize_army(state, "sethmarch", {"cavalry": 1}, known_regions).is_empty(), "remaining manpower can be mobilized only when the garrison actually contains the troop type")
+    var routes := {"sethmarch": ["orrowen_weald"], "orrowen_weald": ["sethmarch"]}
+    check(not EmpireSystem.move_field_army(state, field_id, "vessmoor_plains", routes, known_regions), "field armies cannot teleport across unlinked atlas regions")
+    check(EmpireSystem.move_field_army(state, field_id, "orrowen_weald", routes, known_regions), "field armies can march along a defined atlas region link")
+    check(str(state["field_armies"][field_id]["location"]) == "orrowen_weald" and not bool(state["field_armies"][field_id]["supplied"]), "marching into uncontrolled territory marks the army unsupplied")
+    check(not EmpireSystem.move_field_army(state, field_id, "sethmarch", routes, known_regions), "an army has one strategic move per turn")
+    check(int(EmpireSystem.field_army_summary(state)["armies"]) == 1 and int(EmpireSystem.field_army_summary(state)["troops"]) == 5, "field army summary reports deployed forces")
 
     state["buildings"] = {}
     state["food"] = 0
@@ -946,7 +956,8 @@ func _test_empire_management() -> void:
     check(int(report.get("troops", 0)) == 13 and int(report.get("military_upkeep", 0)) == 13 and int(report.get("military_food", 0)) == 13, "seasonal ledger includes standing-army upkeep and ration consumption")
     var restored: Dictionary = EmpireSystem.normalize_state(state)
     check(bool(restored.get("unlocked", false)) and int(restored.get("turn", 0)) == 1, "empire state survives normalization")
-    check(int(EmpireSystem.army_summary(restored).get("troops", 0)) == 13, "provincial garrisons survive campaign normalization and save restoration")
+    check(int(EmpireSystem.army_summary(restored).get("troops", 0)) == 8, "provincial garrisons survive campaign normalization and save restoration")
+    check(int(EmpireSystem.field_army_summary(restored).get("troops", 0)) == 5, "field armies survive campaign normalization and save restoration")
     check(not bool(EmpireSystem.normalize_state({}).get("unlocked", false)), "legacy saves without empire state remain locked and loadable")
 
 func _test_thalassar_region() -> void:
