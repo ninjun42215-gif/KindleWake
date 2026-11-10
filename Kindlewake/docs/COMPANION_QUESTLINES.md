@@ -22,3 +22,8 @@ Each recruitable companion quest should have a clear unlock condition, a distinc
 ### Northstar Wreck dungeon extension
 
 After restoring the Lantern Quay signal, the company can chart and enter the Northstar Wreck. The wreck is a separate explorable dungeon with a captain's logbook cache and a Blackwake salvage-captain boss encounter. Maren's quest cannot resolve until the party defeats the captain and recovers the logbook. This keeps the signal puzzle, dungeon clear and log recovery as distinct campaign milestones.
+
+
+## Neris Quell — Lantern Quay recruit
+
+Neris is a former Blackwake reef diver freed after the Northstar Wreck battle. She becomes recruitable at Lantern Quay only after the signal is restored, the salvage captain is defeated and the logbook is recovered. She joins without a gold fee and begins with authored trust and respect toward the company lead. Her scout profile emphasizes observation, survival and agility.
