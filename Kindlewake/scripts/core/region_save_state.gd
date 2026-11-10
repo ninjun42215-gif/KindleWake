@@ -69,9 +69,6 @@ static func is_valid_campaign_payload(payload: Dictionary) -> bool:
         for history_entry in member.get("trait_history", []):
             if typeof(history_entry) != TYPE_DICTIONARY:
                 return false
-        for history_entry in member.get("trait_history", []):
-            if typeof(history_entry) != TYPE_DICTIONARY:
-                return false
         if typeof(member.get("enhancements", {})) != TYPE_DICTIONARY or not _is_valid_numeric_dictionary(member.get("enhancements", {})):
             return false
         if typeof(member.get("reward", {})) != TYPE_DICTIONARY or not _is_valid_numeric_dictionary(member.get("reward", {})):
@@ -96,13 +93,7 @@ static func is_valid_campaign_payload(payload: Dictionary) -> bool:
         for memory in personality.get("memories", []):
             if typeof(memory) != TYPE_DICTIONARY:
                 return false
-        for memory in personality.get("memories", []):
-            if typeof(memory) != TYPE_DICTIONARY:
-                return false
         if typeof(personality.get("behavior", {})) != TYPE_DICTIONARY or typeof(personality.get("ambition", {})) != TYPE_DICTIONARY:
-            return false
-        var behavior: Dictionary = personality.get("behavior", {})
-        if not _is_string_array(behavior.get("seen_evidence", [])):
             return false
         var behavior: Dictionary = personality.get("behavior", {})
         if not _is_string_array(behavior.get("seen_evidence", [])):
