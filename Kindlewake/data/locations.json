@@ -649,6 +649,24 @@
             "success_text": "The maker's mark links the bolt to a specific issue batch in the convoy inventory.",
             "failure_text": "Weather and a generic stamp cannot identify a particular shipment."
           }
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Messenger's Purse",
+          "tint": [
+            0.82,
+            0.72,
+            0.52
+          ],
+          "text": "A courier carries a purse whose stitching Joss recognises from an old job.",
+          "companion_quest_id": "q_companion_joss_debt_of_silence",
+          "companion_quest_milestone": "purse_recognised",
+          "companion_quest_text": "Joss admits the purse came from a payment he kept after helping a child escape. He recognises the broker's knot and asks you to follow the money without frightening the courier.",
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -741,6 +759,35 @@
             "success_text": "The angle and recovered splinter pattern point to the raised western bank.",
             "failure_text": "The other trajectories contradict the impact angle and wood damage."
           }
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "Cellar Ledger Broker",
+          "tint": [
+            0.72,
+            0.76,
+            0.86
+          ],
+          "text": "A cellar broker has hidden a second account book behind the cask rack.",
+          "companion_quest_id": "q_companion_joss_debt_of_silence",
+          "companion_quest_milestone": "smuggling_ledger_found",
+          "companion_quest_text": "The ledger lists debtors and displaced families as cargo. Joss asks you to identify the broker's coded entries before the book is moved.",
+          "companion_quest_challenge": {
+            "prompt": "Which entry proves the ledger is selling identities rather than recording ordinary cargo?",
+            "options": [
+              "A coded name matched to a debtor's sealed refuge receipt",
+              "A tally of empty wine casks",
+              "A list of routine inn-room charges"
+            ],
+            "correct_option": "A coded name matched to a debtor's sealed refuge receipt",
+            "success_text": "The matching code and sealed receipt show that a person's identity was being traded as leverage.",
+            "failure_text": "The other entries are ordinary trade records and do not identify a person being targeted."
+          },
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -822,6 +869,35 @@
             "success_text": "The signed tally records the quartermaster's custody and the false return.",
             "failure_text": "The rumour and damaged wheel do not establish who diverted the supplies."
           }
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Refugee Cart",
+          "tint": [
+            0.76,
+            0.82,
+            0.72
+          ],
+          "text": "A cart waits behind the market with frightened debtors hidden beneath canvas.",
+          "companion_quest_id": "q_companion_joss_debt_of_silence",
+          "companion_quest_milestone": "debtors_rescued",
+          "companion_quest_text": "The ledger's names match the people hiding in the cart. Get them to safety before the brokers return, then let Joss decide what restitution can be offered.",
+          "companion_quest_challenge": {
+            "prompt": "The brokers are approaching. Which escape plan protects the named debtors without exposing their identities?",
+            "options": [
+              "Move the cart through the covered mill lane and leave the name list sealed",
+              "Read the names aloud to draw the brokers away",
+              "Split the group and send each debtor alone through the main gate"
+            ],
+            "correct_option": "Move the cart through the covered mill lane and leave the name list sealed",
+            "success_text": "The debtors reach shelter together and their identities remain protected.",
+            "failure_text": "That plan exposes the debtors or separates them where the brokers can intercept them."
+          },
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -1300,6 +1376,24 @@
           "companion_quest_id": "q_companion_kestrel_no_master",
           "companion_quest_milestone": "coded_mark_found",
           "companion_quest_text": "Kestrel spots a contract mark used by their former handlers. It points to a safehouse where names were traded for patrol routes. Kestrel asks you not to touch the mark until its pattern is copied."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Sealed Vessmoor Summons",
+          "tint": [
+            0.82,
+            0.76,
+            0.58
+          ],
+          "text": "A House Vessmoor courier waits with a wax-sealed summons addressed to Isaure.",
+          "companion_quest_id": "q_companion_isaure_two_oaths",
+          "companion_quest_milestone": "summons_received",
+          "companion_quest_text": "The summons demands Isaure return and denounce the company. She recognises her relative's seal but notices the witness mark is missing.",
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -1368,6 +1462,35 @@
             "success_text": "The lantern mark matches the hidden ledger notation. Kestrel finds the watcher schedule and the list of names sold to the patrol.",
             "failure_text": "The caretaker shakes their head. That sign was ordinary household business, not the warning used by the handlers."
           }
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "Household Muster Clerk",
+          "tint": [
+            0.72,
+            0.82,
+            0.76
+          ],
+          "text": "A former Vessmoor clerk keeps a copy of the household muster.",
+          "companion_quest_id": "q_companion_isaure_two_oaths",
+          "companion_quest_milestone": "household_muster_examined",
+          "companion_quest_text": "The muster divides retainers between lawful household duty and private loyalty. Compare the orders with the seal register before deciding who was actually summoned.",
+          "companion_quest_challenge": {
+            "prompt": "Which detail exposes the mentor's forged muster order?",
+            "options": [
+              "The order uses a retired seal number absent from the current register",
+              "The parchment is folded twice",
+              "The retainers wear different colours"
+            ],
+            "correct_option": "The order uses a retired seal number absent from the current register",
+            "success_text": "The retired seal number proves the order was forged and that the retainers were misled.",
+            "failure_text": "Folds and clothing do not establish whether the household order was authorised."
+          },
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
@@ -1425,6 +1548,35 @@
           "companion_quest_id": "q_companion_kestrel_no_master",
           "companion_quest_milestone": "witness_protected",
           "companion_quest_text": "The witness can identify the handler who sold the names, but revealing them would expose the safehouse families. Kestrel asks you to protect the witness before deciding what the records should become."
+        },
+        {
+          "kind": "text",
+          "npc": true,
+          "name": "The Gatehouse Challenge",
+          "tint": [
+            0.82,
+            0.7,
+            0.68
+          ],
+          "text": "A Vessmoor duelling witness carries the mentor's challenge and a copy of the original oath.",
+          "companion_quest_id": "q_companion_isaure_two_oaths",
+          "companion_quest_milestone": "mentor_challenge_resolved",
+          "companion_quest_text": "Isaure's former mentor demands a duel to settle her perceived dishonour. The witness can confirm the forged order; choose a response that protects Isaure's agency and avoids turning the challenge into a blood feud.",
+          "companion_quest_challenge": {
+            "prompt": "Which response answers the challenge while preserving a lawful path to resolution?",
+            "options": [
+              "Present the original oath and forged muster before witnesses, then offer arbitration",
+              "Accept a duel to the death without hearing the evidence",
+              "Burn both documents and accuse the retainers"
+            ],
+            "correct_option": "Present the original oath and forged muster before witnesses, then offer arbitration",
+            "success_text": "The witnesses recognise the forged order. Isaure can face her mentor without accepting his false terms.",
+            "failure_text": "The other responses either risk needless death or destroy the evidence needed for a fair hearing."
+          },
+          "cell": [
+            1,
+            1
+          ]
         }
       ]
     },
