@@ -231,7 +231,7 @@ static func guild_contribute(party: PartyState, state: Dictionary, guild_id: Str
     if party.gold < amount: return "Not enough gold."
     party.gold -= amount
     guild["contribution"] = int(guild.get("contribution", 0)) + amount
-    guild["standing"] = clampi(1 + int(guild["contribution"]) / int(goods.get("guilds", {}).get(guild_id, {}).get("standing_cost", 500)), 1, 5)
+    guild["standing"] = clampi(1 + floori(float(guild["contribution"]) / float(goods.get("guilds", {}).get(guild_id, {}).get("standing_cost", 500))), 1, 5)
     state["guilds"][guild_id] = guild
     return ""
 
