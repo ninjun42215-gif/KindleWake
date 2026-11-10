@@ -61,6 +61,7 @@ func _initialize() -> void:
     _test_shop_and_screen()
     _test_save_system()
     _test_campaign_restore_validation()
+    _test_campaign_save_semantic_backup_fallback()
     _simulate_battles(30)
     print("")
     print("Checks: %d   Failures: %d" % [checks, failures])
@@ -1716,6 +1717,18 @@ func _test_campaign_restore_validation() -> void:
     var malformed_inventory: Dictionary = payload.duplicate(true)
     malformed_inventory["party"]["inventory"] = []
     check(not RegionSaveState.is_valid_campaign_payload(malformed_inventory), "campaign restore rejects invalid inventory structures")
+    var malformed_personality: Dictionary = payload.duplicate(true)
+    malformed_personality["party"]["sheets"]["torren"]["personality"] = []
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_personality), "campaign restore rejects malformed nested personality state")
+    var malformed_history: Dictionary = payload.duplicate(true)
+    malformed_history["party"]["sheets"]["torren"]["trait_history"] = "not-an-array"
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_history), "campaign restore rejects malformed trait history")
+    var malformed_sigils: Dictionary = payload.duplicate(true)
+    malformed_sigils["party"]["sheets"]["torren"]["sigils"] = {"weapon": {}, "armor": []}
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_sigils), "campaign restore rejects malformed equipped sigil arrays")
+    var malformed_region: Dictionary = payload.duplicate(true)
+    malformed_region["world_positions"] = {"sethmarch": "invalid"}
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_region), "campaign restore rejects malformed saved regional positions")
 
 func _test_save_system() -> void:
     print("[save system]")
@@ -1882,3 +1895,36 @@ func _test_companion_relationships() -> void:
     var restored: Dictionary = RelationshipSystemScript.normalize_state(state)
     check(RelationshipSystemScript.normalize_state(restored) == restored, "relationship state remains stable after save normalization")
     check(RelationshipSystemScript.normalize_state({}).is_empty(), "legacy campaigns default safely without relationship data")
+
+
+func _test_campaign_save_semantic_backup_fallback() -> void:
+    print("[campaign semantic backup fallback]")
+    ss.delete_slot("semantic_campaign")
+    var member := {
+        "character_id": "torren",
+        "base_stats": {"hp": 100, "str": 10},
+        "skills": [],
+        "equipment": {},
+        "sigils": {},
+    }
+    var valid_payload := {
+        "campaign": true,
+        "party": {
+            "roster": ["torren"],
+            "sheets": {"torren": member},
+            "inventory": {},
+            "sigil_inv": [],
+        },
+        "creation_profile": {},
+        "world_flags": {},
+        "world_pos": [0.0, 0.0],
+        "world_positions": {},
+    }
+    check(ss.save_slot("semantic_campaign", valid_payload, "valid campaign"), "valid campaign fixture is saved")
+    var malformed_payload: Dictionary = valid_payload.duplicate(true)
+    malformed_payload["party"]["sheets"]["torren"]["personality"] = []
+    check(ss.save_slot("semantic_campaign", malformed_payload, "malformed newer campaign"), "malformed campaign fixture is written for recovery test")
+    var recovered: Dictionary = ss.load_slot("semantic_campaign")
+    check(bool(recovered.get("ok", false)) and bool(recovered.get("from_backup", false)), "semantic campaign corruption falls back to the previous valid backup")
+    check(RegionSaveState.is_valid_campaign_payload(recovered.get("payload", {})), "semantic backup recovery returns a structurally valid campaign")
+    ss.delete_slot("semantic_campaign")
