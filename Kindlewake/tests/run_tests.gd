@@ -198,6 +198,10 @@ func _test_companion_quests() -> void:
     check(not bool(locked.get("ok", false)) and state.is_empty(), "a companion quest cannot start before its ally is recruited")
     var started := CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog)
     check(bool(started.get("ok", false)) and CompanionQuestSystem.status(state, quest_id) == "active", "recruited ally can start their personal quest")
+    var start_only: Dictionary = {}
+    CompanionQuestSystem.start(start_only, quest_id, ["torren", "old_brisa"], catalog)
+    var start_restored := CompanionQuestSystem.normalize_state(start_only, catalog)
+    check(CompanionQuestSystem.status(start_restored, quest_id) == "active", "a newly started companion quest survives save normalization before its first objective")
     check(not bool(CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog).get("ok", false)), "a companion quest cannot be started twice")
     check(not bool(CompanionQuestSystem.advance(state, quest_id, "families_contacted", catalog).get("ok", false)), "out-of-order milestones are rejected")
     check(bool(CompanionQuestSystem.advance(state, quest_id, "ledger_recovered", catalog).get("ok", false)), "first companion quest milestone advances")
