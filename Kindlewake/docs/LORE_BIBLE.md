@@ -18,7 +18,7 @@ The campaign begins as a struggle to survive and protect a few people. It expand
 
 ## 2. The Covenant of Seven Flames
 
-The Covenant of Seven Flames is the founding compact that was supposed to bind the great powers of the realm to mutual obligations. It is not merely a magical relic or a royal title. It is a political and moral agreement.
+The Covenant of the Seven Flames is first and foremost the ancient public compact: a political and moral agreement that bound the Seven Houses and their recognised communities to mutual obligations. It is not a magical relic, a royal title or a secret society. Its surviving seals and the Hidden Codicil are documentary/oath-bearing instruments associated with it. Separately, the live faction data contains a secret organisation named covenant_seven_flames (The Covenant of the Seven Flames). That secret order is a later, distinct organisation which adopted the compact's name; it is not the original compact, not the Seven Houses, and not proof that every person who honours the public Covenant belongs to the order. Keep dialogue, quests, faction relations and records explicit about which meaning is intended.
 
 The Seven Houses publicly claim that the Covenant protects the realm. Over generations, each house preserved a different fragment and edited or ignored obligations that became inconvenient. The Hidden Codicil records the original terms, including:
 - shared grain reserves during famine;
@@ -31,6 +31,19 @@ The Seven Flames are therefore both a symbol of unity and evidence of institutio
 
 The Covenant's supernatural dimension should remain restrained and costly. Magic is rare and feared. A seal can preserve, reveal, bind or witness an oath; it should not become a convenient answer to every political or personal problem. The exact metaphysics, costs and limits of each flame must be authored consistently before implementation.
 
+## 2.1 Political chronology and constitutional terms
+
+This chronology reconciles the original GDD's King Osric IV and Crownlands setting with the later Last Emperor ending. It is the canon reference for all future story writing.
+
+1. **The old Eldrimar Empire:** In an earlier age, an imperial order linked the central Crownlands to a wider network of roads, charters and allied realms. The Covenant of the Seven Flames emerged as a compact of mutual obligations among seven great houses and the communities under their protection. It was never simply an imperial religion or a magical artefact.
+2. **The imperial fragmentation:** The old Empire fractured over generations. Its central authority ceased to govern the whole known world, and its former territories developed distinct crowns, assemblies, compacts and local laws. The Eldrimar Crownlands survived as a successor monarchy. The imperial office became dormant rather than an active throne; old imperial charters and legal procedures survived in fragments.
+3. **The Crownlands under Osric IV:** At the opening of the game, Osric IV is King of the Crownlands, not a reigning Emperor over all seven continents. Aurelmont is the Crownlands capital. The six other recognised noble houses alongside Dunmarrow are political powers within Eldrimar, not automatically vassals of a functioning world empire.
+4. **The succession crisis:** Osric dies without a secure heir. Lord Regent Maelor Brennhallow exercises authority in the Crownlands. Edmer Dunmarrow, keeper of the Hidden Codicil, is executed and the Dunmarrow estate is burned. The Codicil exposes the Covenant's original obligations and preserves a lawful route for resolving the Crownlands crisis; it does not itself instantly make every realm part of a new empire.
+5. **The Last Emperor settlement:** Only in the designated true-ending route, after the final conflict and with the necessary house/realm ratifications, is the dormant imperial constitutional office temporarily reconstituted. The protagonist is invested as **Last Emperor** for one narrow purpose: to carry out the final settlement and dissolution under the surviving charters. This is a transitional legal mandate, not a conquest of every continent and not a permanent restoration of imperial supremacy.
+6. **Dissolution and the Concord:** The Last Emperor formally dissolves the imperial office and central imperial claim, records the dissolution charter and establishes the Concord of Free Realms among willing signatories. Each realm retains its own laws and may refuse, contest or later renegotiate the Concord. No successor may ordinarily inherit or purchase the title of Emperor.
+
+**Terminology:** use *King of the Crownlands* for Osric IV; *Lord Regent* for Maelor during the opening crisis; *the old Eldrimar Empire* for the historical imperial order; *Last Emperor* only for the protagonist's temporary endgame office; and *Concord of Free Realms* for the post-dissolution compact. Do not call Osric an Emperor, describe Maelor as Regent of a functioning seven-continent empire, or imply the protagonist begins the story as a prince/emperor.
+
 ## 3. The Dunmarrow fall
 
 House Dunmarrow once held an important place in Eldrimar's political order. Edmer Dunmarrow was executed after intending to expose the broken Covenant and its Hidden Codicil. His accusation of treason became the official story.
@@ -41,8 +54,8 @@ The central antagonist, Regent Maelor Brennhallow, suppressed the Codicil becaus
 
 ## 4. The opening and established characters
 
-### Torren Dunmarrow
-The burden of inheritance. His arc moves from “I must restore what was taken” toward “I must decide what deserves to be restored.” His defining flaw is confusing duty with self-erasure. The protagonist creator may establish the player's own identity; Torren remains a named character in the established creative material and should not be silently substituted for the player-created heir without checking the current implementation.
+### Torren Dunmarrow — the player character
+Torren is the canonical protagonist identity and stable character record (protagonist_id: torren). The character-creation screen customises the playable Torren's name, presentation, face, hair, skin, build, origin, discipline, weapon preference and temperament; it does not create a second, unrelated heir alongside a non-player Torren. The default profile is Torren Dunmarrow. Narrative references to Torren, the surviving heir and the player-character therefore refer to the same protagonist unless a scene explicitly discusses a historical account or an alias. Keep the stable internal ID torren even when the player changes the displayed name or appearance. His arc moves from “I must restore what was taken” toward “I must decide what deserves to be restored.” His defining flaw is confusing duty with self-erasure.
 
 ### Bram Vosk
 A veteran who values practical protection over clean hands. He embodies the cost of loyalty and must learn that loyalty can include disagreement rather than obedience.
@@ -108,7 +121,7 @@ A distant continent connected to the shared Seven Flames mystery. Its identity s
 ## 7. Political powers and territorial identity
 
 The setting's established political powers include:
-- the Crownlands and the Eldrimar houses, including fallen House Dunmarrow and House Ysmark;
+- the Crownlands and the Seven Houses of the historical Covenant compact: Dunmarrow, Brennhallow, Ysmark, Quillon, Vessmoor, Tarnholt and Orrowen. The Crownlands monarchy is a separate royal institution, not an eighth house;
 - the Tidebound Assembly;
 - the Nine Wells Compact;
 - the Hearthfjord Jarldoms;
@@ -117,7 +130,7 @@ The setting's established political powers include:
 - the Free Ranger Lodges;
 - the Meridian League;
 - the Independent Sky Monasteries;
-- the Covenant of the Seven Flames as a religious/political institution and shared historical compact.
+- the public Covenant of the Seven Flames as the historical compact; and, separately, the secret organisation covenant_seven_flames recorded in live faction data. Never conflate the organisation with all Covenant signatories or believers.
 
 Their exact region affiliations and current relations must come from the live faction and continent data. Political borders can change through authored story outcomes. A territory is not just a colour on a map: it has people, food, routes, laws, local leaders, grievances, threats and a reason to resist or cooperate.
 
@@ -144,6 +157,8 @@ An archive and political knowledge centre. Its palette is ink violet, parchment 
 A sacred/faith-associated location. Its palette is candle ivory, weathered stone and restrained sacred gold. Faith should be represented through human institutions and disagreements, not a simplistic good-versus-corrupt church.
 
 ### Brinegate Coast
+Brinegate is the seat of the Tidebound Assembly in Thalassar, not the seat of House Ysmark. House Ysmark's seat is explicitly unconfirmed in current faction data and must remain unresolved until an authored reveal establishes it. Do not use the older GDD shorthand “Ysmark Coast (Brinegate, ports)” as a political ownership statement.
+
 The current Thalassar vertical slice: Brinegate harbour, Saltmere, Lantern Quay, Old Beacon Vault, Northstar Wreck and Tideglass Grotto. Its story loop involves Captain Ilyra Venn, the darkened beacon, the grotto, the keeper's strongbox and ledger, the Reef Warden, and the choice to publish the scraped Seven Flames oath or keep it private for a 60-gold patron payment. Maren Vey's recruitment requires both ledger recovery and defeating the grotto guardian.
 
 ## 9. Monsters, creatures and enemies — design canon
