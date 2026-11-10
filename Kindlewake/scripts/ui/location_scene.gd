@@ -305,11 +305,14 @@ func _build_companion_quest_actions(spot: Dictionary) -> void:
     if status == "complete":
         spot_text.text += "\\n\\nBrisa's story has been resolved. The people of Foxglove remember the choice you made."
         return
-    if status == "ready":
+    if status == "ready" and not milestones.is_empty() and milestone == str(milestones.back()):
         spot_text.text += "\\n\\nBrisa asks how the community should preserve the names and care for those displaced."
         var labels := ["Keep the infirmary ledger", "Return Brisa to village service", "Establish a shared care network"]
         for i in range(mini(outcomes.size(), labels.size())):
             spot_buttons.add_child(_btn(labels[i], _resolve_companion_quest.bind(quest_id, str(outcomes[i]))))
+        return
+    if status == "ready":
+        spot_text.text += "\\n\\nThis objective has been recorded. Visit the market factor to decide how Foxglove will organise its care network."
         return
     if progress < milestones.size() and str(milestones[progress]) == milestone:
         spot_buttons.add_child(_btn("Record this objective", _advance_companion_quest.bind(quest_id, milestone)))
