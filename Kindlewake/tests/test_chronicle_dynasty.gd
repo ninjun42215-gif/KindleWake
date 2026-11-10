@@ -55,7 +55,7 @@ func _initialize() -> void:
  state = title.state
  check(not Dynasty.create_title(state,"count","Count of Nowhere","heir_2",str(domain.domain_id)).ok,"title rank cannot skip the intervening viscount rank")
  check(bool(Dynasty.assign_title(state,"founder_barony","heir_2").ok),"existing title can be granted to a living family member")
- var saved := JSON.parse_string(JSON.stringify(state))
+ var saved: Variant = JSON.parse_string(JSON.stringify(state))
  var restored := Dynasty.normalize_state(saved)
  check(not restored.is_empty() and restored.people.size() == state.people.size(),"family and relationship state survives JSON save normalization")
  var corrupt := Dynasty.normalize_state({"founder_id":"missing","people":{"bad":"not a person"},"titles":{"broken":"not a title"},"domains":[]})
