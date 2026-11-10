@@ -303,10 +303,8 @@ func _launch_opening_challenge(story_id: String) -> void:
         spot_text.text += "\\n\\nThis story challenge is not available."
         return
     GameState.pending_location = current_map_id
+    GameState.world_flags["_pending_act_one_challenge"] = story_id
     get_tree().change_scene_to_file("res://ActOneQuestChallenge.tscn")
-    var challenge_scene := get_tree().current_scene
-    if challenge_scene != null:
-        challenge_scene.set("quest_id", story_id)
 
 
 func _resolve_opening_story_action(story_id: String, action_id: String) -> void:
