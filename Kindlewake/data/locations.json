@@ -2058,6 +2058,401 @@
           "world_flag_on_victory": "tideglass_grotto_cleared"
         }
       ]
+    },
+    "sallow_ford_keep": {
+      "name": "Sallow Ford Keep",
+      "kind": "town",
+      "entry": [
+        8,
+        10
+      ],
+      "zoom": 1.1,
+      "rows": [
+        "#################",
+        "#...............#",
+        "#...............#",
+        "#...1.......2...#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "########E########"
+      ],
+      "doors": {
+        "1": {
+          "to": "sallow_keep_hall",
+          "spawn": [
+            6,
+            8
+          ]
+        },
+        "2": {
+          "to": "sallow_keep_barracks",
+          "spawn": [
+            6,
+            8
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            5,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Castellan Edric",
+          "text": "The ford is held, but the lower bailey floods each spring. Repair the sluice gates before storing grain below the waterline.",
+          "dialogue": [
+            "The west tower sees every cart on the kingsroad. It also sees every banner approaching from the marsh.",
+            "The garrison has not received wages in six weeks. Feed the families before demanding another levy."
+          ]
+        },
+        {
+          "cell": [
+            11,
+            5
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Quartermaster Lysa",
+          "text": "The keep's quartermaster can arrange stores and equipment.",
+          "rune_service": false
+        }
+      ]
+    },
+    "sallow_keep_hall": {
+      "name": "Hall of the Ford",
+      "kind": "interior",
+      "entry": [
+        6,
+        8
+      ],
+      "rows": [
+        "#############",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "######1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "sallow_ford_keep",
+          "spawn": [
+            4,
+            4
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            6,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Steward of the Ford",
+          "text": "The keep's charter grants safe passage, not arbitrary tolls. Rebuild the bridge and publish the levy before winter."
+        }
+      ]
+    },
+    "sallow_keep_barracks": {
+      "name": "Sallow Keep Barracks",
+      "kind": "interior",
+      "entry": [
+        6,
+        8
+      ],
+      "rows": [
+        "#############",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "######1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "sallow_ford_keep",
+          "spawn": [
+            12,
+            4
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            6,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Sergeant Harl",
+          "text": "The watch is short of boots, bowstrings and dry bedding. A garrison that cannot sleep will not hold a wall."
+        }
+      ]
+    },
+    "elderbough_watch": {
+      "name": "Elderbough Watch",
+      "kind": "town",
+      "entry": [
+        8,
+        10
+      ],
+      "zoom": 1.1,
+      "rows": [
+        "#################",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "########E########"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            5,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Warden-Captain Sella",
+          "text": "The bell path is clear again. The wardens will defend the watch, provided the old-growth grove remains protected.",
+          "dialogue": [
+            "No tree older than the boundary stones may be felled without the moot's consent.",
+            "Our signal bell has three calls: fire, strangers and flood. Learn them before taking command."
+          ]
+        },
+        {
+          "cell": [
+            11,
+            5
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Trail Keeper",
+          "text": "The keeper trades maps, herbs and ranger supplies."
+        }
+      ]
+    },
+    "redwater_granary": {
+      "name": "Redwater Granary",
+      "kind": "town",
+      "entry": [
+        8,
+        10
+      ],
+      "zoom": 1.1,
+      "rows": [
+        "#################",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "########E########"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            5,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Freeholder Mara",
+          "text": "The granary stores belong to the villages that filled them. Any charter must guarantee a winter reserve before an army receives its share.",
+          "dialogue": [
+            "One storehouse is for seed, one for winter, and four for trade and levy. Do not confuse the seals.",
+            "The millpond is low. Repairing the sluice is worth more than raising another wall."
+          ]
+        },
+        {
+          "cell": [
+            11,
+            5
+          ],
+          "kind": "party",
+          "npc": true,
+          "name": "Grain Factor",
+          "text": "The factor can arrange grain contracts and regional provisions."
+        }
+      ]
+    },
+    "dungeon_sunken_tollhouse": {
+      "name": "The Sunken Tollhouse",
+      "kind": "dungeon",
+      "entry": [
+        8,
+        10
+      ],
+      "zoom": 1.05,
+      "rows": [
+        "#################",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "########E########"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            4,
+            4
+          ],
+          "kind": "treasure",
+          "npc": false,
+          "name": "Sealed cache",
+          "text": "The tide presses against the old toll vault. Sluice marks on the walls show the sequence used to drain the lower floor. A dry cache has survived behind the masonry.",
+          "reward_gold": 95
+        },
+        {
+          "cell": [
+            12,
+            6
+          ],
+          "kind": "boss",
+          "npc": false,
+          "name": "Dungeon guardian",
+          "text": "The tide presses against the old toll vault. Sluice marks on the walls show the sequence used to drain the lower floor. The guardian blocks the final chamber.",
+          "battle_id": "battle_catacombs",
+          "world_flag_on_victory": "dungeon_sunken_tollhouse_cleared"
+        }
+      ]
+    },
+    "dungeon_wardens_barrow": {
+      "name": "Warden's Barrow",
+      "kind": "dungeon",
+      "entry": [
+        8,
+        10
+      ],
+      "zoom": 1.05,
+      "rows": [
+        "#################",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "########E########"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            4,
+            4
+          ],
+          "kind": "treasure",
+          "npc": false,
+          "name": "Sealed cache",
+          "text": "The burial halls are carved with oaths, boundary maps and later corrections. The oldest inscription is hidden behind a loose stone. A dry cache has survived behind the masonry.",
+          "reward_gold": 120
+        },
+        {
+          "cell": [
+            12,
+            6
+          ],
+          "kind": "boss",
+          "npc": false,
+          "name": "Dungeon guardian",
+          "text": "The burial halls are carved with oaths, boundary maps and later corrections. The oldest inscription is hidden behind a loose stone. The guardian blocks the final chamber.",
+          "battle_id": "battle_hollowroot",
+          "world_flag_on_victory": "dungeon_wardens_barrow_cleared"
+        }
+      ]
+    },
+    "dungeon_ashen_granary": {
+      "name": "The Ashen Granary",
+      "kind": "dungeon",
+      "entry": [
+        8,
+        10
+      ],
+      "zoom": 1.05,
+      "rows": [
+        "#################",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "#...............#",
+        "########E########"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            4,
+            4
+          ],
+          "kind": "treasure",
+          "npc": false,
+          "name": "Sealed cache",
+          "text": "Ash fills the loft stairs, but the root cellar is sealed behind a firebreak door. A levy order lies beneath the grain scale. A dry cache has survived behind the masonry.",
+          "reward_gold": 110
+        },
+        {
+          "cell": [
+            12,
+            6
+          ],
+          "kind": "boss",
+          "npc": false,
+          "name": "Dungeon guardian",
+          "text": "Ash fills the loft stairs, but the root cellar is sealed behind a firebreak door. A levy order lies beneath the grain scale. The guardian blocks the final chamber.",
+          "battle_id": "battle_catacombs",
+          "world_flag_on_victory": "dungeon_ashen_granary_cleared"
+        }
+      ]
     }
   }
 }
