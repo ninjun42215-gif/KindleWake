@@ -202,6 +202,26 @@
       "rune_effect": {
         "drain_pct": 45
       }
+    },
+    "field_repair": {
+      "name": "Field Repair",
+      "type": "heal",
+      "power": 16,
+      "mp": 0,
+      "range_min": 1,
+      "range_max": 2,
+      "target": "ally",
+      "description": "The siege engineer braces damaged equipment and restores 16 HP to an adjacent allied unit."
+    },
+    "breach_charge": {
+      "name": "Breach Charge",
+      "type": "damage",
+      "power": 18,
+      "mp": 0,
+      "range_min": 1,
+      "range_max": 1,
+      "target": "enemy",
+      "description": "A close-range demolition charge deals heavy damage to a wall, gate or enemy blocking the breach."
     }
   }
 }
