@@ -912,3 +912,10 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - `tests/run_tests.gd` covers gate placement and tap-bound clamping at 360×800, 390×844, 1280×720 and 800×360. `tests/scene_smoke_test.gd` loads every authored `.tscn` resource headlessly; the APK builder runs it after editor import and before gameplay tests/export.
 
 **CI evidence:** run #633 passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 427 strict checks with 0 failures, balance report and signed 40.8 MB APK export with no Android permissions. APK artifact `13724652587`. The first editor import scan still logs transient global-class registration errors before its clean retry; ObjectDB/resource-cleanup warnings remain non-failing. **QA still required:** verify creator and Chapter I gameplay on a 20:9 Android phone in portrait and landscape. CI does not replace device QA.
+
+
+## Regional bestiary expansion — feature/regional-bestiary-v1
+
+The campaign encounter roster is being expanded from generic roadside raiders into a territory-authored bestiary. The first playable pools cover Sethmarch and Brinegate Coast and include marsh predators, mire ambushers, fen hedge-mages, oath-bound iron dead, reef crawlers, drowned sailors, shore cutthroats, tide-cult hexers and the Reef Matriarch. Each species has an authored habitat, role, threat tier and lore entry, and resolves through the existing character/class/weapon/combat pipeline.
+
+The bestiary also records original species from the Orrowen Weald, Vessmoor Plains, Nhalor and Varakhan for future territory releases. Those atlas entries are lore/content definitions only until their regional maps and campaign gates become playable; they do not create fake travel destinations or encounters. Existing battle rules and save schema remain unchanged. Dedicated species sprite sheets and territory-specific battle backgrounds remain a separate art-production task; the current implementation must not pretend that class-based sprite overlays are finished monster art.
