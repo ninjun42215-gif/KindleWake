@@ -195,6 +195,10 @@ func merchant_join_guild(guild_id: String) -> String:
     return TradeSystemScript.join_guild(trade_state, guild_id, GameData.trade_economy)
 
 
+func merchant_guild_contribute(guild_id: String, amount: int) -> String:
+    return TradeSystemScript.guild_contribute(party, trade_state, guild_id, amount, GameData.trade_economy)
+
+
 func merchant_accept_contract(contract_id: String) -> String:
     return TradeSystemScript.accept_contract(trade_state, contract_id, GameData.trade_economy)
 
@@ -205,6 +209,18 @@ func merchant_complete_contract(contract_id: String) -> String:
 
 func merchant_travel_route(route_id: String) -> String:
     return TradeSystemScript.travel_route(party, trade_state, route_id, GameData.trade_economy)
+
+
+func merchant_should_trigger_ambush(route_id: String) -> bool:
+    return TradeSystemScript.should_trigger_ambush(trade_state, GameData.trade_economy, route_id, rng)
+
+
+func merchant_resolve_ambush(route_id: String = "") -> Dictionary:
+    return TradeSystemScript.resolve_caravan_ambush(party, trade_state, GameData.trade_economy, rng, route_id)
+
+
+func merchant_reduce_smuggling_heat(amount: int = 10) -> void:
+    TradeSystemScript.reduce_smuggling_heat(trade_state, amount)
 
 
 func merchant_smuggle(good_id: String, quantity: int) -> Dictionary:
