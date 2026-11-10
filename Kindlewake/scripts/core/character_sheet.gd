@@ -4,6 +4,7 @@ extends RefCounted
 const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
 const RuneSystemScript = preload("res://scripts/core/rune_system.gd")
+const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 ## Persistent character: class, level, EXP, base stats, skills and equipment.
 ## A BattleUnitScript is a per-battle snapshot built from `to_battle_def()`; formulas stay in CombatCalcScript.
 ## `db` arguments are the dictionaries from GameData.as_db(): they need "items", "weapons" and "classes".
@@ -33,6 +34,8 @@ var fallback_weapon_id: String = ""      # same: weapon of characters without an
 var sigils: Dictionary = {"weapon": [], "armor": []}
 var enhancements: Dictionary = {}  # equipment slot -> +0..+15   # group -> Array of sigil instances ({"id","ap"}; {} = empty socket)
 var reward: Dictionary = {}              # enemies only: {"exp","ap","gold"} paid when defeated
+var traits: Array[String] = []             # enduring trait IDs; temporary conditions stay in battle status effects
+var trait_history: Array = []               # bounded acquisition/removal history
 
 
 static func from_def(char_id: String, def: Dictionary) -> CharacterSheet:
@@ -43,6 +46,8 @@ static func from_def(char_id: String, def: Dictionary) -> CharacterSheet:
     s.class_id = str(def.get("class_id", ""))
     s.level = clampi(int(def.get("level", 1)), 1, MAX_LEVEL)
     s.loyalty = clampi(int(def.get("loyalty", 50)), 0, 100)
+    s.traits = TraitSystemScript.normalized_ids(def.get("traits", []))
+    s.trait_history = (def.get("trait_history", []) as Array).duplicate(true)
     s.xp = clampi(int(def.get("xp", 0)), 0, maxi(0, exp_to_next_for(s.level) - 1))
     if s.level >= MAX_LEVEL:
         s.xp = 0
@@ -125,6 +130,10 @@ func total_stats(items: Dictionary, sdefs: Dictionary = {}) -> Dictionary:
             t[stat_key] = cur + int(round(float(cur) * float(mods[k]) / 100.0))
         elif key != "exp_pct" and key != "gold_pct":
             t[key] = int(t.get(key, 0)) + int(mods[k])
+    # Trait bonuses are derived on demand; base stats and equipment data are never mutated.
+    var trait_mods: Dictionary = TraitSystemScript.stat_effects(traits, db.get("traits", {}))
+    for stat_key in trait_mods:
+        t[str(stat_key)] = int(t.get(str(stat_key), 0)) + int(trait_mods[stat_key])
     for k in t.keys():
         t[k] = maxi(1 if str(k) == "hp" else 0, int(t[k]))
     return t
@@ -139,6 +148,7 @@ func to_battle_def(db: Dictionary) -> Dictionary:
         "name": display_name, "class_id": class_id, "level": level, "house": house,
         "weapon_id": weapon_id(items), "armor_def": int(arm["def"]), "armor_res": int(arm["res"]),
         "skills": all_skills(items, sdefs, db.get("classes", {})), "stats": total_stats(items, sdefs),
+        "traits": traits.duplicate(),
         "skill_mods": skill_mods(items, sdefs), "reward": reward.duplicate(),
     }
 
@@ -194,6 +204,34 @@ func equip_problem(slot: String, item_id: String, items: Dictionary) -> String:
         if bool(wep.get("two_handed", false)):
             return "The two-handed weapon blocks the off-hand."
     return ""
+
+
+
+
+# ---------------------------------------------------------------- enduring character traits
+
+func acquire_trait(trait_id: String, source: String, definitions: Dictionary) -> Dictionary:
+    var result: Dictionary = TraitSystemScript.acquire(traits, trait_history, trait_id, source, definitions)
+    if bool(result.get("ok", false)):
+        traits = result.traits
+        trait_history = result.history
+    return result
+
+
+func remove_trait(trait_id: String, reason: String, definitions: Dictionary, allow_permanent: bool = false) -> Dictionary:
+    var result: Dictionary = TraitSystemScript.remove(traits, trait_history, trait_id, reason, definitions, allow_permanent)
+    if bool(result.get("ok", false)):
+        traits = result.traits
+        trait_history = result.history
+    return result
+
+
+func evolve_trait(trait_id: String, definitions: Dictionary, source: String) -> Dictionary:
+    var result: Dictionary = TraitSystemScript.evolve(traits, trait_history, trait_id, definitions, source)
+    if bool(result.get("ok", false)):
+        traits = result.traits
+        trait_history = result.history
+    return result
 
 
 # ---------------------------------------------------------------- experience and levels
@@ -285,6 +323,7 @@ func to_dict() -> Dictionary:
     return {
         "character_id": character_id, "name": display_name, "house": house, "class_id": class_id,
         "level": level, "xp": xp, "loyalty": loyalty, "base_stats": base_stats.duplicate(), "skills": skills.duplicate(),
+        "traits": traits.duplicate(), "trait_history": trait_history.duplicate(true),
         "equipment": equipment.duplicate(), "natural_def": natural_def, "natural_res": natural_res,
         "fallback_weapon_id": fallback_weapon_id, "sigils": sigils.duplicate(true), "enhancements": enhancements.duplicate(true), "reward": reward.duplicate(),
     }
@@ -298,6 +337,8 @@ static func from_dict(d: Dictionary) -> CharacterSheet:
     s.class_id = str(d.get("class_id", ""))
     s.level = clampi(int(d.get("level", 1)), 1, MAX_LEVEL)
     s.loyalty = clampi(int(d.get("loyalty", 50)), 0, 100)
+    s.traits = TraitSystemScript.normalized_ids(d.get("traits", []))
+    s.trait_history = (d.get("trait_history", []) as Array).duplicate(true)
     s.xp = clampi(int(d.get("xp", 0)), 0, maxi(0, exp_to_next_for(s.level) - 1))
     if s.level >= MAX_LEVEL:
         s.xp = 0
