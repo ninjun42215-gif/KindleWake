@@ -141,3 +141,15 @@
 - Integrated trade data in `GameData`; added `GameState.trade_buy()`, `trade_sell()` and `trade_quotes()`. Campaign payloads persist optional `trade_state`; old schema-4 saves receive a safe empty state.
 - Added regression assertions for regional price spreads, inventory/gold changes, cross-market profit, invalid sales, capacity limits and market quote data.
 - Scope is the backend/data foundation, not a finished player-facing merchant UI. Caravan routes/events, contracts, tariffs, smuggling and merchant-guild progression remain follow-up work. Keep game version 0.12.0 and save schema 4 unless verified tests require a change.
+
+
+## 2026-11-10 — Merchant profession and caravan economy expansion
+
+- Extended the regional trading branch with merchant XP/reputation and five ranks. Ranks add cargo capacity and reduce transaction service fees.
+- Added persistent caravan purchase, three upgrade tiers, up to eight guards, risk-based route ambush checks, defence resolution, stolen cargo and possible guard casualties.
+- Added destination-specific delivery contracts with progress tracking, rewards and guild standing improvements.
+- Added three reputation-gated merchant guilds and guild-exclusive commodities, with contribution-based standing progression.
+- Added regional tariffs, authorized empire tariff/route-policy APIs, four regional corridors, tolls, protected routes, route closure and active-region travel integration.
+- Added smuggling with customs seizure, fines and rising heat; guards reduce detection probability.
+- Added legacy trade-state normalization and strict regression assertions. Campaign save schema remains 4; game version remains 0.12.0.
+- Scope: gameplay rules, data and GameState campaign APIs are implemented. Dedicated merchant UI, guild hall UI, visual route map, and empire policy screens are not yet wired. Exact-head Godot import/tests/APK CI must pass before merge; physical Android QA remains separate.
