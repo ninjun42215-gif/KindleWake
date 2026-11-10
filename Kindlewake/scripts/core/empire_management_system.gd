@@ -716,7 +716,7 @@ static func tactical_battle_database(base_db: Dictionary, battle: Dictionary, wa
 		if character_id == "strategic_siege_engineer":
 			var engineer: Dictionary = engineer_templates.get("siege_engineer", {})
 			var engineer_class_id := str(engineer.get("class_id", "swordsman"))
-			chars[character_id] = {"name": str(engineer.get("name", "Siege Engineer")), "class_id": engineer_class_id, "level": 1, "weapon_id": str(engineer.get("weapon_id", "arming_sword")), "armor_def": int(engineer.get("armor_def", 2)), "armor_res": int(engineer.get("armor_res", 2)), "skills": [], "stats": (engineer.get("stats", {}) as Dictionary).duplicate(true)}
+			chars[character_id] = {"name": str(engineer.get("name", "Siege Engineer")), "class_id": engineer_class_id, "level": 1, "weapon_id": str(engineer.get("weapon_id", "arming_sword")), "armor_def": int(engineer.get("armor_def", 2)), "armor_res": int(engineer.get("armor_res", 2)), "skills": (engineer.get("abilities", []) as Array).duplicate(), "stats": (engineer.get("stats", {}) as Dictionary).duplicate(true)}
 			continue
 		if character_id.begins_with("strategic_siege_") and character_id != "strategic_siege_engine":
 			var engine_key := character_id.trim_prefix("strategic_siege_")
