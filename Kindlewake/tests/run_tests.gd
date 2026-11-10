@@ -2052,7 +2052,7 @@ func _test_campaign_save_semantic_backup_fallback() -> void:
     var still_valid: Dictionary = ss.load_slot(slot)
     check(bool(still_valid.get("ok", false)) and not bool(still_valid.get("from_backup", true)) and int(still_valid["payload"]["party"]["gold"]) == 30, "rejected malformed save leaves the valid primary untouched")
 
-    check(_write_raw_save_envelope(slot, invalid_primary, ss.SAVE_VERSION), "test writes a checksum-valid malformed legacy primary")
+    check(_write_raw_save_envelope(slot, invalid_primary, 4), "test writes a checksum-valid malformed legacy primary")
     var recovered: Dictionary = ss.load_slot(slot)
     check(bool(recovered.get("ok", false)) and bool(recovered.get("from_backup", false)), "checksum-valid but semantically invalid primary falls back to valid backup")
     check(RegionSaveState.is_valid_campaign_payload(recovered.get("payload", {})) and int(recovered["payload"]["party"]["gold"]) == 25, "semantic backup recovery returns the previous valid campaign")
