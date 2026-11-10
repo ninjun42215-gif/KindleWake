@@ -90,10 +90,47 @@ func companion_relationship(character_a: String, character_b: String) -> Diction
 ## Campaign/story systems call these methods with authored, consequential evidence; no random trait rolls occur.
 func record_character_behavior(character_id: String, behavior_id: String, amount: int, evidence_id: String) -> bool:
     var member = party.sheet(character_id)
-    if member == null:
+    if member == null or behavior_id == "" or evidence_id == "" or amount <= 0:
         return false
-    member.record_behavior(behavior_id, amount, evidence_id)
+    if not member.record_behavior(behavior_id, amount, evidence_id):
+        return false
+    _advance_ambition_from_behavior(member, behavior_id, amount)
     return true
+
+
+## Assign a curated ambition only when its definition and objective are valid.
+func assign_character_ambition(character_id: String, ambition_id: String) -> Dictionary:
+    var member = party.sheet(character_id)
+    var definition: Dictionary = GameData.ambitions.get(ambition_id, {})
+    if member == null or definition.is_empty():
+        return {"ok": false, "reason": "Unknown character or ambition."}
+    if str(member.ambition.get("status", "")) == "active":
+        return {"ok": false, "reason": "This character already has an active ambition."}
+    var objective: Dictionary = definition.get("objective", {})
+    if str(objective.get("behavior", "")) == "" or int(objective.get("target", 0)) <= 0:
+        return {"ok": false, "reason": "This ambition has an invalid objective."}
+    var started: bool = member.begin_ambition(ambition_id, str(definition.get("name", ambition_id)), str(definition.get("description", "")), int(objective.get("target", 1)))
+    return {"ok": started, "reason": "" if started else "Could not assign ambition."}
+
+
+func _advance_ambition_from_behavior(member, behavior_id: String, amount: int) -> Dictionary:
+    var active_id := str(member.ambition.get("id", ""))
+    if active_id == "" or str(member.ambition.get("status", "")) != "active":
+        return {"ok": false, "completed": false}
+    var definition: Dictionary = GameData.ambitions.get(active_id, {})
+    var objective: Dictionary = definition.get("objective", {})
+    if str(objective.get("behavior", "")) != behavior_id:
+        return {"ok": false, "completed": false}
+    var result: Dictionary = member.advance_ambition(amount)
+    if bool(result.get("completed", false)):
+        member.adjust_stress(int(definition.get("stress_reward", 0)))
+        var reward_trait := str(definition.get("completion_trait", ""))
+        if reward_trait != "":
+            member.acquire_trait(reward_trait, "ambition:" + active_id, GameData.traits)
+        member.memories.append({"event_id": "ambition:" + active_id + ":" + member.character_id, "event_type": "ambition_completed", "type": "achievement", "summary": "Completed the ambition: " + str(definition.get("name", active_id)), "timestamp": int(Time.get_unix_time_from_system()), "resolved": true, "source": "ambition"})
+        while member.memories.size() > 40:
+            member.memories.pop_front()
+    return result
 
 
 func resolve_character_event(character_id: String, event_id: String, source: String = "campaign_event", instance_id: String = "") -> Dictionary:
