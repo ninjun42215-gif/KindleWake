@@ -408,7 +408,7 @@ func _on_attack_camp(p: Dictionary) -> void:
 
 
 func _open_party() -> void:
-    party_screen.setup(GameState.party, GameData.party_db(), {}, false)
+    party_screen.setup(GameState.party, GameData.party_db(), {}, false, false, false, GameState.companion_relationships)
     # The minimap is created later in the world HUD; keep the modal above it.
     if party_screen.get_parent() != null:
         party_screen.get_parent().move_child(party_screen, party_screen.get_parent().get_child_count() - 1)
