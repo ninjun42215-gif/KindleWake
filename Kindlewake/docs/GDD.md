@@ -1,5 +1,5 @@
 # KINDLEWAKE: THE SUNDERED VOW — Game Design Document
-Version 0.12.0 Brinegate Coast Expansion (candidate; consolidated release) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
+Version 0.12.0 Brinegate Coast Expansion (released baseline) (data-driven protagonist creation foundation; character creation and original cast design; sprite source-pack integration; touch scrolling fix; shop compare and confirm; party screen redesign; towns and interiors; art pass; free-roam overworld; class skills; weapon skills; phone HUD rework; Milestone 2 in progress: equipment, character sheets, FF7-style EXP/AP/Sigil grinding, party screen and shop; Android APK pipeline; full class tree as data) · Engine: Godot 4.2+ (GDScript, GL Compatibility renderer) · Platforms: Android, iOS · Fully offline
 
 > Inspiration only: tactical depth and mercenary management in the spirit of *Knights of Ages*, and recruitment/headquarters/platoon ideas in the spirit of *Suikoden II*. All characters, names, maps, story, art and music are original. Nothing is copied.
 
@@ -903,7 +903,7 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 ## 18. Chapter I input and chronicle creator reliability pass (0.12.0 maintenance)
 
 **Working branch:** `fix/ch1-and-creator-ux`  
-**Status:** implementation committed; branch CI and physical-device verification pending. No game-version or save-schema change.
+**Status:** implementation committed; Godot/Android CI passed on runtime-code commit `b2598c3c8620a701d1fabd84394ec5cbb7449451`; physical-device verification remains pending. No game-version or save-schema change.
 
 - Chapter I courtyard movement is handled in the root Control's `_gui_input`, so the full-rect Control no longer prevents taps from reaching `_unhandled_input` (which is not dispatched after GUI handling consumes the event). Mouse drag and touch drag also update the movement target.
 - Movement destinations are constrained to a responsive playable rectangle that excludes the objective and instruction panels. The postern is positioned below the objective panel and the party reaches it within a 120px radius.
@@ -911,4 +911,4 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - On narrow portrait viewports, the live portrait and concise character summary remain above the scrollable creator form. Desktop preview/form arrangement is retained; narrow landscape remains scrollable.
 - `tests/run_tests.gd` covers gate placement and tap-bound clamping at 360×800, 390×844, 1280×720 and 800×360. `tests/scene_smoke_test.gd` loads every authored `.tscn` resource headlessly; the APK builder runs it after editor import and before gameplay tests/export.
 
-**QA still required:** run Godot import, scene smoke, strict logic tests, balance simulation and APK export on the exact PR head. Then verify creator and Chapter I gameplay on a 20:9 Android phone in portrait and landscape. CI does not replace device QA.
+**CI evidence:** run #633 passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 427 strict checks with 0 failures, balance report and signed 40.8 MB APK export with no Android permissions. APK artifact `13724652587`. The first editor import scan still logs transient global-class registration errors before its clean retry; ObjectDB/resource-cleanup warnings remain non-failing. **QA still required:** verify creator and Chapter I gameplay on a 20:9 Android phone in portrait and landscape. CI does not replace device QA.
