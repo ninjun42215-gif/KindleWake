@@ -8,6 +8,20 @@ const Chronicle = preload("res://scripts/core/chronicle_system.gd")
 var failures := 0
 var checks := 0
 func _initialize() -> void:
+ var locations_data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/locations.json"))
+ var aurelmont: Dictionary = locations_data.get("maps", {}).get("aurelmont", {})
+ _check(not aurelmont.is_empty(),"Aurelmont map exists for the Act V return path")
+ var rows: Array = aurelmont.get("rows", [])
+ var map_valid := not rows.is_empty()
+ for row in rows:
+  if str(row).length() != 20:
+   map_valid = false
+ _check(map_valid,"Aurelmont map rows have consistent 20-tile widths")
+ var has_audience := false
+ for spot in aurelmont.get("spots", []):
+  if str(spot.get("story_id", "")) == "last_audience":
+   has_audience = true
+ _check(has_audience,"Aurelmont has a persistent Last Audience interaction for resuming Act V")
  var flags: Dictionary = {}
  _check(not bool(ActTwo.inspect("boundary_tree",flags).available),"Act II is locked before Act I")
  _check(not bool(ActThree.inspect("three_bridges",flags).available),"Act III is locked before Act II")
