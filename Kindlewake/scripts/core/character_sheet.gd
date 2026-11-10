@@ -111,7 +111,7 @@ func armor_totals(items: Dictionary) -> Dictionary:
 
 
 ## Base stats plus every equipped item's "bonus" block (HP/MP max included).
-func total_stats(items: Dictionary, sdefs: Dictionary = {}) -> Dictionary:
+func total_stats(items: Dictionary, sdefs: Dictionary = {}, trait_defs: Dictionary = {}) -> Dictionary:
     var t: Dictionary = base_stats.duplicate()
     for slot in SLOTS:
         var it: Dictionary = items.get(item_in(slot), {})
@@ -131,7 +131,7 @@ func total_stats(items: Dictionary, sdefs: Dictionary = {}) -> Dictionary:
         elif key != "exp_pct" and key != "gold_pct":
             t[key] = int(t.get(key, 0)) + int(mods[k])
     # Trait bonuses are derived on demand; base stats and equipment data are never mutated.
-    var trait_mods: Dictionary = TraitSystemScript.stat_effects(traits, db.get("traits", {}))
+    var trait_mods: Dictionary = TraitSystemScript.stat_effects(traits, trait_defs)
     for stat_key in trait_mods:
         t[str(stat_key)] = int(t.get(str(stat_key), 0)) + int(trait_mods[stat_key])
     for k in t.keys():
@@ -147,7 +147,7 @@ func to_battle_def(db: Dictionary) -> Dictionary:
     return {
         "name": display_name, "class_id": class_id, "level": level, "house": house,
         "weapon_id": weapon_id(items), "armor_def": int(arm["def"]), "armor_res": int(arm["res"]),
-        "skills": all_skills(items, sdefs, db.get("classes", {})), "stats": total_stats(items, sdefs),
+        "skills": all_skills(items, sdefs, db.get("classes", {})), "stats": total_stats(items, sdefs, db.get("traits", {})),
         "traits": traits.duplicate(),
         "skill_mods": skill_mods(items, sdefs), "reward": reward.duplicate(),
     }
