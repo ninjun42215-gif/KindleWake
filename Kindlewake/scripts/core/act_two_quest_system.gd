@@ -21,6 +21,8 @@ static func inspect(story_id: String, flags: Dictionary) -> Dictionary:
 
 
 static func apply_boundary(flags_in: Dictionary, settlement: String) -> Dictionary:
+    if not bool(flags_in.get("chapter_1_complete", false)):
+        return {"ok":false,"reason":"The Sethmarch oath must be completed before Act II begins."}
     if bool(flags_in.get("act2_boundary_resolved", false)):
         return {"ok":false,"reason":"The boundary settlement has already been recorded."}
     if not ["shared_stewardship", "temporary_survey"].has(settlement):
@@ -49,6 +51,8 @@ static func apply_hearing(flags_in: Dictionary, outcome: String) -> Dictionary:
 
 
 static func apply_escort(flags_in: Dictionary, decision: String) -> Dictionary:
+    if not bool(flags_in.get("act2_hearing_resolved", false)):
+        return {"ok":false,"reason":"The Orrowen hearing must be completed before the escort scenario can conclude."}
     if not bool(flags_in.get("act2_escort_captain_defeated", false)) or bool(flags_in.get("act2_escort_resolved", false)):
         return {"ok":false,"reason":"The crossing must be secured before the escort decision can be recorded."}
     if not ["obey_writ", "grant_sanctuary", "negotiate_passage"].has(decision):
