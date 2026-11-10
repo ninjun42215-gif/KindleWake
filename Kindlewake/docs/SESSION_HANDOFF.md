@@ -1,4 +1,68 @@
-> **LIVE IMPLEMENTATION CHECKPOINT — 2026-11-10 (trait/personality foundation in review):** Branch `feature/trait-personality-progression` adds a data-driven 69-trait catalogue, five non-stacking trait synergies, 16 contextual event templates, event-driven stress/memory/behavior tracking, ambition progress state, CharacterSheet persistence, derived stat effects, and a PartyScreen character-sheet display. Save schema remains 4; old character records default safely. This is an initial foundation, not the full 300-trait / 200-event target. See [TRAIT_PERSONALITY_SYSTEM.md](TRAIT_PERSONALITY_SYSTEM.md) for exact scope, APIs and remaining work. Exact-head CI passed on `501e3abfa6877502254d8a60790f6a7818f30587`: Godot 4.2.2 import (clean second scan), 8/8 scene smoke loads, 465 strict checks / 0 failures, balance report, signed 41.0 MB Android APK for arm64-v8a and armeabi-v7a, and zero requested Android permissions. Version Sync #184, Project Health Audit #439, and Workflow YAML Lint #646 also passed. APK artifact `13733390175` (SHA-256 `32e0f7d55a4ccac1fb9845903b694b1de1755051662bff60c9b9d4eefbf48454`); test logs artifact `13733135964`. The first editor scan logged transient class-registration errors before the clean second scan; non-failing ObjectDB/resource cleanup warnings remain. Physical Android-device QA is still pending. No portrait/sprite mappings or unverified character personalities were invented. Keep PR #40 in draft pending code review and device QA.
+# Current session handoff — 2026-11-10
+
+**Canonical repository:** `ninjun42215-gif/KindleWake`  
+**Default branch:** `main`  
+**Current main commit:** `036a17da88ab1b1037b224334dbfbbdcb392e195`  
+**Project:** Godot 4.2.2 / GL Compatibility / offline-first  
+**Version:** 0.12.0 · Android version code 1200 · save schema 4
+
+Read [PRODUCTION_AUDIT_AND_ROADMAP.md](PRODUCTION_AUDIT_AND_ROADMAP.md) first. It is the current implementation inventory and integration plan. Older checkpoints below this section are historical records and must not be treated as current state.
+
+## Current verified state
+
+- Main includes semantic campaign-save validation, valid-backup recovery when the primary is malformed, malformed campaign write rejection, future-version downgrade protection, and isolated SaveSystem test storage. The test harness no longer writes into the player's real `auto_a` / `auto_b` save slots.
+- Main exact-head CI run [#42804577127](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42804577127) passed: 671 strict checks / 0 failures, 9/9 scene resources loaded, campaign restore → World startup lifecycle test with 0 failures, balance report, Android APK export/signature, Project Health Audit, Version Sync and Workflow YAML Lint.
+- The first Godot editor import scan still logs a transient global-class registration error (`CharacterSheet`); the builder's clean second scan completes without unresolved script errors. ObjectDB/resource cleanup warnings remain at headless test exit and should be tracked separately.
+- PR #100 is merged and the lifecycle test is now part of strict CI. PRs #102, #104 and #110 were closed as stale/duplicate work after their save-recovery changes were incorporated into main. PR #95 and #93 were closed as superseded by PR #100.
+- Issue #36 (Android crash after character creation / Continue) remains open. Headless lifecycle coverage is not physical-device QA. Obtain Android logcat `FATAL EXCEPTION`, Godot stack trace, and a reproducible device sequence before claiming a root cause or fix.
+- Issue #82 tracks integration and release readiness.
+
+## Current main inventory
+
+- 28 classes, 15 combat skills, 77 runes, 69 traits, five trait synergies, 20 personality event templates and 36 character definitions.
+- 39 town/interior location maps and six battle definitions.
+- Seven-continent atlas blueprint, but only two distinct overworld datasets are wired through `GameData.world_for_region()`.
+- Tactical battle, character creation, party progression, gear/runes, traits/personality, free-roam exploration, faction foundations, authored quest chains, checksummed saves and battle restore validation are present.
+- Generic companion quest framework, regional trading, full five-act campaign, Chronicle founder epilogue, realm/territory simulation, and a persistent node-based class skill tree are not integrated on main.
+- No bundled music/SFX or font files are present. Most classes lack complete character sprite/portrait/animation coverage.
+- Android is configured; iOS export/device QA is not.
+
+## Integration snapshot
+
+Recheck these branches against live main before touching them. Divergence counts are not quality scores.
+
+| PR | System | Last observed divergence | Integration warning |
+|---|---|---:|---|
+| #42 | Regional bestiary / human enemies | 21 ahead / 26 behind | Touches GameState, encounters, characters and tests |
+| #53 | Companion quest framework | 62 ahead / 25 behind | Large overlap in locations, GameState, save validation and tests |
+| #61 | Dungeons / holdings / world expansion | 72 ahead / 24 behind | Overlaps world maps, location UI, economy and GameState |
+| #81 | Regional trading | 3 ahead / 11 behind | Reconcile shared GameState, location, merchant UI and tests |
+| #83 | Five-act continuity | 123 ahead / 25 behind | Stacked on Act V parent; do not merge independently |
+| #87 | Territorial governance | 6 ahead / 8 behind | Overlaps other governance implementation |
+| #88 | Founder epilogue / Chronicle | 132 ahead / 25 behind | Stacked on #83; parent must integrate first |
+| #91 | Realm governance | 5 ahead / 6 behind | Overlaps #87 and #61; consolidate to one realm model |
+
+PR #99 and #101 were closed without merge; their 40-event catalogue and ambition progression are not on main. PR #80 is stale and must not be merged wholesale.
+
+## Immediate next steps
+
+1. Reproduce issue #36 on Android with logcat and test install, pause/resume, process kill, cold relaunch, Continue and autosave recovery.
+2. Reconcile one vertical slice of the companion quest system before porting all 21 quests.
+3. Integrate regional trade and faction diplomacy on current main.
+4. Expand the world only when each region has a real map, routes, encounters, local maps, progression gates and save tests.
+5. Choose one coherent governance/holdings/economy model rather than merging overlapping branches.
+6. Integrate five-act continuity and then the founder epilogue in dependency order. Chronicle must remain gated behind the full ending, the ruler's explicit abolition of the empire, the founder's authored late-life epilogue, and a recorded natural old-age death.
+7. Build and balance class talent trees after the current promotion/skill system is fully mapped.
+8. Complete audio, typography, class/companion art, accessibility, performance and Android device QA.
+
+## Engineering constraints
+
+- Never commit directly to `main`; use focused pull requests.
+- Preserve offline-first behavior and save schema 4 unless a separately reviewed migration is necessary.
+- Reconcile each feature against the current main head; do not merge stale branches wholesale or merge stacked children before parents.
+- Exact-head CI must include import, strict tests, scene smoke, campaign lifecycle, balance, Android export/signature and project audits.
+- Physical-device QA is a separate release gate.
+- Keep README, asset manifest, provenance ledger and production audit synchronized.
 
 ---
 
