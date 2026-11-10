@@ -5,6 +5,7 @@ const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
+const CompanionQuestJournalScript = preload("res://scripts/ui/companion_quest_journal.gd")
 ## Towns and building interiors (data/locations.json, rules in LocalMap).
 ## Walk with tap / drag like the overworld. Walking into a door loads the next map (town -> house -> town) inside this
 ## scene; walking onto the exit (E) of a town returns to the overworld. People and objects ("spots") are used with the
@@ -38,6 +39,7 @@ var spot_title: Label
 var spot_text: Label
 var spot_buttons: VBoxContainer
 var party_screen: PartyScreen
+var quest_journal: CompanionQuestJournal
 var move_stick: VirtualStick
 var run_btn: Button
 var run_toggled: bool = false
@@ -83,7 +85,7 @@ func _load_map(id: String, spawn: Vector2i) -> void:
 # ------------------------------------------------------------------ input and movement
 
 func _unhandled_input(event: InputEvent) -> void:
-    if panel_open or party_screen.visible or leaving:
+    if panel_open or party_screen.visible or quest_journal.visible or leaving:
         return
     if event is InputEventMouseButton:
         var mb := event as InputEventMouseButton
@@ -111,7 +113,7 @@ func _free_at(p: Vector2) -> bool:
 func _process(delta: float) -> void:
     if leaving:
         return
-    if not panel_open and not party_screen.visible:
+    if not panel_open and not party_screen.visible and not quest_journal.visible:
         moving_vector = ExplorationControls.movement_vector()
         if move_stick != null and move_stick.value.length() > moving_vector.length():
             moving_vector = move_stick.value
@@ -682,6 +684,12 @@ func _build_ui() -> void:
     run_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
     run_btn.grow_vertical = Control.GROW_DIRECTION_BEGIN
 
+    var journal_btn := _btn("CHRONICLE", _open_quest_journal, 17)
+    journal_btn.custom_minimum_size = Vector2(150, 54)
+    root.add_child(journal_btn)
+    journal_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
+    journal_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+
     spot_panel = _hud_panel(0.97)
     var box := VBoxContainer.new()
     box.add_theme_constant_override("separation", 12)
@@ -709,6 +717,18 @@ func _build_ui() -> void:
     party_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     party_screen.visible = false
     party_screen.closed.connect(_on_party_closed)
+
+    quest_journal = CompanionQuestJournalScript.new()
+    root.add_child(quest_journal)
+    quest_journal.visible = false
+
+
+func _open_quest_journal() -> void:
+    if panel_open or party_screen.visible:
+        return
+    has_target = false
+    pressing = false
+    quest_journal.open()
 
 
 func _update_hud() -> void:
