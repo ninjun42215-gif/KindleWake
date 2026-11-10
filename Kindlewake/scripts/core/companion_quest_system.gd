@@ -52,6 +52,11 @@ static func start(state: Dictionary, quest_id: String, roster: Array, catalog: D
 		return {"ok": false, "reason": "Recruit this companion before starting their personal quest."}
 	if (definition.get("milestones", []) as Array).is_empty() or (definition.get("outcomes", []) as Array).is_empty():
 		return {"ok": false, "reason": "This companion quest is not fully authored."}
+	var world_flags: Dictionary = catalog.get("world_flags", {})
+	for raw_flag in definition.get("required_flags_all", []):
+		var required_flag := str(raw_flag)
+		if required_flag != "" and not bool(world_flags.get(required_flag, false)):
+			return {"ok": false, "reason": str(definition.get("unlock_hint", "A campaign story requirement has not yet been met."))}
 	state[quest_id] = {"status": ACTIVE, "progress": 0, "choices": {}, "outcome": ""}
 	return {"ok": true, "quest_id": quest_id, "progress": 0, "status": ACTIVE}
 
