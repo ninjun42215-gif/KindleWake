@@ -181,6 +181,18 @@
       ],
       "completion_reward": {
         "gold": 35
+      },
+      "synopsis": "Edda uncovers a labour debt hidden in the accounts of a foundry workshop. The company must distinguish stolen tools from honest loans, verify the workers' claims and decide who should own the furnace.",
+      "resolution_prompt": "The former employer offers Edda the workshop in exchange for abandoning the workers' claims. How should the rebuilt foundry be governed?",
+      "outcome_labels": {
+        "shared_workshop": "Establish a shared workshop",
+        "protected_ownership": "Grant Edda ownership with worker protections",
+        "independent_guild": "Help Edda form an independent guild"
+      },
+      "outcome_descriptions": {
+        "shared_workshop": "Edda establishes a shared workshop charter. Workers elect a keeper for the tool register and receive a transparent share of each contract.",
+        "protected_ownership": "Edda accepts ownership only after signing enforceable wage, safety and apprenticeship protections. The workers retain a route to challenge violations.",
+        "independent_guild": "Edda refuses the employer's terms and leaves to form an independent guild. The foundry remains closed for now, but its workers keep their claims and tools."
       }
     },
     "q_companion_joss_debt_of_silence": {
@@ -238,6 +250,18 @@
       ],
       "completion_reward": {
         "gold": 50
+      },
+      "synopsis": "Bram Cullen learns that a private company has bought his prison debt and is using false transfers to seize other inmates. The company investigates the contracts and frees the debtors without pretending every debt is fraudulent.",
+      "resolution_prompt": "The false transfers are exposed and the debtors are safe. What should become of the evidence and the company's claims?",
+      "outcome_labels": {
+        "destroy_false_records": "Destroy the false transfer records",
+        "public_tribunal": "Submit the evidence to a public tribunal",
+        "negotiate_release": "Negotiate release while preserving evidence"
+      },
+      "outcome_descriptions": {
+        "destroy_false_records": "Bram destroys only the forged transfer copies and keeps verified originals with the freed debtors. The immediate threat ends, though a formal ruling is lost.",
+        "public_tribunal": "Bram submits the forged transfers and witness statements to a public tribunal. Legitimate debts remain subject to review, while the unlawful seizures face judgment.",
+        "negotiate_release": "Bram negotiates the debtors' release in exchange for preserving the full record for later claims. The company withdraws its immediate seizure order but is not granted immunity."
       }
     },
     "q_companion_verra_song_without_seal": {
