@@ -8,9 +8,9 @@ This document describes the first playable gameplay pass for the five Kaer Setho
 |---|---|---|---|
 | The Blocked Well | Ordered restoration puzzle | Safety, diagnosis and process | Clean water returns to the keep |
 | Roof Before Banner | Material selection and repair-sequence puzzle | Observation and prioritisation | The wounded have a dry hall before the house banner is raised |
-| The Last Convoy | Tactical route/formation decisions followed by a cinematic boss confrontation | Protecting civilians, controlling space and reading an enemy's commitment | The convoy manifest is recovered; families and supplies are accounted for |
+| The Last Convoy | Tactical route/formation decisions followed by a full tactical boss battle | Protecting civilians, controlling space and reading an enemy's commitment | The convoy manifest is recovered; families and supplies are accounted for |
 | A Name on the Toll Book | Evidence deduction puzzle | Chronology, authority and witness protection | A forged toll order is authenticated without needlessly exposing families |
-| The First Oath | Cinematic confrontation, interactive response and a final oath choice | Legitimacy, restraint and institutional accountability | The household publicly accepts a duty to the Sethmarch |
+| The First Oath | Cinematic confrontation, full tactical boss battle and a final oath choice | Legitimacy, restraint and institutional accountability | The household publicly accepts a duty to the Sethmarch |
 
 ## Implementation notes
 
@@ -18,7 +18,7 @@ This document describes the first playable gameplay pass for the five Kaer Setho
 - The five challenges have separate authored stage content, not one generic quiz prompt.
 - Choices are validated. A wrong answer explains that the choice puts people or evidence at risk and allows another attempt; it does not softlock the campaign.
 - Successful completion writes the established GameState.world_flags used by the Act I quest gates and saves through the existing local campaign save path.
-- The Last Convoy and First Oath include authored boss-confrontation beats with meaningful counterplay choices. In this first pass these are cinematic, choice-driven encounters, not yet full tactical BattleController encounters with animated boss units. A later combat pass should replace or extend these beats with bespoke tactical battle definitions while preserving their story gates and outcomes.
+- The Last Convoy and First Oath launch dedicated tactical BattleController encounters with boss-grade units, signature skills, supporting enemies, authored battlefields, commander objectives and story-specific victory flags. The story challenge resumes after the battle result. Unique multi-phase boss AI, bespoke animated boss sprites and custom attack VFX remain future polish work.
 - The initial arrival priority remains respected: if the player already completed the well or roof through the arrival decision, that work remains complete and the corresponding quest is not replayed.
 - All content is offline and uses the existing Godot scene and campaign state architecture.
 
