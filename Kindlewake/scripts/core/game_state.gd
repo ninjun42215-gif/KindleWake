@@ -93,10 +93,6 @@ func dismiss_empire_councillor(role: String) -> bool:
     return EmpireSystem.dismiss_councillor(empire_state, role)
 
 
-func dismiss_province_governor(province_id: String) -> bool:
-    return EmpireSystem.dismiss_governor(empire_state, province_id)
-
-
 func player_controlled_provinces() -> Array:
     var owned: Array = []
     var territories: Dictionary = faction_state.get("territories", {})
