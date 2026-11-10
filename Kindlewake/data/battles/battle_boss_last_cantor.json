@@ -81,8 +81,8 @@
       "character_id": "brother_wystan",
       "team": "player",
       "cell": [
-        6,
-        10
+        8,
+        11
       ],
       "facing": 0
     },
@@ -109,7 +109,7 @@
       "character_id": "roadreaver",
       "team": "enemy",
       "cell": [
-        15,
+        14,
         6
       ],
       "facing": 2
