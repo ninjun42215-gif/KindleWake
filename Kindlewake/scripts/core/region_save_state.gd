@@ -50,6 +50,10 @@ static func is_valid_campaign_payload(payload: Dictionary) -> bool:
             return false
         if typeof(member.get("traits", [])) != TYPE_ARRAY or typeof(member.get("trait_history", [])) != TYPE_ARRAY:
             return false
+        var trait_history: Array = member.get("trait_history", [])
+        for history_entry in trait_history:
+            if typeof(history_entry) != TYPE_DICTIONARY:
+                return false
         if typeof(member.get("enhancements", {})) != TYPE_DICTIONARY or typeof(member.get("reward", {})) != TYPE_DICTIONARY:
             return false
         var sigils: Dictionary = member.get("sigils", {})
@@ -62,7 +66,14 @@ static func is_valid_campaign_payload(payload: Dictionary) -> bool:
         var personality: Dictionary = personality_value
         if typeof(personality.get("memories", [])) != TYPE_ARRAY:
             return false
+        var memories: Array = personality.get("memories", [])
+        for memory in memories:
+            if typeof(memory) != TYPE_DICTIONARY:
+                return false
         if typeof(personality.get("behavior", {})) != TYPE_DICTIONARY or typeof(personality.get("ambition", {})) != TYPE_DICTIONARY:
+            return false
+        var behavior: Dictionary = personality.get("behavior", {})
+        if typeof(behavior.get("seen_evidence", [])) != TYPE_ARRAY:
             return false
     if typeof(payload.get("creation_profile", {})) != TYPE_DICTIONARY:
         return false
