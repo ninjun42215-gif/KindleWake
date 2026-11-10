@@ -26,6 +26,7 @@ var world: Dictionary = {}               # world.json: the Eldrimar regional ove
 var thalassar_world: Dictionary = {}     # thalassar_world.json: Brinegate Coast
 var continents: Dictionary = {}          # continents.json: the seven-continent campaign atlas
 var factions: Dictionary = {}            # factions.json: political powers and regional affiliations
+var companion_quests: Dictionary = {}     # companion_quests.json: optional recruitable-ally quest definitions
 var battles: Dictionary = {}
 
 
