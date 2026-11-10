@@ -28,7 +28,7 @@ Implemented as `scripts/core/empire_management_system.gd`, integrated with `Game
 - Standing armies add seasonal treasury upkeep and food/ration demand. Seasonal reports expose troop count, military upkeep and military food consumption so army size has a visible economic cost.
 - Field armies can be mobilized from existing garrisons without creating duplicate troops. Mobilization preserves troop composition and may assign an existing party character as commander.
 - Field armies move one step per season along authored regional links in the seven-continent atlas; arbitrary jumps and non-adjacent moves are rejected.
-- Field armies outside player-controlled provinces are marked unsupplied. Seasonal advancement charges their upkeep and rations, refreshes movement, and recalculates supply from current territorial control.
+- Field armies outside player-controlled provinces are marked unsupplied. One isolated season is a warning grace period; from the second consecutive unsupplied season onward, each season causes deterministic 5% troop attrition (minimum one soldier), reduces morale by 10, and records total losses in the seasonal ledger. Supplied armies recover 6 morale per season up to 100. Armies destroyed by prolonged isolation are removed and recorded in the chronicle.
 - Seasonal tax income, upkeep, food production/consumption, manpower replenishment, public-order and stability effects, fort defence contribution and bounded event history.
 - Safe normalization for legacy saves with no empire payload. The system is additive and does not require a save schema bump.
 
@@ -43,7 +43,7 @@ Each known province contributes a modest baseline tax and food yield, while popu
 3. **Provinces:** atlas ownership, governor appointment/recall and construction. Actions are disabled outside player-controlled House Dunmarrow/Crownlands territory; local order and resource specialization remain future work.
 4. **Economy:** tax policy, edicts and seasonal ledger. A forecast/confirmation preview remains future work.
 5. **Military:** manpower is visible in the realm overview and forts contribute a defence value in the seasonal report; garrisons, recruitment levies, supply and campaign readiness are not yet implemented.
-6. **Military:** recruit and disband provincial infantry, archers and cavalry; view total troops, garrisoned provinces, upkeep and food demand. Barracks increase local garrison capacity. Seasonal ledgers charge troop upkeep and rations. Field army mobilization, commanders, atlas-link movement, seasonal movement refresh and controlled-territory supply checks are implemented. Tactical deployment, attrition, supply-line networks, sieges and war declarations remain future work.
+6. **Military:** recruit and disband provincial infantry, archers and cavalry; view total troops, garrisoned provinces, upkeep and food demand. Barracks increase local garrison capacity. Seasonal ledgers charge troop upkeep and rations. Field army mobilization, commanders, atlas-link movement, seasonal movement refresh, controlled-territory supply checks, morale recovery and prolonged-isolation attrition are implemented. Tactical deployment, attrition, supply-line networks, sieges and war declarations remain future work.
 7. **Diplomacy:** faction relations and territorial transfers remain available through the separate faction backend; a player-facing diplomacy screen, treaties, trade and war declarations are future work.
 8. **Chronicle:** current realm decisions, construction, appointments, policy changes and seasonal reports. Rebellion and territorial events will join when authored.
 
@@ -51,7 +51,7 @@ Each known province contributes a modest baseline tax and food yield, while popu
 
 - Province-level population, prosperity, culture and unrest.
 - Trade routes, tariffs, resource specialization and caravan/port income.
-- Army mustering, garrisons, supply lines, siege preparation and war exhaustion.
+- Connected supply-line networks, siege preparation, war exhaustion and tactical battle deployment.
 - Faction AI turns, claims, succession crises and negotiated peace.
 - Character traits, skills, loyalty and rivalries influencing office performance.
 - Events with clear causes, player choices and persistent consequences.
