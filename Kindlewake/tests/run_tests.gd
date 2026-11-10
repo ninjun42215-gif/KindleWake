@@ -925,7 +925,7 @@ func _test_empire_management() -> void:
     check(EmpireSystem.construct(state, "sethmarch", "farms", known_regions), "construction spends treasury on a valid building")
     check(int(state["treasury"]) == 380, "construction deducts the exact building cost")
     check(not EmpireSystem.construct(state, "sethmarch", "farms", known_regions), "duplicate building construction is rejected")
-    check(not EmpireSystem.construct(state, "orrowen_weald", "fort", known_regions) == false, "known province accepts a valid fort construction")
+    check(EmpireSystem.construct(state, "orrowen_weald", "fort", known_regions), "known province accepts a valid fort construction")
     state["food"] = 0
     var before_order: int = int(state["public_order"])
     var report: Dictionary = EmpireSystem.advance_season(state, ["sethmarch"])
