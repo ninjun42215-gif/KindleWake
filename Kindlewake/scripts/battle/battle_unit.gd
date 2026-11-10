@@ -99,7 +99,8 @@ func to_dict() -> Dictionary:
         "skills": skills.duplicate(), "is_protagonist": is_protagonist, "is_commander": is_commander,
         "move": move, "jump": jump, "ctb": ctb, "has_moved": has_moved, "has_acted": has_acted,
         "statuses": statuses.duplicate(true), "kills": kills, "kill_exp": kill_exp,
-        "skill_mods": skill_mods.duplicate(), "reward": reward.duplicate(),\n        "traits": traits.duplicate(), "personality": personality.duplicate(true), "companion_bonds": companion_bonds.duplicate(true),
+        "skill_mods": skill_mods.duplicate(), "reward": reward.duplicate(),
+        "traits": traits.duplicate(), "personality": personality.duplicate(true), "companion_bonds": companion_bonds.duplicate(true),
     }
 
 
