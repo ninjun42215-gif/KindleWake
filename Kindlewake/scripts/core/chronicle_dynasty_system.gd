@@ -83,6 +83,8 @@ static func new_house(founder_record: Dictionary, founder_name: String, house_na
  people["heir_1"]["siblings"] = ["heir_2"]
  people["heir_2"]["siblings"] = ["heir_1"]
  people["heir_1"]["designated_heir"] = true
+ people["heir_1"]["title_id"] = "founder_barony"
+ people["heir_1"]["title_ids"] = ["founder_barony"]
  var domains := {"kaer_sethorn":{"id":"kaer_sethorn","name":"Kaer Sethorn and its holdings","steward":"heir_1","prosperity":50,"security":45,"food":55,"legitimacy":60,"notes":"A modest holding entrusted to the first branch; its duties are relief, roads and fair local judgement."}}
  var titles := {"founder_barony":{"id":"founder_barony","rank_id":"baron","name":"Baron of Kaer Sethorn","holder":"heir_1","domain_id":"kaer_sethorn","jurisdiction":"Kaer Sethorn and its villages","obligations":["maintain the well","keep the road passable","publish relief accounts"],"legitimacy":60}}
  return {
@@ -94,7 +96,7 @@ static func new_house(founder_record: Dictionary, founder_name: String, house_na
 
 
 static func _person(id: String, name: String, age: int, relation: String, parents: Array, traits: Array, alive: bool) -> Dictionary:
- return {"id":id,"name":name,"age":age,"relation":relation,"parents":parents.duplicate(),"children":[],"siblings":[],"spouse":"","traits":traits.duplicate(),"alive":alive,"death_cause":"","title_id":"","domain_ids":[],"designated_heir":false,"born_year":1}
+ return {"id":id,"name":name,"age":age,"relation":relation,"parents":parents.duplicate(),"children":[],"siblings":[],"spouse":"","traits":traits.duplicate(),"alive":alive,"death_cause":"","title_id":"","title_ids":[],"domain_ids":[],"designated_heir":false,"born_year":1}
 
 
 static func normalize_state(raw: Dictionary) -> Dictionary:
@@ -307,9 +309,11 @@ static func assign_title(raw: Dictionary, title_id: String, person_id: String) -
  var old_holder := str(title.get("holder",""))
  if state.people.has(old_holder):
   var former: Dictionary = state.people[old_holder]
-  if str(former.get("title_id","")) == title_id:
-   former["title_id"] = ""
-   state.people[old_holder] = former
+  var former_titles: Array = former.get("title_ids",[])
+  former_titles.erase(title_id)
+  former["title_ids"] = former_titles
+  former["title_id"] = str(former_titles.back()) if not former_titles.is_empty() else ""
+  state.people[old_holder] = former
  title["holder"] = person_id
  state.titles[title_id] = title
  var person: Dictionary = state.people[person_id]
