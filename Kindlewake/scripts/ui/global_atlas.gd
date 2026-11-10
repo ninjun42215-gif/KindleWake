@@ -161,7 +161,7 @@ func _build_diplomacy_panel() -> void:
     close.pressed.connect(_close_diplomacy)
     header.add_child(close)
     var intro := Label.new()
-    intro.text = "Standing is measured against House Dunmarrow. Relations change through authored campaign choices; alliances require %d relation and cannot be forced during war." % FactionSystem.ALLIANCE_THRESHOLD
+    intro.text = "Standing is measured against House Dunmarrow. Relations change through authored campaign choices. Treaty tiers require %d relation for non-aggression, %d for trade, and %d for alliance; war blocks proposals." % [FactionSystem.NON_AGGRESSION_THRESHOLD, FactionSystem.TRADE_PACT_THRESHOLD, FactionSystem.ALLIANCE_THRESHOLD]
     intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     intro.add_theme_color_override("font_color", Color("#b7c6c3"))
     shell.add_child(intro)
@@ -246,23 +246,26 @@ func _refresh_diplomacy() -> void:
             allied.text = "Alliance established"
             allied.add_theme_color_override("font_color", Color("#9bc49d"))
             column.add_child(allied)
-        elif FactionSystem.can_propose_alliance(GameState.faction_state, player_faction, faction_id):
-            var propose := Button.new()
-            propose.text = "PROPOSE ALLIANCE"
-            propose.custom_minimum_size = Vector2(0, 38)
-            propose.pressed.connect(_propose_alliance.bind(faction_id))
-            column.add_child(propose)
         elif diplomatic_state == "war":
             var war_label := Label.new()
-            war_label.text = "A formal state of war prevents an alliance proposal."
+            war_label.text = "A formal state of war prevents treaty proposals."
             war_label.add_theme_color_override("font_color", Color("#d69a79"))
             column.add_child(war_label)
         else:
-            var threshold_label := Label.new()
-            threshold_label.text = "Alliance threshold: %d relation" % FactionSystem.ALLIANCE_THRESHOLD
-            threshold_label.add_theme_font_size_override("font_size", 12)
-            threshold_label.add_theme_color_override("font_color", Color("#9aaeb0"))
-            column.add_child(threshold_label)
+            var next_treaty := FactionSystem.next_proposable_treaty(GameState.faction_state, player_faction, faction_id)
+            if next_treaty != "":
+                var propose := Button.new()
+                propose.text = "PROPOSE %s" % FactionSystem.treaty_name(next_treaty).to_upper()
+                propose.custom_minimum_size = Vector2(0, 38)
+                propose.pressed.connect(_propose_treaty.bind(faction_id, next_treaty))
+                column.add_child(propose)
+            else:
+                var threshold_label := Label.new()
+                var threshold := FactionSystem.next_treaty_threshold(diplomatic_state)
+                threshold_label.text = "Next treaty threshold: %d relation" % threshold if threshold >= 0 else "No further treaty tier available."
+                threshold_label.add_theme_font_size_override("font_size", 12)
+                threshold_label.add_theme_color_override("font_color", Color("#9aaeb0"))
+                column.add_child(threshold_label)
     var history_heading := Label.new()
     history_heading.text = "RECENT DIPLOMATIC HISTORY"
     history_heading.add_theme_font_size_override("font_size", 18)
@@ -285,13 +288,13 @@ func _refresh_diplomacy() -> void:
             diplomacy_body.add_child(line)
 
 
-func _propose_alliance(faction_id: String) -> void:
-    if GameState.set_faction_diplomacy("house_dunmarrow", faction_id, "alliance"):
+func _propose_treaty(faction_id: String, treaty: String) -> void:
+    if FactionSystem.can_propose_treaty(GameState.faction_state, "house_dunmarrow", faction_id, treaty) and GameState.set_faction_diplomacy("house_dunmarrow", faction_id, treaty):
         GameState.save_campaign("auto_a")
-        diplomacy_feedback.text = "Alliance recorded with %s." % _faction_name(faction_id)
+        diplomacy_feedback.text = "%s recorded with %s." % [FactionSystem.treaty_name(treaty), _faction_name(faction_id)]
         _refresh_diplomacy()
     else:
-        diplomacy_feedback.text = "The alliance threshold or current diplomatic state does not permit this proposal."
+        diplomacy_feedback.text = "The relation threshold or current diplomatic state does not permit this treaty."
         _refresh_diplomacy()
 
 
