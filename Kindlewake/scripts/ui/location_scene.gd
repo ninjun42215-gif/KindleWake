@@ -7,6 +7,7 @@ const NerisQuestSystem = preload("res://scripts/core/neris_quest_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
+const MerchantScreenScript = preload("res://scripts/ui/merchant_screen.gd")
 ## Towns and building interiors (data/locations.json, rules in LocalMap).
 ## Walk with tap / drag like the overworld. Walking into a door loads the next map (town -> house -> town) inside this
 ## scene; walking onto the exit (E) of a town returns to the overworld. People and objects ("spots") are used with the
@@ -40,6 +41,8 @@ var spot_title: Label
 var spot_text: Label
 var spot_buttons: VBoxContainer
 var party_screen: PartyScreen
+var merchant_screen: Control
+var merchant_origin_region: String = ""
 var move_stick: VirtualStick
 var run_btn: Button
 var run_toggled: bool = false
@@ -85,7 +88,7 @@ func _load_map(id: String, spawn: Vector2i) -> void:
 # ------------------------------------------------------------------ input and movement
 
 func _unhandled_input(event: InputEvent) -> void:
-    if panel_open or party_screen.visible or leaving:
+    if panel_open or party_screen.visible or (merchant_screen != null and merchant_screen.visible) or leaving:
         return
     if event is InputEventMouseButton:
         var mb := event as InputEventMouseButton
@@ -113,7 +116,7 @@ func _free_at(p: Vector2) -> bool:
 func _process(delta: float) -> void:
     if leaving:
         return
-    if not panel_open and not party_screen.visible:
+    if not panel_open and not party_screen.visible and (merchant_screen == null or not merchant_screen.visible):
         moving_vector = ExplorationControls.movement_vector()
         if move_stick != null and move_stick.value.length() > moving_vector.length():
             moving_vector = move_stick.value
@@ -575,6 +578,21 @@ func _on_party_closed() -> void:
     hud_text = ""
 
 
+func _open_merchant() -> void:
+    if panel_open or party_screen.visible or leaving:
+        return
+    merchant_origin_region = GameState.active_region_id
+    merchant_screen.call("open_exchange")
+
+
+func _on_merchant_closed() -> void:
+    hud_text = ""
+    if merchant_origin_region != GameState.active_region_id:
+        get_tree().change_scene_to_file("res://World.tscn")
+        return
+    GameState.save_campaign("auto_a")
+
+
 # ------------------------------------------------------------------ drawing
 
 func _draw() -> void:
@@ -848,6 +866,11 @@ func _build_ui() -> void:
     info_panel.add_child(info_label)
     root.add_child(info_panel)
     info_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT, Control.PRESET_MODE_MINSIZE, 12)
+    var merchant_btn := _btn("MERCHANT", _open_merchant, 17)
+    merchant_btn.custom_minimum_size = Vector2(190, 48)
+    root.add_child(merchant_btn)
+    merchant_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
+    merchant_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 
     prompt_btn = _btn("Talk", _on_prompt_pressed, 28)
     prompt_btn.custom_minimum_size = Vector2(420, 84)
@@ -898,6 +921,11 @@ func _build_ui() -> void:
     party_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     party_screen.visible = false
     party_screen.closed.connect(_on_party_closed)
+    merchant_screen = MerchantScreenScript.new()
+    root.add_child(merchant_screen)
+    merchant_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    merchant_screen.visible = false
+    merchant_screen.connect("closed", Callable(self, "_on_merchant_closed"))
 
 
 func _update_hud() -> void:
