@@ -133,6 +133,18 @@ func establish_empire_trade_route(origin: String, destination: String) -> bool:
 func close_empire_trade_route(route_id: String) -> bool:
     return EmpireSystem.close_trade_route(empire_state, route_id)
 
+func preview_empire_season() -> Dictionary:
+    return EmpireSystem.preview_season(empire_state, player_controlled_provinces(), atlas_region_adjacency(), GameData.characters)
+
+
+func suppress_empire_unrest() -> bool:
+    return EmpireSystem.suppress_rebellion(empire_state)
+
+
+func negotiate_faction_peace(faction_id: String, gold_offer: int = 100) -> bool:
+    return EmpireSystem.negotiate_peace(faction_state, empire_state, "house_dunmarrow", faction_id, gold_offer)
+
+
 func advance_empire_season() -> Dictionary:
     var report: Dictionary = EmpireSystem.advance_season(empire_state, player_controlled_provinces(), atlas_region_adjacency(), GameData.characters)
     if not bool(report.get("ok", false)):
