@@ -35,7 +35,8 @@
         "publish_record": "lucan_outcome_public_record",
         "private_restitution": "lucan_outcome_restitution",
         "protected_archive": "lucan_outcome_protected_archive"
-      }
+      },
+      "journal_summary": "Follow an abandoned Orrowen signal pattern, reconstruct a deserter patrol route, and protect the witness caught between truth and fear."
     },
     "q_companion_brisa_hearth_of_names": {
       "companion_id": "old_brisa",
@@ -70,7 +71,8 @@
         "keep_infirmary": "brisa_outcome_infirmary_ledger",
         "village_service": "brisa_outcome_village_service",
         "community_network": "brisa_outcome_shared_care"
-      }
+      },
+      "journal_summary": "Help Brisa recover the names of families erased from Foxglove's infirmary ledger, then decide how the village should care for them."
     },
     "q_companion_kestrel_no_master": {
       "companion_id": "kestrel",
@@ -105,7 +107,8 @@
         "destroy_records": "kestrel_outcome_records_destroyed",
         "submit_evidence": "kestrel_outcome_magistrate",
         "kestrel_decides": "kestrel_outcome_self_determined"
-      }
+      },
+      "journal_summary": "Decode the marks of Kestrel's former handlers, uncover a safehouse ledger, and decide who controls the names it contains."
     },
     "q_companion_anselm_line_to_hold": {
       "companion_id": "anselm_pike",
