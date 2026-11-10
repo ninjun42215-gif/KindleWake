@@ -1,0 +1,784 @@
+{
+  "schema_version": 1,
+  "description": "Data-driven companion quest progression definitions. Narrative specifications live in docs/COMPANION_QUEST_EXPANSION.md.",
+  "quests": {
+    "q_companion_lucan_last_flight": {
+      "companion_id": "lucan_thorne",
+      "title": "The Last Flight",
+      "chapter": "II",
+      "required_region": "orrowen",
+      "milestones": [
+        "signal_found",
+        "patrol_traced",
+        "witness_heard"
+      ],
+      "outcomes": [
+        "publish_record",
+        "private_restitution",
+        "protected_archive"
+      ],
+      "completion_reward": {
+        "gold": 50
+      },
+      "resolution_prompt": "Lucan has enough evidence to name the deserters, but the signal log also implicates a family that sheltered them. Decide what justice should protect.",
+      "outcome_labels": {
+        "publish_record": "Publish the signal record",
+        "private_restitution": "Arrange private restitution",
+        "protected_archive": "Seal the names in a protected archive"
+      },
+      "outcome_descriptions": {
+        "publish_record": "The signal record is read before the town. Lucan accepts the danger of public truth and asks that the innocent family be named only as witnesses.",
+        "private_restitution": "The deserters' stolen pay is returned quietly. Lucan keeps the record, but the victims receive restitution without being dragged into public accusation.",
+        "protected_archive": "The evidence is sealed under the company's protection. Lucan becomes its keeper, preserving proof until the witnesses can speak safely."
+      },
+      "outcome_flags": {
+        "publish_record": "lucan_outcome_public_record",
+        "private_restitution": "lucan_outcome_restitution",
+        "protected_archive": "lucan_outcome_protected_archive"
+      },
+      "journal_summary": "Follow an abandoned Orrowen signal pattern, reconstruct a deserter patrol route, and protect the witness caught between truth and fear."
+    },
+    "q_companion_brisa_hearth_of_names": {
+      "companion_id": "old_brisa",
+      "title": "A Hearth of Names",
+      "chapter": "I",
+      "required_region": "sethmarch",
+      "milestones": [
+        "ledger_recovered",
+        "families_contacted",
+        "care_network_secured"
+      ],
+      "outcomes": [
+        "keep_infirmary",
+        "village_service",
+        "community_network"
+      ],
+      "resolution_prompt": "Brisa asks how Foxglove should preserve the recovered names and care for the families displaced by the old infirmary's closure.",
+      "outcome_labels": {
+        "keep_infirmary": "Keep the infirmary ledger",
+        "village_service": "Return Brisa to village service",
+        "community_network": "Establish a shared care network"
+      },
+      "outcome_descriptions": {
+        "keep_infirmary": "Foxglove keeps a permanent infirmary ledger. Brisa helps maintain it, while the village shares the work.",
+        "village_service": "Brisa returns to village service by choice, with the company funding a modest supply chest.",
+        "community_network": "A rotating care network is established. Households share supplies, so no single healer carries the burden alone."
+      },
+      "completion_reward": {
+        "gold": 35
+      },
+      "outcome_flags": {
+        "keep_infirmary": "brisa_outcome_infirmary_ledger",
+        "village_service": "brisa_outcome_village_service",
+        "community_network": "brisa_outcome_shared_care"
+      },
+      "journal_summary": "Help Brisa recover the names of families erased from Foxglove's infirmary ledger, then decide how the village should care for them."
+    },
+    "q_companion_kestrel_no_master": {
+      "companion_id": "kestrel",
+      "title": "No Master's Shadow",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "coded_mark_found",
+        "safehouse_investigated",
+        "witness_protected"
+      ],
+      "outcomes": [
+        "destroy_records",
+        "submit_evidence",
+        "kestrel_decides"
+      ],
+      "completion_reward": {
+        "gold": 50
+      },
+      "resolution_prompt": "The safehouse ledger proves Kestrel's former employer sold names to the patrol. Kestrel will not be owned by another contract. Decide what becomes of the evidence.",
+      "outcome_labels": {
+        "destroy_records": "Destroy the contract records",
+        "submit_evidence": "Submit evidence to the magistrate",
+        "kestrel_decides": "Let Kestrel decide what survives"
+      },
+      "outcome_descriptions": {
+        "destroy_records": "The contract book burns. The names cannot be sold again, though the magistrate loses the evidence needed for a public case.",
+        "submit_evidence": "The ledger is delivered under seal. The magistrate opens an inquiry, and Kestrel gives testimony on their own terms.",
+        "kestrel_decides": "Kestrel chooses which names must be protected and which records can be used. For the first time, the decision is theirs alone."
+      },
+      "outcome_flags": {
+        "destroy_records": "kestrel_outcome_records_destroyed",
+        "submit_evidence": "kestrel_outcome_magistrate",
+        "kestrel_decides": "kestrel_outcome_self_determined"
+      },
+      "journal_summary": "Decode the marks of Kestrel's former handlers, uncover a safehouse ledger, and decide who controls the names it contains."
+    },
+    "q_companion_anselm_line_to_hold": {
+      "companion_id": "anselm_pike",
+      "title": "The Line We Hold",
+      "chapter": "I",
+      "required_region": "sethmarch",
+      "milestones": [
+        "muster_notice_read",
+        "drill_ground_examined",
+        "soldiers_resolved"
+      ],
+      "outcomes": [
+        "testify",
+        "lawful_service",
+        "refuse_unit"
+      ],
+      "completion_reward": {
+        "gold": 35
+      },
+      "synopsis": "Anselm finds his name on a muster order issued after the fighting ended. He traces the order through a drill ground and hears the soldiers who were pressured to serve. The company must decide whether to expose the false muster, offer lawful service, or refuse to legitimise the unit.",
+      "journal_summary": "Trace the false muster order that threatens Anselm's former soldiers, verify the drill-ground record and hear the men before deciding what justice requires.",
+      "resolution_prompt": "The muster order is proven unlawful, but the soldiers still need a future. What should Anselm ask of the company and the town?",
+      "outcome_labels": {
+        "testify": "Testify against the false muster",
+        "lawful_service": "Offer a lawful service compact",
+        "refuse_unit": "Refuse to rebuild the unit"
+      },
+      "outcome_descriptions": {
+        "testify": "Anselm gives a public account of the false muster and accepts that the officers responsible may retaliate.",
+        "lawful_service": "The soldiers receive a voluntary, time-limited service compact with wages, clear command and the right to leave.",
+        "refuse_unit": "Anselm refuses to preserve the old unit in any form. The soldiers are helped to return to civilian work."
+      },
+      "outcome_flags": {
+        "testify": "anselm_outcome_testimony",
+        "lawful_service": "anselm_outcome_lawful_compact",
+        "refuse_unit": "anselm_outcome_refused_unit"
+      }
+    },
+    "q_companion_petra_bitter_draught": {
+      "companion_id": "petra_quill",
+      "title": "The Bitter Draught",
+      "chapter": "I",
+      "required_region": "sethmarch",
+      "milestones": [
+        "ward_ledger_found",
+        "treatment_verified",
+        "triage_decided"
+      ],
+      "outcomes": [
+        "publish_error",
+        "restorative_agreement",
+        "protect_identity"
+      ],
+      "completion_reward": {
+        "gold": 35
+      },
+      "synopsis": "Petra discovers that a charitable ward has been distributing a diluted treatment while its accounts record full-strength medicine. She verifies the surviving doses, interviews patients and must choose between public exposure, a restorative agreement or protecting a vulnerable informant.",
+      "journal_summary": "Audit the ward's medicine ledger, verify the treatment and hear patients before Petra decides how to answer a dangerous medical fraud.",
+      "resolution_prompt": "The ward's false accounts are proven, but exposing every name could harm patients and the informant. How should Petra proceed?",
+      "outcome_labels": {
+        "publish_error": "Publish the ward's errors",
+        "restorative_agreement": "Secure a restorative agreement",
+        "protect_identity": "Protect the informant's identity"
+      },
+      "outcome_descriptions": {
+        "publish_error": "Petra publishes the falsified accounts and treatment record, making the institution answer publicly while redacting patient names.",
+        "restorative_agreement": "The ward accepts independent oversight, replaces the diluted medicine and compensates affected families under a signed agreement.",
+        "protect_identity": "Petra gives the verified evidence to an independent healer's circle and keeps the informant's identity sealed."
+      },
+      "outcome_flags": {
+        "publish_error": "petra_outcome_public_record",
+        "restorative_agreement": "petra_outcome_restoration",
+        "protect_identity": "petra_outcome_identity_protected"
+      }
+    },
+    "q_companion_dorian_unspent_bolt": {
+      "companion_id": "dorian_vask",
+      "title": "The Unspent Bolt",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "convoy_identified",
+        "shot_reconstructed",
+        "quartermaster_confronted"
+      ],
+      "outcomes": [
+        "give_testimony",
+        "make_restitution",
+        "decline_absolution"
+      ],
+      "completion_reward": {
+        "gold": 50
+      },
+      "synopsis": "Dorian recognises the fletching on a bolt recovered from a convoy ambush. Reconstructing the shot reveals that the attack was staged to conceal a quartermaster's diversion of supplies. Dorian must decide whether to testify, make restitution or refuse an easy absolution.",
+      "journal_summary": "Reconstruct the convoy shot that still haunts Dorian, follow the missing supplies and confront the quartermaster who profited from the ambush.",
+      "resolution_prompt": "The quartermaster's diversion is proven, but Dorian's bolt caused a death during the staged ambush. What should happen next?",
+      "outcome_labels": {
+        "give_testimony": "Give testimony at the hearing",
+        "make_restitution": "Make restitution to the family",
+        "decline_absolution": "Decline public absolution"
+      },
+      "outcome_descriptions": {
+        "give_testimony": "Dorian testifies fully, including his own actions, so the quartermaster's diversion and the ambush can be judged together.",
+        "make_restitution": "Dorian directs the recovered convoy funds toward the victim's family and accepts a private hearing rather than a public pardon.",
+        "decline_absolution": "Dorian refuses to let the quartermaster's crimes erase his own responsibility. He preserves the evidence and leaves judgment to the family."
+      },
+      "outcome_flags": {
+        "give_testimony": "dorian_outcome_testimony",
+        "make_restitution": "dorian_outcome_restitution",
+        "decline_absolution": "dorian_outcome_no_absolution"
+      }
+    },
+    "q_companion_edda_iron_and_ash": {
+      "companion_id": "edda_stonehand",
+      "title": "Iron and Ash",
+      "chapter": "I",
+      "required_region": "sethmarch",
+      "milestones": [
+        "tools_accounted",
+        "worker_claims_verified",
+        "furnace_bargain_resolved"
+      ],
+      "outcomes": [
+        "shared_workshop",
+        "protected_ownership",
+        "independent_guild"
+      ],
+      "completion_reward": {
+        "gold": 35
+      },
+      "synopsis": "Edda uncovers a labour debt hidden in the accounts of a foundry workshop. The company must distinguish stolen tools from honest loans, verify the workers' claims and decide who should own the furnace.",
+      "resolution_prompt": "The former employer offers Edda the workshop in exchange for abandoning the workers' claims. How should the rebuilt foundry be governed?",
+      "outcome_labels": {
+        "shared_workshop": "Establish a shared workshop",
+        "protected_ownership": "Grant Edda ownership with worker protections",
+        "independent_guild": "Help Edda form an independent guild"
+      },
+      "outcome_descriptions": {
+        "shared_workshop": "Edda establishes a shared workshop charter. Workers elect a keeper for the tool register and receive a transparent share of each contract.",
+        "protected_ownership": "Edda accepts ownership only after signing enforceable wage, safety and apprenticeship protections. The workers retain a route to challenge violations.",
+        "independent_guild": "Edda refuses the employer's terms and leaves to form an independent guild. The foundry remains closed for now, but its workers keep their claims and tools."
+      },
+      "journal_summary": "Edda uncovers a labour debt hidden in the foundry accounts. Audit the tools, hear the workers and decide who should own the furnace.",
+      "outcome_flags": {
+        "shared_workshop": "edda_outcome_shared_workshop",
+        "protected_ownership": "edda_outcome_protected_ownership",
+        "independent_guild": "edda_outcome_independent_guild"
+      }
+    },
+    "q_companion_joss_debt_of_silence": {
+      "companion_id": "joss_harrow",
+      "title": "The Debt of Silence",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "purse_recognised",
+        "smuggling_ledger_found",
+        "debtors_rescued"
+      ],
+      "outcomes": [
+        "return_money",
+        "trade_ledger",
+        "expose_network"
+      ],
+      "completion_reward": {
+        "gold": 50
+      },
+      "synopsis": "Joss recognises a purse from a job that saved a child but admits he kept the remaining payment. The trail leads to a smuggling ledger that prices the identities of debtors and refugees. The company must get the named people out safely before deciding what Joss owes.",
+      "journal_summary": "Trace the stolen purse to a smuggling ledger, rescue the people whose names are being sold and decide how Joss should make restitution.",
+      "resolution_prompt": "The debtors are safe and the ledger is secure. Joss can return what he kept, trade the ledger for safe passage or expose the network. What should he do?",
+      "outcome_labels": {
+        "return_money": "Return the stolen money",
+        "trade_ledger": "Trade the ledger for safe passage",
+        "expose_network": "Expose the smuggling network"
+      },
+      "outcome_descriptions": {
+        "return_money": "Joss returns the money to the people he wronged and accepts a restitution agreement. The ledger remains sealed with the company so the rescued debtors are not exposed again.",
+        "trade_ledger": "Joss trades the ledger to secure safe passage for the remaining debtors. The network loses its leverage over them, though its wider leadership escapes the hearing.",
+        "expose_network": "Joss gives the ledger to the authorities and names the brokers who sold identities. Some victims refuse his apology, but the network can no longer operate openly."
+      },
+      "outcome_flags": {
+        "return_money": "joss_outcome_restitution",
+        "trade_ledger": "joss_outcome_safe_passage",
+        "expose_network": "joss_outcome_network_exposed"
+      }
+    },
+    "q_companion_isaure_two_oaths": {
+      "companion_id": "isaure_vessmoor",
+      "title": "Two Oaths, One Name",
+      "chapter": "II",
+      "required_region": "vessmoor",
+      "milestones": [
+        "summons_received",
+        "household_muster_examined",
+        "mentor_challenge_resolved"
+      ],
+      "outcomes": [
+        "renew_limited_oath",
+        "renounce_command",
+        "service_compact"
+      ],
+      "completion_reward": {
+        "gold": 50
+      },
+      "synopsis": "A sealed summons demands that Isaure return to House Vessmoor and denounce the company. At a Vessmoor household outpost, she discovers retainers divided between lawful duty and private loyalty. Her former mentor then challenges her honour, forcing her to define what an oath can demand.",
+      "journal_summary": "Answer the sealed Vessmoor summons, examine the household muster and resolve Isaure's challenge with her former mentor.",
+      "resolution_prompt": "The forged order has been exposed and Isaure has faced her mentor. Which future should she choose without surrendering the company's independence?",
+      "outcome_labels": {
+        "renew_limited_oath": "Renew a limited House oath",
+        "renounce_command": "Renounce the claim to command",
+        "service_compact": "Negotiate a written service compact"
+      },
+      "outcome_descriptions": {
+        "renew_limited_oath": "Isaure renews a narrow oath to protect Vessmoor's people, not to obey every demand of its ruling household. She becomes a diplomatic cavalry envoy while remaining free to refuse unlawful orders.",
+        "renounce_command": "Isaure publicly renounces her claim to command and returns the household seal. She remains with the company as a free agent, no longer bound by inherited authority.",
+        "service_compact": "Isaure signs a time-limited service compact with clear duties, wages and the right to withdraw. Vessmoor retainers acknowledge her choice without granting the company control of the House."
+      },
+      "outcome_flags": {
+        "renew_limited_oath": "isaure_outcome_limited_oath",
+        "renounce_command": "isaure_outcome_renounced_command",
+        "service_compact": "isaure_outcome_service_compact"
+      }
+    },
+    "q_companion_bram_cullen_broken_chain": {
+      "companion_id": "bram_cullen",
+      "title": "The Broken Chain",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "debt_transfer_found",
+        "contracts_audited",
+        "debtors_freed"
+      ],
+      "outcomes": [
+        "destroy_false_records",
+        "public_tribunal",
+        "negotiate_release"
+      ],
+      "completion_reward": {
+        "gold": 50
+      },
+      "synopsis": "Bram Cullen learns that a private company has bought his prison debt and is using false transfers to seize other inmates. The company investigates the contracts and frees the debtors without pretending every debt is fraudulent.",
+      "resolution_prompt": "The false transfers are exposed and the debtors are safe. What should become of the evidence and the company's claims?",
+      "outcome_labels": {
+        "destroy_false_records": "Destroy the false transfer records",
+        "public_tribunal": "Submit the evidence to a public tribunal",
+        "negotiate_release": "Negotiate release while preserving evidence"
+      },
+      "outcome_descriptions": {
+        "destroy_false_records": "Bram destroys only the forged transfer copies and keeps verified originals with the freed debtors. The immediate threat ends, though a formal ruling is lost.",
+        "public_tribunal": "Bram submits the forged transfers and witness statements to a public tribunal. Legitimate debts remain subject to review, while the unlawful seizures face judgment.",
+        "negotiate_release": "Bram negotiates the debtors' release in exchange for preserving the full record for later claims. The company withdraws its immediate seizure order but is not granted immunity."
+      },
+      "journal_summary": "A private company has bought Bram Cullen's prison debt and is using false transfers to seize other inmates. Expose the fraud and secure their release.",
+      "outcome_flags": {
+        "destroy_false_records": "bram_cullen_outcome_records_destroyed",
+        "public_tribunal": "bram_cullen_outcome_public_tribunal",
+        "negotiate_release": "bram_cullen_outcome_negotiated_release"
+      }
+    },
+    "q_companion_verra_song_without_seal": {
+      "companion_id": "verra_nightsong",
+      "title": "A Song Without a Seal",
+      "chapter": "II",
+      "required_region": "brinegate",
+      "milestones": [
+        "borrowed_verse_heard",
+        "singers_copy_recovered",
+        "public_performance_resolved"
+      ],
+      "outcomes": [
+        "publish_original",
+        "protect_performers",
+        "write_new_song"
+      ],
+      "completion_reward": {
+        "gold": 50
+      },
+      "synopsis": "Verra hears a popular marching song whose verses have been altered to praise a noble house and erase the names of the workers who wrote it. She tracks down the original performers and must decide how to restore the song without putting them at risk.",
+      "journal_summary": "Recover the verses stripped from a workers' song, verify who wrote them and decide how Verra can return the music to its people.",
+      "resolution_prompt": "The original verses are verified, but the performers fear retaliation. How should Verra restore the song?",
+      "outcome_labels": {
+        "publish_original": "Publish the original verses",
+        "protect_performers": "Protect the original performers",
+        "write_new_song": "Write a new song together"
+      },
+      "outcome_descriptions": {
+        "publish_original": "Verra publishes the original verses with a clear account of the authorship dispute, giving the workers their credit.",
+        "protect_performers": "Verra keeps the performers' identities private and shares the verified song through trusted local circles.",
+        "write_new_song": "Verra and the original performers write a new song together, preserving their testimony without exposing those who fear reprisal."
+      },
+      "outcome_flags": {
+        "publish_original": "verra_outcome_original_published",
+        "protect_performers": "verra_outcome_performers_protected",
+        "write_new_song": "verra_outcome_new_song"
+      }
+    },
+    "q_companion_tomas_far_marker": {
+      "companion_id": "tomas_wren",
+      "title": "The Far Marker",
+      "chapter": "I",
+      "required_region": "sethmarch",
+      "milestones": [
+        "fen_marker_recognised",
+        "scout_trail_reconstructed",
+        "homeward_choice_made"
+      ],
+      "outcomes": [
+        "return_openly",
+        "relocate_family",
+        "send_aid"
+      ],
+      "completion_reward": {
+        "gold": 35
+      },
+      "synopsis": "Tomas finds a weather-worn boundary marker carrying his family's old trail sign. The trail leads through a damaged fen causeway to a household that fled after a surveyor's false warning. Tomas must decide whether to bring them home openly, help them relocate or send aid without demanding their return.",
+      "journal_summary": "Find Tomas's missing fen marker, follow the trail left by his family and learn what kind of homecoming they actually want.",
+      "resolution_prompt": "Tomas has found his family, but returning is not the same as being safe. What should he offer them?",
+      "outcome_labels": {
+        "return_openly": "Return home openly",
+        "relocate_family": "Help the family relocate",
+        "send_aid": "Send aid without demanding a return"
+      },
+      "outcome_descriptions": {
+        "return_openly": "Tomas escorts his family home with the village's protection and makes the false survey public.",
+        "relocate_family": "Tomas helps his family settle elsewhere, accepting that safety matters more than restoring the old household.",
+        "send_aid": "Tomas leaves the choice with his family and arranges regular aid without making their return a condition."
+      },
+      "outcome_flags": {
+        "return_openly": "tomas_outcome_homecoming",
+        "relocate_family": "tomas_outcome_relocated",
+        "send_aid": "tomas_outcome_aid"
+      }
+    },
+    "q_companion_orlan_margin_of_truth": {
+      "companion_id": "orlan_pike",
+      "title": "In the Margin",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "misbound_volume_found",
+        "source_provenance_verified",
+        "archive_access_resolved"
+      ],
+      "outcomes": [
+        "publish_source",
+        "independent_custody",
+        "redact_names"
+      ],
+      "completion_reward": {
+        "gold": 50
+      },
+      "synopsis": "Orlan discovers that a catalogue entry was altered to conceal a record limiting unlawful conscription. He traces the annotation through binding marks and duplicate copies, then must decide how dangerous evidence can survive without exposing vulnerable people.",
+      "journal_summary": "Trace the altered catalogue entry, verify the disputed annotation's provenance and decide who should safeguard the conscription record.",
+      "resolution_prompt": "The annotation is authentic, but its names could endanger living families. How should Orlan preserve the truth?",
+      "outcome_labels": {
+        "publish_source": "Publish the verified source",
+        "independent_custody": "Deposit it with independent custodians",
+        "redact_names": "Redact vulnerable names"
+      },
+      "outcome_descriptions": {
+        "publish_source": "Orlan publishes the verified clause with its provenance and accepts the political consequences of making the record public.",
+        "independent_custody": "Orlan places authenticated copies with independent custodians, preserving access while preventing one authority from controlling the evidence.",
+        "redact_names": "Orlan removes identifying details while retaining the clause, chain of custody and evidence needed for future verification."
+      },
+      "outcome_flags": {
+        "publish_source": "orlan_outcome_source_published",
+        "independent_custody": "orlan_outcome_independent_archive",
+        "redact_names": "orlan_outcome_names_redacted"
+      }
+    },
+    "q_companion_odaly_open_door": {
+      "companion_id": "sister_odaly",
+      "title": "The Open Door",
+      "chapter": "II",
+      "required_region": "tarnholt",
+      "milestones": [
+        "sanctuary_bell_answered",
+        "shelter_rules_agreed",
+        "threshold_defended"
+      ],
+      "outcomes": [
+        "conditional_sanctuary",
+        "refuge_network",
+        "order_reform"
+      ],
+      "completion_reward": {
+        "gold": 50
+      },
+      "synopsis": "Sister Odalys is called to a sanctuary that has barred families after armed fugitives abused its protection. She hears residents and keepers separately, then helps establish safety rules that protect the vulnerable without granting immunity for violence.",
+      "journal_summary": "Hear the sanctuary's residents and keepers, agree on fair rules for shelter and decide how Odalys should protect those at the threshold.",
+      "resolution_prompt": "The sanctuary can reopen only with safeguards. Which path should Odalys help establish?",
+      "outcome_labels": {
+        "conditional_sanctuary": "Reopen with conditional sanctuary",
+        "refuge_network": "Build a neutral refuge network",
+        "order_reform": "Seek reform within the order"
+      },
+      "outcome_descriptions": {
+        "conditional_sanctuary": "Odalys establishes clear admission, safeguarding and due-process rules so families can seek shelter while credible threats are handled lawfully.",
+        "refuge_network": "Odalys helps several communities share refuge duties, preventing one sanctuary from becoming the only point of failure.",
+        "order_reform": "Odalys returns to her order with testimony and a practical safeguarding charter, pressing it to protect people without shielding violent acts."
+      },
+      "outcome_flags": {
+        "conditional_sanctuary": "odaly_outcome_conditional_sanctuary",
+        "refuge_network": "odaly_outcome_refuge_network",
+        "order_reform": "odaly_outcome_order_reform"
+      }
+    },
+    "q_companion_willem_last_challenge": {
+      "companion_id": "willem_roake",
+      "title": "The Last Challenge",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "challenge_received",
+        "duel_record_verified",
+        "rematch_resolved"
+      ],
+      "outcomes": [
+        "admit_technicality",
+        "make_restitution",
+        "acknowledge_cost"
+      ],
+      "completion_reward": {
+        "gold": 50
+      },
+      "synopsis": "A former rival accuses Willem of winning their famous duel through a technicality. By interviewing the seconds and examining the sealed record, Willem learns the rival had been protecting a young squire from a politically arranged match. The truth forces him to decide what honour means when the law and the right thing diverge.",
+      "journal_summary": "Hear the rival's accusation, verify the sealed duel record and decide how Willem should answer the challenge without turning honour into vanity.",
+      "resolution_prompt": "The record confirms Willem's legal victory, but the circumstances were unfair. What should he do with that truth?",
+      "outcome_labels": {
+        "admit_technicality": "Admit the technicality publicly",
+        "make_restitution": "Make restitution to the squire",
+        "acknowledge_cost": "Keep the legal result and acknowledge its cost"
+      },
+      "outcome_descriptions": {
+        "admit_technicality": "Willem corrects the public record, accepting the loss of prestige so that the next generation sees that honour includes admitting an advantage gained unfairly.",
+        "make_restitution": "Willem keeps the legal result but directs his standing and prize toward the squire whose future was manipulated, making repair more important than applause.",
+        "acknowledge_cost": "Willem refuses to rewrite a lawful result, but publicly acknowledges the moral cost and commits to stricter rules for future challenges."
+      },
+      "outcome_flags": {
+        "admit_technicality": "willem_outcome_technicality_admitted",
+        "make_restitution": "willem_outcome_restitution",
+        "acknowledge_cost": "willem_outcome_cost_acknowledged"
+      }
+    },
+    "q_companion_ysolde_names_in_salt": {
+      "companion_id": "ysolde_marrow",
+      "title": "Names in Salt",
+      "chapter": "III",
+      "required_region": "brinegate_coast",
+      "milestones": [
+        "salt_register_found",
+        "family_names_verified",
+        "wharf_hearing_resolved"
+      ],
+      "outcomes": [
+        "publish_names",
+        "sealed_testimony",
+        "family_choice"
+      ],
+      "completion_reward": {
+        "gold": 65
+      },
+      "synopsis": "Ysolde finds a coastal register that renamed families after a past levy. She compares tide tables, harbour marks and family testimony to distinguish deliberate erasure from clerical drift. At a wharf hearing, an official argues that restoring the names will disrupt trade, while evidence points to private profiteering. The families must decide how their identities return to the record.",
+      "journal_summary": "Find the altered salt register, verify family identities against tide and harbour records, then decide who controls the restoration of names.",
+      "resolution_prompt": "The records are verified, but public disclosure could expose families to old debts and political pressure. How should their names be restored?",
+      "outcome_labels": {
+        "publish_names": "Publish every verified name",
+        "sealed_testimony": "Preserve identities in sealed testimony",
+        "family_choice": "Let each family choose"
+      },
+      "outcome_descriptions": {
+        "publish_names": "Ysolde publishes the verified names with the evidence trail, making the historical erasure public and accepting the political pressure that follows.",
+        "sealed_testimony": "Ysolde deposits authenticated testimony with trusted neutral custodians, preserving proof while restricting access to vulnerable identities.",
+        "family_choice": "Ysolde gives each family control over whether and when its name is restored, creating a slower record but refusing to repeat the coercion that erased them."
+      },
+      "outcome_flags": {
+        "publish_names": "ysolde_outcome_names_published",
+        "sealed_testimony": "ysolde_outcome_sealed_testimony",
+        "family_choice": "ysolde_outcome_family_choice"
+      }
+    },
+    "q_companion_garrick_spared_enemy": {
+      "companion_id": "garrick_holt",
+      "title": "The Man We Spared",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "prisoner_request_received",
+        "witnesses_escorted",
+        "commander_captured_or_surrendered"
+      ],
+      "outcomes": [
+        "testify",
+        "acknowledge_harm",
+        "support_trial"
+      ],
+      "completion_reward": {
+        "gold": 50
+      },
+      "synopsis": "Garrick is confronted by the commander he once spared, now accused of reprisals against a village. Two witnesses disagree about what the commander ordered and what his soldiers did. Garrick must face the difference between mercy, trust and accountability without turning a lawful hearing into revenge.",
+      "journal_summary": "Hear the prisoner's request, escort witnesses who disagree and bring the accused commander before a fair hearing. Decide what Garrick should say about the mercy he once showed.",
+      "resolution_prompt": "The commander is in custody and the witnesses have been heard. Garrick must decide whether to explain his earlier mercy, acknowledge the harm it enabled or support a trial without demanding vengeance.",
+      "outcome_labels": {
+        "testify": "Testify to the reasons for mercy",
+        "acknowledge_harm": "Acknowledge the harm caused",
+        "support_trial": "Support a lawful trial"
+      },
+      "outcome_descriptions": {
+        "testify": "Garrick gives a full account of why he spared the commander and makes clear that mercy was never meant to erase responsibility. His testimony becomes a record against both vengeance and impunity.",
+        "acknowledge_harm": "Garrick publicly accepts that his judgement helped place others at risk. He steps back from command duties while arranging restitution for the witnesses and families harmed.",
+        "support_trial": "Garrick asks the court to judge the commander on evidence rather than on Garrick's old decision. He remains a field veteran and refuses both personal absolution and revenge."
+      },
+      "outcome_flags": {
+        "testify": "garrick_outcome_testified",
+        "acknowledge_harm": "garrick_outcome_harm_acknowledged",
+        "support_trial": "garrick_outcome_trial_supported"
+      }
+    },
+    "q_companion_corwin_heirless_seal": {
+      "companion_id": "corwin_brennhallow",
+      "title": "The Heirless Seal",
+      "chapter": "IV",
+      "required_region": "sethmarch",
+      "milestones": [
+        "seal_forgery_found",
+        "charter_authority_audited",
+        "retainers_heard"
+      ],
+      "outcomes": [
+        "submit_claim",
+        "renounce_claim",
+        "temporary_custody"
+      ],
+      "completion_reward": {
+        "gold": 80
+      },
+      "synopsis": "A forged Brennhallow seal is issuing orders in the name of an absent heir. Corwin traces the seal's authority through charter witnesses and household records, then hears retainers divided over his claim. The matter concerns one House's custodial authority only; no decision can bind the Seven Houses or replace formal Council ratification.",
+      "journal_summary": "Trace the forged Brennhallow seal, audit the charter's witnesses and hear the retainers. Decide whether Corwin should submit his claim, renounce advantage or accept tightly limited temporary custody.",
+      "resolution_prompt": "The forged orders are exposed and the household has been heard. Corwin can submit his claim to neutral review, renounce personal advantage or serve briefly as a custodian under public limits.",
+      "outcome_labels": {
+        "submit_claim": "Submit the claim to neutral review",
+        "renounce_claim": "Renounce personal advantage",
+        "temporary_custody": "Accept limited temporary custody"
+      },
+      "outcome_descriptions": {
+        "submit_claim": "Corwin submits every relevant document to neutral review and accepts that the result may deny him authority. His role is that of a constitutional witness, not a self-appointed lord over other Houses.",
+        "renounce_claim": "Corwin relinquishes any personal claim arising from the disputed seal and returns to private life. The household must resolve its succession through its lawful process.",
+        "temporary_custody": "Corwin accepts a strictly temporary custodial role, limited by a published inventory, independent witnesses and a fixed review date. The arrangement cannot bind the Seven Houses or create a hereditary right."
+      },
+      "outcome_flags": {
+        "submit_claim": "corwin_outcome_claim_submitted",
+        "renounce_claim": "corwin_outcome_claim_renounced",
+        "temporary_custody": "corwin_outcome_temporary_custody"
+      }
+    },
+    "q_companion_seraphine_measure_of_oaths": {
+      "companion_id": "seraphine_tarnholt",
+      "title": "The Measure of Oaths",
+      "chapter": "IV",
+      "required_region": "tarnholt",
+      "milestones": [
+        "unread_oath_found",
+        "order_records_examined",
+        "chapter_house_heard"
+      ],
+      "outcomes": [
+        "revise_oath",
+        "refuse_authority",
+        "demand_oversight"
+      ],
+      "completion_reward": {
+        "gold": 80
+      },
+      "synopsis": "Seraphine discovers that new members of the Tarnholt order have been asked to swear to an oath they were never allowed to read. She traces the practice through chapter records and listens to members who fear expulsion. The evidence shows that the custom has become institutional rather than an isolated mistake. Seraphine must choose reform, refusal or transparent oversight without confusing the public Covenant compact with any secret faction that borrows its name.",
+      "journal_summary": "Recover the unread oath, examine the chapter's records and hear the members affected by the practice. Decide whether Seraphine should reform the order, refuse its authority or remain under transparent oversight.",
+      "resolution_prompt": "The chapter has heard the evidence. Seraphine can renew a revised oath, refuse the institution's authority or remain while demanding transparent oversight and protection for members who leave.",
+      "outcome_labels": {
+        "revise_oath": "Renew a revised and readable oath",
+        "refuse_authority": "Refuse the order's authority",
+        "demand_oversight": "Remain and demand oversight"
+      },
+      "outcome_descriptions": {
+        "revise_oath": "Seraphine helps the chapter adopt an oath that every member can read before consenting. The revised text protects freedom of conscience and makes the order answerable for its promises.",
+        "refuse_authority": "Seraphine refuses to lend her standing to an institution that will not honour informed consent. She becomes an independent protector for members who choose to leave, without declaring every believer complicit.",
+        "demand_oversight": "Seraphine remains as a lay mediator under a public review charter, with independent complaints, published rules and protection against retaliation. The chapter must demonstrate reform rather than claim it."
+      },
+      "outcome_flags": {
+        "revise_oath": "seraphine_outcome_oath_revised",
+        "refuse_authority": "seraphine_outcome_authority_refused",
+        "demand_oversight": "seraphine_outcome_oversight_demanded"
+      }
+    },
+    "q_companion_ilyan_silent_tower": {
+      "companion_id": "ilyan_voss",
+      "title": "The Silent Tower",
+      "chapter": "III",
+      "required_region": "sethmarch",
+      "milestones": [
+        "missing_page_found",
+        "rune_experiment_contained",
+        "apprentice_reached"
+      ],
+      "outcomes": [
+        "destroy_research",
+        "shared_oversight",
+        "publish_safe_procedure"
+      ],
+      "completion_reward": {
+        "gold": 65
+      },
+      "synopsis": "Ilyan discovers that a page has been removed from the Silent Tower's research record, concealing a dangerous interaction between two runes. He insists on a controlled test with strict containment limits. The missing apprentice has repeated the experiment without safeguards, forcing Ilyan to choose between secrecy, shared oversight and publishing a safe procedure that does not expose the dangerous sequence.",
+      "journal_summary": "Recover the missing research page, contain a controlled rune experiment and reach the apprentice before the unsafe procedure spreads. Decide how the knowledge should be kept or shared.",
+      "resolution_prompt": "The apprentice is safe and the experiment is contained. Should Ilyan destroy the research, place it under shared oversight or publish a safe procedure while withholding dangerous details?",
+      "outcome_labels": {
+        "destroy_research": "Destroy the dangerous research",
+        "shared_oversight": "Place it under shared oversight",
+        "publish_safe_procedure": "Publish a safe procedure"
+      },
+      "outcome_descriptions": {
+        "destroy_research": "Ilyan destroys the dangerous sequence and keeps only a record of the hazard. He accepts that some knowledge must be lost when no safe custodian can be trusted.",
+        "shared_oversight": "Ilyan deposits the research with independent scholars and tower wardens under a review charter, requiring multiple custodians and documented safety checks before any future experiment.",
+        "publish_safe_procedure": "Ilyan publishes the containment method and warning signs while withholding the unstable rune sequence. The apprentice helps teach the procedure so that safety does not depend on secrecy."
+      },
+      "outcome_flags": {
+        "destroy_research": "ilyan_outcome_research_destroyed",
+        "shared_oversight": "ilyan_outcome_shared_oversight",
+        "publish_safe_procedure": "ilyan_outcome_safe_procedure_published"
+      }
+    },
+    "q_companion_maren_tideglass_wake": {
+      "companion_id": "maren_vey",
+      "title": "The Tideglass Wake",
+      "chapter": "III",
+      "required_region": "brinegate_coast",
+      "milestones": [
+        "ledger_page_found",
+        "safe_route_plotted",
+        "wreck_manifest_recovered"
+      ],
+      "outcomes": [
+        "publish_manifest",
+        "protect_crew",
+        "negotiate_reparations"
+      ],
+      "completion_reward": {
+        "gold": 65
+      },
+      "synopsis": "After the Northstar signal is restored and its captain's log recovered, Maren discovers that the Tideglass Ledger's final leaf conceals a passenger transfer and cargo lien. She compares the harbour copy with family testimony and the ship's final manifest to identify who profited from the disappearance. The surviving crew's safety remains central, and Brinegate remains under the Tidebound Assembly.",
+      "journal_summary": "After Maren's Northstar signal quest, verify the hidden passenger transfer, trace the affected families and audit the cargo lien in the wreck's manifest. Decide how to restore the record without endangering survivors.",
+      "resolution_prompt": "The final manifest and passenger evidence now agree. Publishing may expose the surviving crew; sealed testimony protects them but delays public accountability. How should Maren resolve the record?",
+      "outcome_labels": {
+        "publish_manifest": "Publish the manifest",
+        "protect_crew": "Protect the surviving crew",
+        "negotiate_reparations": "Negotiate reparations"
+      },
+      "outcome_descriptions": {
+        "publish_manifest": "Maren publishes the authenticated manifest and its route evidence. The voyage can no longer be erased, though the crew must face renewed scrutiny and the cargo owner loses the protection of silence.",
+        "protect_crew": "Maren submits the evidence to neutral custodians and keeps vulnerable crew identities sealed. The record survives without turning rescued people into public targets.",
+        "negotiate_reparations": "Maren uses the manifest to secure compensation and a standing rescue route for affected families. The settlement is public in its obligations but limits disclosure of individual crew identities."
+      },
+      "outcome_flags": {
+        "publish_manifest": "maren_outcome_manifest_published",
+        "protect_crew": "maren_outcome_crew_protected",
+        "negotiate_reparations": "maren_outcome_reparations"
+      },
+      "required_flags_all": [
+        "maren_signal_completed"
+      ],
+      "unlock_hint": "Complete Maren's Northstar signal quest first. This personal story follows the restored signal and recovered logbook."
+    }
+  }
+}
