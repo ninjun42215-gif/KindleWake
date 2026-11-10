@@ -7,7 +7,7 @@ const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 
 const DATA_DIR := "res://data/"
 ## Listed explicitly (instead of scanning the folder) so it also works inside exported builds.
-const BATTLE_FILES := ["battle_01", "battle_hollowroot", "battle_bell", "battle_catacombs", "battle_tideglass", "battle_northstar_wreck", "battle_boss_hollow_hart", "battle_boss_drowned_crown", "battle_boss_ash_regent", "battle_boss_pale_matriarch", "battle_boss_briar_sovereign", "battle_boss_star_eater", "battle_boss_last_cantor", "battle_holding_siege"]
+const BATTLE_FILES := ["battle_01", "battle_hollowroot", "battle_bell", "battle_catacombs", "battle_tideglass", "battle_northstar_wreck", "battle_boss_hollow_hart", "battle_boss_drowned_crown", "battle_boss_ash_regent", "battle_boss_pale_matriarch", "battle_boss_briar_sovereign", "battle_boss_star_eater", "battle_boss_last_cantor", "battle_holding_siege", "battle_act1_hask", "battle_act1_ash_bailiff", "battle_act2_escort", "battle_act3_three_bridges", "battle_act4_quillon_warden"]
 
 var classes: Dictionary = {}
 var terrain: Dictionary = {}
