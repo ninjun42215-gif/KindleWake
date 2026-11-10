@@ -933,3 +933,11 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 
 
 - **Headless cleanup candidate (2026-11-10, rebased PR pending):** the PartyScreen smoke test frees its temporary Control synchronously and drains deferred child nodes before the test tree exits; the standalone balance report frees its GameData Node; Blender source import is disabled because no `.blend` files are tracked. No gameplay, version or save-schema change. Exact-head validation is pending.
+
+
+## Tactical AI pathfinding clarification — 2026-11-10
+
+- Ordinary player movement retains the existing rule that allied occupied cells may be traversed but cannot be selected as destinations.
+- AI movement uses a separate reach calculation with allied occupied cells treated as blockers. This applies to attack-position candidate generation, long-range approach planning and the fallback movement choice.
+- A deterministic three-row corridor regression verifies that the player path may pass through the ally while the AI path routes around it and does not plan an attack from a tile reachable only by crossing that ally.
+- This follow-up corrects the incomplete allied-blocker handoff merged in PR #123; exact-head validation is pending.

@@ -1208,6 +1208,41 @@ func _test_auto_battle() -> void:
     var c := BattleController.new()
     c.setup(gd.battle_def("battle_01"), gd.as_db(), 777)
     c.begin()
+    # A deterministic corridor proves the AI avoids an allied blocker while normal movement
+    # retains the documented ability to pass through allies.
+    var corridor_def: Dictionary = gd.battle_def("battle_01").duplicate(true)
+    corridor_def["terrain"] = [".....", ".....", "....."]
+    corridor_def["heights"] = ["00000", "00000", "00000"]
+    corridor_def["legend"] = {".": "grass"}
+    var corridor_enemy_id := ""
+    for spawn_value in corridor_def.get("units", []):
+        var spawn: Dictionary = spawn_value
+        if str(spawn.get("team", "")) == "enemy":
+            corridor_enemy_id = str(spawn.get("character_id", ""))
+            break
+    var corridor_setup_ok: bool = not corridor_enemy_id.is_empty() and gd.characters.has("torren") and gd.characters.has("bram")
+    if corridor_setup_ok:
+        corridor_def["units"] = [
+            {"character_id": "torren", "team": "player", "cell": [0, 1], "facing": 1},
+            {"character_id": "bram", "team": "player", "cell": [1, 1], "facing": 1},
+            {"character_id": corridor_enemy_id, "team": "enemy", "cell": [4, 1], "facing": 3}
+        ]
+        var corridor_ctl := BattleController.new()
+        corridor_ctl.setup(corridor_def, gd.as_db(), 778)
+        var corridor_mover: BattleUnit = corridor_ctl.unit_by_id(1)
+        var corridor_ally: BattleUnit = corridor_ctl.unit_by_id(2)
+        var corridor_goal := Vector2i(3, 1)
+        var player_path: Array[Vector2i] = corridor_ctl.map.path_from(corridor_ctl.reach_for(corridor_mover), corridor_mover.cell, corridor_goal)
+        var ai_full_reach: Dictionary = BattleAI._ai_reach(corridor_mover, corridor_ctl, 99)
+        var ai_path: Array[Vector2i] = corridor_ctl.map.path_from(ai_full_reach, corridor_mover.cell, corridor_goal)
+        var corridor_plan: Dictionary = BattleAI.decide(corridor_mover, corridor_ctl)
+        var ai_move_reach: Dictionary = BattleAI._ai_reach(corridor_mover, corridor_ctl, corridor_mover.move)
+        var planned_cell: Vector2i = corridor_plan.get("move_to", corridor_mover.cell)
+        check(player_path.has(corridor_ally.cell) and ai_full_reach["cost"].has(corridor_goal) and not ai_path.has(corridor_ally.cell), "AI full route avoids allied blockers while player path retains ally pass-through")
+        check(str(corridor_plan.get("action", "wait")) == "wait" and planned_cell != corridor_goal and ai_move_reach["cost"].has(planned_cell) and corridor_ctl.unit_at(planned_cell) == null, "AI does not plan an attack from a tile reachable only through an ally")
+    else:
+        check(false, "AI allied-blocker corridor fixture has its required characters")
+        check(false, "AI allied-blocker movement fixture is valid")
     var approach_plans_valid := true
     var approach_plans_checked := 0
     for unit_value in c.units:

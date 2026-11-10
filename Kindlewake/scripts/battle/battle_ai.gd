@@ -13,7 +13,7 @@ static func decide(unit: BattleUnit, ctl) -> Dictionary:
     var plan: Dictionary = {"move_to": unit.cell, "action": "wait", "target": null}
     if unit.morale <= 0 or unit.has_acted:
         return plan
-    var reach: Dictionary = ctl.reach_for(unit)
+    var reach: Dictionary = _ai_reach(unit, ctl, unit.move)
     var cost: Dictionary = reach["cost"]
     var origin: Vector2i = unit.cell
     var candidates: Array[Vector2i] = [origin]
@@ -169,6 +169,16 @@ static func _threat_at(unit: BattleUnit, cell: Vector2i, ctl) -> float:
     return threat
 
 
+## AI pathfinding treats allied occupied cells as blockers while player movement retains pass-through.
+static func _ai_reach(unit: BattleUnit, ctl, move_points: int) -> Dictionary:
+    var ally_cells: Dictionary = {}
+    for o in ctl.units:
+        var ally: BattleUnit = o
+        if ally.is_alive() and ally.team == unit.team and ally.id != unit.id:
+            ally_cells[ally.cell] = true
+    return ctl.map.compute_reach(unit.cell, move_points, unit.jump, ctl.enemy_cell_map(unit), ally_cells, true)
+
+
 ## No attack possible this turn: walk along the shortest path toward a cell from which the nearest
 ## opposing unit can be attacked, stopping at the furthest legal cell within movement range.
 static func _approach_cell(unit: BattleUnit, ctl, reach: Dictionary) -> Vector2i:
@@ -189,12 +199,7 @@ static func _approach_cell(unit: BattleUnit, ctl, reach: Dictionary) -> Vector2i
     var rmin: int = int(w.get("range_min", 1))
     var rmax: int = int(w.get("range_max", 1))
     var ranged: bool = bool(w.get("ranged", false))
-    var ally_cells: Dictionary = {}
-    for o in ctl.units:
-        var ally: BattleUnit = o
-        if ally.is_alive() and ally.team == unit.team and ally.id != unit.id:
-            ally_cells[ally.cell] = true
-    var full: Dictionary = ctl.map.compute_reach(origin, 99, unit.jump, ctl.enemy_cell_map(unit), ally_cells)
+    var full: Dictionary = _ai_reach(unit, ctl, 99)
     var full_cost: Dictionary = full["cost"]
     var goal: Vector2i = origin
     var goal_cost := 100000

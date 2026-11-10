@@ -85,9 +85,10 @@ func all_cells() -> Array[Vector2i]:
     return out
 
 
-## Dijkstra flood fill. enemy_cells block movement; ally_cells may be passed through (callers must
-## not let a unit stop there). Returns {"cost": {cell: int}, "prev": {cell: cell}}.
-func compute_reach(start: Vector2i, move_points: int, jump: int, enemy_cells: Dictionary, _ally_cells: Dictionary) -> Dictionary:
+## Dijkstra flood fill. Enemy cells always block. Allies may be passed through for ordinary movement,
+## or treated as blockers for AI route planning with block_ally_cells=true.
+## Returns {"cost": {cell: int}, "prev": {cell: cell}}.
+func compute_reach(start: Vector2i, move_points: int, jump: int, enemy_cells: Dictionary, ally_cells: Dictionary, block_ally_cells: bool = false) -> Dictionary:
     var cost: Dictionary = {start: 0}
     var prev: Dictionary = {}
     var open: Array[Vector2i] = [start]
@@ -103,7 +104,7 @@ func compute_reach(start: Vector2i, move_points: int, jump: int, enemy_cells: Di
             var n: Vector2i = cur + d
             if not in_bounds(n):
                 continue
-            if enemy_cells.has(n):
+            if enemy_cells.has(n) or (block_ally_cells and ally_cells.has(n)):
                 continue
             var step: int = move_cost(n)
             if step < 0:
