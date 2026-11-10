@@ -460,8 +460,14 @@ static func _advance_sieges(state: Dictionary, controlled_provinces: Array) -> D
 			_record(state, "siege_abandoned", {"region": str(region), "reason": "besieging_army_lost"})
 			continue
 		var army: Dictionary = state["field_armies"][army_id]
+		if str(army.get("location", "")) != str(region):
+			sieges.erase(region)
+			_record(state, "siege_abandoned", {"region": str(region), "reason": "besieging_army_moved"})
+			continue
 		var strength := _troop_total(army.get("troops", {}))
 		if strength <= 0:
+			sieges.erase(region)
+			_record(state, "siege_abandoned", {"region": str(region), "reason": "besieging_army_destroyed"})
 			continue
 		var supplied := bool(army.get("supplied", false))
 		var gain := 1
