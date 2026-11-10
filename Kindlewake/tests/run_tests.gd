@@ -45,6 +45,7 @@ func _initialize() -> void:
     _test_world_atlas()
     _test_faction_politics()
     _test_empire_management()
+    _test_field_army_supply_attrition()
     _test_thalassar_region()
     _test_wraparound_world()
     _test_brinegate_quest()
@@ -960,6 +961,24 @@ func _test_empire_management() -> void:
     check(int(EmpireSystem.army_summary(restored).get("troops", 0)) == 13, "provincial garrisons survive campaign normalization and save restoration")
     check(int(EmpireSystem.field_army_summary(restored).get("troops", 0)) == 5, "field armies survive campaign normalization and save restoration")
     check(not bool(EmpireSystem.normalize_state({}).get("unlocked", false)), "legacy saves without empire state remain locked and loadable")
+
+func _test_field_army_supply_attrition() -> void:
+    print("[field army supply attrition]")
+    var regions: Array = ["sethmarch", "orrowen_weald"]
+    var state: Dictionary = EmpireSystem.new_state()
+    EmpireSystem.unlock(state)
+    state["treasury"] = 10000
+    check(EmpireSystem.recruit_troops(state, "sethmarch", "infantry", 20, regions), "isolated supply test recruits a field force")
+    var army_id: String = EmpireSystem.mobilize_army(state, "sethmarch", {"infantry": 20}, regions)
+    check(army_id != "" and int(state["field_armies"][army_id].get("morale", 0)) == 100, "new field armies begin with full morale")
+    var routes: Dictionary = {"sethmarch": ["orrowen_weald"], "orrowen_weald": ["sethmarch"]}
+    check(EmpireSystem.move_field_army(state, army_id, "orrowen_weald", routes, regions), "isolated army can enter an adjacent region")
+    var first: Dictionary = EmpireSystem.advance_season(state, ["sethmarch"])
+    check(int(first.get("supply_losses", -1)) == 0 and int(state["field_armies"][army_id]["days_unsupplied"]) == 1, "one unsupplied season warns but causes no casualties")
+    var second: Dictionary = EmpireSystem.advance_season(state, ["sethmarch"])
+    check(int(second.get("supply_losses", 0)) == 1 and int(state["field_armies"][army_id]["troops"]["infantry"]) == 19, "prolonged isolation causes deterministic minimum-one troop attrition")
+    check(int(state["field_armies"][army_id]["morale"]) == 80, "each unsupplied season reduces field army morale")
+
 
 func _test_thalassar_region() -> void:
     print("[Thalassar / Brinegate Coast]")
