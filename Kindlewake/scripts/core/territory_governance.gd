@@ -90,12 +90,12 @@ static func capture(state: Dictionary, region_id: String, new_owner: String, fac
     return true
 
 
-static func advance_turn(state: Dictionary) -> Dictionary:
+static func advance_turn(state: Dictionary, faction_id: String) -> Dictionary:
     var summary := {"tax_income": 0, "unresting_regions": [], "rebellion_risk_regions": []}
     var territories: Dictionary = state.get("territories", {})
     for region_id in territories.keys():
         var territory: Dictionary = territories[region_id]
-        if str(territory.get("owner", "")) == "":
+        if faction_id == "" or str(territory.get("owner", "")) != faction_id:
             continue
         var tax_rate := clampf(float(territory.get("tax_rate", 0.05)), MIN_TAX, MAX_TAX)
         var prosperity := int(territory.get("prosperity", 50))
