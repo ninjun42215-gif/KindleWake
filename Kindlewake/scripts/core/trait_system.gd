@@ -98,6 +98,14 @@ static func remove(trait_ids: Array, history: Array, trait_id: String, reason: S
         log.pop_front()
     return {"ok": true, "reason": "", "traits": updated, "history": log}
 
+static func _requirements_met(requirements: Dictionary, behavior: Dictionary) -> bool:
+    if requirements.is_empty():
+        return false
+    for key in requirements:
+        if int(behavior.get(str(key), 0)) < int(requirements[key]):
+            return false
+    return true
+
 static func evolve(trait_ids: Array, history: Array, trait_id: String, definitions: Dictionary, source: String, behavior: Dictionary = {}) -> Dictionary:
     var definition: Dictionary = definitions.get(trait_id, {})
     var next_id := str(definition.get("evolves_to", ""))
@@ -106,7 +114,7 @@ static func evolve(trait_ids: Array, history: Array, trait_id: String, definitio
     if not trait_ids.has(trait_id):
         return {"ok": false, "reason": "The character does not have the required starting trait.", "traits": normalized_ids(trait_ids), "history": history.duplicate(true)}
     var requirements: Dictionary = definition.get("evolution_requirements", {})
-    if not PersonalitySystem.requirements_met(requirements, behavior):
+    if not _requirements_met(requirements, behavior):
         return {"ok": false, "reason": "The character has not yet met the evolution requirements.", "traits": normalized_ids(trait_ids), "history": history.duplicate(true)}
     var removed := remove(trait_ids, history, trait_id, "evolved:" + source, definitions, true)
     var added := acquire(removed.traits, removed.history, next_id, "evolved:" + source, definitions)
