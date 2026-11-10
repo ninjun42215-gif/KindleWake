@@ -135,3 +135,12 @@
 - Current scope is backend foundation only. No diplomacy screen, automatic war simulation, AI faction turns or strategic battle layer is claimed complete.
 - Validation on code head `f7b31035e4651a4a6854cc5ad644beff88c2148b`: Build Android APK run #683 passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 447 strict checks / 0 failures, balance report and signed APK export for arm64-v8a + armeabi-v7a with no requested Android permissions. APK artifact `13733346417` (~41.0 MB); test logs artifact `13732869336`. Version Sync #188, Workflow YAML Lint #666 and Project Health Audit #458 also passed on that exact code head. The first CI attempt caught a missing `GameData.factions` declaration and a strict-test type inference error; both were fixed before the successful rerun. Documentation commits after that code head require a fresh exact-head gate. Physical Android QA remains outstanding.
 - Next implementation slice after this foundation: connect authored quests/choices to relation changes, then add a compact faction dossier UI before enabling player-initiated treaty/war actions. Preserve offline-only architecture, existing saves and schema 4.
+
+
+## 2026-11-10 — Realm governance foundation
+
+- Added `EmpireSystem` with deterministic regional income/upkeep, tax policy, stability, governors, one-time realm policies and duplicate-month protection.
+- Connected optional empire state to campaign save/load and gated runtime controls behind `world_flags.empire_management_unlocked`.
+- Added regression coverage for ownership checks, treasury costs, monthly settlement idempotency and legacy normalization.
+- Branch: `feature/territorial-governance-current-main`. CI and player-facing UI remain pending; do not treat this as a finished kingdom-management screen.
+
