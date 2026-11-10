@@ -43,7 +43,7 @@ Each known province contributes a modest baseline tax and food yield, while popu
 ## Player-facing screens now implemented in the feature branch
 
 1. **Realm overview:** treasury, food, manpower, stability, legitimacy, public order and explicit season advancement/report.
-2. **Council chamber:** office responsibilities, roster-based appointments and dismissal. Companion trait tags are shown on office cards and compatible traits modify seasonal office effects. Companion loyalty and traits now affect office performance; character portrait rendering and rivalry effects remain future work.
+2. **Council chamber:** office responsibilities, roster-based appointments and dismissal. Companion trait tags are shown on office cards and compatible traits modify seasonal office effects. Council cards now use the same battle sprite sheet for portraits; companion loyalty and traits affect office performance. Authored rivalry consequences remain future work.
 3. **Provinces:** atlas ownership, governor appointment/recall and construction. Actions are disabled outside player-controlled House Dunmarrow/Crownlands territory; rebellion warnings, public relief and regional resource specialization are implemented; deeper local-governor consequences remain future work.
 4. **Economy:** tax policy, edicts, persistent trade routes, rebellion warnings and funded relief. An immutable next-season forecast previews treasury, food and manpower without changing live campaign state.
 5. **Military overview:** manpower, troop strength, garrison counts, field deployments, upkeep, rations, readiness and war exhaustion are visible in the military administration tab.
