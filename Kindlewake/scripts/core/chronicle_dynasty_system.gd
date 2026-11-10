@@ -709,4 +709,9 @@ static func person_summary(person: Dictionary) -> String:
  var children: Array = person.get("children",[])
  var title_ids: Array = person.get("title_ids",[])
  var title_label := ", ".join(title_ids) if not title_ids.is_empty() else "none"
- return "%s, age %d • %s • %s • spouse: %s • children: %d • titles: %s" % [str(person.get("name","Unnamed")),int(person.get("age",0)),"living" if bool(person.get("alive",false)) else "deceased",", ".join(trait_names) if not trait_names.is_empty() else "no recorded traits",spouse if spouse != "" else "none",children.size(),title_label]
+ var education: Dictionary = person.get("education",{})
+ var education_label := str(education.get("focus","none")) + (" (complete)" if bool(education.get("completed",false)) else "")
+ var guardian := str(person.get("guardian_id",""))
+ var adopted_by := str(person.get("adoptive_parent_id",""))
+ var claims: Array = person.get("claims",[])
+ return "%s, age %d • %s • %s • spouse: %s • children: %d • titles: %s • education: %s • guardian: %s • adopted by: %s • claims: %d" % [str(person.get("name","Unnamed")),int(person.get("age",0)),"living" if bool(person.get("alive",false)) else "deceased",", ".join(trait_names) if not trait_names.is_empty() else "no recorded traits",spouse if spouse != "" else "none",children.size(),title_label,education_label,guardian if guardian != "" else "none",adopted_by if adopted_by != "" else "none",claims.size()]
