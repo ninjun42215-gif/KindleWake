@@ -13,6 +13,7 @@ const SAVE_DIR := "user://saves/"
 const SAVE_VERSION := 4
 const GAME_VERSION := "0.12.0"
 const AUTOSAVE_SLOTS := ["auto_a", "auto_b"]
+const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 
 
 func slot_path(slot_id: String) -> String:
@@ -66,22 +67,45 @@ func save_slot(slot_id: String, payload: Dictionary, summary: String = "") -> bo
 ## Returns {"ok": bool, "payload": Dictionary, "meta": Dictionary, "from_backup": bool, "error": String}
 func load_slot(slot_id: String) -> Dictionary:
     var path: String = slot_path(slot_id)
-    var env: Dictionary = _read_envelope(path)
-    var from_backup := false
-    if env.is_empty():
-        env = _read_envelope(path + ".bak")
-        from_backup = not env.is_empty()
-    if env.is_empty():
+    var primary_env: Dictionary = _read_envelope(path)
+    if not primary_env.is_empty():
+        var primary_result: Dictionary = _decode_envelope(primary_env)
+        if bool(primary_result.get("ok", false)):
+            primary_result["from_backup"] = false
+            return primary_result
+        # A newer-version save must never be silently replaced by an older backup.
+        if str(primary_result.get("error", "")) == "Save was made by a newer version of the game.":
+            return primary_result
+
+    var backup_env: Dictionary = _read_envelope(path + ".bak")
+    if not backup_env.is_empty():
+        var backup_result: Dictionary = _decode_envelope(backup_env)
+        if bool(backup_result.get("ok", false)):
+            backup_result["from_backup"] = true
+            return backup_result
+
+    if primary_env.is_empty() and backup_env.is_empty():
         return {"ok": false, "error": "Save missing or corrupted."}
+    if not primary_env.is_empty():
+        return _decode_envelope(primary_env)
+    return {"ok": false, "error": "Save missing or corrupted."}
+
+
+## Decode, migrate and semantically validate before exposing persisted state to runtime systems.
+func _decode_envelope(env: Dictionary) -> Dictionary:
+    if typeof(env.get("meta")) != TYPE_DICTIONARY:
+        return {"ok": false, "error": "Save metadata is invalid."}
     var meta: Dictionary = env["meta"]
     var version: int = int(meta.get("save_version", 1))
     if version > SAVE_VERSION:
         return {"ok": false, "error": "Save was made by a newer version of the game."}
-    var parsed: Variant = JSON.parse_string(str(env["payload"]))
+    var parsed: Variant = JSON.parse_string(str(env.get("payload", "")))
     if typeof(parsed) != TYPE_DICTIONARY:
         return {"ok": false, "error": "Save payload is invalid."}
     var payload: Dictionary = migrate(parsed, version)
-    return {"ok": true, "payload": payload, "meta": meta, "from_backup": from_backup, "error": ""}
+    if bool(payload.get("campaign", false)) and not RegionSaveState.is_valid_campaign_payload(payload):
+        return {"ok": false, "error": "Campaign save payload is invalid."}
+    return {"ok": true, "payload": payload, "meta": meta, "from_backup": false, "error": ""}
 
 
 ## Upgrade old payloads step by step without discarding existing campaign fields.
@@ -183,6 +207,8 @@ func _read_envelope(path: String) -> Dictionary:
         return {}
     var env: Dictionary = parsed
     if not (env.has("payload") and env.has("checksum") and env.has("meta")):
+        return {}
+    if typeof(env.get("payload")) != TYPE_STRING or typeof(env.get("meta")) != TYPE_DICTIONARY:
         return {}
     if checksum_of(str(env["payload"])) != str(env["checksum"]):
         return {}
