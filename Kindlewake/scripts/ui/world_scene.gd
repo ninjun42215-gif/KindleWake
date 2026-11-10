@@ -415,12 +415,12 @@ func _claim_holding(p: Dictionary) -> void:
     GameState.save_campaign("auto_a")
     var method: String = str(p.get("capture_method", "occupation"))
     var consequence: String = "A provisional garrison is sworn in. The holding is yours to administer, but stability must be earned through food, safety, fair levies and respect for local custom."
-    if realm_unlocked:
-        consequence += "\n\nYour first external stronghold is secured. The war room can now coordinate realm administration: tax policy, regional governors and royal decrees. The Realm screen is available from the world HUD."
     if method == "forest_stewardship_compact":
         consequence = "The wardens accept a stewardship compact. The watch remains under local law, and the old-growth grove is placed under protection."
     elif method == "grain_charter":
         consequence = "The freeholders sign a grain charter. Seed stores and winter reserves are protected before any military requisition."
+    if realm_unlocked:
+        consequence += "\n\nYour first external stronghold is secured. The war room can now coordinate realm administration: tax policy, regional governors and royal decrees. The Realm screen is available from the world HUD."
     _open_place(p, consequence)
 
 
