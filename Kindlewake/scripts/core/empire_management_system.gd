@@ -298,13 +298,16 @@ static func army_summary(state: Dictionary) -> Dictionary:
 
 
 ## Advance one strategic season. The caller controls when story time advances.
-static func advance_season(state: Dictionary, province_ids: Array, adjacency: Dictionary = {}) -> Dictionary:
+static func advance_season(state: Dictionary, province_ids: Array, adjacency: Dictionary = {}, character_profiles: Dictionary = {}) -> Dictionary:
 	if not bool(state.get("unlocked", false)):
 		return {"ok": false, "reason": "realm_locked"}
 	var tax_rate := str(state.get("tax_rate", "normal"))
 	var tax_multiplier := {"low": 0.65, "normal": 1.0, "high": 1.45}.get(tax_rate, 1.0)
 	var income := 0
 	var food_gain := 0
+	var trade_income := 0
+	for route in state.get("trade_routes", {}).values():
+		trade_income += int(route.get("income", 20))
 	var upkeep := 0
 	var defence := 0
 	for province_id in province_ids:
@@ -320,6 +323,9 @@ static func advance_season(state: Dictionary, province_ids: Array, adjacency: Di
 		defence += int(def.get("defence", 0))
 	food_gain += 5 if state["policies"].has("development") else 0
 	income = int(round(float(income) * tax_multiplier))
+	var council: Dictionary = council_effects(state, character_profiles)
+	income += trade_income + int(council.get("income", 0))
+	food_gain += int(council.get("food", 0))
 	upkeep += int(state["council"].size()) * 3
 	if state["policies"].has("relief"):
 		upkeep += 15
@@ -382,12 +388,16 @@ static func advance_season(state: Dictionary, province_ids: Array, adjacency: Di
 		state["public_order"] = mini(100, int(state["public_order"]) + 2)
 	if state["policies"].has("tolerance"):
 		state["stability"] = mini(100, int(state["stability"]) + 2)
+	state["stability"] = clampi(int(state["stability"]) + int(council.get("stability", 0)), 0, 100)
+	state["public_order"] = clampi(int(state["public_order"]) + int(council.get("public_order", 0)), 0, 100)
+	state["war_exhaustion"] = clampi(int(state.get("war_exhaustion", 0)) + int(council.get("war_exhaustion", 0)), 0, 100)
 	if int(state.get("war_exhaustion", 0)) >= 70:
 		state["stability"] = maxi(0, int(state["stability"]) - 2)
 		state["public_order"] = maxi(0, int(state["public_order"]) - 2)
 	state["turn"] = int(state["turn"]) + 1
 	var siege_report := _advance_sieges(state, province_ids)
-	var report := {"ok": true, "season": state["turn"], "sieges_advanced": siege_report["advanced"], "sieges_completed": siege_report["completed"], "war_exhaustion": int(state.get("war_exhaustion", 0)), "income": income, "upkeep": upkeep, "food_change": food_gain - province_ids.size() * 8 - military_food, "defence": defence, "military_upkeep": int(military["upkeep"]), "military_food": military_food, "troops": int(military["troops"]), "supply_losses": supply_losses, "food_shortage": food_shortage}
+	var unrest_report := rebellion_assessment(state, province_ids)
+	var report := {"ok": true, "season": state["turn"], "sieges_advanced": siege_report["advanced"], "sieges_completed": siege_report["completed"], "war_exhaustion": int(state.get("war_exhaustion", 0)), "income": income, "upkeep": upkeep, "food_change": food_gain - province_ids.size() * 8 - military_food, "defence": defence, "military_upkeep": int(military["upkeep"]), "military_food": military_food, "troops": int(military["troops"]), "supply_losses": supply_losses, "trade_income": trade_income, "rebellion_risk": int(unrest_report.get("risk", 0)), "rebellion_alerts": unrest_report.get("alerts", []), "food_shortage": food_shortage}
 	_record(state, "season", report)
 	return report
 
