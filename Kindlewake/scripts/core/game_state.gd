@@ -89,8 +89,16 @@ func appoint_empire_councillor(role: String, character_id: String) -> bool:
         return false
     return EmpireSystem.appoint_councillor(empire_state, role, character_id)
 
+func dismiss_empire_councillor(role: String) -> bool:
+    return EmpireSystem.dismiss_councillor(empire_state, role)
+
+
+func dismiss_province_governor(province_id: String) -> bool:
+    return EmpireSystem.dismiss_governor(empire_state, province_id)
+
+
 func appoint_province_governor(province_id: String, character_id: String) -> bool:
-    if not party.has_character(character_id):
+    if not party.sheets.has(character_id):
         return false
     return EmpireSystem.appoint_governor(empire_state, province_id, character_id, GameData.factions.get("regions", {}).keys())
 
