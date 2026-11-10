@@ -98,6 +98,9 @@ func _initialize() -> void:
     _test_campaign_restore_validation()
     _test_campaign_save_semantic_backup_fallback()
     _simulate_battles(30)
+    # PartyScreen rebuilds defer old child-node deletion; drain it before SceneTree shutdown.
+    await process_frame
+    await process_frame
     print("")
     print("Checks: %d   Failures: %d" % [checks, failures])
     ArtScript._cache.clear()
@@ -2464,7 +2467,8 @@ func _test_shop_and_screen() -> void:
     tcard.free()
     screen.close()
     check(not screen.visible and screen_closed == 1, "Close hides the screen and emits closed")
-    screen.queue_free()
+    # The headless test exits immediately; free synchronously instead of leaving a queued Node.
+    screen.free()
 
 
 func rng_for_tests() -> RandomNumberGenerator:

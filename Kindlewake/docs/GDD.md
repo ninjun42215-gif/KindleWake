@@ -930,3 +930,6 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - Confirmed the campaign level cap is 250 in `CharacterSheet.MAX_LEVEL`, load normalization, cap-overflow handling and strict regression tests. The authoritative curve and progression rules remain in section 4.
 - Updated the production checkpoint after PR #118 merged as main commit `830bc0273d45140a11a4038f092a4d5ee347a243`; current project version remains 0.12.0 and save schema 4. No version or save-schema change is introduced by this documentation update.
 - Current-main CI passed 18 scene loads, 912 strict checks with 0 failures, the balance report and signed Android export. Physical-device QA and asset redistribution verification remain release gates.
+
+
+- **Headless cleanup candidate (2026-11-10, rebased PR pending):** the PartyScreen smoke test frees its temporary Control synchronously and drains deferred child nodes before the test tree exits; the standalone balance report frees its GameData Node; Blender source import is disabled because no `.blend` files are tracked. No gameplay, version or save-schema change. Exact-head validation is pending.

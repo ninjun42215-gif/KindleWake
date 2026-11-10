@@ -19,6 +19,7 @@ func _initialize() -> void:
     print("KINDLEWAKE balance report   (%d battles per scenario, AI vs AI, starting party)" % n)
     _scenario_table(n)
     _grind_curve(60)
+    gd.free()
     quit(0)
 
 
