@@ -757,9 +757,9 @@
       "completion_reward": {
         "gold": 65
       },
-      "synopsis": "Maren discovers that the Tideglass Ledger omits a voyage carrying refugees and sealed cargo. She plots a safe approach through shoals by comparing tide marks, local pilot testimony and a damaged chart, then reaches the wreck and recovers its manifest. The evidence shows the crew diverted the vessel to evade a blockade, while the cargo's owner later profited from the disappearance. The story keeps Ilyra Venn's leadership distinct and Brinegate under the Tidebound Assembly.",
-      "journal_summary": "Recover the missing Tideglass Ledger page, plot a safe route through the shoals and retrieve the wreck's sealed manifest. Decide how to protect the surviving crew and expose the voyage's disappearance.",
-      "resolution_prompt": "The manifest proves what happened, but publishing it could expose the surviving crew. Should Maren publish the record, protect the crew through neutral custodians or negotiate reparations?",
+      "synopsis": "After the Northstar signal is restored and its captain's log recovered, Maren discovers that the Tideglass Ledger's final leaf conceals a passenger transfer and cargo lien. She compares the harbour copy with family testimony and the ship's final manifest to identify who profited from the disappearance. The surviving crew's safety remains central, and Brinegate remains under the Tidebound Assembly.",
+      "journal_summary": "After Maren's Northstar signal quest, verify the hidden passenger transfer, trace the affected families and audit the cargo lien in the wreck's manifest. Decide how to restore the record without endangering survivors.",
+      "resolution_prompt": "The final manifest and passenger evidence now agree. Publishing may expose the surviving crew; sealed testimony protects them but delays public accountability. How should Maren resolve the record?",
       "outcome_labels": {
         "publish_manifest": "Publish the manifest",
         "protect_crew": "Protect the surviving crew",
@@ -774,7 +774,11 @@
         "publish_manifest": "maren_outcome_manifest_published",
         "protect_crew": "maren_outcome_crew_protected",
         "negotiate_reparations": "maren_outcome_reparations"
-      }
+      },
+      "required_flags_all": [
+        "maren_signal_completed"
+      ],
+      "unlock_hint": "Complete Maren's Northstar signal quest first. This personal story follows the restored signal and recovered logbook."
     }
   }
 }
