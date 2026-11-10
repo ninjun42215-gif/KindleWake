@@ -564,6 +564,9 @@ func _show_result() -> void:
         result_company_button.visible = true
         result_continue_button.text = "Retry Escape" if str(battle_def.get("id", "")) == "east_gallery_escape" else "Continue Journey"
     result_text.text += "\nTurns taken: %d" % controller.turn_count
+    var deployment_report: Dictionary = GameState.recover_deployed_recruits(controller.units, battle_def)
+    if int(deployment_report.get("recovered", 0)) > 0 or int(deployment_report.get("lost", 0)) > 0:
+        result_text.text += "\n\nHolding reinforcements: %d returned to reserve, %d lost in battle." % [int(deployment_report.get("recovered", 0)), int(deployment_report.get("lost", 0))]
     var siege_objective_id := str(battle_def.get("siege_objective_id", ""))
     if siege_objective_id != "":
         if won:
