@@ -43,10 +43,24 @@ static func advance_turn(definitions: Array, world_flags: Dictionary, treasury: 
         var economy: Dictionary = definition.get("economy", {})
         var base_income := maxi(0, int(definition.get("turn_income", economy.get("gold", 0))))
         var base_upkeep := maxi(0, int(definition.get("garrison_upkeep", 1)))
-        var local_provisions := maxi(0, int(economy.get("provisions", definition.get("turn_provisions", 0))))
+        var local_provisions := maxi(0, int(economy.get("provisions", definition.get("turn_provisions", 0)))) + building_provisions
         var local_materials := maxi(0, int(economy.get("materials", definition.get("turn_materials", 0))))
+        var building_income := 0
+        var building_provisions := 0
+        var fortification := 0
+        for building_id in ["farm", "workshop", "trade_post", "fortifications"]:
+            var tier := clampi(int(world_flags.get("holding_building_" + id + "_" + building_id, 0)), 0, 3)
+            var building: Dictionary = {
+                "farm":{"yield_provisions":3,"yield_gold":0,"defense":0},
+                "workshop":{"yield_provisions":0,"yield_gold":2,"defense":0},
+                "trade_post":{"yield_provisions":0,"yield_gold":5,"defense":0},
+                "fortifications":{"yield_provisions":0,"yield_gold":0,"defense":2}
+            }.get(building_id, {})
+            building_income += int(building.get("yield_gold", 0)) * tier
+            building_provisions += int(building.get("yield_provisions", 0)) * tier
+            fortification += int(building.get("defense", 0)) * tier
         var garrison := maxi(0, int(world_flags.get("holding_garrison_" + id, 0)))
-        var local_income := base_income
+        var local_income := base_income + building_income
         var local_upkeep := base_upkeep + garrison
         var governance := str(world_flags.get("holding_governance_" + id, definition.get("governance", "appointed_warden")))
         if governance == "merchant_council":
@@ -60,6 +74,7 @@ static func advance_turn(definitions: Array, world_flags: Dictionary, treasury: 
         var delta := 0
         if garrison >= int(definition.get("recommended_garrison", 2)):
             delta += 3
+        delta += fortification
         elif garrison == 0:
             delta -= 4
         if status == "provisional":
