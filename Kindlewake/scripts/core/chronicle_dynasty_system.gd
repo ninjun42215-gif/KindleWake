@@ -538,7 +538,7 @@ static func create_domain(raw: Dictionary, name: String, steward_id: String) -> 
  var state := normalize_state(raw)
  if name.strip_edges().length() < 3 or not state.people.has(steward_id) or not bool(state.people[steward_id].alive):
   return {"ok":false,"reason":"A named holding and living steward are required."}
- var domain_id := "domain_%02d" % (state.domains.size()+1)
+ var domain_id: String = "domain_%02d" % (state.domains.size()+1)
  state.domains[domain_id] = {"id":domain_id,"name":name.strip_edges(),"steward":steward_id,"prosperity":35,"security":35,"food":40,"legitimacy":40,"notes":"A new holding under the Concord's duties of stewardship."}
  var person: Dictionary = state.people[steward_id]
  person.domain_ids.append(domain_id)
@@ -561,7 +561,7 @@ static func create_title(raw: Dictionary, rank_id: String, name: String, holder_
   highest = maxi(highest,existing_rank)
  if int(rank.rank) != highest + 1:
   return {"ok":false,"reason":"Establish each intervening rank before advancing to a higher title."}
- var title_id := "title_%02d" % (state.titles.size()+1)
+ var title_id: String = "title_%02d" % (state.titles.size()+1)
  state.titles[title_id] = {"id":title_id,"rank_id":rank_id,"name":name.strip_edges(),"holder":holder_id,"domain_id":domain_id,"jurisdiction":str(rank.jurisdiction),"obligations":[str(rank.duties)],"legitimacy":40}
  var person: Dictionary = state.people[holder_id]
  var person_titles: Array = person.get("title_ids",[])
