@@ -245,12 +245,14 @@ func merchant_smuggle(good_id: String, quantity: int) -> Dictionary:
     return TradeSystemScript.smuggle_sell(party, trade_state, active_region_id, good_id, quantity, GameData.trade_economy, rng)
 
 
-func merchant_set_tariff(region_id: String, rate: float, authorized: bool = false) -> String:
-    return TradeSystemScript.set_tariff(trade_state, region_id, rate, authorized)
+func merchant_set_tariff(region_id: String, rate: float) -> String:
+    var emperor_authorized := bool(world_flags.get("empire_management_unlocked", false))
+    return TradeSystemScript.set_tariff(trade_state, region_id, rate, emperor_authorized)
 
 
-func merchant_set_route_policy(route_id: String, policy: Dictionary, authorized: bool = false) -> String:
-    return TradeSystemScript.set_route_policy(trade_state, route_id, policy, authorized)
+func merchant_set_route_policy(route_id: String, policy: Dictionary) -> String:
+    var emperor_authorized := bool(world_flags.get("empire_management_unlocked", false))
+    return TradeSystemScript.set_route_policy(trade_state, route_id, policy, emperor_authorized)
 
 
 func newest_campaign_slot() -> String:
