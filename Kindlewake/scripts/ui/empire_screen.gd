@@ -181,7 +181,7 @@ func _refresh() -> void:
         if id == selected_id:
             b.add_theme_stylebox_override("normal", _style_panel(Color(0.31, 0.23, 0.12)))
         list_box.add_child(b)
-    summary_label.text = "TURN %d   •   TREASURY %d GOLD   •   ADMINISTERED %d / %d" % [int(GameState.world_flags.get("empire_turn", 0)), GameState.party.gold, claimed_count, definitions.size()]
+    summary_label.text = "TURN %d   •   %d GOLD   •   %d PROVISIONS   •   %d MATERIALS   •   %d / %d HOLDINGS" % [int(GameState.world_flags.get("empire_turn", 0)), GameState.party.gold, int(GameState.world_flags.get("empire_stockpile_provisions", 0)), int(GameState.world_flags.get("empire_stockpile_materials", 0)), claimed_count, definitions.size()]
     _refresh_detail()
     _building = false
 
