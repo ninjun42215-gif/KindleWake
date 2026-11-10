@@ -3145,10 +3145,10 @@
             "prompt": "Which route uses the available evidence while avoiding the newly exposed shoal?",
             "options": [
               "Follow the old chart's straight channel without checking the tide",
-              "Cross the eastern shoal at ebb because the waterline and pilot's sounding agree on the western channel",
+              "Take the western channel at ebb because the waterline and pilot's sounding agree on its depth",
               "Choose the deepest-looking water by colour alone"
             ],
-            "correct_option": "Cross the eastern shoal at ebb because the waterline and pilot's sounding agree on the western channel",
+            "correct_option": "Take the western channel at ebb because the waterline and pilot's sounding agree on its depth",
             "success_text": "The combined tide marks and pilot sounding reveal the safe western channel. Maren plots the approach without requiring a paid chart.",
             "failure_text": "A chart alone or water colour cannot confirm depth. Compare the current tide marks with the pilot's independent sounding."
           }
