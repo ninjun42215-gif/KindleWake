@@ -1,0 +1,140 @@
+{
+  "id": "act2_changed_escort",
+  "title": "The Escort That Changed Course",
+  "briefing": "A false banner has brought displaced families to the narrow crossing. Hold the bridge approach, defeat Writ-Captain Odran Vale and keep the refugees moving. Optional objective: preserve the sealed writ carried by the captain.",
+  "weather": "overcast",
+  "legend": {
+    ".": "grass",
+    "f": "forest",
+    "r": "road",
+    "w": "ford",
+    "b": "bridge",
+    "#": "rock"
+  },
+  "terrain": [
+    "....................",
+    "....ff..............",
+    "...fff......ff......",
+    "....f........f......",
+    ".........r..........",
+    "....~~~~~b~~~~~.....",
+    "....~~~~~b~~~~~.....",
+    ".........r..........",
+    "......f..r..f.......",
+    ".....ff..r..........",
+    ".........r..........",
+    "....................",
+    "....................",
+    "...................."
+  ],
+  "heights": [
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000"
+  ],
+  "victory": [
+    "defeat_commander"
+  ],
+  "units": [
+    {
+      "character_id": "torren",
+      "team": "player",
+      "cell": [
+        9,
+        11
+      ],
+      "facing": 0,
+      "protagonist": true
+    },
+    {
+      "character_id": "bram",
+      "team": "player",
+      "cell": [
+        8,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "sela",
+      "team": "player",
+      "cell": [
+        10,
+        11
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "brother_wystan",
+      "team": "player",
+      "cell": [
+        7,
+        11
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "checkpoint_sergeant",
+      "team": "enemy",
+      "cell": [
+        13,
+        4
+      ],
+      "facing": 2,
+      "commander": true
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        10,
+        3
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        8,
+        4
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadbowman",
+      "team": "enemy",
+      "cell": [
+        12,
+        2
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadbowman",
+      "team": "enemy",
+      "cell": [
+        15,
+        3
+      ],
+      "facing": 2
+    }
+  ],
+  "battlefield": "river_crossing",
+  "reward_rune": "",
+  "world_flag_on_victory": "act2_escort_captain_defeated",
+  "victory_text": "Odran's sword falls. The false banner is lowered, and the families cross under guard. The sealed writ is recovered with its order to turn them back.",
+  "defeat_text": "The crossing is lost for now. The refugees retreat to cover; the company can regroup and attempt the escort again.",
+  "return_scene": "res://ActTwoQuestChallenge.tscn"
+}
