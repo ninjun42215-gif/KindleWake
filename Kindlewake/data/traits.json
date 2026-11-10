@@ -19,7 +19,10 @@
         "battle_courage",
         "training"
       ],
-      "permanent": false
+      "permanent": false,
+      "evolution_requirements": {
+        "brave_actions": 3
+      }
     },
     "cowardly": {
       "name": "Cowardly",
@@ -366,7 +369,10 @@
         "research",
         "ancient_text"
       ],
-      "permanent": false
+      "permanent": false,
+      "evolution_requirements": {
+        "research_sessions": 8
+      }
     },
     "strategist": {
       "name": "Strategist",
@@ -431,7 +437,11 @@
         "sword_training",
         "sword_victory"
       ],
-      "permanent": false
+      "permanent": false,
+      "evolution_requirements": {
+        "sword_training": 10,
+        "duel_victories": 1
+      }
     },
     "master_swordsman": {
       "name": "Master Swordsman",
@@ -464,7 +474,10 @@
         "archery_training",
         "ranged_victory"
       ],
-      "permanent": false
+      "permanent": false,
+      "evolution_requirements": {
+        "ranged_hits": 30
+      }
     },
     "master_archer": {
       "name": "Master Archer",
