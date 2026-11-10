@@ -513,6 +513,16 @@ func _play_anim(unit_id: int, anim: String) -> void:
 
 
 func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
+    if kind == "boss_phase":
+        var boss: BattleUnitScript = controller.unit_by_id(unit_id)
+        if boss != null:
+            var phase_color := Color(1.0, 0.28, 0.12)
+            if str(data.get("vfx", "")) == "judgement":
+                phase_color = Color(1.0, 0.88, 0.34)
+            _add_battle_vfx(boss, "burst", phase_color)
+            _add_popup(boss, "PHASE %d" % int(data.get("phase", 2)), phase_color)
+            _add_popup(boss, str(data.get("name", "Desperation")).to_upper(), Color.WHITE)
+    if kind == "attack" or kind == "skill_damage":
     if kind == "attack" or kind == "skill_damage":
         _play_anim(unit_id, "attack")
         var tid: int = int(data.get("target_id", -1))
