@@ -33,6 +33,9 @@ var kills: int = 0
 var kill_exp: int = 0                # EXP value of this unit's kills (statistic only; rewards are paid by PartyState)
 var skill_mods: Dictionary = {}      # skill id -> power bonus percent (support sigils)
 var reward: Dictionary = {}          # {"exp","ap","gold"} paid to the party when this enemy is defeated
+var traits: Array[String] = []
+var personality: Dictionary = {}       # transient tactical context copied from the campaign character sheet
+var companion_bonds: Dictionary = {}   # other deployed companions keyed by character ID
 
 
 func stat(key: String) -> int:
@@ -80,6 +83,10 @@ static func create(p_id: int, char_id: String, char_def: Dictionary, class_def: 
     u.jump = int(class_def.get("jump", 1))
     u.skill_mods = (char_def.get("skill_mods", {}) as Dictionary).duplicate()
     u.reward = (char_def.get("reward", {}) as Dictionary).duplicate()
+    for trait_id in char_def.get("traits", []):
+        u.traits.append(str(trait_id))
+    u.personality = (char_def.get("personality", {}) as Dictionary).duplicate(true)
+    u.companion_bonds = (char_def.get("companion_bonds", {}) as Dictionary).duplicate(true)
     return u
 
 
@@ -92,7 +99,7 @@ func to_dict() -> Dictionary:
         "skills": skills.duplicate(), "is_protagonist": is_protagonist, "is_commander": is_commander,
         "move": move, "jump": jump, "ctb": ctb, "has_moved": has_moved, "has_acted": has_acted,
         "statuses": statuses.duplicate(true), "kills": kills, "kill_exp": kill_exp,
-        "skill_mods": skill_mods.duplicate(), "reward": reward.duplicate(),
+        "skill_mods": skill_mods.duplicate(), "reward": reward.duplicate(),\n        "traits": traits.duplicate(), "personality": personality.duplicate(true), "companion_bonds": companion_bonds.duplicate(true),
     }
 
 
@@ -133,4 +140,8 @@ static func from_dict(d: Dictionary) -> BattleUnit:
     u.kill_exp = int(d.get("kill_exp", 0))
     u.skill_mods = (d.get("skill_mods", {}) as Dictionary).duplicate()
     u.reward = (d.get("reward", {}) as Dictionary).duplicate()
+    for trait_id in d.get("traits", []):
+        u.traits.append(str(trait_id))
+    u.personality = (d.get("personality", {}) as Dictionary).duplicate(true)
+    u.companion_bonds = (d.get("companion_bonds", {}) as Dictionary).duplicate(true)
     return u
