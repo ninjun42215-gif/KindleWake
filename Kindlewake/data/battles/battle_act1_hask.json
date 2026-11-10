@@ -1,0 +1,134 @@
+{
+  "id": "act1_hask_boss",
+  "title": "The Last Convoy: Hask Gravelteeth",
+  "briefing": "BOSS BATTLE — Sallow Ford. Protect the crossing and defeat Hask Gravelteeth. The captain's heavy axe can punish isolated units; hold the approach, use the riverbank and break his escort before surrounding him.",
+  "weather": "clear",
+  "legend": {
+    ".": "grass",
+    "f": "forest",
+    "r": "road",
+    "h": "hill",
+    "w": "ford",
+    "~": "deep_water",
+    "b": "bridge",
+    "#": "rock"
+  },
+  "terrain": [
+    "....................",
+    "....................",
+    "......ff....hh......",
+    ".....fff...hhh......",
+    "......f....hh.#.....",
+    ".........r..........",
+    "....~~~~~b~~~w~~....",
+    "....~~~~~b~~~w~~....",
+    ".........r..........",
+    ".....f...r...f......",
+    ".....ff..r..........",
+    "......f.............",
+    "....................",
+    "...................."
+  ],
+  "heights": [
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000011000000",
+    "00000000000122000000",
+    "00000000000110000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000"
+  ],
+  "victory": [
+    "rout_all",
+    "defeat_commander"
+  ],
+  "units": [
+    {
+      "character_id": "torren",
+      "team": "player",
+      "cell": [
+        9,
+        10
+      ],
+      "facing": 0,
+      "protagonist": true
+    },
+    {
+      "character_id": "bram",
+      "team": "player",
+      "cell": [
+        8,
+        9
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "sela",
+      "team": "player",
+      "cell": [
+        10,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "brother_wystan",
+      "team": "player",
+      "cell": [
+        7,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "hask_convoy_champion",
+      "team": "enemy",
+      "cell": [
+        13,
+        4
+      ],
+      "facing": 2,
+      "commander": true
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        10,
+        3
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        8,
+        4
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadbowman",
+      "team": "enemy",
+      "cell": [
+        12,
+        3
+      ],
+      "facing": 2
+    }
+  ],
+  "battlefield": "river_crossing",
+  "reward_rune": "",
+  "world_flag_on_victory": "act1_hask_defeated",
+  "victory_text": "Hask's axe is knocked into the mud. The roadwolves scatter, and the convoy crosses under guard. The manifest is recovered.",
+  "defeat_text": "The convoy line breaks. The company is driven back, but the road remains open for another attempt.",
+  "return_scene": "res://ActOneQuestChallenge.tscn"
+}
