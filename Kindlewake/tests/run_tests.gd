@@ -293,7 +293,7 @@ func _test_empire_development() -> void:
 
 
     var deployment_flags := {"holding_claimed_keep":true,"holding_owner_keep":"house_dunmarrow","holding_recruits_keep":{"levy":2,"archer":1,"knight":1}}
-    var battle_definition := {"terrain":Array(["....................","....................","....................","....................","....................","....................","....................","....................","....................","....................","....................","....................","....................","...................."]),"units":[{"character_id":"torren","team":"player","cell":[8,10]},{"character_id":"bram","team":"player","cell":[7,9]}]}
+    var battle_definition := {"terrain":["....................","....................","....................","....................","....................","....................","....................","....................","....................","....................","....................","....................","....................","...................."],"units":[{"character_id":"torren","team":"player","cell":[8,10]},{"character_id":"bram","team":"player","cell":[7,9]}]}
     var deployed_battle := EmpireDevelopmentSystem.deploy_recruits_to_battle("keep", battle_definition, deployment_flags)
     var deployed_units: Array = deployed_battle.get("units", [])
     check(deployed_units.size() == 6 and deployment_flags.get("holding_recruits_keep", {}).is_empty(), "up to four recruited reserves deploy into tactical battles and are deducted from holding reserves")
