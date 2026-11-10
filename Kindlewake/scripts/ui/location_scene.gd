@@ -68,6 +68,12 @@ func cell_of(pos: Vector2) -> Vector2i:
 func _load_map(id: String, spawn: Vector2i) -> void:
     current_map_id = id
     lmap = maps[id]
+    # Reapply discovered secret passages when a map is revisited.
+    for secret_spot in lmap.spots:
+        if str(secret_spot.get("kind", "")) == "secret":
+            var secret_flag := str(secret_spot.get("world_flag_on_reveal", ""))
+            if secret_flag != "" and bool(GameState.world_flags.get(secret_flag, false)):
+                lmap.set_tile(lmap.spot_cell(secret_spot), ".")
     var sp: Vector2i = spawn if spawn.x >= 0 else lmap.entry
     player_pos = cell_center(sp)
     last_cell = sp
