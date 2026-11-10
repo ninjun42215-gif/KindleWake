@@ -282,6 +282,18 @@ func _test_act_two_broken_seals() -> void:
     flags = result.get("world_flags", {}) as Dictionary
     check(bool(flags.get("chapter_2_complete", false)) and bool(flags.get("act2_political_debt_orrowen", false)), "Act II completion and political debt persist")
     check(not bool(ActTwoQuestSystem.apply_escort(flags, "grant_sanctuary").get("ok", true)), "escort resolution is immutable after chronicle entry")
+    var alternate: Dictionary = {"chapter_1_complete":true}
+    result = ActTwoQuestSystem.apply_boundary(alternate, "temporary_survey")
+    alternate = result.get("world_flags", {}) as Dictionary
+    check(bool(alternate.get("orrowen_temporary_survey", false)), "temporary survey alternative is preserved")
+    result = ActTwoQuestSystem.apply_hearing(alternate, "publish_verified_record")
+    alternate = result.get("world_flags", {}) as Dictionary
+    check(bool(alternate.get("act2_record_published", false)) and not bool(alternate.get("act2_witness_protected", true)), "publication alternative is distinct from witness protection")
+    alternate["act2_escort_captain_defeated"] = true
+    result = ActTwoQuestSystem.apply_escort(alternate, "grant_sanctuary")
+    alternate = result.get("world_flags", {}) as Dictionary
+    check(bool(alternate.get("act2_refugees_sheltered", false)) and not bool(alternate.get("act2_political_debt_orrowen", true)), "sanctuary alternative does not create the negotiated political debt")
+    check(not bool(ActTwoQuestSystem.apply_escort(alternate, "invalid").get("ok", true)), "unknown Act II decisions are rejected")
     var expected := ["boundary_tree", "orrowen_hearing", "changed_escort"]
     for quest_id in expected:
         check(ActTwoQuestChallenge.CHALLENGES.has(quest_id), "playable Act II challenge exists: " + quest_id)
@@ -291,6 +303,7 @@ func _test_act_two_broken_seals() -> void:
     check(not escort.is_empty(), "Act II escort battle is registered in GameData")
     check(str(escort.get("world_flag_on_victory", "")) == "act2_escort_captain_defeated", "escort tactical victory sets its campaign gate")
     check(str(escort.get("return_scene", "")) == "res://ActTwoQuestChallenge.tscn", "escort battle returns to the Act II challenge")
+    check((escort.get("terrain", []) as Array).size() == 14 and str((escort.get("terrain", []) as Array)[0]).length() == 20, "escort battlefield is a valid 20x14 grid")
     var has_commander := false
     for spawn in escort.get("units", []):
         if str((spawn as Dictionary).get("character_id", "")) == "checkpoint_sergeant":
