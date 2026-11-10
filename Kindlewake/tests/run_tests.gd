@@ -932,6 +932,9 @@ func _test_thalassar_region() -> void:
     check(places_ok and coast.connected(coast.start_cell, coast.place_cell("tideglass_grotto")), "the harbour, settlements, ruins and Tideglass Grotto are reachable")
     var tideglass_battle: Dictionary = gd.battle_def("battle_tideglass")
     check(not tideglass_battle.is_empty(), "Tideglass Grotto resolves to its own tactical battle")
+    var wreck_battle: Dictionary = gd.battle_def("battle_northstar_wreck")
+    check(not wreck_battle.is_empty() and str(wreck_battle.get("world_flag_on_victory", "")) == "northstar_wreck_cleared", "Northstar Wreck resolves to its own boss battle and clear flag")
+    check(gd.characters.has("blackwake_captain"), "the Northstar Wreck captain has an authored human enemy definition")
     var battle_roster_ok := true
     for spawn in tideglass_battle.get("units", []):
         var cid: String = str((spawn as Dictionary).get("character_id", ""))
@@ -949,8 +952,10 @@ func _test_thalassar_region() -> void:
     var unlocked: Dictionary = RecruitmentSystem.inspect(recruit_party, "maren_vey", maren, flags)
     check(bool(unlocked.get("available", false)), "recovering the Tideglass ledger unlocks Maren's recruitment")
     var maps: Dictionary = LocalMap.load_all(gd.locations)
-    var coast_maps_ok := maps.has("brinegate") and maps.has("saltmere") and maps.has("lantern_quay") and maps.has("dungeon_tideglass")
-    check(coast_maps_ok, "Brinegate, Saltmere, Lantern Quay and Tideglass have playable location maps")
+    var coast_maps_ok := maps.has("brinegate") and maps.has("saltmere") and maps.has("lantern_quay") and maps.has("dungeon_tideglass") and maps.has("dungeon_northstar_wreck")
+    check(coast_maps_ok, "Brinegate, Saltmere, Lantern Quay, Tideglass and Northstar Wreck have playable location maps")
+    if maps.has("dungeon_northstar_wreck"):
+        check((maps["dungeon_northstar_wreck"] as LocalMap).kind == "dungeon", "Northstar Wreck is an explorable dungeon with a boss encounter")
     if maps.has("dungeon_tideglass"):
         check((maps["dungeon_tideglass"] as LocalMap).kind == "dungeon", "Tideglass is an explorable dungeon, not a static story panel")
 
@@ -1026,8 +1031,12 @@ func _test_maren_companion_quest() -> void:
     var final_note: Dictionary = MarenQuestSystem.submit_signal(flags, "rising")
     check(bool(final_note.get("complete", false)), "the low-high-rising signal puzzle restores the Northstar sounding")
     flags = final_note.get("world_flags", {})
+    var early_resolution: Dictionary = MarenQuestSystem.resolve_quest(flags, "return_log")
+    check(not bool(early_resolution.get("ok", true)), "the quest cannot resolve before the Northstar Wreck is cleared and its logbook recovered")
+    flags[MarenQuestSystem.WRECK_CLEARED_FLAG] = true
+    flags[MarenQuestSystem.LOG_FOUND_FLAG] = true
     var resolved: Dictionary = MarenQuestSystem.resolve_quest(flags, "return_log")
-    check(bool(resolved.get("ok", false)), "Maren's recovered log can be resolved after the signal puzzle")
+    check(bool(resolved.get("ok", false)), "Maren's recovered log can be resolved after the wreck is cleared")
     var duplicate: Dictionary = MarenQuestSystem.resolve_quest(resolved.get("world_flags", {}), "publish_log")
     check(not bool(duplicate.get("ok", true)), "the companion quest resolution is one-time")
     check(not bool(MarenQuestSystem.resolve_quest(flags, "unknown").get("ok", true)), "unknown companion quest outcomes are rejected")
