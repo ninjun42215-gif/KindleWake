@@ -178,3 +178,5 @@ Working branch: `feature/empire-management-system`.
 - Added GameState.complete_story_milestone("crown_authority_granted") as the explicit narrative unlock contract. The sea-charter milestone is deliberately not used as a substitute for the story event that grants governing authority; the approved scene still needs to invoke this contract.
 - Added regression coverage for trade, forecast immutability, council traits, rebellion relief, faction AI diplomacy, siege artillery and engineer effects. Tests remain unexecuted because Godot is unavailable in the current environment.
 - Do not merge until branch reconciliation and exact-head Godot/Android validation are complete. The hereditary family system remains post-campaign only.
+
+- Strategic battle instances now receive unique persisted IDs; resolved battle IDs are retained in campaign state and duplicate result submissions are rejected, preventing repeated casualties/war-exhaustion awards after reloads.
