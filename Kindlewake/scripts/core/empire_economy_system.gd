@@ -74,9 +74,9 @@ static func advance_turn(definitions: Array, world_flags: Dictionary, treasury: 
         var delta := 0
         if garrison >= int(definition.get("recommended_garrison", 2)):
             delta += 3
-        delta += fortification
         elif garrison == 0:
             delta -= 4
+        delta += fortification
         if status == "provisional":
             delta -= 1
         if governance == "local_compact":
