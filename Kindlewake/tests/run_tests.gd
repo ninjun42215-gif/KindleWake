@@ -115,13 +115,21 @@ func _test_companion_quests() -> void:
     var catalog := {"quests": gd.companion_quests}
     check(gd.companion_quests.size() == 21, "all 21 recruitable companion quest definitions load")
     var ids_ok := true
+    var recruited_ids: Array[String] = []
+    for character_id in gd.characters.keys():
+        var character: Dictionary = gd.characters[character_id]
+        if typeof(character.get("recruit", null)) == TYPE_DICTIONARY:
+            recruited_ids.append(str(character_id))
+    var covered_ids: Array[String] = []
     for quest_id in gd.companion_quests.keys():
         var definition: Dictionary = gd.companion_quests[quest_id]
         var companion_id := str(definition.get("companion_id", ""))
-        if not gd.characters.has(companion_id) or not gd.characters[companion_id].has("recruit"):
+        if not gd.characters.has(companion_id) or typeof(gd.characters[companion_id].get("recruit", null)) != TYPE_DICTIONARY:
             ids_ok = false
+        covered_ids.append(companion_id)
         if (definition.get("milestones", []) as Array).size() < 3 or (definition.get("outcomes", []) as Array).size() < 2:
             ids_ok = false
+    check(ids_ok and recruited_ids.size() == covered_ids.size() and recruited_ids.all(func(id): return covered_ids.has(id)), "every currently recruitable character has exactly one quest definition")
     check(ids_ok, "every quest resolves to a recruitable character and has milestones and outcomes")
     var state: Dictionary = {}
     var quest_id := "q_companion_brisa_hearth_of_names"
@@ -1541,6 +1549,11 @@ func _test_campaign_restore_validation() -> void:
         "world_positions": {},
     }
     check(RegionSaveState.is_valid_campaign_payload(payload), "a structurally valid new campaign can be restored")
+    var legacy_without_quests: Dictionary = payload.duplicate(true)
+    check(RegionSaveState.is_valid_campaign_payload(legacy_without_quests), "legacy campaign saves without companion quest data remain valid")
+    var malformed_companion_quests: Dictionary = payload.duplicate(true)
+    malformed_companion_quests["companion_quests"] = []
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_companion_quests), "campaign restore rejects malformed companion quest state")
     var missing_party: Dictionary = payload.duplicate(true)
     missing_party.erase("party")
     check(not RegionSaveState.is_valid_campaign_payload(missing_party), "campaign restore rejects a missing party")
