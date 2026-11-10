@@ -230,6 +230,15 @@ func capture_holding_after_siege(target_holding_id: String, source_holding_id: S
     if bool(world_flags.get("holding_claimed_" + target_holding_id, false)) and str(world_flags.get("holding_owner_" + target_holding_id, "")) == "house_dunmarrow":
         return false
     var old_owner := str(world_flags.get("holding_owner_" + target_holding_id, target.get("owner", "unknown")))
+    var displaced_faction := ""
+    for faction in GameData.factions.get("factions", []):
+        var faction_name := str(faction.get("name", "")).to_lower()
+        var owner_name := old_owner.to_lower()
+        if faction_name != "" and (faction_name.contains(owner_name) or owner_name.contains(faction_name) or (faction_name.contains("orrowen") and owner_name.contains("orrowen")) or (faction_name.contains("vessmoor") and owner_name.contains("vessmoor"))):
+            displaced_faction = str(faction.get("id", ""))
+            break
+    if displaced_faction != "" and displaced_faction != "house_dunmarrow":
+        FactionSystem.adjust_relation(faction_state, "house_dunmarrow", displaced_faction, -12, "holding_captured_by_siege")
     world_flags["holding_claimed_" + target_holding_id] = true
     world_flags["holding_owner_" + target_holding_id] = "house_dunmarrow"
     world_flags["holding_status_" + target_holding_id] = "provisional"
