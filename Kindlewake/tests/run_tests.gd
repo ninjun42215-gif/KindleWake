@@ -46,6 +46,7 @@ func _initialize() -> void:
     _test_act_one_tactical_bosses()
     _test_boss_phase_transitions()
     _test_act_two_broken_seals()
+    _test_act_three_river_campaign()
     _test_escape_mission()
     _test_escape_ui_layout()
     _test_sigils()
@@ -315,6 +316,51 @@ func _test_act_two_broken_seals() -> void:
     check(location_maps["thornmere"].spots.any(func(s): return str(s.get("story_id", "")) == "boundary_tree"), "Boundary Tree is placed in Thornmere")
     check(location_maps["elderbough"].spots.any(func(s): return str(s.get("story_id", "")) == "orrowen_hearing"), "Orrowen hearing is placed in Elderbough")
     check(location_maps["crossing"].spots.any(func(s): return str(s.get("story_id", "")) == "changed_escort"), "Changed Escort is placed at Sallow Crossing")
+
+func _test_act_three_river_campaign() -> void:
+    print("[Act III: River Campaign]")
+    var flags: Dictionary = {}
+    check(not bool(ActThreeQuestSystem.inspect("three_bridges", flags).get("available", false)), "Act III remains locked before Act II completion")
+    flags["chapter_2_complete"] = true
+    check(bool(ActThreeQuestSystem.inspect("three_bridges", flags).get("available", false)), "Three Bridges opens after Act II")
+    check(not bool(ActThreeQuestSystem.apply_bridges(flags).get("ok", true)), "river operation requires tactical victory")
+    flags["act3_three_bridges_victory"] = true
+    var result: Dictionary = ActThreeQuestSystem.apply_bridges(flags)
+    check(bool(result.get("ok", false)), "river operation records after battle")
+    flags = result.world_flags
+    check(bool(flags.get("act3_ford_secured", false)) and bool(flags.get("act3_evacuation_bridge_held", false)), "ford and evacuation bridge outcomes persist")
+    check(bool(ActThreeQuestSystem.inspect("banner_reeds", flags).get("available", false)), "Banner in the Reeds follows the bridge operation")
+    result = ActThreeQuestSystem.apply_banner(flags, "protect_deserters")
+    check(bool(result.get("ok", false)), "deserter protection is a valid outcome")
+    flags = result.world_flags
+    check(bool(flags.get("act3_civilians_sheltered", false)) and bool(flags.get("act3_deserter_testimony", false)), "shelter and testimony consequences persist")
+    check(bool(ActThreeQuestSystem.inspect("price_crossing", flags).get("available", false)), "Price of a Crossing follows the reed-bank decision")
+    result = ActThreeQuestSystem.apply_crossing(flags, "prioritise_wounded")
+    check(bool(result.get("ok", false)), "wounded-first allocation is valid")
+    flags = result.world_flags
+    check(bool(flags.get("chapter_3_complete", false)) and bool(flags.get("act3_wounded_evacuated", false)), "Act III completion and evacuation choice persist")
+    check(not bool(ActThreeQuestSystem.apply_crossing(flags, "protect_stores").get("ok", true)), "crossing allocation cannot be overwritten")
+    var alt: Dictionary = {"chapter_2_complete":true,"act3_three_bridges_victory":true}
+    result = ActThreeQuestSystem.apply_bridges(alt)
+    alt = result.world_flags
+    result = ActThreeQuestSystem.apply_banner(alt, "use_as_leverage")
+    alt = result.world_flags
+    result = ActThreeQuestSystem.apply_crossing(alt, "protect_stores")
+    check(bool(result.get("world_flags", {}).get("act3_stores_protected", false)), "stores-first alternative is preserved")
+    var battle: Dictionary = gd.battle_def("act3_three_bridges")
+    check(not battle.is_empty(), "Three Bridges battle is registered")
+    check(str(battle.get("world_flag_on_victory", "")) == "act3_three_bridges_victory", "Three Bridges victory flag is correct")
+    check(gd.characters.has("river_marshal"), "River Marshal character exists")
+    check(bool(ActThreeQuestSystem.inspect("banner_reeds", {"chapter_2_complete":true}).get("available", false)) == false, "Banner in the Reeds cannot skip the bridge operation")
+    var map_spots := true
+    for pair in [["thornmere","three_bridges"],["elderbough","banner_reeds"],["crossing","price_crossing"]]:
+        var found := false
+        for spot in gd.locations.maps[str(pair[0])].get("spots", []):
+            if str(spot.get("story_id","")) == str(pair[1]):
+                found = true
+        map_spots = map_spots and found
+    check(map_spots, "all three Act III story spots are present in local maps")
+
 
 func _test_escape_mission() -> void:
     print("[escape mission]")
