@@ -50,6 +50,7 @@ var manual_save_btn: Button
 var global_atlas_btn: Button
 var empire_btn: Button
 var boss_btn: Button
+var top_actions_box: VBoxContainer
 var empire_screen: EmpireScreenScript
 var prompt_btn: Button
 var place_panel: PanelContainer
@@ -746,18 +747,23 @@ func _apply_safe_area() -> void:
         info_label.add_theme_font_size_override("font_size", 15 if compact else 19)
     if leader_status_label != null:
         leader_status_label.add_theme_font_size_override("font_size", 12 if compact else 14)
+    if top_actions_box != null:
+        top_actions_box.custom_minimum_size = Vector2(clampf(vw * 0.36, 128.0, 190.0), 0.0)
     if company_btn != null:
-        company_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 56.0 if compact else 64.0)
-        company_btn.add_theme_font_size_override("font_size", 16 if compact else 20)
+        company_btn.custom_minimum_size = Vector2(0.0, 50.0 if compact else 56.0)
+        company_btn.add_theme_font_size_override("font_size", 13 if compact else 16)
     if manual_save_btn != null:
-        manual_save_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0 if compact else 52.0)
-        manual_save_btn.add_theme_font_size_override("font_size", 15 if compact else 18)
+        manual_save_btn.custom_minimum_size = Vector2(0.0, 42.0 if compact else 48.0)
+        manual_save_btn.add_theme_font_size_override("font_size", 13 if compact else 16)
     if global_atlas_btn != null:
-        global_atlas_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0)
-        global_atlas_btn.add_theme_font_size_override("font_size", 14 if compact else 17)
+        global_atlas_btn.custom_minimum_size = Vector2(0.0, 42.0 if compact else 48.0)
+        global_atlas_btn.add_theme_font_size_override("font_size", 12 if compact else 15)
     if empire_btn != null:
-        empire_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0)
-        empire_btn.add_theme_font_size_override("font_size", 14 if compact else 17)
+        empire_btn.custom_minimum_size = Vector2(0.0, 42.0 if compact else 48.0)
+        empire_btn.add_theme_font_size_override("font_size", 12 if compact else 15)
+    if boss_btn != null:
+        boss_btn.custom_minimum_size = Vector2(0.0, 42.0 if compact else 48.0)
+        boss_btn.add_theme_font_size_override("font_size", 12 if compact else 15)
     if prompt_btn != null:
         prompt_btn.custom_minimum_size = Vector2(clampf(vw * 0.42, 230.0, 380.0), 64.0 if compact else 68.0)
         prompt_btn.add_theme_font_size_override("font_size", 20 if compact else 28)
@@ -805,32 +811,23 @@ func _build_ui() -> void:
     root.add_child(info_panel)
     info_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT, Control.PRESET_MODE_MINSIZE, 12)
 
-    # Top-right: company management is always one tap away on the road.
-    company_btn = _btn("COMPANY", _open_party, 20)
-    company_btn.custom_minimum_size = Vector2(190, 64)
-    root.add_child(company_btn)
-    company_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
-    company_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-    manual_save_btn = _btn("SAVE", _save_campaign_manual, 18)
-    manual_save_btn.custom_minimum_size = Vector2(190, 52)
-    root.add_child(manual_save_btn)
-    manual_save_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 84)
-    manual_save_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-    global_atlas_btn = _btn("WORLD ATLAS", _open_world_atlas, 17)
-    global_atlas_btn.custom_minimum_size = Vector2(190, 48)
-    root.add_child(global_atlas_btn)
-    global_atlas_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 144)
-    global_atlas_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-    empire_btn = _btn("REALM", _open_empire, 17)
-    empire_btn.custom_minimum_size = Vector2(190, 48)
-    root.add_child(empire_btn)
-    empire_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 204)
-    empire_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-    boss_btn = _btn("REGIONAL GUARDIAN", _challenge_regional_boss, 17)
-    boss_btn.custom_minimum_size = Vector2(190, 48)
-    root.add_child(boss_btn)
-    boss_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 264)
-    boss_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    # Top-right actions use one vertical stack so controls never overlap on phones.
+    top_actions_box = VBoxContainer.new()
+    top_actions_box.add_theme_constant_override("separation", 4)
+    root.add_child(top_actions_box)
+    top_actions_box.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
+    top_actions_box.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    top_actions_box.custom_minimum_size = Vector2(150, 0)
+    company_btn = _btn("COMPANY", _open_party, 16)
+    top_actions_box.add_child(company_btn)
+    manual_save_btn = _btn("SAVE", _save_campaign_manual, 16)
+    top_actions_box.add_child(manual_save_btn)
+    global_atlas_btn = _btn("WORLD ATLAS", _open_world_atlas, 15)
+    top_actions_box.add_child(global_atlas_btn)
+    empire_btn = _btn("REALM", _open_empire, 15)
+    top_actions_box.add_child(empire_btn)
+    boss_btn = _btn("BOSSES", _challenge_regional_boss, 15)
+    top_actions_box.add_child(boss_btn)
 
     # Top-centre: ambush banner
     banner = _hud_panel(0.95)
