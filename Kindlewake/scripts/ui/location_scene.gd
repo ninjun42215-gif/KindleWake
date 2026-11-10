@@ -2,6 +2,7 @@ extends Node2D
 
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
+const OpeningActOneQuestSystem = preload("res://scripts/core/opening_act_one_quest_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
@@ -253,6 +254,8 @@ func _on_prompt_pressed() -> void:
         else:
             spot_buttons.add_child(_btn("Present the ledger publicly", _resolve_brinegate_choice.bind("public")))
             spot_buttons.add_child(_btn("Keep the Codicil seal private", _resolve_brinegate_choice.bind("private")))
+    elif spot_kind == "story":
+        _render_opening_story(near_spot)
     elif spot_kind == "recruit":
         var cid: String = str(near_spot.get("character_id", ""))
         var definition: Dictionary = GameData.characters.get(cid, {})
@@ -279,6 +282,38 @@ func _on_prompt_pressed() -> void:
             spot_text.text += "\n\nThe guardian has been defeated."
     spot_buttons.add_child(_btn("Close", _close_panel))
     spot_panel.visible = true
+
+
+func _render_opening_story(spot: Dictionary) -> void:
+    var story_id: String = str(spot.get("story_id", ""))
+    var view: Dictionary = OpeningActOneQuestSystem.inspect(story_id, GameState.world_flags)
+    spot_title.text = str(view.get("title", spot.get("name", "Story")))
+    spot_text.text = str(view.get("body", ""))
+    for child in spot_buttons.get_children():
+        spot_buttons.remove_child(child)
+        child.queue_free()
+    for action in view.get("actions", []):
+        var entry: Dictionary = action
+        spot_buttons.add_child(_btn(str(entry.get("label", "Continue")), _resolve_opening_story_action.bind(story_id, str(entry.get("id", "")))))
+
+
+func _resolve_opening_story_action(story_id: String, action_id: String) -> void:
+    var outcome: Dictionary = OpeningActOneQuestSystem.resolve(story_id, action_id, GameState.world_flags)
+    if not bool(outcome.get("ok", false)):
+        spot_text.text += "\\n\\n" + str(outcome.get("reason", "That action is unavailable."))
+        return
+    GameState.world_flags = (outcome.get("world_flags", GameState.world_flags) as Dictionary).duplicate(true)
+    GameState.save_campaign("auto_a")
+    var result_text: String = str(outcome.get("text", ""))
+    var view: Dictionary = OpeningActOneQuestSystem.inspect(story_id, GameState.world_flags)
+    spot_text.text = result_text + "\\n\\n" + str(view.get("body", ""))
+    for child in spot_buttons.get_children():
+        spot_buttons.remove_child(child)
+        child.queue_free()
+    for action in view.get("actions", []):
+        var entry: Dictionary = action
+        spot_buttons.add_child(_btn(str(entry.get("label", "Continue")), _resolve_opening_story_action.bind(story_id, str(entry.get("id", "")))))
+    spot_buttons.add_child(_btn("Close", _close_panel))
 
 
 func _resolve_brinegate_choice(choice: String) -> void:
