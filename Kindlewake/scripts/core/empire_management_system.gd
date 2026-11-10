@@ -612,6 +612,10 @@ static func build_tactical_battle(state: Dictionary, army_id: String, base_battl
 	if siege_assault:
 		units.append({"character_id": "strategic_siege_engine", "team": "player", "cell": [6, 13], "facing": 0, "name": "Battering Ram"})
 	battle["id"] = "field_army_%s_%s" % [army_id, region_id]
+	battle.erase("reward_rune")
+	battle.erase("reward_item")
+	battle.erase("world_flag_on_victory")
+	battle.erase("world_flag_on_defeat")
 	battle["title"] = "Battle for %s" % region_id.replace("_", " ").capitalize()
 	battle["briefing"] = ("The besieging army advances behind a battering ram. Break the garrison and take the breached walls." if siege_assault else "Your field army engages the regional garrison. Keep the company and levy cohorts alive; every cohort lost weakens the standing army.")
 	battle["units"] = units
