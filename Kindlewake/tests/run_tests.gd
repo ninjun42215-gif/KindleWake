@@ -1759,6 +1759,18 @@ func _test_campaign_restore_validation() -> void:
     var malformed_inventory: Dictionary = payload.duplicate(true)
     malformed_inventory["party"]["inventory"] = []
     check(not RegionSaveState.is_valid_campaign_payload(malformed_inventory), "campaign restore rejects invalid inventory structures")
+    var malformed_personality: Dictionary = payload.duplicate(true)
+    malformed_personality["party"]["sheets"]["torren"]["personality"] = "not-a-dictionary"
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_personality), "campaign restore rejects malformed character personality data")
+    var malformed_traits: Dictionary = payload.duplicate(true)
+    malformed_traits["party"]["sheets"]["torren"]["traits"] = {}
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_traits), "campaign restore rejects malformed character trait history")
+    var malformed_sigils: Dictionary = payload.duplicate(true)
+    malformed_sigils["party"]["sheets"]["torren"]["sigils"] = {"weapon": "not-an-array"}
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_sigils), "campaign restore rejects malformed equipment sigil arrays")
+    var malformed_behavior: Dictionary = payload.duplicate(true)
+    malformed_behavior["party"]["sheets"]["torren"]["personality"] = {"memories": [], "behavior": [], "ambition": {}}
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_behavior), "campaign restore rejects malformed personality behavior data")
 
 func _test_save_system() -> void:
     print("[save system]")
