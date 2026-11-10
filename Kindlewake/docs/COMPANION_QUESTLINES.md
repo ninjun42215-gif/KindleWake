@@ -17,3 +17,8 @@ The quest uses stable relationship evidence IDs, writes distinct character memor
 ## Expansion pattern
 
 Each recruitable companion quest should have a clear unlock condition, a distinct gameplay mechanic or authored cinematic/boss encounter, a meaningful choice, relationship and personality consequences, and a one-time completion record. Quest state should use world flags or an existing campaign subsystem rather than new save-schema fields.
+
+
+### Northstar Wreck dungeon extension
+
+After restoring the Lantern Quay signal, the company can chart and enter the Northstar Wreck. The wreck is a separate explorable dungeon with a captain's logbook cache and a Blackwake salvage-captain boss encounter. Maren's quest cannot resolve until the party defeats the captain and recovers the logbook. This keeps the signal puzzle, dungeon clear and log recovery as distinct campaign milestones.
