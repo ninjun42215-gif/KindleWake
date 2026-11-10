@@ -25,7 +25,7 @@ static func new_state() -> Dictionary:
 	return {
 		"version": 1, "unlocked": false, "realm_name": "The Crownlands",
 		"treasury": 500, "food": 300, "manpower": 100, "stability": 60,
-		"legitimacy": 45, "public_order": 60, "tax_rate": "normal",
+		"legitimacy": 45, "public_order": 60, "tax_rate": "normal", "tariff_rate": "standard",
 		"policies": [], "council": {}, "governors": {}, "provinces": {},
 		"buildings": {}, "armies": {}, "field_armies": {}, "sieges": {}, "trade_routes": {}, "rebellion_risk": 0, "rebellion_alerts": [], "war_exhaustion": 0, "next_army_id": 1, "next_battle_id": 1, "resolved_battle_ids": [], "turn": 0, "history": []
 	}
@@ -50,6 +50,9 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
 	if typeof(raw.get("rebellion_alerts", [])) == TYPE_ARRAY:
 		state["rebellion_alerts"] = (raw["rebellion_alerts"] as Array).duplicate(true)
 	state["tax_rate"] = str(raw.get("tax_rate", "normal"))
+	state["tariff_rate"] = str(raw.get("tariff_rate", "standard"))
+	if not ["low", "standard", "high"].has(state["tariff_rate"]):
+		state["tariff_rate"] = "standard"
 	if not TAX_RATES.has(state["tax_rate"]):
 		state["tax_rate"] = "normal"
 	for key in ["policies", "council", "governors", "provinces", "buildings", "armies", "field_armies", "sieges", "trade_routes"]:
@@ -78,6 +81,28 @@ static func set_tax_rate(state: Dictionary, rate: String) -> bool:
 	state["tax_rate"] = rate
 	_record(state, "tax_policy", {"rate": rate})
 	return true
+
+
+static func set_tariff_rate(state: Dictionary, rate: String) -> bool:
+	if not bool(state.get("unlocked", false)) or not ["low", "standard", "high"].has(rate):
+		return false
+	state["tariff_rate"] = rate
+	_record(state, "tariff_policy", {"rate": rate})
+	return true
+
+
+static func regional_resource_effects(province_ids: Array, warfare_data: Dictionary) -> Dictionary:
+	var effects := {"income": 0, "food": 0, "manpower": 0, "stability": 0, "public_order": 0, "resources": []}
+	var resource_table: Dictionary = warfare_data.get("regional_resources", {})
+	for province_variant in province_ids:
+		var province_id := str(province_variant)
+		if not resource_table.has(province_id):
+			continue
+		var resource: Dictionary = resource_table[province_id]
+		for key in ["income", "food", "manpower", "stability", "public_order"]:
+			effects[key] += int(resource.get(key, 0))
+		effects["resources"].append({"province": province_id, "id": str(resource.get("id", "")), "name": str(resource.get("name", province_id))})
+	return effects
 
 
 static func toggle_policy(state: Dictionary, policy: String) -> bool:
@@ -304,7 +329,7 @@ static func army_summary(state: Dictionary) -> Dictionary:
 
 
 ## Advance one strategic season. The caller controls when story time advances.
-static func advance_season(state: Dictionary, province_ids: Array, adjacency: Dictionary = {}, character_profiles: Dictionary = {}) -> Dictionary:
+static func advance_season(state: Dictionary, province_ids: Array, adjacency: Dictionary = {}, character_profiles: Dictionary = {}, warfare_data: Dictionary = {}) -> Dictionary:
 	if not bool(state.get("unlocked", false)):
 		return {"ok": false, "reason": "realm_locked"}
 	var tax_rate := str(state.get("tax_rate", "normal"))
@@ -321,6 +346,13 @@ static func advance_season(state: Dictionary, province_ids: Array, adjacency: Di
 		else:
 			trade_income += int(route.get("income", 20))
 	state["trade_routes"] = trade_routes
+	var tariff_base := 0
+	for route in trade_routes.values():
+		tariff_base += int(route.get("turnover", 100))
+	var tariff_percent := {"low": 5, "standard": 10, "high": 20}.get(str(state.get("tariff_rate", "standard")), 10)
+	var tariff_income := int(round(float(tariff_base) * float(tariff_percent) / 100.0))
+	var resource_effects: Dictionary = regional_resource_effects(province_ids, warfare_data)
+	income += tariff_income + int(resource_effects.get("income", 0))
 	var upkeep := 0
 	var defence := 0
 	for province_id in province_ids:
@@ -335,6 +367,7 @@ static func advance_season(state: Dictionary, province_ids: Array, adjacency: Di
 		food_gain += int(def.get("food", 0))
 		defence += int(def.get("defence", 0))
 	food_gain += 5 if state["policies"].has("development") else 0
+	food_gain += int(resource_effects.get("food", 0))
 	income = int(round(float(income) * tax_multiplier))
 	var council: Dictionary = council_effects(state, character_profiles)
 	income += trade_income + int(council.get("income", 0))
@@ -381,9 +414,9 @@ static func advance_season(state: Dictionary, province_ids: Array, adjacency: Di
 		_record(state, "army_lost", {"army": destroyed_id, "cause": "prolonged_supply_isolation"})
 	state["field_armies"] = deployed
 	if state["policies"].has("conscription"):
-		state["manpower"] = mini(999999, int(state["manpower"]) + 12)
+		state["manpower"] = mini(999999, int(state["manpower"]) + 12 + int(resource_effects.get("manpower", 0)))
 	else:
-		state["manpower"] = mini(999999, int(state["manpower"]) + 4)
+		state["manpower"] = mini(999999, int(state["manpower"]) + 4 + int(resource_effects.get("manpower", 0)))
 	if state["policies"].has("mercantile"):
 		income += 15
 	state["treasury"] = maxi(0, int(state["treasury"]) + income - upkeep)
@@ -401,8 +434,13 @@ static func advance_season(state: Dictionary, province_ids: Array, adjacency: Di
 		state["public_order"] = mini(100, int(state["public_order"]) + 2)
 	if state["policies"].has("tolerance"):
 		state["stability"] = mini(100, int(state["stability"]) + 2)
-	state["stability"] = clampi(int(state["stability"]) + int(council.get("stability", 0)), 0, 100)
-	state["public_order"] = clampi(int(state["public_order"]) + int(council.get("public_order", 0)), 0, 100)
+	state["stability"] = clampi(int(state["stability"]) + int(council.get("stability", 0)) + int(resource_effects.get("stability", 0)), 0, 100)
+	state["public_order"] = clampi(int(state["public_order"]) + int(council.get("public_order", 0)) + int(resource_effects.get("public_order", 0)), 0, 100)
+	if str(state.get("tariff_rate", "standard")) == "high" and tariff_base > 0:
+		state["public_order"] = maxi(0, int(state["public_order"]) - 2)
+		state["legitimacy"] = maxi(0, int(state["legitimacy"]) - 1)
+	elif str(state.get("tariff_rate", "standard")) == "low" and tariff_base > 0:
+		state["public_order"] = mini(100, int(state["public_order"]) + 1)
 	state["war_exhaustion"] = clampi(int(state.get("war_exhaustion", 0)) + int(council.get("war_exhaustion", 0)), 0, 100)
 	if int(state.get("war_exhaustion", 0)) >= 70:
 		state["stability"] = maxi(0, int(state["stability"]) - 2)
@@ -410,7 +448,7 @@ static func advance_season(state: Dictionary, province_ids: Array, adjacency: Di
 	state["turn"] = int(state["turn"]) + 1
 	var siege_report := _advance_sieges(state, province_ids)
 	var unrest_report := rebellion_assessment(state, province_ids)
-	var report := {"ok": true, "season": state["turn"], "sieges_advanced": siege_report["advanced"], "sieges_completed": siege_report["completed"], "war_exhaustion": int(state.get("war_exhaustion", 0)), "income": income, "upkeep": upkeep, "food_change": food_gain - province_ids.size() * 8 - military_food, "defence": defence, "military_upkeep": int(military["upkeep"]), "military_food": military_food, "troops": int(military["troops"]), "supply_losses": supply_losses, "trade_income": trade_income, "rebellion_risk": int(unrest_report.get("risk", 0)), "rebellion_alerts": unrest_report.get("alerts", []), "food_shortage": food_shortage}
+	var report := {"ok": true, "season": state["turn"], "sieges_advanced": siege_report["advanced"], "sieges_completed": siege_report["completed"], "war_exhaustion": int(state.get("war_exhaustion", 0)), "income": income, "upkeep": upkeep, "food_change": food_gain - province_ids.size() * 8 - military_food, "defence": defence, "military_upkeep": int(military["upkeep"]), "military_food": military_food, "troops": int(military["troops"]), "supply_losses": supply_losses, "trade_income": trade_income, "tariff_income": tariff_income, "regional_resources": resource_effects.get("resources", []), "resource_income": int(resource_effects.get("income", 0)), "resource_food": int(resource_effects.get("food", 0)), "resource_manpower": int(resource_effects.get("manpower", 0)), "rebellion_risk": int(unrest_report.get("risk", 0)), "rebellion_alerts": unrest_report.get("alerts", []), "food_shortage": food_shortage}
 	_record(state, "season", report)
 	return report
 
@@ -858,7 +896,7 @@ static func establish_trade_route(state: Dictionary, origin: String, destination
 	if state.get("trade_routes", {}).has(route_id) or int(state.get("treasury", 0)) < 100:
 		return false
 	state["treasury"] = int(state["treasury"]) - 100
-	state["trade_routes"][route_id] = {"origin": origin, "destination": destination, "income": 20}
+	state["trade_routes"][route_id] = {"origin": origin, "destination": destination, "income": 20, "turnover": 100}
 	_record(state, "trade_route_established", {"route": route_id})
 	return true
 
@@ -932,12 +970,12 @@ static func rebellion_assessment(state: Dictionary, controlled: Array) -> Dictio
 	return {"risk": int(state["rebellion_risk"]), "alerts": alerts}
 
 ## Pure forecast: run the exact seasonal rules against a deep copy and return the report without mutating the live campaign.
-static func preview_season(state: Dictionary, province_ids: Array, adjacency: Dictionary = {}, character_profiles: Dictionary = {}) -> Dictionary:
+static func preview_season(state: Dictionary, province_ids: Array, adjacency: Dictionary = {}, character_profiles: Dictionary = {}, warfare_data: Dictionary = {}) -> Dictionary:
 	var projected: Dictionary = state.duplicate(true)
 	var before_treasury := int(projected.get("treasury", 0))
 	var before_food := int(projected.get("food", 0))
 	var before_manpower := int(projected.get("manpower", 0))
-	var report := advance_season(projected, province_ids, adjacency, character_profiles)
+	var report := advance_season(projected, province_ids, adjacency, character_profiles, warfare_data)
 	if not bool(report.get("ok", false)):
 		return report
 	report["treasury_after"] = int(projected.get("treasury", 0))
