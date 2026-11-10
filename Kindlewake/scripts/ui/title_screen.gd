@@ -174,7 +174,7 @@ func _on_creator_confirmed(profile: Dictionary) -> void:
         creator_overlay = null
     GameState.new_game(profile)
     GameState.campaign_slot = "auto_a"
-    get_tree().change_scene_to_file("res://Prologue.tscn")
+    get_tree().change_scene_to_file("res://WrongBell.tscn")
 
 
 func _on_creator_cancelled() -> void:
