@@ -1,0 +1,342 @@
+{
+  "schema_version": 1,
+  "description": "Data-driven companion quest progression definitions. Narrative specifications live in docs/COMPANION_QUEST_EXPANSION.md.",
+  "quests": {
+    "q_companion_lucan_last_flight": {
+      "companion_id": "lucan_thorne",
+      "title": "The Last Flight",
+      "chapter": "II",
+      "required_region": "orrowen",
+      "milestones": [
+        "signal_found",
+        "patrol_traced",
+        "witness_heard"
+      ],
+      "outcomes": [
+        "publish_record",
+        "private_restitution",
+        "protected_archive"
+      ]
+    },
+    "q_companion_brisa_hearth_of_names": {
+      "companion_id": "old_brisa",
+      "title": "A Hearth of Names",
+      "chapter": "I",
+      "required_region": "sethmarch",
+      "milestones": [
+        "ledger_recovered",
+        "families_contacted",
+        "care_network_secured"
+      ],
+      "outcomes": [
+        "keep_infirmary",
+        "village_service",
+        "community_network"
+      ]
+    },
+    "q_companion_kestrel_no_master": {
+      "companion_id": "kestrel",
+      "title": "No Master's Shadow",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "coded_mark_found",
+        "safehouse_investigated",
+        "witness_protected"
+      ],
+      "outcomes": [
+        "destroy_records",
+        "submit_evidence",
+        "kestrel_decides"
+      ]
+    },
+    "q_companion_anselm_line_to_hold": {
+      "companion_id": "anselm_pike",
+      "title": "The Line We Hold",
+      "chapter": "I",
+      "required_region": "sethmarch",
+      "milestones": [
+        "muster_notice_read",
+        "drill_ground_examined",
+        "soldiers_resolved"
+      ],
+      "outcomes": [
+        "testify",
+        "lawful_service",
+        "refuse_unit"
+      ]
+    },
+    "q_companion_petra_bitter_draught": {
+      "companion_id": "petra_quill",
+      "title": "The Bitter Draught",
+      "chapter": "I",
+      "required_region": "sethmarch",
+      "milestones": [
+        "ward_ledger_found",
+        "treatment_verified",
+        "triage_decided"
+      ],
+      "outcomes": [
+        "publish_error",
+        "restorative_agreement",
+        "protect_identity"
+      ]
+    },
+    "q_companion_dorian_unspent_bolt": {
+      "companion_id": "dorian_vask",
+      "title": "The Unspent Bolt",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "convoy_identified",
+        "shot_reconstructed",
+        "quartermaster_confronted"
+      ],
+      "outcomes": [
+        "give_testimony",
+        "make_restitution",
+        "decline_absolution"
+      ]
+    },
+    "q_companion_edda_iron_and_ash": {
+      "companion_id": "edda_stonehand",
+      "title": "Iron and Ash",
+      "chapter": "I",
+      "required_region": "sethmarch",
+      "milestones": [
+        "tools_accounted",
+        "worker_claims_verified",
+        "furnace_bargain_resolved"
+      ],
+      "outcomes": [
+        "shared_workshop",
+        "protected_ownership",
+        "independent_guild"
+      ]
+    },
+    "q_companion_joss_debt_of_silence": {
+      "companion_id": "joss_harrow",
+      "title": "The Debt of Silence",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "purse_recognised",
+        "smuggling_ledger_found",
+        "debtors_rescued"
+      ],
+      "outcomes": [
+        "return_money",
+        "trade_ledger",
+        "expose_network"
+      ]
+    },
+    "q_companion_isaure_two_oaths": {
+      "companion_id": "isaure_vessmoor",
+      "title": "Two Oaths, One Name",
+      "chapter": "II",
+      "required_region": "vessmoor",
+      "milestones": [
+        "summons_received",
+        "household_muster_examined",
+        "mentor_challenge_resolved"
+      ],
+      "outcomes": [
+        "renew_limited_oath",
+        "renounce_command",
+        "service_compact"
+      ]
+    },
+    "q_companion_bram_cullen_broken_chain": {
+      "companion_id": "bram_cullen",
+      "title": "The Broken Chain",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "debt_transfer_found",
+        "contracts_audited",
+        "debtors_freed"
+      ],
+      "outcomes": [
+        "destroy_false_records",
+        "public_tribunal",
+        "negotiate_release"
+      ]
+    },
+    "q_companion_verra_song_without_seal": {
+      "companion_id": "verra_nightsong",
+      "title": "A Song Without a Seal",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "altered_song_heard",
+        "original_verses_verified",
+        "public_performance_resolved"
+      ],
+      "outcomes": [
+        "publish_original",
+        "protect_performers",
+        "write_new_song"
+      ]
+    },
+    "q_companion_tomas_far_marker": {
+      "companion_id": "tomas_wren",
+      "title": "The Far Marker",
+      "chapter": "I",
+      "required_region": "sethmarch",
+      "milestones": [
+        "fen_marker_found",
+        "family_trail_followed",
+        "homecoming_resolved"
+      ],
+      "outcomes": [
+        "return_openly",
+        "relocate_family",
+        "send_aid"
+      ]
+    },
+    "q_companion_orlan_margin_of_truth": {
+      "companion_id": "orlan_pike",
+      "title": "In the Margin",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "misbound_volume_found",
+        "source_provenance_verified",
+        "archive_access_resolved"
+      ],
+      "outcomes": [
+        "publish_source",
+        "independent_custody",
+        "redact_names"
+      ]
+    },
+    "q_companion_odaly_open_door": {
+      "companion_id": "sister_odaly",
+      "title": "The Open Door",
+      "chapter": "II",
+      "required_region": "tarnholt",
+      "milestones": [
+        "sanctuary_bell_answered",
+        "shelter_rules_agreed",
+        "threshold_defended"
+      ],
+      "outcomes": [
+        "conditional_sanctuary",
+        "refuge_network",
+        "order_reform"
+      ]
+    },
+    "q_companion_willem_last_challenge": {
+      "companion_id": "willem_roake",
+      "title": "The Last Challenge",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "challenge_received",
+        "duel_record_verified",
+        "rematch_resolved"
+      ],
+      "outcomes": [
+        "admit_technicality",
+        "make_restitution",
+        "acknowledge_cost"
+      ]
+    },
+    "q_companion_ysolde_names_in_salt": {
+      "companion_id": "ysolde_marrow",
+      "title": "Names in Salt",
+      "chapter": "III",
+      "required_region": "brinegate_coast",
+      "milestones": [
+        "salt_register_found",
+        "family_names_verified",
+        "wharf_hearing_resolved"
+      ],
+      "outcomes": [
+        "publish_names",
+        "sealed_testimony",
+        "family_choice"
+      ]
+    },
+    "q_companion_garrick_spared_enemy": {
+      "companion_id": "garrick_holt",
+      "title": "The Man We Spared",
+      "chapter": "II",
+      "required_region": "sethmarch",
+      "milestones": [
+        "prisoner_request_received",
+        "witnesses_escorted",
+        "commander_captured_or_surrendered"
+      ],
+      "outcomes": [
+        "testify",
+        "acknowledge_harm",
+        "support_trial"
+      ]
+    },
+    "q_companion_corwin_heirless_seal": {
+      "companion_id": "corwin_brennhallow",
+      "title": "The Heirless Seal",
+      "chapter": "IV",
+      "required_region": "sethmarch",
+      "milestones": [
+        "seal_forgery_found",
+        "charter_authority_audited",
+        "retainers_heard"
+      ],
+      "outcomes": [
+        "submit_claim",
+        "renounce_claim",
+        "temporary_custody"
+      ]
+    },
+    "q_companion_seraphine_measure_of_oaths": {
+      "companion_id": "seraphine_tarnholt",
+      "title": "The Measure of Oaths",
+      "chapter": "IV",
+      "required_region": "tarnholt",
+      "milestones": [
+        "unread_oath_found",
+        "order_records_examined",
+        "chapter_house_heard"
+      ],
+      "outcomes": [
+        "revise_oath",
+        "refuse_authority",
+        "demand_oversight"
+      ]
+    },
+    "q_companion_ilyan_silent_tower": {
+      "companion_id": "ilyan_voss",
+      "title": "The Silent Tower",
+      "chapter": "III",
+      "required_region": "sethmarch",
+      "milestones": [
+        "missing_page_found",
+        "rune_experiment_contained",
+        "apprentice_reached"
+      ],
+      "outcomes": [
+        "destroy_research",
+        "shared_oversight",
+        "publish_safe_procedure"
+      ]
+    },
+    "q_companion_maren_tideglass_wake": {
+      "companion_id": "maren_vey",
+      "title": "The Tideglass Wake",
+      "chapter": "III",
+      "required_region": "brinegate_coast",
+      "milestones": [
+        "ledger_page_found",
+        "safe_route_plotted",
+        "wreck_manifest_recovered"
+      ],
+      "outcomes": [
+        "publish_manifest",
+        "protect_crew",
+        "negotiate_reparations"
+      ]
+    }
+  }
+}
