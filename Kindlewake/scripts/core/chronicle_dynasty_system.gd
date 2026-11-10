@@ -109,7 +109,7 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
  for id in people.keys():
   if typeof(people[id]) != TYPE_DICTIONARY:
    people.erase(id)
-   continue
+ for id in people.keys():
   var person: Dictionary = people[id]
   person["id"] = str(id)
   person["age"] = maxi(0,int(person.get("age",0)))
@@ -126,6 +126,12 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
  var saved_domains: Variant = state.get("domains",{})
  state["titles"] = saved_titles.duplicate(true) if typeof(saved_titles) == TYPE_DICTIONARY else {}
  state["domains"] = saved_domains.duplicate(true) if typeof(saved_domains) == TYPE_DICTIONARY else {}
+ for title_id in state["titles"].keys():
+  if typeof(state["titles"][title_id]) != TYPE_DICTIONARY:
+   state["titles"].erase(title_id)
+ for domain_id in state["domains"].keys():
+  if typeof(state["domains"][domain_id]) != TYPE_DICTIONARY:
+   state["domains"].erase(domain_id)
  for title_id in state["titles"].keys():
   var title: Dictionary = state["titles"][title_id]
   if not people.has(str(title.get("holder",""))):
