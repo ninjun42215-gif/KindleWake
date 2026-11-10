@@ -25,7 +25,7 @@ static func new_state() -> Dictionary:
 		"treasury": 500, "food": 300, "manpower": 100, "stability": 60,
 		"legitimacy": 45, "public_order": 60, "tax_rate": "normal",
 		"policies": [], "council": {}, "governors": {}, "provinces": {},
-		"buildings": {}, "armies": {}, "field_armies": {}, "sieges": {}, "war_exhaustion": 0, "next_army_id": 1, "turn": 0, "history": []
+		"buildings": {}, "armies": {}, "field_armies": {}, "sieges": {}, "trade_routes": {}, "rebellion_risk": 0, "rebellion_alerts": [], "war_exhaustion": 0, "next_army_id": 1, "turn": 0, "history": []
 	}
 
 
@@ -40,10 +40,13 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
 		state[stat] = maxi(0, int(state[stat]))
 	for stat in ["stability", "legitimacy", "public_order"]:
 		state[stat] = clampi(int(state[stat]), MIN_STAT, MAX_STAT)
+	state["rebellion_risk"] = clampi(int(raw.get("rebellion_risk", 0)), 0, 100)
+	if typeof(raw.get("rebellion_alerts", [])) == TYPE_ARRAY:
+		state["rebellion_alerts"] = (raw["rebellion_alerts"] as Array).duplicate(true)
 	state["tax_rate"] = str(raw.get("tax_rate", "normal"))
 	if not TAX_RATES.has(state["tax_rate"]):
 		state["tax_rate"] = "normal"
-	for key in ["policies", "council", "governors", "provinces", "buildings", "armies", "field_armies", "sieges"]:
+	for key in ["policies", "council", "governors", "provinces", "buildings", "armies", "field_armies", "sieges", "trade_routes"]:
 		if typeof(raw.get(key, {})) == TYPE_DICTIONARY:
 			state[key] = (raw[key] as Dictionary).duplicate(true)
 	if typeof(raw.get("policies", [])) == TYPE_ARRAY:
