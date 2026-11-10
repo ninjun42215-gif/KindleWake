@@ -21,16 +21,19 @@ static func initialize(raw: Dictionary) -> Dictionary:
  var state := raw.duplicate(true)
  if typeof(state.get("politics",{})) == TYPE_DICTIONARY and not state.get("politics",{}).is_empty():
   return normalize(state)
- var houses := {}
+ var houses := {"player_house":{"id":"player_house","name":str(state.get("house_name","House of the Open Hand")),"leader":"The Householder","motto":"Stewardship before dominion","influence":50,"legitimacy":60,"treasury":50,"food":50,"military":35}}
  for seed in HOUSE_SEEDS:
   houses[seed.id] = seed.duplicate(true)
  var relations := {}
- for i in range(HOUSE_SEEDS.size()):
-  for j in range(i+1,HOUSE_SEEDS.size()):
-   var a := str(HOUSE_SEEDS[i].id)
-   var b := str(HOUSE_SEEDS[j].id)
-   relations[_key(a,b)] = {"score":12 if i == 0 else (-18 if j == 2 else 4),"allied":false,"feud":false,"history":[]}
- state["politics"] = {"version":VERSION,"player_house":str(state.get("house_name","House of the Open Hand")),"houses":houses,"relations":relations,"influence":50,"reputation":50,"year":int(state.get("year",1)),"events":[]}
+ var ids: Array = houses.keys()
+ ids.sort()
+ for i in range(ids.size()):
+  for j in range(i+1,ids.size()):
+   var a := str(ids[i])
+   var b := str(ids[j])
+   var initial_score := 8 if a == "player_house" or b == "player_house" else (-18 if b == "house_dunmar" else 4)
+   relations[_key(a,b)] = {"score":initial_score,"allied":false,"feud":false,"history":[]}
+ state["politics"] = {"version":VERSION,"player_house":"player_house","houses":houses,"relations":relations,"influence":50,"reputation":50,"year":int(state.get("year",1)),"events":[]}
  return normalize(state)
 
 static func normalize(raw: Dictionary) -> Dictionary:
