@@ -221,6 +221,93 @@
       ],
       "town": "tarnholt",
       "text": "A hilltop settlement of House Tarnholt, where the order's chapter house stands beside a public guest hall. Its doors are open to travellers, but its vows are now under scrutiny."
+    },
+    {
+      "id": "sallow_ford_keep",
+      "name": "Sallow Ford Keep",
+      "kind": "stronghold",
+      "cell": [
+        22,
+        38
+      ],
+      "town": "sallow_ford_keep",
+      "owner": "crownlands",
+      "capture_method": "military_occupation",
+      "claim_requires_flag": "camp_cleared",
+      "text": "A squat river-stone fortress commands the Sallow ford. Its lower bailey floods every spring, and the western tower overlooks the old toll road. The castellan's unpaid garrison has survived by taxing every cart that crosses the river. The keep is a strategic prize, but its bridge, granary and flood gates need repair.",
+      "governance": "military_governor",
+      "claim_requirement_text": "The Roadwolf camp must be cleared before a garrison can secure the ford."
+    },
+    {
+      "id": "elderbough_watch",
+      "name": "Elderbough Watch",
+      "kind": "stronghold",
+      "cell": [
+        42,
+        7
+      ],
+      "town": "elderbough_watch",
+      "owner": "house_orrowen",
+      "capture_method": "forest_stewardship_compact",
+      "claim_requires_flag": "dungeon_bell_cleared",
+      "text": "A frontier watchfort has grown around the roots of a fallen elder tree. Its signal bell can be heard across the northern valley. The wardens know every deer path and will resist any commander who burns the surrounding wood.",
+      "governance": "warden_captain",
+      "claim_requirement_text": "Recover the bell shrine testimony before asking the wardens to accept a stewardship compact."
+    },
+    {
+      "id": "redwater_granary",
+      "name": "Redwater Granary",
+      "kind": "stronghold",
+      "cell": [
+        61,
+        34
+      ],
+      "town": "redwater_granary",
+      "owner": "house_vessmoor",
+      "capture_method": "grain_charter",
+      "claim_requires_flag": "dungeon_catacombs_cleared",
+      "text": "Six stone storehouses and a broad millpond make this town the food reserve of Vessmoor. Its ledgers are more closely guarded than its gates. A ruler who requisitions grain without consent may feed an army this month and face an uprising at harvest.",
+      "governance": "freeholder_council",
+      "claim_requirement_text": "Recover the Kingsroad levy evidence before negotiating a grain charter."
+    },
+    {
+      "id": "sunken_tollhouse_dungeon",
+      "name": "The Sunken Tollhouse",
+      "kind": "dungeon",
+      "cell": [
+        19,
+        13
+      ],
+      "town": "dungeon_sunken_tollhouse",
+      "battle": "battle_catacombs",
+      "world_flag_on_victory": "dungeon_sunken_tollhouse_cleared",
+      "text": "The tollhouse sank into the Sallow after an old bridge failed. At low water, its upper chambers emerge from the mud; below them, sluice gates control a flooded vault where the retired toll authority hid its last ledger."
+    },
+    {
+      "id": "wardens_barrow_dungeon",
+      "name": "Warden's Barrow",
+      "kind": "dungeon",
+      "cell": [
+        11,
+        5
+      ],
+      "town": "dungeon_wardens_barrow",
+      "battle": "battle_hollowroot",
+      "world_flag_on_victory": "dungeon_wardens_barrow_cleared",
+      "text": "A long barrow built for wardens who died defending the old boundary trees. Its burial halls preserve conflicting versions of the forest compact. The final chamber tests whether the visitor can distinguish an oath from a later forgery."
+    },
+    {
+      "id": "ashen_granary_dungeon",
+      "name": "The Ashen Granary",
+      "kind": "dungeon",
+      "cell": [
+        56,
+        39
+      ],
+      "town": "dungeon_ashen_granary",
+      "battle": "battle_catacombs",
+      "world_flag_on_victory": "dungeon_ashen_granary_cleared",
+      "text": "A communal granary burned during a disputed levy. The lofts are blackened and the mill wheel is cracked, but a sealed root cellar may still contain seed grain and the order that authorised the fire."
     }
   ],
   "roads": [
@@ -295,11 +382,40 @@
     [
       "cindermead",
       "tarnholt"
+    ],
+    [
+      "crossing",
+      "sallow_ford_keep"
+    ],
+    [
+      "sallow_ford_keep",
+      "redwater"
+    ],
+    [
+      "orrowen_gate",
+      "elderbough_watch"
+    ],
+    [
+      "elderbough_watch",
+      "wardens_barrow_dungeon"
+    ],
+    [
+      "sethorn",
+      "sunken_tollhouse_dungeon"
+    ],
+    [
+      "redwater",
+      "redwater_granary"
+    ],
+    [
+      "redwater_granary",
+      "ashen_granary_dungeon"
     ]
   ],
   "region_notes": {
     "orrowen": "Orrowen Weald: ancient forest roads, ranger settlements and the Bell Under Leaves.",
     "vessmoor": "Vessmoor Plains: open horse country, market towns and the Kingsroad Catacombs.",
+    "sethmarch": "undefined Sallow Ford Keep and the Sunken Tollhouse add a contested crossing, sluice routes and old toll records.",
     "tarnholt": "Tarnholt: a hilltop settlement and chapter house where House Tarnholt's order is being pressed to make its vows transparent and voluntary."
   },
   "wrap_world": true
