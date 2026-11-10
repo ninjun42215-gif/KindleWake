@@ -180,5 +180,33 @@
     },
     "fort_level_armor": 2,
     "fort_level_hp": 2
+  },
+  "fortifications": {
+    "fort_gate": {
+      "name": "Fort Gate",
+      "class_id": "fort_gate",
+      "weapon_id": "hand_axe",
+      "armor_def": 6,
+      "armor_res": 4,
+      "class_def": {
+        "name": "Fort Gate",
+        "move": 0,
+        "jump": 0
+      },
+      "stats": {
+        "hp": 100,
+        "mp": 0,
+        "str": 0,
+        "dex": 0,
+        "int": 0,
+        "vit": 8,
+        "spd": 1,
+        "lck": 0,
+        "acc": 0,
+        "eva": 0,
+        "ldr": 0,
+        "mor": 0
+      }
+    }
   }
 }
