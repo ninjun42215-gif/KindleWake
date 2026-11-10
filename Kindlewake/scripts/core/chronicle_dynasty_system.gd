@@ -123,8 +123,18 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
   person["children"] = _valid_ids(person.get("children",[]),people)
   person["parents"] = _valid_ids(person.get("parents",[]),people)
   person["siblings"] = _valid_ids(person.get("siblings",[]),people)
+  person["domain_ids"] = _valid_ids(person.get("domain_ids",[]),state.get("domains",{}))
+  person["birth_parents"] = _valid_ids(person.get("birth_parents",person.get("parents",[])),people)
   var spouse_id := str(person.get("spouse",""))
   person["spouse"] = spouse_id if people.has(spouse_id) else ""
+  var guardian_id := str(person.get("guardian_id",""))
+  person["guardian_id"] = guardian_id if people.has(guardian_id) else ""
+  var adoptive_parent_id := str(person.get("adoptive_parent_id",""))
+  person["adoptive_parent_id"] = adoptive_parent_id if people.has(adoptive_parent_id) else ""
+  var education: Variant = person.get("education",{})
+  person["education"] = education.duplicate(true) if typeof(education) == TYPE_DICTIONARY else {}
+  var claims: Variant = person.get("claims",[])
+  person["claims"] = claims.duplicate(true) if typeof(claims) == TYPE_ARRAY else []
   person["alive"] = bool(person.get("alive",false))
   people[id] = person
  state["people"] = people
@@ -168,6 +178,12 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
    holder["title_id"] = str(title_id)
    people[holder_id] = holder
  state["people"] = people
+ var saved_council: Variant = state.get("council",{})
+ state["council"] = saved_council.duplicate(true) if typeof(saved_council) == TYPE_DICTIONARY else {}
+ for role in state["council"].keys():
+  var council_member := str(state["council"][role])
+  if not COUNCIL_ROLES.has(str(role)) or not people.has(council_member) or not bool(people[council_member].get("alive",false)):
+   state["council"].erase(role)
  if typeof(state.get("chronicle",[])) != TYPE_ARRAY:
   state["chronicle"] = []
  return state
