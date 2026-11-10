@@ -26,6 +26,8 @@ func _ready() -> void:
     queue_redraw()
 
 func _build_interface() -> void:
+    var compact := size.x < 800.0 or size.y > size.x
+    var portrait := size.y > size.x
     var background := ColorRect.new()
     background.color = Color("#101c25")
     background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -33,93 +35,96 @@ func _build_interface() -> void:
     add_child(background)
     var header := Label.new()
     header.text = "THE SEVENFOLD WORLD"
-    header.position = Vector2(28, 18)
-    header.add_theme_font_size_override("font_size", 32)
+    header.position = Vector2(16, 12) if compact else Vector2(28, 18)
+    header.add_theme_font_size_override("font_size", 22 if compact else 32)
     header.add_theme_color_override("font_color", Color("#ead5a5"))
     add_child(header)
     var subtitle := Label.new()
     subtitle.text = "ELDRIMAR AND THE SIX GREAT CONTINENTS BEYOND"
-    subtitle.position = Vector2(30, 56)
-    subtitle.add_theme_font_size_override("font_size", 13)
+    subtitle.position = Vector2(18, 40) if compact else Vector2(30, 56)
+    subtitle.add_theme_font_size_override("font_size", 10 if compact else 13)
     subtitle.add_theme_color_override("font_color", Color("#9eb3b9"))
     add_child(subtitle)
     var back := Button.new()
     back.text = "RETURN TO FRONTIER"
-    back.custom_minimum_size = Vector2(210, 48)
-    back.position = Vector2(28, 104)
+    back.custom_minimum_size = Vector2(180, 40) if compact else Vector2(210, 48)
+    back.position = Vector2(16, 68) if compact else Vector2(28, 104)
     back.pressed.connect(_return_to_world)
     add_child(back)
     var side := PanelContainer.new()
-    side.anchor_left = 0.69
-    side.anchor_top = 0.04
-    side.anchor_right = 0.98
-    side.anchor_bottom = 0.96
+    side.anchor_left = 0.04 if portrait else 0.69
+    side.anchor_top = 0.58 if portrait else 0.04
+    side.anchor_right = 0.96 if portrait else 0.98
+    side.anchor_bottom = 0.97 if portrait else 0.96
     var style := StyleBoxFlat.new()
     style.bg_color = Color("#1d2c33")
     style.border_color = Color("#776747")
     style.set_border_width_all(2)
     style.set_corner_radius_all(8)
-    style.set_content_margin_all(14)
+    style.set_content_margin_all(10 if compact else 14)
     side.add_theme_stylebox_override("panel", style)
     add_child(side)
+    var side_scroll := ScrollContainer.new()
+    side_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    side_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    side.add_child(side_scroll)
     var column := VBoxContainer.new()
-    column.add_theme_constant_override("separation", 9)
-    side.add_child(column)
+    column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    column.add_theme_constant_override("separation", 4 if compact else 9)
+    side_scroll.add_child(column)
     detail_title = Label.new()
-    detail_title.add_theme_font_size_override("font_size", 26)
+    detail_title.add_theme_font_size_override("font_size", 18 if compact else 26)
     detail_title.add_theme_color_override("font_color", Color("#f0d49a"))
     detail_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     column.add_child(detail_title)
     detail_epithet = Label.new()
-    detail_epithet.add_theme_font_size_override("font_size", 16)
+    detail_epithet.add_theme_font_size_override("font_size", 12 if compact else 16)
     detail_epithet.add_theme_color_override("font_color", Color("#8fc0bd"))
     detail_epithet.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     column.add_child(detail_epithet)
     detail_status = Label.new()
-    detail_status.add_theme_font_size_override("font_size", 13)
+    detail_status.add_theme_font_size_override("font_size", 11 if compact else 13)
     column.add_child(detail_status)
     column.add_child(HSeparator.new())
     detail_text = Label.new()
     detail_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     detail_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    detail_text.add_theme_font_size_override("font_size", 15)
+    detail_text.add_theme_font_size_override("font_size", 12 if compact else 15)
+    if compact:
+        detail_text.custom_minimum_size.y = 40
     column.add_child(detail_text)
     detail_locations = Label.new()
     detail_locations.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    detail_locations.add_theme_font_size_override("font_size", 14)
+    detail_locations.add_theme_font_size_override("font_size", 11 if compact else 14)
     detail_locations.add_theme_color_override("font_color", Color("#e2c58b"))
     column.add_child(detail_locations)
     var route_note := Label.new()
     route_note.text = "Study each continent's people, conflicts and routes. New regions become reachable through campaign decisions."
     route_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    route_note.add_theme_font_size_override("font_size", 12)
+    route_note.add_theme_font_size_override("font_size", 10 if compact else 12)
     route_note.add_theme_color_override("font_color", Color("#a8b5b7"))
     column.add_child(route_note)
     detail_action_btn = Button.new()
-    detail_action_btn.custom_minimum_size = Vector2(0, 50)
+    detail_action_btn.custom_minimum_size = Vector2(0, 40 if compact else 50)
     detail_action_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     detail_action_btn.pressed.connect(_travel_to_selected)
     column.add_child(detail_action_btn)
     var diplomacy_button := Button.new()
     diplomacy_button.text = "OPEN DIPLOMACY LEDGER"
-    diplomacy_button.custom_minimum_size = Vector2(0, 46)
+    diplomacy_button.custom_minimum_size = Vector2(0, 40 if compact else 46)
     diplomacy_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     diplomacy_button.pressed.connect(_open_diplomacy)
     column.add_child(diplomacy_button)
-    var scroll := ScrollContainer.new()
-    scroll.custom_minimum_size = Vector2(0, 190)
-    scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    column.add_child(scroll)
     var list := VBoxContainer.new()
     list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    list.add_theme_constant_override("separation", 5)
-    scroll.add_child(list)
+    list.add_theme_constant_override("separation", 4 if compact else 5)
+    column.add_child(list)
     var atlas: Array = GameData.continents.get("continents", [])
     for i in range(atlas.size()):
         var continent: Dictionary = atlas[i]
         var button := Button.new()
         button.text = "%02d   %s" % [i + 1, str(continent.get("name", "Unknown"))]
-        button.custom_minimum_size = Vector2(0, 42)
+        button.custom_minimum_size = Vector2(0, 36 if compact else 42)
         button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         button.pressed.connect(_select_continent.bind(i))
         list.add_child(button)
@@ -130,10 +135,11 @@ func _build_interface() -> void:
 func _build_diplomacy_panel() -> void:
     diplomacy_panel = PanelContainer.new()
     diplomacy_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-    diplomacy_panel.offset_left = 34
-    diplomacy_panel.offset_top = 30
-    diplomacy_panel.offset_right = -34
-    diplomacy_panel.offset_bottom = -30
+    var compact := size.x < 800.0 or size.y > size.x
+    diplomacy_panel.offset_left = 12 if compact else 34
+    diplomacy_panel.offset_top = 12 if compact else 30
+    diplomacy_panel.offset_right = -12 if compact else -34
+    diplomacy_panel.offset_bottom = -12 if compact else -30
     diplomacy_panel.z_index = 20
     diplomacy_panel.visible = false
     var style := StyleBoxFlat.new()
@@ -141,32 +147,34 @@ func _build_diplomacy_panel() -> void:
     style.border_color = Color("#d2b77d")
     style.set_border_width_all(2)
     style.set_corner_radius_all(10)
-    style.set_content_margin_all(18)
+    style.set_content_margin_all(10 if compact else 18)
     diplomacy_panel.add_theme_stylebox_override("panel", style)
     add_child(diplomacy_panel)
     var shell := VBoxContainer.new()
-    shell.add_theme_constant_override("separation", 10)
+    shell.add_theme_constant_override("separation", 6 if compact else 10)
     diplomacy_panel.add_child(shell)
     var header := HBoxContainer.new()
     shell.add_child(header)
     var title := Label.new()
-    title.text = "CAMPAIGN DIPLOMACY & TERRITORIES"
+    title.text = "DIPLOMACY LEDGER" if compact else "CAMPAIGN DIPLOMACY & TERRITORIES"
     title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    title.add_theme_font_size_override("font_size", 23)
+    title.add_theme_font_size_override("font_size", 16 if compact else 23)
     title.add_theme_color_override("font_color", Color("#f0d49a"))
     header.add_child(title)
     var close := Button.new()
     close.text = "CLOSE"
-    close.custom_minimum_size = Vector2(100, 42)
+    close.custom_minimum_size = Vector2(78, 40) if compact else Vector2(100, 42)
     close.pressed.connect(_close_diplomacy)
     header.add_child(close)
     var intro := Label.new()
     intro.text = "Standing is measured against House Dunmarrow. Relations change through authored campaign choices. Treaty tiers require %d relation for non-aggression, %d for trade, and %d for alliance; war blocks proposals." % [FactionSystem.NON_AGGRESSION_THRESHOLD, FactionSystem.TRADE_PACT_THRESHOLD, FactionSystem.ALLIANCE_THRESHOLD]
     intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    intro.add_theme_font_size_override("font_size", 12 if compact else 14)
     intro.add_theme_color_override("font_color", Color("#b7c6c3"))
     shell.add_child(intro)
     diplomacy_feedback = Label.new()
     diplomacy_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    diplomacy_feedback.add_theme_font_size_override("font_size", 12 if compact else 14)
     diplomacy_feedback.add_theme_color_override("font_color", Color("#e2c58b"))
     shell.add_child(diplomacy_feedback)
     var scroll := ScrollContainer.new()
@@ -188,6 +196,7 @@ func _close_diplomacy() -> void:
 
 
 func _refresh_diplomacy() -> void:
+    var compact := size.x < 800.0 or size.y > size.x
     for child in diplomacy_body.get_children():
         diplomacy_body.remove_child(child)
         child.queue_free()
@@ -220,12 +229,13 @@ func _refresh_diplomacy() -> void:
         card.add_child(column)
         var heading := Label.new()
         heading.text = "%s  ·  %s" % [str(faction.get("name", faction_id)), str(faction.get("continent", "unknown")).capitalize()]
-        heading.add_theme_font_size_override("font_size", 17)
+        heading.add_theme_font_size_override("font_size", 15 if compact else 17)
         heading.add_theme_color_override("font_color", Color("#f0d49a"))
         column.add_child(heading)
         var standing_label := Label.new()
         standing_label.text = "Standing: %s (%+d)     Treaty: %s" % [FactionSystem.relation_label(standing), standing, diplomatic_state.replace("_", " ").capitalize()]
         standing_label.add_theme_color_override("font_color", Color("#b9d0cb"))
+        standing_label.add_theme_font_size_override("font_size", 12 if compact else 14)
         column.add_child(standing_label)
         var owned_regions: Array[String] = []
         for continent_entry in GameData.continents.get("continents", []):
@@ -238,7 +248,7 @@ func _refresh_diplomacy() -> void:
         var territory_label := Label.new()
         territory_label.text = "Territories (%d): %s" % [owned_regions.size(), ", ".join(owned_regions) if not owned_regions.is_empty() else "No recognized territory"]
         territory_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-        territory_label.add_theme_font_size_override("font_size", 13)
+        territory_label.add_theme_font_size_override("font_size", 11 if compact else 13)
         territory_label.add_theme_color_override("font_color", Color("#d3ddd6"))
         column.add_child(territory_label)
         if diplomatic_state == "alliance":
@@ -256,7 +266,7 @@ func _refresh_diplomacy() -> void:
             if next_treaty != "":
                 var propose := Button.new()
                 propose.text = "PROPOSE %s" % FactionSystem.treaty_name(next_treaty).to_upper()
-                propose.custom_minimum_size = Vector2(0, 38)
+                propose.custom_minimum_size = Vector2(0, 42 if compact else 38)
                 propose.pressed.connect(_propose_treaty.bind(faction_id, next_treaty))
                 column.add_child(propose)
             else:
@@ -268,7 +278,7 @@ func _refresh_diplomacy() -> void:
                 column.add_child(threshold_label)
     var history_heading := Label.new()
     history_heading.text = "RECENT DIPLOMATIC HISTORY"
-    history_heading.add_theme_font_size_override("font_size", 18)
+    history_heading.add_theme_font_size_override("font_size", 15 if compact else 18)
     history_heading.add_theme_color_override("font_color", Color("#f0d49a"))
     diplomacy_body.add_child(history_heading)
     var history: Array = GameState.faction_state.get("history", [])
@@ -284,7 +294,7 @@ func _refresh_diplomacy() -> void:
             var line := Label.new()
             line.text = _describe_diplomatic_event(event, faction_names)
             line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-            line.add_theme_font_size_override("font_size", 13)
+            line.add_theme_font_size_override("font_size", 11 if compact else 13)
             diplomacy_body.add_child(line)
 
 
@@ -368,7 +378,8 @@ func _refresh_selection() -> void:
 
 func _draw() -> void:
     var atlas: Array = GameData.continents.get("continents", [])
-    var rect := Rect2(size.x * 0.025, size.y * 0.19, size.x * 0.625, size.y * 0.75)
+    var portrait := size.y > size.x
+    var rect := Rect2(size.x * (0.04 if portrait else 0.025), size.y * (0.16 if portrait else 0.19), size.x * (0.92 if portrait else 0.625), size.y * (0.40 if portrait else 0.75))
     draw_rect(rect, Color("#132630"), true)
     for i in range(1, 9):
         var x := rect.position.x + rect.size.x * float(i) / 9.0
@@ -395,8 +406,10 @@ func _draw() -> void:
         var label_pair: Array = continent.get("map_label", [0.5, 0.5])
         if label_pair.size() >= 2:
             var label_pos := rect.position + Vector2(float(label_pair[0]), float(label_pair[1])) * rect.size
-            draw_string(ThemeDB.fallback_font, label_pos - Vector2(42, -4), str(continent.get("name", "")), HORIZONTAL_ALIGNMENT_CENTER, 112, 16, Color("#102029"), 5)
-            draw_string(ThemeDB.fallback_font, label_pos - Vector2(42, -5), str(continent.get("name", "")), HORIZONTAL_ALIGNMENT_CENTER, 112, 16, Color("#fff0cf"), 4)
+            var label_width := 92 if portrait else 112
+            var label_size := 12 if portrait else 16
+            draw_string(ThemeDB.fallback_font, label_pos - Vector2(label_width * 0.5, -4), str(continent.get("name", "")), HORIZONTAL_ALIGNMENT_CENTER, label_width, label_size, Color("#102029"), 5)
+            draw_string(ThemeDB.fallback_font, label_pos - Vector2(label_width * 0.5, -5), str(continent.get("name", "")), HORIZONTAL_ALIGNMENT_CENTER, label_width, label_size, Color("#fff0cf"), 4)
     draw_string(ThemeDB.fallback_font, Vector2(rect.position.x + 16, rect.end.y - 18), "THE KNOWN WORLD  •  SEVEN CONTINENTS", HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 32, 14, Color("#b9d0cb"))
 
 func _travel_to_selected() -> void:
