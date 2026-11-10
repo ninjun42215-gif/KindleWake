@@ -83,3 +83,5 @@ The Realm, Council, Provinces, Military, Diplomacy, Economy and Chronicle tabs a
 - Added low/standard/high trade tariff policies (5%/10%/20% of route turnover); high tariffs increase revenue but reduce public order and legitimacy, while low tariffs improve order.
 - Added authored resource specializations for the seven Crown Continent regions: Sethmarch grain, Orrowen timber, Vessmoor horses, Quillon crystal, Tarnholt incense, Brennhallow iron and Aurelmont royal crafts. Controlled regions contribute seasonal income, food, manpower, stability or public-order yields.
 - Council effects now account for companion loyalty as well as traits and office: low loyalty creates stability/order strain and war exhaustion; high loyalty grants a modest role-specific bonus.
+
+- Deterministic NPC diplomacy now generates persistent frontier claims when hostile non-player factions are at war and share a border. Claims are shown in the Diplomacy tab and are cleared only when the territory is transferred; they do not autonomously seize land.
