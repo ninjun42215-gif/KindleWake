@@ -84,6 +84,12 @@ func _test_data() -> void:
     check(gd.strategic_warfare.get("troops", {}).has("infantry") and gd.strategic_warfare.get("troops", {}).has("archers") and gd.strategic_warfare.get("troops", {}).has("cavalry"), "authored tactical profiles load for all strategic troop types")
     check(gd.strategic_warfare.get("siege_engines", {}).has("battering_ram"), "authored siege engine profile loads")
     check(gd.strategic_warfare.get("garrisons", {}).get("faction_bonus", {}).has("tidebound_assembly"), "regional garrison composition includes faction-specific doctrine")
+    var all_faction_doctrines := true
+    var faction_bonuses: Dictionary = gd.strategic_warfare.get("garrisons", {}).get("faction_bonus", {})
+    for faction in gd.factions.get("factions", []):
+        if not faction_bonuses.has(str(faction.get("id", ""))):
+            all_faction_doctrines = false
+    check(all_faction_doctrines, "every authored faction has a regional garrison doctrine")
     var expected_rarities: Array = ["common", "uncommon", "rare", "epic", "legendary", "mythical"]
     check(gd.item_rarities.size() == 6, "six equipment rarity tiers are declared")
     var rarity_coverage := true
