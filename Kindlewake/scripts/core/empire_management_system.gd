@@ -27,7 +27,7 @@ static func new_state() -> Dictionary:
 		"treasury": 500, "food": 300, "manpower": 100, "stability": 60,
 		"legitimacy": 45, "public_order": 60, "tax_rate": "normal",
 		"policies": [], "council": {}, "governors": {}, "provinces": {},
-		"buildings": {}, "armies": {}, "field_armies": {}, "sieges": {}, "trade_routes": {}, "rebellion_risk": 0, "rebellion_alerts": [], "war_exhaustion": 0, "next_army_id": 1, "turn": 0, "history": []
+		"buildings": {}, "armies": {}, "field_armies": {}, "sieges": {}, "trade_routes": {}, "rebellion_risk": 0, "rebellion_alerts": [], "war_exhaustion": 0, "next_army_id": 1, "next_battle_id": 1, "resolved_battle_ids": [], "turn": 0, "history": []
 	}
 
 
@@ -37,6 +37,9 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
 		if raw.has(key):
 			state[key] = raw[key]
 	state["next_army_id"] = maxi(1, int(raw.get("next_army_id", 1)))
+	state["next_battle_id"] = maxi(1, int(raw.get("next_battle_id", 1)))
+	if typeof(raw.get("resolved_battle_ids", [])) == TYPE_ARRAY:
+		state["resolved_battle_ids"] = (raw["resolved_battle_ids"] as Array).slice(-100)
 	state["war_exhaustion"] = clampi(int(raw.get("war_exhaustion", 0)), 0, 100)
 	for stat in ["treasury", "food", "manpower", "turn"]:
 		state[stat] = maxi(0, int(state[stat]))
@@ -646,7 +649,9 @@ static func build_tactical_battle(state: Dictionary, army_id: String, base_battl
 		units.append({"character_id": "strategic_siege_ballista", "team": "player", "cell": [3, 14], "facing": 0, "name": "Field Ballista"})
 		units.append({"character_id": "strategic_siege_trebuchet", "team": "player", "cell": [1, 16], "facing": 0, "name": "Counterweight Trebuchet"})
 		units.append({"character_id": "strategic_siege_engineer", "team": "player", "cell": [5, 15], "facing": 0, "name": "Siege Engineer"})
-	battle["id"] = "field_army_%s_%s" % [army_id, region_id]
+	var battle_sequence := int(state.get("next_battle_id", 1))
+	state["next_battle_id"] = battle_sequence + 1
+	battle["id"] = "field_army_%s_%s_%d" % [army_id, region_id, battle_sequence]
 	battle.erase("reward_rune")
 	battle.erase("reward_item")
 	battle.erase("world_flag_on_victory")
@@ -777,6 +782,19 @@ static func tactical_deployment(state: Dictionary, army_id: String) -> Dictionar
 		if count > 0:
 			roster.append({"troop_type": troop_type, "count": count, "unit_id": "strategic_%s_%s" % [army_id, troop_type]})
 	return {"ok": true, "army_id": army_id, "commander": str(army.get("commander", "")), "morale": int(army.get("morale", 100)), "supplied": bool(army.get("supplied", false)), "roster": roster}
+
+
+## Resolves each generated tactical battle at most once, even if a result screen or save is replayed.
+static func resolve_tactical_battle(state: Dictionary, battle_id: String, army_id: String, casualties: Dictionary, won: bool) -> bool:
+	if battle_id == "" or state.get("resolved_battle_ids", []).has(battle_id):
+		return false
+	if not apply_tactical_result(state, army_id, casualties, won):
+		return false
+	var resolved: Array = state.get("resolved_battle_ids", [])
+	resolved.append(battle_id)
+	state["resolved_battle_ids"] = resolved.slice(maxi(0, resolved.size() - 100))
+	_record(state, "strategic_battle_resolved", {"battle_id": battle_id, "army": army_id})
+	return true
 
 
 static func apply_tactical_result(state: Dictionary, army_id: String, casualties: Dictionary, won: bool) -> bool:
