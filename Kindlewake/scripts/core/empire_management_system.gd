@@ -904,3 +904,48 @@ static func rebellion_assessment(state: Dictionary, controlled: Array) -> Dictio
 		alerts.append({"province": candidate, "risk": int(state["rebellion_risk"]), "status": "unrest"})
 	state["rebellion_alerts"] = alerts
 	return {"risk": int(state["rebellion_risk"]), "alerts": alerts}
+
+## Pure forecast: run the exact seasonal rules against a deep copy and return the report without mutating the live campaign.
+static func preview_season(state: Dictionary, province_ids: Array, adjacency: Dictionary = {}, character_profiles: Dictionary = {}) -> Dictionary:
+	var projected: Dictionary = state.duplicate(true)
+	var before_treasury := int(projected.get("treasury", 0))
+	var before_food := int(projected.get("food", 0))
+	var before_manpower := int(projected.get("manpower", 0))
+	var report := advance_season(projected, province_ids, adjacency, character_profiles)
+	if not bool(report.get("ok", false)):
+		return report
+	report["treasury_after"] = int(projected.get("treasury", 0))
+	report["food_after"] = int(projected.get("food", 0))
+	report["manpower_after"] = int(projected.get("manpower", 0))
+	report["treasury_change"] = int(projected.get("treasury", 0)) - before_treasury
+	report["food_change_actual"] = int(projected.get("food", 0)) - before_food
+	report["manpower_change"] = int(projected.get("manpower", 0)) - before_manpower
+	return report
+
+static func suppress_rebellion(state: Dictionary, cost: int = 80) -> bool:
+	if not bool(state.get("unlocked", false)) or int(state.get("rebellion_risk", 0)) < 20 or int(state.get("treasury", 0)) < cost:
+		return false
+	state["treasury"] = int(state["treasury"]) - cost
+	state["rebellion_risk"] = maxi(0, int(state.get("rebellion_risk", 0)) - 25)
+	state["public_order"] = mini(100, int(state.get("public_order", 0)) + 10)
+	state["rebellion_alerts"] = []
+	_record(state, "unrest_suppressed", {"cost": cost, "risk": state["rebellion_risk"]})
+	return true
+
+static func negotiate_peace(faction_state: Dictionary, empire_state: Dictionary, faction_a: String, faction_b: String, gold_offer: int = 0) -> bool:
+	if gold_offer < 0 or int(empire_state.get("treasury", 0)) < gold_offer:
+		return false
+	var key := faction_a + "|" + faction_b if faction_a < faction_b else faction_b + "|" + faction_a
+	if str(faction_state.get("diplomacy", {}).get(key, "neutral")) != "war":
+		return false
+	var relation_value := FactionSystem.relation(faction_state, faction_a, faction_b)
+	var acceptance := relation_value + int(empire_state.get("war_exhaustion", 0)) / 2 + gold_offer / 10
+	if acceptance < 25:
+		return false
+	if not FactionSystem.set_diplomatic_state(faction_state, faction_a, faction_b, "neutral"):
+		return false
+	empire_state["treasury"] = int(empire_state["treasury"]) - gold_offer
+	empire_state["war_exhaustion"] = maxi(0, int(empire_state.get("war_exhaustion", 0)) - 10)
+	FactionSystem.adjust_relation(faction_state, faction_a, faction_b, 10, "negotiated peace")
+	_record(empire_state, "negotiated_peace", {"faction": faction_b, "gold": gold_offer})
+	return true
