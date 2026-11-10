@@ -237,7 +237,7 @@ static func move_field_army(state: Dictionary, army_id: String, destination: Str
 	var field_armies: Dictionary = state["field_armies"]
 	var army: Dictionary = field_armies[army_id]
 	var origin := str(army.get("location", ""))
-	if destination == origin or not adjacency.get(origin, []).has(destination):
+	if int(army.get("movement", 1)) <= 0 or destination == origin or not adjacency.get(origin, []).has(destination):
 		return false
 	army["location"] = destination
 	army["movement"] = 0
