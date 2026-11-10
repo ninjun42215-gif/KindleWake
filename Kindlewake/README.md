@@ -196,3 +196,9 @@ docs/            GDD.md, SESSION_HANDOFF.md, CONTINUATION_PROMPT.md
 ## Campaign politics foundation (implementation in review)
 
 The current feature branch adds data-driven factions across the seven-continent atlas, regional political affiliations, bounded diplomatic relations, non-aggression/trade/alliance/war states, alliance trust gating, validated territory transfers and campaign history. Political state is stored as an optional campaign payload field; legacy schema-4 saves receive safe defaults. Code head `f7b31035e4651a4a6854cc5ad644beff88c2148b` passed the Android build, 8/8 scene smoke tests, 447 strict checks / 0 failures, balance report, version sync, workflow lint and project health audit. Physical Android QA remains outstanding. This is the rules/data foundation only: no player-facing kingdom UI, autonomous faction turns or complete strategic-war system is claimed yet. See `docs/GDD.md` section 19 and `docs/SESSION_HANDOFF.md`.
+
+
+
+## Royal Administration implementation (PR #46 in review)
+
+The feature branch adds an unlock-gated Royal Court overlay with Realm, Council, Provinces, Economy and Chronicle tabs; seasonal realm economy; tax and edict policies; council appointments; province governors; and construction. Campaign saves include an optional empire-state field without changing schema 4. Only player-controlled House Dunmarrow/Crownlands territories can be administered. This branch has not yet passed Godot/Android CI; see `docs/SESSION_HANDOFF.md` and `docs/EMPIRE_MANAGEMENT_SYSTEM.md`. The hereditary dynasty system remains a separate post-campaign unlock after the Last Emperor abolishes the Empire and dies naturally of old age.
