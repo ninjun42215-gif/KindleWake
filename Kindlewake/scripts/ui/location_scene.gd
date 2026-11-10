@@ -8,6 +8,7 @@ const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
 const CompanionQuestJournalScript = preload("res://scripts/ui/companion_quest_journal.gd")
+const PersonalitySystemScript = preload("res://scripts/core/personality_system.gd")
 ## Towns and building interiors (data/locations.json, rules in LocalMap).
 ## Walk with tap / drag like the overworld. Walking into a door loads the next map (town -> house -> town) inside this
 ## scene; walking onto the exit (E) of a town returns to the overworld. People and objects ("spots") are used with the
@@ -369,6 +370,7 @@ func _resolve_companion_quest(quest_id: String, outcome: String) -> void:
     var definition: Dictionary = GameData.companion_quests.get(quest_id, {})
     var descriptions: Dictionary = definition.get("outcome_descriptions", {})
     var description := str(descriptions.get(outcome, "The companion's decision is recorded. This outcome can now be referenced by later story events."))
+    _apply_companion_quest_consequences(quest_id, outcome, definition, description)
     var outcome_flags: Dictionary = definition.get("outcome_flags", {})
     var outcome_flag := str(outcome_flags.get(outcome, ""))
     if outcome_flag != "":
@@ -388,6 +390,42 @@ func _resolve_companion_quest(quest_id: String, outcome: String) -> void:
             (child as Button).disabled = true
 
 
+
+
+func _apply_companion_quest_consequences(quest_id: String, outcome: String, definition: Dictionary, description: String) -> void:
+    var applied_flag := "companion_quest_consequences_applied_" + quest_id
+    if bool(GameState.world_flags.get(applied_flag, false)):
+        return
+
+    var all_effects: Dictionary = definition.get("relationship_effects", {})
+    var effects: Dictionary = all_effects.get(outcome, {})
+    var companion_id := str(definition.get("companion_id", ""))
+    var leader_id := str(GameState.party.roster[0]) if not GameState.party.roster.is_empty() else ""
+    if leader_id != "" and companion_id != "" and leader_id != companion_id:
+        for dimension in ["trust", "respect"]:
+            var amount := int(effects.get(dimension, 0))
+            if amount != 0:
+                var evidence_id := "companion_quest:%s:%s:%s" % [quest_id, outcome, dimension]
+                GameState.adjust_companion_relationship(leader_id, companion_id, dimension, amount, evidence_id)
+
+    var companion_sheet = GameState.party.sheet(companion_id)
+    if companion_sheet != null:
+        var stress_delta := int(effects.get("stress_delta", 0))
+        if stress_delta != 0:
+            companion_sheet.adjust_stress(stress_delta)
+        var memory_id := "companion_quest:%s:%s" % [quest_id, outcome]
+        var memory := {
+            "event_id": memory_id,
+            "event_type": "companion_quest_resolution",
+            "type": "relationship",
+            "summary": description,
+            "timestamp": int(Time.get_unix_time_from_system()),
+            "resolved": true,
+            "source": quest_id
+        }
+        companion_sheet.memories = PersonalitySystemScript.add_memory(companion_sheet.memories, memory)
+
+    GameState.world_flags[applied_flag] = true
 
 
 func _format_quest_label(value: String) -> String:
