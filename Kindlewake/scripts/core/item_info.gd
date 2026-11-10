@@ -24,6 +24,8 @@ static func stat_name(key: String) -> String:
 
 
 static func slot_name(slot: String) -> String:
+    if slot == "trade_good":
+        return "Trade good"
     return str(SLOT_NAMES.get(slot, slot.capitalize()))
 
 
@@ -74,6 +76,8 @@ static func item_line(item_id: String, items: Dictionary, weapons: Dictionary, w
     if with_name:
         parts.append(str(it.get("name", item_id)))
     parts.append(str(it.get("rarity", "common")).capitalize())
+    if bool(it.get("trade_good", false)):
+        parts.append("Trade good")
     var w: Dictionary = weapons.get(str(it.get("weapon_id", "")), {})
     if not w.is_empty():
         parts.append("ATK %d, range %d-%d" % [int(w.get("power", 0)), int(w.get("range_min", 1)), int(w.get("range_max", 1))])
