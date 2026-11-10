@@ -148,3 +148,8 @@ The backend is merged and save-compatible, but the story unlock event and player
 
 ### Regional trade integration decision
 The PR #81 design is promising but not release-ready. Keep regional trade separate from equipment inventory; require canonical region IDs and story flags for transport; authorize tariffs only in player-held territories; and design all merchant controls for a 360px phone viewport. Preserve offline operation.
+
+
+## Realm administration UI follow-up — 2026-11-10
+
+Branch `feat/mobile-realm-administration-ui` extends the existing EmpireScreen rather than creating a parallel screen. It replaces the narrow phone's unusable two-column layout with mobile-first Holdings/Realm tabs, displays the shared treasury/tax/stability/legitimacy, supports unique governor assignment and royal policy cards, and unlocks realm controls after the first external stronghold is claimed. The holding governance/building/recruitment/siege features remain available. Exact-head CI and actual Android visual/touch review are pending. Governor-specific mechanical bonuses are not yet implemented; assignments currently provide administration identity only.
