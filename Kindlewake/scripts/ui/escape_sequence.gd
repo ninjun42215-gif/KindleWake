@@ -174,7 +174,7 @@ func _process(delta: float) -> void:
             moving = false
         else:
             player_pos += offset.normalized() * minf(distance, PLAYER_SPEED * delta)
-            var playable: Rect2 = playable_rect_for_size(size)
+            var playable: Rect2 = EscapeLayout.playable_rect_for_size(size)
             player_pos = player_pos.clamp(playable.position, playable.end)
     var near_exit: bool = player_pos.distance_to(exit_pos) <= GATE_REACH_RADIUS
     action_button.visible = near_exit and not started
