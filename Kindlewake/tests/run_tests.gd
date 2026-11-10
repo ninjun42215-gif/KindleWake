@@ -291,6 +291,23 @@ func _test_empire_development() -> void:
     var developed_turn := EmpireEconomySystem.advance_turn([{"id":"keep","turn_income":10,"recommended_garrison":1,"economy":{"provisions":0,"materials":0}}], productive_flags, 50)
     check(int(developed_turn.get("provisions_gained", 0)) == 3 and int(productive_flags.get("holding_stability_keep", 0)) >= 37, "farms add recurring provisions and fortifications improve stability each empire turn")
 
+
+    var deployment_flags := {"holding_claimed_keep":true,"holding_owner_keep":"house_dunmarrow","holding_recruits_keep":{"levy":2,"archer":1,"knight":1}}
+    var battle_definition := {"terrain":Array(["....................","....................","....................","....................","....................","....................","....................","....................","....................","....................","....................","....................","....................","...................."]),"units":[{"character_id":"torren","team":"player","cell":[8,10]},{"character_id":"bram","team":"player","cell":[7,9]}]}
+    var deployed_battle := EmpireDevelopmentSystem.deploy_recruits_to_battle("keep", battle_definition, deployment_flags)
+    var deployed_units: Array = deployed_battle.get("units", [])
+    check(deployed_units.size() == 6 and deployment_flags.get("holding_recruits_keep", {}).is_empty(), "up to four recruited reserves deploy into tactical battles and are deducted from holding reserves")
+    var mock_units: Array = []
+    var troop_ids := ["frontier_levy","frontier_levy","march_archer","household_knight"]
+    for i in range(troop_ids.size()):
+        var mock := BattleUnit.new()
+        mock.character_id = troop_ids[i]
+        mock.team = "player"
+        mock.hp = 1 if i < 3 else 0
+        mock_units.append(mock)
+    var recovered := EmpireDevelopmentSystem.recover_deployed_recruits(mock_units, deployed_battle, deployment_flags)
+    check(int(recovered.get("recovered", 0)) == 3 and int(recovered.get("lost", 0)) == 1 and int(deployment_flags["holding_recruits_keep"].get("levy", 0)) == 2 and int(deployment_flags["holding_recruits_keep"].get("archer", 0)) == 1, "surviving deployed troops return to reserve while fallen troops become campaign casualties")
+
 func _test_dungeon_mechanisms() -> void:
     print("[dungeon mechanisms]")
     var maps: Dictionary = gd.locations.get("maps", {})
