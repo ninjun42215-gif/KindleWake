@@ -4,6 +4,7 @@ extends Node
 ## This scene runs with project autoloads enabled (unlike --script mode).
 
 var failures: int = 0
+var autosave_snapshot: Dictionary = {}
 
 
 func _ready() -> void:
@@ -14,6 +15,7 @@ func _run_lifecycle() -> void:
     await get_tree().process_frame
 
     var slot := "campaign_lifecycle_test"
+    _snapshot_autosave_files()
     SaveSystem.delete_slot(slot)
     GameState.new_game()
 
@@ -57,7 +59,35 @@ func _fail(label: String) -> void:
     push_error("FAIL: " + label)
 
 
+func _snapshot_autosave_files() -> void:
+    var base_path: String = SaveSystem.slot_path("auto_a")
+    for suffix in ["", ".bak", ".tmp"]:
+        var path: String = base_path + suffix
+        var exists := FileAccess.file_exists(path)
+        autosave_snapshot[path] = {
+            "exists": exists,
+            "bytes": FileAccess.get_file_as_bytes(path) if exists else PackedByteArray()
+        }
+
+
+func _restore_autosave_files() -> void:
+    for path_value in autosave_snapshot.keys():
+        var path := str(path_value)
+        var snapshot: Dictionary = autosave_snapshot[path]
+        if not bool(snapshot.get("exists", false)):
+            if FileAccess.file_exists(path):
+                DirAccess.remove_absolute(path)
+            continue
+        var file := FileAccess.open(path, FileAccess.WRITE)
+        if file != null:
+            file.store_buffer(snapshot.get("bytes", PackedByteArray()))
+            file.close()
+        else:
+            _fail("original autosave file can be restored: " + path)
+
+
 func _finish(slot: String) -> void:
     SaveSystem.delete_slot(slot)
+    _restore_autosave_files()
     print("Campaign lifecycle failures: %d" % failures)
     get_tree().quit(1 if failures > 0 else 0)
