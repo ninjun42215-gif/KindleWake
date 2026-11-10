@@ -244,6 +244,30 @@ func _refresh_detail() -> void:
     detail_box.add_child(_label("A soldier costs 1 gold per empire turn. A garrison at the recommended strength improves stability; an empty garrison increases unrest.", 14, DIM))
     detail_box.add_child(_label("GOVERNANCE EFFECTS\nWarden: standard administration\nMerchant Council: +20% gold income, +1 upkeep\nLocal Compact: −1 upkeep and +2 stability\nMilitary Command: +2 upkeep and −1 stability", 14, DIM))
 
+    detail_box.add_child(_label("DEVELOPMENT  •  SPEND GOLD AND MATERIALS", 17, GOLD))
+    for building_id in ["farm", "workshop", "trade_post", "fortifications"]:
+        var tier := int(GameState.world_flags.get("holding_building_" + id + "_" + building_id, 0))
+        var building_names := {"farm":"Granary Farms","workshop":"Civic Workshop","trade_post":"Trade Post","fortifications":"Fortifications"}
+        var cost_gold := {"farm":45,"workshop":60,"trade_post":75,"fortifications":65}
+        var cost_materials := {"farm":4,"workshop":6,"trade_post":5,"fortifications":8}
+        var row := HBoxContainer.new()
+        row.add_child(_label("%s  •  TIER %d/3" % [str(building_names[building_id]), tier], 14))
+        row.add_child(_button("UPGRADE  %dG / %dM" % [int(cost_gold[building_id]) * (tier + 1), int(cost_materials[building_id]) * (tier + 1)], _develop_building.bind(building_id)))
+        detail_box.add_child(row)
+
+    detail_box.add_child(_label("RECRUITMENT  •  GOLD + PROVISIONS", 17, GOLD))
+    var recruits: Dictionary = GameState.world_flags.get("holding_recruits_" + id, {})
+    for troop_id in ["levy", "archer", "knight"]:
+        var troop_names := {"levy":"Frontier Levy","archer":"March Archer","knight":"Household Knight"}
+        var troop_cost := {"levy":18,"archer":32,"knight":65}
+        var food_cost := {"levy":3,"archer":4,"knight":7}
+        var row := HBoxContainer.new()
+        row.add_child(_label("%s  •  RESERVE %d" % [str(troop_names[troop_id]), int(recruits.get(troop_id, 0))], 14))
+        row.add_child(_button("RECRUIT 1  %dG / %dP" % [int(troop_cost[troop_id]), int(food_cost[troop_id])], _recruit_troop.bind(troop_id)))
+        row.add_child(_button("GARRISON +1", _assign_recruit.bind(troop_id)))
+        detail_box.add_child(row)
+
+
 
 func _governance_changed(index: int, models: Array) -> void:
     var result: Dictionary = GameState.set_holding_governance(selected_id, str(models[index]))
@@ -265,6 +289,30 @@ func _change_garrison(delta: int) -> void:
         GameState.save_campaign("auto_a")
     else:
         result_label.text = str(result.get("reason", "Could not assign garrison."))
+
+
+func _develop_building(building_id: String) -> void:
+    var result: Dictionary = GameState.upgrade_holding_building(selected_id, building_id)
+    result_label.text = "Development completed." if bool(result.get("ok", false)) else str(result.get("reason", "Could not upgrade."))
+    if bool(result.get("ok", false)):
+        GameState.save_campaign("auto_a")
+    _refresh()
+
+
+func _recruit_troop(troop_id: String) -> void:
+    var result: Dictionary = GameState.recruit_holding_troops(selected_id, troop_id, 1)
+    result_label.text = "Recruited %d %s." % [int(result.get("recruited", 0)), troop_id] if bool(result.get("ok", false)) else str(result.get("reason", "Recruitment failed."))
+    if bool(result.get("ok", false)):
+        GameState.save_campaign("auto_a")
+    _refresh()
+
+
+func _assign_recruit(troop_id: String) -> void:
+    var result: Dictionary = GameState.assign_recruits_to_holding_garrison(selected_id, troop_id, 1)
+    result_label.text = "One troop assigned to the garrison." if bool(result.get("ok", false)) else str(result.get("reason", "Assignment failed."))
+    if bool(result.get("ok", false)):
+        GameState.save_campaign("auto_a")
+    _refresh()
 
 
 func _advance_turn() -> void:
