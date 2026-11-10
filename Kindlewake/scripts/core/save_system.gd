@@ -106,6 +106,11 @@ func save_slot(slot_id: String, payload: Dictionary, summary: String = "") -> bo
                 DirAccess.remove_absolute(tmp_path)
                 push_error("SaveSystem: could not preserve the previous valid save as backup.")
                 return false
+        var remove_error: int = DirAccess.remove_absolute(final_path)
+        if remove_error != OK:
+            DirAccess.remove_absolute(tmp_path)
+            push_error("SaveSystem: could not replace the previous save file.")
+            return false
     var err: int = DirAccess.rename_absolute(tmp_path, final_path)
     if err != OK:
         push_error("SaveSystem: rename failed (" + str(err) + ")")
