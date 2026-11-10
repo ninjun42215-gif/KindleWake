@@ -1132,8 +1132,13 @@ func _fill_shop(box: VBoxContainer) -> void:
             var desc: String = ""
             var name_col: Color = COL_TEXT
             if kind == "item":
-                desc = ItemInfo.slot_name(str((items.get(id, {}) as Dictionary).get("slot", ""))) + ": " + ItemInfo.item_line(id, items, weapons, false)
-                name_col = _rarity_color(id)
+                var item_definition: Dictionary = items.get(id, {})
+                if bool(item_definition.get("trade_good", false)):
+                    desc = "Trade good: " + str(item_definition.get("description", "Regional commodity."))
+                    name_col = COL_GOLD
+                else:
+                    desc = ItemInfo.slot_name(str(item_definition.get("slot", ""))) + ": " + ItemInfo.item_line(id, items, weapons, false)
+                    name_col = _rarity_color(id)
             else:
                 var sd: Dictionary = sdefs.get(id, {})
                 var th: Array = sd.get("ap", [])
@@ -1202,7 +1207,11 @@ func _fill_shop_detail(box: VBoxContainer, kind: String, id: String, confirm: Ca
     if selling:
         inner.add_child(_label("Selling removes it from the bag for good.", 15, COL_DIM))
     elif kind == "item":
-        _add_compare(inner, id)
+        var item_definition: Dictionary = (db.get("items", {}) as Dictionary).get(id, {})
+        if bool(item_definition.get("trade_good", false)):
+            inner.add_child(_label(str(item_definition.get("description", "Regional commodity.")), 15, COL_DIM))
+        else:
+            _add_compare(inner, id)
     else:
         inner.add_child(_label("runes go into the sockets of a weapon or armor (runes tab).", 15, COL_DIM))
     var row := HBoxContainer.new()
