@@ -1080,6 +1080,13 @@ func _test_recruitment() -> void:
     party.gold = 100
     var joined: Dictionary = RecruitmentSystem.recruit(party, "joss_harrow", joss, flags)
     check(bool(joined.get("ok", false)) and party.roster.has("joss_harrow") and party.gold == 50 and bool(flags.get("recruited_joss_harrow", false)), "successful recruitment adds the member, spends gold and records the one-time flag")
+    var relationship_state: Dictionary = {}
+    var maren_definition: Dictionary = gd.character_def("maren_vey")
+    var relationship_count: int = RecruitmentSystem.apply_relationship_on_join(relationship_state, "torren", "maren_vey", maren_definition)
+    check(relationship_count == 2, "Maren's authored recruitment event applies two relationship dimensions")
+    check(int(RelationshipSystemScript.get_relationship(relationship_state, "torren", "maren_vey").get("trust", 0)) == 6, "Maren's recruitment establishes a small evidence-based trust bond")
+    check(int(RelationshipSystemScript.get_relationship(relationship_state, "maren_vey", "torren").get("respect", 0)) == 8, "Maren's recruitment relationship is symmetric and records respect")
+    check(RecruitmentSystem.apply_relationship_on_join(relationship_state, "torren", "maren_vey", maren_definition) == 0, "recruitment relationship evidence cannot be applied twice")
     check(party.sheet("joss_harrow").loyalty == 38, "a recruit receives their authored starting loyalty")
     var duplicate: Dictionary = RecruitmentSystem.recruit(party, "joss_harrow", joss, flags)
     check(not bool(duplicate.get("ok", true)) and party.gold == 50, "duplicate recruitment is refused without charging twice")
