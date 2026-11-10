@@ -308,8 +308,15 @@ static func advance_season(state: Dictionary, province_ids: Array, adjacency: Di
 	var income := 0
 	var food_gain := 0
 	var trade_income := 0
-	for route in state.get("trade_routes", {}).values():
-		trade_income += int(route.get("income", 20))
+	var trade_routes: Dictionary = state.get("trade_routes", {})
+	for route_id in trade_routes.keys():
+		var route: Dictionary = trade_routes[route_id]
+		if not province_ids.has(str(route.get("origin", ""))) or not province_ids.has(str(route.get("destination", ""))):
+			trade_routes.erase(route_id)
+			_record(state, "trade_route_disrupted", {"route": str(route_id), "reason": "territory_lost"})
+		else:
+			trade_income += int(route.get("income", 20))
+	state["trade_routes"] = trade_routes
 	var upkeep := 0
 	var defence := 0
 	for province_id in province_ids:
