@@ -108,6 +108,17 @@
           "dialogue": [
             "“The manifest lists flour, lamp oil, and twelve families. The ridge has been watched by men who wear no house colours.”"
           ]
+        },
+        {
+          "cell": [
+            15,
+            14
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "The Changed Escort",
+          "story_id": "changed_escort",
+          "text": "A diplomatic escort has been ordered to turn a marked supply train back at the narrow crossing. The wagons carry displaced families."
         }
       ]
     },
@@ -557,6 +568,17 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        },
+        {
+          "cell": [
+            7,
+            7
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "The Boundary Tree",
+          "story_id": "boundary_tree",
+          "text": "A felled boundary tree has reopened a dispute over woodland rights, tenant fields and old coppice paths."
         }
       ]
     },
@@ -964,6 +986,17 @@
           "npc": true,
           "name": "Town Crier",
           "text": "The roads east and south are open. Keep to the marked stones after dusk."
+        },
+        {
+          "cell": [
+            8,
+            7
+          ],
+          "kind": "story",
+          "npc": true,
+          "name": "The Orrowen Hearing",
+          "story_id": "orrowen_hearing",
+          "text": "Four witnesses have gathered to speak about the disputed levy and boundary order."
         }
       ]
     },
