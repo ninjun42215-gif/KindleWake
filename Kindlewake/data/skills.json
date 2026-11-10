@@ -202,6 +202,34 @@
       "rune_effect": {
         "drain_pct": 45
       }
+    },
+    "fordbreaker_cleave": {
+      "name": "Fordbreaker Cleave",
+      "type": "damage",
+      "power": 14,
+      "mp": 5,
+      "range_min": 1,
+      "range_max": 2,
+      "target": "enemy",
+      "rune_effect": {
+        "status": "exposed",
+        "chance": 35,
+        "turns": 1
+      }
+    },
+    "final_edict": {
+      "name": "Final Edict",
+      "type": "damage",
+      "power": 22,
+      "mp": 12,
+      "range_min": 1,
+      "range_max": 3,
+      "target": "enemy",
+      "rune_effect": {
+        "status": "exposed",
+        "chance": 65,
+        "turns": 2
+      }
     }
   }
 }
