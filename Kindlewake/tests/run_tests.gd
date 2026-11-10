@@ -125,6 +125,24 @@ func _test_regional_bestiary() -> void:
             human_count += 1
     check(human_count >= 10, "bestiary includes a broad faction-based human enemy roster")
     check(str(species.get("dunmarrow_deserter", {}).get("faction", "")) == "Dunmarrow Remnant", "human enemies retain authored faction identity")
+    var regional_groups_valid := true
+    var human_group_count := 0
+    for region_id in ["sethmarch", "brinegate_coast"]:
+        var region: Dictionary = regions.get(region_id, {})
+        for group_value in region.get("groups", []):
+            var group: Dictionary = group_value
+            var group_has_human := false
+            for enemy_value in group.get("units", []):
+                var enemy_id := str(enemy_value)
+                if not enemy_db.has(enemy_id):
+                    regional_groups_valid = false
+                var species_record: Dictionary = species.get(enemy_id, {})
+                if str(species_record.get("family", "")) == "human":
+                    group_has_human = true
+            if group_has_human:
+                human_group_count += 1
+    check(regional_groups_valid, "every regional encounter group references existing combatants")
+    check(human_group_count >= 5, "human factions appear across multiple weighted regional encounter groups")
     var regional_rng := RandomNumberGenerator.new()
     regional_rng.seed = 417
     var regions: Dictionary = gd.bestiary.get("regions", {})
