@@ -172,6 +172,74 @@ func start_regional_boss_for_region(region_id: String) -> bool:
     return true
 
 
+## Launch an assault against a selected foreign holding from the nearest available player holding.
+func start_campaign_siege(target_holding_id: String) -> bool:
+    var target: Dictionary = {}
+    for definition in GameData.world_expansion.get("capturable_locations", []):
+        if str(definition.get("id", "")) == target_holding_id:
+            target = definition
+            break
+    if target.is_empty() or (bool(world_flags.get("holding_claimed_" + target_holding_id, false)) and str(world_flags.get("holding_owner_" + target_holding_id, "")) == "house_dunmarrow"):
+        return false
+    var source_id := ""
+    for definition in GameData.world_expansion.get("capturable_locations", []):
+        var id := str(definition.get("id", ""))
+        if bool(world_flags.get("holding_claimed_" + id, false)) and str(world_flags.get("holding_owner_" + id, "")) == "house_dunmarrow" and str(definition.get("continent", "")) == str(target.get("continent", "")):
+            source_id = id
+            break
+    if source_id == "":
+        for definition in GameData.world_expansion.get("capturable_locations", []):
+            var id := str(definition.get("id", ""))
+            if bool(world_flags.get("holding_claimed_" + id, false)) and str(world_flags.get("holding_owner_" + id, "")) == "house_dunmarrow":
+                source_id = id
+                break
+    if source_id == "":
+        return false
+    var objective_id := "capture_" + target_holding_id
+    var staged := begin_holding_siege(source_id, objective_id, 3)
+    if not bool(staged.get("ok", false)):
+        return false
+    var battle := GameData.battle_def("battle_holding_siege")
+    if battle.is_empty():
+        return false
+    battle["siege_objective_id"] = objective_id
+    battle["siege_target_holding_id"] = target_holding_id
+    battle["siege_source_holding_id"] = source_id
+    battle["title"] = "Assault: " + str(target.get("name", target_holding_id))
+    battle["briefing"] = "The company marches from %s to assault %s. Break the defenders and secure the stronghold. Victory will establish provisional control; the region itself will not transfer automatically." % [str(source.get("name", source_id)), str(target.get("name", target_holding_id))]
+    battle = _deploy_holding_recruits(source_id, battle)
+    start_battle_from_world(battle)
+    return true
+
+
+## A victorious siege establishes provisional location-level control and records the displaced authority.
+func capture_holding_after_siege(target_holding_id: String, source_holding_id: String, objective_id: String) -> bool:
+    var siege: Dictionary = world_flags.get("siege_" + objective_id, {})
+    if str(siege.get("status", "")) != "resolved" or str(siege.get("origin", "")) != source_holding_id:
+        return false
+    var target: Dictionary = {}
+    for definition in GameData.world_expansion.get("capturable_locations", []):
+        if str(definition.get("id", "")) == target_holding_id:
+            target = definition
+            break
+    if target.is_empty():
+        return false
+    if bool(world_flags.get("holding_claimed_" + target_holding_id, false)) and str(world_flags.get("holding_owner_" + target_holding_id, "")) == "house_dunmarrow":
+        return false
+    var old_owner := str(world_flags.get("holding_owner_" + target_holding_id, target.get("owner", "unknown")))
+    world_flags["holding_claimed_" + target_holding_id] = true
+    world_flags["holding_owner_" + target_holding_id] = "house_dunmarrow"
+    world_flags["holding_status_" + target_holding_id] = "provisional"
+    world_flags["holding_stability_" + target_holding_id] = 25
+    world_flags["holding_governance_" + target_holding_id] = "appointed_warden"
+    world_flags["holding_previous_owner_" + target_holding_id] = old_owner
+    var history: Array = world_flags.get("holding_history", [])
+    history.append({"holding":target_holding_id,"old_owner":old_owner,"new_owner":"house_dunmarrow","cause":"siege_victory","source":source_holding_id,"empire_turn":int(world_flags.get("empire_turn", 0))})
+    world_flags["holding_history"] = history
+    world_flags["holding_captured_by_siege_" + target_holding_id] = true
+    return true
+
+
 func start_holding_siege_battle(holding_id: String) -> bool:
     if not bool(world_flags.get("holding_claimed_" + holding_id, false)) or str(world_flags.get("holding_owner_" + holding_id, "")) != "house_dunmarrow":
         return false
