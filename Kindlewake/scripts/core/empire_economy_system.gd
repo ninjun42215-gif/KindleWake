@@ -5,6 +5,12 @@ extends RefCounted
 const PLAYER_FACTION := "house_dunmarrow"
 const MIN_STABILITY := 0
 const MAX_STABILITY := 100
+const BUILDING_EFFECTS := {
+    "farm":{"yield_provisions":3,"yield_gold":0,"defense":0},
+    "workshop":{"yield_provisions":0,"yield_gold":2,"defense":0},
+    "trade_post":{"yield_provisions":0,"yield_gold":5,"defense":0},
+    "fortifications":{"yield_provisions":0,"yield_gold":0,"defense":2}
+}
 
 static func assign_garrison(holding_id: String, unit_count: int, world_flags: Dictionary) -> Dictionary:
     if holding_id == "" or not bool(world_flags.get("holding_claimed_" + holding_id, false)) or str(world_flags.get("holding_owner_" + holding_id, PLAYER_FACTION)) != PLAYER_FACTION:
@@ -49,12 +55,7 @@ static func advance_turn(definitions: Array, world_flags: Dictionary, treasury: 
         var fortification := 0
         for building_id in ["farm", "workshop", "trade_post", "fortifications"]:
             var tier := clampi(int(world_flags.get("holding_building_" + id + "_" + building_id, 0)), 0, 3)
-            var building: Dictionary = {
-                "farm":{"yield_provisions":3,"yield_gold":0,"defense":0},
-                "workshop":{"yield_provisions":0,"yield_gold":2,"defense":0},
-                "trade_post":{"yield_provisions":0,"yield_gold":5,"defense":0},
-                "fortifications":{"yield_provisions":0,"yield_gold":0,"defense":2}
-            }.get(building_id, {})
+            var building: Dictionary = BUILDING_EFFECTS.get(building_id, {})
             building_income += int(building.get("yield_gold", 0)) * tier
             building_provisions += int(building.get("yield_provisions", 0)) * tier
             fortification += int(building.get("defense", 0)) * tier
