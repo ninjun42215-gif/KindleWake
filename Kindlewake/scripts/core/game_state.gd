@@ -110,61 +110,12 @@ func save_campaign(slot_id: String = "auto_a") -> bool:
     return SaveSystem.save_slot(slot_id, campaign_payload(), "Kindlewake • %d gold • %d companions" % [party.gold, party.roster.size()])
 
 
-## Reject malformed campaign structures before constructing typed runtime objects.
-## This is deliberately non-destructive: a bad save is reported as unavailable, never overwritten.
-static func is_valid_campaign_payload(payload: Dictionary) -> bool:
-    if not bool(payload.get("campaign", false)):
-        return false
-    if typeof(payload.get("party")) != TYPE_DICTIONARY:
-        return false
-    var party_data: Dictionary = payload["party"]
-    if typeof(party_data.get("roster")) != TYPE_ARRAY or typeof(party_data.get("sheets")) != TYPE_DICTIONARY:
-        return false
-    if typeof(party_data.get("inventory", {})) != TYPE_DICTIONARY:
-        return false
-    if typeof(party_data.get("sigil_inv", [])) != TYPE_ARRAY:
-        return false
-    var roster: Array = party_data["roster"]
-    var sheets: Dictionary = party_data["sheets"]
-    if roster.is_empty():
-        return false
-    var seen: Dictionary = {}
-    for entry in roster:
-        var member_id := str(entry)
-        if member_id == "" or seen.has(member_id) or typeof(sheets.get(member_id)) != TYPE_DICTIONARY:
-            return false
-        seen[member_id] = true
-        var member: Dictionary = sheets[member_id]
-        if str(member.get("character_id", member_id)) != member_id:
-            return false
-        if typeof(member.get("base_stats", {})) != TYPE_DICTIONARY:
-            return false
-        if typeof(member.get("skills", [])) != TYPE_ARRAY:
-            return false
-        if typeof(member.get("equipment", {})) != TYPE_DICTIONARY:
-            return false
-        if typeof(member.get("sigils", {})) != TYPE_DICTIONARY:
-            return false
-    if typeof(payload.get("creation_profile", {})) != TYPE_DICTIONARY:
-        return false
-    if typeof(payload.get("world_flags", {})) != TYPE_DICTIONARY:
-        return false
-    if typeof(payload.get("world_pos", [0.0, 0.0])) != TYPE_ARRAY:
-        return false
-    var pos: Array = payload.get("world_pos", [0.0, 0.0])
-    if pos.size() < 2 or typeof(pos[0]) not in [TYPE_FLOAT, TYPE_INT] or typeof(pos[1]) not in [TYPE_FLOAT, TYPE_INT]:
-        return false
-    if typeof(payload.get("world_positions", {})) != TYPE_DICTIONARY:
-        return false
-    return true
-
-
 func load_campaign(slot_id: String) -> bool:
     var result: Dictionary = SaveSystem.load_slot(slot_id)
     if not bool(result.get("ok", false)):
         return false
     var payload: Dictionary = result.get("payload", {})
-    if not is_valid_campaign_payload(payload):
+    if not RegionSaveState.is_valid_campaign_payload(payload):
         push_warning("GameState: refusing malformed campaign save in slot " + slot_id)
         return false
 
