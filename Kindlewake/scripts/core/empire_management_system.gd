@@ -609,13 +609,14 @@ static func build_tactical_battle(state: Dictionary, army_id: String, base_battl
 			var cohort_count := mini(5, remaining)
 			var unit_id := "strategic_defender_%s_%d" % [troop_type, cohort_index]
 			var cell: Vector2i = enemy_cells[enemy_index]
-			units.append({"character_id": unit_id, "team": "enemy", "cell": [cell.x, cell.y], "facing": 2, "commander": not enemy_commander_assigned and troop_type == "infantry", "name": "%s Garrison" % troop_type.capitalize()})
-			if troop_type == "infantry":
+			units.append({"character_id": unit_id, "team": "enemy", "cell": [cell.x, cell.y], "facing": 2, "commander": not enemy_commander_assigned and troop_type == "infantry" and not siege_assault, "name": "%s Garrison" % troop_type.capitalize()})
+			if troop_type == "infantry" and not siege_assault:
 				enemy_commander_assigned = true
 			remaining -= cohort_count
 			cohort_index += 1
 			enemy_index += 1
 	if siege_assault:
+		units.append({"character_id": "strategic_fort_gate", "team": "enemy", "cell": [19, 3], "facing": 2, "commander": true, "name": "Fort Gate"})
 		units.append({"character_id": "strategic_siege_engine", "team": "player", "cell": [6, 13], "facing": 0, "name": "Battering Ram"})
 	battle["id"] = "field_army_%s_%s" % [army_id, region_id]
 	battle.erase("reward_rune")
