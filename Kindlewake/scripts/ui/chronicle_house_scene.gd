@@ -206,11 +206,15 @@ func _refresh() -> void:
  for domain_id in state.domains.keys():
   var domain: Dictionary = state.domains[domain_id]
   domain_lines.append("%s — food %d / security %d / prosperity %d / legitimacy %d" % [str(domain.name),int(domain.food),int(domain.security),int(domain.prosperity),int(domain.legitimacy)])
+ var council_lines: Array[String] = []
+ for role in state.get("council",{}).keys():
+  var council_id := str(state.council[role])
+  council_lines.append("%s: %s" % [str(role).replace("_"," ").capitalize(),str(state.people.get(council_id,{}).get("name","Vacant"))])
  var recent_events: Array[String] = []
  var log: Array = state.get("chronicle",[])
  for event in log.slice(maxi(0,log.size()-4),log.size()):
   recent_events.append("Year %d: %s" % [int(event.get("year",0)),str(event.get("event","event")).replace("_"," ")])
- summary.text = "%s • Year %d • Law: %s\nThe Concord recognises titles as duties under review, not a claim to imperial sovereignty.\n%s\nRecent record: %s" % [str(state.house_name),int(state.year),str(state.succession_policy).replace("_"," ").capitalize(),"\n".join(domain_lines)," • ".join(recent_events)]
+ summary.text = "%s • Year %d • Law: %s\nThe Concord recognises titles as duties under review, not a claim to imperial sovereignty.\nCouncil: %s\n%s\nRecent record: %s" % [str(state.house_name),int(state.year),str(state.succession_policy).replace("_"," ").capitalize()," • ".join(council_lines) if not council_lines.is_empty() else "no appointments","\n".join(domain_lines)," • ".join(recent_events)]
  for child in members_box.get_children():
   members_box.remove_child(child)
   child.queue_free()
