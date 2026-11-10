@@ -717,6 +717,22 @@ def main(argv: Optional[List[str]] = None) -> int:
                 say("  Full output: dist/logs/run_tests.txt (paste it into the next chat).")
                 if args.strict:
                     raise BuildError("Tests failed and --strict was given.")
+
+            lifecycle_scene = PROJECT / "tests" / "campaign_continue_lifecycle_test.tscn"
+            if lifecycle_scene.is_file():
+                say("\n[5a] Running campaign save/restore and World startup lifecycle test")
+                code, out = run([str(godot), "--headless", "--path", str(PROJECT),
+                                 "res://tests/campaign_continue_lifecycle_test.tscn"],
+                                env=env, log=logs / "campaign_continue_lifecycle_test.txt", timeout=300)
+                lifecycle_ok = ("Campaign lifecycle failures: 0" in out and
+                                "SCRIPT ERROR" not in out and "Parse Error" not in out)
+                summary.append("campaign_lifecycle: exit %d, pass marker %s" %
+                               (code, "yes" if lifecycle_ok else "no"))
+                if code != 0 or not lifecycle_ok:
+                    say("  CAMPAIGN LIFECYCLE TEST FAILED. See dist/logs/campaign_continue_lifecycle_test.txt.")
+                    if args.strict:
+                        raise BuildError("Campaign continue runtime lifecycle test failed.")
+
             if args.with_balance:
                 say("\n    Running tests/balance_report.gd")
                 code, out = run([str(godot), "--headless", "--path", str(PROJECT), "--script", "res://tests/balance_report.gd"],
