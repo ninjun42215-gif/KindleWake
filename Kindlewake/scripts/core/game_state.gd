@@ -134,7 +134,11 @@ func close_empire_trade_route(route_id: String) -> bool:
     return EmpireSystem.close_trade_route(empire_state, route_id)
 
 func preview_empire_season() -> Dictionary:
-    return EmpireSystem.preview_season(empire_state, player_controlled_provinces(), atlas_region_adjacency(), GameData.characters)
+    return EmpireSystem.preview_season(empire_state, player_controlled_provinces(), atlas_region_adjacency(), GameData.characters, GameData.strategic_warfare)
+
+
+func set_empire_tariff_rate(rate: String) -> bool:
+	return EmpireSystem.set_tariff_rate(empire_state, rate)
 
 
 func suppress_empire_unrest() -> bool:
@@ -146,7 +150,7 @@ func negotiate_faction_peace(faction_id: String, gold_offer: int = 100) -> bool:
 
 
 func advance_empire_season() -> Dictionary:
-    var report: Dictionary = EmpireSystem.advance_season(empire_state, player_controlled_provinces(), atlas_region_adjacency(), GameData.characters)
+    var report: Dictionary = EmpireSystem.advance_season(empire_state, player_controlled_provinces(), atlas_region_adjacency(), GameData.characters, GameData.strategic_warfare)
     if not bool(report.get("ok", false)):
         return report
     var faction_ids: Array = []
