@@ -908,9 +908,10 @@ static func close_trade_route(state: Dictionary, route_id: String) -> bool:
 	return true
 
 ## NPC diplomacy is deterministic and excludes the player faction; it never transfers territory.
-static func advance_faction_ai(faction_state: Dictionary, faction_ids: Array, player_faction: String = "house_dunmarrow") -> Dictionary:
+static func advance_faction_ai(faction_state: Dictionary, faction_ids: Array, player_faction: String = "house_dunmarrow", adjacency: Dictionary = {}) -> Dictionary:
 	var declarations: Array = []
 	var treaties: Array = []
+	var claims: Array = []
 	for i in range(faction_ids.size()):
 		for j in range(i + 1, faction_ids.size()):
 			var a := str(faction_ids[i])
@@ -926,7 +927,27 @@ static func advance_faction_ai(faction_state: Dictionary, faction_ids: Array, pl
 			elif relation_value >= 70 and current == "neutral":
 				if FactionSystem.set_diplomatic_state(faction_state, a, b, "trade_pact"):
 					treaties.append({"factions": [a, b], "relation": relation_value})
-	return {"declarations": declarations, "treaties": treaties}
+	var territory_ids: Array = faction_state.get("territories", {}).keys()
+	territory_ids.sort()
+	for faction_variant in faction_ids:
+		var faction_id := str(faction_variant)
+		if faction_id == player_faction:
+			continue
+		for owned_region_variant in territory_ids:
+			var owned_region := str(owned_region_variant)
+			var owned_state: Dictionary = faction_state["territories"][owned_region]
+			if str(owned_state.get("owner", "")) != faction_id or str(owned_state.get("status", "held")) != "held":
+				continue
+			for neighbor_variant in adjacency.get(owned_region, []):
+				var target_region := str(neighbor_variant)
+				var target_state: Dictionary = faction_state.get("territories", {}).get(target_region, {})
+				var target_owner := str(target_state.get("owner", ""))
+				if target_owner == "" or target_owner == faction_id or target_owner == player_faction:
+					continue
+				var diplomacy_key := faction_id + "|" + target_owner if faction_id < target_owner else target_owner + "|" + faction_id
+				if str(faction_state.get("diplomacy", {}).get(diplomacy_key, "neutral")) == "war" and FactionSystem.claim_region(faction_state, faction_id, target_region, adjacency):
+					claims.append({"faction": faction_id, "region": target_region, "against": target_owner})
+	return {"declarations": declarations, "treaties": treaties, "claims": claims}
 
 ## Office bonuses are deterministic; known trait tags add role-specific benefits.
 static func council_effects(state: Dictionary, character_profiles: Dictionary = {}) -> Dictionary:
