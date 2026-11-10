@@ -1,0 +1,132 @@
+{
+  "id": "battle_boss_drowned_crown",
+  "title": "The Broken Flagship",
+  "briefing": "Admiral Veyr commands the flagship deck. Break the signal line, then bring down the Drowned Crown.",
+  "weather": "clear",
+  "legend": {
+    ".": "grass",
+    "f": "forest",
+    "r": "road",
+    "h": "hill",
+    "~": "deep_water",
+    "b": "bridge",
+    "#": "rock"
+  },
+  "terrain": [
+    "....................",
+    "....~~~~~~..........",
+    "...~~~~~~~..h.......",
+    "....~~~~~~..h.......",
+    ".....bbbbb..........",
+    ".........r..........",
+    "...~~~~~~~~~~.......",
+    "...~~~~~~~~~~.......",
+    ".........r..........",
+    "....f....r....f.....",
+    ".........r..........",
+    "....................",
+    "....................",
+    "...................."
+  ],
+  "heights": [
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000",
+    "00000000000000000000"
+  ],
+  "victory": [
+    "rout_all",
+    "defeat_commander"
+  ],
+  "units": [
+    {
+      "character_id": "torren",
+      "team": "player",
+      "cell": [
+        8,
+        10
+      ],
+      "facing": 0,
+      "protagonist": true
+    },
+    {
+      "character_id": "bram",
+      "team": "player",
+      "cell": [
+        7,
+        9
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "sela",
+      "team": "player",
+      "cell": [
+        9,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "brother_wystan",
+      "team": "player",
+      "cell": [
+        6,
+        10
+      ],
+      "facing": 0
+    },
+    {
+      "character_id": "boss_drowned_crown",
+      "team": "enemy",
+      "cell": [
+        14,
+        4
+      ],
+      "facing": 2,
+      "commander": true
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        12,
+        3
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadreaver",
+      "team": "enemy",
+      "cell": [
+        15,
+        6
+      ],
+      "facing": 2
+    },
+    {
+      "character_id": "roadbowman",
+      "team": "enemy",
+      "cell": [
+        16,
+        3
+      ],
+      "facing": 2
+    }
+  ],
+  "battlefield": "regional_boss_thalassar",
+  "boss_encounter_id": "drowned_crown",
+  "world_flag_on_victory": "regional_boss_thalassar_cleared",
+  "victory_text": "The regional guardian is defeated. Its territory falls quiet, and the campaign can advance.",
+  "defeat_text": "The company is driven from the arena. The guardian remains undefeated."
+}
