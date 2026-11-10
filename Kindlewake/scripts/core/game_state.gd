@@ -202,7 +202,7 @@ func companion_relationship(character_a: String, character_b: String) -> Diction
 
 ## Companion personal quests are optional, recruit-gated and persisted with the campaign.
 func start_companion_quest(quest_id: String) -> Dictionary:
-    return CompanionQuestSystem.start(companion_quests, quest_id, party.roster, {"quests": GameData.companion_quests})
+    return CompanionQuestSystem.start(companion_quests, quest_id, party.roster, {"quests": GameData.companion_quests, "world_flags": world_flags})
 
 
 func advance_companion_quest(quest_id: String, milestone_id: String) -> Dictionary:
