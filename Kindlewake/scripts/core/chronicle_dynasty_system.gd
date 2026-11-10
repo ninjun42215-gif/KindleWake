@@ -12,6 +12,17 @@ const TRAITS := {
  "shrewd":{"polarity":"positive","description":"Reads motives and practical consequences."},
  "generous":{"polarity":"positive","description":"Shares wealth when others are in need."},
  "patient":{"polarity":"positive","description":"Waits for the right moment."},
+ "loyal":{"polarity":"positive","description":"Keeps faith with people and promises."},
+ "curious":{"polarity":"positive","description":"Seeks knowledge beyond familiar boundaries."},
+ "charitable":{"polarity":"positive","description":"Makes relief a duty rather than a favour."},
+ "disciplined":{"polarity":"positive","description":"Maintains order under pressure."},
+ "witty":{"polarity":"positive","description":"Uses humour to ease difficult rooms."},
+ "perceptive":{"polarity":"positive","description":"Notices details others overlook."},
+ "resolute":{"polarity":"positive","description":"Does not abandon a difficult obligation."},
+ "humble":{"polarity":"positive","description":"Accepts correction without humiliation."},
+ "diplomatic":{"polarity":"positive","description":"Finds language that lets rivals negotiate."},
+ "scholarly":{"polarity":"positive","description":"Studies records, law and history."},
+ "inventive":{"polarity":"positive","description":"Finds practical solutions with limited means."},
  "honest":{"polarity":"positive","description":"Prefers candour even when costly."},
  "proud":{"polarity":"negative","description":"Finds compromise difficult."},
  "cruel":{"polarity":"negative","description":"Uses fear where trust would serve better."},
@@ -20,7 +31,25 @@ const TRAITS := {
  "cowardly":{"polarity":"negative","description":"May abandon a duty under threat."},
  "deceitful":{"polarity":"negative","description":"Conceals motives and distorts the record."},
  "melancholic":{"polarity":"negative","description":"Carries grief that can cloud judgement."},
- "stubborn":{"polarity":"mixed","description":"Resists pressure, including wise counsel."}
+ "stubborn":{"polarity":"mixed","description":"Resists pressure, including wise counsel."},
+ "envious":{"polarity":"negative","description":"Measures worth against another person's fortune."},
+ "vengeful":{"polarity":"negative","description":"Keeps old injuries alive."},
+ "impatient":{"polarity":"negative","description":"Demands results before plans are ready."},
+ "arrogant":{"polarity":"negative","description":"Mistakes rank for proof of wisdom."},
+ "wasteful":{"polarity":"negative","description":"Consumes resources without regard for tomorrow."},
+ "suspicious":{"polarity":"negative","description":"Sees hidden threats in ordinary disagreement."},
+ "fanatical":{"polarity":"negative","description":"Treats compromise as betrayal."},
+ "indolent":{"polarity":"negative","description":"Avoids duties that require sustained effort."},
+ "fickle":{"polarity":"negative","description":"Changes allegiance when fortune turns."},
+ "hot_tempered":{"polarity":"negative","description":"Lets anger outrun judgement."},
+ "secretive":{"polarity":"mixed","description":"Protects confidences but withholds useful truth."},
+ "ambivalent":{"polarity":"mixed","description":"Struggles to commit when duties conflict."},
+ "world_weary":{"polarity":"mixed","description":"Has seen enough loss to distrust easy promises."},
+ "zealous":{"polarity":"mixed","description":"Serves a cause with intensity that can narrow perspective."},
+ "forgiving":{"polarity":"positive","description":"Allows repair after sincere wrongdoing."},
+ "steadfast":{"polarity":"positive","description":"Remains dependable through long hardship."},
+ "resourceful":{"polarity":"positive","description":"Makes good use of scarce supplies."},
+ "empathetic":{"polarity":"positive","description":"Understands the fears behind another person's words."}
 }
 const RANKS = [
  {"id":"knight","name":"Knight / Dame","rank":1,"jurisdiction":"A sworn household or a small holding","duties":"Service, protection and attendance"},
@@ -209,7 +238,7 @@ static func set_succession_policy(raw: Dictionary, policy: String, designated_he
  var state := normalize_state(raw)
  if not SUCCESSION_POLICIES.has(policy):
   return {"ok":false,"reason":"Unknown succession law."}
- if policy == "designated_heir":
+ if policy in ["designated_heir","elective"]:
   if not state.people.has(designated_heir) or not bool(state.people[designated_heir].alive):
    return {"ok":false,"reason":"The designated heir must be a living family member."}
  state.succession_policy = policy
@@ -223,6 +252,12 @@ static func assign_title(raw: Dictionary, title_id: String, person_id: String) -
  if not state.titles.has(title_id) or not state.people.has(person_id) or not bool(state.people[person_id].alive):
   return {"ok":false,"reason":"A living house member and a recorded title are required."}
  var title: Dictionary = state.titles[title_id]
+ var old_holder := str(title.get("holder",""))
+ if state.people.has(old_holder):
+  var former: Dictionary = state.people[old_holder]
+  if str(former.get("title_id","")) == title_id:
+   former["title_id"] = ""
+   state.people[old_holder] = former
  title["holder"] = person_id
  state.titles[title_id] = title
  var person: Dictionary = state.people[person_id]
@@ -324,6 +359,23 @@ static func _inherit_titles(state: Dictionary, deceased_id: String) -> void:
    state.people[heir] = p
   state.last_succession = {"title_id":title_id,"from":deceased_id,"to":heir,"policy":state.succession_policy,"year":state.year}
  state.titles = titles
+ if str(state.succession_policy) == "equal_partition":
+  var deceased: Dictionary = state.people[deceased_id]
+  var heirs: Array = []
+  for child_id in deceased.children:
+   if state.people.has(child_id) and bool(state.people[child_id].alive):
+    heirs.append(str(child_id))
+  heirs.sort()
+  if not heirs.is_empty():
+   var domains: Dictionary = state.domains
+   var share := 0
+   for domain_id in domains.keys():
+    var domain: Dictionary = domains[domain_id]
+    if str(domain.get("steward","")) == deceased_id:
+     domain["steward"] = heirs[share % heirs.size()]
+     domains[domain_id] = domain
+     share += 1
+   state.domains = domains
 
 
 static func _select_heir(state: Dictionary, deceased_id: String) -> String:
@@ -347,7 +399,10 @@ static func _select_heir(state: Dictionary, deceased_id: String) -> String:
   "seniority":
    candidates.sort_custom(func(a,b): return int(state.people[a].age) > int(state.people[b].age))
   "elective":
-   candidates.sort_custom(func(a,b): return int(state.people[a].age) + state.people[a].traits.size() > int(state.people[b].age) + state.people[b].traits.size())
+   var elected := str(state.designated_heir)
+   if candidates.has(elected):
+    return elected
+   candidates.sort_custom(func(a,b): return int(state.people[a].age) > int(state.people[b].age))
   "equal_partition":
    candidates.sort()
   _:
