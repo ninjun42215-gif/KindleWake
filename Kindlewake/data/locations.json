@@ -2090,6 +2090,55 @@
           "world_flag_on_victory": "tideglass_grotto_cleared"
         }
       ]
+    },
+    "dungeon_northstar_wreck": {
+      "name": "Northstar Wreck",
+      "kind": "dungeon",
+      "entry": [
+        7,
+        9
+      ],
+      "zoom": 1.25,
+      "rows": [
+        "##############",
+        "#............#",
+        "#..#####.....#",
+        "#..#...#.....#",
+        "#..#...###...#",
+        "#..#.....#...#",
+        "#..#####.#...#",
+        "#........#...#",
+        "#..########..#",
+        "#............#",
+        "#............#",
+        "#######E######"
+      ],
+      "doors": {},
+      "spots": [
+        {
+          "cell": [
+            3,
+            2
+          ],
+          "kind": "treasure",
+          "name": "Captain's Logbook",
+          "npc": false,
+          "text": "The captain's waterproof case holds the Northstar's final sounding: the crew saw a second signal burning beyond the reef before the ship was boarded.",
+          "reward_gold": 40
+        },
+        {
+          "cell": [
+            10,
+            6
+          ],
+          "kind": "boss",
+          "npc": true,
+          "name": "Blackwake Salvage Captain",
+          "text": "The salvage captain has stripped the wreck and kept its log as leverage. Maren recognizes the ship's brass compass on his belt.",
+          "battle_id": "battle_northstar_wreck",
+          "world_flag_on_victory": "northstar_wreck_cleared"
+        }
+      ]
     }
   }
 }
