@@ -546,7 +546,16 @@ func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
             if rune_status == "chill": skill_color = Color(0.42, 0.78, 1.0)
             elif rune_status == "shock": skill_color = Color(1.0, 0.92, 0.32)
             elif rune_status == "exposed": skill_color = Color(0.82, 0.52, 1.0)
-            _add_battle_vfx(hit_target, "burst", skill_color)
+            var skill_id: String = str(data.get("skill_id", ""))
+            var effect_kind := "burst"
+            if skill_id == "fordbreaker_cleave":
+                skill_color = Color(1.0, 0.30, 0.12)
+                effect_kind = "slash"
+                _add_popup(hit_target, "CLEAVED", skill_color)
+            elif skill_id == "final_edict":
+                skill_color = Color(1.0, 0.86, 0.30)
+                _add_popup(hit_target, "JUDGED", skill_color)
+            _add_battle_vfx(hit_target, effect_kind, skill_color)
             _add_popup(hit_target, str(data["damage"]) + "*", Color(1.0, 0.55, 0.25))
             if rune_status != "":
                 var effect_color := Color(1.0, 0.4, 0.2)
