@@ -280,7 +280,8 @@ func begin_ambition(ambition_id: String, title: String, description: String, tar
         return false
     ambition = {
         "id": ambition_id, "title": title, "description": description,
-        "progress": 0, "target": target, "deadline": deadline, "status": "active"
+        "progress": 0, "target": target, "deadline": deadline, "status": "active",
+        "combat_focus": combat_focus if ["aggressive", "support"].has(combat_focus) else ""
     }
     return true
 
