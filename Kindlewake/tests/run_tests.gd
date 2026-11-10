@@ -1008,8 +1008,16 @@ func _test_supply_siege_and_tactical_bridge() -> void:
     var battle_def: Dictionary = EmpireSystem.build_tactical_battle(state, army_id, {"id": "test_battle", "units": [{"character_id": "torren", "team": "player", "cell": [9, 10]}]}, "orrowen_weald", "house_orrowen", true, 1)
     var battle_units: Array = battle_def.get("units", [])
     check(not battle_def.is_empty() and battle_def.get("strategic_units", {}).size() == 4, "strategic army composition builds four tactical infantry cohorts")
-    check(battle_units.any(func(unit): return str(unit.get("character_id", "")) == "strategic_siege_engine"), "siege assault battle deploys a dedicated battering ram")
-    check(battle_units.any(func(unit): return str(unit.get("team", "")) == "enemy" and str(unit.get("character_id", "")).begins_with("strategic_defender_")), "hostile region garrison is generated as tactical defenders")
+    var has_ram := false
+    var has_defender := false
+    for unit in battle_units:
+        var unit_id := str(unit.get("character_id", ""))
+        if unit_id == "strategic_siege_engine":
+            has_ram = true
+        if str(unit.get("team", "")) == "enemy" and unit_id.begins_with("strategic_defender_"):
+            has_defender = true
+    check(has_ram, "siege assault battle deploys a dedicated battering ram")
+    check(has_defender, "hostile region garrison is generated as tactical defenders")
     check(EmpireSystem.resolve_siege_battle(state, "orrowen_weald", true) and bool(state["sieges"]["orrowen_weald"].get("captured", false)), "winning the tactical siege assault breaches the occupation objective")
     check(int(state["war_exhaustion"]) > 2 and EmpireSystem.reduce_war_exhaustion(state, 5), "war exhaustion rises after an assault and can be reduced by a peace action")
     check(EmpireSystem.complete_siege_transfer(state, "orrowen_weald") and not state["sieges"].has("orrowen_weald"), "completed occupation closes the siege record")
@@ -1060,7 +1068,11 @@ func _test_strategic_battle_integration() -> void:
             stats = {"hp": 36, "mp": 0, "str": 10, "dex": 7, "int": 2, "vit": 9, "spd": 8, "lck": 3, "acc": 80, "eva": 13, "ldr": 3, "mor": 75}
         chars[character_id] = {"name": str(spawn.get("name", troop_type)), "class_id": class_id, "level": 1, "weapon_id": weapon_id, "armor_def": 2 if not defender else 4, "armor_res": 1, "skills": [], "stats": stats}
     db["characters"] = chars
-    if battle_def.get("units", []).any(func(unit): return str(unit.get("character_id", "")) == "strategic_siege_engine"):
+    var has_ram := false
+    for spawn in battle_def.get("units", []):
+        if str(spawn.get("character_id", "")) == "strategic_siege_engine":
+            has_ram = true
+    if has_ram:
         classes["siege_engine"] = {"name": "Battering Ram", "move": 2, "jump": 0}
         chars["strategic_siege_engine"] = {"name": "Battering Ram", "class_id": "siege_engine", "level": 1, "weapon_id": "battle_axe", "armor_def": 8, "armor_res": 2, "skills": [], "stats": {"hp": 70, "mp": 0, "str": 12, "dex": 3, "int": 1, "vit": 14, "spd": 2, "lck": 1, "acc": 70, "eva": 0, "ldr": 0, "mor": 100}}
     db["classes"] = classes
