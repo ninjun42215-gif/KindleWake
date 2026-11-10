@@ -5,6 +5,7 @@ const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const EncounterBuilderScript = preload("res://scripts/core/encounter_builder.gd")
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const TerritoryGovernance = preload("res://scripts/core/territory_governance.gd")
 const RelationshipSystem = preload("res://scripts/core/relationship_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
@@ -23,6 +24,7 @@ var pending_location: String = ""        # town map the location scene opens nex
 var creation_profile: Dictionary = {}  # confirmed protagonist profile; stored with battle saves
 var campaign_slot: String = ""
 var faction_state: Dictionary = {}
+var territory_state: Dictionary = {}
 var companion_relationships: Dictionary = {}
 
 
@@ -56,6 +58,7 @@ func new_game(profile: Dictionary = {}) -> void:
     world_flags = {}
     pending_location = ""
     faction_state = FactionSystem.new_campaign_state(GameData.factions)
+    territory_state = TerritoryGovernance.new_state(GameData.factions)
     companion_relationships = {}
 
 
@@ -69,9 +72,24 @@ func set_faction_diplomacy(faction_a: String, faction_b: String, next_state: Str
     return FactionSystem.set_diplomatic_state(faction_state, faction_a, faction_b, next_state)
 
 
-## Transfer a known atlas region after a battle, treaty or authored story outcome.
+## Transfer a known atlas region after an authored battle, treaty or story outcome.
+## Governance consequences are initialized here; no automatic conquest is simulated.
 func transfer_faction_region(region_id: String, new_owner: String, cause: String) -> bool:
+    if not TerritoryGovernance.capture(territory_state, region_id, new_owner, GameData.factions, cause):
+        return false
     return FactionSystem.transfer_region(faction_state, region_id, new_owner, cause)
+
+
+## Change tax, garrison or fortification only for a region controlled by this faction.
+func set_territory_policy(region_id: String, policy: Dictionary, faction_id: String) -> bool:
+    return TerritoryGovernance.set_policy(territory_state, region_id, policy, faction_id)
+
+
+## Advance one authored governance period and pay its deterministic tax income to the party.
+func advance_territory_governance() -> Dictionary:
+    var result: Dictionary = TerritoryGovernance.advance_turn(territory_state)
+    party.gold += int(result.get("tax_income", 0))
+    return result
 
 
 
@@ -176,6 +194,7 @@ func campaign_payload() -> Dictionary:
         "world_positions": world_positions.duplicate(true),
         "world_flags": world_flags.duplicate(true),
         "faction_state": faction_state.duplicate(true),
+        "territory_state": territory_state.duplicate(true),
         "companion_relationships": companion_relationships.duplicate(true),
         "from_world": true
     }
@@ -203,6 +222,7 @@ func load_campaign(slot_id: String) -> bool:
     creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
     world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
     faction_state = FactionSystem.normalize_state(payload.get("faction_state", {}), GameData.factions)
+    territory_state = TerritoryGovernance.normalize_state(payload.get("territory_state", {}), GameData.factions)
     companion_relationships = RelationshipSystem.normalize_state(payload.get("companion_relationships", {}))
     world_pos = region_state["world_pos"]
     active_region_id = str(region_state["active_region_id"])
