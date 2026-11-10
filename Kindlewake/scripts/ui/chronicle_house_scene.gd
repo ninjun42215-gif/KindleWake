@@ -1,0 +1,267 @@
+extends Control
+## First playable Chronicle of Houses interface. All state is offline and rules-driven.
+const Dynasty = preload("res://scripts/core/chronicle_dynasty_system.gd")
+var state: Dictionary = {}
+var selected_person := "heir_1"
+var summary: Label
+var members_box: VBoxContainer
+var parent_picker: OptionButton
+var child_name: LineEdit
+var child_age: SpinBox
+var spouse_a: OptionButton
+var spouse_b: OptionButton
+var trait_picker: OptionButton
+var title_picker: OptionButton
+var policy_picker: OptionButton
+var status: Label
+
+func _ready() -> void:
+ if not GameState.chronicle_unlocked():
+  _blocked()
+  return
+ var saved: Variant = GameState.world_flags.get("chronicle_house_state",{})
+ if typeof(saved) == TYPE_DICTIONARY and not saved.is_empty():
+  state = Dynasty.normalize_state(saved)
+ else:
+  var founder: Dictionary = GameState.chronicle_state.get("founder_record",{})
+  state = Dynasty.new_house(founder,str(GameState.creation_profile.get("name","The Founder")))
+  if state.is_empty():
+   _blocked()
+   return
+  _save()
+ _build()
+ _refresh()
+
+func _build() -> void:
+ var bg := ColorRect.new()
+ bg.color = Color("#101820")
+ bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+ add_child(bg)
+ var scroll := ScrollContainer.new()
+ scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+ scroll.offset_left = 18
+ scroll.offset_right = -18
+ scroll.offset_top = 16
+ scroll.offset_bottom = -16
+ add_child(scroll)
+ var col := VBoxContainer.new()
+ col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+ col.add_theme_constant_override("separation",12)
+ scroll.add_child(col)
+ var heading := Label.new()
+ heading.text = "CHRONICLE OF HOUSES"
+ heading.add_theme_font_size_override("font_size",30)
+ heading.add_theme_color_override("font_color",Color("#e4c58a"))
+ col.add_child(heading)
+ summary = Label.new()
+ summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+ col.add_child(summary)
+ _section(col,"THE FAMILY")
+ members_box = VBoxContainer.new()
+ col.add_child(members_box)
+ _section(col,"RECORD A CHILD")
+ parent_picker = OptionButton.new()
+ col.add_child(parent_picker)
+ child_name = LineEdit.new()
+ child_name.placeholder_text = "Child's name"
+ col.add_child(child_name)
+ child_age = SpinBox.new()
+ child_age.min_value = 0
+ child_age.max_value = 60
+ child_age.value = 1
+ child_age.prefix = "Age "
+ col.add_child(child_age)
+ col.add_child(_button("Record child",_add_child))
+ _section(col,"MARRIAGE RECORD")
+ spouse_a = OptionButton.new()
+ spouse_b = OptionButton.new()
+ col.add_child(spouse_a)
+ col.add_child(spouse_b)
+ col.add_child(_button("Record marriage",_marry))
+ _section(col,"CHARACTER TRAITS")
+ trait_picker = OptionButton.new()
+ for trait_id in Dynasty.TRAITS.keys():
+  trait_picker.add_item(str(trait_id).replace("_"," ").capitalize())
+ col.add_child(trait_picker)
+ col.add_child(_button("Add selected trait",_add_trait))
+ col.add_child(_button("Remove selected trait",_remove_trait))
+ _section(col,"TITLES AND SUCCESSION")
+ title_picker = OptionButton.new()
+ for title_id in state.titles.keys():
+  title_picker.add_item(str(state.titles[title_id].get("name",title_id)))
+ col.add_child(title_picker)
+ col.add_child(_button("Grant title to selected family member",_grant_title))
+ policy_picker = OptionButton.new()
+ for policy in Dynasty.SUCCESSION_POLICIES:
+  policy_picker.add_item(str(policy).replace("_"," ").capitalize())
+ col.add_child(policy_picker)
+ col.add_child(_button("Set succession law",_set_policy))
+ _section(col,"DOMAIN STEWARDSHIP")
+ col.add_child(_button("Improve food stores (+5)",_domain_food))
+ col.add_child(_button("Improve security (+5)",_domain_security))
+ col.add_child(_button("Improve prosperity (+5)",_domain_prosperity))
+ _section(col,"PASSAGE OF YEARS")
+ col.add_child(_button("Advance one year",_advance_year))
+ col.add_child(_button("Save Chronicle",_save))
+ status = Label.new()
+ status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+ status.add_theme_color_override("font_color",Color("#d3b77d"))
+ col.add_child(status)
+ col.add_child(_button("Return to title",_return_title))
+
+func _section(parent: VBoxContainer, text: String) -> void:
+ var label := Label.new()
+ label.text = text
+ label.add_theme_font_size_override("font_size",21)
+ label.add_theme_color_override("font_color",Color("#c09b5e"))
+ parent.add_child(label)
+ var line := HSeparator.new()
+ parent.add_child(line)
+
+func _button(text_value: String, callback: Callable) -> Button:
+ var button := Button.new()
+ button.text = text_value
+ button.custom_minimum_size.y = 50
+ button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+ button.pressed.connect(callback)
+ return button
+
+func _refresh() -> void:
+ summary.text = "%s • Year %d • Law: %s\nThe Concord recognises titles as duties under review, not a claim to imperial sovereignty." % [str(state.house_name),int(state.year),str(state.succession_policy).replace("_"," ").capitalize()]
+ for child in members_box.get_children():
+  members_box.remove_child(child)
+  child.queue_free()
+ var ids: Array = state.people.keys()
+ ids.sort()
+ for id in ids:
+  var person: Dictionary = state.people[id]
+  var row := HBoxContainer.new()
+  var button := Button.new()
+  button.text = Dynasty.person_summary(person)
+  button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+  button.custom_minimum_size.y = 54
+  button.add_theme_font_size_override("font_size",15)
+  button.button_pressed = str(id) == selected_person
+  button.pressed.connect(_select_person.bind(str(id)))
+  row.add_child(button)
+  members_box.add_child(row)
+ _fill_people_picker(parent_picker,true)
+ _fill_people_picker(spouse_a,false)
+ _fill_people_picker(spouse_b,false)
+ status.text = "Selected: %s. Titles, kinship and yearly events are recorded in this house chronicle." % str(state.people.get(selected_person,{}).get("name","None"))
+
+func _fill_people_picker(picker: OptionButton, living_only: bool) -> void:
+ picker.clear()
+ var ids: Array = state.people.keys()
+ ids.sort()
+ var selected_index := 0
+ for id in ids:
+  var person: Dictionary = state.people[id]
+  if living_only and not bool(person.alive):
+   continue
+  picker.add_item("%s (age %d)" % [str(person.name),int(person.age)])
+  picker.set_item_metadata(picker.item_count-1,str(id))
+  if str(id) == selected_person:
+   selected_index = picker.item_count-1
+ if picker.item_count > 0:
+  picker.select(selected_index)
+
+func _selected_id(picker: OptionButton) -> String:
+ if picker.item_count == 0 or picker.selected < 0:
+  return ""
+ return str(picker.get_item_metadata(picker.selected))
+
+func _select_person(id: String) -> void:
+ selected_person = id
+ _refresh()
+
+func _add_child() -> void:
+ var result := Dynasty.add_child(state,_selected_id(parent_picker),child_name.text,int(child_age.value),[])
+ if not bool(result.ok):
+  status.text = str(result.reason)
+  return
+ state = result.state
+ selected_person = str(result.person_id)
+ child_name.clear()
+ _save()
+ _refresh()
+
+func _marry() -> void:
+ var result := Dynasty.set_spouse(state,_selected_id(spouse_a),_selected_id(spouse_b))
+ if not bool(result.ok):
+  status.text = str(result.reason)
+  return
+ state = result.state
+ _save()
+ _refresh()
+
+func _add_trait() -> void:
+ var trait_id := str(Dynasty.TRAITS.keys()[trait_picker.selected])
+ var result := Dynasty.add_trait(state,selected_person,trait_id)
+ _apply_result(result)
+
+func _remove_trait() -> void:
+ var trait_id := str(Dynasty.TRAITS.keys()[trait_picker.selected])
+ var result := Dynasty.remove_trait(state,selected_person,trait_id)
+ _apply_result(result)
+
+func _grant_title() -> void:
+ if title_picker.item_count == 0:
+  return
+ var title_id := str(state.titles.keys()[title_picker.selected])
+ _apply_result(Dynasty.assign_title(state,title_id,selected_person))
+
+func _set_policy() -> void:
+ var policy := Dynasty.SUCCESSION_POLICIES[policy_picker.selected]
+ _apply_result(Dynasty.set_succession_policy(state,policy,selected_person if policy == "designated_heir" else ""))
+
+func _domain_food() -> void:
+ _domain_change("food")
+func _domain_security() -> void:
+ _domain_change("security")
+func _domain_prosperity() -> void:
+ _domain_change("prosperity")
+
+func _domain_change(field: String) -> void:
+ var domain_id := str(state.domains.keys()[0])
+ var value := int(state.domains[domain_id].get(field,0))+5
+ _apply_result(Dynasty.update_domain(state,domain_id,field,value))
+
+func _advance_year() -> void:
+ var result := Dynasty.advance_year(state)
+ if not bool(result.ok):
+  status.text = str(result.reason)
+  return
+ state = result.state
+ var deaths: Array = result.get("deaths",[])
+ status.text = "Year %d recorded. Natural deaths: %s. Succession is resolved under %s." % [int(state.year),", ".join(deaths) if not deaths.is_empty() else "none",str(state.succession_policy)]
+ _save()
+ _refresh()
+
+func _apply_result(result: Dictionary) -> void:
+ if not bool(result.get("ok",false)):
+  status.text = str(result.get("reason","Action rejected."))
+  return
+ state = result.state
+ _save()
+ _refresh()
+
+func _save() -> void:
+ GameState.world_flags["chronicle_house_state"] = state.duplicate(true)
+ GameState.save_campaign("auto_a")
+
+func _return_title() -> void:
+ _save()
+ get_tree().change_scene_to_file("res://TitleScreen.tscn")
+
+func _blocked() -> void:
+ var label := Label.new()
+ label.text = "Chronicle of Houses is sealed. The founder must complete the five-act campaign, dissolve the Empire, finish the late-life epilogue and die naturally before this mode can begin."
+ label.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+ label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+ add_child(label)
+ var button := Button.new()
+ button.text = "Return to title"
+ button.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+ button.pressed.connect(func(): get_tree().change_scene_to_file("res://TitleScreen.tscn"))
+ add_child(button)
