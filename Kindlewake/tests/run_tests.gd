@@ -178,6 +178,11 @@ func _test_act_one_challenge_content() -> void:
     check(distinct_stage_counts.size() >= 2, "Act I quests use different challenge lengths and pacing")
     check(str(ActOneQuestChallenge.CHALLENGES["last_convoy"].steps[2].scene).contains("boss"), "Last Convoy includes a cinematic boss confrontation")
     check(str(ActOneQuestChallenge.CHALLENGES["first_oath"].steps[1].scene).contains("boss"), "First Oath includes a cinematic boss confrontation")
+    var toll_options: Array = ActOneQuestChallenge.CHALLENGES["toll_book"].steps[2].options
+    check(toll_options.has(["Publish the names after protecting the families", "public"]) or toll_options.any(func(option): return str(option[1]) == "public"), "Toll Book preserves the public disclosure branch")
+    check(toll_options.any(func(option): return str(option[1]) == "seal"), "Toll Book preserves the sealed evidence branch")
+    var oath_options: Array = ActOneQuestChallenge.CHALLENGES["first_oath"].steps[2].options
+    check(oath_options.any(func(option): return str(option[1]) == "people") and oath_options.any(func(option): return str(option[1]) == "law"), "First Oath preserves both political promise branches")
 
 
 func _test_escape_mission() -> void:
