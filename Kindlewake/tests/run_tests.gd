@@ -150,6 +150,22 @@ func _test_companion_quests() -> void:
     check(restored == state, "companion quest progress survives normalization for save/load")
     var malformed := CompanionQuestSystem.normalize_state({"unknown_quest": {"status": "complete"}, quest_id: {"status": "invalid"}}, catalog)
     check(malformed.is_empty(), "unknown and malformed companion quest states are discarded safely")
+    var maps: Dictionary = gd.locations.get("maps", {})
+    var brisa_spots := {
+        "foxglove": "ledger_recovered",
+        "foxglove_inn": "families_contacted",
+        "foxglove_market": "care_network_secured"
+    }
+    var world_hooks_ok := true
+    for map_id in brisa_spots.keys():
+        var map_def: Dictionary = maps.get(map_id, {})
+        var found := false
+        for spot in map_def.get("spots", []):
+            if str(spot.get("companion_quest_id", "")) == quest_id and str(spot.get("companion_quest_milestone", "")) == str(brisa_spots[map_id]):
+                found = true
+        if not found:
+            world_hooks_ok = false
+    check(world_hooks_ok, "Brisa's three ordered quest milestones are connected to Foxglove town, inn and market interactions")
 
 
 func _test_prologue() -> void:
