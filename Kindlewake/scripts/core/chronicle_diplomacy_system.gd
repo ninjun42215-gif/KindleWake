@@ -170,7 +170,44 @@ static func advance_political_year(raw: Dictionary) -> Dictionary:
   elif int(r.score) < 0: r.score = maxi(-100,int(r.score)-1)
   if int(r.score) < ALLIANCE_THRESHOLD: r.allied = false
   s.politics.relations[key] = r
+ var ai_result := resolve_rival_decisions(s)
+ if bool(ai_result.get("ok",false)):
+  s = ai_result.state
  _event(s,"political_year_advanced",{"year":s.politics.year})
+ return {"ok":true,"state":s}
+
+static func resolve_rival_decisions(raw: Dictionary) -> Dictionary:
+ var s := normalize(raw)
+ if not s.has("politics"):
+  return {"ok":false,"reason":"Political records have not been initialized."}
+ var player_house := str(s.politics.get("player_house","player_house"))
+ var ids: Array = s.politics.houses.keys()
+ ids.sort()
+ for house_id_value in ids:
+  var house_id := str(house_id_value)
+  if house_id == player_house:
+   continue
+  for target_value in ids:
+   var target_id := str(target_value)
+   if target_id == house_id:
+    continue
+   var key := _key(house_id,target_id)
+   if not s.politics.relations.has(key):
+    continue
+   var relation: Dictionary = s.politics.relations[key]
+   var house: Dictionary = s.politics.houses[house_id]
+   if bool(relation.feud) and int(relation.score) >= -35 and int(house.treasury) >= 40:
+    relation.feud = false
+    relation.score = mini(0,int(relation.score)+5)
+    _event(s,"rival_house_reconciled",{"house":house_id,"target":target_id})
+   elif not bool(relation.feud) and int(relation.score) >= ALLIANCE_THRESHOLD and not bool(relation.allied):
+    relation.allied = true
+    _event(s,"rival_house_alliance",{"house":house_id,"target":target_id})
+   elif not bool(relation.feud) and int(relation.score) <= -65:
+    relation.feud = true
+    relation.allied = false
+    _event(s,"rival_house_feud",{"house":house_id,"target":target_id})
+   s.politics.relations[key] = relation
  return {"ok":true,"state":s}
 
 static func summary(s: Dictionary,id: String) -> String:
