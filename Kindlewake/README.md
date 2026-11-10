@@ -206,3 +206,5 @@ The feature branch adds an unlock-gated Royal Court overlay with Realm, Council,
 - Siege engineer now has two tactical skills: Field Repair restores HP to a nearby allied unit (including the ram), and Breach Charge damages a nearby wall/gate or enemy. Both use the standard BattleController skill/target flow.
 
 - Economy now includes low/standard/high trade tariffs, seven authored regional resource specialties, and councillor loyalty effects alongside trait-based office bonuses.
+
+- Deterministic NPC diplomacy now generates persistent frontier claims when hostile non-player factions are at war and share a border. Claims are shown in the Diplomacy tab and are cleared only when the territory is transferred; they do not autonomously seize land.
