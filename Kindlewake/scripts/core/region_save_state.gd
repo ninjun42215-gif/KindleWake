@@ -32,7 +32,7 @@ static func is_valid_campaign_payload(payload: Dictionary) -> bool:
 
     var inventory: Dictionary = party_data.get("inventory", {})
     for item_id in inventory.keys():
-        if int(inventory[item_id]) < 0 or not _is_number(inventory[item_id]):
+        if not _is_number(inventory[item_id]) or int(inventory[item_id]) < 0:
             return false
     var sigil_inventory: Array = party_data.get("sigil_inv", [])
     for instance in sigil_inventory:
