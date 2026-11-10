@@ -358,6 +358,7 @@ func _build_military() -> void:
         for destination in adjacency.get(location, []):
             body.add_child(_button("March to " + str(destination).replace("_", " ").capitalize(), _move_field_army.bind(str(army_id), str(destination)), true))
         if not GameState.player_controlled_provinces().has(location) and not GameState.empire_state.get("sieges", {}).has(location):
+            body.add_child(_button("Engage garrison at " + location.replace("_", " ").capitalize(), _engage_garrison.bind(str(army_id)), true))
             body.add_child(_button("Begin siege of " + location.replace("_", " ").capitalize(), _start_siege.bind(str(army_id), location), true))
     _section("ACTIVE SIEGES")
     var sieges: Dictionary = GameState.empire_state.get("sieges", {})
@@ -369,7 +370,7 @@ func _build_military() -> void:
         if bool(siege.get("captured", false)):
             body.add_child(_button("Confirm occupation", _confirm_occupation.bind(str(region_id)), true))
         elif int(siege.get("progress", 0)) >= 4:
-            body.add_child(_button("Assault breached defences", _assault_siege.bind(str(region_id)), true))
+            body.add_child(_button("Launch tactical siege assault", _assault_siege.bind(str(region_id)), true))
 
 
 func _reduce_war_exhaustion() -> void:
@@ -384,16 +385,20 @@ func _start_siege(army_id: String, region_id: String) -> void:
     GameState.save_campaign("auto_a")
 
 
-func _assault_siege(region_id: String) -> void:
-    var result: Dictionary = GameState.resolve_province_siege(region_id, 30, 1)
-    var ok: bool = bool(result.get("ok", false))
-    if ok:
-        message = "Assault %s · %d casualties · war exhaustion %d." % ["succeeded" if bool(result.get("won", false)) else "repulsed", int(result.get("casualties", 0)), int(result.get("war_exhaustion", 0))]
+func _engage_garrison(army_id: String) -> void:
+    if GameState.start_field_army_battle(army_id, false):
+        get_tree().change_scene_to_file("res://Main.tscn")
     else:
-        message = "The siege assault cannot proceed: " + str(result.get("reason", "unknown"))
-    message_good = ok and bool(result.get("won", false))
-    GameState.save_campaign("auto_a")
-    _rebuild()
+        _set_message("This field army cannot engage the selected garrison.", false)
+
+
+func _assault_siege(region_id: String) -> void:
+    var siege: Dictionary = GameState.empire_state.get("sieges", {}).get(region_id, {})
+    var army_id := str(siege.get("army_id", ""))
+    if army_id != "" and GameState.start_field_army_battle(army_id, true):
+        get_tree().change_scene_to_file("res://Main.tscn")
+    else:
+        _set_message("The siege assault cannot begin. Check the besieging army and breached defences.", false)
 
 
 func _confirm_occupation(region_id: String) -> void:
