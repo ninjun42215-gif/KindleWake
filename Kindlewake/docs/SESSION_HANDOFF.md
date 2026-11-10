@@ -131,3 +131,13 @@
 - Current scope is backend foundation only. No diplomacy screen, automatic war simulation, AI faction turns or strategic battle layer is claimed complete.
 - Validation on code head `f7b31035e4651a4a6854cc5ad644beff88c2148b`: Build Android APK run #683 passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 447 strict checks / 0 failures, balance report and signed APK export for arm64-v8a + armeabi-v7a with no requested Android permissions. APK artifact `13733346417` (~41.0 MB); test logs artifact `13732869336`. Version Sync #188, Workflow YAML Lint #666 and Project Health Audit #458 also passed on that exact code head. The first CI attempt caught a missing `GameData.factions` declaration and a strict-test type inference error; both were fixed before the successful rerun. Documentation commits after that code head require a fresh exact-head gate. Physical Android QA remains outstanding.
 - Next implementation slice after this foundation: connect authored quests/choices to relation changes, then add a compact faction dossier UI before enabling player-initiated treaty/war actions. Preserve offline-only architecture, existing saves and schema 4.
+
+
+## 2026-11-10 — Regional trading economy
+
+- Created feature branch `feature/regional-trading-economy-v1` from current `main`; keep `main` untouched.
+- Added `data/trade_goods.json` with 18 commodities and eight region-specific market profiles.
+- Added pure offline `TradeSystem` rules for quotes, regional pricing, market stock/demand pressure, bulk buy/sell, cargo weight and capacity. Cargo uses the existing party inventory contract.
+- Integrated trade data in `GameData`; added `GameState.trade_buy()`, `trade_sell()` and `trade_quotes()`. Campaign payloads persist optional `trade_state`; old schema-4 saves receive a safe empty state.
+- Added regression assertions for regional price spreads, inventory/gold changes, cross-market profit, invalid sales, capacity limits and market quote data.
+- Scope is the backend/data foundation, not a finished player-facing merchant UI. Caravan routes/events, contracts, tariffs, smuggling and merchant-guild progression remain follow-up work. Keep game version 0.12.0 and save schema 4 unless verified tests require a change.
