@@ -5,7 +5,8 @@
     "Regional ecology and local history determine enemy identity.",
     "Humanoid factions remain politically grounded; monsters are rare and tied to place.",
     "Enemy roles use existing classes, weapons, stats and combat rules; no unimplemented status mechanics are implied.",
-    "Atlas-only territories are lore records until their regions become playable."
+    "Atlas-only territories are lore records until their regions become playable.",
+    "Human enemy records name their faction and motive; not every hostile human is an interchangeable bandit."
   ],
   "species": {
     "marsh_hound": {
@@ -196,6 +197,126 @@
       "threat_tier": 4,
       "battle_character_id": "ilyr_lantern_wraith",
       "lore": "A pale keeper-light that appears on abandoned roads where the covenant lamps were extinguished."
+    },
+    "dunmarrow_deserter": {
+      "name": "Dunmarrow Levy Deserter",
+      "family": "human",
+      "territory": "Sethmarch — Sallow Marches",
+      "role": "shielded infantry",
+      "threat_tier": 2,
+      "battle_character_id": "dunmarrow_deserter",
+      "lore": "Former household levies who abandoned their posts after the estate burned; some now sell their knowledge of the marsh roads to the highest bidder.",
+      "faction": "Dunmarrow Remnant"
+    },
+    "fenroad_poacher": {
+      "name": "Fenroad Poacher",
+      "family": "human",
+      "territory": "Sethmarch — Sallow Marches",
+      "role": "ranged scout",
+      "threat_tier": 1,
+      "battle_character_id": "fenroad_poacher",
+      "lore": "Local hunters turned poachers who know every dry hummock and hidden ford in the Sallow Marches.",
+      "faction": "Fenroad Poachers"
+    },
+    "tollhouse_extortionist": {
+      "name": "Tollhouse Extortionist",
+      "family": "human",
+      "territory": "Sethmarch — Sallow Marches",
+      "role": "bruiser",
+      "threat_tier": 2,
+      "battle_character_id": "tollhouse_extortionist",
+      "lore": "A hard-handed collector who has turned abandoned toll stations into private checkpoints.",
+      "faction": "Tollhouse Gang"
+    },
+    "blackfen_zealot": {
+      "name": "Blackfen Oath Zealot",
+      "family": "human",
+      "territory": "Sethmarch — Sallow Marches",
+      "role": "support caster",
+      "threat_tier": 3,
+      "battle_character_id": "blackfen_zealot",
+      "lore": "A fervent oath-breaker who twists fragments of old boundary rites into battlefield rites and promises of protection.",
+      "faction": "Blackfen Covenant"
+    },
+    "reedbank_sellsword": {
+      "name": "Reedbank Sellsword",
+      "family": "human",
+      "territory": "Sethmarch — Sallow Marches",
+      "role": "mobile duelist",
+      "threat_tier": 2,
+      "battle_character_id": "reedbank_sellsword",
+      "lore": "A hired blade paid to keep the old causeway closed while rival claimants search the drowned estate roads.",
+      "faction": "Free Companies"
+    },
+    "redwater_veteran": {
+      "name": "Redwater Company Veteran",
+      "family": "human",
+      "territory": "Vessmoor Plains",
+      "role": "armoured commander",
+      "threat_tier": 3,
+      "battle_character_id": "redwater_veteran",
+      "lore": "A disciplined veteran of the Redwater Company, trained to hold a line while lighter raiders circle the flanks.",
+      "faction": "Redwater Company"
+    },
+    "saltreef_corsair": {
+      "name": "Salt-Reef Corsair",
+      "family": "human",
+      "territory": "Brinegate Coast",
+      "role": "fast duelist",
+      "threat_tier": 2,
+      "battle_character_id": "saltreef_corsair",
+      "lore": "A professional shore raider who knows the reefs, hidden landing coves and harbour watch rotations.",
+      "faction": "Salt-Reef Corsairs"
+    },
+    "brinegate_crossbowman": {
+      "name": "Brinegate Crossbowman",
+      "family": "human",
+      "territory": "Brinegate Coast",
+      "role": "ranged marksman",
+      "threat_tier": 2,
+      "battle_character_id": "brinegate_crossbowman",
+      "lore": "A harbour watchman turned sellsword, carrying a service crossbow and selling patrol routes to smugglers.",
+      "faction": "Harbour Defectors"
+    },
+    "sevenflames_adept": {
+      "name": "Seven Flames Apostate",
+      "family": "human",
+      "territory": "Brinegate Coast",
+      "role": "arcane support",
+      "threat_tier": 3,
+      "battle_character_id": "sevenflames_adept",
+      "lore": "A human dissident who has stolen fragments of the beacon liturgy and uses them to recruit frightened coastal villages.",
+      "faction": "Seven Flames Apostates"
+    },
+    "tidebound_smuggler": {
+      "name": "Tidebound Smuggler",
+      "family": "human",
+      "territory": "Brinegate Coast",
+      "role": "skirmisher",
+      "threat_tier": 1,
+      "battle_character_id": "tidebound_smuggler",
+      "lore": "A runner from a splinter crew that uses the Tidebound charter routes to move contraband and evade harbour dues.",
+      "faction": "Tidebound Splinter Crew"
+    },
+    "harbor_enforcer": {
+      "name": "Harbour Enforcer",
+      "family": "human",
+      "territory": "Brinegate Coast",
+      "role": "frontline guard",
+      "threat_tier": 2,
+      "battle_character_id": "harbor_enforcer",
+      "lore": "A dockside strongarm employed by competing harbour interests to intimidate witnesses and control the quays.",
+      "faction": "Harbour Syndicate"
+    },
+    "exiled_marine": {
+      "name": "Exiled Marine",
+      "family": "human",
+      "territory": "Brinegate Coast",
+      "role": "polearm infantry",
+      "threat_tier": 2,
+      "battle_character_id": "exiled_marine",
+      "lore": "A discharged coastal marine who still follows the old drill, though no captain now claims their service.",
+      "faction": "Coastal Exiles"
     }
   },
   "regions": {
@@ -203,7 +324,7 @@
       "name": "Sethmarch — Sallow Marches",
       "base_battle": "battle_01",
       "title": "Sallow Marches Encounter",
-      "briefing": "The marsh roads conceal hungry beasts, oath-bound dead and desperate outcasts. Read the enemy line before crossing the ford.",
+      "briefing": "The marsh roads conceal hungry beasts, oath-bound dead and armed remnants of the old household. Read the enemy line before crossing the ford.",
       "enemy_cells": [
         [
           9,
@@ -228,7 +349,7 @@
       ],
       "groups": [
         {
-          "weight": 5,
+          "weight": 4,
           "units": [
             "marsh_hound",
             "marsh_hound",
@@ -238,9 +359,17 @@
         {
           "weight": 4,
           "units": [
-            "roadreaver",
+            "dunmarrow_deserter",
+            "fenroad_poacher",
+            "tollhouse_extortionist"
+          ]
+        },
+        {
+          "weight": 3,
+          "units": [
+            "reedbank_sellsword",
             "marsh_hound",
-            "fen_witch"
+            "blackfen_zealot"
           ]
         },
         {
@@ -254,29 +383,29 @@
         {
           "weight": 2,
           "units": [
-            "hollowroot_mite",
-            "hollowroot_mite",
-            "mire_stalker",
-            "fen_witch"
+            "dunmarrow_deserter",
+            "blackfen_zealot",
+            "fen_witch",
+            "reedbank_sellsword"
           ]
         },
         {
           "weight": 1,
           "units": [
-            "bog_ironbrute",
-            "fen_witch",
-            "mire_stalker"
+            "tollhouse_extortionist",
+            "blackfen_zealot",
+            "bog_ironbrute"
           ],
-          "commander": "bog_ironbrute"
+          "commander": "tollhouse_extortionist"
         }
       ],
-      "ambush_text": "Ambush! Marsh hounds break from the reeds as something moves beneath the black water."
+      "ambush_text": "Ambush! Marsh predators break from the reeds as armed deserters close the road."
     },
     "brinegate_coast": {
       "name": "Brinegate Coast",
       "base_battle": "battle_tideglass",
       "title": "Brinegate Coast Encounter",
-      "briefing": "The failing beacon has drawn shore-raiders and things from beneath the reef. The tide will not wait for the living.",
+      "briefing": "The failing beacon has drawn shore-raiders, harbour defectors and things from beneath the reef. The tide will not wait for the living.",
       "enemy_cells": [
         [
           13,
@@ -301,7 +430,7 @@
       ],
       "groups": [
         {
-          "weight": 5,
+          "weight": 4,
           "units": [
             "reef_crawler",
             "saltcutthroat_alt",
@@ -311,8 +440,16 @@
         {
           "weight": 4,
           "units": [
-            "saltcutthroat_alt",
-            "saltcutthroat_alt",
+            "saltreef_corsair",
+            "brinegate_crossbowman",
+            "tidebound_smuggler"
+          ]
+        },
+        {
+          "weight": 3,
+          "units": [
+            "harbor_enforcer",
+            "saltreef_corsair",
             "saltbow"
           ]
         },
@@ -321,15 +458,15 @@
           "units": [
             "reef_crawler",
             "drowned_sailor",
-            "brine_hexer"
+            "sevenflames_adept"
           ]
         },
         {
           "weight": 2,
           "units": [
             "tide_gnasher",
-            "reef_crawler",
-            "brine_hexer"
+            "exiled_marine",
+            "sevenflames_adept"
           ]
         },
         {
@@ -342,7 +479,7 @@
           "commander": "reef_matriarch"
         }
       ],
-      "ambush_text": "Ambush! Shore-raiders and reef-born things surge from the tide pools."
+      "ambush_text": "Ambush! Corsairs emerge from the sea grass as harbour defectors block the road."
     }
   }
 }
