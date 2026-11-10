@@ -191,10 +191,11 @@ func _test_empire_economy() -> void:
     var governance: Dictionary = EmpireEconomySystem.set_governance("keep", "local_compact", flags)
     check(bool(governance.get("ok", false)), "valid local governance can be appointed")
     check(not bool(EmpireEconomySystem.set_governance("keep", "tyranny", flags).get("ok", true)), "unknown governance models are rejected")
-    var definitions: Array = [{"id":"keep","turn_income":20,"garrison_upkeep":2,"recommended_garrison":2}]
+    var definitions: Array = [{"id":"keep","turn_income":20,"garrison_upkeep":2,"recommended_garrison":2,"economy":{"gold":20,"provisions":3,"materials":2}}]
     var turn: Dictionary = EmpireEconomySystem.advance_turn(definitions, flags, 100)
     check(bool(turn.get("ok", false)) and int(turn.get("income", 0)) == 20 and int(turn.get("upkeep", 0)) == 4, "empire turn calculates holding income, fixed upkeep and garrison upkeep")
     check(int(turn.get("treasury_after", 0)) == 116 and int(flags.get("holding_stability_keep", 0)) > 35, "turn pays net income and a sufficient garrison improves stability")
+    check(int(turn.get("provisions_gained", 0)) == 3 and int(turn.get("materials_gained", 0)) == 2 and int(flags.get("empire_stockpile_provisions", 0)) == 3 and int(flags.get("empire_stockpile_materials", 0)) == 2, "claimed holdings add provisions and materials to persistent stockpiles")
     flags["holding_owner_keep"] = "foreign_house"
     var lost: Dictionary = EmpireEconomySystem.advance_turn(definitions, flags, 100)
     check(int(lost.get("holdings_processed", -1)) == 0 and int(lost.get("treasury_after", 0)) == 100, "foreign-held locations stop producing player income and upkeep")
