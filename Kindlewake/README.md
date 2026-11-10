@@ -1,4 +1,4 @@
-> **LIVE PROJECT CHECKPOINT — 2026-11-10 (post-merge):** Canonical repository `ninjun42215-gif/KindleWake`; default branch `main`. PR #28 (v0.12.0 world expansion), PR #30 (Chapter I + creator fixes), PR #31 (verified CI handoff) and PR #32 (final post-merge handoff state) are merged. There is no active implementation branch for this milestone; inspect the live `main` ref before starting new work.
+> **LIVE PROJECT CHECKPOINT — 2026-11-10 (visual asset pass):** Canonical repository `ninjun42215-gif/KindleWake`; default branch `main`. PR #28 (v0.12.0 world expansion), PR #30 (Chapter I + creator fixes), PR #31 (verified CI handoff) and PR #32 (final post-merge handoff state) are merged. There is no active implementation branch for this milestone; inspect the live `main` ref before starting new work.
 >
 > **Project state:** Godot 4.2 / GL Compatibility, game and Android version `0.12.0`, Android version code `1200`, save schema `4`. Preserve all existing systems, JSON data and saves. No version/schema change was needed.
 >
@@ -184,3 +184,10 @@ docs/            GDD.md, SESSION_HANDOFF.md, CONTINUATION_PROMPT.md
 - The protagonist now starts with a weapon matching the selected preference. All eight preferences use common-tier gear; the four missing weapon families (spear, crossbow, staff and dagger) now have weapon and item definitions.
 - The four-member roster, companion equipment and shared starting inventory are unchanged. Existing save schema remains v2; only game-version metadata advanced.
 - Static checker and Android offline preflight pass. Godot runtime and balance tests remain unverified because Godot is unavailable in this environment.
+
+
+## 2026-11-10 — Premium environment asset pass
+
+- Added eight original KindleWake SVG settlement illustrations for the houses, frontier hut, keep and towers. `Art.world()` now loads these vector assets in place of the legacy voxel-building PNGs.
+- Updated the asset provenance ledger and art credits. The unverified voxel building pack is no longer used by the game; its old files remain in the repository only as historical material.
+- This is the first asset tranche, not a claim that the full game art is production-complete. Character portraits, player/companion sprites, enemy variety, dungeon set dressing, battle effects, UI iconography, and audio still need dedicated premium passes.
