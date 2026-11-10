@@ -2219,7 +2219,7 @@
         "#################",
         "#...............#",
         "#...............#",
-        "#...............#",
+        "#...1...........#",
         "#...............#",
         "#...............#",
         "#...............#",
@@ -2229,7 +2229,15 @@
         "#...............#",
         "########E########"
       ],
-      "doors": {},
+      "doors": {
+        "1": {
+          "to": "elderbough_watch_hall",
+          "spawn": [
+            6,
+            8
+          ]
+        }
+      },
       "spots": [
         {
           "cell": [
@@ -2269,7 +2277,7 @@
         "#################",
         "#...............#",
         "#...............#",
-        "#...............#",
+        "#...........1...#",
         "#...............#",
         "#...............#",
         "#...............#",
@@ -2279,7 +2287,15 @@
         "#...............#",
         "########E########"
       ],
-      "doors": {},
+      "doors": {
+        "1": {
+          "to": "redwater_storehouse",
+          "spawn": [
+            6,
+            8
+          ]
+        }
+      },
       "spots": [
         {
           "cell": [
@@ -2451,6 +2467,88 @@
           "text": "Ash fills the loft stairs, but the root cellar is sealed behind a firebreak door. A levy order lies beneath the grain scale. The guardian blocks the final chamber.",
           "battle_id": "battle_catacombs",
           "world_flag_on_victory": "dungeon_ashen_granary_cleared"
+        }
+      ]
+    },
+    "elderbough_watch_hall": {
+      "name": "Warden's Signal Hall",
+      "kind": "interior",
+      "entry": [
+        6,
+        8
+      ],
+      "rows": [
+        "#############",
+        "#...........#",
+        "#..###......#",
+        "#...........#",
+        "#.....+.....#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "######1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "elderbough_watch",
+          "spawn": [
+            4,
+            4
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            6,
+            3
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Bell Keeper",
+          "text": "Three bell calls govern the valley: fire, strangers and flood. The signal book is kept here, and no captain may alter it without the wardens' assent."
+        }
+      ]
+    },
+    "redwater_storehouse": {
+      "name": "Redwater Seed Store",
+      "kind": "interior",
+      "entry": [
+        6,
+        8
+      ],
+      "rows": [
+        "#############",
+        "#...........#",
+        "#..SSSSSS...#",
+        "#..S....S...#",
+        "#..S....S...#",
+        "#..SSSSSS...#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "######1######"
+      ],
+      "doors": {
+        "1": {
+          "to": "redwater_granary",
+          "spawn": [
+            12,
+            4
+          ]
+        }
+      },
+      "spots": [
+        {
+          "cell": [
+            6,
+            5
+          ],
+          "kind": "text",
+          "npc": true,
+          "name": "Seed Warden",
+          "text": "The seed vault is sealed through winter. Any governor who breaks the seal without the freeholders' vote will lose the granary's support."
         }
       ]
     }
