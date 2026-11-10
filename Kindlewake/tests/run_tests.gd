@@ -4,7 +4,7 @@ const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
-const EscapeSequenceUI = preload("res://scripts/ui/escape_sequence.gd")
+const EscapeLayoutScript = preload("res://scripts/ui/escape_layout.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
@@ -160,8 +160,8 @@ func _test_escape_ui_layout() -> void:
         Vector2(800, 360)
     ]
     for viewport_size in viewport_sizes:
-        var playable: Rect2 = EscapeSequenceUI.playable_rect_for_size(viewport_size)
-        var gate: Vector2 = EscapeSequenceUI.gate_position_for_size(viewport_size)
+        var playable: Rect2 = EscapeLayoutScript.playable_rect_for_size(viewport_size)
+        var gate: Vector2 = EscapeLayoutScript.gate_position_for_size(viewport_size)
         check(playable.has_point(gate), "postern gate remains in the playable area at %dx%d" % [int(viewport_size.x), int(viewport_size.y)])
         var clamped: Vector2 = Vector2(-100.0, viewport_size.y + 100.0).clamp(playable.position, playable.end - Vector2.ONE)
         check(playable.has_point(clamped), "tap targets clamp inside the playable area at %dx%d" % [int(viewport_size.x), int(viewport_size.y)])
