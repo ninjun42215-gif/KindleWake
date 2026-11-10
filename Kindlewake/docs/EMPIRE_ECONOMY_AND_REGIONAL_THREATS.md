@@ -99,3 +99,23 @@ The campaign state now supports a persistent siege objective lifecycle: stage an
 - Ilyr — The Last Cantor
 
 These are validated encounter briefs, not yet playable battle definitions. Each still needs a compatible tactical map, battle roster using existing character/unit IDs, phase-trigger scripting, hazard resolution and victory/aftermath integration before it can be launched as a boss fight.
+
+
+## Development, recruitment and siege systems
+
+The empire development layer is implemented in `scripts/core/empire_development_system.gd` and exposed through GameState and the Holdings screen.
+
+- Granary farms: spend gold and materials to add recurring provisions.
+- Civic workshops: add recurring gold.
+- Chartered trade posts: add a larger recurring gold yield.
+- Fortifications: improve holding stability each empire turn.
+- Buildings have three tiers; each successive tier scales its gold and material cost.
+- Recruitment converts gold and provisions into Frontier Levy, March Archer or Household Knight reserves.
+- Recruited reserves can be assigned into the holding garrison; garrison upkeep remains charged on explicit empire turns.
+- Foreign-owned holdings reject player development, recruitment, garrison changes and governance changes.
+
+Siege progression is an explicit objective state machine. A player holding can stage an objective, record incremental progress, and resolve the encounter only after the objective is complete. Resolution records whether the assault succeeded or was repelled; it does not silently transfer ownership. Authored battle and treaty outcomes remain responsible for sovereignty changes.
+
+## Seven regional boss encounter briefs
+
+`data/regional_boss_encounters.json` is now loaded by GameData and contains a three-phase encounter brief for each continent. Each brief defines its arena, hazards, phase objectives and counterplay. These are authored encounter specifications, not yet fully playable boss battle scenes or battle rosters. The data validation test checks all seven records and their phase structure.
