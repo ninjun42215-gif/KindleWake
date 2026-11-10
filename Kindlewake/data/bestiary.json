@@ -1,0 +1,319 @@
+{
+  "schema_version": 1,
+  "title": "The Sevenfold Bestiary",
+  "design_rules": [
+    "Regional ecology and local history determine enemy identity.",
+    "Humanoid factions remain politically grounded; monsters are rare and tied to place.",
+    "Enemy roles use existing classes, weapons, stats and combat rules; no unimplemented status mechanics are implied.",
+    "Atlas-only territories are lore records until their regions become playable."
+  ],
+  "species": {
+    "marsh_hound": {
+      "name": "Marsh Hound",
+      "family": "beast",
+      "territory": "Sallow Marches",
+      "role": "pack flanker",
+      "threat_tier": 1,
+      "battle_character_id": "marsh_hound",
+      "lore": "Lean marsh predators that follow wounded travellers through reed beds."
+    },
+    "mire_stalker": {
+      "name": "Mire Stalker",
+      "family": "beast",
+      "territory": "Sallow Marches",
+      "role": "ambusher",
+      "threat_tier": 2,
+      "battle_character_id": "mire_stalker",
+      "lore": "A long-limbed hunter that waits beneath black water and strikes at the last traveller in a column."
+    },
+    "fen_witch": {
+      "name": "Fen Hag",
+      "family": "coven",
+      "territory": "Sallow Marches",
+      "role": "ranged hexer",
+      "threat_tier": 2,
+      "battle_character_id": "fen_witch",
+      "lore": "A hedge sorcerer who bargains with the drowned and marks trespassers with ash."
+    },
+    "bog_ironbrute": {
+      "name": "Bog Ironbrute",
+      "family": "aberration",
+      "territory": "Sallow Marches",
+      "role": "armoured bruiser",
+      "threat_tier": 3,
+      "battle_character_id": "bog_ironbrute",
+      "lore": "A corpse sealed inside rusted tollhouse plate, animated by the marsh's old boundary oath."
+    },
+    "hollowroot_mite": {
+      "name": "Hollowroot Broodling",
+      "family": "vermin",
+      "territory": "Orrowen Weald",
+      "role": "swarm skirmisher",
+      "threat_tier": 1,
+      "battle_character_id": "hollowroot_mite",
+      "lore": "Pale root-mites nest in the tunnels beneath the Greenward Gate and swarm torchlight."
+    },
+    "thornstalker": {
+      "name": "Thornstalker",
+      "family": "beast",
+      "territory": "Orrowen Weald",
+      "role": "forest ambusher",
+      "threat_tier": 3,
+      "battle_character_id": "thornstalker",
+      "lore": "A lean antlered predator whose bark-coloured hide disappears among the thorn hedges."
+    },
+    "briar_wolf": {
+      "name": "Briar Wolf",
+      "family": "beast",
+      "territory": "Orrowen Weald",
+      "role": "pack hunter",
+      "threat_tier": 2,
+      "battle_character_id": "briar_wolf",
+      "lore": "Wolves of the old weald carry thorn burrs in their coats and drive prey toward ravines."
+    },
+    "antler_guardian": {
+      "name": "Antlered Barrow Guardian",
+      "family": "bound dead",
+      "territory": "Orrowen Weald",
+      "role": "elite sentinel",
+      "threat_tier": 4,
+      "battle_character_id": "antler_guardian",
+      "lore": "A barrow sentinel bound to the antler seal; it rises only when the old graves are disturbed."
+    },
+    "redwater_raider": {
+      "name": "Redwater Cutthroat",
+      "family": "raider",
+      "territory": "Vessmoor Plains",
+      "role": "melee raider",
+      "threat_tier": 2,
+      "battle_character_id": "redwater_raider",
+      "lore": "A toll-road robber who wears stolen Vessmoor colours to frame the local garrisons."
+    },
+    "ash_carrion_hawk": {
+      "name": "Ashwing Carrion Hawk",
+      "family": "beast",
+      "territory": "Vessmoor Plains",
+      "role": "fast ranged hunter",
+      "threat_tier": 2,
+      "battle_character_id": "ash_carrion_hawk",
+      "lore": "A scavenger bird with soot-grey feathers that circles battlefields before the fighting ends."
+    },
+    "frostbound": {
+      "name": "Frostbound Reaver",
+      "family": "bound dead",
+      "territory": "Nhalor",
+      "role": "heavy shock troop",
+      "threat_tier": 3,
+      "battle_character_id": "frostbound",
+      "lore": "A dead border soldier preserved in blue ice, still obeying a commander long buried."
+    },
+    "glass_scorpion": {
+      "name": "Glass Dune Scorpion",
+      "family": "beast",
+      "territory": "Varakhan",
+      "role": "venomous flanker",
+      "threat_tier": 3,
+      "battle_character_id": "glass_scorpion",
+      "lore": "A translucent desert scorpion that hunts beneath salt crust and broken glass."
+    },
+    "saltcutthroat_alt": {
+      "name": "Saltmarsh Cutthroat",
+      "family": "raider",
+      "territory": "Brinegate Coast",
+      "role": "mobile duelist",
+      "threat_tier": 2,
+      "battle_character_id": "saltcutthroat_alt",
+      "lore": "A shore-raider paid to keep the beacon road empty and the harbour frightened."
+    },
+    "drowned_sailor": {
+      "name": "Drowned Deckhand",
+      "family": "drowned",
+      "territory": "Brinegate Coast",
+      "role": "durable melee",
+      "threat_tier": 2,
+      "battle_character_id": "drowned_sailor",
+      "lore": "A sailor lost beneath the Northstar wreck, returned with weed in his lungs and salt in his eyes."
+    },
+    "reef_crawler": {
+      "name": "Reef Crawler",
+      "family": "aberration",
+      "territory": "Brinegate Coast",
+      "role": "fast skirmisher",
+      "threat_tier": 2,
+      "battle_character_id": "reef_crawler",
+      "lore": "A many-jointed cave scavenger that clings to wet stone above the tide line."
+    },
+    "brine_hexer": {
+      "name": "Brine Hexer",
+      "family": "coven",
+      "territory": "Brinegate Coast",
+      "role": "ranged controller",
+      "threat_tier": 3,
+      "battle_character_id": "brine_hexer",
+      "lore": "A tide-cult adept who studies the Seven Flames seal and twists old beacon rites."
+    },
+    "tide_gnasher": {
+      "name": "Tide Gnasher",
+      "family": "aberration",
+      "territory": "Brinegate Coast",
+      "role": "frontline bruiser",
+      "threat_tier": 3,
+      "battle_character_id": "tide_gnasher",
+      "lore": "A reef-born predator drawn inland by the failing beacon and the smell of blood."
+    },
+    "reef_matriarch": {
+      "name": "Reef Matriarch",
+      "family": "aberration",
+      "territory": "Brinegate Coast",
+      "role": "regional boss",
+      "threat_tier": 5,
+      "battle_character_id": "reef_matriarch",
+      "lore": "An ancient creature beneath the outer reef; its shell bears the same seven-cut mark as the drowned vault."
+    }
+  },
+  "regions": {
+    "sethmarch": {
+      "name": "Sethmarch — Sallow Marches",
+      "base_battle": "battle_01",
+      "title": "Sallow Marches Encounter",
+      "briefing": "The marsh roads conceal hungry beasts, oath-bound dead and desperate outcasts. Read the enemy line before crossing the ford.",
+      "enemy_cells": [
+        [
+          9,
+          2
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          7,
+          2
+        ]
+      ],
+      "groups": [
+        {
+          "weight": 5,
+          "units": [
+            "marsh_hound",
+            "marsh_hound",
+            "mire_stalker"
+          ]
+        },
+        {
+          "weight": 4,
+          "units": [
+            "roadreaver",
+            "marsh_hound",
+            "fen_witch"
+          ]
+        },
+        {
+          "weight": 3,
+          "units": [
+            "mire_stalker",
+            "bog_ironbrute",
+            "roadbowman"
+          ]
+        },
+        {
+          "weight": 2,
+          "units": [
+            "hollowroot_mite",
+            "hollowroot_mite",
+            "mire_stalker",
+            "fen_witch"
+          ]
+        },
+        {
+          "weight": 1,
+          "units": [
+            "bog_ironbrute",
+            "fen_witch",
+            "mire_stalker"
+          ],
+          "commander": "bog_ironbrute"
+        }
+      ]
+    },
+    "brinegate_coast": {
+      "name": "Brinegate Coast",
+      "base_battle": "battle_tideglass",
+      "title": "Brinegate Coast Encounter",
+      "briefing": "The failing beacon has drawn shore-raiders and things from beneath the reef. The tide will not wait for the living.",
+      "enemy_cells": [
+        [
+          13,
+          4
+        ],
+        [
+          10,
+          3
+        ],
+        [
+          8,
+          4
+        ],
+        [
+          12,
+          3
+        ],
+        [
+          14,
+          5
+        ]
+      ],
+      "groups": [
+        {
+          "weight": 5,
+          "units": [
+            "reef_crawler",
+            "saltcutthroat_alt",
+            "drowned_sailor"
+          ]
+        },
+        {
+          "weight": 4,
+          "units": [
+            "saltcutthroat_alt",
+            "saltcutthroat_alt",
+            "saltbow"
+          ]
+        },
+        {
+          "weight": 3,
+          "units": [
+            "reef_crawler",
+            "drowned_sailor",
+            "brine_hexer"
+          ]
+        },
+        {
+          "weight": 2,
+          "units": [
+            "tide_gnasher",
+            "reef_crawler",
+            "brine_hexer"
+          ]
+        },
+        {
+          "weight": 1,
+          "units": [
+            "reef_matriarch",
+            "drowned_sailor",
+            "brine_hexer"
+          ],
+          "commander": "reef_matriarch"
+        }
+      ]
+    }
+  }
+}
