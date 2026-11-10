@@ -273,3 +273,124 @@ Use these detailed references rather than relying on this summary alone:
 - [Base44 start here](BASE44_START_HERE.md).
 
 **Rule:** When source code, tests and the GDD disagree, inspect the live code and test evidence, then record the discrepancy and update the bible. Never silently change an established mechanic.
+
+
+## 15. Post-campaign generational dynasty system — locked until the true ending
+
+**Status: DESIGNED / REQUESTED. Not verified implemented.** This is a distinct post-campaign mode. It must not be folded into the main campaign character progression or unlocked early.
+
+### 15.1 Exact unlock gate and state transition
+
+The system is locked unless the save records every required milestone:
+- main campaign completion flag;
+- protagonist reached the ending path in which they become the last Emperor;
+- empire dissolution charter enacted and chronicle entry written;
+- post-ending late-life sequence completed;
+- protagonist's death cause is natural old age;
+- a valid succession candidate or a deliberate no-heir succession resolution exists.
+
+A battle death, scripted sacrifice, defeat, retirement, skipped epilogue or ordinary ending without the Emperor-and-dissolution sequence must not unlock dynasty mode. The UI should foreshadow the Chronicle as sealed/locked only if useful, but must not expose playable marriage, children, inheritance or noble-house management before the gate.
+
+On valid death, create an immutable Founder Chronicle record, calculate the succession according to the recorded succession law, then transition to the first successor. Preserve the completed main-campaign save as a read-only historical origin and create a separate generational campaign state. Never overwrite the original ending record.
+
+### 15.2 Core generational loop
+
+A generation should support this loop:
+1. Review inherited house chronicle, family tree, titles, holdings, debts, alliances and unresolved claims.
+2. Manage the current head and household: education, guardianship, marriage proposals, household roles and personal ambitions.
+3. Govern the domain: taxes, food, infrastructure, justice, garrisons, trade, public works and local stability.
+4. Fulfil obligations to the Concord and neighbouring realms.
+5. Resolve events through diplomacy, personal decisions, investigations, military action or tactical battles.
+6. Develop the current generation's skills, traits, relationships and reputation.
+7. Age, retire, die or be succeeded; resolve inheritance and record the consequences.
+8. Continue as the next eligible heir or chosen successor.
+
+Time advances in a readable calendar (monthly/seasonal turns are a suitable starting point). Characters age every turn; important events must be surfaced before irreversible outcomes. Do not simulate decades in a single opaque tick.
+
+### 15.3 Characters, family and life cycle
+
+Characters require stable IDs and explicit relationships: parent, child, spouse, guardian, adopted child, sibling, half-sibling, cousin, legitimised child and house member. Track birth date/age, health, education, traits, skills, class, culture/region, faith/worldview where relevant, loyalty, relationships, titles, claims, holdings, life status and cause of death.
+
+Life-cycle stages should include childhood, adolescence, adulthood, maturity, old age and death, with culturally authored age ranges. Children are not combat units by default. Their gameplay should focus on education, guardianship, relationships, events and future choices; only appropriate adults enter military roles.
+
+Marriage must be consensual in narrative framing and represented through proposals, compatibility, personal agency and political consequences. Do not reduce spouses to breeding/stat optimisation. Marriage can create alliances, divided loyalties, claims, household changes and emotional storylines. Include celibate, unmarried, adopted and childless paths without a dead-end.
+
+### 15.4 Hereditary traits, skills and bloodline
+
+Build on the requested CK-style trait system, but separate:
+- **inherited predispositions:** limited probabilities for selected temperament, aptitude or rare family traits;
+- **learned traits:** gained through upbringing, mentors, education, profession and lived choices;
+- **life-event traits:** gained or removed through hardship, service, injury, grief, recovery and achievement;
+- **house traditions:** non-genetic cultural practices that descendants can learn or reject.
+
+A child must not simply copy the parent's full stats. Use bounded inheritance ranges, individual variation, environment and training. Avoid guaranteed perfect heirs or runaway stat inflation. Traits must have provenance, acquisition/removal rules, exclusivity, caps and visible effects. Some traits may skip generations or be expressed differently; inherited traits should never be deterministic proof of superiority.
+
+### 15.5 Nobility, titles and domains
+
+Use a flexible rank model: Landed Gentry → Knight/Dame → Baron/Baroness → Viscount/Viscountess → Count/Earl → Marquess → Duke/Duchess → Archduke/Archduchess. Prince/Princess and High Protector/First Warden are realm-specific or constitutional offices, not automatic rungs above Duke. Emperor is abolished and must not return as an ordinary purchasable/inheritable title.
+
+Each title record must define:
+- stable title ID, local name, rank/tier and culture;
+- jurisdiction and associated holdings;
+- source of legitimacy (grant, election, inheritance, marriage claim, conquest recognised by law, or service);
+- duties, taxes/revenue, levies, public works and defence obligations;
+- privileges and legal limits;
+- liege/compact obligations where applicable;
+- succession and revocation rules;
+- prestige/reputation effects and dispute process.
+
+A title does not itself equal a territory. Domain, title, claim, occupation and legal control are distinct. A baron can hold a title but be dispossessed; a count may govern a county with contested claims; a knight may own an estate without holding a noble title.
+
+### 15.6 House, domain and realm management
+
+A house has a head, members, cadet branches, family reputation, treasury, debts, traditions, heraldry, seat, claims, alliances and historical chronicle. Domain management should reuse the existing territory/faction/economy foundations rather than create parallel state.
+
+Domain metrics should be individually legible: treasury, food reserves, prosperity, stability, legitimacy, public trust, infrastructure, defence, local relations and obligations. Events need cause-and-effect forecasts. Taxes and levies create trade-offs, not free income. Neglect, famine, unjust law, corruption or military occupation should create understandable consequences and opportunities to repair harm.
+
+### 15.7 Succession and inheritance
+
+Succession law is a core player choice and a source of story:
+- equal partition among eligible heirs;
+- seniority within the house;
+- primogeniture with configurable gender-neutral or realm-specific rules;
+- elective succession among eligible house members or recognised office-holders;
+- designated heir with lawful confirmation;
+- adoption/chosen successor;
+- collateral-branch succession when the direct line ends.
+
+Do not hard-code one child-count/title table. Resolve succession by title-specific law, legitimacy, parentage/adoption, age/eligibility, claims, prior grants, wills/charters and recorded events. Show a preview before confirmation, including who inherits each title/holding, what becomes contested, and who receives compensation. Prevent accidental title duplication. If a title has no eligible heir, it may revert to the granting realm, pass to a lawful collateral claimant or become disputed according to its charter.
+
+Younger children need meaningful paths: command, scholarship, diplomacy, clergy/civic service, marriage alliance, estate stewardship, mercenary service, founding a cadet branch or pressing a claim. They should not become useless roster leftovers.
+
+### 15.8 Reputation, diplomacy and social mobility
+
+Keep realm/faction reputation separate from personal renown, house standing, legal legitimacy and local trust. They may influence invitations, marriage negotiations, title grants, trade, court access and arbitration, but high reputation must not guarantee every outcome.
+
+Titles can be earned through service, lawful grant, election, recognised inheritance or a costly political settlement. Do not make every title a shop purchase. A common-born character may rise through service, while a noble may lose standing through misconduct. Marriage can open doors but must not be the only route to advancement.
+
+### 15.9 War, injuries, aging and death
+
+Generational characters age and eventually die. Retirement is a player-facing transition, not a silent deletion. Injuries can affect recovery, capability and story; permanent wounds must be rare, clearly explained and never stacked into an unavoidable punishment spiral. Death in battle should have clear rules and memorial/estate consequences; only the founder's specific natural-old-age death triggers the first unlock.
+
+Wars should connect domain-level causes to existing tactical combat. A house may defend a keep, escort supplies, suppress banditry, support a liege, contest a border or refuse an unjust levy. Use named commanders and record casualties, captures, ransom, surrender, occupation and aftermath.
+
+### 15.10 Chronicle and presentation
+
+Required views: family tree; current household; character dossier; title/domain map; succession preview; house ledger; court/diplomacy; event chronicle; memorial. Each generation needs a concise year/season recap and a full life record on death. Use original KindleWake visual language and mobile-readable screens.
+
+### 15.11 Save architecture and testing
+
+Use a distinct versioned generational save profile linked to, but not mutating, the completed campaign origin. Add safe migration, deterministic succession tests, family-graph integrity checks, title uniqueness/claim tests, aging/death tests, save-load round trips and long-horizon simulation/balance tests. Offline local JSON/save architecture remains mandatory.
+
+Acceptance tests must prove:
+- every invalid ending/death path remains locked;
+- only the specified Emperor → dissolution → natural old-age death path unlocks;
+- a valid heir can inherit without corrupting the original campaign;
+- adoption and non-biological succession work;
+- partition and non-partition laws resolve consistently;
+- no title or holding is duplicated;
+- family graph has no impossible parent cycles;
+- old campaign saves load unchanged;
+- long simulations do not create runaway wealth, population, stats or title inflation.
+
+Do not implement the entire generational system as one large feature. After source audit, build vertical slices: (1) ending gate and immutable founder chronicle, (2) family graph and life-cycle data, (3) one household and succession law, (4) one barony domain loop, (5) expanded titles/realms, (6) long-horizon events and wars.
