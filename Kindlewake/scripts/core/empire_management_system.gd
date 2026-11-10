@@ -379,6 +379,9 @@ static func advance_season(state: Dictionary, province_ids: Array, adjacency: Di
 		state["public_order"] = mini(100, int(state["public_order"]) + 2)
 	if state["policies"].has("tolerance"):
 		state["stability"] = mini(100, int(state["stability"]) + 2)
+	if int(state.get("war_exhaustion", 0)) >= 70:
+		state["stability"] = maxi(0, int(state["stability"]) - 2)
+		state["public_order"] = maxi(0, int(state["public_order"]) - 2)
 	state["turn"] = int(state["turn"]) + 1
 	var siege_report := _advance_sieges(state, province_ids)
 	var report := {"ok": true, "season": state["turn"], "sieges_advanced": siege_report["advanced"], "sieges_completed": siege_report["completed"], "war_exhaustion": int(state.get("war_exhaustion", 0)), "income": income, "upkeep": upkeep, "food_change": food_gain - province_ids.size() * 8 - military_food, "defence": defence, "military_upkeep": int(military["upkeep"]), "military_food": military_food, "troops": int(military["troops"]), "supply_losses": supply_losses, "food_shortage": food_shortage}
