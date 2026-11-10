@@ -217,19 +217,10 @@ func start_campaign_siege(target_holding_id: String) -> bool:
 
 ## A victorious siege establishes provisional location-level control and records the displaced authority.
 func capture_holding_after_siege(target_holding_id: String, source_holding_id: String, objective_id: String) -> bool:
-    var siege: Dictionary = world_flags.get("siege_" + objective_id, {})
-    if str(siege.get("status", "")) != "resolved" or str(siege.get("origin", "")) != source_holding_id:
+    var result: Dictionary = EmpireDevelopmentSystem.capture_holding_after_siege(target_holding_id, source_holding_id, objective_id, world_flags, GameData.world_expansion.get("capturable_locations", []))
+    if not bool(result.get("ok", false)):
         return false
-    var target: Dictionary = {}
-    for definition in GameData.world_expansion.get("capturable_locations", []):
-        if str(definition.get("id", "")) == target_holding_id:
-            target = definition
-            break
-    if target.is_empty():
-        return false
-    if bool(world_flags.get("holding_claimed_" + target_holding_id, false)) and str(world_flags.get("holding_owner_" + target_holding_id, "")) == "house_dunmarrow":
-        return false
-    var old_owner := str(world_flags.get("holding_owner_" + target_holding_id, target.get("owner", "unknown")))
+    var old_owner := str(result.get("old_owner", ""))
     var displaced_faction := ""
     for faction in GameData.factions.get("factions", []):
         var faction_name := str(faction.get("name", "")).to_lower()
@@ -239,16 +230,6 @@ func capture_holding_after_siege(target_holding_id: String, source_holding_id: S
             break
     if displaced_faction != "" and displaced_faction != "house_dunmarrow":
         FactionSystem.adjust_relation(faction_state, "house_dunmarrow", displaced_faction, -12, "holding_captured_by_siege")
-    world_flags["holding_claimed_" + target_holding_id] = true
-    world_flags["holding_owner_" + target_holding_id] = "house_dunmarrow"
-    world_flags["holding_status_" + target_holding_id] = "provisional"
-    world_flags["holding_stability_" + target_holding_id] = 25
-    world_flags["holding_governance_" + target_holding_id] = "appointed_warden"
-    world_flags["holding_previous_owner_" + target_holding_id] = old_owner
-    var history: Array = world_flags.get("holding_history", [])
-    history.append({"holding":target_holding_id,"old_owner":old_owner,"new_owner":"house_dunmarrow","cause":"siege_victory","source":source_holding_id,"empire_turn":int(world_flags.get("empire_turn", 0))})
-    world_flags["holding_history"] = history
-    world_flags["holding_captured_by_siege_" + target_holding_id] = true
     return true
 
 
