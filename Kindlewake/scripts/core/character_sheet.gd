@@ -35,7 +35,7 @@ var enhancements: Dictionary = {}  # equipment slot -> +0..+15   # group -> Arra
 var reward: Dictionary = {}              # enemies only: {"exp","ap","gold"} paid when defeated
 
 
-static func from_def(char_id: String, def: Dictionary) -> CharacterSheet:
+static func from_def(char_id: String, def: Dictionary) -> Variant:
     var s = load("res://scripts/core/character_sheet.gd").new()
     s.character_id = char_id
     s.display_name = str(def.get("name", char_id))
@@ -166,8 +166,8 @@ func derived(db: Dictionary) -> Dictionary:
 
 ## A throw-away copy of this character wearing `item_id` in `slot` (pass "" to take the slot's item off).
 ## Used by the party screen to preview what a change would do; the original sheet is never touched.
-func with_item(slot: String, item_id: String, items: Dictionary) -> CharacterSheet:
-    var copy: CharacterSheet = CharacterSheet.from_dict(to_dict())
+func with_item(slot: String, item_id: String, items: Dictionary) -> Variant:
+    var copy: Variant = load("res://scripts/core/character_sheet.gd").call("from_dict", to_dict())
     copy.equipment[slot] = item_id
     copy.fit_sockets(items)
     return copy
@@ -290,8 +290,8 @@ func to_dict() -> Dictionary:
     }
 
 
-static func from_dict(d: Dictionary) -> CharacterSheet:
-    var s := CharacterSheet.new()
+static func from_dict(d: Dictionary) -> Variant:
+    var s = load("res://scripts/core/character_sheet.gd").new()
     s.character_id = str(d.get("character_id", ""))
     s.display_name = str(d.get("name", s.character_id))
     s.house = str(d.get("house", ""))
