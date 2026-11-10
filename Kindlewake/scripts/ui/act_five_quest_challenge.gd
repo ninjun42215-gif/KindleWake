@@ -138,8 +138,17 @@ func _resolve_fire(fire: String, response: String) -> void:
  if _apply(System.resolve_fire(GameState.world_flags,fire,response)):
   _render()
 func _audience(decision: String) -> void:
- if _apply(System.resolve_audience(GameState.world_flags,decision)):
-  _render()
+ if not _apply(System.resolve_audience(GameState.world_flags,decision)):
+  return
+ var milestones := ["campaign_completed","became_last_emperor","empire_dissolved"]
+ for milestone in milestones:
+  if not GameState.record_chronicle_milestone(milestone):
+   status_label.text = "The ending was saved, but the founder chronology rejected milestone: " + milestone
+   GameState.save_campaign("auto_a")
+   _render()
+   return
+ GameState.save_campaign("auto_a")
+ _render()
 func _end(message: String) -> void:
  title_label.text = "THE KINDLING"
  body_label.text = message
