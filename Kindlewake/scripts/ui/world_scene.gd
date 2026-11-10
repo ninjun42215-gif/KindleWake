@@ -2,6 +2,7 @@ extends Node2D
 
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
+const EmpireScreenScript = preload("res://scripts/ui/empire_screen.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
@@ -47,6 +48,8 @@ var leader_exp_bar: ProgressBar
 var company_btn: Button
 var manual_save_btn: Button
 var global_atlas_btn: Button
+var empire_btn: Button
+var empire_screen: EmpireScreenScript
 var prompt_btn: Button
 var place_panel: PanelContainer
 var place_title: Label
@@ -741,6 +744,9 @@ func _apply_safe_area() -> void:
     if global_atlas_btn != null:
         global_atlas_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0)
         global_atlas_btn.add_theme_font_size_override("font_size", 14 if compact else 17)
+    if empire_btn != null:
+        empire_btn.custom_minimum_size = Vector2(clampf(vw * 0.16, 130.0, 190.0), 48.0)
+        empire_btn.add_theme_font_size_override("font_size", 14 if compact else 17)
     if prompt_btn != null:
         prompt_btn.custom_minimum_size = Vector2(clampf(vw * 0.42, 230.0, 380.0), 64.0 if compact else 68.0)
         prompt_btn.add_theme_font_size_override("font_size", 20 if compact else 28)
@@ -804,6 +810,11 @@ func _build_ui() -> void:
     root.add_child(global_atlas_btn)
     global_atlas_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 144)
     global_atlas_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    empire_btn = _btn("HOLDINGS", _open_empire, 17)
+    empire_btn.custom_minimum_size = Vector2(190, 48)
+    root.add_child(empire_btn)
+    empire_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 204)
+    empire_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 
     # Top-centre: ambush banner
     banner = _hud_panel(0.95)
@@ -868,6 +879,29 @@ func _build_ui() -> void:
     party_screen.visible = false
     party_screen.closed.connect(_on_party_closed)
 
+    empire_screen = EmpireScreenScript.new()
+    root.add_child(empire_screen)
+    empire_screen.setup(GameData.world_expansion.get("capturable_locations", []))
+    empire_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    empire_screen.visible = false
+    empire_screen.closed.connect(_on_empire_closed)
+
+
+
+func _open_empire() -> void:
+    if panel_open or party_screen.visible or ambush_timer >= 0.0:
+        return
+    has_target = false
+    pressing = false
+    GameState.world_pos = wmap.wrap_position(player_pos)
+    GameState.save_campaign("auto_a")
+    panel_open = true
+    empire_screen.open()
+
+
+func _on_empire_closed() -> void:
+    panel_open = false
+    _update_hud()
 
 
 func _open_world_atlas() -> void:
