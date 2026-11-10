@@ -165,7 +165,7 @@ func _test_art_assets() -> void:
 func _test_companion_quests() -> void:
     print("[companion quests]")
     var catalog := {"quests": gd.companion_quests, "world_flags": {}}
-    check(gd.companion_quests.size() == 22, "all 22 recruitable companion quest definitions load")
+    check(gd.companion_quests.size() == 21, "all 21 catalogue-backed companion quest definitions load")
     var ids_ok := true
     var recruited_ids: Array[String] = []
     for character_id in gd.characters.keys():
@@ -191,6 +191,7 @@ func _test_companion_quests() -> void:
     var bespoke_quest_companions: Array[String] = ["neris_quell"]
     recruited_ids = recruited_ids.filter(func(id): return not bespoke_quest_companions.has(id))
     check(ids_ok and recruited_ids.size() == covered_ids.size() and recruited_ids.all(func(id): return covered_ids.has(id)), "every recruitable companion without a dedicated quest system has exactly one catalogue quest; Neris uses her existing bespoke route")
+    check(str(gd.companion_quests["q_companion_maren_tideglass_wake"].get("required_flags_all", [])[0]) == MarenQuestSystem.COMPLETE_FLAG, "Maren's catalogue sequel uses the existing Northstar quest completion flag")
     check(ids_ok, "every quest resolves to a recruitable character and has milestones and outcomes")
     var state: Dictionary = {}
     var quest_id := "q_companion_brisa_hearth_of_names"
@@ -205,12 +206,6 @@ func _test_companion_quests() -> void:
     var maren_catalog := {"quests": gd.companion_quests, "world_flags": {"maren_signal_completed": true}}
     var maren_started := CompanionQuestSystem.start(maren_locked_state, "q_companion_maren_tideglass_wake", ["torren", "maren_vey"], maren_catalog)
     check(bool(maren_started.get("ok", false)), "Maren's follow-up unlocks after the existing Northstar quest resolves")
-    var neris_locked_state: Dictionary = {}
-    var neris_locked := CompanionQuestSystem.start(neris_locked_state, "q_companion_neris_light_kept", ["torren", "neris_quell"], catalog)
-    check(not bool(neris_locked.get("ok", false)) and neris_locked_state.is_empty(), "Neris's keeper charter story stays locked until her second-beacon quest is complete")
-    var neris_catalog := {"quests": gd.companion_quests, "world_flags": {NerisQuestSystem.COMPLETE_FLAG: true}}
-    var neris_started := CompanionQuestSystem.start(neris_locked_state, "q_companion_neris_light_kept", ["torren", "neris_quell"], neris_catalog)
-    check(bool(neris_started.get("ok", false)), "Neris's follow-up unlocks after her existing second-beacon quest resolves")
     check(not bool(CompanionQuestSystem.advance(state, quest_id, "families_contacted", catalog).get("ok", false)), "out-of-order milestones are rejected")
     check(bool(CompanionQuestSystem.advance(state, quest_id, "ledger_recovered", catalog).get("ok", false)), "first companion quest milestone advances")
     check(bool(CompanionQuestSystem.advance(state, quest_id, "families_contacted", catalog).get("ok", false)), "second companion quest milestone advances")
@@ -285,7 +280,6 @@ func _test_companion_quests() -> void:
         "q_companion_corwin_heirless_seal": {"cindermead": "seal_forgery_found", "cindermead_inn": "charter_authority_audited", "cindermead_market": "retainers_heard"},
         "q_companion_ilyan_silent_tower": {"dungeon_bell": "missing_page_found", "dungeon_hollowroot": "rune_experiment_contained", "dungeon_catacombs": "apprentice_reached"},
         "q_companion_maren_tideglass_wake": {"brinegate": "ledger_page_found", "saltmere": "safe_route_plotted", "dungeon_northstar_wreck": "wreck_manifest_recovered"},
-        "q_companion_neris_light_kept": {"lantern_quay": "keeper_ledger_recovered", "saltmere": "pilot_watch_verified", "brinegate": "beacon_charter_heard"},
         "q_companion_seraphine_measure_of_oaths": {"tarnholt": "unread_oath_found", "tarnholt_inn": "order_records_examined", "tarnholt_chapter_house": "chapter_house_heard"}
     }
     var authored_hooks_ok := true
@@ -323,7 +317,7 @@ func _test_companion_quests() -> void:
             playable_summaries_ok = false
     check(playable_summaries_ok, "all twenty-two authored companion quest routes have journal summaries")
     var playable_flags_ok := true
-    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal", "q_companion_ilyan_silent_tower", "q_companion_maren_tideglass_wake", "q_companion_neris_light_kept"]:
+    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal", "q_companion_ilyan_silent_tower", "q_companion_maren_tideglass_wake"]:
         var playable_definition: Dictionary = gd.companion_quests[playable_id]
         var playable_flags: Dictionary = playable_definition.get("outcome_flags", {})
         if playable_flags.size() != (playable_definition.get("outcomes", []) as Array).size():
@@ -2227,6 +2221,13 @@ func _test_campaign_save_semantic_backup_fallback() -> void:
         "faction_state": {},
         "companion_relationships": {}
     }
+    check(RegionSaveState.is_valid_campaign_payload(valid_payload), "campaign save fixture remains valid with optional companion quest data omitted")
+    var valid_quest_payload: Dictionary = valid_payload.duplicate(true)
+    valid_quest_payload["companion_quests"] = {"q_companion_brisa_hearth_of_names": {"status": "active", "progress": 1}}
+    check(RegionSaveState.is_valid_campaign_payload(valid_quest_payload), "campaign saves accept companion quest progress as an optional dictionary")
+    var malformed_quest_payload: Dictionary = valid_payload.duplicate(true)
+    malformed_quest_payload["companion_quests"] = ["invalid"]
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_quest_payload), "campaign restore rejects malformed companion quest containers")
 
     var malformed_history: Dictionary = valid_payload.duplicate(true)
     malformed_history["party"]["sheets"]["torren"]["trait_history"] = ["bad-entry"]
