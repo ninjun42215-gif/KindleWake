@@ -54,7 +54,9 @@ func _initialize() -> void:
  var title := Dynasty.create_title(state,"viscount","Viscount of the Western Orchards","heir_2",str(domain.domain_id))
  check(bool(title.ok),"next noble rank can be established with jurisdiction and duties")
  state = title.state
- check(bool(Dynasty.assign_title(state,"founder_barony","heir_2").ok),"existing title can be granted to a living family member")
+ var reassigned_title := Dynasty.assign_title(state,"founder_barony","heir_2")
+ check(bool(reassigned_title.ok),"existing title can be granted to a living family member")
+ state = reassigned_title.state
  var saved: Variant = JSON.parse_string(JSON.stringify(state))
  var restored := Dynasty.normalize_state(saved)
  check(not restored.is_empty() and restored.people.size() == state.people.size(),"family and relationship state survives JSON save normalization")
@@ -63,16 +65,20 @@ func _initialize() -> void:
  var aged := restored.duplicate(true)
  aged.people["heir_2"].age = Dynasty.NATURAL_OLD_AGE-1
  var year := Dynasty.advance_year(aged)
- print("DEBUG succession: ",year.state.last_succession)
- print("DEBUG title holders: ",year.state.titles)
- print("DEBUG heir1 title_ids: ",year.state.people["heir_1"].title_ids)
- print("DEBUG heir2 siblings: ",aged.people["heir_2"].siblings)
  check(bool(year.ok) and year.state.people["heir_2"].alive == false,"natural old-age death is recorded by yearly simulation")
- check(str(year.state.last_succession.get("to","")) == "heir_1","title succession resolves to eligible heir under configured law")
- check(year.state.people["heir_1"].title_ids.size() >= 2,"succession preserves multiple titles held by the same heir")
+ check(str(year.state.last_succession.get("to","")) == str(cousin_b.person_id),"title succession resolves to the eligible child when the designated heir dies")
+ check(year.state.people[str(cousin_b.person_id)].title_ids.size() >= 2,"succession preserves multiple titles held by the same heir")
  check(int(year.state.year) == 2,"house chronicle advances its calendar")
  check(int(year.state.domains["kaer_sethorn"].food) == 54 and int(year.state.domains["kaer_sethorn"].prosperity) == 51,"annual domain economy consumes food and improves stable holdings")
  check(year.state.chronicle.size() > 0,"yearly and family events enter the house chronicle")
+ var sibling_state := Dynasty.new_house(founder,"Torren Vale","House Vale")
+ var sibling_policy := Dynasty.set_succession_policy(sibling_state,"designated_heir","heir_2")
+ sibling_state = sibling_policy.state
+ var sibling_title := Dynasty.assign_title(sibling_state,"founder_barony","heir_2")
+ sibling_state = sibling_title.state
+ sibling_state.people["heir_2"].age = Dynasty.NATURAL_OLD_AGE-1
+ var sibling_year := Dynasty.advance_year(sibling_state)
+ check(str(sibling_year.state.last_succession.get("to","")) == "heir_1","living sibling inherits when the designated heir dies without descendants")
  var partition_state := Dynasty.new_house(founder,"Torren Vale","House Vale")
  var first_child := Dynasty.add_child(partition_state,"heir_1","First Child",20)
  partition_state = first_child.state
