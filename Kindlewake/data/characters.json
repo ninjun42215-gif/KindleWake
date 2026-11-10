@@ -1286,6 +1286,59 @@
         "ldr": 7,
         "mor": 78
       }
+    },
+    "neris_quell": {
+      "name": "Neris Quell",
+      "class_id": "scout",
+      "level": 4,
+      "house": "thalassar",
+      "weapon_id": "dagger",
+      "armor_def": 2,
+      "armor_res": 2,
+      "skills": [],
+      "reward": {
+        "exp": 0,
+        "ap": 20,
+        "gold": 0
+      },
+      "stats": {
+        "hp": 31,
+        "mp": 2,
+        "str": 7,
+        "dex": 13,
+        "int": 6,
+        "vit": 8,
+        "spd": 12,
+        "lck": 10,
+        "acc": 87,
+        "eva": 20,
+        "ldr": 5,
+        "mor": 60
+      },
+      "loyalty": 66,
+      "roster_wave": 2,
+      "recruit": {
+        "wave": 2,
+        "method": "northstar_wreck_rescue",
+        "cost": 0,
+        "requirements": {
+          "flags_all": [
+            "maren_signal_solved",
+            "northstar_wreck_cleared",
+            "northstar_wreck_log_found"
+          ]
+        },
+        "relationship_on_join": {
+          "trust": 5,
+          "respect": 4
+        },
+        "traits_on_join": [
+          "observant",
+          "survivalist",
+          "agile",
+          "independent"
+        ]
+      }
     }
   }
 }

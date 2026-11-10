@@ -2,6 +2,7 @@ extends RefCounted
 ## Data-driven recruitment checks and atomic roster/flag/gold updates.
 
 const RelationshipSystem = preload("res://scripts/core/relationship_system.gd")
+const TraitSystem = preload("res://scripts/core/trait_system.gd")
 
 static func inspect(party: PartyState, character_id: String, definition: Dictionary, world_flags: Dictionary, spot: Dictionary = {}) -> Dictionary:
     if character_id == "" or definition.is_empty():
@@ -29,7 +30,7 @@ static func inspect(party: PartyState, character_id: String, definition: Diction
     return {"available": true, "cost": cost, "reason": ""}
 
 
-static func recruit(party: PartyState, character_id: String, definition: Dictionary, world_flags: Dictionary, spot: Dictionary = {}) -> Dictionary:
+static func recruit(party: PartyState, character_id: String, definition: Dictionary, world_flags: Dictionary, spot: Dictionary = {}, trait_definitions: Dictionary = {}) -> Dictionary:
     var availability: Dictionary = inspect(party, character_id, definition, world_flags, spot)
     if not bool(availability.get("available", false)):
         availability["ok"] = false
@@ -37,9 +38,21 @@ static func recruit(party: PartyState, character_id: String, definition: Diction
     var cost: int = int(availability.get("cost", 0))
     party.gold -= cost
     party.add_member(character_id, definition)
+    var member: CharacterSheet = party.sheet(character_id)
+    var recruit_data: Dictionary = definition.get("recruit", {})
+    var traits_applied := 0
+    if not trait_definitions.is_empty():
+        for raw_trait_id in recruit_data.get("traits_on_join", []):
+            var trait_id := str(raw_trait_id)
+            var trait_result: Dictionary = TraitSystem.acquire(member.traits, member.trait_history, trait_id, "recruitment:" + character_id, trait_definitions)
+            if bool(trait_result.get("ok", false)):
+                member.traits = TraitSystem.normalized_ids(trait_result.get("traits", []))
+                member.trait_history = (trait_result.get("history", []) as Array).duplicate(true)
+                traits_applied += 1
     world_flags["recruited_" + character_id] = true
     availability["ok"] = true
-    availability["loyalty"] = party.sheet(character_id).loyalty
+    availability["loyalty"] = member.loyalty
+    availability["traits_applied"] = traits_applied
     return availability
 
 
