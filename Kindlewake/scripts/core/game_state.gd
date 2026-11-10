@@ -132,6 +132,7 @@ func campaign_payload() -> Dictionary:
         "active_region_id": active_region_id,
         "world_positions": world_positions.duplicate(true),
         "world_flags": world_flags.duplicate(true),
+        "pending_location": pending_location,
         "faction_state": faction_state.duplicate(true),
         "chronicle_state": chronicle_state.duplicate(true),
         "from_world": true
@@ -166,7 +167,7 @@ func load_campaign(slot_id: String) -> bool:
     world_positions = region_state["world_positions"]
     from_world = true
     pending_battle = {}
-    pending_location = ""
+    pending_location = str(payload.get("pending_location", ""))
     campaign_slot = slot_id
     return true
 
