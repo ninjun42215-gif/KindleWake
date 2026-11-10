@@ -1,0 +1,814 @@
+{
+  "schema_version": 1,
+  "status": "authored_expansion_catalogue_not_yet_all_playable",
+  "design_rules": {
+    "canon": "Additive to the seven-continent atlas. Existing names, factions, routes and story gates remain authoritative.",
+    "capture": "A location changes faction ownership only through a validated occupation or negotiated transfer. Clearing a dungeon never silently transfers its province.",
+    "settlement_states": [
+      "unclaimed",
+      "contested",
+      "besieged",
+      "occupied",
+      "administered",
+      "autonomous"
+    ],
+    "dungeon_replay": "Cleared dungeons retain discovered shortcuts and may repopulate only where their authored ecology or faction activity supports it.",
+    "save_compatibility": "Catalogue data is static content. Campaign ownership and discovery state belong in optional campaign fields with safe defaults."
+  },
+  "capturable_locations": [
+    {
+      "id": "sallow_ford_keep",
+      "name": "Sallow Ford Keep",
+      "continent": "eldrimar",
+      "region": "sethmarch",
+      "kind": "border_castle",
+      "owner": "Crownlands Remnants",
+      "capture": "siege_or_charter",
+      "description": "A squat river-stone fortress guarding the only reliable wagon ford through the Sallow. Its lower bailey floods in spring, while the west tower commands the old toll road. The castellan claims the keep is held in trust for the dead king, but the garrison has not been paid in three months.",
+      "strategic_value": [
+        "controls the Sallow ford",
+        "opens a protected supply route into Sethmarch",
+        "reduces road ambush pressure"
+      ],
+      "economy": {
+        "gold": 2,
+        "provisions": 1,
+        "materials": 1
+      },
+      "garrison": "small",
+      "governance": "appoint_castellan"
+    },
+    {
+      "id": "foxglove_crossing",
+      "name": "Foxglove Crossing",
+      "continent": "eldrimar",
+      "region": "orrowen_weald",
+      "kind": "market_town",
+      "owner": "House Orrowen",
+      "capture": "council_or_battle",
+      "description": "A timber-and-stone market town built where three forest tracks meet. Herbalists, charcoal burners and bowyers trade beneath a long green awning. The town's elders will not accept a new lord until the old coppice boundaries and hunting rights are honoured.",
+      "strategic_value": [
+        "forest goods market",
+        "recruitment of scouts and bowyers",
+        "safe rest stop on the Weald road"
+      ],
+      "economy": {
+        "gold": 2,
+        "provisions": 2,
+        "materials": 0
+      },
+      "garrison": "militia",
+      "governance": "town_charter"
+    },
+    {
+      "id": "elderbough_watch",
+      "name": "Elderbough Watch",
+      "continent": "eldrimar",
+      "region": "orrowen_weald",
+      "kind": "frontier_fort",
+      "owner": "House Orrowen",
+      "capture": "battle_or_local_compact",
+      "description": "An old watchfort grown around the roots of a fallen elder tree. Its roofline is hidden by leaves, but its signal bell can be heard across the valley. The wardens know every deer path and will resist any commander who burns the surrounding wood.",
+      "strategic_value": [
+        "reveals hidden forest routes",
+        "raises regional warning time",
+        "supports patrols against poachers"
+      ],
+      "economy": {
+        "gold": 0,
+        "provisions": 1,
+        "materials": 1
+      },
+      "garrison": "small",
+      "governance": "warden_captain"
+    },
+    {
+      "id": "redwater_granary",
+      "name": "Redwater Granary",
+      "continent": "eldrimar",
+      "region": "vessmoor_plains",
+      "kind": "supply_town",
+      "owner": "Vessmoor Freeholders",
+      "capture": "battle_or_supply_agreement",
+      "description": "A walled grain town clustered around six communal storehouses and a broad millpond. Its real strength is not its walls but its ledgers: the granary can feed a marching force through a lean month. The freeholders fear requisition more than enemy banners.",
+      "strategic_value": [
+        "major provision reserve",
+        "reduces army attrition",
+        "unlocks grain contracts"
+      ],
+      "economy": {
+        "gold": 1,
+        "provisions": 4,
+        "materials": 0
+      },
+      "garrison": "militia",
+      "governance": "freeholder_council"
+    },
+    {
+      "id": "milefort",
+      "name": "Milefort",
+      "continent": "eldrimar",
+      "region": "vessmoor_plains",
+      "kind": "road_fort",
+      "owner": "Crownlands Remnants",
+      "capture": "siege_or_surrender",
+      "description": "A square stone fort at the old imperial mile marker. Its walls are plain, thick and expensive to bypass. Whoever holds Milefort can tax the kingsroad, escort merchants and move troops between the plains and highlands without crossing bandit country.",
+      "strategic_value": [
+        "road toll income",
+        "army movement hub",
+        "caravan protection"
+      ],
+      "economy": {
+        "gold": 3,
+        "provisions": 0,
+        "materials": 1
+      },
+      "garrison": "medium",
+      "governance": "military_governor"
+    },
+    {
+      "id": "glassmere_quay",
+      "name": "Glassmere Quay",
+      "continent": "eldrimar",
+      "region": "quillon_heights",
+      "kind": "lake_town",
+      "owner": "Quillon Collegium",
+      "capture": "negotiation_or_battle",
+      "description": "A pale-stone lakeside town whose glassmakers supply lenses to the observatories. Its narrow quay is protected by floating chains and a watch lantern that shines through mountain fog. The Collegium will bargain, but it will not surrender its archive stores.",
+      "strategic_value": [
+        "specialist glass and lens trade",
+        "lake transport",
+        "access to observatory supply lines"
+      ],
+      "economy": {
+        "gold": 2,
+        "provisions": 1,
+        "materials": 1
+      },
+      "garrison": "militia",
+      "governance": "collegium_prefect"
+    },
+    {
+      "id": "tarnholt_gatehouse",
+      "name": "Tarnholt Gatehouse",
+      "continent": "eldrimar",
+      "region": "tarnholt_cloisters",
+      "kind": "pilgrim_fort",
+      "owner": "Tarnholt Cloisters",
+      "capture": "sanctuary_compact_or_battle",
+      "description": "A fortified hospice guarding the steep pilgrim road. Its infirmary is larger than its barracks, and its bell calls healers before soldiers. The brothers will defend refugees and relics even against a lawful army.",
+      "strategic_value": [
+        "healing and recovery services",
+        "pilgrim donations",
+        "safe passage through the cloister road"
+      ],
+      "economy": {
+        "gold": 1,
+        "provisions": 2,
+        "materials": 0
+      },
+      "garrison": "small",
+      "governance": "hospice_prior"
+    },
+    {
+      "id": "ironvein_hold",
+      "name": "Ironvein Hold",
+      "continent": "eldrimar",
+      "region": "brennhallow_highlands",
+      "kind": "mine_castle",
+      "owner": "Brennhallow Thanes",
+      "capture": "siege_or_mining_compact",
+      "description": "A black basalt hold built above the main iron seam. Its forge vents glow at night and its lower galleries descend into abandoned imperial workings. The thanes measure authority by the safety of miners and the fairness of the ore share.",
+      "strategic_value": [
+        "iron and materials production",
+        "forge upgrades",
+        "siege equipment supply"
+      ],
+      "economy": {
+        "gold": 1,
+        "provisions": 0,
+        "materials": 4
+      },
+      "garrison": "heavy",
+      "governance": "thane_moot"
+    },
+    {
+      "id": "crownmarket_ward",
+      "name": "Crownmarket Ward",
+      "continent": "eldrimar",
+      "region": "aurelmont",
+      "kind": "city_district",
+      "owner": "Aurelmont Crown",
+      "capture": "political_control",
+      "description": "A dense walled ward of counting houses, armourers and guild courts beneath Aurelmont's old imperial aqueduct. It cannot be taken like a frontier fort: control depends on the guild keys, the watch captain and the legitimacy of the city's council.",
+      "strategic_value": [
+        "high-value trade",
+        "urban recruitment",
+        "political influence in the capital"
+      ],
+      "economy": {
+        "gold": 5,
+        "provisions": 1,
+        "materials": 1
+      },
+      "garrison": "elite_watch",
+      "governance": "guild_council"
+    },
+    {
+      "id": "saltmere_harbour",
+      "name": "Saltmere Harbour",
+      "continent": "thalassar",
+      "region": "brinegate_coast",
+      "kind": "port_town",
+      "owner": "Tidebound Assembly",
+      "capture": "naval_blockade_or_compact",
+      "description": "A sheltered harbour of salt sheds, net lofts and shipwright yards. Its harbour chain can close the inner basin, while the tide tables are guarded as carefully as military plans. The town's pilots will not serve a ruler who endangers civilian shipping.",
+      "strategic_value": [
+        "sea trade and ferry routes",
+        "ship repair",
+        "coastal supply landing"
+      ],
+      "economy": {
+        "gold": 4,
+        "provisions": 2,
+        "materials": 1
+      },
+      "garrison": "harbour_watch",
+      "governance": "harbour_assembly"
+    },
+    {
+      "id": "veyhaven_beacon",
+      "name": "Veyhaven Beacon",
+      "continent": "thalassar",
+      "region": "isles_of_vey",
+      "kind": "lighthouse_fort",
+      "owner": "Island Principalities",
+      "capture": "beacon_restoration_or_battle",
+      "description": "A cliff-top signal fortress that links the outer islands by fire and mirror. Its beacon has been dark since the last storm season. Restoring it is as important as taking its walls, because ships without its signal risk the reefs.",
+      "strategic_value": [
+        "reveals island routes",
+        "reduces sea-travel hazards",
+        "enables coastal patrols"
+      ],
+      "economy": {
+        "gold": 1,
+        "provisions": 1,
+        "materials": 1
+      },
+      "garrison": "small",
+      "governance": "beacon_warden"
+    },
+    {
+      "id": "morrowtide_exchange",
+      "name": "Morrowtide Exchange",
+      "continent": "thalassar",
+      "region": "kelpward",
+      "kind": "trade_town",
+      "owner": "Kelpward Guilds",
+      "capture": "guild_contract_or_battle",
+      "description": "A stilt-built exchange above the kelp beds where divers sell dyes, medicines and salvage. The market is governed by diver guilds whose ledgers record every recovered cargo. A ruler who ignores those salvage claims will find the piers empty.",
+      "strategic_value": [
+        "rare coastal trade goods",
+        "medicine supply",
+        "salvage contracts"
+      ],
+      "economy": {
+        "gold": 3,
+        "provisions": 1,
+        "materials": 1
+      },
+      "garrison": "guild_guard",
+      "governance": "diver_guild"
+    },
+    {
+      "id": "redglass_wells",
+      "name": "Redglass Wells",
+      "continent": "varakhan",
+      "region": "serekh_desert",
+      "kind": "oasis_town",
+      "owner": "Basin Clans",
+      "capture": "water_rights_compact_or_battle",
+      "description": "A chain of cistern courtyards around a deep spring. The town's walls are low because its true defence is the buried waterworks and the clan network that controls their keys. Any occupying force must honour measured water shares or face a slow revolt.",
+      "strategic_value": [
+        "water and provisions",
+        "desert route access",
+        "camel and caravan contracts"
+      ],
+      "economy": {
+        "gold": 2,
+        "provisions": 3,
+        "materials": 0
+      },
+      "garrison": "clan_guard",
+      "governance": "water_council"
+    },
+    {
+      "id": "nahlor_ashwatch",
+      "name": "Ashwatch Citadel",
+      "continent": "nhalor",
+      "region": "old_nhal",
+      "kind": "ruined_castle",
+      "owner": "Unclaimed",
+      "capture": "clear_ruin_then_garrison",
+      "description": "A half-buried citadel of dark volcanic stone, abandoned after its cisterns turned bitter. Its upper walls remain defensible, but the lower vaults are occupied by things that move beneath the ash. Rebuilding it requires a clean water source and a garrison willing to endure the fumes.",
+      "strategic_value": [
+        "frontier stronghold",
+        "rare volcanic materials",
+        "late-game expedition staging"
+      ],
+      "economy": {
+        "gold": 0,
+        "provisions": 0,
+        "materials": 2
+      },
+      "garrison": "none",
+      "governance": "appointed_warden"
+    },
+    {
+      "id": "veyrwood",
+      "name": "Veyrwood Mootstead",
+      "continent": "veyrwood",
+      "region": "thorncrown",
+      "kind": "forest_town",
+      "owner": "Veyrwood Moots",
+      "capture": "forest_compact_or_battle",
+      "description": "A ring of timber halls around a living moot oak. Each settlement sends a speaker, and no single chief can sell the forest. The mootstead grants rights only when the player protects boundary stones, seed groves and winter stores.",
+      "strategic_value": [
+        "timber and herbal trade",
+        "forest alliances",
+        "scout recruitment"
+      ],
+      "economy": {
+        "gold": 1,
+        "provisions": 2,
+        "materials": 2
+      },
+      "garrison": "moot_guard",
+      "governance": "rotating_moot"
+    },
+    {
+      "id": "asterreach_skyhold",
+      "name": "Skyhold of Asterreach",
+      "continent": "asterreach",
+      "region": "nine_spires",
+      "kind": "highland_castle",
+      "owner": "Asterreach Houses",
+      "capture": "pass_control_or_battle",
+      "description": "A terraced fortress above a narrow stair of mountain passes. Its signal mirrors connect isolated valleys, and its storehouses are built to survive months of snow. The houses dispute precedence, but unite against any outsider who blocks the winter road.",
+      "strategic_value": [
+        "mountain pass control",
+        "highland materials",
+        "late-game airship approach"
+      ],
+      "economy": {
+        "gold": 2,
+        "provisions": 1,
+        "materials": 2
+      },
+      "garrison": "heavy",
+      "governance": "house_conclave"
+    },
+    {
+      "id": "ilyr_tidecourt",
+      "name": "Tidecourt of Ilyr",
+      "continent": "ilyr",
+      "region": "sevenfold_meridian",
+      "kind": "island_city",
+      "owner": "Ilyrian Tide Court",
+      "capture": "treaty_or_naval_campaign",
+      "description": "A crescent city of sea courts, tidal gardens and stone quays. Its judges settle disputes between island captains, and its harbour law is recognised far beyond its own waters. A conqueror can seize the walls, but only a treaty can make the fleet obey.",
+      "strategic_value": [
+        "advanced maritime trade",
+        "naval recruitment",
+        "diplomatic leverage"
+      ],
+      "economy": {
+        "gold": 4,
+        "provisions": 2,
+        "materials": 1
+      },
+      "garrison": "elite_harbour_guard",
+      "governance": "tidecourt"
+    },
+    {
+      "id": "deepwake_last_beacon",
+      "name": "Last Beacon",
+      "continent": "thalassar",
+      "region": "deepwake_reach",
+      "kind": "lighthouse_keep",
+      "owner": "Unclaimed",
+      "capture": "restore_beacon_then_claim",
+      "description": "The final lighthouse before the black currents. Its lamp room is intact, but the oil cistern has been fouled and the keeper's stair is blocked by wreckage. Relighting it reconnects remote sea lanes and exposes a safe approach to the Deepwake vaults.",
+      "strategic_value": [
+        "deep-sea route discovery",
+        "sea hazard reduction",
+        "expedition staging"
+      ],
+      "economy": {
+        "gold": 1,
+        "provisions": 1,
+        "materials": 0
+      },
+      "garrison": "none",
+      "governance": "beacon_keeper"
+    }
+  ],
+  "dungeons": [
+    {
+      "id": "old_watchtower_cellars",
+      "name": "Old Watchtower Cellars",
+      "continent": "eldrimar",
+      "region": "sethmarch",
+      "tier": 1,
+      "type": "fortified_ruin",
+      "floors": 2,
+      "description": "Beneath a leaning imperial watchtower, the cellars descend through a collapsed armoury into a dry cistern. Roadwolf scouts use the upper rooms as a cache; the lowest chamber contains a sealed dispatch box whose wax bears an obsolete royal mark.",
+      "mechanics": [
+        "torch_and_visibility",
+        "collapsing_floor",
+        "keyed_shortcut"
+      ],
+      "boss": "The Cellar Reeve",
+      "rewards": [
+        "old_dispatch",
+        "iron_scrap",
+        "watchtower_key"
+      ],
+      "world_effect": "Reveals a safer road patrol route after the dispatch is authenticated."
+    },
+    {
+      "id": "roadwolf_stockade",
+      "name": "Roadwolf Stockade",
+      "continent": "eldrimar",
+      "region": "sethmarch",
+      "tier": 1,
+      "type": "human_bandit_fort",
+      "floors": 1,
+      "description": "A timber palisade hidden in a reed basin, built from stolen toll wagons. Prisoners are kept in a drainage trench, and the bandits rotate sentries whenever the marsh fog thickens.",
+      "mechanics": [
+        "stealth_or_assault",
+        "prisoner_rescue",
+        "alarm_meter"
+      ],
+      "boss": "Hask's Quartermaster",
+      "rewards": [
+        "captured_manifest",
+        "provisions",
+        "roadwolf_banner"
+      ],
+      "world_effect": "Rescuing captives improves local trust; destroying the stores weakens future road ambushes."
+    },
+    {
+      "id": "sunken_tollhouse",
+      "name": "The Sunken Tollhouse",
+      "continent": "eldrimar",
+      "region": "sethmarch",
+      "tier": 2,
+      "type": "flooded_ruin",
+      "floors": 3,
+      "description": "A tollhouse swallowed by the Sallow after an old bridge failed. Its upper rooms are accessible at low water; the lower vault can be reached only by opening sluice gates in the correct order.",
+      "mechanics": [
+        "tide_cycle",
+        "sluice_puzzle",
+        "underwater_cache"
+      ],
+      "boss": "The Drowned Collector",
+      "rewards": [
+        "toll_ledger_fragment",
+        "river_pearl",
+        "sluice_key"
+      ],
+      "world_effect": "Unlocks evidence about the retired toll authority and a hidden ferry landing."
+    },
+    {
+      "id": "hollowroot_warren",
+      "name": "Hollowroot Warren",
+      "continent": "eldrimar",
+      "region": "orrowen_weald",
+      "tier": 1,
+      "type": "living_root_cavern",
+      "floors": 3,
+      "description": "A maze of hollow roots beneath an ancient coppice. Root bridges flex under weight, spores reveal invisible trails, and a blind burrower hunts by vibration rather than sight.",
+      "mechanics": [
+        "sound_tracking",
+        "spore_reveal",
+        "root_bridge_weight"
+      ],
+      "boss": "The Pale Burrower",
+      "rewards": [
+        "heartwood_resin",
+        "warden_token",
+        "rare_herb"
+      ],
+      "world_effect": "Clearing the nest opens a protected herbalist path but requires preserving the oldest root."
+    },
+    {
+      "id": "bell_under_leaves",
+      "name": "The Bell Under Leaves",
+      "continent": "eldrimar",
+      "region": "orrowen_weald",
+      "tier": 2,
+      "type": "buried_shrine",
+      "floors": 2,
+      "description": "A moss-covered shrine where a bell rings beneath the forest floor though no rope remains. Its chambers are arranged around acoustic shafts; the correct sequence of chimes opens the sealed witness alcove.",
+      "mechanics": [
+        "sound_sequence",
+        "echo_navigation",
+        "witness_record"
+      ],
+      "boss": "The Bell-Keeper's Shade",
+      "rewards": [
+        "coppice_charter",
+        "bronze_bell_clapper",
+        "sealed_testimony"
+      ],
+      "world_effect": "Adds verified testimony to the Orrowen hearing and can prevent a forest feud."
+    },
+    {
+      "id": "wardens_barrow",
+      "name": "Warden's Barrow",
+      "continent": "eldrimar",
+      "region": "orrowen_weald",
+      "tier": 3,
+      "type": "ancestral_tomb",
+      "floors": 4,
+      "description": "A long barrow built for wardens who died defending the old boundary trees. Each burial hall records a different version of the forest compact. The final door opens only after the player distinguishes oath, custom and later forgery.",
+      "mechanics": [
+        "ancestral_inscriptions",
+        "branching_trial",
+        "guardian_boss"
+      ],
+      "boss": "The Rootbound Warden",
+      "rewards": [
+        "warden_circlet",
+        "old_boundary_map",
+        "living_oak_seed"
+      ],
+      "world_effect": "Unlocks a durable forest stewardship agreement."
+    },
+    {
+      "id": "kingsroad_catacombs",
+      "name": "Kingsroad Catacombs",
+      "continent": "eldrimar",
+      "region": "vessmoor_plains",
+      "tier": 2,
+      "type": "imperial_catacomb",
+      "floors": 3,
+      "description": "A burial road beneath the old kingsroad, lined with mile stones and sealed family niches. The route is patrolled by tomb robbers who have learned to move the stone markers and falsify the dead's names.",
+      "mechanics": [
+        "map_reconstruction",
+        "pressure_tiles",
+        "undead_patrols"
+      ],
+      "boss": "The Milewarden",
+      "rewards": [
+        "imperial_route_tablet",
+        "coin_cache",
+        "burial_seal"
+      ],
+      "world_effect": "Reveals a forgotten branch road and a noble lineage record."
+    },
+    {
+      "id": "ashen_granary",
+      "name": "The Ashen Granary",
+      "continent": "eldrimar",
+      "region": "vessmoor_plains",
+      "tier": 2,
+      "type": "burned_supply_complex",
+      "floors": 2,
+      "description": "A communal granary burned during a disputed levy. Its grain lofts are blackened, but the sealed root cellar holds seed grain and the ledger that proves who ordered the fire.",
+      "mechanics": [
+        "firebreak_routing",
+        "grain_salvage",
+        "evidence_sorting"
+      ],
+      "boss": "The Cinder Bailiff",
+      "rewards": [
+        "seed_grain",
+        "levy_order",
+        "granary_key"
+      ],
+      "world_effect": "Can restore Redwater's harvest or expose a corrupt tax collector."
+    },
+    {
+      "id": "sevenfold_archive",
+      "name": "The Sevenfold Archive",
+      "continent": "eldrimar",
+      "region": "quillon_heights",
+      "tier": 3,
+      "type": "scholarly_labyrinth",
+      "floors": 5,
+      "description": "Seven archive wings were built by rival imperial recorders, each with a different indexing system. The challenge is to reconstruct the chronology without destroying contradictory documents.",
+      "mechanics": [
+        "document_classification",
+        "rotating_shelves",
+        "logic_lock"
+      ],
+      "boss": "The Archivist Without a Seal",
+      "rewards": [
+        "codicil_cross_reference",
+        "archive_lens",
+        "scholar_recruit_token"
+      ],
+      "world_effect": "Adds a verified lead to the Hidden Codicil investigation."
+    },
+    {
+      "id": "reliquary_of_dust",
+      "name": "Reliquary of Dust",
+      "continent": "eldrimar",
+      "region": "tarnholt_cloisters",
+      "tier": 3,
+      "type": "sealed_reliquary",
+      "floors": 3,
+      "description": "A quiet reliquary whose dust has never been disturbed. The order's oldest rule forbids opening the central vault without first accounting for every relic removed during the famine years.",
+      "mechanics": [
+        "relic_inventory",
+        "moral_choice",
+        "warded_chambers"
+      ],
+      "boss": "The Ashen Cantor",
+      "rewards": [
+        "tarnholt_relic",
+        "healer_codex",
+        "relic_register"
+      ],
+      "world_effect": "Can restore a lost healing tradition or expose the cloister's concealed debt."
+    },
+    {
+      "id": "deepforge_descent",
+      "name": "Deepforge Descent",
+      "continent": "eldrimar",
+      "region": "brennhallow_highlands",
+      "tier": 3,
+      "type": "industrial_mine",
+      "floors": 4,
+      "description": "A mine shaft descends past abandoned lifts into a forge that still burns without a visible fuel source. Ore carts, counterweights and ventilation shutters form the dungeon's central traversal puzzle.",
+      "mechanics": [
+        "lift_counterweight",
+        "ventilation_control",
+        "forge_hazard"
+      ],
+      "boss": "The Red Throat Engine",
+      "rewards": [
+        "deep_iron",
+        "forge_pattern",
+        "thane_oath_tablet"
+      ],
+      "world_effect": "Unlocks advanced fortification and siege-equipment crafting."
+    },
+    {
+      "id": "kings_underkeep",
+      "name": "The King's Underkeep",
+      "continent": "eldrimar",
+      "region": "aurelmont",
+      "tier": 4,
+      "type": "royal_underfortress",
+      "floors": 5,
+      "description": "The hidden defensive level beneath Aurelmont, built to protect the royal archive during civil war. Its gates still recognise old offices, not living rulers; forged credentials can open one door and condemn the bearer at the next.",
+      "mechanics": [
+        "credential_deduction",
+        "multi_route_infiltration",
+        "elite_guard_boss"
+      ],
+      "boss": "The Seal Marshal",
+      "rewards": [
+        "dormant_imperial_charter",
+        "royal_armour_pattern",
+        "sealed_succession_record"
+      ],
+      "world_effect": "Opens a major political route without automatically deciding the succession."
+    },
+    {
+      "id": "tideglass_grotto",
+      "name": "Tideglass Grotto",
+      "continent": "thalassar",
+      "region": "brinegate_coast",
+      "tier": 1,
+      "type": "tidal_cave",
+      "floors": 2,
+      "description": "A sea cave whose walls are lined with translucent salt glass. Water rises through the lower tunnels in timed pulses, exposing old smuggler marks and a chamber where the tide has preserved a ship's manifest.",
+      "mechanics": [
+        "tide_timing",
+        "light_refraction",
+        "hidden_cache"
+      ],
+      "boss": "The Glassjaw Eel",
+      "rewards": [
+        "saltglass_shard",
+        "smuggler_manifest",
+        "tide_chart"
+      ],
+      "world_effect": "Opens a safe coastal route and identifies a compromised harbour official."
+    },
+    {
+      "id": "wreck_kings_hold",
+      "name": "The Wreck-King's Hold",
+      "continent": "thalassar",
+      "region": "brinegate_coast",
+      "tier": 2,
+      "type": "wreck_fortress",
+      "floors": 3,
+      "description": "A fortress assembled from lashed ship hulls on a reef shelf. Its corridors tilt with the swell, and the corsair captain uses signal lanterns to call reinforcements from nearby wrecks.",
+      "mechanics": [
+        "moving_decks",
+        "signal_disruption",
+        "boarding_combat"
+      ],
+      "boss": "The Wreck-King",
+      "rewards": [
+        "corsair_signal_code",
+        "shipwright_tools",
+        "captain_chart"
+      ],
+      "world_effect": "Weakens corsair raids and may recruit a reformed pilot."
+    },
+    {
+      "id": "stormwell",
+      "name": "Stormwell",
+      "continent": "thalassar",
+      "region": "isles_of_vey",
+      "tier": 3,
+      "type": "storm_shrine",
+      "floors": 3,
+      "description": "A sea-cut shaft that draws lightning into a ring of bronze conductors. The old keepers used it to warn ships, but a damaged grounding chain now sends the charge through the flooded floor.",
+      "mechanics": [
+        "lightning_conductor",
+        "storm_window",
+        "insulated_switches"
+      ],
+      "boss": "The Chainbound Tempest",
+      "rewards": [
+        "storm_copper",
+        "beacon_core",
+        "keeper_log"
+      ],
+      "world_effect": "Restores the Veyhaven beacon network and makes a new island route safe."
+    },
+    {
+      "id": "drowned_library",
+      "name": "The Drowned Library",
+      "continent": "thalassar",
+      "region": "deepwake_reach",
+      "tier": 4,
+      "type": "submerged_archive",
+      "floors": 4,
+      "description": "A library sealed below the black current. Its books are stored in air bells connected by narrow pressure doors; the deepest chamber records the first ships that crossed the current before it changed.",
+      "mechanics": [
+        "air_bell_pressure",
+        "current_navigation",
+        "waterlogged_archive"
+      ],
+      "boss": "The Siltbound Librarian",
+      "rewards": [
+        "deepwake_logbook",
+        "blackcurrent_compass",
+        "lost_codicil_reference"
+      ],
+      "world_effect": "Reveals the origin of the black current and an endgame sea passage."
+    },
+    {
+      "id": "redglass_labyrinth",
+      "name": "The Redglass Labyrinth",
+      "continent": "varakhan",
+      "region": "serekh_desert",
+      "tier": 2,
+      "type": "desert_mirror_tomb",
+      "floors": 3,
+      "description": "A buried complex of red glass mirrors and narrow water channels. Sunlight changes the safe route by the hour, and the chambers are designed to test whether a visitor understands the basin's shared water laws.",
+      "mechanics": [
+        "mirror_beam_routing",
+        "water_ration_puzzle",
+        "heat_exposure"
+      ],
+      "boss": "The Glass Regent",
+      "rewards": [
+        "basin_water_charter",
+        "redglass_focus",
+        "clan_genealogy"
+      ],
+      "world_effect": "Can secure a water-rights compact among rival basin clans."
+    },
+    {
+      "id": "ashwatch_vaults",
+      "name": "Ashwatch Vaults",
+      "continent": "nhalor",
+      "region": "old_nhal",
+      "tier": 4,
+      "type": "volcanic_ruin",
+      "floors": 4,
+      "description": "Vaults beneath the half-buried citadel, filled with warm ash, sealed vents and old imperial survey instruments. The deepest chamber is not a treasure room but a pressure regulator keeping the lower galleries from collapsing.",
+      "mechanics": [
+        "ventilation_route",
+        "ashfall_cycles",
+        "structural_bracing"
+      ],
+      "boss": "The Cinder Below",
+      "rewards": [
+        "volcanic_alloy",
+        "survey_lens",
+        "citadel_water_map"
+      ],
+      "world_effect": "Allows Ashwatch Citadel to be safely resettled and claimed."
+    }
+  ]
+}
