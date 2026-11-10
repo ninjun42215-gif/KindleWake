@@ -138,6 +138,7 @@ func _show_main() -> void:
     content_box.add_child(continue_btn)
     content_box.add_child(_button("NEW GAME", _new_game))
     content_box.add_child(_button("LOAD GAME", _show_load))
+    content_box.add_child(_button("FOUNDER'S EPILOGUE / CHRONICLE", _open_founder_epilogue))
     content_box.add_child(_button("SETTINGS", _show_settings))
     content_box.add_child(_button("EXIT GAME", _confirm_exit))
     status_label.text = "A chronicle awaits." if latest == "" else "A saved chronicle is ready."
@@ -148,7 +149,7 @@ func _continue_game() -> void:
     if slot == "" or not GameState.load_campaign(slot):
         status_label.text = "No valid campaign save was found."
         return
-    get_tree().change_scene_to_file("res://World.tscn")
+    get_tree().change_scene_to_file("res://Location.tscn" if GameState.pending_location != "" else "res://World.tscn")
 
 
 func _new_game() -> void:
@@ -174,7 +175,7 @@ func _on_creator_confirmed(profile: Dictionary) -> void:
         creator_overlay = null
     GameState.new_game(profile)
     GameState.campaign_slot = "auto_a"
-    get_tree().change_scene_to_file("res://Prologue.tscn")
+    get_tree().change_scene_to_file("res://WrongBell.tscn")
 
 
 func _on_creator_cancelled() -> void:
@@ -203,7 +204,7 @@ func _show_load() -> void:
 
 func _load_slot(slot: String) -> void:
     if GameState.load_campaign(slot):
-        get_tree().change_scene_to_file("res://World.tscn")
+        get_tree().change_scene_to_file("res://Location.tscn" if GameState.pending_location != "" else "res://World.tscn")
     else:
         status_label.text = "That save is not a valid campaign."
 
@@ -268,3 +269,16 @@ func _confirm_exit() -> void:
 
 func _quit_game() -> void:
     get_tree().quit()
+
+func _open_founder_epilogue() -> void:
+    var slot := GameState.newest_campaign_slot()
+    if slot == "" or not GameState.load_campaign(slot):
+        status_label.text = "No completed campaign save is available."
+        return
+    if not bool(GameState.world_flags.get("chapter_5_complete", false)) or not bool(GameState.chronicle_state.get("milestones", {}).get("empire_dissolved", false)):
+        status_label.text = "Complete the five-act campaign and dissolve the Empire before the founder's epilogue."
+        return
+    if GameState.chronicle_unlocked():
+        get_tree().change_scene_to_file("res://ChronicleHouse.tscn")
+    else:
+        get_tree().change_scene_to_file("res://ChronicleEpilogue.tscn")
