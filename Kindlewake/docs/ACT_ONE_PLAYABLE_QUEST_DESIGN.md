@@ -67,3 +67,14 @@ Both Act I commanders now have two authored health-threshold transitions. They a
 - These are implemented presentation effects using the current placeholder/sprite-sheet rendering path. They are not bespoke frame-by-frame boss sprite sheets, voice acting or cinematic camera sequences.
 
 - Hask's successful weapon hits use a heavy double-sweep impact effect; the Ash Bailiff's damaging skills use a gold seal-and-verdict strike rather than the generic elemental burst.
+
+
+## Boss-specific tactical AI
+
+The two Act I commanders now receive encounter-specific plans through BattleAI; all other units continue to use the existing scoring AI.
+
+- **Hask Gravelteeth — formation breaker:** evaluates legal movement cells, scores Power Strike against exposed targets, rewards isolation and finishing opportunities, and otherwise chooses a weapon attack using the same formation pressure. He approaches normally when no attack is available.
+- **The Ash Bailiff — retainer guardian:** evaluates Greater Mending against wounded allies, with extra priority for retainers under immediate pressure. When urgent healing is not justified, he compares Judgement against weapon attacks and weights targets who threaten his formation.
+- **Rules and persistence:** boss decisions still execute through BattleController.try_move, try_skill, and try_attack; the normal one-move/one-action economy, MP costs, range checks, line-of-sight rules and battle saves remain authoritative. No extra boss turn or hidden damage is granted.
+- **Scope:** behavior is keyed to the corresponding Act I battle and commander character ID. It does not change the AI of ordinary enemies, unrelated commanders, or player Auto Battle.
+- **Coverage:** headless test cases exercise Hask's isolated-target Power Strike, the Bailiff's retainer healing priority, and his offensive Judgement choice. Run the project's Godot test command before treating runtime behavior as verified.
