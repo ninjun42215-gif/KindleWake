@@ -78,3 +78,18 @@ The two Act I commanders now receive encounter-specific plans through BattleAI; 
 - **Rules and persistence:** boss decisions still execute through BattleController.try_move, try_skill, and try_attack; the normal one-move/one-action economy, MP costs, range checks, line-of-sight rules and battle saves remain authoritative. No extra boss turn or hidden damage is granted.
 - **Scope:** behavior is keyed to the corresponding Act I battle and commander character ID. It does not change the AI of ordinary enemies, unrelated commanders, or player Auto Battle.
 - **Coverage:** headless test cases exercise Hask's isolated-target Power Strike, the Bailiff's retainer healing priority, and his offensive Judgement choice. Run the project's Godot test command before treating runtime behavior as verified.
+
+
+## Boss AI balance test protocol
+
+The headless suite now runs eight fixed-seed full-battle simulations per Act I boss in two modes:
+
+1. **Specialized:** the encounter-specific commander logic is enabled.
+2. **Generic baseline:** the same encounter data, party, enemies, boss phases and seeds are retained, but the battle ID is changed so the commander uses the ordinary scoring AI.
+
+Each batch reports player wins, average battle turns, commander weapon attacks, damage skills, healing actions, movement actions and timeouts. The specialized runs also assert that Hask actually uses Power Strike and that the Bailiff demonstrates both healing and Judgement over the sample set. Both modes must finish every sample within the simulation guard.
+
+The comparison is diagnostic rather than a hard-coded win-rate target: the small deterministic sample is intended to reveal obvious non-use, excessive passivity, healing spam or a large difficulty swing. Do not change boss HP, damage, MP costs or phase thresholds solely to force a particular win rate. Review larger samples and actual player playtests before final difficulty tuning. The Godot headless command remains:
+
+`godot --headless --path . --script res://tests/run_tests.gd`
+
