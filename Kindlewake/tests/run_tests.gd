@@ -936,12 +936,13 @@ func _test_thalassar_region() -> void:
     check(not wreck_battle.is_empty() and str(wreck_battle.get("world_flag_on_victory", "")) == "northstar_wreck_cleared", "Northstar Wreck resolves to its own boss battle and clear flag")
     check(gd.characters.has("blackwake_captain"), "the Northstar Wreck captain has an authored human enemy definition")
     var battle_roster_ok := true
-    for spawn in tideglass_battle.get("units", []):
-        var cid: String = str((spawn as Dictionary).get("character_id", ""))
-        var enemy_def: Dictionary = gd.character_def(cid)
-        if enemy_def.is_empty() or not gd.classes.has(str(enemy_def.get("class_id", ""))) or not gd.weapons.has(str(enemy_def.get("weapon_id", ""))):
-            battle_roster_ok = false
-    check(battle_roster_ok, "every Tideglass combatant resolves to an authored character, class and weapon")
+    for battle_definition in [tideglass_battle, wreck_battle]:
+        for spawn in (battle_definition as Dictionary).get("units", []):
+            var cid: String = str((spawn as Dictionary).get("character_id", ""))
+            var enemy_def: Dictionary = gd.character_def(cid)
+            if enemy_def.is_empty() or not gd.classes.has(str(enemy_def.get("class_id", ""))) or not gd.weapons.has(str(enemy_def.get("weapon_id", ""))):
+                battle_roster_ok = false
+    check(battle_roster_ok, "every Tideglass and Northstar combatant resolves to an authored character, class and weapon")
     check(gd.world_for_region("brinegate_coast").get("name", "") == "The Brinegate Coast" and gd.world_for_region("sethmarch").get("name", "") == gd.world.get("name", ""), "region routing selects Thalassar without mutating Sethmarch data")
     check(gd.characters.has("maren_vey"), "Maren Vey has a complete recruit character definition")
     var recruit_party: PartyState = PartyState.new_game(gd.start, gd.characters)
