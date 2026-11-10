@@ -6,6 +6,7 @@ const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
+const GameStateScript = preload("res://scripts/core/game_state.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -1464,7 +1465,7 @@ func _test_campaign_restore_validation() -> void:
         "world_pos": [0.0, 0.0],
         "world_positions": {},
     }
-    check(GameState.is_valid_campaign_payload(payload), "a structurally valid new campaign can be restored")
+    check(GameStateScript.is_valid_campaign_payload(payload), "a structurally valid new campaign can be restored")
     var missing_party: Dictionary = payload.duplicate(true)
     missing_party.erase("party")
     check(not GameState.is_valid_campaign_payload(missing_party), "campaign restore rejects a missing party")
