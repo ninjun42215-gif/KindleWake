@@ -1562,7 +1562,7 @@ func _simulate_battles(n: int) -> void:
 func _test_trait_system() -> void:
     print("[trait and personality system]")
     var defs: Dictionary = gd.traits
-    check(defs.size() >= 35, "data-driven trait catalogue loads a broad initial library")
+    check(defs.size() >= 60, "data-driven trait catalogue loads a broad initial library")
     check(defs.has("brave") and defs.has("scholar") and defs.has("battle_trauma") and defs.has("magical_affinity"), "catalogue covers personality, knowledge, psychological and rare magical traits")
     var sheet := CharacterSheet.from_def("trait_test", {"name":"Test Hero","class_id":"swordsman","level":1,"stats":{"hp":20,"mp":5,"str":5,"dex":5,"int":5,"vit":5,"spd":5,"lck":5,"acc":70,"eva":5,"ldr":5,"mor":50}})
     var base: Dictionary = sheet.base_stats.duplicate(true)
