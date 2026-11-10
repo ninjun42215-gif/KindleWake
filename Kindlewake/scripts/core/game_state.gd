@@ -223,9 +223,9 @@ func capture_holding_after_siege(target_holding_id: String, source_holding_id: S
     var old_owner := str(result.get("old_owner", ""))
     var displaced_faction := ""
     for faction in GameData.factions.get("factions", []):
-        var faction_name := str(faction.get("name", "")).to_lower()
-        var owner_name := old_owner.to_lower()
-        if faction_name != "" and (faction_name.contains(owner_name) or owner_name.contains(faction_name) or (faction_name.contains("orrowen") and owner_name.contains("orrowen")) or (faction_name.contains("vessmoor") and owner_name.contains("vessmoor"))):
+        var faction_name := str(faction.get("name", "")).to_lower().replace("the ", "").replace("house ", "")
+        var owner_name := old_owner.to_lower().replace("the ", "").replace("house ", "")
+        if faction_name != "" and (faction_name.contains(owner_name) or owner_name.contains(faction_name)):
             displaced_faction = str(faction.get("id", ""))
             break
     if displaced_faction != "" and displaced_faction != "house_dunmarrow":
