@@ -114,11 +114,11 @@ The empire development layer is implemented in `scripts/core/empire_development_
 - Recruited reserves can be assigned into the holding garrison; garrison upkeep remains charged on explicit empire turns.
 - Foreign-owned holdings reject player development, recruitment, garrison changes and governance changes.
 
-Siege progression is an explicit objective state machine. A player holding can stage an objective, record incremental progress, and resolve the encounter only after the objective is complete. Resolution records whether the assault succeeded or was repelled; it does not silently transfer ownership. Authored battle and treaty outcomes remain responsible for sovereignty changes.
+Siege progression is an explicit objective state machine. A player holding can stage an objective, record incremental progress, and resolve the encounter only after the objective is complete. Resolution records whether the assault succeeded or was repelled. Target-specific campaign assaults can establish provisional control of the selected holding after a tactical victory; they never transfer the entire atlas region automatically.
 
 ## Seven regional boss encounter briefs
 
-`data/regional_boss_encounters.json` is now loaded by GameData and contains a three-phase encounter brief for each continent. Each brief defines its arena, hazards, phase objectives and counterplay. These are authored encounter specifications, not yet fully playable boss battle scenes or battle rosters. The data validation test checks all seven records and their phase structure.
+`data/regional_boss_encounters.json` is now loaded by GameData and contains a three-phase encounter brief for each continent. Each brief defines its arena, hazards, phase objectives and counterplay. These briefs are the authored design source for the seven playable tactical boss encounters. GameData attaches their phases and objectives to the corresponding battle definitions; tests validate the seven records and phase structure.
 
 
 ## Playable regional guardian and siege encounters
