@@ -6,6 +6,7 @@
       "rarity": "uncommon",
       "alignment": "positive",
       "description": "Holds steady when danger closes in. Fear and intimidation have less power over this character.",
+      "battle_behavior": {"risk_tolerance":0.15},
       "effects": {
         "mor": 2,
         "ldr": 1
@@ -30,6 +31,7 @@
       "rarity": "uncommon",
       "alignment": "negative",
       "description": "Threats can overwhelm sound judgment. This trait is never awarded for a tactical retreat or obeying a withdrawal order.",
+      "battle_behavior": {"risk_tolerance":-0.2},
       "effects": {
         "mor": -2
       },
@@ -212,6 +214,7 @@
       "rarity": "uncommon",
       "alignment": "negative",
       "description": "Accepts risks without always weighing the cost to self or allies.",
+      "battle_behavior": {"risk_tolerance":0.25},
       "effects": {
         "str": 1,
         "vit": -1
@@ -310,6 +313,7 @@
       "rarity": "rare",
       "alignment": "positive",
       "description": "Has learned to act clearly under extraordinary pressure. Fear does not disappear, but it no longer dictates action.",
+      "battle_behavior": {"risk_tolerance":0.2},
       "effects": {
         "mor": 3,
         "vit": 1
@@ -517,6 +521,7 @@
       "rarity": "uncommon",
       "alignment": "positive",
       "description": "Pays close attention to companions in danger and is inclined to shield them.",
+      "battle_behavior": {"support_priority":6},
       "effects": {
         "vit": 1,
         "ldr": 1
@@ -613,6 +618,7 @@
       "rarity": "rare",
       "alignment": "negative",
       "description": "A difficult battle has left painful memories. This is not cowardice or a measure of courage; recovery and support are possible.",
+      "battle_behavior": {"risk_tolerance":-0.12},
       "effects": {
         "mor": -1
       },
@@ -627,6 +633,7 @@
       "rarity": "uncommon",
       "alignment": "positive",
       "description": "Has learned practical field medicine and the careful treatment of wounds.",
+      "battle_behavior": {"support_priority":5},
       "effects": {
         "int": 1,
         "ldr": 1
@@ -742,6 +749,7 @@
       "rarity": "uncommon",
       "alignment": "positive",
       "description": "Reads the feelings of others and responds with care.",
+      "battle_behavior": {"support_priority":4},
       "effects": {
         "ldr": 1,
         "mor": 1
@@ -872,6 +880,7 @@
       "rarity": "rare",
       "alignment": "positive",
       "description": "Understands positioning, timing, and the practical use of battlefield terrain.",
+      "battle_behavior": {"risk_tolerance":0.05},
       "effects": {
         "int": 1,
         "acc": 1

@@ -112,7 +112,23 @@ func progress_character_ambition(character_id: String, amount: int) -> Dictionar
 
 ## Battle database with the party's current sheets (level, stats, equipment) substituted in.
 func battle_db() -> Dictionary:
-    return party.battle_db(GameData.as_db())
+    var out: Dictionary = party.battle_db(GameData.as_db())
+    var characters: Dictionary = (out.get("characters", {}) as Dictionary).duplicate(true)
+    for character_id_value in party.roster:
+        var character_id := str(character_id_value)
+        var definition: Dictionary = (characters.get(character_id, {}) as Dictionary).duplicate(true)
+        var bonds: Dictionary = {}
+        for other_id_value in party.roster:
+            var other_id := str(other_id_value)
+            if other_id == character_id:
+                continue
+            var bond := RelationshipSystem.get_relationship(companion_relationships, character_id, other_id)
+            if not bond.is_empty():
+                bonds[other_id] = bond
+        definition["companion_bonds"] = bonds
+        characters[character_id] = definition
+    out["characters"] = characters
+    return out
 
 
 ## Pays EXP, AP and gold after a battle (FF7 rules, see PartyState.battle_rewards).

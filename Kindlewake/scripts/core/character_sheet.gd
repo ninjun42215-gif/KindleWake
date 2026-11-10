@@ -159,6 +159,7 @@ func to_battle_def(db: Dictionary) -> Dictionary:
         "weapon_id": weapon_id(items), "armor_def": int(arm["def"]), "armor_res": int(arm["res"]),
         "skills": all_skills(items, sdefs, db.get("classes", {})), "stats": total_stats(items, sdefs, db.get("traits", {})),
         "traits": traits.duplicate(),
+        "personality": {"stress": stress, "memories": memories.duplicate(true), "ambition": ambition.duplicate(true)},
         "skill_mods": skill_mods(items, sdefs), "reward": reward.duplicate(),
     }
 
@@ -274,12 +275,13 @@ func adjust_stress(amount: int) -> int:
     return stress
 
 
-func begin_ambition(ambition_id: String, title: String, description: String, target: int, deadline: int = 0) -> bool:
+func begin_ambition(ambition_id: String, title: String, description: String, target: int, deadline: int = 0, combat_focus: String = "") -> bool:
     if ambition_id == "" or title == "" or target <= 0:
         return false
     ambition = {
         "id": ambition_id, "title": title, "description": description,
-        "progress": 0, "target": target, "deadline": deadline, "status": "active"
+        "progress": 0, "target": target, "deadline": deadline, "status": "active",
+        "combat_focus": combat_focus if ["aggressive", "support"].has(combat_focus) else ""
     }
     return true
 

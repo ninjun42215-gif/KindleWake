@@ -3,6 +3,7 @@ extends SceneTree
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 const RelationshipSystemScript = preload("res://scripts/core/relationship_system.gd")
+const CompanionBehaviorScript = preload("res://scripts/core/companion_behavior_system.gd")
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const PrologueSystem = preload("res://scripts/core/prologue_system.gd")
 const EscapeMissionSystem = preload("res://scripts/core/escape_mission.gd")
@@ -37,6 +38,7 @@ func _initialize() -> void:
     _test_progression()
     _test_trait_system()
     _test_companion_relationships()
+    _test_companion_behavior()
     _test_recruitment()
     _test_prologue()
     _test_escape_mission()
@@ -1060,6 +1062,24 @@ func _test_locations() -> void:
     var cm: LocalMap = maps["crossing"]
     check(cm.walkable(cm.entry) and cm.is_exit(Vector2i(11, 17)) and not cm.walkable(Vector2i(0, 0)) and not cm.walkable(Vector2i(-3, 4)), "walls and trees block, paths and exits are open, outside the map is blocked")
     check(not cm.door_at(Vector2i(4, 4)).is_empty() and cm.door_at(Vector2i(5, 4)).is_empty(), "door tiles lead somewhere and plain wall does not")
+
+
+func _test_companion_behavior() -> void:
+    print("[companion tactical personality]")
+    var definitions: Dictionary = gd.traits
+    var calm_brave := CompanionBehaviorScript.risk_tolerance(["brave"], {"stress": 0, "memories": [], "ambition": {}}, definitions)
+    check(calm_brave > 0.1, "brave traits increase tactical risk tolerance")
+    var distressed := CompanionBehaviorScript.risk_tolerance(["brave"], {"stress": 90, "memories": [{"type":"traumatic"},{"type":"betrayal"}], "ambition": {}}, definitions)
+    check(distressed < calm_brave and CompanionBehaviorScript.threat_sensitivity(["brave"], {"stress":90,"memories":[{"type":"traumatic"}]}, definitions) > 1.0, "high stress and traumatic memories make a companion more cautious")
+    var protective_score := CompanionBehaviorScript.support_score(["protective","healer"], {"stress":0,"ambition":{"status":"active","combat_focus":"support"}}, {"ally":{"friendship":70,"trust":80,"respect":60,"affection":50,"rivalry":0}}, "ally", definitions)
+    check(protective_score >= 20.0, "protective traits, support ambitions and trusted bonds increase ally support priority")
+    var aggressive_drive := CompanionBehaviorScript.attack_drive(["reckless"], {"stress":0,"ambition":{"status":"active","combat_focus":"aggressive"}}, definitions)
+    check(aggressive_drive > CompanionBehaviorScript.attack_drive([], {}, definitions), "an explicitly aggressive ambition increases attack drive")
+    var unit := BattleUnit.create(99, "companion_test", {"name":"Companion","class_id":"knight","stats":{"hp":20,"mor":60},"traits":["protective"],"personality":{"stress":35,"memories":[{"type":"relationship"}],"ambition":{"status":"active","combat_focus":"support"}},"companion_bonds":{"ally":{"trust":40}}}, {"move":4,"jump":1}, "player", Vector2i.ZERO, 0)
+    var restored := BattleUnit.from_dict(unit.to_dict())
+    check(restored.traits == unit.traits and restored.personality == unit.personality and restored.companion_bonds == unit.companion_bonds, "battle snapshots preserve optional companion tactical context")
+    var legacy := BattleUnit.from_dict({"id":1,"character_id":"legacy","stats":{"hp":10},"cell":[0,0]})
+    check(legacy.traits.is_empty() and legacy.personality.is_empty() and legacy.companion_bonds.is_empty(), "legacy battle snapshots default safely without companion tactical context")
 
 
 func _test_recruitment() -> void:

@@ -2,6 +2,7 @@ class_name BattleAI
 extends RefCounted
 ## Scoring AI. It is team-agnostic, so the test-suite can also run full AI-vs-AI battles.
 ## `ctl` is a BattleController (left untyped to avoid a script dependency cycle).
+const CompanionBehavior = preload("res://scripts/core/companion_behavior_system.gd")
 
 
 ## Returns {"move_to": Vector2i, "action": "attack" | "skill" | "wait", "target": BattleUnit or null,
@@ -80,7 +81,8 @@ static func _best_heal(unit: BattleUnit, ctl, candidates: Array[Vector2i]) -> Di
                     continue
                 var score: float = (1.0 - ratio) * 100.0
                 score += float(ctl.map.cover_at(cell)) * 0.15
-                score -= 1.5 * _threat_at(unit, cell, ctl)
+                score += CompanionBehavior.support_score(unit.traits, unit.personality, unit.companion_bonds, t.character_id, ctl.db.get("traits", {}))
+                score -= 1.5 * CompanionBehavior.threat_sensitivity(unit.traits, unit.personality, ctl.db.get("traits", {})) * _threat_at(unit, cell, ctl)
                 score -= 0.5 * float(BattleMap.manhattan(origin, cell))
                 if score > best_score:
                     best_score = score
@@ -107,7 +109,7 @@ static func _best_bolt(unit: BattleUnit, ctl, candidates: Array[Vector2i]) -> Di
             for t in targets:
                 var p: Dictionary = CombatCalc.skill_preview(unit, t, sk, skill_id, ctl.weapon_of(unit))
                 var avg: float = (float(p["dmg_min"]) + float(p["dmg_max"])) * 0.5
-                var score: float = avg
+                var score: float = avg + CompanionBehavior.attack_drive(unit.traits, unit.personality, ctl.db.get("traits", {}))
                 if float(p["dmg_max"]) >= float(t.hp):
                     score += 25.0
                 if t.is_commander:
@@ -132,6 +134,7 @@ static func _score_attack(unit: BattleUnit, target: BattleUnit, cell: Vector2i, 
     var avg: float = (float(p["dmg_min"]) + float(p["dmg_max"])) * 0.5
     var crit_p: float = float(p["crit"]) / 100.0
     var score: float = hit * avg * (1.0 + crit_p * 0.5)
+    score += CompanionBehavior.attack_drive(unit.traits, unit.personality, ctl.db.get("traits", {}))
     if float(p["dmg_max"]) >= float(target.hp) and hit >= 0.6:
         score += 25.0
     if target.is_commander:
