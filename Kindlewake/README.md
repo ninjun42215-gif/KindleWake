@@ -4,10 +4,11 @@
 >
 > **Current Phase 0/1 work:** Chapter I courtyard input now uses Control.`_gui_input` for taps and drags, clamps destinations to a responsive playable rectangle, and uses a 120px gate reach radius. The title screen now mounts the character creator as a full-screen overlay; portrait preview and compact live summary are pinned above the scrolling form on narrow portrait phones. A headless scene-resource smoke test is integrated into the Android build script before the strict gameplay tests and APK export.
 >
-> **Validation status:** implementation is committed on the working branch, but branch CI has not yet completed. No Godot headless result or physical-device result may be claimed until the corresponding workflow/device evidence exists. Required manual checks: phone portrait and landscape, 20:9, safe areas/notches, title → creator → back, Prologue → escape → battle → World, victory flag and save/load.
+> **Validation status:** the implementation passed GitHub Actions on runtime-code commit `b2598c3c8620a701d1fabd84394ec5cbb7449451`: Godot 4.2.2 import (clean retry), 8/8 scene resources loaded, 427 strict checks with 0 failures, balance report completed, and signed Android APK exported (about 40.8 MB; no Android permissions). Build run [#633](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42731540020), APK artifact `13724652587`; Version Sync #139, Project Health Audit #348 and Workflow YAML Lint #526 also passed. The first editor import scan still logs transient global-class registration errors before its clean retry; existing ObjectDB/resource-cleanup warnings remain non-failing.
 >
-> **Next step:** run the PR checks on the exact branch head, fix any parse/test/build failures, then report findings and risks. Stop before Phase 2 (Theme/fonts/SceneRouter) until the owner approves.
+> **Remaining QA:** no physical-device screenshots or tests have been supplied. Still required: 20:9 phone portrait and landscape, safe areas/notches, title → creator → BACK, Prologue → escape → battle → World, victory flag, kill/relaunch and Continue/save-load. Do not describe device QA as passed.
 >
+> **Next step:** finish physical Android QA and report findings. Stop before Phase 2 (Theme/fonts/SceneRouter) until the owner approves. The PR is intentionally open and has not been merged.
 > **Hard constraints:** fully offline; no accounts, servers, multiplayer or INTERNET permission. Never edit `main` directly. Keep a short-lived branch and one consolidated PR; merge only after required checks pass on the exact PR head SHA. Third-party sprite-pack redistribution licensing remains unresolved and blocks public/commercial release until verified or replaced.
 
 ---
