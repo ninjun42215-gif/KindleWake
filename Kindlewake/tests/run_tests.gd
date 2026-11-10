@@ -250,6 +250,13 @@ func _test_companion_quests() -> void:
         if str(gd.companion_quests[playable_id].get("journal_summary", "")).length() < 30:
             playable_summaries_ok = false
     check(playable_summaries_ok, "all eight authored companion quest routes have journal summaries")
+    var playable_flags_ok := true
+    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt"]:
+        var playable_definition: Dictionary = gd.companion_quests[playable_id]
+        var playable_flags: Dictionary = playable_definition.get("outcome_flags", {})
+        if playable_flags.size() != (playable_definition.get("outcomes", []) as Array).size():
+            playable_flags_ok = false
+    check(playable_flags_ok, "all eight authored companion quest routes persist every distinct resolution outcome")
 
 
 func _test_prologue() -> void:
