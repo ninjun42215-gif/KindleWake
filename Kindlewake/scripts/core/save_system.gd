@@ -13,6 +13,9 @@ const SAVE_DIR := "user://saves/"
 const SAVE_VERSION := 4
 const GAME_VERSION := "0.12.0"
 const AUTOSAVE_SLOTS := ["auto_a", "auto_b"]
+const RegionSaveState = preload("res://scripts/core/region_save_state.gd")
+
+var _test_save_directory: String = ""
 
 
 func _is_valid_slot_id(slot_id: String) -> bool:
@@ -26,10 +29,23 @@ func _is_valid_slot_id(slot_id: String) -> bool:
     return true
 
 
+func set_test_save_directory(path: String) -> bool:
+    # Only the headless/debug test harness may redirect its own SaveSystem instance.
+    # The live autoload never calls this, so player saves remain under user://saves/.
+    if not OS.is_debug_build() or not path.begins_with("user://") or path.contains(".."):
+        return false
+    _test_save_directory = path if path.ends_with("/") else path + "/"
+    return true
+
+
+func _save_directory() -> String:
+    return _test_save_directory if _test_save_directory != "" else SAVE_DIR
+
+
 func slot_path(slot_id: String) -> String:
     if not _is_valid_slot_id(slot_id):
         return ""
-    return SAVE_DIR + "slot_" + slot_id + ".save"
+    return _save_directory() + "slot_" + slot_id + ".save"
 
 
 func checksum_of(text: String) -> String:
@@ -42,7 +58,7 @@ func checksum_of(text: String) -> String:
 func save_slot(slot_id: String, payload: Dictionary, summary: String = "") -> bool:
     if not _is_valid_slot_id(slot_id):
         return false
-    DirAccess.make_dir_recursive_absolute(SAVE_DIR)
+    DirAccess.make_dir_recursive_absolute(_save_directory())
     var payload_text: String = JSON.stringify(payload)
     var envelope: Dictionary = {
         "meta": {
@@ -82,26 +98,60 @@ func save_slot(slot_id: String, payload: Dictionary, summary: String = "") -> bo
 func load_slot(slot_id: String) -> Dictionary:
     if not _is_valid_slot_id(slot_id):
         return {"ok": false, "error": "Invalid save slot."}
+
     var path: String = slot_path(slot_id)
-    var env: Dictionary = _read_envelope(path)
-    var from_backup := false
-    if env.is_empty():
-        env = _read_envelope(path + ".bak")
-        from_backup = not env.is_empty()
-    if env.is_empty():
+    var primary_env: Dictionary = _read_envelope(path)
+    if not primary_env.is_empty():
+        var primary_result: Dictionary = _decode_envelope(primary_env)
+        if bool(primary_result.get("ok", false)):
+            primary_result["from_backup"] = false
+            return primary_result
+        # Never silently downgrade a save created by a newer game version.
+        if str(primary_result.get("error", "")) == "Save was made by a newer version of the game.":
+            return primary_result
+
+    var backup_env: Dictionary = _read_envelope(path + ".bak")
+    if not backup_env.is_empty():
+        var backup_result: Dictionary = _decode_envelope(backup_env)
+        if bool(backup_result.get("ok", false)):
+            backup_result["from_backup"] = true
+            return backup_result
+
+    if primary_env.is_empty() and backup_env.is_empty():
         return {"ok": false, "error": "Save missing or corrupted."}
+    if not primary_env.is_empty():
+        return _decode_envelope(primary_env)
+    return {"ok": false, "error": "Save missing or corrupted."}
+
+
+## Decode, migrate and semantically validate before exposing campaign state to runtime code.
+func _decode_envelope(env: Dictionary) -> Dictionary:
+    if typeof(env.get("meta")) != TYPE_DICTIONARY:
+        return {"ok": false, "error": "Save metadata is invalid."}
+    if typeof(env.get("payload")) != TYPE_STRING:
+        return {"ok": false, "error": "Save payload is invalid."}
+
     var meta: Dictionary = env["meta"]
-    var version: int = int(meta.get("save_version", 1))
+    var version_value: Variant = meta.get("save_version", 1)
+    if typeof(version_value) not in [TYPE_INT, TYPE_FLOAT]:
+        return {"ok": false, "error": "Save version metadata is invalid."}
+    var version: int = int(version_value)
+    if version < 1:
+        return {"ok": false, "error": "Save version metadata is invalid."}
     if version > SAVE_VERSION:
         return {"ok": false, "error": "Save was made by a newer version of the game."}
+
     var payload_parser := JSON.new()
     if payload_parser.parse(str(env["payload"])) != OK:
         return {"ok": false, "error": "Save payload is invalid."}
     var parsed: Variant = payload_parser.data
     if typeof(parsed) != TYPE_DICTIONARY:
         return {"ok": false, "error": "Save payload is invalid."}
+
     var payload: Dictionary = migrate(parsed, version)
-    return {"ok": true, "payload": payload, "meta": meta, "from_backup": from_backup, "error": ""}
+    if bool(payload.get("campaign", false)) and not RegionSaveState.is_valid_campaign_payload(payload):
+        return {"ok": false, "error": "Campaign save payload is invalid."}
+    return {"ok": true, "payload": payload, "meta": meta, "from_backup": false, "error": ""}
 
 
 ## Upgrade old payloads step by step without discarding existing campaign fields.
