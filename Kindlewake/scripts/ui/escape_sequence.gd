@@ -14,14 +14,56 @@ var instruction_label: Label
 var action_button: Button
 var started := false
 
+const PLAY_AREA_TOP := 168.0
+const PLAY_AREA_BOTTOM := 128.0
+const GATE_REACH_RADIUS := 120.0
+const PLAYER_SPEED := 220.0
+
 
 func _ready() -> void:
     _build_ui()
-    var viewport_size: Vector2 = get_viewport_rect().size
-    player_pos = Vector2(viewport_size.x * 0.16, viewport_size.y * 0.72)
-    target_pos = player_pos
-    exit_pos = Vector2(viewport_size.x * 0.84, viewport_size.y * 0.30)
+    _layout_positions()
     _set_story_text()
+    queue_redraw()
+
+
+func _notification(what: int) -> void:
+    if what == NOTIFICATION_RESIZED and is_node_ready():
+        _layout_positions()
+
+
+static func playable_rect_for_size(viewport_size: Vector2) -> Rect2:
+    var top: float = minf(PLAY_AREA_TOP, viewport_size.y * 0.35)
+    var bottom_inset: float = minf(PLAY_AREA_BOTTOM, viewport_size.y * 0.28)
+    var bottom: float = maxf(top + 1.0, viewport_size.y - bottom_inset)
+    var side: float = minf(16.0, viewport_size.x * 0.05)
+    return Rect2(Vector2(side, top), Vector2(maxf(1.0, viewport_size.x - side * 2.0), maxf(1.0, bottom - top)))
+
+
+static func gate_position_for_size(viewport_size: Vector2) -> Vector2:
+    var playable: Rect2 = playable_rect_for_size(viewport_size)
+    var min_y: float = playable.position.y + minf(48.0, playable.size.y * 0.35)
+    var max_y: float = playable.end.y - minf(48.0, playable.size.y * 0.35)
+    return Vector2(
+        clampf(viewport_size.x * 0.84, playable.position.x + 1.0, playable.end.x - 1.0),
+        clampf(viewport_size.y * 0.30, min_y, max_y)
+    )
+
+
+func _layout_positions() -> void:
+    var viewport_size: Vector2 = size
+    if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+        viewport_size = get_viewport_rect().size
+    var playable: Rect2 = playable_rect_for_size(viewport_size)
+    if player_pos == Vector2.ZERO:
+        player_pos = Vector2(
+            clampf(viewport_size.x * 0.16, playable.position.x + 1.0, playable.end.x - 1.0),
+            clampf(viewport_size.y * 0.72, playable.position.y + 1.0, playable.end.y - 1.0)
+        )
+    else:
+        player_pos = player_pos.clamp(playable.position, playable.end)
+    target_pos = target_pos.clamp(playable.position, playable.end) if target_pos != Vector2.ZERO else player_pos
+    exit_pos = gate_position_for_size(viewport_size)
     queue_redraw()
 
 
@@ -111,22 +153,35 @@ func _set_story_text() -> void:
         story_label.text = "The company escaped the gallery with neither the survivors nor the record. There is no time to turn back. Raiders have taken the postern."
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _gui_input(event: InputEvent) -> void:
     if started or action_button.visible:
         return
+
     var point := Vector2.ZERO
-    var pressed := false
+    var should_move := false
     if event is InputEventMouseButton:
         var mouse := event as InputEventMouseButton
-        pressed = mouse.pressed and mouse.button_index == MOUSE_BUTTON_LEFT
+        should_move = mouse.pressed and mouse.button_index == MOUSE_BUTTON_LEFT
         point = mouse.position
+    elif event is InputEventMouseMotion:
+        var motion := event as InputEventMouseMotion
+        should_move = (motion.button_mask & MOUSE_BUTTON_MASK_LEFT) != 0
+        point = motion.position
     elif event is InputEventScreenTouch:
         var touch := event as InputEventScreenTouch
-        pressed = touch.pressed
+        should_move = touch.pressed
         point = touch.position
-    if pressed and point.y > 150.0 and point.y < size.y - 120.0:
-        target_pos = point
-        moving = true
+    elif event is InputEventScreenDrag:
+        var drag := event as InputEventScreenDrag
+        should_move = true
+        point = drag.position
+
+    if should_move:
+        var playable: Rect2 = playable_rect_for_size(size)
+        if playable.has_point(point):
+            target_pos = point.clamp(playable.position, playable.end)
+            moving = true
+            accept_event()
 
 
 func _process(delta: float) -> void:
@@ -137,8 +192,10 @@ func _process(delta: float) -> void:
         if distance <= 4.0:
             moving = false
         else:
-            player_pos += offset.normalized() * minf(distance, 220.0 * delta)
-    var near_exit: bool = player_pos.distance_to(exit_pos) <= 100.0
+            player_pos += offset.normalized() * minf(distance, PLAYER_SPEED * delta)
+            var playable: Rect2 = playable_rect_for_size(size)
+            player_pos = player_pos.clamp(playable.position, playable.end)
+    var near_exit: bool = player_pos.distance_to(exit_pos) <= GATE_REACH_RADIUS
     action_button.visible = near_exit and not started
     if near_exit:
         objective_label.text = "OBJECTIVE COMPLETE  •  The postern is within reach"
