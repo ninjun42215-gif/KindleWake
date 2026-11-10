@@ -1337,7 +1337,18 @@
           "survivalist",
           "agile",
           "independent"
-        ]
+        ],
+        "relationship_on_companion_quest": {
+          "publish_route": {
+            "respect": 8,
+            "trust": -4
+          },
+          "keep_private": {
+            "friendship": 8,
+            "trust": 10,
+            "affection": 3
+          }
+        }
       }
     }
   }
