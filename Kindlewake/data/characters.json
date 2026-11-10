@@ -32,7 +32,11 @@
         "mor": 65
       },
       "roster_wave": 1,
-      "loyalty": 72
+      "loyalty": 72,
+      "traits": [
+        "administrator",
+        "diligent"
+      ]
     },
     "bram": {
       "name": "Sir Bram Vosk",
@@ -66,7 +70,11 @@
         "mor": 60
       },
       "roster_wave": 1,
-      "loyalty": 84
+      "loyalty": 84,
+      "traits": [
+        "strategist",
+        "disciplined"
+      ]
     },
     "sela": {
       "name": "Sela Wrenfield",
@@ -100,7 +108,11 @@
         "mor": 55
       },
       "roster_wave": 1,
-      "loyalty": 68
+      "loyalty": 68,
+      "traits": [
+        "observant",
+        "patient"
+      ]
     },
     "brother_wystan": {
       "name": "Brother Wystan",
@@ -140,7 +152,11 @@
         "mor": 55
       },
       "roster_wave": 1,
-      "loyalty": 66
+      "loyalty": 66,
+      "traits": [
+        "devout",
+        "compassionate"
+      ]
     },
     "hask_gravelteeth": {
       "name": "Hask Gravelteeth",
@@ -351,7 +367,11 @@
         "method": "orrowen_favour",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "traits": [
+        "silver_tongued",
+        "diplomat"
+      ]
     },
     "old_brisa": {
       "name": "Old Brisa",
@@ -388,7 +408,11 @@
         "method": "village_quest",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "traits": [
+        "compassionate",
+        "resilient"
+      ]
     },
     "kestrel": {
       "name": "Kestrel",
@@ -425,7 +449,11 @@
         "method": "hidden_location",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "traits": [
+        "cunning",
+        "observant"
+      ]
     },
     "anselm_pike": {
       "name": "Anselm Pike",
@@ -462,7 +490,11 @@
         "method": "barracks_event",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "traits": [
+        "diligent",
+        "disciplined"
+      ]
     },
     "petra_quill": {
       "name": "Petra Quill",
@@ -499,7 +531,11 @@
         "method": "plague_ward_quest",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "traits": [
+        "scholar",
+        "administrator"
+      ]
     },
     "dorian_vask": {
       "name": "Dorian Vask",
@@ -536,7 +572,11 @@
         "method": "negotiation",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "traits": [
+        "diplomat",
+        "silver_tongued"
+      ]
     },
     "edda_stonehand": {
       "name": "Edda Stonehand",
@@ -577,7 +617,11 @@
             "found_tollhouse"
           ]
         }
-      }
+      },
+      "traits": [
+        "disciplined",
+        "brave"
+      ]
     },
     "joss_harrow": {
       "name": "Joss Harrow",
@@ -614,7 +658,11 @@
         "method": "tavern_rumour",
         "cost": 50,
         "requirements": {}
-      }
+      },
+      "traits": [
+        "cunning",
+        "ambitious"
+      ]
     },
     "isaure_vessmoor": {
       "name": "Lady Isaure Vessmoor",
@@ -655,7 +703,11 @@
             "vessmoor_gate_passed"
           ]
         }
-      }
+      },
+      "traits": [
+        "charismatic",
+        "administrator"
+      ]
     },
     "bram_cullen": {
       "name": "Bram Cullen",
@@ -737,7 +789,11 @@
             "joss_harrow"
           ]
         }
-      }
+      },
+      "traits": [
+        "observant",
+        "cunning"
+      ]
     },
     "tomas_wren": {
       "name": "Tomas Wren",
@@ -774,7 +830,11 @@
         "method": "side_quest",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "traits": [
+        "diligent",
+        "brave"
+      ]
     },
     "orlan_pike": {
       "name": "Orlan Pike",
@@ -815,7 +875,11 @@
             "dungeon_bell_cleared"
           ]
         }
-      }
+      },
+      "traits": [
+        "strategist",
+        "scholar"
+      ]
     },
     "sister_odaly": {
       "name": "Sister Odalys",
@@ -856,7 +920,11 @@
             "dungeon_catacombs_cleared"
           ]
         }
-      }
+      },
+      "traits": [
+        "devout",
+        "compassionate"
+      ]
     },
     "willem_roake": {
       "name": "Ser Willem Roake",
@@ -897,7 +965,11 @@
             "isaure_vessmoor"
           ]
         }
-      }
+      },
+      "traits": [
+        "disciplined",
+        "brave"
+      ]
     },
     "ysolde_marrow": {
       "name": "Ysolde Marrow",
@@ -938,7 +1010,11 @@
             "verra_nightsong"
           ]
         }
-      }
+      },
+      "traits": [
+        "silver_tongued",
+        "charismatic"
+      ]
     },
     "garrick_holt": {
       "name": "Garrick Holt",
@@ -979,7 +1055,11 @@
             "dungeon_catacombs_cleared"
           ]
         }
-      }
+      },
+      "traits": [
+        "brave",
+        "disciplined"
+      ]
     },
     "corwin_brennhallow": {
       "name": "Lord Corwin Brennhallow",
@@ -1061,7 +1141,11 @@
             "act_4_unlocked"
           ]
         }
-      }
+      },
+      "traits": [
+        "devout",
+        "scholar"
+      ]
     },
     "ilyan_voss": {
       "name": "Ilyan Voss",
@@ -1102,7 +1186,11 @@
             "act_4_unlocked"
           ]
         }
-      }
+      },
+      "traits": [
+        "strategist",
+        "administrator"
+      ]
     },
     "maren_vey": {
       "name": "Maren Vey",
@@ -1144,7 +1232,11 @@
             "tideglass_ledger_found"
           ]
         }
-      }
+      },
+      "traits": [
+        "diplomat",
+        "observant"
+      ]
     },
     "reefwarden": {
       "name": "The Reef Warden",
