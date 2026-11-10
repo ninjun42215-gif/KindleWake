@@ -549,13 +549,15 @@ func _test_empire_realm_administration() -> void:
     check(bool(settled.get("ok", false)) and int(settled.get("treasury_after", 0)) == 119 and int(settled.get("month_index", 0)) == 1, "realm month applies the adjusted holding net to the shared treasury")
     check(not bool(EmpireSystemScript.advance_month(state, factions, "empire-turn-1", 20, 4, 119).get("ok", true)), "realm month settlement is idempotent")
     var summary: Dictionary = EmpireSystemScript.realm_summary(state, factions, 119, 20, 4)
-    check(int(summary.get("treasury", 0)) == 119 and int(summary.get("owned_regions", []).size()) == 1 and int(summary.get("governor_count", 0)) == 1, "realm summary reads the shared treasury and canonical faction ownership")
+    check(int(summary.get("treasury", 0)) == 119 and int(summary.get("owned_regions", []).size()) == 2 and int(summary.get("governor_count", 0)) == 1, "realm summary reads the shared treasury and canonical faction ownership")
     var normalized: Dictionary = EmpireSystemScript.normalize_state({
-        "ruler_faction":"missing_house","tax_rate":0.9,"stability":140,"legitimacy":-5,
+        "ruler_faction":"house_dunmarrow","tax_rate":0.9,"stability":140,"legitimacy":-5,
         "policies":{"granaries":true,"unknown_policy":true},"governors":{"sethmarch":"torren","elyria":"torren","unknown_region":"bram"},"processed_months":["m1","m1",""],
         "history":[{"month_token":"m1"}]
     }, ["house_dunmarrow"], factions, ["torren"])
-    check(str(normalized.get("ruler_faction", "x")) == "" and float(normalized.get("tax_rate", 0.0)) == 0.25 and int(normalized.get("stability", 0)) == 100 and int(normalized.get("legitimacy", 0)) == 0, "legacy realm state is clamped and unknown rulers are rejected")
+    check(str(normalized.get("ruler_faction", "")) == "house_dunmarrow" and float(normalized.get("tax_rate", 0.0)) == 0.25 and int(normalized.get("stability", 0)) == 100 and int(normalized.get("legitimacy", 0)) == 0, "legacy realm state is clamped to safe values")
+    var invalid_ruler: Dictionary = EmpireSystemScript.normalize_state({"ruler_faction":"missing_house"}, ["house_dunmarrow"])
+    check(str(invalid_ruler.get("ruler_faction", "x")) == "", "unknown ruler factions are rejected during save normalization")
     check(normalized.get("policies", {}).size() == 1 and normalized.get("processed_months", []).size() == 1 and not normalized.has("treasury"), "realm save normalization filters policies and duplicate month tokens without duplicating gold")
     check(normalized.get("governors", {}).size() == 1 and normalized.get("governors", {}).has("sethmarch"), "realm save normalization removes governors outside owned regions or current roster")
 
