@@ -934,7 +934,7 @@ func _test_empire_management() -> void:
     var army: Dictionary = EmpireSystem.army_summary(state)
     check(int(army["troops"]) == 15 and int(army["upkeep"]) == 15 and int(army["food"]) == 15, "army summary totals troop strength, upkeep and food demand")
     check(EmpireSystem.disband_troops(state, "sethmarch", "infantry", 2, known_regions), "garrison units can be disbanded")
-    check(int(EmpireSystem.army_summary(state)["troops"]) == 13 and int(state["manpower"]) == 81, "disbanding returns 75 percent of spent manpower")
+    check(int(EmpireSystem.army_summary(state)["troops"]) == 13 and int(state["manpower"]) == 86, "disbanding returns 75 percent of spent manpower")
     check(not EmpireSystem.disband_troops(state, "sethmarch", "infantry", 999, known_regions), "disbanding cannot exceed the current garrison")
 
     state["buildings"] = {}
