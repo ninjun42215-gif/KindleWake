@@ -1090,6 +1090,7 @@ func _test_neris_companion_quest() -> void:
     var started: Dictionary = NerisQuestSystem.start_quest({"maren_signal_completed": true}, ["torren", "neris_quell"])
     check(bool(started.get("ok", false)), "Neris can begin charting the second beacon after joining the company")
     var flags: Dictionary = started.get("world_flags", {})
+    check(not bool(NerisQuestSystem.resolve_quest(flags, "publish_route").get("ok", true)), "Neris's route cannot be resolved before the charting sequence is complete")
     var wrong: Dictionary = NerisQuestSystem.submit_route(flags, "west")
     check(bool(wrong.get("ok", false)) and not bool(wrong.get("correct", true)) and int(wrong.world_flags.get(NerisQuestSystem.PROGRESS_FLAG, -1)) == 0, "an incorrect bearing resets the route without consuming resources")
     flags = NerisQuestSystem.submit_route(wrong.world_flags, "east").world_flags
@@ -1097,7 +1098,6 @@ func _test_neris_companion_quest() -> void:
     var final_bearing: Dictionary = NerisQuestSystem.submit_route(flags, "east")
     check(bool(final_bearing.get("complete", false)), "east-south-east bearings chart the hidden second beacon")
     flags = final_bearing.get("world_flags", {})
-    check(not bool(NerisQuestSystem.resolve_quest(flags, "publish_route").get("ok", true)), "Neris's route cannot be resolved before the charting sequence is complete")
     var published: Dictionary = NerisQuestSystem.resolve_quest(flags, "publish_route")
     check(bool(published.get("ok", false)) and int(published.get("gold", 0)) == 100, "publishing the route opens the merchant passage and rewards the company")
     check(not bool(NerisQuestSystem.resolve_quest(published.get("world_flags", {}), "keep_private").get("ok", true)), "Neris's route can only be resolved once")
@@ -1105,9 +1105,10 @@ func _test_neris_companion_quest() -> void:
     var private_result: Dictionary = NerisQuestSystem.resolve_quest(private_flags, "keep_private")
     check(bool(private_result.get("ok", false)) and bool(private_result.world_flags.get("saltmere_fishers_route_open", false)), "keeping the route private reserves it for local fishers")
     var public_bonds: Dictionary = {}
+    RelationshipSystemScript.adjust(public_bonds, "torren", "neris_quell", "trust", 20, "setup:existing-trust")
     check(NerisQuestSystem.apply_relationships(public_bonds, "torren", ["torren", "neris_quell"], gd.characters, "publish_route") == 2, "publishing the route applies Neris's authored respect and trust consequences")
     var public_bond: Dictionary = RelationshipSystemScript.get_relationship(public_bonds, "torren", "neris_quell")
-    check(int(public_bond.get("respect", 0)) == 8 and int(public_bond.get("trust", 0)) == 0, "public charting trades some trust for respect")
+    check(int(public_bond.get("respect", 0)) == 8 and int(public_bond.get("trust", 0)) == 16, "public charting trades some trust for respect")
     var private_bonds: Dictionary = {}
     check(NerisQuestSystem.apply_relationships(private_bonds, "torren", ["torren", "neris_quell"], gd.characters, "keep_private") == 3, "keeping the route private applies Neris's authored friendship, trust and affection")
     var private_bond: Dictionary = RelationshipSystemScript.get_relationship(private_bonds, "torren", "neris_quell")
