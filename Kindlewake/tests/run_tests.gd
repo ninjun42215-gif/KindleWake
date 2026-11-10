@@ -208,6 +208,9 @@ func _test_companion_quests() -> void:
         "q_companion_isaure_two_oaths": {"elderbough": "summons_received", "elderbough_inn": "household_muster_examined", "elderbough_market": "mentor_challenge_resolved"},
         "q_companion_verra_song_without_seal": {"brinegate": "borrowed_verse_heard", "saltmere": "singers_copy_recovered", "lantern_quay": "public_performance_resolved"},
         "q_companion_tomas_far_marker": {"crossing": "fen_marker_recognised", "crossing_inn": "scout_trail_reconstructed", "crossing_elder": "homeward_choice_made"}
+,
+        "q_companion_orlan_margin_of_truth": {"milefort": "misbound_volume_found", "milefort_inn": "source_provenance_verified", "milefort_market": "archive_access_resolved"},
+        "q_companion_odaly_open_door": {"redwater": "sanctuary_bell_answered", "redwater_inn": "shelter_rules_agreed", "redwater_market": "threshold_defended"}
     }
     var authored_hooks_ok := true
     for authored_quest_id in authored_quest_maps.keys():
@@ -224,19 +227,19 @@ func _test_companion_quests() -> void:
         var outcome_flags: Dictionary = gd.companion_quests[authored_quest_id].get("outcome_flags", {})
         if outcome_flags.size() != (gd.companion_quests[authored_quest_id].get("outcomes", []) as Array).size():
             authored_hooks_ok = false
-    check(authored_hooks_ok, "Lucan, Kestrel, Anselm, Petra, Dorian, Joss, Isaure, Verra and Tomas have three ordered location hooks, valid investigation challenges and persistent outcome branches")
+    check(authored_hooks_ok, "Lucan, Kestrel, Anselm, Petra, Dorian, Joss, Isaure, Verra, Tomas, Orlan and Odalys have three ordered location hooks, valid investigation challenges and persistent outcome branches")
     var playable_summaries_ok := true
-    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker"]:
+    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door"]:
         if str(gd.companion_quests[playable_id].get("journal_summary", "")).length() < 30:
             playable_summaries_ok = false
-    check(playable_summaries_ok, "all twelve authored companion quest routes have journal summaries")
+    check(playable_summaries_ok, "all fourteen authored companion quest routes have journal summaries")
     var playable_flags_ok := true
-    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker"]:
+    for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door"]:
         var playable_definition: Dictionary = gd.companion_quests[playable_id]
         var playable_flags: Dictionary = playable_definition.get("outcome_flags", {})
         if playable_flags.size() != (playable_definition.get("outcomes", []) as Array).size():
             playable_flags_ok = false
-    check(playable_flags_ok, "all twelve authored companion quest routes persist every distinct resolution outcome")
+    check(playable_flags_ok, "all fourteen authored companion quest routes persist every distinct resolution outcome")
 
 
 func _test_prologue() -> void:
