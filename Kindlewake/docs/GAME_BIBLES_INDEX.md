@@ -11,6 +11,10 @@ This index gathers the separate bibles needed to understand and develop the game
 4. **[Game Vision and Requirements](GAME_VISION_AND_REQUIREMENTS.md)** — what the owner wants the finished game to become and acceptance criteria.
 5. **[Current Game State and Gap Analysis](CURRENT_GAME_STATE_AND_GAP_ANALYSIS.md)** — what is documented as current, what is unverified, limitations and next implementation priorities.
 
+## Narrative implementation reference
+
+- [Main Campaign Quest Specifications](STORY_QUEST_SPECIFICATIONS.md) — stable quest IDs, objectives, branches, evidence provenance, companion arcs, cinematic/encounter contracts, save requirements, vertical-slice order and acceptance tests. Use alongside Lore Bible §15; this is a design specification, not proof of implementation.
+
 ## Existing detailed bibles — preserve and use
 
 | Document | What it governs | How Base44 should use it |
