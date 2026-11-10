@@ -270,6 +270,7 @@ func try_attack(unit: BattleUnit, target: BattleUnit) -> bool:
         msg = "%s misses %s." % [unit.display_name, target.display_name]
     log_message.emit(msg)
     unit_acted.emit(unit.id, "attack", {"target_id": target.id, "result": res})
+    _check_boss_phases(target)
     if bool(res["killed"]):
         log_message.emit("%s is defeated!" % target.display_name)
         unit.kills += 1
@@ -330,6 +331,7 @@ func _cast_damage(unit: BattleUnit, skill_id: String, sk: Dictionary, target: Ba
     unit.facing = BattleMap.facing_from_delta(target.cell - unit.cell)
     log_message.emit("%s uses %s on %s for %d." % [unit.display_name, str(sk.get("name", skill_id)), target.display_name, int(res["damage"])])
     unit_acted.emit(unit.id, "skill_damage", {"target_id": target.id, "damage": int(res["damage"]), "killed": bool(res["killed"]), "status": applied_status})
+    _check_boss_phases(target)
     if bool(res["killed"]):
         log_message.emit("%s is defeated!" % target.display_name)
         unit.kills += 1
@@ -426,6 +428,37 @@ func _tick_rune_statuses(unit: BattleUnit) -> bool:
         return true
     return false
 
+## Health-threshold boss transitions. Markers are serialized with BattleUnit.statuses.
+func _check_boss_phases(target: BattleUnit) -> void:
+    if target == null or not target.is_alive() or not target.is_commander:
+        return
+    var phases: Array = def.get("boss_phases", [])
+    for i in range(phases.size()):
+        var phase: Dictionary = phases[i]
+        if str(phase.get("character_id", "")) != target.character_id:
+            continue
+        var marker := "_boss_phase_%d" % i
+        if bool(target.statuses.get(marker, false)):
+            continue
+        var threshold := clampi(int(phase.get("threshold_percent", 0)), 1, 99)
+        var hp_percent := int(floor(float(target.hp) * 100.0 / float(target.max_hp())))
+        if hp_percent > threshold:
+            continue
+        target.statuses[marker] = true
+        var bonuses: Dictionary = phase.get("stat_bonuses", {})
+        for stat_key in bonuses.keys():
+            var key := str(stat_key)
+            target.stats[key] = target.stat(key) + int(bonuses[stat_key])
+        for skill_id in phase.get("add_skills", []):
+            var skill := str(skill_id)
+            if skills.has(skill) and not target.skills.has(skill):
+                target.skills.append(skill)
+        var heal_percent := clampi(int(phase.get("heal_percent", 0)), 0, 50)
+        if heal_percent > 0:
+            target.hp = mini(target.max_hp(), target.hp + maxi(1, int(ceil(float(target.max_hp()) * float(heal_percent) / 100.0))))
+        target.morale = clampi(target.morale + int(phase.get("morale_restore", 0)), 0, 100)
+        log_message.emit(str(phase.get("message", "%s changes tactics!" % target.display_name)))
+        unit_acted.emit(target.id, "boss_phase", {"phase": i + 1, "character_id": target.character_id, "threshold_percent": threshold})
 
 func _apply_kill_morale(killer: BattleUnit, victim: BattleUnit) -> void:
     for o in units:
