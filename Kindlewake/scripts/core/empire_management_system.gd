@@ -224,7 +224,7 @@ static func mobilize_army(state: Dictionary, province_id: String, troop_counts: 
 	var army_id := "field_%04d" % int(state.get("next_army_id", 1))
 	state["next_army_id"] = int(state.get("next_army_id", 1)) + 1
 	var field_armies: Dictionary = state.get("field_armies", {})
-	field_armies[army_id] = {"id": army_id, "name": "Field Army %d" % (int(state["next_army_id"]) - 1), "location": province_id, "troops": composition, "commander": commander_id, "movement": 1, "supplied": true, "days_unsupplied": 0}
+	field_armies[army_id] = {"id": army_id, "name": "Field Army %d" % (int(state["next_army_id"]) - 1), "location": province_id, "troops": composition, "commander": commander_id, "movement": 1, "supplied": true, "days_unsupplied": 0, "morale": 100}
 	state["field_armies"] = field_armies
 	_record(state, "army_mobilized", {"army": army_id, "province": province_id, "troops": composition})
 	return army_id
@@ -322,12 +322,39 @@ static func advance_season(state: Dictionary, province_ids: Array) -> Dictionary
 	upkeep += int(military["upkeep"])
 	var military_food := int(military["food"])
 	var deployed: Dictionary = state.get("field_armies", {})
+	var supply_losses := 0
+	var destroyed_armies: Array[String] = []
 	for army_id in deployed.keys():
 		var field_army: Dictionary = deployed[army_id]
 		field_army["movement"] = 1
 		field_army["supplied"] = province_ids.has(str(field_army.get("location", "")))
-		field_army["days_unsupplied"] = 0 if bool(field_army["supplied"]) else int(field_army.get("days_unsupplied", 0)) + 1
+		if bool(field_army["supplied"]):
+			field_army["days_unsupplied"] = 0
+			field_army["morale"] = mini(100, int(field_army.get("morale", 100)) + 6)
+		else:
+			field_army["days_unsupplied"] = int(field_army.get("days_unsupplied", 0)) + 1
+			field_army["morale"] = maxi(0, int(field_army.get("morale", 100)) - 10)
+			if int(field_army["days_unsupplied"]) >= 2:
+				var troop_total := 0
+				for troop_count in field_army.get("troops", {}).values():
+					troop_total += maxi(0, int(troop_count))
+				var casualties := mini(troop_total, maxi(1, int(ceil(float(troop_total) * 0.05))))
+				var remaining := casualties
+				for troop_type in ["cavalry", "archers", "infantry"]:
+					var available := int(field_army.get("troops", {}).get(troop_type, 0))
+					var lost := mini(available, remaining)
+					if lost > 0:
+						field_army["troops"][troop_type] = available - lost
+						remaining -= lost
+						supply_losses += lost
+					if remaining <= 0:
+						break
+				if troop_total - casualties <= 0:
+					destroyed_armies.append(str(army_id))
 		deployed[army_id] = field_army
+	for destroyed_id in destroyed_armies:
+		deployed.erase(destroyed_id)
+		_record(state, "army_lost", {"army": destroyed_id, "cause": "prolonged_supply_isolation"})
 	state["field_armies"] = deployed
 	if state["policies"].has("conscription"):
 		state["manpower"] = mini(999999, int(state["manpower"]) + 12)
@@ -351,7 +378,7 @@ static func advance_season(state: Dictionary, province_ids: Array) -> Dictionary
 	if state["policies"].has("tolerance"):
 		state["stability"] = mini(100, int(state["stability"]) + 2)
 	state["turn"] = int(state["turn"]) + 1
-	var report := {"ok": true, "season": state["turn"], "income": income, "upkeep": upkeep, "food_change": food_gain - province_ids.size() * 8 - military_food, "defence": defence, "military_upkeep": int(military["upkeep"]), "military_food": military_food, "troops": int(military["troops"]), "food_shortage": food_shortage}
+	var report := {"ok": true, "season": state["turn"], "income": income, "upkeep": upkeep, "food_change": food_gain - province_ids.size() * 8 - military_food, "defence": defence, "military_upkeep": int(military["upkeep"]), "military_food": military_food, "troops": int(military["troops"]), "supply_losses": supply_losses, "food_shortage": food_shortage}
 	_record(state, "season", report)
 	return report
 
