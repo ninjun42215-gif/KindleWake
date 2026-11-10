@@ -18,7 +18,7 @@ KindleWake: The Sundered Vow is an offline-first medieval fantasy tactical RPG f
 - Enjoy meaningful depth without online requirements, manipulative timers or mandatory grinding.
 
 ### Scope targets in the existing GDD
-The GDD describes a 25–35 hour core campaign with New Game+ and Legacy Mode as long-term targets. These are targets, not current content claims.
+The GDD describes a 25–35 hour core campaign and New Game+ as long-term targets. The former optional Legacy Mode toggle is superseded: the Chronicle of Houses is a separate post-campaign system available only after the designated Last Emperor → formal dissolution → late-life epilogue → natural old-age death sequence. These are targets, not current content claims.
 
 ## 2. World and campaign
 
@@ -238,7 +238,7 @@ The [Premium Production Bible](PREMIUM_PRODUCTION_BIBLE.md) is part of the requi
 
 ## 14. Post-ending dynasty campaign — explicit owner requirement
 
-The family/dynasty simulation is **not part of the main campaign**. It unlocks only after the player completes the main story, becomes the last Emperor, formally abolishes the Empire, completes the late-life epilogue and the protagonist dies naturally of old age. This is a hard progression gate, not an optional early-game toggle.
+The family/dynasty simulation is **not part of the main campaign**. It unlocks only after the player completes the designated true-ending route, is formally invested as Last Emperor under the dormant imperial charter, abolishes the imperial office and central claim, establishes the Concord of Free Realms, completes the late-life epilogue and the protagonist dies naturally of old age. This is a hard progression gate, not an optional early-game toggle.
 
 After that death, control passes to an eligible descendant or lawful chosen successor. The player then continues the Chronicle of Houses across generations, inspired at a high level by the character-life-cycle and inheritance depth of Knights of Ages while using original KindleWake lore and rules.
 
@@ -251,7 +251,7 @@ Required scope:
 - marriage alliances, faction reputation, house prestige, legitimacy and local trust;
 - succession laws, inheritance previews, contested claims and meaningful roles for younger children;
 - wars, sieges, tactical battles, ransom, capture, memorials and generational chronicle;
-- a flexible political order after the Empire's abolition; no ordinary restoration of the Emperor title.
+- a flexible political order after the Empire's abolition; no ordinary restoration of the Emperor title. The old Eldrimar Empire was historically fragmented before the opening; Osric IV is King of the Crownlands, and the imperial office is dormant until the one-time endgame settlement.
 
 The first generational release should be deliberately smaller than the full vision: unlock gate + founder chronicle, family tree, aging, one household, one barony, one succession law and a complete save/load loop. Expand only after that vertical slice is stable.
 
