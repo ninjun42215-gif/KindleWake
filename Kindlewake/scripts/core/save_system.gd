@@ -41,7 +41,6 @@ func checksum_of(text: String) -> String:
 
 func save_slot(slot_id: String, payload: Dictionary, summary: String = "") -> bool:
     if not _is_valid_slot_id(slot_id):
-        push_error("SaveSystem: invalid slot id")
         return false
     DirAccess.make_dir_recursive_absolute(SAVE_DIR)
     var payload_text: String = JSON.stringify(payload)
