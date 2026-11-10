@@ -54,6 +54,7 @@ func reload() -> void:
     thalassar_world = _load_json("thalassar_world.json")
     continents = _load_json("continents.json")
     factions = _load_json("factions.json")
+    companion_quests = _load_json("companion_quests.json").get("quests", {})
     locations = _load_json("locations.json")
     character_creation = _load_json("character_creation.json")
     battles.clear()
