@@ -156,6 +156,18 @@
     "sethorn_hall": {
       "items": [],
       "runes": []
+    },
+    "saltmere": {
+      "items": [
+        "spear",
+        "dagger",
+        "hunting_bow",
+        "leather_cuirass",
+        "padded_jerkin"
+      ],
+      "runes": [
+        "mend"
+      ]
     }
   },
   "runes": [
@@ -175,5 +187,37 @@
       "rune_remove",
       "rune_forge"
     ]
+  },
+  "regional_unlocks": {
+    "saltmere": [
+      "saltmere_trade_route_open",
+      "saltmere_fishers_route_open"
+    ]
+  },
+  "route_stocks": {
+    "saltmere": {
+      "saltmere_trade_route_open": {
+        "items": [
+          "deepwater_spice",
+          "stormglass",
+          "northstar_chart"
+        ],
+        "runes": [
+          "fleet",
+          "coin_eye"
+        ]
+      },
+      "saltmere_fishers_route_open": {
+        "items": [
+          "reef_salt",
+          "smoked_tidefish",
+          "kelp_linen"
+        ],
+        "runes": [
+          "mend",
+          "vigor"
+        ]
+      }
+    }
   }
 }

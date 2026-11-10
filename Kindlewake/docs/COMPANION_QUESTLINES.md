@@ -42,3 +42,8 @@ Neris is a former Blackwake reef diver freed after the Northstar Wreck battle. S
 - **Keep the route private for local fishers:** reserves the route for the coast's fishing families. Neris gains friendship, trust and affection, and her stress eases.
 
 Both outcomes record a one-time campaign flag, a distinct memory and authored relationship evidence. No save schema change is required.
+
+
+## Saltmere route market
+
+Neris's second-beacon decision now unlocks the Saltmere Reef Market. Publishing the route opens merchant stock (Deepwater Spice, Stormglass and a Northstar chart fragment); keeping it private opens fisher stock (Reef Salt, Smoked Tidefish and Kelp Linen). The market is closed before either route is established. Trade goods can be bought and resold, but are never treated as equipment. The route-specific stock is data-driven in `shop.json` and merges with Saltmere's base regional stock.

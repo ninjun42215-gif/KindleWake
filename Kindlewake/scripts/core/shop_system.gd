@@ -5,6 +5,38 @@ extends RefCounted
 ## Every method returns "" on success, otherwise a short reason for the UI.
 
 
+static func market_available(shop: Dictionary, region_id: String, world_flags: Dictionary) -> bool:
+    var unlocks: Dictionary = shop.get("regional_unlocks", {})
+    var required: Array = unlocks.get(region_id, [])
+    if required.is_empty():
+        return true
+    for flag_id in required:
+        if bool(world_flags.get(str(flag_id), false)):
+            return true
+    return false
+
+
+static func regional_stock(shop: Dictionary, region_id: String, world_flags: Dictionary) -> Dictionary:
+    var regional: Dictionary = shop.get("regional_stocks", {})
+    var result: Dictionary = (regional.get(region_id, {}) as Dictionary).duplicate(true)
+    if result.is_empty():
+        return {}
+    var route_stocks: Dictionary = shop.get("route_stocks", {}).get(region_id, {})
+    for flag_id in route_stocks:
+        if not bool(world_flags.get(str(flag_id), false)):
+            continue
+        var additions: Dictionary = route_stocks[flag_id]
+        for key in ["items", "runes", "sigils"]:
+            if not additions.has(key):
+                continue
+            var list: Array = (result.get(key, []) as Array).duplicate()
+            for stock_id in additions[key]:
+                if not list.has(stock_id):
+                    list.append(stock_id)
+            result[key] = list
+    return result
+
+
 static func sell_ratio(shop: Dictionary) -> float:
     return clampf(float(shop.get("sell_ratio", 0.5)), 0.0, 1.0)
 
