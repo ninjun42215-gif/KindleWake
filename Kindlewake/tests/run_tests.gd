@@ -280,6 +280,10 @@ func _test_empire_development() -> void:
     check(bool(completed.get("completed", false)), "siege objective completes at its required progress")
     var resolved := EmpireDevelopmentSystem.resolve_siege("siege_test", true, flags)
     check(bool(resolved.get("ok", false)) and str(resolved.get("status", "")) == "resolved", "a completed siege objective can be resolved after its encounter")
+    var repelled_start := EmpireDevelopmentSystem.start_siege("keep", "siege_retrial", 2, flags)
+    var repelled := EmpireDevelopmentSystem.resolve_siege("siege_retrial", false, flags)
+    var retry := EmpireDevelopmentSystem.start_siege("keep", "siege_retrial", 2, flags)
+    check(bool(repelled_start.get("ok", false)) and bool(repelled.get("ok", false)) and bool(retry.get("ok", false)), "repelled sieges resolve cleanly and can be attempted again")
     var foreign_flags := {"holding_claimed_keep":true,"holding_owner_keep":"foreign_house"}
     check(not bool(EmpireDevelopmentSystem.recruit("keep", "levy", 1, foreign_flags, 100).get("ok", true)), "foreign holdings cannot recruit for the player")
 
