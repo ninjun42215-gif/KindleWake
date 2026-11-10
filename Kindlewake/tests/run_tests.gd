@@ -187,7 +187,7 @@ func _test_art_assets() -> void:
 
 func _test_companion_quests() -> void:
     print("[companion quests]")
-    var catalog := {"quests": gd.companion_quests}
+    var catalog := {"quests": gd.companion_quests, "world_flags": {}}
     check(gd.companion_quests.size() == 21, "all 21 recruitable companion quest definitions load")
     var ids_ok := true
     var recruited_ids: Array[String] = []
@@ -211,6 +211,16 @@ func _test_companion_quests() -> void:
         for outcome in definition.get("outcomes", []):
             if labels.has(str(outcome)) and str(labels[str(outcome)]).strip_edges().is_empty():
                 ids_ok = false
+        var relationship_effects: Dictionary = definition.get("relationship_effects", {})
+        if relationship_effects.size() != (definition.get("outcomes", []) as Array).size():
+            ids_ok = false
+        for outcome in definition.get("outcomes", []):
+            var effects: Dictionary = relationship_effects.get(str(outcome), {})
+            for dimension in ["trust", "respect"]:
+                if not effects.has(dimension) or int(effects.get(dimension, 0)) < 0 or int(effects.get(dimension, 0)) > 3:
+                    ids_ok = false
+            if not effects.has("stress_delta") or int(effects.get("stress_delta", 99)) < -2 or int(effects.get("stress_delta", 99)) > 2:
+                ids_ok = false
     var bespoke_quest_companions: Array[String] = ["neris_quell"]
     recruited_ids = recruited_ids.filter(func(id): return not bespoke_quest_companions.has(id))
     check(ids_ok and recruited_ids.size() == covered_ids.size() and recruited_ids.all(func(id): return covered_ids.has(id)), "every recruitable companion without a dedicated quest system has exactly one catalogue quest; Neris uses her existing bespoke route")
@@ -222,6 +232,16 @@ func _test_companion_quests() -> void:
     var started := CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog)
     check(bool(started.get("ok", false)) and CompanionQuestSystem.status(state, quest_id) == "active", "recruited ally can start their personal quest")
     check(not bool(CompanionQuestSystem.start(state, quest_id, ["torren", "old_brisa"], catalog).get("ok", false)), "a companion quest cannot be started twice")
+    var maren_quest_id := "q_companion_maren_tideglass_wake"
+    var maren_definition: Dictionary = gd.companion_quests.get(maren_quest_id, {})
+    var maren_required_flags: Array = maren_definition.get("required_flags_all", [])
+    check(maren_required_flags.has(MarenQuestSystem.COMPLETE_FLAG), "Maren's catalogue sequel uses the existing Northstar quest completion flag")
+    var maren_locked_state: Dictionary = {}
+    var maren_locked := CompanionQuestSystem.start(maren_locked_state, maren_quest_id, ["torren", "maren_vey"], catalog)
+    check(not bool(maren_locked.get("ok", false)) and maren_locked_state.is_empty(), "Maren's companion follow-up stays locked until her Northstar signal quest is complete")
+    var maren_catalog := {"quests": gd.companion_quests, "world_flags": {MarenQuestSystem.COMPLETE_FLAG: true}}
+    var maren_started := CompanionQuestSystem.start(maren_locked_state, maren_quest_id, ["torren", "maren_vey"], maren_catalog)
+    check(bool(maren_started.get("ok", false)), "Maren's follow-up unlocks after the existing Northstar quest resolves")
     check(not bool(CompanionQuestSystem.advance(state, quest_id, "families_contacted", catalog).get("ok", false)), "out-of-order milestones are rejected")
     check(bool(CompanionQuestSystem.advance(state, quest_id, "ledger_recovered", catalog).get("ok", false)), "first companion quest milestone advances")
     check(bool(CompanionQuestSystem.advance(state, quest_id, "families_contacted", catalog).get("ok", false)), "second companion quest milestone advances")
