@@ -19,6 +19,22 @@
       ],
       "completion_reward": {
         "gold": 50
+      },
+      "resolution_prompt": "Lucan has enough evidence to name the deserters, but the signal log also implicates a family that sheltered them. Decide what justice should protect.",
+      "outcome_labels": {
+        "publish_record": "Publish the signal record",
+        "private_restitution": "Arrange private restitution",
+        "protected_archive": "Seal the names in a protected archive"
+      },
+      "outcome_descriptions": {
+        "publish_record": "The signal record is read before the town. Lucan accepts the danger of public truth and asks that the innocent family be named only as witnesses.",
+        "private_restitution": "The deserters' stolen pay is returned quietly. Lucan keeps the record, but the victims receive restitution without being dragged into public accusation.",
+        "protected_archive": "The evidence is sealed under the company's protection. Lucan becomes its keeper, preserving proof until the witnesses can speak safely."
+      },
+      "outcome_flags": {
+        "publish_record": "lucan_outcome_public_record",
+        "private_restitution": "lucan_outcome_restitution",
+        "protected_archive": "lucan_outcome_protected_archive"
       }
     },
     "q_companion_brisa_hearth_of_names": {
@@ -49,6 +65,11 @@
       },
       "completion_reward": {
         "gold": 35
+      },
+      "outcome_flags": {
+        "keep_infirmary": "brisa_outcome_infirmary_ledger",
+        "village_service": "brisa_outcome_village_service",
+        "community_network": "brisa_outcome_shared_care"
       }
     },
     "q_companion_kestrel_no_master": {
@@ -68,6 +89,22 @@
       ],
       "completion_reward": {
         "gold": 50
+      },
+      "resolution_prompt": "The safehouse ledger proves Kestrel's former employer sold names to the patrol. Kestrel will not be owned by another contract. Decide what becomes of the evidence.",
+      "outcome_labels": {
+        "destroy_records": "Destroy the contract records",
+        "submit_evidence": "Submit evidence to the magistrate",
+        "kestrel_decides": "Let Kestrel decide what survives"
+      },
+      "outcome_descriptions": {
+        "destroy_records": "The contract book burns. The names cannot be sold again, though the magistrate loses the evidence needed for a public case.",
+        "submit_evidence": "The ledger is delivered under seal. The magistrate opens an inquiry, and Kestrel gives testimony on their own terms.",
+        "kestrel_decides": "Kestrel chooses which names must be protected and which records can be used. For the first time, the decision is theirs alone."
+      },
+      "outcome_flags": {
+        "destroy_records": "kestrel_outcome_records_destroyed",
+        "submit_evidence": "kestrel_outcome_magistrate",
+        "kestrel_decides": "kestrel_outcome_self_determined"
       }
     },
     "q_companion_anselm_line_to_hold": {
