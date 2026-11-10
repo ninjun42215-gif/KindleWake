@@ -66,12 +66,11 @@ func award_battle(units: Array, result: String) -> Dictionary:
 
 ## A road ambush generated during campaign travel; encounters are part of the world, not a separate mode.
 func travel_encounter_def() -> Dictionary:
-    if not GameData.bestiary.get("regions", {}).is_empty():
-        var regional: Dictionary = EncounterBuilderScript.build_regional_skirmish(
+    var regional_defs: Dictionary = GameData.bestiary.get("regions", {})
+    if regional_defs.has(active_region_id):
+        return EncounterBuilderScript.build_regional_skirmish(
             GameData.bestiary, active_region_id, GameData.battles, rng
         )
-        if not regional.is_empty():
-            return regional
     return EncounterBuilderScript.build_skirmish(GameData.encounters, GameData.battles, rng)
 
 
