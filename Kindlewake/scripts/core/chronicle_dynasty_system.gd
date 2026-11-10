@@ -232,6 +232,49 @@ static func update_domain(raw: Dictionary, domain_id: String, field: String, val
  return {"ok":true,"state":state}
 
 
+static func create_domain(raw: Dictionary, name: String, steward_id: String) -> Dictionary:
+ var state := normalize_state(raw)
+ if name.strip_edges().length() < 3 or not state.people.has(steward_id) or not bool(state.people[steward_id].alive):
+  return {"ok":false,"reason":"A named holding and living steward are required."}
+ var domain_id := "domain_%02d" % (state.domains.size()+1)
+ state.domains[domain_id] = {"id":domain_id,"name":name.strip_edges(),"steward":steward_id,"prosperity":35,"security":35,"food":40,"legitimacy":40,"notes":"A new holding under the Concord's duties of stewardship."}
+ var person: Dictionary = state.people[steward_id]
+ person.domain_ids.append(domain_id)
+ state.people[steward_id] = person
+ _log(state,"domain_founded",{"domain":domain_id,"steward":steward_id})
+ return {"ok":true,"state":state,"domain_id":domain_id}
+
+
+static func create_title(raw: Dictionary, rank_id: String, name: String, holder_id: String, domain_id: String) -> Dictionary:
+ var state := normalize_state(raw)
+ var rank: Dictionary = {}
+ for item in RANKS:
+  if str(item.id) == rank_id:
+   rank = item
+ if rank.is_empty() or name.strip_edges().length() < 3 or not state.people.has(holder_id) or not bool(state.people[holder_id].alive) or not state.domains.has(domain_id):
+  return {"ok":false,"reason":"Choose a valid rank, title name, living holder and domain."}
+ var highest := 0
+ for existing in state.titles.values():
+  var existing_rank := _rank_value(str(existing.get("rank_id","")))
+  highest = maxi(highest,existing_rank)
+ if int(rank.rank) <= highest:
+  return {"ok":false,"reason":"New titles must follow the existing rank ladder; a higher rank requires a greater public duty."}
+ var title_id := "title_%02d" % (state.titles.size()+1)
+ state.titles[title_id] = {"id":title_id,"rank_id":rank_id,"name":name.strip_edges(),"holder":holder_id,"domain_id":domain_id,"jurisdiction":str(rank.jurisdiction),"obligations":[str(rank.duties)],"legitimacy":40}
+ var person: Dictionary = state.people[holder_id]
+ person.title_id = title_id
+ state.people[holder_id] = person
+ _log(state,"title_established",{"title":title_id,"rank":rank_id,"holder":holder_id})
+ return {"ok":true,"state":state,"title_id":title_id}
+
+
+static func _rank_value(rank_id: String) -> int:
+ for rank in RANKS:
+  if str(rank.id) == rank_id:
+   return int(rank.rank)
+ return 0
+
+
 static func advance_year(raw: Dictionary) -> Dictionary:
  var state := normalize_state(raw)
  if state.is_empty():
