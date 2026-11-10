@@ -17,15 +17,19 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
     var result: Dictionary = {}
     for raw_key in raw:
         var key := str(raw_key)
-        var pair: Dictionary = raw[raw_key] if raw[raw_key] is Dictionary else {}
+        var pair_value: Variant = raw[raw_key]
+        var pair: Dictionary = pair_value if typeof(pair_value) == TYPE_DICTIONARY else {}
         var metrics: Dictionary = {}
-        var raw_metrics: Dictionary = pair.get("metrics", {})
+        var metrics_value: Variant = pair.get("metrics", {})
+        var raw_metrics: Dictionary = metrics_value if typeof(metrics_value) == TYPE_DICTIONARY else {}
         for dimension in DIMENSIONS:
             metrics[dimension] = clampi(int(raw_metrics.get(dimension, 0)), 0, MAX_VALUE)
-        var history: Array = pair.get("history", []).duplicate(true)
+        var history_value: Variant = pair.get("history", [])
+        var history: Array = history_value.duplicate(true) if typeof(history_value) == TYPE_ARRAY else []
         while history.size() > MAX_HISTORY:
             history.pop_front()
-        var seen: Array = pair.get("seen_evidence", []).duplicate()
+        var seen_value: Variant = pair.get("seen_evidence", [])
+        var seen: Array = seen_value.duplicate() if typeof(seen_value) == TYPE_ARRAY else []
         while seen.size() > MAX_EVIDENCE:
             seen.pop_front()
         result[key] = {"metrics": metrics, "history": history, "seen_evidence": seen}
