@@ -199,6 +199,9 @@ func _test_companion_quests() -> void:
 
 
     var authored_quest_maps := {
+        "q_companion_brisa_hearth_of_names": {"foxglove": "ledger_recovered", "foxglove_inn": "families_contacted", "foxglove_market": "care_network_secured"},
+        "q_companion_edda_iron_and_ash": {"foxglove_recruit": "tools_accounted", "foxglove_inn": "worker_claims_verified", "sethorn_hall": "furnace_bargain_resolved"},
+        "q_companion_bram_cullen_broken_chain": {"foxglove_recruit": "debt_transfer_found", "crossing": "contracts_audited", "crossing_inn": "debtors_freed"},
         "q_companion_lucan_last_flight": {"thornmere": "signal_found", "thornmere_inn": "patrol_traced", "thornmere_market": "witness_heard"},
         "q_companion_kestrel_no_master": {"elderbough": "coded_mark_found", "elderbough_inn": "safehouse_investigated", "elderbough_market": "witness_protected"},
         "q_companion_anselm_line_to_hold": {"crossing": "muster_notice_read", "crossing_elder": "drill_ground_examined", "sethorn_hall": "soldiers_resolved"},
@@ -219,20 +222,33 @@ func _test_companion_quests() -> void:
     }
     var authored_hooks_ok := true
     for authored_quest_id in authored_quest_maps.keys():
+        var found_milestones := 0
         for map_id in authored_quest_maps[authored_quest_id].keys():
             var found_hook := false
             for authored_spot in maps.get(map_id, {}).get("spots", []):
                 if str(authored_spot.get("companion_quest_id", "")) == authored_quest_id and str(authored_spot.get("companion_quest_milestone", "")) == str(authored_quest_maps[authored_quest_id][map_id]):
                     found_hook = true
+                    found_milestones += 1
+                    var hook_cell: Array = authored_spot.get("cell", [])
+                    var map_rows: Array = maps.get(map_id, {}).get("rows", [])
+                    if hook_cell.size() < 2 or int(hook_cell[1]) < 0 or int(hook_cell[1]) >= map_rows.size():
+                        authored_hooks_ok = false
+                    else:
+                        var hook_row := str(map_rows[int(hook_cell[1])])
+                        var hook_x := int(hook_cell[0])
+                        if hook_x < 0 or hook_x >= hook_row.length() or "#TF~rbwBSKXHUPNC".contains(hook_row.substr(hook_x, 1)):
+                            authored_hooks_ok = false
                     var challenge: Dictionary = authored_spot.get("companion_quest_challenge", {})
                     if not challenge.is_empty() and (not (challenge.get("options", []) as Array).has(str(challenge.get("correct_option", ""))) or (challenge.get("options", []) as Array).size() < 2):
                         authored_hooks_ok = false
             if not found_hook:
                 authored_hooks_ok = false
+        if found_milestones != (gd.companion_quests[authored_quest_id].get("milestones", []) as Array).size():
+            authored_hooks_ok = false
         var outcome_flags: Dictionary = gd.companion_quests[authored_quest_id].get("outcome_flags", {})
         if outcome_flags.size() != (gd.companion_quests[authored_quest_id].get("outcomes", []) as Array).size():
             authored_hooks_ok = false
-    check(authored_hooks_ok, "Lucan, Kestrel, Anselm, Petra, Dorian, Joss, Isaure, Verra, Tomas, Orlan, Odalys, Willem, Ysolde, Garrick and Corwin have three location hooks, valid investigation challenges and persistent outcome branches")
+    check(authored_hooks_ok, "all twenty authored routes have three location hooks on walkable tiles, valid investigation challenges and persistent outcome branches")
     var playable_summaries_ok := true
     for playable_id in ["q_companion_brisa_hearth_of_names", "q_companion_lucan_last_flight", "q_companion_kestrel_no_master", "q_companion_edda_iron_and_ash", "q_companion_bram_cullen_broken_chain", "q_companion_anselm_line_to_hold", "q_companion_petra_bitter_draught", "q_companion_dorian_unspent_bolt", "q_companion_joss_debt_of_silence", "q_companion_isaure_two_oaths", "q_companion_verra_song_without_seal", "q_companion_tomas_far_marker", "q_companion_orlan_margin_of_truth", "q_companion_odaly_open_door", "q_companion_willem_last_challenge", "q_companion_ysolde_names_in_salt", "q_companion_garrick_spared_enemy", "q_companion_corwin_heirless_seal", "q_companion_ilyan_silent_tower", "q_companion_maren_tideglass_wake"]:
         if str(gd.companion_quests[playable_id].get("journal_summary", "")).length() < 30:
@@ -244,7 +260,7 @@ func _test_companion_quests() -> void:
         var playable_flags: Dictionary = playable_definition.get("outcome_flags", {})
         if playable_flags.size() != (playable_definition.get("outcomes", []) as Array).size():
             playable_flags_ok = false
-    check(playable_flags_ok, "all eighteen authored companion quest routes persist every distinct resolution outcome")
+    check(playable_flags_ok, "all twenty authored companion quest routes persist every distinct resolution outcome")
 
 
 func _test_prologue() -> void:
