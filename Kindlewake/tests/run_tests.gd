@@ -229,6 +229,7 @@ func _test_empire_development() -> void:
     }
     var upgrade := EmpireDevelopmentSystem.upgrade_building("keep", "farm", flags, 200)
     check(bool(upgrade.get("ok", false)) and int(upgrade.get("tier", 0)) == 1 and int(flags.get("empire_stockpile_materials", 0)) == 26, "holding farm upgrades consume materials and advance one tier")
+    check(not bool(EmpireDevelopmentSystem.recruit("keep", "levy", 0, flags, 100).get("ok", true)), "zero-sized recruitment requests are rejected")
     var insufficient := EmpireDevelopmentSystem.upgrade_building("keep", "farm", flags, 10)
     check(not bool(insufficient.get("ok", true)) and int(flags.get("holding_building_keep_farm", 0)) == 1, "unaffordable building upgrades leave the holding unchanged")
     var recruited := EmpireDevelopmentSystem.recruit("keep", "archer", 2, flags, 100)
@@ -239,10 +240,12 @@ func _test_empire_development() -> void:
     check(bool(siege.get("ok", false)), "a player holding can stage an objective-based siege")
     var progress := EmpireDevelopmentSystem.progress_siege("siege_test", 1, flags)
     check(bool(progress.get("ok", false)) and not bool(progress.get("completed", true)), "siege objectives preserve incremental progress")
+    var early_resolution := EmpireDevelopmentSystem.resolve_siege("siege_test", true, flags)
+    check(not bool(early_resolution.get("ok", true)), "siege cannot be resolved before its objective is complete")
     var completed := EmpireDevelopmentSystem.progress_siege("siege_test", 1, flags)
     check(bool(completed.get("completed", false)), "siege objective completes at its required progress")
-    var premature := EmpireDevelopmentSystem.resolve_siege("siege_test", true, flags)
-    check(bool(premature.get("ok", false)) and str(premature.get("status", "")) == "resolved", "a completed siege objective can be resolved after its encounter")
+    var resolved := EmpireDevelopmentSystem.resolve_siege("siege_test", true, flags)
+    check(bool(resolved.get("ok", false)) and str(resolved.get("status", "")) == "resolved", "a completed siege objective can be resolved after its encounter")
     var foreign_flags := {"holding_claimed_keep":true,"holding_owner_keep":"foreign_house"}
     check(not bool(EmpireDevelopmentSystem.recruit("keep", "levy", 1, foreign_flags, 100).get("ok", true)), "foreign holdings cannot recruit for the player")
 
