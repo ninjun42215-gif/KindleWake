@@ -367,8 +367,8 @@ func _advance_season() -> void:
     if not bool(report.get("ok", false)):
         _set_message("The realm is not yet unlocked.", false)
         return
-    var result := "Season %d: +%d gold income, %d upkeep, food change %d." % [
-        int(report.get("season", 0)), int(report.get("income", 0)), int(report.get("upkeep", 0)), int(report.get("food_change", 0))
+    var result := "Season %d: +%d gold income, %d total upkeep (army: %d), food change %d (army rations: %d), %d soldiers maintained." % [
+        int(report.get("season", 0)), int(report.get("income", 0)), int(report.get("upkeep", 0)), int(report.get("military_upkeep", 0)), int(report.get("food_change", 0)), int(report.get("military_food", 0)), int(report.get("troops", 0))
     ]
     if bool(report.get("food_shortage", false)):
         result += " Famine threatens public order!"
