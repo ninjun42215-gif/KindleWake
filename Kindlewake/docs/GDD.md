@@ -923,3 +923,13 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - Exposes GameState methods for story, quest and battle systems to adjust relations, set diplomatic states and transfer known atlas regions. No automatic wars, random coups, fabricated quest consequences or player-facing diplomacy screen are introduced in this foundation.
 
 **Validation:** code head `f7b31035e4651a4a6854cc5ad644beff88c2148b` passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 447 strict checks / 0 failures, balance report and signed Android APK export (arm64-v8a + armeabi-v7a; no requested permissions). Version Sync #188, Workflow YAML Lint #666 and Project Health Audit #458 passed. APK artifact `13733346417`; test logs `13732869336`. Any later documentation-only head still requires the repository's exact-head gate. Physical Android QA remains separate and unperformed. Future work: player-facing diplomacy UI, faction missions, treaties with authored costs, war campaigns, recruitment consequences and strategic territory operations.
+
+
+## 20. Regional Trading and Merchant Economy
+
+- Adds a data-driven commodity catalogue covering frontier food, coastal provisions, timber, ore, herbs, textiles, crafted goods, luxuries and rune materials.
+- Eight market profiles have distinct regional supply advantages and prices: Brinegate specializes in salt, fish and pearls; Thornmere in grain and wool; Foxglove in herbs and leather; Elderbough in timber, honey and wine; Cindermead in ore and weapon components; Redwater in amber and dyestuff; Milefort in military supplies; Sethmarch acts as a mixed crossroads.
+- `TradeSystem` supports market quotes, quantity-based buying and selling, stock depletion/restocking through player sales, local demand pressure, cargo weight/capacity and deterministic regional price movement.
+- Cargo is stored in the existing party inventory. Market stock, demand, transaction count and trade totals are persisted as an optional campaign payload field. Existing schema-4 saves receive a clean default trade state.
+- `GameState.trade_buy()`, `trade_sell()` and `trade_quotes()` expose the active region's market rules to town/market UI. Save schema and game version remain unchanged.
+- This PR establishes the content and rules foundation. A dedicated merchant UI, caravan routes/events, tariffs, trade contracts, smuggling and merchant-guild progression remain follow-up implementation work.
