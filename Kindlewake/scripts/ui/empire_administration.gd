@@ -290,6 +290,8 @@ func _build_military() -> void:
     _section("THE REALM'S STANDING FORCES")
     var summary: Dictionary = GameState.empire_army_summary()
     _metric("Troop strength", "%d soldiers" % int(summary.get("troops", 0)), "%d provincial garrisons" % int(summary.get("garrisoned_provinces", 0)))
+    var deployed: Dictionary = GameState.field_army_summary()
+    _metric("Field deployments", "%d armies · %d soldiers" % [int(deployed.get("armies", 0)), int(deployed.get("troops", 0))], "%d unsupplied armies" % int(deployed.get("unsupplied", 0)))
     _metric("Seasonal military burden", "%d gold · %d food" % [int(summary.get("upkeep", 0)), int(summary.get("food", 0))], "Readiness estimate: %d%% based on current food reserves" % int(summary.get("readiness", 100)))
     _section("SELECT GARRISON PROVINCE")
     var region_ids: Array = GameData.factions.get("regions", {}).keys()
