@@ -65,16 +65,12 @@ func new_game(profile: Dictionary = {}) -> void:
 ## Start a personal quest only after its companion has joined the roster and any authored story gates are met.
 func start_companion_quest(quest_id: String) -> Dictionary:
     var result: Dictionary = CompanionQuestSystem.start(companion_quests, quest_id, party.roster, {"quests": GameData.companion_quests, "world_flags": world_flags})
-    if bool(result.get("ok", false)):
-        save_campaign("auto_a")
     return result
 
 
 ## Record the next authored objective in a companion quest.
 func advance_companion_quest(quest_id: String, milestone_id: String) -> Dictionary:
     var result: Dictionary = CompanionQuestSystem.advance(companion_quests, quest_id, milestone_id, {"quests": GameData.companion_quests})
-    if bool(result.get("ok", false)):
-        save_campaign("auto_a")
     return result
 
 
