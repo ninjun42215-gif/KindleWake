@@ -35,6 +35,10 @@ The existing [Game Design Document](GDD.md) and [Premium Production Bible](PREMI
 
 KindleWake: **The Sundered Vow** is an offline-first, character-driven medieval fantasy tactical RPG. It is a company drama about people choosing to stand together after institutions fail them. The player controls Torren Dunmarrow (stable protagonist ID torren), whose name and appearance are customisable through the character creator. Torren inherits a damaged legacy, a ruined keep and a mystery tied to the public Covenant of the Seven Flames. The campaign should grow from personal survival into a realm-wide political reckoning, with tactical battles, meaningful companions, recruitment, territorial politics and a headquarters that changes visibly.
 
+## Main campaign narrative implementation reference
+
+Before implementing or revising campaign quests, read [STORY_QUEST_SPECIFICATIONS.md](STORY_QUEST_SPECIFICATIONS.md) together with [LORE_BIBLE.md §15](LORE_BIBLE.md) and [GDD.md §10](GDD.md). The quest specification defines proposed stable IDs, entry/exit conditions, evidence provenance, choice/state contracts, companion arcs, encounter requirements, save compatibility and implementation slices. Audit existing quest/scene/data IDs before adding anything; reuse the current Godot architecture and do not treat a specification as a shipped feature.
+
 ## Required reading by task
 
 | Task | Read first |
