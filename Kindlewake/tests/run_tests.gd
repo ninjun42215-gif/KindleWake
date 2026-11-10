@@ -108,6 +108,12 @@ func _test_data() -> void:
                 break
         check(has_tier, "equipment data includes " + str(rarity) + " tier")
     check(gd.characters.has("torren"), "characters loaded")
+    var recruit_profiles_valid := true
+    for recruit_id in ["frontier_levy", "march_archer", "household_knight"]:
+        var recruit: Dictionary = gd.characters.get(recruit_id, {})
+        if recruit.is_empty() or not gd.classes.has(str(recruit.get("class_id", ""))) or not gd.weapons.has(str(recruit.get("weapon_id", ""))):
+            recruit_profiles_valid = false
+    check(recruit_profiles_valid, "all recruitable holding troops have valid battle classes and weapons")
     var def: Dictionary = gd.battle_def("battle_01")
     check(not def.is_empty(), "battle_01 loaded")
     var db: Dictionary = gd.as_db()
