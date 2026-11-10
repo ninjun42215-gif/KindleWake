@@ -875,13 +875,14 @@ func _test_faction_politics() -> void:
     for continent_entry in gd.continents.get("continents", []):
         for region_entry in (continent_entry as Dictionary).get("regions", []):
             atlas_region_ids[str((region_entry as Dictionary).get("id", ""))] = true
-    var coverage_ok := atlas_region_ids.size() == definitions.get("regions", {}).size()
+    var faction_regions: Dictionary = definitions.get("regions", {})
+    var coverage_ok: bool = atlas_region_ids.size() == faction_regions.size()
     for region_id in atlas_region_ids.keys():
-        var region: Dictionary = definitions.get("regions", {}).get(str(region_id), {})
+        var region: Dictionary = faction_regions.get(str(region_id), {})
         if region.is_empty() or not faction_ids.has(str(region.get("owner", ""))):
             coverage_ok = false
     check(coverage_ok, "every authored atlas region has a valid initial political affiliation")
-    check(str(definitions.get("regions", {}).get("sethmarch", {}).get("owner", "")) == "house_dunmarrow", "Sethmarch begins under the contested Dunmarrow claim")
+    check(str(faction_regions.get("sethmarch", {}).get("owner", "")) == "house_dunmarrow", "Sethmarch begins under the contested Dunmarrow claim")
     var state: Dictionary = FactionSystem.new_campaign_state(definitions)
     check(FactionSystem.relation(state, "house_orrowen", "house_vessmoor") == 0 and FactionSystem.relation(state, "house_vessmoor", "house_orrowen") == 0, "new campaigns begin with neutral, symmetric diplomatic relations")
     check(not FactionSystem.set_diplomatic_state(state, "house_orrowen", "house_vessmoor", "alliance"), "an alliance cannot be formed below the required trust threshold")
