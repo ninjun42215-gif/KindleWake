@@ -280,7 +280,16 @@ static func army_summary(state: Dictionary) -> Dictionary:
 			total += amount
 			upkeep += amount * int(definition.get("upkeep", 0))
 			food += amount * int(definition.get("food", 0))
-	return {"troops": total, "upkeep": upkeep, "food": food, "garrisoned_provinces": provinces, "readiness": 100 if total == 0 else clampi(int(state.get("food", 0) * 100 / maxi(1, food)), 0, 100)}
+	for field_army in state.get("field_armies", {}).values():
+		if typeof(field_army) != TYPE_DICTIONARY:
+			continue
+		for troop_type in field_army.get("troops", {}).keys():
+			var amount := maxi(0, int(field_army["troops"][troop_type]))
+			var definition: Dictionary = TROOP_TYPES.get(str(troop_type), {})
+			total += amount
+			upkeep += amount * int(definition.get("upkeep", 0))
+			food += amount * int(definition.get("food", 0))
+	return {"troops": total, "upkeep": upkeep, "food": food, "garrisoned_provinces": provinces, "field_armies": state.get("field_armies", {}).size(), "readiness": 100 if total == 0 else clampi(int(state.get("food", 0) * 100 / maxi(1, food)), 0, 100)}
 
 
 ## Advance one strategic season. The caller controls when story time advances.
@@ -312,6 +321,14 @@ static func advance_season(state: Dictionary, province_ids: Array) -> Dictionary
 	var military := army_summary(state)
 	upkeep += int(military["upkeep"])
 	var military_food := int(military["food"])
+	var deployed: Dictionary = state.get("field_armies", {})
+	for army_id in deployed.keys():
+		var field_army: Dictionary = deployed[army_id]
+		field_army["movement"] = 1
+		field_army["supplied"] = province_ids.has(str(field_army.get("location", "")))
+		field_army["days_unsupplied"] = 0 if bool(field_army["supplied"]) else int(field_army.get("days_unsupplied", 0)) + 1
+		deployed[army_id] = field_army
+	state["field_armies"] = deployed
 	if state["policies"].has("conscription"):
 		state["manpower"] = mini(999999, int(state["manpower"]) + 12)
 	else:
