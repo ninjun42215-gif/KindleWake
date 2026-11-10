@@ -40,17 +40,22 @@ static func normalize_state(raw: Dictionary, valid_factions: Array = [], faction
     state["month_index"] = maxi(0, int(source.get("month_index", 0)))
     var raw_governors: Dictionary = source.get("governors", {}) if source.get("governors", {}) is Dictionary else {}
     var territories: Dictionary = faction_state.get("territories", {})
-    for region_id in raw_governors:
-        var character_id := str(raw_governors[region_id])
-        if str(region_id) == "" or character_id == "":
+    var governor_regions: Array = raw_governors.keys()
+    governor_regions.sort()
+    var assigned_governors: Dictionary = {}
+    for region_value in governor_regions:
+        var region_id := str(region_value)
+        var character_id := str(raw_governors[region_value])
+        if region_id == "" or character_id == "" or assigned_governors.has(character_id):
             continue
         if not faction_state.is_empty():
-            var territory: Dictionary = territories.get(str(region_id), {})
+            var territory: Dictionary = territories.get(region_id, {})
             if str(territory.get("owner", "")) != ruler or str(territory.get("status", "")) != "held":
                 continue
         if not eligible_roster.is_empty() and not eligible_roster.has(character_id):
             continue
-        state["governors"][str(region_id)] = character_id
+        state["governors"][region_id] = character_id
+        assigned_governors[character_id] = true
     var raw_policies: Dictionary = source.get("policies", {}) if source.get("policies", {}) is Dictionary else {}
     for policy_id in POLICY_DEFINITIONS:
         if bool(raw_policies.get(policy_id, false)):
