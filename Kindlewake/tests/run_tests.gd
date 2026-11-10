@@ -304,65 +304,69 @@ func _test_act_one_boss_ai() -> void:
 func _simulate_act_one_bosses(samples_per_encounter: int) -> void:
     print("[Act I boss balance simulations]")
     for battle_id in ["act1_hask_boss", "act1_ash_bailiff_boss"]:
-        var completed := 0
-        var player_wins := 0
-        var total_turns := 0
-        var boss_damage_skills := 0
-        var boss_heals := 0
-        var boss_weapon_attacks := 0
-        var boss_moves := 0
-        var timed_out := 0
-        for sample in range(samples_per_encounter):
-            var ctl := BattleController.new()
-            ctl.setup(gd.battle_def(battle_id), gd.as_db(), 81000 + sample + (1000 if battle_id == "act1_ash_bailiff_boss" else 0))
-            var boss_id := -1
-            for unit_obj in ctl.units:
-                var unit: BattleUnit = unit_obj
-                if unit.is_commander:
-                    boss_id = unit.id
-                    break
-            var events := {"damage_skills": 0, "heals": 0, "weapon_attacks": 0, "moves": 0}
-            ctl.unit_acted.connect(func(actor_id: int, kind: String, _data: Dictionary) -> void:
-                if actor_id != boss_id:
-                    return
-                match kind:
-                    "skill_damage":
-                        events["damage_skills"] += 1
-                    "heal":
-                        events["heals"] += 1
-                    "attack":
-                        events["weapon_attacks"] += 1
-                    "move":
-                        events["moves"] += 1
-            )
-            ctl.begin()
-            var guard := 0
-            while ctl.result == "" and guard < 1600:
-                ctl.run_ai_turn(true)
-                guard += 1
-            if ctl.result == "":
-                timed_out += 1
-            else:
-                completed += 1
-                if ctl.result == "victory":
-                    player_wins += 1
-            total_turns += ctl.turn_count
-            boss_damage_skills += int(events["damage_skills"])
-            boss_heals += int(events["heals"])
-            boss_weapon_attacks += int(events["weapon_attacks"])
-            boss_moves += int(events["moves"])
-        var avg_turns := float(total_turns) / float(samples_per_encounter)
-        check(timed_out == 0, battle_id + " AI-vs-AI simulations all reach a battle result")
-        check(completed == samples_per_encounter, battle_id + " simulation sample count is complete")
-        print("  info  %s: player wins %d/%d; avg turns %.1f; boss attacks %d; boss damage skills %d; boss heals %d; boss moves %d; timeouts %d" % [
-            battle_id, player_wins, samples_per_encounter, avg_turns, boss_weapon_attacks, boss_damage_skills, boss_heals, boss_moves, timed_out
-        ])
-        if battle_id == "act1_hask_boss":
-            check(boss_damage_skills > 0, "Hask uses his signature damage skill in full battle simulations")
-        else:
-            check(boss_heals > 0, "Ash Bailiff heals at least once across full battle simulations")
-            check(boss_damage_skills > 0, "Ash Bailiff uses his signature damage skill in full battle simulations")
-
+        for mode in ["specialized", "generic_baseline"]:
+            var completed := 0
+            var player_wins := 0
+            var total_turns := 0
+            var boss_damage_skills := 0
+            var boss_heals := 0
+            var boss_weapon_attacks := 0
+            var boss_moves := 0
+            var timed_out := 0
+            for sample in range(samples_per_encounter):
+                var battle_def: Dictionary = gd.battle_def(battle_id).duplicate(true)
+                if mode == "generic_baseline":
+                    battle_def["id"] = "baseline_" + battle_id
+                var ctl := BattleController.new()
+                ctl.setup(battle_def, gd.as_db(), 81000 + sample + (1000 if battle_id == "act1_ash_bailiff_boss" else 0))
+                var boss_id := -1
+                for unit_obj in ctl.units:
+                    var unit: BattleUnit = unit_obj
+                    if unit.is_commander:
+                        boss_id = unit.id
+                        break
+                var events := {"damage_skills": 0, "heals": 0, "weapon_attacks": 0, "moves": 0}
+                ctl.unit_acted.connect(func(actor_id: int, kind: String, _data: Dictionary) -> void:
+                    if actor_id != boss_id:
+                        return
+                    match kind:
+                        "skill_damage":
+                            events["damage_skills"] += 1
+                        "heal":
+                            events["heals"] += 1
+                        "attack":
+                            events["weapon_attacks"] += 1
+                        "move":
+                            events["moves"] += 1
+                )
+                ctl.begin()
+                var guard := 0
+                while ctl.result == "" and guard < 1600:
+                    ctl.run_ai_turn(true)
+                    guard += 1
+                if ctl.result == "":
+                    timed_out += 1
+                else:
+                    completed += 1
+                    if ctl.result == "victory":
+                        player_wins += 1
+                total_turns += ctl.turn_count
+                boss_damage_skills += int(events["damage_skills"])
+                boss_heals += int(events["heals"])
+                boss_weapon_attacks += int(events["weapon_attacks"])
+                boss_moves += int(events["moves"])
+            var avg_turns := float(total_turns) / float(samples_per_encounter)
+            check(timed_out == 0, battle_id + " " + mode + " simulations all reach a battle result")
+            check(completed == samples_per_encounter, battle_id + " " + mode + " sample count is complete")
+            print("  info  %s [%s]: player wins %d/%d; avg turns %.1f; boss attacks %d; boss damage skills %d; boss heals %d; boss moves %d; timeouts %d" % [
+                battle_id, mode, player_wins, samples_per_encounter, avg_turns, boss_weapon_attacks, boss_damage_skills, boss_heals, boss_moves, timed_out
+            ])
+            if mode == "specialized":
+                if battle_id == "act1_hask_boss":
+                    check(boss_damage_skills > 0, "Hask uses his signature damage skill in specialized full battle simulations")
+                else:
+                    check(boss_heals > 0, "Ash Bailiff heals at least once in specialized full battle simulations")
+                    check(boss_damage_skills > 0, "Ash Bailiff uses his signature damage skill in specialized full battle simulations")
 
 func bailiff_ctl_prepare(ctl: BattleController, bailiff: BattleUnit, retainer: BattleUnit) -> void:
     bailiff.cell = Vector2i(13, 4)
