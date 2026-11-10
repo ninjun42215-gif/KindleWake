@@ -80,6 +80,8 @@ func _make_unit(uid: int, char_id: String, team: String, cell: Vector2i, facing:
 func _test_data() -> void:
     print("[data]")
     check(gd.classes.size() >= 5, "classes loaded")
+    check(Art.unit_sheet("soldier", "idle") != null, "council portraits and tactical battles share the authored soldier idle sprite sheet")
+    check(load("res://scripts/ui/character_portrait.gd") != null, "reusable council portrait control resolves its script resource")
     check(gd.weapons.size() >= 5, "weapons loaded")
     check(gd.strategic_warfare.get("troops", {}).has("infantry") and gd.strategic_warfare.get("troops", {}).has("archers") and gd.strategic_warfare.get("troops", {}).has("cavalry"), "authored tactical profiles load for all strategic troop types")
     check(gd.strategic_warfare.get("siege_engines", {}).has("battering_ram"), "authored siege engine profile loads")
