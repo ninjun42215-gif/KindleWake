@@ -12,7 +12,7 @@ static func inspect(flags: Dictionary) -> Dictionary:
  var ready := bool(flags.get("chapter_4_complete", false))
  return {"title":"THE KINDLING","available":ready and not bool(flags.get("chapter_5_complete", false)),"complete":bool(flags.get("chapter_5_complete", false)),"body":"Aurelmont is close enough to see its smoke. Three roads remain, each carrying a different debt. The final campaign is gated behind the Quillon witness decision." if ready else "The Quillon Archive and witness account must be resolved before the road to Aurelmont opens."}
 static func choose_route(flags_in: Dictionary, route: String) -> Dictionary:
- if not bool(flags_in.get("chapter_4_complete", false)) or bool(flags_in.get("act5_route_chosen", false)):
+ if not bool(flags_in.get("chapter_1_complete", false)) or not bool(flags_in.get("chapter_2_complete", false)) or not bool(flags_in.get("chapter_3_complete", false)) or not bool(flags_in.get("chapter_4_complete", false)) or bool(flags_in.get("act5_route_chosen", false)):
   return _fail("The road to Aurelmont is not ready.")
  if not ROUTES.has(route):
   return _fail("That route is not available.")
@@ -35,7 +35,7 @@ static func resolve_route_action(flags_in: Dictionary, action: String) -> Dictio
  flags["act5_aurelmont_reached"] = true
  return _ok(flags, "The company reaches Aurelmont. The road's help and cost are recorded.")
 static func evidence_board(flags_in: Dictionary) -> Dictionary:
- if not bool(flags_in.get("act5_aurelmont_reached", false)):
+ if not bool(flags_in.get("act5_aurelmont_reached", false)) or not bool(flags_in.get("chapter_1_complete", false)) or not bool(flags_in.get("chapter_2_complete", false)) or not bool(flags_in.get("chapter_3_complete", false)) or not bool(flags_in.get("chapter_4_complete", false)):
   return _fail("The Seven Witnesses cannot be convened before the company reaches Aurelmont.")
  var flags := flags_in.duplicate(true)
  var evidence := {
@@ -73,7 +73,7 @@ static func resolve_fire(flags_in: Dictionary, fire_id: String, response: String
  flags["act5_fire_" + fire_id] = response
  flags["act5_fires_resolved"] = expected + 1
  if fire_id == "granary_fire":
-  flags["act5_food_security"] = "preserved" if response == "open_granaries" else "damaged"
+  flags["act5_food_security"] = "stores_preserved" if response == "save_grain" else "immediate_relief_opened"
  elif fire_id == "archive_fire":
   flags["act5_public_record"] = "preserved" if response == "save_records" else "people_first"
  else:
@@ -82,7 +82,7 @@ static func resolve_fire(flags_in: Dictionary, fire_id: String, response: String
   flags["act5_three_fires_complete"] = true
  return _ok(flags, "The crisis response is entered. The other fronts continue to demand attention.")
 static func resolve_audience(flags_in: Dictionary, decision: String) -> Dictionary:
- if not bool(flags_in.get("act5_three_fires_complete", false)) or bool(flags_in.get("chapter_5_complete", false)):
+ if not bool(flags_in.get("chapter_4_complete", false)) or not bool(flags_in.get("act5_route_chosen", false)) or not bool(flags_in.get("act5_aurelmont_reached", false)) or not bool(flags_in.get("act5_witness_conclave_complete", false)) or int(flags_in.get("act5_fires_resolved", 0)) != FIRES.size() or not bool(flags_in.get("act5_three_fires_complete", false)) or bool(flags_in.get("chapter_5_complete", false)):
   return _fail("Maelor's final audience is not ready.")
  if not ["open_concord","guarded_concord","wounded_concord","narrow_concord"].has(decision):
   return _fail("That settlement is not available.")
