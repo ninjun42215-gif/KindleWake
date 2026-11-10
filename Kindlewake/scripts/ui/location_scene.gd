@@ -72,6 +72,12 @@ func cell_of(pos: Vector2) -> Vector2i:
 func _load_map(id: String, spawn: Vector2i) -> void:
     current_map_id = id
     lmap = maps[id]
+    # Reapply discovered secret passages when a map is revisited.
+    for secret_spot in lmap.spots:
+        if str(secret_spot.get("kind", "")) == "secret":
+            var secret_flag := str(secret_spot.get("world_flag_on_reveal", ""))
+            if secret_flag != "" and bool(GameState.world_flags.get(secret_flag, false)):
+                lmap.set_tile(lmap.spot_cell(secret_spot), ".")
     var sp: Vector2i = spawn if spawn.x >= 0 else lmap.entry
     player_pos = cell_center(sp)
     last_cell = sp
@@ -284,10 +290,28 @@ func _on_prompt_pressed() -> void:
             spot_text.text += "\n\nThe cache is empty."
     elif spot_kind == "boss":
         var boss_flag: String = str(near_spot.get("world_flag_on_victory", ""))
-        if not bool(GameState.world_flags.get(boss_flag, false)):
+        var required_flag: String = str(near_spot.get("requires_flag", ""))
+        if required_flag != "" and not bool(GameState.world_flags.get(required_flag, false)):
+            spot_text.text += "\n\nThe guardian's seal remains closed. Resolve the mechanism in this chamber first."
+        elif not bool(GameState.world_flags.get(boss_flag, false)):
             spot_buttons.add_child(_btn("Challenge the guardian", _challenge_boss.bind(near_spot)))
         else:
             spot_text.text += "\n\nThe guardian has been defeated."
+    elif spot_kind == "mechanism":
+        var mechanism_id: String = str(near_spot.get("mechanism_id", ""))
+        var solved_flag: String = str(near_spot.get("world_flag_on_solved", ""))
+        if bool(GameState.world_flags.get(solved_flag, false)):
+            spot_text.text += "\n\nThe mechanism is aligned. Its seal remains open."
+        else:
+            var options: Array = near_spot.get("options", [])
+            for option in options:
+                spot_buttons.add_child(_btn("Set: " + str(option).capitalize(), _resolve_mechanism.bind(near_spot, str(option))))
+    elif spot_kind == "secret":
+        var secret_flag: String = str(near_spot.get("world_flag_on_reveal", ""))
+        if bool(GameState.world_flags.get(secret_flag, false)):
+            spot_text.text += "\n\nThe hidden passage has already been opened."
+        else:
+            spot_buttons.add_child(_btn("Search the seam and open the passage", _reveal_secret_passage.bind(near_spot)))
     spot_buttons.add_child(_btn("Close", _close_panel))
     spot_panel.visible = true
 
@@ -636,6 +660,56 @@ func _claim_treasure(spot: Dictionary) -> void:
         GameState.world_flags["northstar_wreck_log_found"] = true
     GameState.save_campaign("auto_a")
     spot_text.text += "\n\nYou recover %d gold.%s" % [reward, loot_text]
+
+
+func _resolve_mechanism(spot: Dictionary, choice: String) -> void:
+    var mechanism_id := str(spot.get("mechanism_id", ""))
+    var sequence: Array = spot.get("sequence", [])
+    var solved_flag := str(spot.get("world_flag_on_solved", ""))
+    if mechanism_id == "" or sequence.is_empty() or solved_flag == "":
+        spot_text.text += "\n\nThe mechanism is damaged beyond use."
+        return
+    if bool(GameState.world_flags.get(solved_flag, false)):
+        return
+    var progress_key := "mechanism_progress_" + mechanism_id
+    var progress := clampi(int(GameState.world_flags.get(progress_key, 0)), 0, sequence.size() - 1)
+    if choice == str(sequence[progress]):
+        progress += 1
+        GameState.world_flags[progress_key] = progress
+        if progress >= sequence.size():
+            GameState.world_flags[solved_flag] = true
+            GameState.world_flags.erase(progress_key)
+            spot_text.text += "\n\nThe sequence locks into place. A deep mechanism turns, and the guardian seal releases."
+            GameState.save_campaign("auto_a")
+            for child in spot_buttons.get_children():
+                if child is Button and (child as Button).text != "Close":
+                    (child as Button).disabled = true
+        else:
+            spot_text.text += "\n\nThe mechanism accepts the setting. %d of %d stages are aligned." % [progress, sequence.size()]
+            GameState.save_campaign("auto_a")
+    else:
+        GameState.world_flags[progress_key] = 1 if choice == str(sequence[0]) else 0
+        spot_text.text += "\n\nThe mechanism shudders and resets. The sequence must begin again."
+        GameState.save_campaign("auto_a")
+
+
+func _reveal_secret_passage(spot: Dictionary) -> void:
+    var flag := str(spot.get("world_flag_on_reveal", ""))
+    var cell: Vector2i = lmap.spot_cell(spot)
+    if flag == "" or bool(GameState.world_flags.get(flag, false)):
+        return
+    if not lmap.set_tile(cell, "."):
+        spot_text.text += "\n\nThe stone cannot be shifted from this side."
+        return
+    var reward := maxi(0, int(spot.get("secret_reward_gold", 0)))
+    GameState.party.gold += reward
+    GameState.world_flags[flag] = true
+    spot_text.text += "\n\nThe stone gives way, revealing a narrow passage and a forgotten cache. You recover %d gold." % reward
+    GameState.save_campaign("auto_a")
+    queue_redraw()
+    for child in spot_buttons.get_children():
+        if child is Button and (child as Button).text != "Close":
+            (child as Button).disabled = true
 
 
 func _challenge_boss(spot: Dictionary) -> void:
