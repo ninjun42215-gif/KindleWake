@@ -387,18 +387,18 @@
       "completion_reward": {
         "gold": 50
       },
-      "synopsis": "Verra hears her own song performed with altered words praising the secret Covenant. A travelling troupe has been pressured to repeat the propaganda. Recover the original verses, establish how the edits were made and help the performers choose how to answer.",
-      "journal_summary": "Trace the altered song through a travelling troupe, recover its original verses and decide how Verra will answer the Covenant's propaganda.",
-      "resolution_prompt": "The original song is recovered and the troupe can refuse the patron's demand. Should Verra publish the original with names, protect the performers by removing identifying details or write a new song?",
+      "synopsis": "Verra hears a popular marching song whose verses have been altered to praise a noble house and erase the names of the workers who wrote it. She tracks down the original performers and must decide how to restore the song without putting them at risk.",
+      "journal_summary": "Recover the verses stripped from a workers' song, verify who wrote them and decide how Verra can return the music to its people.",
+      "resolution_prompt": "The original verses are verified, but the performers fear retaliation. How should Verra restore the song?",
       "outcome_labels": {
-        "publish_original": "Publish the original song",
-        "protect_performers": "Protect the performers",
-        "write_new_song": "Write a new song"
+        "publish_original": "Publish the original verses",
+        "protect_performers": "Protect the original performers",
+        "write_new_song": "Write a new song together"
       },
       "outcome_descriptions": {
-        "publish_original": "Verra publishes the original verses and names the patron who altered them. The troupe chooses which members will testify, and the public can compare the two versions.",
-        "protect_performers": "Verra releases the original song without identifying the performers. The truth survives, while those threatened by the patron can leave without becoming public targets.",
-        "write_new_song": "Verra writes an original response that records the harm without turning the troupe into a political weapon. The performers reclaim the stage on their own terms."
+        "publish_original": "Verra publishes the original verses with a clear account of the authorship dispute, giving the workers their credit.",
+        "protect_performers": "Verra keeps the performers' identities private and shares the verified song through trusted local circles.",
+        "write_new_song": "Verra and the original performers write a new song together, preserving their testimony without exposing those who fear reprisal."
       },
       "outcome_flags": {
         "publish_original": "verra_outcome_original_published",
@@ -424,23 +424,23 @@
       "completion_reward": {
         "gold": 35
       },
-      "synopsis": "Tomas recognises a boundary marker from the fen settlement he fled. Following old scout signs reveals that his family sheltered deserters, but not that Tomas shared their choices. The settlement is divided over whether to protect or prosecute them.",
-      "journal_summary": "Follow Tomas's old boundary marker, reconstruct the scout trail and decide whether he should return, help his family relocate or send aid from afar.",
-      "resolution_prompt": "The settlement knows the truth about the family sheltering deserters, but Tomas is not responsible for their decisions. What future should he choose?",
+      "synopsis": "Tomas finds a weather-worn boundary marker carrying his family's old trail sign. The trail leads through a damaged fen causeway to a household that fled after a surveyor's false warning. Tomas must decide whether to bring them home openly, help them relocate or send aid without demanding their return.",
+      "journal_summary": "Find Tomas's missing fen marker, follow the trail left by his family and learn what kind of homecoming they actually want.",
+      "resolution_prompt": "Tomas has found his family, but returning is not the same as being safe. What should he offer them?",
       "outcome_labels": {
-        "return_openly": "Return to the settlement openly",
+        "return_openly": "Return home openly",
         "relocate_family": "Help the family relocate",
-        "send_aid": "Remain away and send aid"
+        "send_aid": "Send aid without demanding a return"
       },
       "outcome_descriptions": {
-        "return_openly": "Tomas returns with witnesses and offers testimony about what he saw, not what others claim he did. The settlement agrees to a hearing instead of a reprisal.",
-        "relocate_family": "Tomas arranges a safe relocation for his family and those who fear reprisals. The settlement loses their presence, but no one is forced into a public confession.",
-        "send_aid": "Tomas remains with the company and sends supplies through a trusted route. He does not return before he is ready, and the family keeps the choice to answer the settlement later."
+        "return_openly": "Tomas escorts his family home with the village's protection and makes the false survey public.",
+        "relocate_family": "Tomas helps his family settle elsewhere, accepting that safety matters more than restoring the old household.",
+        "send_aid": "Tomas leaves the choice with his family and arranges regular aid without making their return a condition."
       },
       "outcome_flags": {
-        "return_openly": "tomas_outcome_returned",
-        "relocate_family": "tomas_outcome_relocated_family",
-        "send_aid": "tomas_outcome_remote_aid"
+        "return_openly": "tomas_outcome_homecoming",
+        "relocate_family": "tomas_outcome_relocated",
+        "send_aid": "tomas_outcome_aid"
       }
     },
     "q_companion_orlan_margin_of_truth": {
