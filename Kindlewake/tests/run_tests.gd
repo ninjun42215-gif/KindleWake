@@ -104,7 +104,7 @@ func _test_art() -> void:
                 var expected_frames: int = int(ArtScript.UNIT_FRAMES[anim])
                 check(int(tex.get_width()) == expected_frames * int(ArtScript.UNIT_FRAME_SIZE), "%s %s strip width matches %d-frame contract" % [kind, anim, expected_frames])
                 check(int(tex.get_height()) == int(ArtScript.UNIT_FRAME_SIZE), "%s %s strip height is one 100px frame" % [kind, anim])
-    for kind in ["rootbound_warden", "bell_keeper", "ashen_reeve"]:
+    for kind in ["rootbound_warden", "bell_keeper", "ashen_reeve", "roadwolf_chieftain", "roadwolf_reaver", "roadwolf_bowman"]:
         var atlas: Texture2D = ArtScript.enemy_sheet(kind)
         check(atlas != null, "%s original boss atlas imports" % kind)
         if atlas != null:
@@ -118,7 +118,11 @@ func _test_art() -> void:
     check(ArtScript.enemy_kind_for("rootbound_warden", "Rootbound Warden") == "rootbound_warden", "Rootbound Warden selects its bespoke atlas")
     check(ArtScript.enemy_kind_for("bell_keeper", "The Bell-Keeper") == "bell_keeper", "Bell-Keeper selects its bespoke atlas")
     check(ArtScript.enemy_kind_for("ashen_reeve", "The Ashen Reeve") == "ashen_reeve", "Ashen Reeve selects its bespoke atlas")
-    check(ArtScript.enemy_kind_for("roadreaver", "Roadwolf Reaver") == "", "ordinary raiders retain the compatible Orc strip")
+    check(ArtScript.enemy_kind_for("hask_gravelteeth", "Hask Gravelteeth") == "roadwolf_chieftain", "Hask selects the original chieftain atlas")
+    check(ArtScript.enemy_kind_for("roadreaver", "Roadwolf Reaver") == "roadwolf_reaver", "Roadwolf Reaver selects the original raider atlas")
+    check(ArtScript.enemy_kind_for("roadbowman", "Roadwolf Bowman") == "roadwolf_bowman", "Roadwolf Bowman selects the original archer atlas")
+    check(ArtScript.enemy_kind_for("unknown_enemy", "Unknown Creature") == "", "unknown enemies retain the safe legacy Orc fallback")
+    check(ArtScript.enemy_scale("roadwolf_chieftain") > ArtScript.enemy_scale("roadwolf_bowman"), "enemy sprite scale preserves heavy and ranged silhouettes")
     check(ArtScript.unit_animation_for("soldier", "cast") == "idle", "legacy hero cast uses a supported base strip")
     check(ArtScript.unit_animation_for("soldier", "victory") == "idle", "legacy hero victory uses a supported base strip")
 

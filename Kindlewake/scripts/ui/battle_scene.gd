@@ -1249,7 +1249,7 @@ func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: V
     if not u.is_alive() and anim != "death":
         return false
     var t: float = anim_clock - start if anim != "idle" and anim != "walk" else anim_clock + float(u.id) * 0.37
-    var scale: float = 2.1 if is_player else (2.55 if enemy_kind == "rootbound_warden" else (2.3 if use_enemy_atlas else 2.4))
+    var scale: float = 2.1 if is_player else (Art.enemy_scale(enemy_kind) if use_enemy_atlas else 2.4)
     var tint: Color = Color.WHITE if use_enemy_atlas else _battle_sprite_tint(u, is_player)
     if anim == "hurt":
         tint = tint.lerp(Color(1.0, 0.58, 0.52), 0.58)

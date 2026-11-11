@@ -12,11 +12,12 @@ const UNIT_FRAMES := {"idle": 6, "walk": 8, "attack": 6, "hurt": 4, "death": 4}
 const UNIT_FRAME_SIZE := 100.0
 const UNIT_FOOT_Y := 60.0               # feet row inside a 100x100 frame (Soldier 60, Orc 57)
 const UNIT_FPS := {"idle": 7.0, "walk": 12.0, "attack": 14.0, "hurt": 10.0, "death": 8.0}
-## Original project-authored boss atlases: 6 columns × 7 animation rows, 100px cells.
+## Original project-authored enemy atlases: 6 columns × 7 animation rows, 100px cells.
 const ENEMY_ATLAS_DIR := UNIT_DIR + "enemies/"
 const ENEMY_ANIM_ROWS := {"idle": 0, "walk": 1, "attack": 2, "hurt": 3, "cast": 4, "victory": 5, "death": 6}
 const ENEMY_FRAME_SIZE := 100.0
 const ENEMY_FRAME_COUNT := 6
+const ENEMY_SCALES := {"rootbound_warden": 2.55, "bell_keeper": 2.3, "ashen_reeve": 2.3, "roadwolf_chieftain": 2.48, "roadwolf_reaver": 2.28, "roadwolf_bowman": 2.2}
 const ENEMY_FPS := {"idle": 6.0, "walk": 10.0, "attack": 14.0, "hurt": 12.0, "cast": 10.0, "victory": 7.0, "death": 7.0}
 
 static var _cache: Dictionary = {}
@@ -62,6 +63,12 @@ static func enemy_kind_for(character_id: String, display_name: String = "") -> S
         return "bell_keeper"
     if key.contains("ashen_reeve") or key.contains("ashen reeve") or key.contains("ashen"):
         return "ashen_reeve"
+    if key.contains("hask_gravelteeth") or key.contains("hask gravelteeth") or key.contains("chieftain"):
+        return "roadwolf_chieftain"
+    if key.contains("roadbowman") or key.contains("roadwolf bowman") or key.contains("bowman"):
+        return "roadwolf_bowman"
+    if key.contains("roadreaver") or key.contains("roadwolf reaver"):
+        return "roadwolf_reaver"
     return ""
 
 
@@ -99,6 +106,10 @@ static func enemy_frame_rect(anim: String, time: float) -> Rect2:
 
 static func enemy_duration(anim: String) -> float:
     return float(ENEMY_FRAME_COUNT) / float(ENEMY_FPS.get(anim, 8.0))
+
+
+static func enemy_scale(kind: String) -> float:
+    return float(ENEMY_SCALES.get(kind, 2.3))
 
 
 ## Draws one unit frame with its feet at `feet`. scale = screen px per sprite px; `flip` mirrors it (sprites face right).
