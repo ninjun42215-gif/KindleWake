@@ -113,6 +113,7 @@ func _start_battle() -> void:
     battle_vfx.clear()
     log_lines.clear()
     visual_pos.clear()
+    anim_override.clear()
     mode = Mode.IDLE
     last_turn_count = -1
     ai_busy = false
@@ -503,48 +504,80 @@ func _play_anim(unit_id: int, anim: String) -> void:
 
 
 func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
-    if kind == "attack" or kind == "skill_damage":
-        _play_anim(unit_id, "attack")
-        var tid: int = int(data.get("target_id", -1))
-        if tid >= 0 and (kind == "skill_damage" or bool((data.get("result", {}) as Dictionary).get("hit", false))):
-            _play_anim(tid, "hurt")
     if kind == "attack":
-        var res: Dictionary = data["result"]
-        var target: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
+        _play_anim(unit_id, "attack")
+        var target: BattleUnitScript = controller.unit_by_id(int(data.get("target_id", -1)))
         if target == null:
             return
-        if bool(res["hit"]):
-            var crit: bool = bool(res["crit"])
-            _add_battle_vfx(target, "slash", Color(1.0, 0.82, 0.42) if crit else Color(0.85, 0.92, 1.0))
-            _add_popup(target, str(res["damage"]) + ("!" if crit else ""), Color(1.0, 0.85, 0.3) if crit else Color.WHITE)
+        var res: Dictionary = data.get("result", {})
+        if bool(res.get("hit", false)):
+            var crit := bool(res.get("crit", false))
+            var dead := not target.is_alive()
+            _play_anim(target.id, "death" if dead else "hurt")
+            var impact_color := Color(1.0, 0.78, 0.38) if crit else Color(0.88, 0.94, 1.0)
+            _add_battle_vfx(target, "slash", impact_color)
+            _add_battle_vfx(target, "impact", impact_color)
+            if dead:
+                _add_battle_vfx(target, "death", Color(0.62, 0.54, 0.46))
+            _add_popup(target, str(res.get("damage", 0)) + ("!" if crit else ""), Color(1.0, 0.85, 0.3) if crit else Color.WHITE)
         else:
             _add_popup(target, "Miss", Color(0.75, 0.75, 0.75))
     elif kind == "skill_damage":
-        var hit_target: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
+        _play_anim(unit_id, "cast")
+        var rune_status: String = str(data.get("status", ""))
+        var skill_color := Color(1.0, 0.48, 0.24)
+        if rune_status == "chill":
+            skill_color = Color(0.42, 0.78, 1.0)
+        elif rune_status == "shock":
+            skill_color = Color(1.0, 0.92, 0.32)
+        elif rune_status == "exposed":
+            skill_color = Color(0.82, 0.52, 1.0)
+        var caster: BattleUnitScript = controller.unit_by_id(unit_id)
+        if caster != null:
+            _add_battle_vfx(caster, "cast", skill_color)
+        var hit_target: BattleUnitScript = controller.unit_by_id(int(data.get("target_id", -1)))
         if hit_target != null:
-            var skill_color := Color(1.0, 0.48, 0.24)
-            var rune_status: String = str(data.get("status", ""))
-            if rune_status == "chill": skill_color = Color(0.42, 0.78, 1.0)
-            elif rune_status == "shock": skill_color = Color(1.0, 0.92, 0.32)
-            elif rune_status == "exposed": skill_color = Color(0.82, 0.52, 1.0)
+            var dead := not hit_target.is_alive()
+            _play_anim(hit_target.id, "death" if dead else "hurt")
             _add_battle_vfx(hit_target, "burst", skill_color)
-            _add_popup(hit_target, str(data["damage"]) + "*", Color(1.0, 0.55, 0.25))
+            _add_battle_vfx(hit_target, "impact", skill_color)
+            if dead:
+                _add_battle_vfx(hit_target, "death", Color(0.62, 0.54, 0.46))
+            _add_popup(hit_target, str(data.get("damage", 0)) + "*", Color(1.0, 0.55, 0.25))
             if rune_status != "":
                 var effect_color := Color(1.0, 0.4, 0.2)
-                if rune_status == "chill": effect_color = Color(0.45, 0.8, 1.0)
-                elif rune_status == "shock": effect_color = Color(1.0, 0.95, 0.35)
-                elif rune_status == "exposed": effect_color = Color(0.85, 0.55, 1.0)
+                if rune_status == "chill":
+                    effect_color = Color(0.45, 0.8, 1.0)
+                elif rune_status == "shock":
+                    effect_color = Color(1.0, 0.95, 0.35)
+                elif rune_status == "exposed":
+                    effect_color = Color(0.85, 0.55, 1.0)
                 _add_popup(hit_target, rune_status.to_upper(), effect_color)
     elif kind == "heal":
-        var healed: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
+        _play_anim(unit_id, "cast")
+        var healer: BattleUnitScript = controller.unit_by_id(unit_id)
+        if healer != null:
+            _add_battle_vfx(healer, "cast", Color(0.58, 0.9, 0.72))
+        var healed: BattleUnitScript = controller.unit_by_id(int(data.get("target_id", -1)))
         if healed != null:
             _add_battle_vfx(healed, "heal", Color(0.48, 1.0, 0.62))
-            _add_popup(healed, "+" + str(data["amount"]), Color(0.4, 1.0, 0.5))
+            _add_popup(healed, "+" + str(data.get("amount", 0)), Color(0.4, 1.0, 0.5))
             if str(data.get("status", "")) == "regen":
                 _add_popup(healed, "REGEN", Color(0.55, 1.0, 0.65))
 
 
-func _on_battle_ended(_outcome: String) -> void:
+func _on_battle_ended(outcome: String) -> void:
+    if outcome == "victory":
+        for o in controller.units:
+            var u: BattleUnitScript = o
+            if u.team == "player" and u.is_alive():
+                _play_anim(u.id, "victory")
+                _add_battle_vfx(u, "victory", Color(1.0, 0.82, 0.38))
+    elif outcome == "defeat":
+        for o in controller.units:
+            var u: BattleUnitScript = o
+            if u.team == "enemy" and u.is_alive():
+                _play_anim(u.id, "victory")
     _show_result()
 
 
@@ -790,7 +823,8 @@ func _process(delta: float) -> void:
             dirty = true
     for i in range(battle_vfx.size() - 1, -1, -1):
         battle_vfx[i]["age"] = float(battle_vfx[i]["age"]) + delta
-        if float(battle_vfx[i]["age"]) > 0.62:
+        var effect_duration: float = float(battle_vfx[i].get("duration", 0.62))
+        if float(battle_vfx[i]["age"]) > effect_duration:
             battle_vfx.remove_at(i)
         dirty = true
     for i in range(popups.size() - 1, -1, -1):
@@ -814,13 +848,15 @@ func _add_popup(unit: BattleUnitScript, text: String, color: Color) -> void:
 ## Lightweight vector impact/cast effects: no external textures, safe on low-end phones.
 func _add_battle_vfx(unit: BattleUnitScript, kind: String, color: Color) -> void:
     var p: Vector2 = visual_pos.get(unit.id, cell_to_world(unit.cell))
-    battle_vfx.append({"pos": p, "age": 0.0, "kind": kind, "color": color, "seed": float(unit.id) * 1.71})
+    var durations := {"slash": 0.62, "burst": 0.62, "heal": 0.82, "cast": 0.78, "impact": 0.42, "victory": 1.25, "death": 0.78}
+    battle_vfx.append({"pos": p, "age": 0.0, "kind": kind, "color": color, "seed": float(unit.id) * 1.71, "duration": float(durations.get(kind, 0.62))})
 
 
 func _draw_battle_vfx() -> void:
     for effect in battle_vfx:
         var age: float = float(effect["age"])
-        var t: float = clampf(age / 0.62, 0.0, 1.0)
+        var duration: float = maxf(0.01, float(effect.get("duration", 0.62)))
+        var t: float = clampf(age / duration, 0.0, 1.0)
         var center: Vector2 = effect["pos"]
         var col: Color = effect["color"]
         col.a = 1.0 - t
@@ -834,6 +870,36 @@ func _draw_battle_vfx() -> void:
                 var rise: float = age * 42.0 + float(k) * 13.0
                 draw_circle(center + Vector2(sin(age * 8.0 + float(k)) * 12.0, -20.0 - rise), 3.5 * (1.0 - t * 0.45), col)
             draw_arc(center + Vector2(0, -24), 12.0 + t * 18.0, 0.0, TAU, 20, col, 2.5)
+        elif kind == "cast":
+            var radius: float = 7.0 + t * 19.0
+            var focus := center + Vector2(0, -34)
+            draw_arc(focus, radius, 0.0, TAU, 24, col, 2.2 * (1.0 - t * 0.45))
+            draw_arc(focus, radius * 0.62, PI * 0.2, PI * 1.8, 16, col.lightened(0.22), 1.3)
+            for k in range(4):
+                var angle: float = TAU * float(k) / 4.0 + age * 3.2
+                var point := focus + Vector2(cos(angle), sin(angle)) * radius
+                draw_circle(point, 2.5 * (1.0 - t * 0.45), col.lightened(0.28))
+            draw_circle(focus, 3.0 * (1.0 - t * 0.5), col)
+        elif kind == "impact":
+            var radius: float = 4.0 + t * 20.0
+            var focus := center + Vector2(0, -27)
+            draw_circle(focus, maxf(1.0, 7.0 * (1.0 - t)), col)
+            for k in range(8):
+                var angle: float = TAU * float(k) / 8.0 + float(effect["seed"])
+                var direction := Vector2(cos(angle), sin(angle))
+                draw_line(focus + direction * radius * 0.25, focus + direction * radius, col.lightened(0.25), 2.0 * (1.0 - t) + 0.4)
+        elif kind == "victory":
+            var focus := center + Vector2(0, -32)
+            draw_arc(focus, 14.0 + t * 23.0, PI * 1.05, PI * 1.95, 20, col, 2.2 * (1.0 - t) + 0.5)
+            for k in range(5):
+                var rise: float = age * 38.0 + float(k) * 9.0
+                var drift := sin(age * 5.0 + float(k) * 1.7) * 15.0
+                draw_circle(center + Vector2(drift, -18.0 - rise), 2.8 * (1.0 - t * 0.55), col.lightened(0.2))
+        elif kind == "death":
+            for k in range(5):
+                var rise: float = age * 24.0 + float(k) * 6.0
+                var drift := sin(age * 4.0 + float(k)) * 10.0
+                draw_circle(center + Vector2(drift, -12.0 - rise), 3.0 * (1.0 - t), col.darkened(0.12))
         else:
             var radius: float = 8.0 + t * 30.0
             draw_arc(center + Vector2(0, -25), radius, 0.0, TAU, 24, col, 3.5 * (1.0 - t) + 0.5)
@@ -985,7 +1051,12 @@ func _draw_units() -> void:
     var order: Array = []
     for o in controller.units:
         var u: BattleUnitScript = o
-        if u.is_alive():
+        var should_draw := u.is_alive()
+        if not should_draw:
+            var ov: Dictionary = anim_override.get(u.id, {})
+            if str(ov.get("anim", "")) == "death":
+                should_draw = anim_clock - float(ov.get("start", 0.0)) <= _unit_anim_duration(u, "death")
+        if should_draw:
             order.append(u)
     order.sort_custom(func(a, b): return float(visual_pos.get(a.id, Vector2.ZERO).y) < float(visual_pos.get(b.id, Vector2.ZERO).y))
     for o in order:
@@ -1144,9 +1215,19 @@ func _draw_sprite_identity_marks(u: BattleUnitScript, p: Vector2, is_player: boo
 
 ## Animated pixel sprite (Tiny RPG Soldier for the player's side, Orc for the enemy). Returns false without the art,
 ## and _draw_unit then falls back to the drawn figure.
+func _unit_anim_duration(u: BattleUnitScript, anim: String) -> float:
+    if u.team != "player":
+        var enemy_kind := Art.enemy_kind_for(u.character_id, u.display_name)
+        if enemy_kind != "" and Art.enemy_sheet(enemy_kind) != null:
+            return Art.enemy_duration(anim)
+    return Art.unit_duration(anim)
+
+
 func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: Vector2) -> bool:
+    var enemy_kind := "" if is_player else Art.enemy_kind_for(u.character_id, u.display_name)
+    var use_enemy_atlas := enemy_kind != "" and Art.enemy_sheet(enemy_kind) != null
     var kind: String = "soldier" if is_player else "orc"
-    if Art.unit_sheet(kind, "idle") == null:
+    if not use_enemy_atlas and Art.unit_sheet(kind, "idle") == null:
         return false
     var team_col := Color(0.30, 0.58, 1.0) if is_player else Color(0.95, 0.30, 0.25)
     var ring: PackedVector2Array = _ellipse_points(p + Vector2(0, 2), 19.0, 8.0, 20)
@@ -1156,25 +1237,58 @@ func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: V
     var anim: String = "idle"
     var start: float = 0.0
     var ov: Dictionary = anim_override.get(u.id, {})
-    if not ov.is_empty() and anim_clock - float(ov["start"]) < Art.unit_duration(str(ov["anim"])) + 0.1:
-        anim = str(ov["anim"])
-        start = float(ov["start"])
-    elif visual_pos.get(u.id, p) != cell_to_world(u.cell):
+    if not ov.is_empty():
+        var requested_anim := str(ov.get("anim", "idle"))
+        start = float(ov.get("start", 0.0))
+        if anim_clock - start < _unit_anim_duration(u, requested_anim) + 0.1:
+            anim = requested_anim
+        elif u.is_alive() and visual_pos.get(u.id, p) != cell_to_world(u.cell):
+            anim = "walk"
+    elif u.is_alive() and visual_pos.get(u.id, p) != cell_to_world(u.cell):
         anim = "walk"
+    if not u.is_alive() and anim != "death":
+        return false
     var t: float = anim_clock - start if anim != "idle" and anim != "walk" else anim_clock + float(u.id) * 0.37
-    var scale: float = 2.1 if is_player else 2.4
-    var tint: Color = _battle_sprite_tint(u, is_player)
+    var scale: float = 2.1 if is_player else (2.55 if enemy_kind == "rootbound_warden" else (2.3 if use_enemy_atlas else 2.4))
+    var tint: Color = Color.WHITE if use_enemy_atlas else _battle_sprite_tint(u, is_player)
     if anim == "hurt":
         tint = tint.lerp(Color(1.0, 0.58, 0.52), 0.58)
-    Art.draw_unit(self, kind, anim, t, p + Vector2(0, 4), scale, fdir.x < 0.0, tint)
-    _draw_sprite_identity_marks(u, p, is_player, scale, t)
+    if use_enemy_atlas:
+        Art.draw_enemy(self, enemy_kind, anim, t, p + Vector2(0, 4), scale, fdir.x < 0.0, tint)
+    else:
+        var sheet_anim := Art.unit_animation_for(kind, anim)
+        Art.draw_unit(self, kind, sheet_anim, t, p + Vector2(0, 4), scale, fdir.x < 0.0, tint)
+        _draw_sprite_action_pose(u, p, anim, t)
+        _draw_sprite_identity_marks(u, p, is_player, scale, t)
     var ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40, 7)), Color(0.1, 0.08, 0.08))
     draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40.0 * ratio, 7)), Color(0.85, 0.2, 0.2).lerp(Color(0.25, 0.85, 0.38), ratio))
     draw_string(ThemeDB.fallback_font, p + Vector2(-40, -55), u.display_name, HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color.WHITE)
+    _draw_status_pips(u, p)
     if u.morale <= 0:
         draw_string(ThemeDB.fallback_font, p + Vector2(-40, -70), "ROUTED", HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color(1, 0.6, 0.3))
     return true
+
+
+## Lightweight action poses for the existing hero/orc strips, which predate cast and victory rows.
+func _draw_sprite_action_pose(u: BattleUnitScript, p: Vector2, anim: String, time: float) -> void:
+    if anim == "cast":
+        var pulse: float = 0.55 + 0.3 * sin(time * 7.0)
+        var magic := Color(0.58, 0.78, 1.0, pulse)
+        if u.class_id == "cleric":
+            magic = Color(1.0, 0.88, 0.54, pulse)
+        elif u.class_id == "mage" or u.class_id == "sorcerer" or u.class_id == "sage":
+            magic = Color(0.76, 0.58, 1.0, pulse)
+        var focus := p + Vector2(14, -44)
+        draw_arc(focus, 6.0 + pulse * 3.0, 0.0, TAU, 16, magic, 2.0)
+        draw_circle(focus, 2.5, magic.lightened(0.2))
+        draw_line(p + Vector2(12, -18), focus, Color(magic.r, magic.g, magic.b, pulse * 0.55), 1.5)
+    elif anim == "victory":
+        var glow: float = 0.55 + 0.25 * sin(time * 5.0)
+        var gold := Color(1.0, 0.82, 0.38, glow)
+        draw_arc(p + Vector2(0, -38), 16.0 + glow * 4.0, PI * 1.08, PI * 1.92, 18, gold, 2.0)
+        draw_circle(p + Vector2(-12, -49), 2.0, gold)
+        draw_circle(p + Vector2(12, -49), 2.0, gold)
 
 
 ## Compact elemental/status markers remain visible without opening the unit inspector.

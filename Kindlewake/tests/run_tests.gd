@@ -1,6 +1,7 @@
 extends SceneTree
 
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
+const ArtScript = preload("res://scripts/ui/art.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -19,6 +20,7 @@ func _initialize() -> void:
     gd.reload()
     ss = load("res://scripts/core/save_system.gd").new()
     _test_data()
+    _test_art()
     _test_class_tree()
     _test_character_creation()
     _test_map()
@@ -89,6 +91,36 @@ func _test_data() -> void:
         var cdef: Dictionary = db["characters"][cid]
         check(db["classes"].has(str(cdef["class_id"])), "class exists for " + cid)
         check(db["weapons"].has(str(cdef["weapon_id"])), "weapon exists for " + cid)
+
+
+func _test_art() -> void:
+    print("[battle art]")
+    var legacy_kinds := ["soldier", "orc"]
+    for kind in legacy_kinds:
+        for anim in ["idle", "walk", "attack", "hurt", "death"]:
+            var tex: Texture2D = ArtScript.unit_sheet(kind, anim)
+            check(tex != null, "%s %s strip loads" % [kind, anim])
+            if tex != null:
+                var expected_frames: int = int(ArtScript.UNIT_FRAMES[anim])
+                check(int(tex.get_width()) == expected_frames * int(ArtScript.UNIT_FRAME_SIZE), "%s %s strip width matches %d-frame contract" % [kind, anim, expected_frames])
+                check(int(tex.get_height()) == int(ArtScript.UNIT_FRAME_SIZE), "%s %s strip height is one 100px frame" % [kind, anim])
+    for kind in ["rootbound_warden", "bell_keeper", "ashen_reeve"]:
+        var atlas: Texture2D = ArtScript.enemy_sheet(kind)
+        check(atlas != null, "%s original boss atlas imports" % kind)
+        if atlas != null:
+            check(int(atlas.get_width()) == 600 and int(atlas.get_height()) == 700, "%s atlas is 6×7 frames at 100px" % kind)
+            for anim in ArtScript.ENEMY_ANIM_ROWS.keys():
+                var row: int = int(ArtScript.ENEMY_ANIM_ROWS[anim])
+                var rect: Rect2 = ArtScript.enemy_frame_rect(str(anim), 0.0)
+                check(int(rect.position.y) == row * 100 and rect.size == Vector2(100, 100), "%s %s row maps to one 100px frame" % [kind, anim])
+            check(ArtScript.enemy_frame_index("death", 999.0) == 5, "%s death animation clamps on final frame" % kind)
+            check(ArtScript.enemy_frame_index("idle", 999.0) >= 0 and ArtScript.enemy_frame_index("idle", 999.0) < 6, "%s idle animation loops inside frame bounds" % kind)
+    check(ArtScript.enemy_kind_for("rootbound_warden", "Rootbound Warden") == "rootbound_warden", "Rootbound Warden selects its bespoke atlas")
+    check(ArtScript.enemy_kind_for("bell_keeper", "The Bell-Keeper") == "bell_keeper", "Bell-Keeper selects its bespoke atlas")
+    check(ArtScript.enemy_kind_for("ashen_reeve", "The Ashen Reeve") == "ashen_reeve", "Ashen Reeve selects its bespoke atlas")
+    check(ArtScript.enemy_kind_for("roadreaver", "Roadwolf Reaver") == "", "ordinary raiders retain the compatible Orc strip")
+    check(ArtScript.unit_animation_for("soldier", "cast") == "idle", "legacy hero cast uses a supported base strip")
+    check(ArtScript.unit_animation_for("soldier", "victory") == "idle", "legacy hero victory uses a supported base strip")
 
 
 func _test_class_tree() -> void:

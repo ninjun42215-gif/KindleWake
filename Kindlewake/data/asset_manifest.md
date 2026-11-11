@@ -19,3 +19,14 @@ The prototype currently uses procedural placeholder geometry so it runs without 
 
 ## Reviewed candidates (not yet imported)
 - Foozle — Pixel Magic Effects: https://foozlecc.itch.io/pixel-magic-sprite-effects. 10 animated 32×32 spell effects with icons; page states CC0 1.0 and permits commercial use and modification. Candidate only; archive/frame layout has not yet been imported or verified in this project.
+
+
+## 2026-11-11 — original boss battle animation atlases
+Three original, project-authored SVG pixel-art atlases are wired into the tactical battle renderer:
+- `assets/art/units/enemies/rootbound_warden.svg` — broad bark-and-root guardian silhouette.
+- `assets/art/units/enemies/bell_keeper.svg` — floating spectral keeper with a hanging bell.
+- `assets/art/units/enemies/ashen_reeve.svg` — ash-armoured revenant with a burning blade.
+- Each atlas is 600×700: six 100×100 frames across and seven rows (idle, walk, attack, hurt, cast, victory, death). The renderer selects the appropriate row and frame at runtime.
+- The three story bosses in `battle_hollowroot.json`, `battle_bell.json` and `battle_catacombs.json` now resolve to bespoke atlases; ordinary Roadwolf raiders keep the existing compatible Orc strips.
+- Existing hero Soldier strips remain integrated. Their unsupported cast/victory states use a supported idle frame plus original action-pose and VFX overlays rather than missing-file lookups.
+- No third-party optional sprite pack was imported. The archive `Feature_hero_battle_sprites.zip` contains only code/docs/tests and no image assets; it is not a reusable hero sprite pack.

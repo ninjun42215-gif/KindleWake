@@ -813,3 +813,11 @@ Legacy sigil_* script entry points remain internal compatibility wrappers during
 - No save schema or runtime gameplay behavior is changed by this delivery packaging.
 
 | 0.10.4-external-intake-handoff | Added an external AI receiving folder and CI-generated source handoff parts capped at 25 MB each; branch-head Android CI pending. |
+
+
+## 2026-11-11 — bespoke boss battle sprite pass
+The tactical battle renderer now uses three original pixel-art animation atlases for the campaign's named supernatural/guardian bosses: Rootbound Warden (bark-and-root guardian), Bell-Keeper (floating spectral keeper), and Ashen Reeve (ash-armoured revenant). Each atlas uses a fixed 6×7 grid of 100×100 transparent frames with idle, walk, attack, hurt, cast, victory and death rows. Ordinary Roadwolf enemies retain the existing Orc strip; the four player heroes continue using the compatible Soldier strips with class identity marks.
+
+Combat presentation now exposes cast and victory states for the legacy hero strips without requesting non-existent textures, displays a short death animation before defeated units leave the field, and layers distinct low-cost vector cast, impact, slash, heal, death and victory effects. These effects are drawn in the existing battle canvas and do not add runtime nodes or heavy particle systems. The new boss atlases are project-authored; no third-party sprite archive was imported.
+
+Revision log — 2026-11-11: added original boss animation atlases, renderer integration, asset/frame-contract regression checks, and battle action/VFX presentation updates.
