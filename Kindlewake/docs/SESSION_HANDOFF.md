@@ -311,3 +311,49 @@ The subsequent run exposed a second organizer-test fixture issue: its temporary 
 ## Version synchronization policy — 2026-11-10
 
 Main now has a version synchronization guard. The branch's project version is 0.10.0, README headline is 0.10.0, and Android export is 0.10.0/code 1000. Main remains 0.9.0/code 900 until reviewed feature changes are merged. The trusted sync tool is loaded from main during PR checks, so this branch does not need to carry it. Keep these three values aligned with project.godot when changing the project version; do not auto-merge this branch into main.
+
+
+
+## Character and monster sprite upgrade checkpoint — 2026-11-11
+
+### Repository state and authority
+- Development branch: `feature/rune-system-v1`.
+- Sprite implementation commit: `a1e5e5eff538044edd811109af568cdbf121a53f` — [commit](https://github.com/ninjun42215-gif/KindleWake/commit/a1e5e5eff538044edd811109af568cdbf121a53f).
+- The branch is 3 commits ahead and 204 commits behind the live `main` head `da4d220de7cdbfeae0d2bc182a3c191b997cd861`. Do not rebase, merge, or cherry-pick from `main` without explicit authorization.
+- Important live-state correction: GitHub reports PR #4 as `state=closed`, `merged=true`, with merge commit `db4f2201c60689f8c2edbf8c39a472e551c6d98b`, merged at `2026-11-09T21:30:41Z`. Its API payload still has `draft=true`, but it is not an open draft PR. The PR head was `01cd3f67a344a964b26eb4150167a21bd3fb733c`; this branch now has three post-merge sprite commits. This run did not merge or write to `main`; do not attempt to undo the already-completed merge. Continue only on the existing feature branch unless the owner changes the authority.
+- The earlier PR #4 draft/unmerged notes above are historical and superseded by this live status.
+
+### Completed sprite increment
+- Added three original, project-authored SVG enemy atlases:
+  - `assets/art/units/enemies/roadwolf_chieftain.svg` — broad horned Hask/war-chief silhouette.
+  - `assets/art/units/enemies/roadwolf_reaver.svg` — lean hooded leather raider with a compact axe.
+  - `assets/art/units/enemies/roadwolf_bowman.svg` — narrow hooded archer with a recurved bow and quiver.
+- Each atlas is 600×700, six 100×100 frames per row, seven rows: idle, walk, attack, hurt, cast, victory and death.
+- `scripts/ui/art.gd` maps Hask Gravelteeth, Roadwolf Reaver and Roadwolf Bowman to their original atlases, retains the three existing story-boss mappings, provides per-archetype scale values, and leaves unknown enemies on the safe legacy Orc fallback.
+- `scripts/ui/battle_scene.gd` now obtains the sprite scale from the selected enemy archetype, so the new atlases are used by the real tactical battle renderer rather than sitting unused.
+- `tests/run_tests.gd` now checks all six enemy atlases for resource loading, 600×700 dimensions, seven row/frame contracts, death-frame clamping, idle-frame looping, archetype mapping, fallback and heavy-versus-ranged scale.
+- Updated `assets/art/CREDITS.md` and `data/asset_manifest.md`. No third-party sprite files were imported in this increment.
+- Existing player Soldier strips and legacy Orc fallback remain integrated. The current credits table still marks the imported Soldier/Orc pack licence as unverified; do not redistribute that original pack or treat its provenance as cleared until the source licence is confirmed or those sprites are replaced with original art.
+
+### Exact validation — implementation commit `a1e5e5eff538044edd811109af568cdbf121a53f`
+- GitHub Actions run: [42951593637](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42951593637) — completed **success** on the exact implementation commit.
+- Workflow YAML lint: PASS.
+- Source-handoff Python tests: 5 passed; repository-organizer tests: 2 passed.
+- Godot 4.2.2 import/strict build: PASS. The first editor scan emitted the known global-class registration errors; `build_apk.py` ran its clean second scan and continued. A remaining second-scan error would have failed the workflow.
+- Godot test suite: **448 checks, 0 failures**. The corrupt-save/checksum fixture logs its expected JSON parse error while its rejection assertion passes. Godot also prints non-failing ObjectDB/resource-in-use shutdown warnings.
+- Balance report: completed for 30 AI-vs-AI battles per scenario; workflow step passed.
+- Android APK export, alignment, signature verification and offline-permission check: PASS.
+- APK: `Kindlewake.apk`, version `0.10.0`, Android version code `1000`, size `41,293,040` bytes, SHA-256 `23a4b18ce4bbc4f375ea55215490826fe6be8ee01ff6c1b34da7d3cdc2321590`.
+- APK artifact ID `13824583749`, expires `2027-02-09T03:16:00Z`: [download](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42951593637/artifacts/13824583749). The artifact was downloaded and independently checked: artifact ZIP CRC, APK ZIP CRC, AndroidManifest presence, arm64-v8a library, release-manifest commit and APK SHA-256 all passed.
+- Source handoff: 171 tracked files, 0 excluded, four parts of 25,000,000 / 25,000,000 / 25,000,000 / 108,558 bytes; archive SHA-256 `a38b1e64dd5e2830a1ba92a943ee2e82119b724f789395a7b2fad161a18789a4`.
+- Source-handoff artifact ID `13825460441`, expires `2027-02-09T03:16:00Z`: [download](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42951593637/artifacts/13825460441). It was downloaded; all part hashes/sizes and reconstructed archive SHA-256 passed, ZIP CRC passed, and the included `source_handoff.py verify` confirmed all 171 tracked-file hashes and safe extraction.
+- Workflow report artifact ID `13825695194`, expires `2027-02-09T03:16:00Z`; test-logs artifact ID `13824184512`, expires `2026-12-11T03:17:05Z`.
+- CI success validates this exact implementation commit only. Physical Android device/gameplay QA has not been performed.
+
+### Remaining work and next steps
+1. Continue visual coverage for future enemy archetypes only when they appear in actual battle data; keep each atlas on the same 100px/6×7 contract and wire it through `enemy_kind_for`.
+2. Consider original class-specific hero atlases or a licence-cleared replacement for the current Soldier strip. Do not import/redistribute the existing third-party hero pack until its licence is verified.
+3. Add a headless scene/render smoke test or captured battle preview if a reliable Godot display/render path becomes available; current tests verify texture/frame contracts and renderer selection but are not screenshot-based visual QA.
+4. Add targeted projectile/elemental rune VFX polish only after checking readability on a small mobile viewport.
+5. Perform physical Android device QA: install/launch, save/load, touch targets, orientation/safe area, frame pacing and long-battle memory.
+6. Preserve rune, equipment, battlefield, title-screen, town-prop and save compatibility work. Keep all new commits on `feature/rune-system-v1`; do not modify or merge `main`.
