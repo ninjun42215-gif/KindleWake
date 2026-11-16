@@ -88,6 +88,11 @@ def main():
         errors.append("Party screen still randomly reuses unrelated portraits as a fallback.")
     if "portrait_registry" not in party_script:
         errors.append("Party screen does not receive the canonical portrait registry through its database.")
+    art_script = (ROOT / "scripts" / "ui" / "art.gd").read_text(encoding="utf-8")
+    if "hash(name)" in art_script or "common[posmod" in art_script:
+        errors.append("NPC portrait resolver still hashes names into arbitrary profession portraits.")
+    if 'return "guard"' not in art_script:
+        errors.append("NPC portrait resolver has no safe authored-role fallback.")
     if errors:
         print("FAIL")
         for error in errors:
