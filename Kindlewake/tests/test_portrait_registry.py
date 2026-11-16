@@ -55,8 +55,8 @@ def main():
     if registry.get("status") != "AUDIT_BASELINE_NOT_COMPLETE":
         errors.append("Registry status must remain explicitly incomplete until artistic QA is approved.")
 
-    if "portrait_registry" not in load_json(ROOT / "data" / "portrait_registry.json"):
-        errors.append("Portrait registry payload is missing.")
+    if not isinstance(registry.get("entities"), list) or not registry.get("entities"):
+        errors.append("Portrait registry has no entity records.")
 
     for entry in entities:
         portrait_id = entry.get("portrait_id")
@@ -86,6 +86,8 @@ def main():
     party_script = (ROOT / "scripts" / "ui" / "party_screen.gd").read_text(encoding="utf-8")
     if "character_id.hash()" in party_script or "fallback_ids" in party_script:
         errors.append("Party screen still randomly reuses unrelated portraits as a fallback.")
+    if "portrait_registry" not in party_script:
+        errors.append("Party screen does not receive the canonical portrait registry through its database.")
     if errors:
         print("FAIL")
         for error in errors:
