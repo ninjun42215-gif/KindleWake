@@ -98,6 +98,8 @@ static func draw_character_animated(canvas: CanvasItem, archetype: String, feet:
             canvas.draw_circle(Vector2(-8, eye_y - 0.6), 0.55, Color(1, 0.88, 0.72))
             canvas.draw_circle(Vector2(8, eye_y - 0.6), 0.55, Color(1, 0.88, 0.72))
         canvas.draw_line(Vector2(-3, -98), Vector2(3, -98), Color(0.35, 0.18, 0.15, 0.7), 1.0)
+        if motion == "talk" and sin(time * 12.0) > 0.15:
+            canvas.draw_circle(Vector2(0, -97), 1.8, Color(0.28, 0.10, 0.10, 0.9))
     if motion == "walk":
         var step: float = sin(phase) * 4.0
         canvas.draw_line(Vector2(-13, -18), Vector2(-13 + step, -3), Color(0.16, 0.13, 0.12, 0.7), 2.0)
