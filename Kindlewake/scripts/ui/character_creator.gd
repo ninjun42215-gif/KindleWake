@@ -34,7 +34,11 @@ func _build_ui() -> void:
     # preview, options, attributes and actions) moves naturally as one page.
     var viewport_size: Vector2 = get_viewport_rect().size
     var narrow: bool = viewport_size.x < 900.0
-    compact_preview_summary = false
+    # Landscape phones can have a wide viewport but very little vertical room.
+    # Compact the preview in that case so the first creator controls are visible
+    # immediately instead of presenting a portrait that fills the whole screen.
+    var short_viewport: bool = viewport_size.y < 760.0
+    compact_preview_summary = short_viewport
 
     var backdrop := ColorRect.new()
     backdrop.color = Color("#080d13")
@@ -43,10 +47,10 @@ func _build_ui() -> void:
     backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
     var margin := MarginContainer.new()
-    margin.add_theme_constant_override("margin_left", 16 if narrow else 28)
-    margin.add_theme_constant_override("margin_top", 18 if narrow else 24)
-    margin.add_theme_constant_override("margin_right", 16 if narrow else 28)
-    margin.add_theme_constant_override("margin_bottom", 22 if narrow else 28)
+    margin.add_theme_constant_override("margin_left", 12 if short_viewport else (16 if narrow else 28))
+    margin.add_theme_constant_override("margin_top", 10 if short_viewport else (18 if narrow else 24))
+    margin.add_theme_constant_override("margin_right", 12 if short_viewport else (16 if narrow else 28))
+    margin.add_theme_constant_override("margin_bottom", 12 if short_viewport else (22 if narrow else 28))
     add_child(margin)
     margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
@@ -60,12 +64,12 @@ func _build_ui() -> void:
 
     var page := VBoxContainer.new()
     page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    page.add_theme_constant_override("separation", 18 if narrow else 22)
+    page.add_theme_constant_override("separation", 10 if short_viewport else (18 if narrow else 22))
     scroll.add_child(page)
 
     var heading := Label.new()
     heading.text = "CREATE YOUR HERO"
-    heading.add_theme_font_size_override("font_size", 27 if narrow else 34)
+    heading.add_theme_font_size_override("font_size", 24 if short_viewport else (27 if narrow else 34))
     heading.add_theme_color_override("font_color", Color("#e5c98d"))
     heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     page.add_child(heading)
@@ -73,9 +77,15 @@ func _build_ui() -> void:
     var subtitle := Label.new()
     subtitle.text = "Shape the heir who will reclaim Kaer Sethorn. Every choice helps define your place in the realm."
     subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    subtitle.add_theme_font_size_override("font_size", 14 if narrow else 16)
+    subtitle.add_theme_font_size_override("font_size", 13 if short_viewport else (14 if narrow else 16))
     subtitle.add_theme_color_override("font_color", Color("#b8c2cc"))
     page.add_child(subtitle)
+    if short_viewport:
+        var scroll_hint := Label.new()
+        scroll_hint.text = "Scroll down to customize your hero and begin the chronicle."
+        scroll_hint.add_theme_font_size_override("font_size", 12)
+        scroll_hint.add_theme_color_override("font_color", Color("#e5c98d"))
+        page.add_child(scroll_hint)
 
     var preview_panel := PanelContainer.new()
     preview_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -102,14 +112,14 @@ func _build_ui() -> void:
     preview_content.add_child(preview_title)
 
     preview = PreviewScript.new()
-    preview.custom_minimum_size = Vector2(260, 360) if narrow else Vector2(320, 400)
+    preview.custom_minimum_size = Vector2(150, 190) if short_viewport else (Vector2(260, 360) if narrow else Vector2(320, 400))
     preview.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
     preview.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
     preview_content.add_child(preview)
     preview_text = Label.new()
     preview_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     preview_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-    preview_text.add_theme_font_size_override("font_size", 14 if narrow else 15)
+    preview_text.add_theme_font_size_override("font_size", 12 if short_viewport else (14 if narrow else 15))
     preview_text.add_theme_color_override("font_color", Color("#c8d0d8"))
     preview_content.add_child(preview_text)
 
