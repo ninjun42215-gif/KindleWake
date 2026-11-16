@@ -491,6 +491,8 @@ func _draw() -> void:
         var k: String = str(d["kind"])
         if k == "tex":
             Art.draw_world(self, str(d["name"]), Vector2(float(d["x"]), float(d["y"])), float(d["scale"]))
+        elif k == "field":
+            Art.draw_prop(self, str(d["name"]), Vector2(float(d["x"]), float(d["y"])), float(d["scale"]))
         elif k == "place":
             _draw_place(d["place"])
         else:
@@ -523,6 +525,20 @@ func _collect_props(x0: int, y0: int, x1: int, y1: int) -> Array:
                 out.append({"y": origin.y + TILE * (0.7 + 0.2 * h2), "kind": "tex", "name": "rock_a" if h2 < 0.5 else "rock_b", "x": origin.x + TILE * (0.3 + 0.4 * h2), "scale": 0.9})
             elif t == WorldMap.GRASS and h > 0.965:
                 out.append({"y": origin.y + TILE * 0.8, "kind": "tex", "name": "tree_a" if h2 < 0.5 else "tree_b", "x": origin.x + TILE * 0.5, "scale": 0.6})
+            # Sparse secondary details add regional texture without cluttering roads.
+            var detail_roll: float = WorldMap.hash01(canonical.x, canonical.y, 73)
+            if detail_roll > 0.925:
+                var field_name: String = ""
+                if t == WorldMap.GRASS:
+                    field_name = "flower" if h2 < 0.5 else "stump"
+                elif t == WorldMap.FOREST:
+                    field_name = "mushrooms" if h2 < 0.5 else "reeds"
+                elif t == WorldMap.HILL:
+                    field_name = "crystals" if h2 < 0.5 else "rune_stone"
+                elif t == WorldMap.FORD:
+                    field_name = "reeds"
+                if field_name != "":
+                    out.append({"y": origin.y + TILE * 0.88, "kind": "field", "name": field_name, "x": origin.x + TILE * (0.3 + 0.4 * h2), "scale": 0.24})
     return out
 
 
@@ -576,10 +592,10 @@ func _draw_place(p: Dictionary) -> void:
     var kind: String = str(p.get("kind", ""))
     var c: Vector2 = p.get("_render_pos", cell_center(wmap.place_cell(id)))
     draw_circle(c + Vector2(0, 14), 26.0, Color(0, 0, 0, 0.22))
-    var top: float = 60.0
+    var top: float = 46.0
     if kind == "keep" or kind == "stronghold":
-        Art.draw_world(self, "keep", c + Vector2(0, 26), 0.85)
-        top = 100.0
+        Art.draw_world(self, "keep", c + Vector2(0, 18), 0.40)
+        top = 64.0
     elif kind == "port":
         draw_rect(Rect2(c + Vector2(-48, 18), Vector2(96, 12)), Color("#7d684e"))
         draw_line(c + Vector2(-42, 16), c + Vector2(-42, 44), Color("#b99a6b"), 4.0)
@@ -589,18 +605,18 @@ func _draw_place(p: Dictionary) -> void:
         draw_colored_polygon(PackedVector2Array([c + Vector2(2, -30), c + Vector2(24, -18), c + Vector2(2, -6)]), Color("#7aaeb0"))
         top = 82.0
     elif kind == "village":
-        Art.draw_world(self, "house_a", c + Vector2(-28, 14), 0.85)
-        Art.draw_world(self, "house_c", c + Vector2(26, 12), 0.85)
-        Art.draw_world(self, "house_b", c + Vector2(0, 28), 0.85)
-        top = 62.0
+        Art.draw_world(self, "house_a", c + Vector2(-46, 10), 0.29)
+        Art.draw_world(self, "house_c", c + Vector2(46, 9), 0.29)
+        Art.draw_world(self, "house_b", c + Vector2(0, 21), 0.29)
+        top = 48.0
     elif kind == "ruin" or kind == "dungeon":
-        Art.draw_world(self, "dead_b", c + Vector2(-30, 24), 0.8)
-        Art.draw_world(self, "tower_a", c + Vector2(0, 26), 0.8, Color(0.82, 0.82, 0.82))
-        Art.draw_world(self, "rock_a", c + Vector2(26, 28), 0.9)
-        top = 82.0
+        Art.draw_world(self, "dead_b", c + Vector2(-42, 16), 0.30)
+        Art.draw_world(self, "tower_a", c + Vector2(0, 18), 0.31, Color(0.82, 0.82, 0.82))
+        Art.draw_world(self, "rock_a", c + Vector2(42, 20), 0.32)
+        top = 54.0
     elif kind == "gate":
-        Art.draw_world(self, "tower_a", c + Vector2(0, 24), 0.9, Color(0.75, 0.68, 0.48))
-        top = 70.0
+        Art.draw_world(self, "tower_a", c + Vector2(0, 17), 0.34, Color(0.75, 0.68, 0.48))
+        top = 50.0
     elif kind == "charter":
         draw_line(c + Vector2(0, 18), c + Vector2(0, -42), Color("#d9c18a"), 4.0)
         draw_colored_polygon(PackedVector2Array([c + Vector2(2, -38), c + Vector2(34, -24), c + Vector2(2, -8)]), Color("#7aaeb0"))
@@ -609,10 +625,10 @@ func _draw_place(p: Dictionary) -> void:
     elif kind == "camp":
         var cleared: bool = bool(GameState.world_flags.get("camp_cleared", false))
         var tint: Color = Color(0.55, 0.55, 0.55) if cleared else Color(1.0, 0.82, 0.78)
-        Art.draw_world(self, "hut", c + Vector2(-28, 16), 0.9, tint)
-        Art.draw_world(self, "hut", c + Vector2(26, 14), 0.9, tint)
-        Art.draw_world(self, "hut", c + Vector2(0, 30), 0.95, tint)
-        top = 60.0
+        Art.draw_world(self, "hut", c + Vector2(-45, 10), 0.29, tint)
+        Art.draw_world(self, "hut", c + Vector2(45, 10), 0.29, tint)
+        Art.draw_world(self, "hut", c + Vector2(0, 22), 0.29, tint)
+        top = 48.0
     var font: Font = ThemeDB.fallback_font
     var label: String = str(p.get("name", ""))
     draw_string(font, c + Vector2(-79, -top + 15), label, HORIZONTAL_ALIGNMENT_CENTER, 160, 18, Color(0, 0, 0, 0.85))

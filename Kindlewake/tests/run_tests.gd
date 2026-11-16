@@ -184,6 +184,17 @@ func _test_art_assets() -> void:
     if prop_texture != null:
         check(prop_texture.get_size() == Vector2(512.0, 512.0), "4x4 prop atlas matches sixteen 128px cells")
 
+    var character_texture: Texture2D = load("res://assets/art/units/character_atlas.svg") as Texture2D
+    check(character_texture != null, "original character and enemy atlas imports")
+    if character_texture != null:
+        check(character_texture.get_size() == Vector2(512.0, 640.0), "4x4 character atlas matches sixteen 128x160 cells")
+    check(ArtScript.CHARACTER_CELLS.size() == 16, "all sixteen character archetypes have atlas cells")
+    check(ArtScript.character_for_npc("Village Guard") == "guard", "town guards receive a guard design")
+    check(ArtScript.character_for_npc("Innkeeper Maud") == "merchant", "town merchants and innkeepers receive civilian designs")
+    check(ArtScript.character_for_enemy("rootbound_warden") == "treant", "rootbound boss receives a unique monster design")
+    check(ArtScript.character_for_enemy("bell_keeper") == "wraith", "bell keeper receives a unique spectral design")
+    check(ArtScript.character_for_enemy("hollow_hart") == "direwolf", "Hollow Hart receives a unique beast design")
+
     for kind in ["soldier", "orc"]:
         for anim in ["idle", "walk", "attack", "hurt", "death"]:
             var frame_count: int = int(ArtScript.UNIT_FRAMES.get(anim, 0))

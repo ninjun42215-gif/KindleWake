@@ -1085,6 +1085,26 @@ func _draw_unit(u: BattleUnitScript, p: Vector2) -> void:
         draw_string(ThemeDB.fallback_font, p + Vector2(-40, -70), "ROUTED", HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color(1, 0.6, 0.3))
 
 
+## Static character-atlas identities distinguish named monsters and bosses in tactical encounters.
+func _draw_atlas_enemy(u: BattleUnitScript, p: Vector2, archetype: String, fdir: Vector2) -> bool:
+    var tint: Color = Color.WHITE
+    if archetype == "wraith":
+        tint = Color(0.78, 0.96, 1.0, 0.96)
+    elif archetype == "treant":
+        tint = Color(0.90, 1.0, 0.84, 1.0)
+    elif archetype == "cultist":
+        tint = Color(1.0, 0.88, 0.84, 1.0)
+    if not Art.draw_character(self, archetype, p + Vector2(0, 8), 0.72, tint):
+        return false
+    draw_line(p + Vector2(0, 2), p + Vector2(0, 2) + fdir * 16.0, Color(1, 1, 1, 0.55), 2.0)
+    var ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
+    draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40, 7)), Color(0.1, 0.08, 0.08))
+    draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40.0 * ratio, 7)), Color(0.85, 0.2, 0.2).lerp(Color(0.25, 0.85, 0.38), ratio))
+    _draw_unit_tag(u, p)
+    _draw_status_pips(u, p)
+    return true
+
+
 ## Palette variants make classes and enemy archetypes readable even while the project expands its bespoke sprite sheets.
 func _battle_sprite_tint(u: BattleUnitScript, is_player: bool) -> Color:
     if is_player:
@@ -1189,6 +1209,11 @@ func _draw_sprite_identity_marks(u: BattleUnitScript, p: Vector2, is_player: boo
 ## Animated pixel sprite (Tiny RPG Soldier for the player's side, Orc for the enemy). Returns false without the art,
 ## and _draw_unit then falls back to the drawn figure.
 func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: Vector2) -> bool:
+    # Named monsters and bosses use distinct original atlas art; other units keep their animated sheets.
+    if not is_player:
+        var identity: String = Art.character_for_enemy(u.character_id, u.display_name)
+        if identity in ["treant", "wraith", "cultist", "skeleton", "direwolf", "goblin", "overlord"]:
+            return _draw_atlas_enemy(u, p, identity, fdir)
     var kind: String = "soldier" if is_player else "orc"
     if Art.unit_sheet(kind, "idle") == null:
         return false

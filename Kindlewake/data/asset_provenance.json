@@ -106,6 +106,19 @@
       "used_in_game": true,
       "release_blocker": false,
       "notes": "896x128 SVG with seven 128x128 cells. Runtime-loaded by GlobalAtlas.tscn through scripts/ui/continent_heraldry_layer.gd; mapped by stable continent ids. No external assets or fonts."
+    },
+    {
+      "id": "kindlewake-original-character-atlas",
+      "name": "Original 16-archetype fantasy character and enemy atlas",
+      "author": "KindleWake project",
+      "source_reference": "Original SVG authored in this repository",
+      "source_url": null,
+      "license": "Original project content",
+      "license_evidence": "Repository source history; no third-party source material used",
+      "license_status": "verified",
+      "used_in_game": true,
+      "release_blocker": false,
+      "notes": "16-cell SVG atlas used for town NPC variety and named monster/boss battlefield identities. Does not replace the licensed animated Soldier/Orc sheets."
     }
   ]
 }
