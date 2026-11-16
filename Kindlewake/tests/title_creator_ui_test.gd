@@ -56,6 +56,12 @@ func _run_ui_test() -> void:
             creator._on_choice_selected(1, "face", face_option)
             _check(str(creator.profile.get("face", "")) == str(face_option.get_item_metadata(1)),
                 "dropdown item selection updates the protagonist profile")
+    creator._on_stat_allocation_changed(5.0, "str")
+    var allocated_after_clamp := 0
+    for stat in ["str", "dex", "int", "vit", "spd", "lck"]:
+        allocated_after_clamp += int(creator.profile.get("stat_allocation", {}).get(stat, 0))
+    _check(allocated_after_clamp <= int(GameData.character_creation.get("stat_points", 8)),
+        "attribute sliders cannot overspend the starting point budget")
     _check(creator.confirm_button != null and not creator.confirm_button.disabled, "valid default profile enables Begin Chronicle")
 
     var emitted_profiles: Array = []
