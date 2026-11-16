@@ -241,6 +241,7 @@ func _add_presentation_radios(parent: VBoxContainer) -> void:
         radio.text = id.capitalize()
         radio.button_group = group
         radio.toggle_mode = true
+        radio.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
         radio.custom_minimum_size = Vector2(0, 48)
         radio.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         radio.add_theme_font_size_override("font_size", 14)
@@ -286,6 +287,7 @@ func _add_portrait_gallery(parent: VBoxContainer) -> void:
             continue
         var button := Button.new()
         button.toggle_mode = true
+        button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
         button.button_group = group
         button.custom_minimum_size = Vector2(0, 116)
         button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
