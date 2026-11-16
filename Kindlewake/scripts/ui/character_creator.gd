@@ -295,7 +295,7 @@ func _add_portrait_gallery(parent: VBoxContainer) -> void:
         button.text = str(portrait.get("name", id))
         button.icon = load("res://assets/art/portraits/%s.svg" % id)
         button.expand_icon = true
-        button.icon_max_width = 78
+        button.add_theme_constant_override("icon_max_width", 78)
         button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
         button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
         button.add_theme_font_size_override("font_size", 11)
