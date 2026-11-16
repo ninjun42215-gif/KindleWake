@@ -1173,11 +1173,13 @@ func _draw_spot(s: Dictionary) -> void:
         if npc_sprite == "":
             npc_sprite = Art.character_for_npc(str(s.get("name", "")), str(s.get("kind", "")))
         var npc_motion: String = "idle"
+        var npc_seed: float = float(posmod(hash(str(s.get("name", ""))), 100)) * 0.03
+        var npc_clock: float = t + npc_seed
         if near and panel_open:
             npc_motion = "talk"
-        elif moving_vector.length() > 0.12:
+        elif fposmod(npc_clock, 17.0) < 2.2:
             npc_motion = "walk"
-        if not Art.draw_character_animated(self, npc_sprite, foot, t + float(hash(str(s.get("name", ""))) % 100) * 0.03, npc_motion, 0.82, tint, c.x > player_pos.x):
+        if not Art.draw_character_animated(self, npc_sprite, foot, npc_clock, npc_motion, 0.82, tint, c.x > player_pos.x):
             if not Art.draw_unit(self, "soldier", "idle", t + c.x * 0.01, foot, 1.35, c.x > player_pos.x, tint):
                 draw_rect(Rect2(foot + Vector2(-8, -30), Vector2(16, 28)), tint)
         if near and bool(s.get("npc", false)):
