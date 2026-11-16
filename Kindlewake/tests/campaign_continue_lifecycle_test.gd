@@ -85,13 +85,16 @@ func _run_lifecycle() -> void:
     await get_tree().process_frame
     if not is_instance_valid(battle) or not battle.is_inside_tree():
         _fail("first tactical battle scene enters the tree")
-    elif battle.get("controller") == null or battle.controller.units.is_empty():
-        _fail("first tactical battle initializes its units and controller")
-    elif battle.get("prep_panel") == null or not battle.prep_panel.visible:
-        _fail("first tactical battle displays its pre-battle preparation panel")
     else:
-        print("  ok    first tactical battle initializes and displays preparation")
-        battle._on_begin_pressed()
+        var battle_controller: Variant = battle.get("controller")
+        var battle_prep_panel: Variant = battle.get("prep_panel")
+        if battle_controller == null or battle_controller.units.is_empty():
+            _fail("first tactical battle initializes its units and controller")
+        elif battle_prep_panel == null or not battle_prep_panel.visible:
+            _fail("first tactical battle displays its pre-battle preparation panel")
+        else:
+            print("  ok    first tactical battle initializes and displays preparation")
+            battle.call("_on_begin_pressed")
         await get_tree().create_timer(2.0).timeout
         if not is_instance_valid(battle) or not battle.is_inside_tree():
             _fail("first tactical battle remains alive after starting combat")
