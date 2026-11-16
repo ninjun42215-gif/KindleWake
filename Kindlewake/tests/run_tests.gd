@@ -2108,6 +2108,12 @@ func _test_locations() -> void:
             if str((sp as Dictionary).get("kind", "")) == "party":
                 party_spots += 1
     check(party_spots >= 3, "the war table, shop counter and smithy open the party screen")
+    var exchange_spots := 0
+    for map_id in ["crossing_shop", "brinegate", "saltmere"]:
+        for spot_value in (maps[map_id] as LocalMap).spots:
+            if bool((spot_value as Dictionary).get("regional_exchange", false)):
+                exchange_spots += 1
+    check(exchange_spots == 3, "regional commodity exchange is limited to the three authored staffed market factors")
     var cm: LocalMap = maps["crossing"]
     check(cm.walkable(cm.entry) and cm.is_exit(Vector2i(11, 17)) and not cm.walkable(Vector2i(0, 0)) and not cm.walkable(Vector2i(-3, 4)), "walls and trees block, paths and exits are open, outside the map is blocked")
     check(not cm.door_at(Vector2i(4, 4)).is_empty() and cm.door_at(Vector2i(5, 4)).is_empty(), "door tiles lead somewhere and plain wall does not")
