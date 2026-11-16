@@ -1206,8 +1206,9 @@ func _draw_player() -> void:
     var t: float = float(Time.get_ticks_msec()) / 1000.0
     var walking: bool = (has_target or moving_vector.length() > 0.12) and not panel_open
     var sprinting: bool = walking and (run_toggled or ExplorationControls.running())
-    var motion_state: String = "run" if sprinting and Art.unit_sheet("soldier", "run") != null else ("walk" if walking else "idle")
-    if not Art.draw_unit(self, "soldier", motion_state, t, p + Vector2(0, 8), 2.0, facing_left):
+    var hero_motion: String = "walk" if walking else "idle"
+    var hero_clock: float = t * (1.35 if sprinting else 1.0)
+    if not Art.draw_character_animated(self, "chronicle_hero", p + Vector2(0, 8), hero_clock, hero_motion, 0.46, Color.WHITE, facing_left):
         draw_rect(Rect2(p + Vector2(-8, -24), Vector2(16, 28)), Color(0.22, 0.50, 0.88))
 
 
