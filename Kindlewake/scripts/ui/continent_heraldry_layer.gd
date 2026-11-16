@@ -22,6 +22,7 @@ const BRASS_LIGHT := Color("#e4c991")
 
 func _ready() -> void:
     mouse_filter = Control.MOUSE_FILTER_IGNORE
+    texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
     z_index = 1
     queue_redraw()
 
