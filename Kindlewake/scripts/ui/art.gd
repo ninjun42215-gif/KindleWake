@@ -181,8 +181,9 @@ static func character_for_npc(name: String, role: String = "") -> String:
         return "mage"
     if key.contains("captain") or key.contains("knight"):
         return "knight"
-    var common: Array[String] = ["merchant", "guard", "hunter", "rogue", "healer", "noble", "scholar", "duelist"]
-    return common[posmod(hash(name), common.size())]
+    # Unknown NPCs use a conservative guard silhouette. Never hash identity into
+    # an unrelated profession portrait; authored role metadata must choose variants.
+    return "guard"
 
 
 static func character_for_enemy(character_id: String, display_name: String = "") -> String:
