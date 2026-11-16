@@ -3,7 +3,8 @@
 **Repository:** https://github.com/ninjun42215-gif/KindleWake  
 **Project:** `Kindlewake/` · Godot 4.2.2 · Android / GL Compatibility  
 **Base:** `main` at `8a1f9e4227c3541c34e17593bb317a88c1c2d7a6`  
-**Working branch:** `fix/inventory-quantity-guards-2026-11-16`
+**Working branch:** `fix/inventory-quantity-guards-2026-11-16`  
+**Pull request:** [#133](https://github.com/ninjun42215-gif/KindleWake/pull/133) — draft; exact-head checks pending.
 
 ## Implemented
 
@@ -31,5 +32,5 @@ Hardened the party inventory API against invalid quantity operations:
 
 1. Confirm the inventory guard regression assertions pass in the Godot 4.2.2 strict suite.
 2. Confirm the Android APK build and the repository's other required checks pass on the exact PR head SHA.
-3. Review the diff for only the three intended paths: `party_state.gd`, `run_tests.gd`, and this handoff/entry-point documentation.
+3. Review the diff for only the four intended paths: `party_state.gd`, `run_tests.gd`, and this handoff/entry-point documentation.
 4. Do not merge automatically or change `main`; retain the existing save schema and all player data.
