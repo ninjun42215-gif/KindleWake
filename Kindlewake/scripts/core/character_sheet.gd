@@ -21,6 +21,8 @@ const HP_GAIN := 2                   # HP gained when the HP growth roll succeed
 
 var character_id: String = ""
 var display_name: String = ""
+var portrait_id: String = ""
+var appearance: Dictionary = {}
 var house: String = ""
 var class_id: String = ""
 var level: int = 1
@@ -47,6 +49,9 @@ static func from_def(char_id: String, def: Dictionary):
     var s = load("res://scripts/core/character_sheet.gd").new()
     s.character_id = char_id
     s.display_name = str(def.get("name", char_id))
+    var creation: Dictionary = def.get("creation", {})
+    s.portrait_id = str(creation.get("portrait_id", ""))
+    s.appearance = creation.duplicate(true)
     s.house = str(def.get("house", ""))
     s.class_id = str(def.get("class_id", ""))
     s.level = clampi(int(def.get("level", 1)), 1, MAX_LEVEL)
@@ -155,7 +160,7 @@ func to_battle_def(db: Dictionary) -> Dictionary:
     var sdefs: Dictionary = db.get("sigils", {})
     var arm: Dictionary = armor_totals(items)
     return {
-        "name": display_name, "class_id": class_id, "level": level, "house": house,
+        "name": display_name, "class_id": class_id, "level": level, "house": house, "portrait_id": portrait_id,
         "weapon_id": weapon_id(items), "armor_def": int(arm["def"]), "armor_res": int(arm["res"]),
         "skills": all_skills(items, sdefs, db.get("classes", {})), "stats": total_stats(items, sdefs, db.get("traits", {})),
         "traits": traits.duplicate(),
@@ -388,6 +393,7 @@ func promote(new_class_id: String, classes: Dictionary) -> bool:
 func to_dict() -> Dictionary:
     return {
         "character_id": character_id, "name": display_name, "house": house, "class_id": class_id,
+        "portrait_id": portrait_id, "appearance": appearance.duplicate(true),
         "level": level, "xp": xp, "loyalty": loyalty, "base_stats": base_stats.duplicate(), "skills": skills.duplicate(),
         "traits": traits.duplicate(), "trait_history": trait_history.duplicate(true),
         "personality": {"stress": stress, "memories": memories.duplicate(true), "behavior": behavior.duplicate(true), "ambition": ambition.duplicate(true)},
@@ -400,6 +406,8 @@ static func from_dict(d: Dictionary):
     var s = load("res://scripts/core/character_sheet.gd").new()
     s.character_id = str(d.get("character_id", ""))
     s.display_name = str(d.get("name", s.character_id))
+    s.portrait_id = str(d.get("portrait_id", ""))
+    s.appearance = (d.get("appearance", {}) as Dictionary).duplicate(true)
     s.house = str(d.get("house", ""))
     s.class_id = str(d.get("class_id", ""))
     s.level = clampi(int(d.get("level", 1)), 1, MAX_LEVEL)

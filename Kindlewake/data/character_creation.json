@@ -19,7 +19,8 @@
       "vit": 1,
       "spd": 1,
       "lck": 1
-    }
+    },
+    "portrait_id": "torren_redcloak"
   },
   "limits": {
     "name_min": 2,
@@ -200,5 +201,115 @@
       }
     }
   },
-  "stat_points": 8
+  "stat_points": 8,
+  "portraits": [
+    {
+      "id": "torren_redcloak",
+      "name": "The Fallen Heir",
+      "presentation": "masculine",
+      "face": "weathered",
+      "hair": "short_dark",
+      "skin": "warm",
+      "build": "athletic"
+    },
+    {
+      "id": "auburn_ranger",
+      "name": "Auburn Ranger",
+      "presentation": "feminine",
+      "face": "soft",
+      "hair": "tied_brown",
+      "skin": "fair",
+      "build": "lean"
+    },
+    {
+      "id": "sunwarden",
+      "name": "Sunwarden",
+      "presentation": "masculine",
+      "face": "sharp",
+      "hair": "cropped_red",
+      "skin": "warm",
+      "build": "athletic"
+    },
+    {
+      "id": "iron_veteran",
+      "name": "Iron Veteran",
+      "presentation": "masculine",
+      "face": "scarred",
+      "hair": "shaved",
+      "skin": "deep",
+      "build": "sturdy"
+    },
+    {
+      "id": "silver_oracle",
+      "name": "Silver Oracle",
+      "presentation": "feminine",
+      "face": "sharp",
+      "hair": "long_dark",
+      "skin": "fair",
+      "build": "lean"
+    },
+    {
+      "id": "dusk_rogue",
+      "name": "Dusk Rogue",
+      "presentation": "androgynous",
+      "face": "sharp",
+      "hair": "cropped_red",
+      "skin": "olive",
+      "build": "lean"
+    },
+    {
+      "id": "shieldmaiden",
+      "name": "Shieldmaiden",
+      "presentation": "feminine",
+      "face": "weathered",
+      "hair": "long_dark",
+      "skin": "warm",
+      "build": "sturdy"
+    },
+    {
+      "id": "courtier",
+      "name": "Courtier",
+      "presentation": "androgynous",
+      "face": "soft",
+      "hair": "tied_brown",
+      "skin": "fair",
+      "build": "athletic"
+    },
+    {
+      "id": "ash_scout",
+      "name": "Ash Scout",
+      "presentation": "masculine",
+      "face": "scarred",
+      "hair": "short_dark",
+      "skin": "olive",
+      "build": "lean"
+    },
+    {
+      "id": "briar_warden",
+      "name": "Briar Warden",
+      "presentation": "feminine",
+      "face": "sharp",
+      "hair": "tied_brown",
+      "skin": "deep",
+      "build": "athletic"
+    },
+    {
+      "id": "old_knight",
+      "name": "Old Knight",
+      "presentation": "masculine",
+      "face": "weathered",
+      "hair": "shaved",
+      "skin": "fair",
+      "build": "sturdy"
+    },
+    {
+      "id": "night_scholar",
+      "name": "Night Scholar",
+      "presentation": "androgynous",
+      "face": "soft",
+      "hair": "long_dark",
+      "skin": "deep",
+      "build": "lean"
+    }
+  ]
 }

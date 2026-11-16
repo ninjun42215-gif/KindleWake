@@ -334,6 +334,8 @@ def preflight(project: Path = PROJECT) -> Tuple[List[str], List[str]]:
                         warnings.append("Android permission enabled: " + key)
             if options.get("architectures/arm64-v8a") != "true":
                 errors.append("architectures/arm64-v8a must be true (all current phones need it).")
+            if options.get("architectures/x86_64") != "true":
+                errors.append("architectures/x86_64 must be true (required for Android emulator smoke tests).")
             if options.get("package/signed") != "true":
                 warnings.append("package/signed is not true: the APK will not install on most phones.")
             try:

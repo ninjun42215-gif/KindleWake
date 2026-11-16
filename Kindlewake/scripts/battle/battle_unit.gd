@@ -7,6 +7,7 @@ const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
 var id: int = 0
 var character_id: String = ""
 var display_name: String = ""
+var portrait_id: String = ""
 var team: String = "player"          # "player" | "enemy"
 var class_id: String = ""
 var level: int = 1
@@ -63,6 +64,7 @@ static func create(p_id: int, char_id: String, char_def: Dictionary, class_def: 
     u.id = p_id
     u.character_id = char_id
     u.display_name = str(char_def.get("name", char_id))
+    u.portrait_id = str(char_def.get("portrait_id", ""))
     u.team = p_team
     u.class_id = str(char_def.get("class_id", ""))
     u.level = int(char_def.get("level", 1))
@@ -94,7 +96,7 @@ static func create(p_id: int, char_id: String, char_def: Dictionary, class_def: 
 func to_dict() -> Dictionary:
     return {
         "id": id, "character_id": character_id, "name": display_name, "team": team,
-        "class_id": class_id, "level": level, "cell": [cell.x, cell.y], "facing": facing,
+        "class_id": class_id, "portrait_id": portrait_id, "level": level, "cell": [cell.x, cell.y], "facing": facing,
         "stats": stats.duplicate(), "hp": hp, "mp": mp, "morale": morale, "fatigue": fatigue,
         "weapon_id": weapon_id, "armor_def": armor_def, "armor_res": armor_res,
         "skills": skills.duplicate(), "is_protagonist": is_protagonist, "is_commander": is_commander, "boss_phase_index": boss_phase_index,
@@ -110,6 +112,7 @@ static func from_dict(d: Dictionary):
     u.id = int(d.get("id", 0))
     u.character_id = str(d.get("character_id", ""))
     u.display_name = str(d.get("name", ""))
+    u.portrait_id = str(d.get("portrait_id", ""))
     u.team = str(d.get("team", "enemy"))
     u.class_id = str(d.get("class_id", ""))
     u.level = int(d.get("level", 1))

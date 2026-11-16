@@ -298,6 +298,15 @@ func _tile(caption: String, value: String, value_color: Color = COL_TEXT, value_
     return p
 
 
+func _portrait_texture(portrait_id: String) -> Texture2D:
+    if portrait_id == "":
+        return null
+    var path := "res://assets/art/portraits/%s.svg" % portrait_id
+    if not ResourceLoader.exists(path):
+        return null
+    return load(path) as Texture2D
+
+
 func _class_title(class_id: String) -> String:
     var cdef: Dictionary = (db.get("classes", {}) as Dictionary).get(class_id, {})
     return str(cdef.get("name", class_id))
@@ -489,13 +498,23 @@ func _build_roster() -> Control:
         var cbox: VBoxContainer = cp[1]
         var row := HBoxContainer.new()
         row.add_theme_constant_override("separation", 10)
-        var badge := PanelContainer.new()
-        badge.custom_minimum_size = Vector2(46, 46)
-        badge.add_theme_stylebox_override("panel", _style(COL_TILE, COL_GOLD if id == selected_id else COL_BORDER_DIM, 2, 23, 4.0))
-        var lv := _text("%d" % sh.level, 22, COL_GOLD)
-        lv.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-        badge.add_child(lv)
-        row.add_child(badge)
+        var portrait := _portrait_texture(sh.portrait_id)
+        if portrait != null:
+            var avatar := TextureRect.new()
+            avatar.texture = portrait
+            avatar.custom_minimum_size = Vector2(52, 62)
+            avatar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+            avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+            avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+            row.add_child(avatar)
+        else:
+            var badge := PanelContainer.new()
+            badge.custom_minimum_size = Vector2(46, 46)
+            badge.add_theme_stylebox_override("panel", _style(COL_TILE, COL_GOLD if id == selected_id else COL_BORDER_DIM, 2, 23, 4.0))
+            var lv := _text("%d" % sh.level, 22, COL_GOLD)
+            lv.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+            badge.add_child(lv)
+            row.add_child(badge)
         var info := VBoxContainer.new()
         info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         info.add_theme_constant_override("separation", 0)
@@ -549,6 +568,19 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
     head.add_child(title)
     head.add_child(_button(">", _on_step.bind(1), Vector2(52, 52), 26))
     box.add_child(head)
+    var hero_portrait := _portrait_texture(sh.portrait_id)
+    if hero_portrait != null:
+        var portrait_frame := PanelContainer.new()
+        portrait_frame.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+        portrait_frame.add_theme_stylebox_override("panel", _style(COL_TILE, COL_GOLD, 2, 8, 5.0))
+        var portrait_view := TextureRect.new()
+        portrait_view.texture = hero_portrait
+        portrait_view.custom_minimum_size = Vector2(148, 184)
+        portrait_view.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+        portrait_view.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+        portrait_view.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+        portrait_frame.add_child(portrait_view)
+        box.add_child(portrait_frame)
     # Experience is deliberately visible, but the 250-level cap is a campaign milestone.
     if sh.level >= CharacterSheetScript.MAX_LEVEL:
         box.add_child(_label("EXPERIENCE  •  MAX LEVEL REACHED", 15, COL_GOLD))

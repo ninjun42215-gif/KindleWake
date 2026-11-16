@@ -45,6 +45,37 @@ func _run_ui_test() -> void:
     _check(creator.preview != null and is_instance_valid(creator.preview), "creator builds its live portrait preview")
     _check(creator.name_input != null and creator.confirm_button != null, "creator builds identity input and confirmation action")
     _check(creator.allocation_sliders.size() == 6, "creator builds all six attribute allocation controls")
+    _check(creator.presentation_buttons.size() == 3, "creator exposes all presentation radio choices")
+    _check(creator.portrait_buttons.size() == 12, "creator exposes the complete twelve-portrait gallery")
+    var all_portraits_load := true
+    for portrait in GameData.character_creation.get("portraits", []):
+        var portrait_path := "res://assets/art/portraits/%s.svg" % str(portrait.get("id", ""))
+        if not ResourceLoader.exists(portrait_path) or load(portrait_path) == null:
+            all_portraits_load = false
+    _check(all_portraits_load, "all twelve portrait assets load as Godot textures")
+    if creator.portrait_buttons.has("auburn_ranger"):
+        creator._on_portrait_button_toggled(true, "auburn_ranger")
+        _check(str(creator.profile.get("portrait_id", "")) == "auburn_ranger",
+            "portrait selection updates the saved protagonist identity")
+        _check(str(creator.profile.get("presentation", "")) == "feminine"
+            and str(creator.profile.get("hair", "")) == "tied_brown"
+            and str(creator.profile.get("skin", "")) == "fair",
+            "selected portrait synchronizes presentation and physical appearance")
+        _check((creator.presentation_buttons["feminine"] as CheckButton).button_pressed,
+            "portrait selection synchronizes the presentation radio")
+    creator._on_portrait_button_toggled(true, "torren_redcloak")
+    if creator.choices.has("origin"):
+        var origin_option: OptionButton = creator.choices["origin"]
+        if origin_option.item_count > 1:
+            creator._on_choice_selected(1, "origin", origin_option)
+            _check(str(creator.profile.get("origin", "")) == str(origin_option.get_item_metadata(1)),
+                "native dropdown selection updates the protagonist background")
+    creator._on_stat_allocation_changed(5.0, "str")
+    var allocated_after_clamp := 0
+    for stat in ["str", "dex", "int", "vit", "spd", "lck"]:
+        allocated_after_clamp += int(creator.profile.get("stat_allocation", {}).get(stat, 0))
+    _check(allocated_after_clamp <= int(GameData.character_creation.get("stat_points", 8)),
+        "attribute sliders cannot overspend the starting point budget")
     _check(creator.confirm_button != null and not creator.confirm_button.disabled, "valid default profile enables Begin Chronicle")
 
     var emitted_profiles: Array = []
@@ -59,6 +90,15 @@ func _run_ui_test() -> void:
         _check(str(emitted_profiles[0].get("name", "")) == "QA Chronicle", "creator emits the edited protagonist identity")
         _check(CharacterCreation.validate(emitted_profiles[0], GameData.character_creation, GameData.classes) == "",
             "emitted protagonist profile passes the production validator")
+        var protagonist_def: Dictionary = CharacterCreation.build_definition(GameData.characters.get("torren", {}), emitted_profiles[0], GameData.character_creation, GameData.classes)
+        _check(str(protagonist_def.get("creation", {}).get("portrait_id", "")) == "torren_redcloak",
+            "the selected portrait ID is embedded in the actual protagonist definition")
+        var sheet = CharacterSheet.from_def("torren", protagonist_def)
+        _check(str(protagonist_def.get("creation", {}).get("portrait_id", "")) == "torren_redcloak",
+            "battle-ready protagonist definition carries the selected portrait identity")
+        _check(sheet.portrait_id == "torren_redcloak", "the protagonist character sheet receives the selected portrait")
+        var restored_sheet = CharacterSheet.from_dict(sheet.to_dict())
+        _check(restored_sheet.portrait_id == "torren_redcloak", "the selected portrait survives character save serialization")
 
     creator.queue_free()
     await get_tree().process_frame

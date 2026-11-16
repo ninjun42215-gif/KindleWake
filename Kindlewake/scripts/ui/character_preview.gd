@@ -3,6 +3,7 @@ extends Control
 ## Original geometric bust preview for creator choices. This is a UI preview, not production portrait art.
 
 var profile: Dictionary = {}
+var portrait_texture: Texture2D = null
 
 
 static func jaw_ratio_for_presentation(presentation_id: String) -> float:
@@ -15,6 +16,9 @@ static func jaw_ratio_for_presentation(presentation_id: String) -> float:
 
 func set_profile(value: Dictionary) -> void:
     profile = value.duplicate(true)
+    var portrait_id := str(profile.get("portrait_id", ""))
+    var portrait_path := "res://assets/art/portraits/%s.svg" % portrait_id
+    portrait_texture = load(portrait_path) as Texture2D if portrait_id != "" and ResourceLoader.exists(portrait_path) else null
     queue_redraw()
 
 
@@ -27,6 +31,15 @@ func _draw() -> void:
     draw_rect(Rect2(Vector2(2, 2), size - Vector2(4, 4)), Color("#34404b"), false, 2.0)
     # Restrained vignette and a quiet heraldic backdrop; no cartoon outlines or oversized features.
     draw_rect(Rect2(Vector2(8, 8), size - Vector2(16, 16)), Color("#18222d"), true)
+    if portrait_texture != null:
+        var texture_size: Vector2 = portrait_texture.get_size()
+        var target := Rect2(Vector2(8, 8), size - Vector2(16, 16))
+        var scale_to_fit := minf(target.size.x / texture_size.x, target.size.y / texture_size.y)
+        var fitted := texture_size * scale_to_fit
+        var destination := Rect2(target.position + (target.size - fitted) * 0.5, fitted)
+        draw_texture_rect(portrait_texture, destination, false)
+        draw_rect(target, Color("#c3a66b"), false, 2.0)
+        return
     # Draw the portrait in a fixed 240x360 composition, uniformly scaled to
     # the available control. Fixed anatomy proportions prevent a floating head
     # on short/tall phone layouts and keep the neck seated inside the collar.
