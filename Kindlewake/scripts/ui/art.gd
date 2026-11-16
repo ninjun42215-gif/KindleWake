@@ -140,6 +140,24 @@ static func draw_character(canvas: CanvasItem, archetype: String, feet: Vector2,
 
 static func character_for_npc(name: String, role: String = "") -> String:
     var key: String = (name + " " + role).to_lower()
+    if key.contains("torren"):
+        return "chronicle_hero"
+    if key.contains("sela"):
+        return "hunter"
+    if key.contains("bram"):
+        return "duelist"
+    if key.contains("wystan") or key.contains("brother"):
+        return "healer"
+    if key.contains("maren"):
+        return "bard"
+    if key.contains("archer"):
+        return "hunter"
+    if key.contains("swordsman") or key.contains("roadreaver"):
+        return "duelist"
+    if key.contains("cleric"):
+        return "healer"
+    if key.contains("mage"):
+        return "scholar"
     # Distinct silhouettes for named professions and social roles; do not recolour one generic soldier.
     if key.contains("blacksmith") or key.contains("smith") or key.contains("forge"):
         return "blacksmith"
