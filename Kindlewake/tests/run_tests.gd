@@ -2417,7 +2417,7 @@ func _test_regional_market_trading() -> void:
     invalid_party.add_item("arming_sword", 1)
     check(TradeSystemScript.cargo_weight(invalid_party, goods) == 0, "equipment and ordinary inventory do not consume trade cargo capacity")
     var price_before := TradeSystemScript.unit_price("sethmarch", "trade_grain", goods, state)
-    check(TradeSystemScript.buy(invalid_party, "sethmarch", "trade_grain", 4, goods, state) == "", "a valid purchase succeeds after rejected transactions")
+    check(TradeSystemScript.buy(invalid_party, "sethmarch", "trade_grain", 10, goods, state) == "", "a valid purchase succeeds after rejected transactions")
     check(TradeSystemScript.unit_price("sethmarch", "trade_grain", goods, state) > price_before, "market prices react to stock and demand")
     var normalized := TradeSystemScript.normalize_state(state, goods)
     check(normalized["markets"]["brinegate_coast"]["stock"]["trade_salt"] == stock_before - 5 and normalized["transactions"] == 3, "regional stock and transaction history survive normalization")
