@@ -20,6 +20,7 @@ var rng := RandomNumberGenerator.new()
 
 # Overworld state (Milestone 7). The world scene and the battle scene hand over through these fields.
 var pending_battle: Dictionary = {}      # battle the battle scene should open next (empty = default story battle)
+var pending_battle_resume: Dictionary = {} # validated campaign save containing an in-progress tactical battle
 var from_world: bool = false             # true when the battle was started from the overworld
 var world_pos: Vector2 = Vector2.ZERO    # active region position in pixels (ZERO = region start)
 var active_region_id: String = "sethmarch"
@@ -59,6 +60,7 @@ func new_game(profile: Dictionary = {}) -> void:
     creation_profile = selected.duplicate(true)
     party = PartyStateScript.new_game(GameData.start, GameData.characters, protagonist)
     pending_battle = {}
+    pending_battle_resume = {}
     from_world = false
     world_pos = Vector2.ZERO
     active_region_id = "sethmarch"
@@ -423,6 +425,12 @@ func take_pending_battle() -> Dictionary:
     return d
 
 
+func take_pending_battle_resume() -> Dictionary:
+    var d: Dictionary = pending_battle_resume
+    pending_battle_resume = {}
+    return d
+
+
 ## Regional commodity exchange. The market is selected from the current world region; no
 ## cross-region route or tariff actions are exposed until those gates are fully implemented.
 func trade_market_available() -> bool:
@@ -497,6 +505,8 @@ func load_campaign(slot_id: String) -> bool:
     world_positions = region_state["world_positions"]
     from_world = true
     pending_battle = {}
+    var resume_value: Variant = payload.get("battle_resume", {})
+    pending_battle_resume = resume_value.duplicate(true) if typeof(resume_value) == TYPE_DICTIONARY else {}
     pending_location = str(payload.get("pending_location", ""))
     campaign_slot = slot_id
     return true
