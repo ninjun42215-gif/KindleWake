@@ -7,6 +7,8 @@ const WORLD_DIR := "res://assets/art/world/"
 const WORLD_VECTOR_NAMES := ["house_a", "house_b", "house_c", "hut", "keep", "tower_a", "tower_b", "tower_c"]
 const UNIT_DIR := "res://assets/art/units/"
 const PROP_ATLAS_PATH := "res://assets/art/props/field_props.svg"
+const CHARACTER_ATLAS_PATH := "res://assets/art/units/character_atlas.svg"
+const CHARACTER_CELLS := {"knight":Vector2i(0,0), "ranger":Vector2i(1,0), "paladin":Vector2i(2,0), "priestess":Vector2i(3,0), "mage":Vector2i(0,1), "rogue":Vector2i(1,1), "guard":Vector2i(2,1), "merchant":Vector2i(3,1), "goblin":Vector2i(0,2), "orc":Vector2i(1,2), "skeleton":Vector2i(2,2), "direwolf":Vector2i(3,2), "wraith":Vector2i(0,3), "cultist":Vector2i(1,3), "treant":Vector2i(2,3), "overlord":Vector2i(3,3)}
 const PROP_CELLS := {"arch":Vector2i(0,0), "column":Vector2i(1,0), "rune_stone":Vector2i(2,0), "torch":Vector2i(3,0), "reeds":Vector2i(0,1), "crystals":Vector2i(1,1), "grave":Vector2i(2,1), "banner":Vector2i(3,1), "mushrooms":Vector2i(0,2), "stump":Vector2i(1,2), "barrel":Vector2i(2,2), "crate":Vector2i(3,2), "campfire":Vector2i(0,3), "frost_pine":Vector2i(1,3), "statue":Vector2i(2,3), "flower":Vector2i(3,3)}
 ## Frames per animation in the 100x100 horizontal strips of the Tiny RPG Soldier / Orc sheets.
 const UNIT_FRAMES := {"idle": 6, "walk": 8, "attack": 6, "hurt": 4, "death": 4}
@@ -72,6 +74,65 @@ static func draw_world(canvas: CanvasItem, name: String, foot: Vector2, scale: f
     var size: Vector2 = tex.get_size() * scale
     canvas.draw_texture_rect(tex, Rect2(foot - Vector2(size.x * 0.5, size.y), size), false, tint)
     return true
+
+
+## Draws one of the original fantasy character designs from the 4x4 atlas.
+static func draw_character(canvas: CanvasItem, archetype: String, feet: Vector2, scale: float = 0.8, tint: Color = Color.WHITE) -> bool:
+    if not CHARACTER_CELLS.has(archetype):
+        return false
+    var tex: Texture2D = _load(CHARACTER_ATLAS_PATH)
+    if tex == null:
+        return false
+    var cell: Vector2i = CHARACTER_CELLS[archetype]
+    var src := Rect2(Vector2(cell.x * 128, cell.y * 160), Vector2(128, 160))
+    var size := Vector2(128, 160) * scale
+    canvas.draw_texture_rect_region(tex, Rect2(feet - Vector2(size.x * 0.5, size.y), size), src, tint)
+    return true
+
+
+static func character_for_npc(name: String, role: String = "") -> String:
+    var key: String = (name + " " + role).to_lower()
+    if key.contains("guard") or key.contains("soldier") or key.contains("watch"):
+        return "guard"
+    if key.contains("merchant") or key.contains("trader") or key.contains("innkeeper") or key.contains("carter"):
+        return "merchant"
+    if key.contains("priest") or key.contains("brother") or key.contains("sister") or key.contains("healer"):
+        return "priestess"
+    if key.contains("scout") or key.contains("ranger") or key.contains("bow") or key.contains("hunter"):
+        return "ranger"
+    if key.contains("mage") or key.contains("witch") or key.contains("seer"):
+        return "mage"
+    if key.contains("captain") or key.contains("knight") or key.contains("lord"):
+        return "knight"
+    var common: Array[String] = ["merchant", "guard", "ranger", "rogue", "priestess", "knight", "mage", "paladin"]
+    return common[posmod(absi(hash(name)), common.size())]
+
+
+static func character_for_enemy(character_id: String, display_name: String = "") -> String:
+    var key: String = (character_id + " " + display_name).to_lower()
+    if key.contains("rootbound") or key.contains("briar") or key.contains("treant"):
+        return "treant"
+    if key.contains("bell_keeper") or key.contains("wraith") or key.contains("ghost") or key.contains("spect"):
+        return "wraith"
+    if key.contains("ashen") or key.contains("cult") or key.contains("matriarch"):
+        return "cultist"
+    if key.contains("skeleton") or key.contains("bone") or key.contains("drowned"):
+        return "skeleton"
+    if key.contains("wolf") or key.contains("hart") or key.contains("beast"):
+        return "direwolf"
+    if key.contains("goblin"):
+        return "goblin"
+    if key.contains("orc") or key.contains("brute") or key.contains("ogre") or key.contains("troll"):
+        return "orc"
+    if key.contains("star_eater") or key.contains("overlord"):
+        return "overlord"
+    if key.contains("hask") or key.contains("boss") or key.contains("chieftain"):
+        return "paladin"
+    if key.contains("bow") or key.contains("archer") or key.contains("scout"):
+        return "ranger"
+    if key.contains("shaman") or key.contains("witch") or key.contains("mage"):
+        return "mage"
+    return "rogue"
 
 
 ## Draws one original 128px environmental prop from the 4x4 atlas.
