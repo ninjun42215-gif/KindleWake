@@ -24,6 +24,9 @@ static func panel_style(alpha: float = 0.9) -> StyleBoxFlat:
 
 
 static func apply_button(button: Button) -> void:
+    # Touch actions fire on the first deliberate press, not after a second focus tap.
+    button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+    button.focus_mode = Control.FOCUS_NONE
     var normal := StyleBoxFlat.new()
     normal.bg_color = INK_RAISED
     normal.border_color = BRASS
