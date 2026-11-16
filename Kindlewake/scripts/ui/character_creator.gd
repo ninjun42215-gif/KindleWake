@@ -531,7 +531,7 @@ func _refresh_allocation_total() -> void:
     for stat in ["str", "dex", "int", "vit", "spd", "lck"]:
         spent += int(allocation.get(stat, 0))
     var total := int(config.get("stat_points", 8))
-    allocation_total_label.text = "Attribute points: %d / %d" % [spent, total]
+    allocation_total_label.text = "Points remaining: %d / %d   •   Allocated: %d" % [total - spent, total, spent]
     allocation_total_label.add_theme_color_override("font_color", Color("#a8c7a0") if spent == total else Color("#e6a18f"))
 
 
