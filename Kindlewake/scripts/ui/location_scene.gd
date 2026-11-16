@@ -1063,16 +1063,23 @@ func _draw_tile(c: Vector2i) -> void:
                 draw_line(Vector2(o.x + off, yy), Vector2(o.x + off, yy + TILE * 0.33), Color(0, 0, 0, 0.28), 1.5)
         "r", "b":
             var col: Color = Color(0.64, 0.27, 0.22) if t == "r" else Color(0.26, 0.42, 0.60)
-            draw_rect(full, _shade(col, c, 0.08))
+            var roof_rect := Rect2(o + Vector2(5, 5), Vector2(TILE - 10, TILE - 10))
+            draw_rect(roof_rect.grow(1.5), Color(0, 0, 0, 0.18))
+            draw_rect(roof_rect, _shade(col, c, 0.08))
             for r in range(4):
                 var yy2: float = o.y + TILE * 0.25 * float(r + 1)
-                draw_line(Vector2(o.x, yy2), Vector2(o.x + TILE, yy2), Color(0, 0, 0, 0.25), 2.0)
+                draw_line(Vector2(o.x + 5, yy2), Vector2(o.x + TILE - 5, yy2), Color(0, 0, 0, 0.25), 1.5)
+            draw_line(o + Vector2(7, 8), o + Vector2(TILE - 7, 8), Color(1, 0.88, 0.68, 0.18), 1.0)
         "w":
-            draw_rect(full, _shade(Color(0.70, 0.58, 0.40), c, 0.06))
-            draw_line(o + Vector2(TILE * 0.5, 0), o + Vector2(TILE * 0.5, TILE), Color(0, 0, 0, 0.18), 1.5)
+            var wall_rect := Rect2(o + Vector2(5, 4), Vector2(TILE - 10, TILE - 8))
+            draw_rect(wall_rect.grow(1.5), Color(0, 0, 0, 0.2))
+            draw_rect(wall_rect, _shade(Color(0.70, 0.58, 0.40), c, 0.06))
+            draw_line(o + Vector2(TILE * 0.5, 4), o + Vector2(TILE * 0.5, TILE - 4), Color(0, 0, 0, 0.18), 1.5)
             if h > 0.35:
-                draw_rect(Rect2(o + Vector2(TILE * 0.28, TILE * 0.22), Vector2(TILE * 0.44, TILE * 0.40)), Color(0.28, 0.40, 0.55))
-                draw_rect(Rect2(o + Vector2(TILE * 0.28, TILE * 0.22), Vector2(TILE * 0.44, TILE * 0.40)), Color(0.15, 0.1, 0.06), false, 2.0)
+                var window_rect := Rect2(o + Vector2(TILE * 0.31, TILE * 0.24), Vector2(TILE * 0.38, TILE * 0.34))
+                draw_rect(window_rect, Color(0.28, 0.40, 0.55))
+                draw_rect(window_rect, Color(0.15, 0.1, 0.06), false, 2.0)
+                draw_line(window_rect.position + Vector2(window_rect.size.x * 0.5, 0), window_rect.position + Vector2(window_rect.size.x * 0.5, window_rect.size.y), Color(0.72, 0.61, 0.42), 1.0)
         "1", "2", "3", "4":
             draw_rect(Rect2(o + Vector2(TILE * 0.12, TILE * 0.05), Vector2(TILE * 0.76, TILE * 0.95)), Color(0.34, 0.20, 0.10))
             draw_arc(o + Vector2(TILE * 0.5, TILE * 0.3), TILE * 0.38, PI, TAU, 10, Color(0.34, 0.20, 0.10), 5.0)
@@ -1136,8 +1143,11 @@ func _draw_tile(c: Vector2i) -> void:
         "P":
             Art.draw_prop(self, "column", prop_center + Vector2(0, -2), 0.34)
         _:
-            if not indoor and t == "." and WorldMap.hash01(c.x, c.y, 43) > 0.94:
-                Art.draw_prop(self, "flower", prop_center + Vector2(0, -5), 0.22)
+            if not indoor and t == ".":
+                var detail: float = WorldMap.hash01(c.x, c.y, 43)
+                if detail > 0.975:
+                    var variants: Array[String] = ["flower", "mushrooms", "stump", "reeds", "rune_stone"]
+                    Art.draw_prop(self, variants[int(WorldMap.hash01(c.x, c.y, 47) * float(variants.size()))], prop_center + Vector2(0, -5), 0.20)
     if indoor and t == "#" and c.y == 0:
         draw_rect(Rect2(o + Vector2(0, TILE - 6), Vector2(TILE, 6)), Color(0, 0, 0, 0.3))
 
@@ -1159,8 +1169,12 @@ func _draw_spot(s: Dictionary) -> void:
         var tint := Color(float(tint_a[0]), float(tint_a[1]), float(tint_a[2]))
         var foot: Vector2 = c + Vector2(0, 12)
         draw_colored_polygon(_ellipse(foot + Vector2(0, 2), 13.0, 5.0), Color(0, 0, 0, 0.3))
-        if not Art.draw_unit(self, "soldier", "idle", t + c.x * 0.01, foot, 2.0, c.x > player_pos.x, tint):
-            draw_rect(Rect2(foot + Vector2(-8, -30), Vector2(16, 28)), tint)
+        var npc_sprite: String = str(s.get("sprite", ""))
+        if npc_sprite == "":
+            npc_sprite = Art.character_for_npc(str(s.get("name", "")), str(s.get("kind", "")))
+        if not Art.draw_character(self, npc_sprite, foot, 0.82, tint):
+            if not Art.draw_unit(self, "soldier", "idle", t + c.x * 0.01, foot, 1.35, c.x > player_pos.x, tint):
+                draw_rect(Rect2(foot + Vector2(-8, -30), Vector2(16, 28)), tint)
     var bob: float = sin(t * 3.0) * 3.0
     var tip: Vector2 = c + Vector2(0, -52 + bob)
     var col := Color(1.0, 0.85, 0.25) if near else Color(1.0, 0.85, 0.25, 0.65)
