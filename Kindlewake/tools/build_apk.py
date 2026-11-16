@@ -745,7 +745,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
             creator_test_scene = PROJECT / "tests" / "title_creator_ui_test.tscn"
             if creator_test_scene.is_file():
-                say("\\n[5a.2] Running title screen and protagonist creator UI interaction test")
+                say("\n[5a.2] Running title screen and protagonist creator UI interaction test")
                 code, out = run([str(godot), "--headless", "--path", str(PROJECT),
                                  "res://tests/title_creator_ui_test.tscn"],
                                 env=env, log=logs / "title_creator_ui_test.txt", timeout=300)
