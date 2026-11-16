@@ -111,6 +111,9 @@ func _button(label: String, callback: Callable, primary: bool = false) -> Button
     b.text = label
     b.custom_minimum_size = Vector2(0, 54)
     b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    # Mobile taps can lose the release edge when Android focus changes. Trigger
+    # menu actions on touch-down so the same action path works for touch and mouse.
+    b.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
     b.add_theme_font_size_override("font_size", 20)
     var normal := StyleBoxFlat.new()
     normal.bg_color = Color("#26333b") if not primary else Color("#59452b")
