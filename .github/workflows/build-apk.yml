@@ -48,6 +48,9 @@ jobs:
           path: ~/.kindlewake_build
           key: kindlewake-build-${{ hashFiles('Kindlewake/tools/build_apk.py') }}
 
+      - name: Install icon-generation dependency
+        run: python -m pip install --disable-pip-version-check Pillow
+
       - name: Generate updated launcher icons
         working-directory: Kindlewake
         run: python tools/make_icon.py
