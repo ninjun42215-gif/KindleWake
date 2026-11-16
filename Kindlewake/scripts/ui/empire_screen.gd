@@ -129,7 +129,7 @@ func _build() -> void:
     holding_picker = OptionButton.new()
     holding_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
     holding_picker.focus_mode = Control.FOCUS_NONE
-        holding_picker.custom_minimum_size = Vector2(0, 46)
+    holding_picker.custom_minimum_size = Vector2(0, 46)
     holding_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     holding_picker.item_selected.connect(_on_holding_selected)
     holdings_tab.add_child(holding_picker)
