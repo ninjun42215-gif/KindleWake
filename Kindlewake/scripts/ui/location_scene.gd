@@ -1172,9 +1172,24 @@ func _draw_spot(s: Dictionary) -> void:
         var npc_sprite: String = str(s.get("sprite", ""))
         if npc_sprite == "":
             npc_sprite = Art.character_for_npc(str(s.get("name", "")), str(s.get("kind", "")))
-        if not Art.draw_character(self, npc_sprite, foot, 0.82, tint):
+        var npc_motion: String = "idle"
+        var npc_seed: float = float(posmod(hash(str(s.get("name", ""))), 100)) * 0.03
+        var npc_clock: float = t + npc_seed
+        if near and panel_open:
+            npc_motion = "talk"
+        elif fposmod(npc_clock, 17.0) < 2.2:
+            npc_motion = "walk"
+        if not Art.draw_character_animated(self, npc_sprite, foot, npc_clock, npc_motion, 0.82, tint, c.x > player_pos.x):
             if not Art.draw_unit(self, "soldier", "idle", t + c.x * 0.01, foot, 1.35, c.x > player_pos.x, tint):
                 draw_rect(Rect2(foot + Vector2(-8, -30), Vector2(16, 28)), tint)
+        if near and bool(s.get("npc", false)):
+            var bubble := Rect2(c + Vector2(-17, -79), Vector2(34, 22))
+            draw_rect(bubble, Color(0.96, 0.91, 0.78, 0.96))
+            draw_rect(bubble, Color(0.29, 0.25, 0.20), false, 1.5)
+            draw_colored_polygon(PackedVector2Array([c + Vector2(-4, -58), c + Vector2(2, -58), c + Vector2(-2, -52)]), Color(0.96, 0.91, 0.78))
+            for dot in range(3):
+                var alpha: float = 0.35 if posmod(int(t * 4.0), 3) != dot else 1.0
+                draw_circle(c + Vector2(-8 + dot * 8, -68), 2.0, Color(0.32, 0.29, 0.24, alpha))
     var bob: float = sin(t * 3.0) * 3.0
     var tip: Vector2 = c + Vector2(0, -52 + bob)
     var col := Color(1.0, 0.85, 0.25) if near else Color(1.0, 0.85, 0.25, 0.65)

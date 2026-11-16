@@ -66,6 +66,54 @@ static func draw_unit(canvas: CanvasItem, kind: String, anim: String, time: floa
     return true
 
 
+## Animated original atlas character: idle breathing, walking bob/stride, attack slash and periodic eye blinks.
+static func draw_character_animated(canvas: CanvasItem, archetype: String, feet: Vector2, time: float, motion: String = "idle", scale: float = 0.8, tint: Color = Color.WHITE, flip: bool = false) -> bool:
+    if not CHARACTER_CELLS.has(archetype):
+        return false
+    var tex: Texture2D = _load(CHARACTER_ATLAS_PATH)
+    if tex == null:
+        return false
+    var cell: Vector2i = CHARACTER_CELLS[archetype]
+    var src := Rect2(Vector2(cell.x * 128, cell.y * 160), Vector2(128, 160))
+    var phase: float = time * (10.0 if motion == "walk" else 3.0)
+    var bob: float = sin(phase) * (3.0 if motion == "walk" else 1.2)
+    var lean: float = -0.08 if motion == "attack" else (0.035 * sin(phase) if motion == "walk" else 0.0)
+    var pulse: float = 0.94 + 0.06 * sin(time * 2.2)
+    var sx: float = scale * (1.0 + (0.025 * sin(phase) if motion == "walk" else 0.0))
+    var sy: float = scale * (1.0 - (0.018 * sin(phase) if motion == "walk" else 0.0))
+    canvas.draw_set_transform(feet + Vector2(0, bob), lean, Vector2(-sx if flip else sx, sy))
+    canvas.draw_texture_rect_region(tex, Rect2(-64, -160, 128, 160), src, tint)
+    # Human faces have visible eyes and a mouth at these atlas coordinates.
+    if archetype in ["knight", "ranger", "paladin", "priestess", "mage", "rogue", "guard", "merchant"]:
+        var blink_phase: float = fposmod(time + float(cell.x * 7 + cell.y * 3), 4.1)
+        var blinking: bool = blink_phase > 3.91
+        var eye_y: float = -108.0
+        var eye_color: Color = Color(0.12, 0.10, 0.09, 0.95)
+        if blinking:
+            canvas.draw_line(Vector2(-10, eye_y), Vector2(-5, eye_y), eye_color, 1.8)
+            canvas.draw_line(Vector2(6, eye_y), Vector2(11, eye_y), eye_color, 1.8)
+        else:
+            canvas.draw_circle(Vector2(-7.5, eye_y), 1.5, eye_color)
+            canvas.draw_circle(Vector2(8.5, eye_y), 1.5, eye_color)
+            canvas.draw_circle(Vector2(-8, eye_y - 0.6), 0.55, Color(1, 0.88, 0.72))
+            canvas.draw_circle(Vector2(8, eye_y - 0.6), 0.55, Color(1, 0.88, 0.72))
+        canvas.draw_line(Vector2(-3, -98), Vector2(3, -98), Color(0.35, 0.18, 0.15, 0.7), 1.0)
+        if motion == "talk" and sin(time * 12.0) > 0.15:
+            canvas.draw_circle(Vector2(0, -97), 1.8, Color(0.28, 0.10, 0.10, 0.9))
+    if motion == "walk":
+        var step: float = sin(phase) * 4.0
+        canvas.draw_line(Vector2(-13, -18), Vector2(-13 + step, -3), Color(0.16, 0.13, 0.12, 0.7), 2.0)
+        canvas.draw_line(Vector2(13, -18), Vector2(13 - step, -3), Color(0.16, 0.13, 0.12, 0.7), 2.0)
+    elif motion == "attack":
+        canvas.draw_arc(Vector2(31, -75), 35.0, -1.25, 1.15, 18, Color(1.0, 0.86, 0.54, 0.9), 4.0)
+        canvas.draw_line(Vector2(16, -58), Vector2(48, -92), Color(0.88, 0.94, 1.0, 0.85), 2.0)
+    elif motion == "skill":
+        canvas.draw_circle(Vector2(0, -77), 25.0 * pulse, Color(0.62, 0.48, 1.0, 0.14))
+        canvas.draw_arc(Vector2(0, -77), 29.0 * pulse, 0.0, TAU, 24, Color(0.82, 0.72, 1.0, 0.75), 2.0)
+    canvas.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+    return true
+
+
 ## Draws a world sprite standing on `foot` (bottom centre), scaled.
 static func draw_world(canvas: CanvasItem, name: String, foot: Vector2, scale: float = 1.0, tint: Color = Color.WHITE) -> bool:
     var tex: Texture2D = world(name)
