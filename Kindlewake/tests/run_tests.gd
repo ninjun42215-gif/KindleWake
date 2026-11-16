@@ -2415,6 +2415,15 @@ func _test_regional_market_trading() -> void:
     invalid_party.gold = 10000
     check(TradeSystemScript.buy(invalid_party, "thornmere", "trade_salt", 1, goods, state) != "", "unknown settlement IDs cannot bypass canonical region gating")
     check(TradeSystemScript.buy(invalid_party, "sethmarch", "missing_good", 1, goods, state) == "Unknown trade good.", "unknown goods are rejected")
+    check(TradeSystemScript.sell(invalid_party, "sethmarch", "trade_grain", 1, goods, state) == "You do not have enough cargo.", "selling cargo the party does not own is rejected")
+    check(TradeSystemScript.sell(invalid_party, "sethmarch", "trade_grain", 0, goods, state) != "", "zero-quantity sales are rejected")
+    var poor_party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    poor_party.gold = 0
+    check(TradeSystemScript.buy(poor_party, "sethmarch", "trade_grain", 1, goods, state) == "Not enough gold." and poor_party.item_count("trade_grain") == 0, "insufficient funds leave gold and cargo unchanged")
+    var zero_weight_goods: Dictionary = goods.duplicate(true)
+    zero_weight_goods["goods"]["trade_grain"]["weight"] = 0
+    poor_party.add_item("trade_grain", 1)
+    check(TradeSystemScript.cargo_weight(poor_party, zero_weight_goods) == 1, "malformed zero-weight goods still consume at least one cargo unit")
     check(TradeSystemScript.buy(invalid_party, "sethmarch", "trade_grain", 0, goods, state) != "" and TradeSystemScript.buy(invalid_party, "sethmarch", "trade_grain", -1, goods, state) != "", "zero and negative purchase quantities are rejected")
     var limited_goods: Dictionary = goods.duplicate(true)
     limited_goods["cargo_capacity"] = 2
