@@ -94,7 +94,7 @@ func _run_ui_test() -> void:
         _check(str(protagonist_def.get("creation", {}).get("portrait_id", "")) == "torren_redcloak",
             "the selected portrait ID is embedded in the actual protagonist definition")
         var sheet = CharacterSheet.from_def("torren", protagonist_def)
-        _check(str(protagonist_def.get("portrait_id", "")) == "torren_redcloak",
+        _check(str(protagonist_def.get("creation", {}).get("portrait_id", "")) == "torren_redcloak",
             "battle-ready protagonist definition carries the selected portrait identity")
         _check(sheet.portrait_id == "torren_redcloak", "the protagonist character sheet receives the selected portrait")
         var restored_sheet = CharacterSheet.from_dict(sheet.to_dict())
