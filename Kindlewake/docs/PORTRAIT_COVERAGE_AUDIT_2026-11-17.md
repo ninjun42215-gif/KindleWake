@@ -10,10 +10,14 @@ Inspected `data/characters.json`, `data/character_creation.json`, `data/location
 
 The registry preserves existing `portrait_id` values as *legacy assignments only*. Presence of a file is not proof that the art depicts the assigned character. Reused IDs are flagged for identity review; they are not accepted as complete coverage.
 
+## Roster reconciliation
+
+The design document defines a 24-character Wave 1 roster: four starting characters (Torren, Bram, Sela and Brother Wystan) plus 20 Wave 1 recruits. The data contains those four starters and 20 `recruit.wave == 1` definitions. It also contains two Wave 2 recruits (Maren Vey and Neris Quell), bringing the current truthy `recruit` field count to 22. This is not a 2-character Wave 1 shortfall; the two additional records are explicitly Wave 2. The 24 named Wave 1 roster entries are present in `characters.json`.
+
 ## Baseline results
 
 - Existing portrait files: **12**
-- Character definitions audited: **48**
+- Character definitions audited: **48** (including all 24 named Wave 1 roster characters)
 - NPC dialogue/event spots audited: **157**
 - Additional named royal story figures tracked: **3**
 - Total registry records: **208**
