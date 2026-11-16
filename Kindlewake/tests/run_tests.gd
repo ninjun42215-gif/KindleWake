@@ -1,5 +1,10 @@
 extends SceneTree
 
+const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
+const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
+const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
+const BattleControllerScript = preload("res://scripts/battle/battle_controller.gd")
+
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 const RelationshipSystemScript = preload("res://scripts/core/relationship_system.gd")
@@ -120,10 +125,10 @@ func check(cond: bool, label: String) -> void:
         print("  FAIL  " + label)
 
 
-func _make_unit(uid: int, char_id: String, team: String, cell: Vector2i, facing: int) -> BattleUnit:
+func _make_unit(uid: int, char_id: String, team: String, cell: Vector2i, facing: int) -> BattleUnitScript:
     var cdef: Dictionary = gd.characters[char_id]
     var cls: Dictionary = gd.classes[str(cdef["class_id"])]
-    return BattleUnit.create(uid, char_id, cdef, cls, team, cell, facing)
+    return BattleUnitScript.create(uid, char_id, cdef, cls, team, cell, facing)
 
 
 func _test_data() -> void:
@@ -455,9 +460,9 @@ func _test_regional_boss_battles() -> void:
     var siege: Dictionary = gd.battle_def("battle_holding_siege")
     check(not siege.is_empty() and siege.get("victory", []).has("defeat_commander"), "holding siege has a playable tactical battlefield and commander objective")
     var sample: Dictionary = gd.battle_def("battle_boss_hollow_hart")
-    var controller := BattleController.new()
+    var controller := BattleControllerScript.new()
     controller.setup(sample, gd.as_db(), 1234)
-    var boss: BattleUnit = null
+    var boss: BattleUnitScript = null
     for unit in controller.units:
         if unit.is_commander and unit.team == "enemy":
             boss = unit
@@ -772,9 +777,9 @@ func _test_boss_phase_transitions() -> void:
     ]
     for entry in cases:
         var battle_def: Dictionary = gd.battle_def(str(entry.battle))
-        var ctl := BattleController.new()
+        var ctl := BattleControllerScript.new()
         ctl.setup(battle_def, gd.as_db(), 812)
-        var boss: BattleUnit = null
+        var boss: BattleUnitScript = null
         for candidate in ctl.units:
             if candidate.character_id == str(entry.boss):
                 boss = candidate
@@ -792,7 +797,7 @@ func _test_boss_phase_transitions() -> void:
         check(boss.skills.has(str(entry.skill)), str(entry.boss) + " unlocks its phase signature attack")
         check(boss.hp > int(floor(float(boss.max_hp()) * float(entry.threshold) / 100.0)), str(entry.boss) + " receives its phase recovery")
         check(not ctl.evaluate_boss_phase(boss) and boss.boss_phase_index == 1, str(entry.boss) + " phase transition cannot trigger twice")
-        var restored: BattleUnit = BattleUnit.from_dict(boss.to_dict())
+        var restored: BattleUnitScript = BattleUnitScript.from_dict(boss.to_dict())
         check(restored.boss_phase_index == 1 and restored.skills.has(str(entry.skill)), str(entry.boss) + " phase and signature skill persist in battle saves")
         boss.hp = 1
         check(not ctl.evaluate_boss_phase(boss), str(entry.boss) + " has no duplicate phase at critical HP")
@@ -979,7 +984,7 @@ func _test_escape_mission() -> void:
             enemy_count += 1
     check(spawn_ok and player_count == 4 and enemy_count == 4, "all eight escape combatants spawn within the courtyard")
     check(str(base.get("id", "")) == original_id and (base.get("units", []) as Array) == original_units, "building the escape encounter never mutates canonical battle data")
-    var controller := BattleController.new()
+    var controller := BattleControllerScript.new()
     controller.setup(battle, gd.as_db(), 77)
     check(controller.map.width == 20 and controller.map.height == 14 and controller.units.size() == 8, "escape encounter loads into the tactical battle controller")
 
@@ -1113,7 +1118,7 @@ func _test_character_creation() -> void:
 
 func _test_map() -> void:
     print("[map]")
-    var m: BattleMap = BattleMap.from_battle_def(gd.battle_def("battle_01"), gd.terrain)
+    var m: BattleMapScript = BattleMapScript.from_battle_def(gd.battle_def("battle_01"), gd.terrain)
     check(m.width == 20 and m.height == 14, "battlefield expands to 20x14")
     check(m.terrain_id(Vector2i(9, 6)) == "bridge", "bridge at expanded coordinate (9,6)")
     check(m.move_cost(Vector2i(4, 6)) == -1, "deep water blocks movement")
@@ -1140,9 +1145,9 @@ func _test_combat() -> void:
     print("[combat]")
     check(is_equal_approx(CombatCalc.base_damage(20.0, 20.0), 10.0), "defense equal to attack halves damage")
     check(is_equal_approx(CombatCalc.base_damage(10.0, 0.0), 10.0), "no defense = full damage")
-    var m: BattleMap = BattleMap.from_battle_def(gd.battle_def("battle_01"), gd.terrain)
-    var a: BattleUnit = _make_unit(1, "bram", "player", Vector2i(9, 9), 0)
-    var r: BattleUnit = _make_unit(2, "roadreaver", "enemy", Vector2i(9, 8), 2)
+    var m: BattleMapScript = BattleMapScript.from_battle_def(gd.battle_def("battle_01"), gd.terrain)
+    var a: BattleUnitScript = _make_unit(1, "bram", "player", Vector2i(9, 9), 0)
+    var r: BattleUnitScript = _make_unit(2, "roadreaver", "enemy", Vector2i(9, 8), 2)
     var units: Array = [a, r]
     var w: Dictionary = gd.weapon_def(a.weapon_id)
     var front: Dictionary = CombatCalc.preview(a, r, w, m, units)
@@ -1152,12 +1157,12 @@ func _test_combat() -> void:
     check(str(rear["facing"]) == "rear", "attacker behind the defender")
     check(int(rear["dmg_max"]) > int(front["dmg_max"]), "rear attacks deal more damage")
     check(int(rear["crit"]) == int(front["crit"]) + 10, "rear attacks gain +10 crit")
-    var ally: BattleUnit = _make_unit(3, "torren", "player", Vector2i(9, 7), 0)
+    var ally: BattleUnitScript = _make_unit(3, "torren", "player", Vector2i(9, 7), 0)
     units.append(ally)
     var flank: Dictionary = CombatCalc.preview(a, r, w, m, units)
     check(bool(flank["flank"]) and int(flank["dmg_max"]) > int(rear["dmg_max"]), "ally on the opposite side gives a flank bonus")
-    var archer: BattleUnit = _make_unit(4, "sela", "player", Vector2i(12, 3), 2)
-    var low_target: BattleUnit = _make_unit(5, "roadreaver", "enemy", Vector2i(12, 5), 0)
+    var archer: BattleUnitScript = _make_unit(4, "sela", "player", Vector2i(12, 3), 2)
+    var low_target: BattleUnitScript = _make_unit(5, "roadreaver", "enemy", Vector2i(12, 5), 0)
     var high: Dictionary = CombatCalc.preview(archer, low_target, gd.weapon_def(archer.weapon_id), m, [archer, low_target])
     check(int(high["height_diff"]) == 2, "height advantage detected (+2)")
     check(int(high["hit"]) >= 10 and int(high["hit"]) <= 98, "hit chance stays within 10-98")
@@ -1165,8 +1170,8 @@ func _test_combat() -> void:
     var rng2 := RandomNumberGenerator.new()
     rng1.seed = 42
     rng2.seed = 42
-    var d1: BattleUnit = _make_unit(6, "roadreaver", "enemy", Vector2i(9, 8), 0)
-    var d2: BattleUnit = _make_unit(7, "roadreaver", "enemy", Vector2i(9, 8), 0)
+    var d1: BattleUnitScript = _make_unit(6, "roadreaver", "enemy", Vector2i(9, 8), 0)
+    var d2: BattleUnitScript = _make_unit(7, "roadreaver", "enemy", Vector2i(9, 8), 0)
     var res1: Dictionary = CombatCalc.resolve(a, d1, w, m, [a, d1], rng1)
     var res2: Dictionary = CombatCalc.resolve(a, d2, w, m, [a, d2], rng2)
     check(res1["hit"] == res2["hit"] and res1["damage"] == res2["damage"], "same RNG seed gives the same result")
@@ -1174,15 +1179,15 @@ func _test_combat() -> void:
 
 func _test_turn_queue() -> void:
     print("[turn queue]")
-    var fast: BattleUnit = _make_unit(1, "sela", "player", Vector2i(1, 1), 0)
-    var slow: BattleUnit = _make_unit(2, "brother_wystan", "player", Vector2i(2, 2), 0)
+    var fast: BattleUnitScript = _make_unit(1, "sela", "player", Vector2i(1, 1), 0)
+    var slow: BattleUnitScript = _make_unit(2, "brother_wystan", "player", Vector2i(2, 2), 0)
     fast.ctb = TurnQueue.initial_ctb(fast)
     slow.ctb = TurnQueue.initial_ctb(slow)
     check(TurnQueue.peek_next([fast, slow]) == fast, "faster unit acts first")
     var order: Array = TurnQueue.timeline([fast, slow], 10)
     var fast_count := 0
     for o in order:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         if u.id == 1:
             fast_count += 1
     check(fast_count > 10 - fast_count, "faster unit acts more often (%d of 10)" % fast_count)
@@ -1191,7 +1196,7 @@ func _test_turn_queue() -> void:
 
 func _test_controller() -> void:
     print("[controller]")
-    var c := BattleController.new()
+    var c := BattleControllerScript.new()
     c.setup(gd.battle_def("battle_01"), gd.as_db(), 12345)
     check(c.units.size() == 8, "8 units spawned")
     c.begin()
@@ -1200,7 +1205,7 @@ func _test_controller() -> void:
     while c.active_unit().team != "player" and guard < 20:
         c.run_ai_turn()
         guard += 1
-    var a: BattleUnit = c.active_unit()
+    var a: BattleUnitScript = c.active_unit()
     check(a.team == "player", "a player unit becomes active")
     var moves: Array[Vector2i] = c.move_targets(a)
     check(moves.size() > 0, "active unit has legal moves")
@@ -1208,7 +1213,7 @@ func _test_controller() -> void:
     check(not c.try_move(a, moves[0]), "cannot move twice in one turn")
     var json: String = JSON.stringify(c.to_dict())
     var parsed: Dictionary = JSON.parse_string(json)
-    var c2 := BattleController.new()
+    var c2 := BattleControllerScript.new()
     check(c2.restore(gd.battle_def("battle_01"), gd.as_db(), parsed), "restore from JSON succeeds")
     var same := c2.units.size() == c.units.size() and c2.active_id == c.active_id and c2.turn_count == c.turn_count
     for i in range(c.units.size()):
@@ -1218,7 +1223,7 @@ func _test_controller() -> void:
     check(c.rng.randi() == c2.rng.randi(), "RNG state restored exactly")
     var bad: Dictionary = parsed.duplicate(true)
     bad["battle_id"] = "other"
-    check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), bad), "restore rejects a different battle id")
+    check(not BattleControllerScript.new().restore(gd.battle_def("battle_01"), gd.as_db(), bad), "restore rejects a different battle id")
     var malformed: Dictionary = parsed.duplicate(true)
     malformed["units"][0]["cell"] = [0]
     var old_unit_count := c2.units.size()
@@ -1226,28 +1231,28 @@ func _test_controller() -> void:
     check(c2.units.size() == old_unit_count, "failed battle restore leaves the current battle untouched")
     var duplicate_ids: Dictionary = parsed.duplicate(true)
     duplicate_ids["units"][1]["id"] = duplicate_ids["units"][0]["id"]
-    check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), duplicate_ids), "restore rejects duplicate unit IDs")
+    check(not BattleControllerScript.new().restore(gd.battle_def("battle_01"), gd.as_db(), duplicate_ids), "restore rejects duplicate unit IDs")
     var outside_map: Dictionary = parsed.duplicate(true)
     outside_map["units"][0]["cell"] = [999, 999]
-    check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), outside_map), "restore rejects unit coordinates outside the battlefield")
+    check(not BattleControllerScript.new().restore(gd.battle_def("battle_01"), gd.as_db(), outside_map), "restore rejects unit coordinates outside the battlefield")
     var invalid_facing: Dictionary = parsed.duplicate(true)
     invalid_facing["units"][0]["facing"] = 99
-    check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), invalid_facing), "restore rejects invalid facing directions")
+    check(not BattleControllerScript.new().restore(gd.battle_def("battle_01"), gd.as_db(), invalid_facing), "restore rejects invalid facing directions")
     var invalid_active: Dictionary = parsed.duplicate(true)
     invalid_active["active_id"] = 999
-    check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), invalid_active), "restore rejects an active unit ID absent from the snapshot")
+    check(not BattleControllerScript.new().restore(gd.battle_def("battle_01"), gd.as_db(), invalid_active), "restore rejects an active unit ID absent from the snapshot")
     var malformed_status: Dictionary = parsed.duplicate(true)
     malformed_status["units"][0]["statuses"] = {"burn": "not-a-status-dictionary"}
-    check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), malformed_status), "restore rejects malformed nested status records")
+    check(not BattleControllerScript.new().restore(gd.battle_def("battle_01"), gd.as_db(), malformed_status), "restore rejects malformed nested status records")
     var malformed_status_value: Dictionary = parsed.duplicate(true)
     malformed_status_value["units"][0]["statuses"] = {"burn": {"turns": "many", "damage": 2}}
-    check(not BattleController.new().restore(gd.battle_def("battle_01"), gd.as_db(), malformed_status_value), "restore rejects non-numeric status durations and effects")
+    check(not BattleControllerScript.new().restore(gd.battle_def("battle_01"), gd.as_db(), malformed_status_value), "restore rejects non-numeric status durations and effects")
 
 
 ## Auto Battle = the AI plays the player's units (run_ai_turn(true)); also covers the cleric's heal logic.
 func _test_auto_battle() -> void:
     print("[auto battle]")
-    var c := BattleController.new()
+    var c := BattleControllerScript.new()
     c.setup(gd.battle_def("battle_01"), gd.as_db(), 777)
     c.begin()
     # A deterministic corridor proves the AI avoids an allied blocker while normal movement
@@ -1269,10 +1274,10 @@ func _test_auto_battle() -> void:
             {"character_id": "bram", "team": "player", "cell": [1, 1], "facing": 1},
             {"character_id": corridor_enemy_id, "team": "enemy", "cell": [4, 1], "facing": 3}
         ]
-        var corridor_ctl := BattleController.new()
+        var corridor_ctl := BattleControllerScript.new()
         corridor_ctl.setup(corridor_def, gd.as_db(), 778)
-        var corridor_mover: BattleUnit = corridor_ctl.unit_by_id(1)
-        var corridor_ally: BattleUnit = corridor_ctl.unit_by_id(2)
+        var corridor_mover: BattleUnitScript = corridor_ctl.unit_by_id(1)
+        var corridor_ally: BattleUnitScript = corridor_ctl.unit_by_id(2)
         var corridor_goal := Vector2i(3, 1)
         var player_path: Array[Vector2i] = corridor_ctl.map.path_from(corridor_ctl.reach_for(corridor_mover), corridor_mover.cell, corridor_goal)
         var ai_full_reach: Dictionary = BattleAI._ai_reach(corridor_mover, corridor_ctl, 99)
@@ -1288,7 +1293,7 @@ func _test_auto_battle() -> void:
     var approach_plans_valid := true
     var approach_plans_checked := 0
     for unit_value in c.units:
-        var approach_unit: BattleUnit = unit_value
+        var approach_unit: BattleUnitScript = unit_value
         if not approach_unit.is_alive() or approach_unit.team != "player":
             continue
         var approach_plan: Dictionary = BattleAI.decide(approach_unit, c)
@@ -1300,10 +1305,10 @@ func _test_auto_battle() -> void:
             if not approach_cost.has(approach_destination) or c.unit_at(approach_destination) != null:
                 approach_plans_valid = false
     check(approach_plans_checked > 0 and approach_plans_valid, "AI approach plans stop on reachable unoccupied tiles and respect allied blockers")
-    var cal: BattleUnit = null
-    var bram: BattleUnit = null
+    var cal: BattleUnitScript = null
+    var bram: BattleUnitScript = null
     for o in c.units:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         if u.character_id == "brother_wystan":
             cal = u
         elif u.character_id == "bram":
@@ -1330,14 +1335,14 @@ func _test_auto_battle() -> void:
     check(c.turn_count == turns_before + 1, "the turn passes on after the auto turn")
 
     # Switching Auto on in the middle of a turn: a unit that already moved must not move again.
-    var c2 := BattleController.new()
+    var c2 := BattleControllerScript.new()
     c2.setup(gd.battle_def("battle_01"), gd.as_db(), 4242)
     c2.begin()
     var guard := 0
     while c2.active_unit().team != "player" and guard < 20:
         c2.run_ai_turn()
         guard += 1
-    var a: BattleUnit = c2.active_unit()
+    var a: BattleUnitScript = c2.active_unit()
     var moves: Array[Vector2i] = c2.move_targets(a)
     check(moves.size() > 0 and c2.try_move(a, moves[0]), "player unit moves by hand first")
     var cell_after_move: Vector2i = a.cell
@@ -1347,7 +1352,7 @@ func _test_auto_battle() -> void:
     check(c2.turn_count == turns2 + 1, "auto finishes the part-played turn")
 
     # Without force the AI must still refuse to play the player's side.
-    var c3 := BattleController.new()
+    var c3 := BattleControllerScript.new()
     c3.setup(gd.battle_def("battle_01"), gd.as_db(), 99)
     c3.begin()
     guard = 0
@@ -1392,8 +1397,8 @@ func _test_progression() -> void:
         if not items.has(k):
             gear_ok = false
     for cid in party.roster:
-        var sh0: CharacterSheet = party.sheet(cid)
-        for slot in CharacterSheet.SLOTS:
+        var sh0: CharacterSheetScript = party.sheet(cid)
+        for slot in CharacterSheetScript.SLOTS:
             if sh0.item_in(slot) != "" and not items.has(sh0.item_in(slot)):
                 gear_ok = false
     check(gear_ok, "starting inventory and starting equipment only use known items")
@@ -1411,7 +1416,7 @@ func _test_progression() -> void:
     check(same, "equipment-resolved characters keep the exact v0.2 weapon, armor and stat numbers")
 
     # --- equipping
-    var torren: CharacterSheet = party.sheet("torren")
+    var torren: CharacterSheetScript = party.sheet("torren")
     var atk0: float = float(torren.derived(db)["attack"])
     check(party.equip("torren", "weapon", "fine_arming_sword", db) == "", "Torren equips the Fine Arming Sword")
     check(float(torren.derived(db)["attack"]) > atk0, "a better sword raises attack")
@@ -1431,11 +1436,11 @@ func _test_progression() -> void:
     check(d.has("attack") and d.has("defense") and d.has("crit") and d.has("move"), "derived stats are produced for the sheet screen")
     check(party.equip("torren", "weapon", "fine_arming_sword", db) == "", "swap back to the Fine Arming Sword")
     var bdb: Dictionary = party.battle_db(db)
-    var bc := BattleController.new()
+    var bc := BattleControllerScript.new()
     bc.setup(gd.battle_def("battle_01"), bdb, 5)
-    var torren_unit: BattleUnit = null
+    var torren_unit: BattleUnitScript = null
     for o in bc.units:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         if u.character_id == "torren":
             torren_unit = u
     check(torren_unit != null and torren_unit.weapon_id == "fine_arming_sword", "a battle built from the party uses Torren's current weapon")
@@ -1443,8 +1448,8 @@ func _test_progression() -> void:
     # --- experience and levels
     var rng := RandomNumberGenerator.new()
     rng.seed = 5
-    var sela: CharacterSheet = CharacterSheet.from_def("sela", gd.characters["sela"])
-    var mira0: CharacterSheet = CharacterSheet.from_def("sela", gd.characters["sela"])
+    var sela: CharacterSheetScript = CharacterSheetScript.from_def("sela", gd.characters["sela"])
+    var mira0: CharacterSheetScript = CharacterSheetScript.from_def("sela", gd.characters["sela"])
     var archer: Dictionary = gd.classes["archer"]
     check(sela.exp_to_next() == 120, "level 2 needs 120 EXP on the revised campaign curve")
     var rep: Dictionary = sela.add_exp(119, rng, archer)
@@ -1467,25 +1472,25 @@ func _test_progression() -> void:
     var rb := RandomNumberGenerator.new()
     ra.seed = 9
     rb.seed = 9
-    var sa: CharacterSheet = CharacterSheet.from_def("sela", gd.characters["sela"])
-    var sb: CharacterSheet = CharacterSheet.from_def("sela", gd.characters["sela"])
+    var sa: CharacterSheetScript = CharacterSheetScript.from_def("sela", gd.characters["sela"])
+    var sb: CharacterSheetScript = CharacterSheetScript.from_def("sela", gd.characters["sela"])
     sa.add_exp(900, ra, archer)
     sb.add_exp(900, rb, archer)
     check(sa.level == sb.level and sa.base_stats == sb.base_stats, "level-up rolls are deterministic for a given seed")
-    check(CharacterSheet.MAX_LEVEL == 250, "campaign level cap is 250")
-    var over_cap: CharacterSheet = CharacterSheet.from_dict({"character_id": "legacy", "level": 999, "xp": 999999, "base_stats": {}})
+    check(CharacterSheetScript.MAX_LEVEL == 250, "campaign level cap is 250")
+    var over_cap: CharacterSheetScript = CharacterSheetScript.from_dict({"character_id": "legacy", "level": 999, "xp": 999999, "base_stats": {}})
     check(over_cap.level == 250 and over_cap.xp == 0, "legacy saves are safely clamped to the new 250-level cap")
-    check(CharacterSheet.exp_to_next_for(100) > CharacterSheet.exp_to_next_for(10) * 10, "late-game levels require substantially more EXP than early levels")
-    sa.level = CharacterSheet.MAX_LEVEL
+    check(CharacterSheetScript.exp_to_next_for(100) > CharacterSheetScript.exp_to_next_for(10) * 10, "late-game levels require substantially more EXP than early levels")
+    sa.level = CharacterSheetScript.MAX_LEVEL
     sa.xp = 17
     sa.add_exp(5000, ra, archer)
-    check(sa.level == CharacterSheet.MAX_LEVEL and sa.xp == 0, "no EXP is stored at the level cap, including pre-existing overflow")
-    var cal: CharacterSheet = CharacterSheet.from_def("brother_wystan", gd.characters["brother_wystan"])
+    check(sa.level == CharacterSheetScript.MAX_LEVEL and sa.xp == 0, "no EXP is stored at the level cap, including pre-existing overflow")
+    var cal: CharacterSheetScript = CharacterSheetScript.from_def("brother_wystan", gd.characters["brother_wystan"])
     cal.add_exp(2500, rng, gd.classes["cleric"])
     check(cal.level > 5 and int(cal.base_stats["mp"]) > 14, "a cleric's MP grows with levels")
 
     # --- promotion
-    var r2: CharacterSheet = CharacterSheet.from_def("torren", gd.characters["torren"])
+    var r2: CharacterSheetScript = CharacterSheetScript.from_def("torren", gd.characters["torren"])
     check(r2.promotion_options(gd.classes).is_empty(), "no promotion at level 2")
     r2.level = 10
     var opts: Array[String] = r2.promotion_options(gd.classes)
@@ -1508,10 +1513,10 @@ func _test_progression() -> void:
     var rules: Dictionary = {"classes": gd.classes, "items": gd.items, "runes": gd.sigils}
     var p2: PartyState = PartyState.new_game(gd.start, gd.characters)
     p2.add_member("roadreaver", gd.characters["roadreaver"])        # an undeployed bench member
-    var bc2 := BattleController.new()
+    var bc2 := BattleControllerScript.new()
     bc2.setup(gd.battle_def("battle_01"), p2.battle_db(db), 6)
     for o in bc2.units:
-        var u2: BattleUnit = o
+        var u2: BattleUnitScript = o
         if u2.team == "enemy":
             u2.hp = 0
         if u2.character_id == "bram":
@@ -1527,7 +1532,7 @@ func _test_progression() -> void:
     var lost: Dictionary = p2.battle_rewards(bc2.units, "defeat", rules)
     check((lost["exp"] as Dictionary).is_empty() and int(lost["gold"]) == 0, "a defeat pays nothing")
     for o in bc2.units:
-        var u2b: BattleUnit = o
+        var u2b: BattleUnitScript = o
         if u2b.team == "enemy" and u2b.is_commander == false:
             u2b.hp = 1
     var part: Dictionary = p2.battle_rewards(bc2.units, "victory", rules)
@@ -1536,10 +1541,10 @@ func _test_progression() -> void:
     var applied: Dictionary = p2.apply_battle_result(bc2.units, "victory", rng, rules)
     var reps: Array = applied["reports"]
     check(p2.gold == gold0 + int(applied["gold"]) and reps.size() == 4, "gold is paid and every rewarded member gets a report")
-    var wy: CharacterSheet = p2.sheet("brother_wystan")
+    var wy: CharacterSheetScript = p2.sheet("brother_wystan")
     var wsig: Dictionary = wy.sigil_at("weapon", 0)
     check(int(wsig.get("ap", 0)) == 20, "Brother Wystan's equipped rune of Mending gained the AP")
-    var c3 := BattleController.new()
+    var c3 := BattleControllerScript.new()
     c3.setup(gd.battle_def("battle_01"), gd.as_db(), 321)
     c3.begin()
     var guard := 0
@@ -1549,7 +1554,7 @@ func _test_progression() -> void:
     var earned := 0
     var expected := 0
     for o in c3.units:
-        var u3: BattleUnit = o
+        var u3: BattleUnitScript = o
         if u3.team == "player":
             earned += u3.kill_exp
         elif not u3.is_alive():
@@ -1559,8 +1564,8 @@ func _test_progression() -> void:
     # --- persistence
     var parsed: Dictionary = JSON.parse_string(JSON.stringify(party.to_dict()))
     var p3: PartyState = PartyState.from_dict(parsed)
-    var s_old: CharacterSheet = party.sheet("torren")
-    var s_new: CharacterSheet = p3.sheet("torren")
+    var s_old: CharacterSheetScript = party.sheet("torren")
+    var s_new: CharacterSheetScript = p3.sheet("torren")
     check(p3.roster == party.roster and p3.gold == party.gold and p3.inventory == party.inventory, "party roster, gold and inventory survive a JSON round trip")
     check(JSON.stringify(p3.sigil_inv) == JSON.stringify(party.sigil_inv) and JSON.stringify(p3.sheet("brother_wystan").sigils) == JSON.stringify(party.sheet("brother_wystan").sigils), "rune inventory and socketed runes survive a JSON round trip")
     check(s_new != null and s_new.equipment == s_old.equipment and s_new.base_stats == s_old.base_stats and s_new.level == s_old.level and s_new.xp == s_old.xp, "sheet equipment, stats, level and EXP survive a JSON round trip")
@@ -1610,7 +1615,7 @@ func _test_runes() -> void:
     check(not bool(refused.get("ok", false)) and few.size() == 2, "fusion refuses fewer than three runes without consuming them")
     check(ShopSystem.for_sale(gd.shop, "rune", "ember") and not ShopSystem.for_sale({"runes":[]}, "rune", "shadow"), "only explicitly stocked rune merchants sell runes")
     check(str(gd.skills["ember_bolt"].get("rune_effect", {}).get("status", "")) == "burn" and str(gd.skills["frost_shard"].get("rune_effect", {}).get("status", "")) == "chill", "elemental spells define special combat effects")
-    var status_probe := BattleUnit.new()
+    var status_probe := BattleUnitScript.new()
     status_probe.stats = {"spd":100,"vit":10,"int":10}
     status_probe.armor_def = 10
     status_probe.armor_res = 5
@@ -1631,7 +1636,7 @@ func _test_runes() -> void:
     check(not bool(RuneSystem.preview([{"id":"dragon"},{"id":"dragon"},{"id":"dragon"}], "dragon", defs).get("ok", false)), "unique runes cannot be fused")
     check(RuneSystem.grade_power_bonus({"id":"ember","grade":"rare"}, defs) == 5, "one fusion grade above a rune's starting grade adds five percent power")
     var passive_party: PartyState = PartyState.new_game(gd.start, gd.characters)
-    var passive_sheet: CharacterSheet = passive_party.sheet("torren")
+    var passive_sheet: CharacterSheetScript = passive_party.sheet("torren")
     var passive_before: Dictionary = passive_sheet.total_stats(gd.items, defs)
     passive_sheet.sigils["weapon"] = [{"id":"thorn","ap":0}, {}]
     var passive_after: Dictionary = passive_sheet.total_stats(gd.items, defs)
@@ -1647,14 +1652,14 @@ func _test_weapon_skills() -> void:
     var db: Dictionary = gd.as_db()
     check(gd.skills.has("power_strike") and gd.skills.has("aimed_shot") and str(gd.skills["power_strike"]["type"]) == "strike", "Power Strike and Aimed Shot exist as strike skills")
     var ps: PartyState = PartyState.new_game(gd.start, gd.characters)
-    var bc := BattleController.new()
+    var bc := BattleControllerScript.new()
     bc.setup(gd.battle_def("battle_01"), ps.battle_db(db), 21)
     bc.begin()
-    var hero: BattleUnit = null
-    var foe: BattleUnit = null
-    var archer: BattleUnit = null
+    var hero: BattleUnitScript = null
+    var foe: BattleUnitScript = null
+    var archer: BattleUnitScript = null
     for o in bc.units:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         if u.character_id == "torren":
             hero = u
         elif u.character_id == "sela":
@@ -1666,7 +1671,7 @@ func _test_weapon_skills() -> void:
         return
     check(hero.skills.has("power_strike") and archer.skills.has("aimed_shot"), "Torren (Swordsman) knows Power Strike and Sela (Archer) knows Aimed Shot from their classes")
     check((gd.characters["torren"]["skills"] as Array).is_empty(), "the skill comes from the class, not from the character file")
-    var tsheet: CharacterSheet = ps.sheet("torren")
+    var tsheet: CharacterSheetScript = ps.sheet("torren")
     check(tsheet.all_skills(db["items"], db["runes"]).is_empty() and tsheet.all_skills(db["items"], db["runes"], db["classes"]).has("power_strike"), "class skills need the class table; all_skills without it grants none")
     var ok_cs := true
     for k in gd.classes.keys():
@@ -2111,10 +2116,10 @@ func _test_companion_behavior() -> void:
     check(protective_score >= 20.0, "protective traits, support ambitions and trusted bonds increase ally support priority")
     var aggressive_drive := CompanionBehaviorScript.attack_drive(["reckless"], {"stress":0,"ambition":{"status":"active","combat_focus":"aggressive"}}, definitions)
     check(aggressive_drive > CompanionBehaviorScript.attack_drive([], {}, definitions), "an explicitly aggressive ambition increases attack drive")
-    var unit := BattleUnit.create(99, "companion_test", {"name":"Companion","class_id":"knight","stats":{"hp":20,"mor":60},"traits":["protective"],"personality":{"stress":35,"memories":[{"type":"relationship"}],"ambition":{"status":"active","combat_focus":"support"}},"companion_bonds":{"ally":{"trust":40}}}, {"move":4,"jump":1}, "player", Vector2i.ZERO, 0)
-    var restored := BattleUnit.from_dict(unit.to_dict())
+    var unit: BattleUnitScript = BattleUnitScript.create(99, "companion_test", {"name":"Companion","class_id":"knight","stats":{"hp":20,"mor":60},"traits":["protective"],"personality":{"stress":35,"memories":[{"type":"relationship"}],"ambition":{"status":"active","combat_focus":"support"}},"companion_bonds":{"ally":{"trust":40}}}, {"move":4,"jump":1}, "player", Vector2i.ZERO, 0)
+    var restored: BattleUnitScript = BattleUnitScript.from_dict(unit.to_dict())
     check(restored.traits == unit.traits and restored.personality == unit.personality and restored.companion_bonds == unit.companion_bonds, "battle snapshots preserve optional companion tactical context")
-    var legacy := BattleUnit.from_dict({"id":1,"character_id":"legacy","stats":{"hp":10},"cell":[0,0]})
+    var legacy: BattleUnitScript = BattleUnitScript.from_dict({"id":1,"character_id":"legacy","stats":{"hp":10},"cell":[0,0]})
     check(legacy.traits.is_empty() and legacy.personality.is_empty() and legacy.companion_bonds.is_empty(), "legacy battle snapshots default safely without companion tactical context")
 
 
@@ -2208,14 +2213,14 @@ func _test_sigils() -> void:
     check(socket_ok, "every socket link points at a real socket")
     # --- levels and AP thresholds
     var mend: Dictionary = sdefs["mend"]
-    check(CharacterSheet.sigil_level({"id": "mend", "ap": 59}, mend) == 1 and CharacterSheet.sigil_level({"id": "mend", "ap": 60}, mend) == 2, "Mending reaches level 2 at exactly 60 AP")
-    check(CharacterSheet.sigil_level({"id": "mend", "ap": 480}, mend) == 4 and CharacterSheet.sigil_is_mastered({"id": "mend", "ap": 480}, mend), "480 AP masters the rune of Mending")
-    check(CharacterSheet.sigil_ap_to_next({"id": "mend", "ap": 50}, mend) == 10, "10 AP remain to the next level")
-    check(CharacterSheet.sigil_skills_at(mend, 1).size() == 1 and CharacterSheet.sigil_skills_at(mend, 1).has("mend") and CharacterSheet.sigil_skills_at(mend, 3).has("mend_ii") and CharacterSheet.sigil_skills_at(mend, 3).has("mend"), "skills accumulate with rune level")
+    check(CharacterSheetScript.sigil_level({"id": "mend", "ap": 59}, mend) == 1 and CharacterSheetScript.sigil_level({"id": "mend", "ap": 60}, mend) == 2, "Mending reaches level 2 at exactly 60 AP")
+    check(CharacterSheetScript.sigil_level({"id": "mend", "ap": 480}, mend) == 4 and CharacterSheetScript.sigil_is_mastered({"id": "mend", "ap": 480}, mend), "480 AP masters the rune of Mending")
+    check(CharacterSheetScript.sigil_ap_to_next({"id": "mend", "ap": 50}, mend) == 10, "10 AP remain to the next level")
+    check(CharacterSheetScript.sigil_skills_at(mend, 1).size() == 1 and CharacterSheetScript.sigil_skills_at(mend, 1).has("mend") and CharacterSheetScript.sigil_skills_at(mend, 3).has("mend_ii") and CharacterSheetScript.sigil_skills_at(mend, 3).has("mend"), "skills accumulate with rune level")
     # --- skills come from sigils
     check((db["characters"]["brother_wystan"]["skills"] as Array).has("mend"), "Brother Wystan's Mend now comes from his socketed rune")
     var ps: PartyState = PartyState.new_game(gd.start, gd.characters)
-    var torren: CharacterSheet = ps.sheet("torren")
+    var torren: CharacterSheetScript = ps.sheet("torren")
     check(ps.sigil_inv.size() == 5, "the party starts with 5 runes in the bag")
     check(torren.socket_count("weapon", items) == 2 and torren.socket_count("armor", items) == 2, "Torren's sword and cuirass each have 2 linked sockets")
     var emb_i := _sigil_index(ps, "ember")
@@ -2224,7 +2229,7 @@ func _test_sigils() -> void:
     check(ps.equip_sigil("torren", "weapon", 5, 0, db, true) != "" and ps.equip_sigil("torren", "helm", 0, 0, db, true) != "", "bad socket or group is refused")
     # Rejected socket operations must not normalize arrays or move overflow runes as a side effect.
     var guard_party: PartyState = PartyState.new_game(gd.start, gd.characters)
-    var guard_sheet: CharacterSheet = guard_party.sheet("torren")
+    var guard_sheet: CharacterSheetScript = guard_party.sheet("torren")
     guard_sheet.fit_sockets(items)
     (guard_sheet.sigils["weapon"] as Array).append({"id":"tutor","ap":0})
     var guard_bag_size: int = guard_party.sigil_inv.size()
@@ -2246,7 +2251,7 @@ func _test_sigils() -> void:
     var tutor_ap: int = int(torren.sigil_at("weapon", 1)["ap"])
     check(ember_ap == 50 and tutor_ap == 40 and rep.size() == 2, "Tutor linked to Embers: 40 AP becomes 50 (+25%) for the Embers, 40 for the Tutor itself")
     # --- stat sigils
-    var fresh: CharacterSheet = CharacterSheet.from_def("torren", gd.characters["torren"])
+    var fresh: CharacterSheetScript = CharacterSheetScript.from_def("torren", gd.characters["torren"])
     fresh.fit_sockets(items)
     var base_hp: int = int(fresh.total_stats(items, sdefs)["hp"])
     (fresh.sigils["weapon"] as Array)[0] = {"id": "vigor", "ap": 0}
@@ -2257,7 +2262,7 @@ func _test_sigils() -> void:
     check(fresh.reward_pct("exp_pct", items, sdefs) == 10, "Veteran's Mark gives +10% EXP at level 1")
     # --- greatsword: more sockets, double AP growth; a smaller weapon returns the extra sigils
     var ps2: PartyState = PartyState.new_game(gd.start, gd.characters)
-    var t2: CharacterSheet = ps2.sheet("torren")
+    var t2: CharacterSheetScript = ps2.sheet("torren")
     ps2.equip_sigil("torren", "weapon", 0, _sigil_index(ps2, "ember"), db, true)
     ps2.equip_sigil("torren", "weapon", 1, _sigil_index(ps2, "tutor"), db, true)
     check(ps2.unequip("torren", "offhand", db) == "" and ps2.equip("torren", "weapon", "greatsword", db) == "", "swap to the two-handed Hearthbreaker")
@@ -2271,7 +2276,7 @@ func _test_sigils() -> void:
     check(ps2.sigil_inv.size() == bag_before + 1 and (t2.sigils["weapon"] as Array).size() == 1, "the rune that lost its socket returns to the bag")
     # --- mastery spawns a fresh copy, once
     var ps3: PartyState = PartyState.new_game(gd.start, gd.characters)
-    var wy: CharacterSheet = ps3.sheet("brother_wystan")
+    var wy: CharacterSheetScript = ps3.sheet("brother_wystan")
     (wy.sigils["weapon"] as Array)[0]["ap"] = 470
     var mrep: Array = wy.award_ap(20, items, sdefs)
     var m0: Dictionary = mrep[0]
@@ -2279,10 +2284,10 @@ func _test_sigils() -> void:
     check(wy.award_ap(50, items, sdefs).is_empty(), "a mastered rune stops gaining AP")
     (wy.sigils["weapon"] as Array)[0] = {"id": "mend", "ap": 470}
     var bag2: int = ps3.sigil_inv.size()
-    var bcm := BattleController.new()
+    var bcm := BattleControllerScript.new()
     bcm.setup(gd.battle_def("battle_01"), ps3.battle_db(db), 8)
     for o in bcm.units:
-        var um: BattleUnit = o
+        var um: BattleUnitScript = o
         if um.team == "enemy":
             um.hp = 0
     var out: Dictionary = ps3.apply_battle_result(bcm.units, "victory", rng_for_tests(), {"classes": gd.classes, "items": items, "runes": sdefs})
@@ -2291,13 +2296,13 @@ func _test_sigils() -> void:
     # --- offensive magic in battle
     var ps4: PartyState = PartyState.new_game(gd.start, gd.characters)
     ps4.equip_sigil("torren", "weapon", 0, _sigil_index(ps4, "ember"), db, true)
-    var bcd := BattleController.new()
+    var bcd := BattleControllerScript.new()
     bcd.setup(gd.battle_def("battle_01"), ps4.battle_db(db), 12)
     bcd.begin()
-    var caster: BattleUnit = null
-    var victim: BattleUnit = null
+    var caster: BattleUnitScript = null
+    var victim: BattleUnitScript = null
     for o in bcd.units:
-        var ud: BattleUnit = o
+        var ud: BattleUnitScript = o
         if ud.character_id == "torren":
             caster = ud
         elif ud.character_id == "roadreaver" and victim == null:
@@ -2316,9 +2321,9 @@ func _test_sigils() -> void:
     check(bcd.try_skill(caster, "ember_bolt", victim), "casting Ember Bolt succeeds")
     var dealt: int = hp_v - victim.hp
     check(dealt >= int(prev["dmg_min"]) and dealt <= int(prev["dmg_max"]) and caster.mp == mp_c - 4 and caster.has_acted, "damage is inside the preview range, MP is spent and the turn is used")
-    var ally: BattleUnit = null
+    var ally: BattleUnitScript = null
     for o in bcd.units:
-        var ua: BattleUnit = o
+        var ua: BattleUnitScript = o
         if ua.team == "player" and ua != caster:
             ally = ua
     check(not bcd.skill_targets(caster, "ember_bolt").has(ally), "an offensive skill never targets allies")
@@ -2351,7 +2356,7 @@ func _test_sigils() -> void:
     check(sk_ok, "every generated skirmish has the 4 heroes, 3+ known enemies and the id 'skirmish'")
     check(seen.size() >= 2, "different seeds produce different enemy groups")
     var sdef2: Dictionary = EncounterBuilder.build_skirmish(gd.encounters, gd.battles, rr)
-    var bcs := BattleController.new()
+    var bcs := BattleControllerScript.new()
     bcs.setup(sdef2, gd.as_db(), 99)
     bcs.begin()
     var g2 := 0
@@ -2402,7 +2407,7 @@ func _test_shop_and_screen() -> void:
     check((fisher_stock.get("items", []) as Array).has("reef_salt") and not (fisher_stock.get("items", []) as Array).has("deepwater_spice"), "the private route unlocks fisher-only trade goods")
     check(ItemInfo.slot_name("trade_good") == "Trade good" and ItemInfo.item_line("deepwater_spice", items, db["weapons"]).contains("Trade good"), "trade goods are identified clearly in the shop and inventory")
     check(gd.skills.has("frost_shard") and gd.skills.has("frost_lance") and str(gd.skills["frost_shard"]["type"]) == "damage", "Frost skills exist as damage spells")
-    check(CharacterSheet.sigil_skills_at(sdefs["frost"], 1).has("frost_shard") and CharacterSheet.sigil_skills_at(sdefs["frost"], 3).has("frost_lance"), "the rune of Frost teaches Frost Shard at level 1 and Frost Lance at level 3")
+    check(CharacterSheetScript.sigil_skills_at(sdefs["frost"], 1).has("frost_shard") and CharacterSheetScript.sigil_skills_at(sdefs["frost"], 3).has("frost_lance"), "the rune of Frost teaches Frost Shard at level 1 and Frost Lance at level 3")
     # --- text helpers
     check(ItemInfo.signed(3) == "+3" and ItemInfo.signed(-2) == "-2" and ItemInfo.signed(0) == "+0", "signed() formats numbers")
     check(ItemInfo.bonus_text({"ldr": 2, "mor": 5}) == "+2 LDR, +5 MOR", "bonus text is sorted and labelled")
@@ -2413,7 +2418,7 @@ func _test_shop_and_screen() -> void:
             text_ok = false
     for k in sdefs.keys():
         var sd: Dictionary = sdefs[k]
-        for lv in range(1, CharacterSheet.sigil_max_level(sd) + 1):
+        for lv in range(1, CharacterSheetScript.sigil_max_level(sd) + 1):
             if ItemInfo.sigil_effect(sd, lv, db["skills"]) == "" or ItemInfo.sigil_short({"id": str(k), "ap": 0}, sd) == "":
                 text_ok = false
     check(text_ok, "every item and every rune level has a description")
@@ -2457,15 +2462,15 @@ func _test_shop_and_screen() -> void:
     ps.gold = ShopSystem.sigil_price("mend", db)
     var bag0: int = ps.sigil_inv.size()
     check(ShopSystem.buy_sigil(ps, "mend", db, shop) == "" and ps.gold == 0 and ps.sigil_inv.size() == bag0 + 1, "buying a rune puts a fresh copy into the bag")
-    check(CharacterSheet.sigil_level(ps.sigil_inv[bag0], sdefs["mend"]) == 1, "a bought rune is level 1")
+    check(CharacterSheetScript.sigil_level(ps.sigil_inv[bag0], sdefs["mend"]) == 1, "a bought rune is level 1")
     check(ShopSystem.sell_sigil(ps, bag0, db, shop) == "" and ps.sigil_inv.size() == bag0 and ps.gold == ShopSystem.sell_price(ShopSystem.sigil_price("mend", db), shop), "selling a rune removes it and pays the sell ratio")
     check(ShopSystem.sell_sigil(ps, 99, db, shop) != "" and ShopSystem.sell_sigil(ps, -1, db, shop) != "", "selling a rune that is not in the bag is refused")
     # --- gear preview
-    var torren: CharacterSheet = ps.sheet("torren")
+    var torren: CharacterSheetScript = ps.sheet("torren")
     var worn: String = torren.item_in("weapon")
     torren.enhancements.clear() # Isolate item comparison from the +15 smithing test above.
     var before: Dictionary = torren.derived(db)
-    var preview: CharacterSheet = torren.with_item("weapon", "fine_arming_sword", items)
+    var preview: CharacterSheetScript = torren.with_item("weapon", "fine_arming_sword", items)
     var after: Dictionary = preview.derived(db)
     check(torren.item_in("weapon") == worn and preview.item_in("weapon") == "fine_arming_sword", "with_item() changes only the copy")
     check(roundi(float(after["attack"])) > roundi(float(before["attack"])), "the Moonforged Wayfarer hits harder than the Wayfarer Blade")
@@ -2789,7 +2794,7 @@ func _simulate_battles(n: int) -> void:
     var total_turns := 0
     var unfinished := 0
     for i in range(n):
-        var c := BattleController.new()
+        var c := BattleControllerScript.new()
         c.setup(gd.battle_def("battle_01"), gd.as_db(), 1000 + i)
         c.begin()
         var guard := 0
@@ -2853,14 +2858,14 @@ func _test_trait_system() -> void:
                 valid_event_awards = false
     check(valid_event_awards, "all event trait awards resolve to defined trait IDs")
     check(defs.has("brave") and defs.has("scholar") and defs.has("battle_trauma") and defs.has("magical_affinity"), "catalogue covers personality, knowledge, psychological and rare magical traits")
-    var sheet := CharacterSheet.from_def("trait_test", {"name":"Test Hero","class_id":"swordsman","level":1,"stats":{"hp":20,"mp":5,"str":5,"dex":5,"int":5,"vit":5,"spd":5,"lck":5,"acc":70,"eva":5,"ldr":5,"mor":50}})
+    var sheet: CharacterSheetScript = CharacterSheetScript.from_def("trait_test", {"name":"Test Hero","class_id":"swordsman","level":1,"stats":{"hp":20,"mp":5,"str":5,"dex":5,"int":5,"vit":5,"spd":5,"lck":5,"acc":70,"eva":5,"ldr":5,"mor":50}})
     var base: Dictionary = sheet.base_stats.duplicate(true)
     var gained: Dictionary = sheet.acquire_trait("brave", "unit_test", defs)
     check(bool(gained.get("ok", false)) and sheet.traits.has("brave"), "valid trait acquisition records an enduring trait")
     check(int(sheet.base_stats.get("mor", 0)) == int(base.get("mor", 0)), "trait effects never mutate permanent base stats")
     var trait_stats: Dictionary = sheet.total_stats({}, {}, defs)
     check(int(trait_stats.get("mor", 0)) == int(base.get("mor", 0)) + 2, "trait stat effects are applied through derived stats")
-    var synergy_sheet := CharacterSheet.from_def("synergy_test", {"name":"Synergy Hero","class_id":"knight","level":1,"traits":["brave","battle_hardened"],"stats":{"hp":20,"mp":5,"str":5,"dex":5,"int":5,"vit":5,"spd":5,"lck":5,"acc":70,"eva":5,"ldr":5,"mor":50}})
+    var synergy_sheet: CharacterSheetScript = CharacterSheetScript.from_def("synergy_test", {"name":"Synergy Hero","class_id":"knight","level":1,"traits":["brave","battle_hardened"],"stats":{"hp":20,"mp":5,"str":5,"dex":5,"int":5,"vit":5,"spd":5,"lck":5,"acc":70,"eva":5,"ldr":5,"mor":50}})
     var synergy_stats: Dictionary = synergy_sheet.total_stats({}, {}, defs)
     check(int(synergy_stats.get("mor", 0)) == 54 and TraitSystemScript.active_synergies(synergy_sheet.traits, defs).size() == 1, "compatible traits unlock a derived synergy without adding a duplicate trait")
     var conflict: Dictionary = sheet.acquire_trait("cowardly", "unit_test", defs)
@@ -2882,7 +2887,7 @@ func _test_trait_system() -> void:
     var event_result: Dictionary = sheet.apply_personality_event("protected_companion", gd.trait_events, defs, "unit_test", "event:protect-companion-unique")
     check(bool(event_result.get("ok", false)) and sheet.traits.has("protective"), "qualifying event evidence awards a contextual protective trait")
     check(sheet.memories.size() == 1 and sheet.stress == 0, "personality event records a memory and applies stress recovery")
-    var restored := CharacterSheet.from_dict(sheet.to_dict())
+    var restored: CharacterSheetScript = CharacterSheetScript.from_dict(sheet.to_dict())
     check(restored.traits == sheet.traits and restored.trait_history.size() == sheet.trait_history.size(), "trait IDs and history survive character serialization")
     check(restored.memories.size() == sheet.memories.size() and restored.behavior == sheet.behavior and restored.stress == sheet.stress, "stress, memories and behavior evidence survive character serialization")
     check(sheet.adjust_stress(150) == 100 and sheet.adjust_stress(-200) == 0, "stress remains bounded between calm and crisis")
@@ -2891,7 +2896,7 @@ func _test_trait_system() -> void:
     check(bool(progress.ok) and not bool(progress.completed) and int(progress.progress) == 2, "ambition progress advances without premature completion")
     var completion := sheet.advance_ambition(2)
     check(bool(completion.completed) and str(sheet.ambition.get("status", "")) == "completed", "ambition completes exactly at its target")
-    var legacy := CharacterSheet.from_dict({"character_id":"legacy","name":"Legacy","class_id":"swordsman","level":1,"base_stats":{"hp":10,"str":4},"skills":[],"equipment":{}})
+    var legacy: CharacterSheetScript = CharacterSheetScript.from_dict({"character_id":"legacy","name":"Legacy","class_id":"swordsman","level":1,"base_stats":{"hp":10,"str":4},"skills":[],"equipment":{}})
     check(legacy.traits.is_empty() and legacy.trait_history.is_empty(), "legacy character saves load safely without trait fields")
 
 
