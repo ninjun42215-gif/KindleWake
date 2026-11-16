@@ -162,3 +162,64 @@
 - Current scope is backend foundation only. No diplomacy screen, automatic war simulation, AI faction turns or strategic battle layer is claimed complete.
 - Validation on code head `f7b31035e4651a4a6854cc5ad644beff88c2148b`: Build Android APK run #683 passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 447 strict checks / 0 failures, balance report and signed APK export for arm64-v8a + armeabi-v7a with no requested Android permissions. APK artifact `13733346417` (~41.0 MB); test logs artifact `13732869336`. Version Sync #188, Workflow YAML Lint #666 and Project Health Audit #458 also passed on that exact code head. The first CI attempt caught a missing `GameData.factions` declaration and a strict-test type inference error; both were fixed before the successful rerun. Documentation commits after that code head require a fresh exact-head gate. Physical Android QA remains outstanding.
 - Next implementation slice after this foundation: connect authored quests/choices to relation changes, then add a compact faction dossier UI before enabling player-initiated treaty/war actions. Preserve offline-only architecture, existing saves and schema 4.
+
+
+---
+
+## QA and Android release-readiness refresh — 2026-11-16
+
+### Live baseline and verified build
+- Current `main`: `da4d220de7cdbfeae0d2bc182a3c191b997cd861` (Godot 4.2.2, game/Android 0.12.0 / code 1200, save schema 4).
+- Exact-main Android build: [run #42821049869](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42821049869). Result: 18/18 scene loads; 948 strict checks / 0 failures; campaign lifecycle, Act V, 70 campaign continuity, 39 Chronicle dynasty and 19 Chronicle family-development checks passed; balance report passed; APK signature valid; no Android permissions requested.
+- Exact-SHA companion checks: Project Health Audit [#42821049944](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42821049944), Version Sync [#42821049780](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42821049780), Workflow YAML Lint [#42821049916](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42821049916), source handoff [#42821050055](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42821050055).
+- Exact-main APK artifact: `13767016313`, archive 41,200,735 bytes, SHA-256 `676584a761743ebbaf60fca1011fe458b6ab39d3c2c45da4f1e2bc029e3077d2`; artifact metadata ties it to run #42821049869 and SHA `da4d220de7cdbfeae0d2bc182a3c191b997cd861`. Build log confirms signature validity and zero requested Android permissions.
+- Import diagnostics: first import scan reported unresolved global classes (`CharacterSheet`, `BattleUnit`, `BattleMap`); clean retry then completed, 18 scenes loaded and strict suites passed. Continue investigating this startup/import-order warning rather than hiding it. Headless custom-cursor and Actions Node.js runtime deprecation warnings remain.
+ 
+### Current PR and workflow triage
+- PR #130 (`docs/authentication-security-model`, head `d2ab36d73e71e69965f6658aa18e8642f3e52daa)): Build APK #43792465999, Version Sync #43792465983, Workflow YAML Lint #43792465988 and Project Health Audit #43792465990 all passed on its exact head. It remains draft.
+- Safe Auto Merge run [#43792636541](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43792636541) failed at its eligibility gate because PR #130 is draft. The log explicitly says it refused to merge; this is an intentional fail-closed refusal, not a game/build test failure. Do not merge or mark the PR ready without authorization.
+- PR #81 trading branch: 3 ahead / 29 behind main, diverged; keep blocked pending cargo inventory separation, tariff/route ownership, canonical region/story-gate validation and mobile layout fixes.
+- PR #42 bestiary: 21 ahead / 44 behind main, diverged; rebase and exact-head test before integration.
+- PR #46 empire system: 261 ahead / 44 behind main, diverged; use only as a reference, extract reviewed slices rather than bulk merge.
+- PR #78 headless test gate: 70 ahead / 43 behind main and stacked on the boss simulation branch; preserve dependency order.
+- PR #130: 2 ahead / 0 behind main, documentation-only.
+- Production publishing remains a separate manual workflow requiring a version tag, explicit `PUBLISH` confirmation and the `android-production` environment. Never use it as a routine QA build.
+
+### Asset and release gates
+- The live provenance ledger marks runtime-used assets verified: Quaternius nature art (CC0), Zerie's Free Soldier/Orc subset (author terms permit game use/modification; no standalone source-pack redistribution), and original KindleWake vector art.
+- Legacy voxel-building PNGs are recorded as unused and replaced in-game by original SVG settlement illustrations. Restricted/unknown optional packs remain unused. The current ledger has no unverified asset marked as used in-game; keep it synchronized with `assets/art/CREDITS.md` and inspect before each release.
+- Physical Android QA is still outstanding: test touch targets, viewport/safe areas, app pause/resume, long sessions, thermal/memory behavior and install/update/save preservation on low-memory and modern devices.
+
+### QA workflow hardening candidate
+- Dedicated branch: `qa/least-privilege-apk-build`, based on exact main SHA `da4d220de7cdbfeae0d2bc182a3c191b997cd861`.
+- Commit `507d41d0eb25372d16a4330ea85f96688f66b4fb`: routine APK build workflow now defaults to `contents: read`; write access is isolated to a tag-only release job that depends on the successful APK build and downloads that run's artifact.
+- Commit `d1a7f3c41fa3f5bb734d943793b9df6ffff48956`: added a YAML-lint policy assertion for read-only build permissions and isolated tag release.
+- Commit `ceb4e9f1a5d24d4ecec253d56c6b4d30f7bdd0fe`: extended the lint guard to every non-release build job, so a future job cannot silently inherit write access.
+- PR [#132](https://github.com/ninjun42215-gif/KindleWake/pull/132) is open as a draft; validated implementation head at this checkpoint: `e7d56027b09afdf28fd0767c24267c3b88dc9cc6` (2 ahead of current main before the handoff-only refresh). Push Workflow YAML Lint [#43793712360](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43793712360) and PR checks all passed on that exact head: Build Android APK [#43793743671](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43793743671), Version Sync [#43793743483](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43793743483), Workflow YAML Lint [#43793743574](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43793743574), Project Health Audit [#43793743525](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43793743525). The PR build log confirms `GITHUB_TOKEN` has `Contents: read`; APK job passed, tag-release job was skipped because this was a PR, 18/18 scenes loaded, 948 strict checks / 0 failures, 70 campaign-continuity checks, 39 Chronicle dynasty checks, 19 family-development checks, balance report, valid APK signature and no requested Android permissions.
+- PR-head APK artifact `14193164762`: 41,200,647-byte archive, SHA-256 `15552ff2497a5d0979652d2c69d4dd8c136ccc0709ac96aa50d26c0fd14f6435`; metadata ties it to run #43793743671 and the validated implementation head above. The import scan still emits transient first-pass global-class compile errors before subsequent scene/tests/build complete; keep investigating this known warning.
+- The session-handoff refresh itself creates a documentation-only commit and therefore advances the PR head; verify the newly triggered exact-head checks before reporting the final PR head as green. Keep PR #132 draft and do not merge.
+
+---
+
+## Mainline CI follow-up — 2026-11-16 02:49 UTC
+
+- Main advanced independently from `da4d220de7cdbfeae0d2bc182a3c191b997cd861` to `8a1f9e4227c3541c34e17593bb317a88c1c2d7a6` with a focused `.github/workflows/safe-auto-merge.yml` fix. This is not part of QA PR #132; do not overwrite or duplicate it.
+- The new mainline SHA passed Build Android APK [#43794234232], Project Health Audit [#43794234198], Version Sync [#43794234203], Workflow YAML Lint [#43794234269] and source handoff [#43794234231]. Exact-main APK artifact `14194230922`, 41,200,677 bytes, SHA-256 `49873ba30a3eab807482734bf3881d84d72d6b03d1e769d43b73988d571d74f3`; log confirms valid signature and no requested Android permissions.
+- The Safe Auto Merge run [#43794410915] succeeded and explicitly skipped draft PR #132 as ineligible. This verifies the mainline no-op fix against the QA PR; no merge was attempted.
+- QA PR #132 remains open/draft. At the validated implementation snapshot, head `5d9af862758e327d637667d655f4f41b3cdb3db6` passed all four core PR checks and produced APK artifact `14193309006` (41,200,583 bytes; SHA-256 `d0e54f24cf4bb28b1ecba3bb46287da4c68a06d450a0980c16fcf37368e25532`). The subsequent README/session-handoff refresh is documentation-only and will advance the branch again; recheck its exact-head PR workflows before final sign-off.
+- Current comparison: QA branch is 8 commits ahead / 1 behind main and GitHub reports the PR mergeable. The one-behind commit is the independent safe-auto-merge fix; no conflicting file changes were observed. Keep the PR draft and do not merge.
+
+
+---
+
+## Final QA candidate verification — 2026-11-16 02:52 UTC
+
+- Current main: `8a1f9e4227c3541c34e17593bb317a88c1c2d7a6`. Its exact-SHA build and all companion checks passed (Build APK #43794234232; Health Audit #43794234198; Version Sync #43794234203; YAML Lint #43794234269; source handoff #43794234231). APK artifact `14194230922`, SHA-256 `49873ba30a3eab807482734bf3881d84d72d6b03d1e769d43b73988d571d74f3`.
+- PR #132 current tested head: `48efab19c053d75a0177a7d1d05046490c6731c8`; draft; GitHub reports mergeable. Branch is 11 commits ahead / 1 behind current main. The single behind commit is the separate safe-auto-merge fix; no rebase or force-push was performed.
+- Exact-head checks all passed: Build APK [#43794533951], Version Sync [#43794533989], YAML Lint [#43794533927], Project Health Audit [#43794533921], plus push YAML Lint [#43794531073].
+- Exact-head APK artifact `14193353930`: 41,200,713-byte archive, SHA-256 `bf964a11df55627b31fd338315c77ec3114a48528abe7b97de50abdccacd6cff`. The build log confirms `Contents: read`, 18/18 scenes, 948 strict checks / 0 failures, 70 continuity checks, 39 dynasty checks, 19 family-development checks, balance report, valid signature and no Android permissions. Tag-release job skipped as intended.
+- Safe Auto Merge [#43794656387] completed successfully and skipped draft PR #132 without attempting a merge. The earlier red draft-refusal runs predate main's safe-no-op fix.
+- Current branch divergence against main: PR #81 trading 3 ahead / 30 behind; PR #42 bestiary 21 / 45; PR #46 empire 261 / 45; PR #78 headless CI 70 / 44 (stacked); boss simulation branches #63/#66 57 / 44. Keep stale/diverged candidates out of bulk integration.
+- Asset provenance remains consistent with runtime usage: active assets are verified; legacy voxel PNGs and restricted/unknown optional packs are unused; do not redistribute the Zerie source pack standalone.
+- Outstanding release work: test the tag-only release job with a non-production test tag before production use; investigate first-pass Godot global-class registration errors; complete physical Android touch/viewport/resume/memory QA; review GitHub Actions Node.js 20 deprecation warnings and migrate actions only after validating supported versions.
+- No merge, tag publication, device test or repository-setting change was performed in this run.

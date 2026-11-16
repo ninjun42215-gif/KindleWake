@@ -40,6 +40,24 @@ jobs:
                   yaml.safe_load(stream)
               print("PASS:", path)
           print("Validated", len(paths), "workflow YAML files.")
+
+          # Guard the Android build workflow's least-privilege boundary.
+          build = yaml.safe_load(Path(".github/workflows/build-apk.yml").read_text(encoding="utf-8"))
+          jobs = build.get("jobs", {})
+          if build.get("permissions", {}).get("contents") != "read":
+              raise SystemExit("Build Android APK must default to contents: read.")
+          for job_name, job in jobs.items():
+              if job_name == "publish-tag-release":
+                  continue
+              effective = job.get("permissions", build.get("permissions", {}))
+              if effective.get("contents") != "read":
+                  raise SystemExit(f"Build job {job_name} must use contents: read.")
+          publish = jobs.get("publish-tag-release", {})
+          if publish.get("permissions", {}).get("contents") != "write":
+              raise SystemExit("Only the tag-release job may use contents: write.")
+          if publish.get("needs") != "apk" or "refs/tags/" not in publish.get("if", ""):
+              raise SystemExit("The write-capable release job must depend on the APK build and be tag-only.")
+          print("PASS: Android build permissions are read-only; tag release is isolated.")
           PY
 
       - name: Test source handoff and organizer safety tools
