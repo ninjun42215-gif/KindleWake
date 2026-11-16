@@ -11,6 +11,7 @@ var config: Dictionary = {}
 var profile: Dictionary = {}
 var choices: Dictionary = {}
 var presentation_buttons: Dictionary = {}
+var portrait_buttons: Dictionary = {}
 var name_input: LineEdit
 var preview: CharacterPreview
 var preview_text: Label
@@ -171,10 +172,7 @@ func _build_ui() -> void:
 
     _add_name_field(form)
     _add_presentation_radios(form)
-    _add_choice(form, "Face", "face", config.get("faces", []))
-    _add_choice(form, "Hair", "hair", config.get("hair", []))
-    _add_choice(form, "Skin tone", "skin", config.get("skin", []))
-    _add_choice(form, "Build", "build", config.get("builds", []))
+    _add_portrait_gallery(form)
     _add_choice(form, "Origin", "origin", _dictionary_options(config.get("origins", {})))
 
     var combat_heading := Label.new()
@@ -255,7 +253,91 @@ func _add_presentation_radios(parent: VBoxContainer) -> void:
 func _on_presentation_toggled(pressed: bool, presentation_id: String) -> void:
     if not pressed:
         return
-    profile["presentation"] = presentation_id
+    for entry in config.get("portraits", []):
+        var portrait: Dictionary = entry
+        if str(portrait.get("presentation", "")) == presentation_id:
+            _apply_portrait(portrait)
+            return
+
+
+func _add_portrait_gallery(parent: VBoxContainer) -> void:
+    var heading := Label.new()
+    heading.text = "Choose your hero's portrait"
+    heading.add_theme_font_size_override("font_size", 17)
+    heading.add_theme_color_override("font_color", Color("#e5c98d"))
+    parent.add_child(heading)
+    var hint := Label.new()
+    hint.text = "The selected portrait is the appearance used on the character sheet."
+    hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    hint.add_theme_font_size_override("font_size", 12)
+    hint.add_theme_color_override("font_color", Color("#b8c2cc"))
+    parent.add_child(hint)
+    var grid := GridContainer.new()
+    grid.columns = 3 if get_viewport_rect().size.x < 600.0 else 4
+    grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    grid.add_theme_constant_override("h_separation", 7)
+    grid.add_theme_constant_override("v_separation", 7)
+    parent.add_child(grid)
+    var group := ButtonGroup.new()
+    for entry in config.get("portraits", []):
+        var portrait: Dictionary = entry
+        var id := str(portrait.get("id", ""))
+        if id == "":
+            continue
+        var button := Button.new()
+        button.toggle_mode = true
+        button.button_group = group
+        button.custom_minimum_size = Vector2(0, 116)
+        button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        button.clip_text = true
+        button.text = str(portrait.get("name", id))
+        button.icon = load("res://assets/art/portraits/%s.svg" % id)
+        button.expand_icon = true
+        button.icon_max_width = 78
+        button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+        button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+        button.add_theme_font_size_override("font_size", 11)
+        button.add_theme_color_override("font_color", Color("#e5d7bb"))
+        button.add_theme_stylebox_override("normal", _portrait_style(false))
+        button.add_theme_stylebox_override("hover", _portrait_style(true))
+        button.add_theme_stylebox_override("pressed", _portrait_style(true))
+        button.button_pressed = str(profile.get("portrait_id", "")) == id
+        button.toggled.connect(_on_portrait_button_toggled.bind(id))
+        portrait_buttons[id] = button
+        grid.add_child(button)
+
+
+func _portrait_style(selected: bool) -> StyleBoxFlat:
+    var style := StyleBoxFlat.new()
+    style.bg_color = Color("#26303a") if selected else Color("#141d27")
+    style.border_color = Color("#d4ad68") if selected else Color("#46515d")
+    style.set_border_width_all(2 if selected else 1)
+    style.set_corner_radius_all(7)
+    style.content_margin_left = 4
+    style.content_margin_right = 4
+    style.content_margin_top = 4
+    style.content_margin_bottom = 4
+    return style
+
+
+func _on_portrait_button_toggled(pressed: bool, portrait_id: String) -> void:
+    if not pressed:
+        return
+    for entry in config.get("portraits", []):
+        var portrait: Dictionary = entry
+        if str(portrait.get("id", "")) == portrait_id:
+            _apply_portrait(portrait)
+            return
+
+
+func _apply_portrait(portrait: Dictionary) -> void:
+    profile["portrait_id"] = str(portrait.get("id", ""))
+    for key in ["presentation", "face", "hair", "skin", "build"]:
+        profile[key] = str(portrait.get(key, profile.get(key, "")))
+    for key in presentation_buttons.keys():
+        (presentation_buttons[key] as CheckButton).set_pressed_no_signal(str(key) == str(profile["presentation"]))
+    for key in portrait_buttons.keys():
+        (portrait_buttons[key] as Button).set_pressed_no_signal(str(key) == str(profile["portrait_id"]))
     _refresh_preview()
 
 
@@ -270,10 +352,7 @@ func _add_choice(parent: VBoxContainer, label_text: String, field: String, value
     var option := OptionButton.new()
     option.custom_minimum_size = Vector2(0, 50)
     option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    # Emit the OptionButton activation on touch-down, avoiding a separate
-    # release/focus tap on mobile devices.
-    # Keep the standard release activation path: BUTTON_PRESS can open and
-    # dismiss native OptionButton popups during the same Android touch gesture.
+    # Native popup lists must remain open for the full Android touch gesture.
     option.action_mode = BaseButton.ACTION_MODE_BUTTON_RELEASE
     option.focus_mode = Control.FOCUS_ALL
     option.add_theme_font_size_override("font_size", 18)
