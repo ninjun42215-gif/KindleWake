@@ -169,7 +169,7 @@ func _build_ui() -> void:
     form.add_child(identity_heading)
 
     _add_name_field(form)
-    _add_choice(form, "Presentation", "presentation", config.get("presentations", []))
+    _add_presentation_radios(form)
     _add_choice(form, "Face", "face", config.get("faces", []))
     _add_choice(form, "Hair", "hair", config.get("hair", []))
     _add_choice(form, "Skin tone", "skin", config.get("skin", []))
@@ -226,6 +226,37 @@ func _add_name_field(parent: VBoxContainer) -> void:
     parent.add_child(name_input)
 
 
+func _add_presentation_radios(parent: VBoxContainer) -> void:
+    var label := Label.new()
+    label.text = "Presentation"
+    label.add_theme_font_size_override("font_size", 15)
+    parent.add_child(label)
+    var row := HBoxContainer.new()
+    row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    row.add_theme_constant_override("separation", 8)
+    parent.add_child(row)
+    var group := ButtonGroup.new()
+    for value in config.get("presentations", []):
+        var id := str(value)
+        var radio := CheckButton.new()
+        radio.text = id.capitalize()
+        radio.button_group = group
+        radio.toggle_mode = true
+        radio.custom_minimum_size = Vector2(0, 48)
+        radio.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        radio.add_theme_font_size_override("font_size", 14)
+        radio.button_pressed = str(profile.get("presentation", "")) == id
+        radio.toggled.connect(_on_presentation_toggled.bind(id))
+        row.add_child(radio)
+
+
+func _on_presentation_toggled(pressed: bool, presentation_id: String) -> void:
+    if not pressed:
+        return
+    profile["presentation"] = presentation_id
+    _refresh_preview()
+
+
 func _add_choice(parent: VBoxContainer, label_text: String, field: String, values: Array) -> OptionButton:
     var row := VBoxContainer.new()
     row.add_theme_constant_override("separation", 3)
@@ -239,8 +270,10 @@ func _add_choice(parent: VBoxContainer, label_text: String, field: String, value
     option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     # Emit the OptionButton activation on touch-down, avoiding a separate
     # release/focus tap on mobile devices.
-    option.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
-    option.focus_mode = Control.FOCUS_NONE
+    # Keep the standard release activation path: BUTTON_PRESS can open and
+    # dismiss native OptionButton popups during the same Android touch gesture.
+    option.action_mode = BaseButton.ACTION_MODE_BUTTON_RELEASE
+    option.focus_mode = Control.FOCUS_ALL
     option.add_theme_font_size_override("font_size", 18)
     row.add_child(option)
     choices[field] = option
