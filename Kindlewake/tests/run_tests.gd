@@ -4,6 +4,7 @@ const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
 const BattleControllerScript = preload("res://scripts/battle/battle_controller.gd")
+const BattlefieldGeneratorScript = preload("res://scripts/battle/battlefield_generator.gd")
 
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
@@ -1755,6 +1756,18 @@ func _test_world() -> void:
     check(w1.connected(w1.start_cell, w1.place_cell("tarnholt")) and gd.locations.get("maps", {}).has("tarnholt"), "Tarnholt is connected to the frontier and opens its authored chapter-house map")
     var skirmish: Dictionary = EncounterBuilder.build_skirmish(gd.encounters, gd.battles, rng_for_tests())
     check(not skirmish.is_empty() and str(skirmish.get("id", "")) == "skirmish", "an ambush can build a skirmish battle")
+    var field := BattlefieldGeneratorScript.build_travel_map(skirmish, w1, w1.start_cell, "sethmarch", 17)
+    check(field.get("terrain", []).size() == 14 and str(field.get("battlefield", "")) != "", "travel ambushes receive a generated tactical map sized to the encounter")
+    var field_rows_ok := true
+    for row in field.get("terrain", []):
+        if str(row).length() != 20:
+            field_rows_ok = false
+    check(field_rows_ok, "generated tactical maps have consistent row widths")
+    var winter_field := BattlefieldGeneratorScript.build_travel_map(skirmish, w1, w1.start_cell, "northstar_wreck", 17)
+    check(str(winter_field.get("battlefield", "")) == "frostfield" and str(winter_field.get("weather", "")) == "snow", "northern regions produce snowfields and regional weather")
+    var ash_field := BattlefieldGeneratorScript.build_travel_map(skirmish, w1, w1.start_cell, "cinder_ashlands", 17)
+    check(str(ash_field.get("battlefield", "")) == "ashen_wastes" and str(ash_field.get("legend", {}).get("a", "")) == "ash", "ashen regions use ash terrain and a distinct battlefield")
+    check(field.get("units", []) == skirmish.get("units", []), "terrain generation preserves encounter party and enemy placements")
 
 
 func _test_world_atlas() -> void:
