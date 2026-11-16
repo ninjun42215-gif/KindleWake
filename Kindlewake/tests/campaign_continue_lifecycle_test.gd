@@ -70,6 +70,37 @@ func _run_lifecycle() -> void:
 
     world.queue_free()
     await get_tree().process_frame
+
+    # Exercise the actual first-battle scene after the restored campaign/world path.
+    GameState.new_game()
+    GameState.start_battle_from_world(GameData.battle_def("battle_01"))
+    var battle_packed := load("res://Main.tscn") as PackedScene
+    if battle_packed == null:
+        _fail("Main.tscn loads as the first tactical battle scene")
+        _finish(true)
+        return
+    var battle := battle_packed.instantiate()
+    get_tree().root.add_child(battle)
+    await get_tree().process_frame
+    await get_tree().process_frame
+    if not is_instance_valid(battle) or not battle.is_inside_tree():
+        _fail("first tactical battle scene enters the tree")
+    elif battle.get("controller") == null or battle.controller.units.is_empty():
+        _fail("first tactical battle initializes its units and controller")
+    elif battle.get("prep_panel") == null or not battle.prep_panel.visible:
+        _fail("first tactical battle displays its pre-battle preparation panel")
+    else:
+        print("  ok    first tactical battle initializes and displays preparation")
+        battle._on_begin_pressed()
+        await get_tree().create_timer(2.0).timeout
+        if not is_instance_valid(battle) or not battle.is_inside_tree():
+            _fail("first tactical battle remains alive after starting combat")
+        else:
+            print("  ok    first tactical battle remains alive during its opening combat window")
+
+    if is_instance_valid(battle):
+        battle.queue_free()
+        await get_tree().process_frame
     _finish(true)
 
 
