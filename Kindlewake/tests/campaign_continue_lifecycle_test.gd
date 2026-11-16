@@ -16,6 +16,10 @@ func _ready() -> void:
 
 func _run_lifecycle() -> void:
     await get_tree().process_frame
+    if not SaveSystem.set_test_save_directory("user://campaign_lifecycle_test"):
+        _fail("lifecycle test redirects all save writes into an isolated directory")
+        _finish(false)
+        return
     _snapshot_autosave_files()
 
     if bool(SaveSystem.slot_info(TEST_SLOT).get("exists", false)):
@@ -88,15 +92,19 @@ func _run_lifecycle() -> void:
             _fail("battle snapshot has a valid player turn owner")
         else:
             battle_scene.controller.active_id = player_unit_id
-            var battle_payload: Dictionary = battle_scene._battle_save_payload()
-            _check(bool(battle_payload.get("campaign", false)),
-                "battle autosaves retain the complete campaign envelope")
-            _check(typeof(battle_payload.get("battle_resume", {})) == TYPE_DICTIONARY,
-                "battle autosaves include a separate tactical resume snapshot")
-            if not SaveSystem.save_slot(TEST_SLOT, battle_payload, "battle resume fixture"):
-                _fail("campaign-backed battle resume fixture can be saved")
-            elif not GameState.load_campaign(TEST_SLOT):
-                _fail("campaign loader accepts a battle-resume save")
+            battle_scene.prep_active = false
+            battle_scene.input_locked = false
+            _check(battle_scene._autosave(),
+                "safe active-turn autosave succeeds and records a resumable campaign")
+            var resume_slot := GameState.newest_campaign_slot()
+            var resume_result: Dictionary = SaveSystem.load_slot(resume_slot)
+            var resume_payload: Dictionary = resume_result.get("payload", {})
+            _check(resume_slot != "" and bool(resume_result.get("ok", false))
+                and bool(resume_payload.get("campaign", false))
+                and typeof(resume_payload.get("battle_resume", {})) == TYPE_DICTIONARY,
+                "the newest title-screen campaign slot contains the tactical resume snapshot")
+            if resume_slot == "" or not GameState.load_campaign(resume_slot):
+                _fail("campaign loader accepts the autosaved battle-resume slot")
             else:
                 _check(not GameState.pending_battle_resume.is_empty(),
                     "campaign load restores the pending tactical battle snapshot")
@@ -123,6 +131,27 @@ func _run_lifecycle() -> void:
                     "completed-battle title return writes a campaign save, not a stale battle snapshot")
                 _check(int(completed_party.get("gold", -1)) == GameState.party.gold,
                     "completed-battle rewards remain in the title-screen campaign save")
+
+                var blocker_path := "user://campaign_lifecycle_blocker"
+                if FileAccess.file_exists(blocker_path):
+                    DirAccess.remove_absolute(blocker_path)
+                var blocker := FileAccess.open(blocker_path, FileAccess.WRITE)
+                if blocker == null:
+                    _fail("save-failure fixture creates its blocking file")
+                else:
+                    blocker.store_string("not a directory")
+                    blocker.close()
+                    if SaveSystem.set_test_save_directory(blocker_path):
+                        var scene_before_return = get_tree().current_scene
+                        resumed_scene._return_to_title()
+                        await get_tree().process_frame
+                        _check(get_tree().current_scene == scene_before_return,
+                            "failed campaign save cancels Return to Title and keeps the battle scene active")
+                    else:
+                        _fail("save-failure fixture can redirect the isolated save directory")
+                    SaveSystem.set_test_save_directory("user://campaign_lifecycle_test")
+                    DirAccess.remove_absolute(blocker_path)
+
                 resumed_scene.queue_free()
                 await get_tree().process_frame
 
