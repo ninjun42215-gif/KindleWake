@@ -95,6 +95,7 @@ var hud_root: Control                    # everything in the HUD lives here (ins
 var preview_panel: PanelContainer        # attack / skill / move preview above Confirm and Cancel
 var preview_label: Label
 var menu_panel: PanelContainer           # Save / Load popup
+var title_confirm: ConfirmationDialog
 
 
 func _ready() -> void:
@@ -1683,7 +1684,14 @@ func _build_ui() -> void:
     mbox.add_child(mtitle)
     mbox.add_child(_make_button("Save", _on_menu_save, Vector2(300, 72), 26))
     mbox.add_child(_make_button("Load", _on_menu_load, Vector2(300, 72), 26))
+    mbox.add_child(_make_button("Return to Title", _request_return_to_title, Vector2(300, 72), 26))
     mbox.add_child(_make_button("Close", _on_menu_pressed, Vector2(300, 72), 26))
+    title_confirm = ConfirmationDialog.new()
+    title_confirm.name = "ReturnToTitleConfirm"
+    title_confirm.title = "Return to Title Screen?"
+    title_confirm.dialog_text = "The current battle will be autosaved when it is safe to do so."
+    title_confirm.confirmed.connect(_return_to_title)
+    root.add_child(title_confirm)
     menu_panel.add_child(mbox)
     root.add_child(menu_panel)
     menu_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
@@ -1702,6 +1710,24 @@ func _build_ui() -> void:
 func _on_menu_pressed() -> void:
     if menu_panel != null:
         menu_panel.visible = not menu_panel.visible
+
+
+func _request_return_to_title() -> void:
+    menu_panel.visible = false
+    if title_confirm != null:
+        title_confirm.popup_centered()
+
+
+func _return_to_title() -> void:
+    if controller.result == "" and not controller.units.is_empty():
+        var active: BattleUnitScript = controller.active_unit()
+        if ai_busy or input_locked or active == null or active.team != "player":
+            _on_log("Wait for your turn to return to the title screen safely.")
+            menu_panel.visible = true
+            return
+        _autosave()
+    GameState.pending_battle = {}
+    get_tree().change_scene_to_file("res://TitleScreen.tscn")
 
 
 func _on_menu_save() -> void:

@@ -68,6 +68,7 @@ var move_stick: VirtualStick
 var run_btn: Button
 var run_toggled: bool = false
 var moving_vector: Vector2 = Vector2.ZERO
+var title_confirm: ConfirmationDialog
 
 
 func _ready() -> void:
@@ -848,6 +849,13 @@ func _build_ui() -> void:
     top_actions_box.add_child(empire_btn)
     boss_btn = _btn("BOSSES", _challenge_regional_boss, 15)
     top_actions_box.add_child(boss_btn)
+    var title_btn := _btn("TITLE", _request_return_to_title, 15)
+    top_actions_box.add_child(title_btn)
+    title_confirm = ConfirmationDialog.new()
+    title_confirm.title = "Return to Title Screen?"
+    title_confirm.dialog_text = "Your current chronicle will be saved before returning to the title screen."
+    title_confirm.confirmed.connect(_return_to_title)
+    root.add_child(title_confirm)
 
     # Top-centre: ambush banner
     banner = _hud_panel(0.95)
@@ -953,6 +961,23 @@ func _open_world_atlas() -> void:
     GameState.world_pos = wmap.wrap_position(player_pos)
     GameState.save_campaign("auto_a")
     get_tree().change_scene_to_file("res://GlobalAtlas.tscn")
+
+
+func _request_return_to_title() -> void:
+    if ambush_timer >= 0.0 or panel_open or party_screen.visible:
+        return
+    has_target = false
+    pressing = false
+    title_confirm.popup_centered()
+
+
+func _return_to_title() -> void:
+    GameState.world_pos = wmap.wrap_position(player_pos)
+    if GameState.save_campaign("auto_a"):
+        get_tree().change_scene_to_file("res://TitleScreen.tscn")
+    else:
+        banner_label.text = "Could not save. Return cancelled to protect your progress."
+        banner.visible = true
 
 
 func _save_campaign_manual() -> void:
