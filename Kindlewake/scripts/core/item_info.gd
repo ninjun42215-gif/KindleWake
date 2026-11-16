@@ -1,5 +1,7 @@
 class_name ItemInfo
 extends RefCounted
+
+const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 ## Text helpers for the party screen and the tests: one place that decides how stats, items, sigils and skills read.
 
 const STAT_NAMES := {
@@ -11,7 +13,7 @@ const SLOT_NAMES := {
     "accessory1": "Accessory 1", "accessory2": "Accessory 2",
 }
 const STAT_ORDER: Array[String] = ["str", "dex", "int", "vit", "spd", "lck", "acc", "eva", "ldr", "mor"]
-## Keys of CharacterSheet.derived() that matter when comparing two pieces of gear, with their short labels.
+## Keys of CharacterSheetScript.derived() that matter when comparing two pieces of gear, with their short labels.
 const DELTA_KEYS: Array[String] = ["max_hp", "max_mp", "attack", "defense", "resistance", "accuracy", "evasion", "crit", "spd", "move"]
 const DELTA_LABELS := {
     "max_hp": "HP", "max_mp": "MP", "attack": "ATK", "defense": "DEF", "resistance": "RES",
@@ -116,10 +118,10 @@ static func skill_line(skill_id: String, skills: Dictionary) -> String:
 ## What a sigil does at a given level. `skills` is the skills table (for spell names).
 static func sigil_effect(sdef: Dictionary, lv: int, skills: Dictionary) -> String:
     var kind: String = str(sdef.get("kind", ""))
-    var ld: Dictionary = CharacterSheet.sigil_level_data(sdef, lv)
+    var ld: Dictionary = CharacterSheetScript.sigil_level_data(sdef, lv)
     if kind == "magic":
         var names: Array[String] = []
-        for sid in CharacterSheet.sigil_skills_at(sdef, lv):
+        for sid in CharacterSheetScript.sigil_skills_at(sdef, lv):
             names.append(str((skills.get(sid, {}) as Dictionary).get("name", sid)))
         return "Spells: " + ", ".join(PackedStringArray(names))
     if kind == "support":
@@ -135,19 +137,19 @@ static func sigil_effect(sdef: Dictionary, lv: int, skills: Dictionary) -> Strin
 
 ## "Lv 2/4, 35 AP to next" or "Lv 4/4 MASTERED".
 static func sigil_progress(inst: Dictionary, sdef: Dictionary) -> String:
-    var lv: int = CharacterSheet.sigil_level(inst, sdef)
-    var mx: int = CharacterSheet.sigil_max_level(sdef)
-    if CharacterSheet.sigil_is_mastered(inst, sdef):
+    var lv: int = CharacterSheetScript.sigil_level(inst, sdef)
+    var mx: int = CharacterSheetScript.sigil_max_level(sdef)
+    if CharacterSheetScript.sigil_is_mastered(inst, sdef):
         return "Lv %d/%d MASTERED" % [lv, mx]
-    return "Lv %d/%d, %d AP to next" % [lv, mx, CharacterSheet.sigil_ap_to_next(inst, sdef)]
+    return "Lv %d/%d, %d AP to next" % [lv, mx, CharacterSheetScript.sigil_ap_to_next(inst, sdef)]
 
 
 ## AP progress that fits on a socket button: "35/70 AP" or "MAX".
 static func sigil_ap_text(inst: Dictionary, sdef: Dictionary) -> String:
-    if CharacterSheet.sigil_is_mastered(inst, sdef):
+    if CharacterSheetScript.sigil_is_mastered(inst, sdef):
         return "MAX"
     var th: Array = sdef.get("ap", [])
-    var lv: int = CharacterSheet.sigil_level(inst, sdef)
+    var lv: int = CharacterSheetScript.sigil_level(inst, sdef)
     return "%d/%d AP" % [int(inst.get("ap", 0)), int(th[lv - 1])]
 
 
@@ -155,10 +157,10 @@ static func sigil_ap_text(inst: Dictionary, sdef: Dictionary) -> String:
 static func sigil_short(inst: Dictionary, sdef: Dictionary) -> String:
     var nm: String = str(sdef.get("name", str(inst.get("id", "?"))))
     nm = nm.replace("Sigil of the ", "").replace("Sigil of ", "")
-    return "%s Lv%d" % [nm, CharacterSheet.sigil_level(inst, sdef)]
+    return "%s Lv%d" % [nm, CharacterSheetScript.sigil_level(inst, sdef)]
 
 
-## "ATK +3, DEF +1" comparing two CharacterSheet.derived() results; "no change" when nothing differs.
+## "ATK +3, DEF +1" comparing two CharacterSheetScript.derived() results; "no change" when nothing differs.
 static func delta_text(before: Dictionary, after: Dictionary) -> String:
     var parts: Array[String] = []
     for key in DELTA_KEYS:
@@ -171,7 +173,7 @@ static func delta_text(before: Dictionary, after: Dictionary) -> String:
     return ", ".join(PackedStringArray(parts))
 
 
-## Per-stat changes between two CharacterSheet.derived() results, for colouring: [{"text": "ATK +3", "sign": 1}, ...].
+## Per-stat changes between two CharacterSheetScript.derived() results, for colouring: [{"text": "ATK +3", "sign": 1}, ...].
 ## sign is 1 for better and -1 for worse; the array is empty when nothing differs.
 static func delta_parts(before: Dictionary, after: Dictionary) -> Array:
     var out: Array = []
