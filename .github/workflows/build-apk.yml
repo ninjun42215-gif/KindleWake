@@ -63,10 +63,11 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
-          target: google_apis
+          target: aosp_atd
           arch: x86_64
           profile: pixel_5
           disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
           script: |
             # Match the HONOR 400's portrait logical viewport: 440 x 952 dp
             # (1264 x 2736 at 460 dpi) while keeping emulator rendering light.
