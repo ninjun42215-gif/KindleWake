@@ -51,7 +51,7 @@ func setup(battle_def: Dictionary, database: Dictionary, seed_value: int = 0) ->
         var char_def: Dictionary = chars.get(char_id, {})
         var class_def: Dictionary = classes.get(str(char_def.get("class_id", "")), {})
         var cell_arr: Array = s.get("cell", [0, 0])
-        var u := BattleUnitScript.create(next_unit_id, char_id, char_def, class_def, str(s.get("team", "enemy")),
+        var u: BattleUnitScript = BattleUnitScript.create(next_unit_id, char_id, char_def, class_def, str(s.get("team", "enemy")),
             Vector2i(int(cell_arr[0]), int(cell_arr[1])), int(s.get("facing", 0)))
         next_unit_id += 1
         u.is_protagonist = bool(s.get("protagonist", false))
@@ -152,7 +152,7 @@ func restore(battle_def: Dictionary, database: Dictionary, saved: Dictionary) ->
         return false
     if typeof(saved["units"]) != TYPE_ARRAY:
         return false
-    var candidate_map := BattleMapScript.from_battle_def(battle_def, database.get("terrain", {}))
+    var candidate_map: BattleMapScript = BattleMapScript.from_battle_def(battle_def, database.get("terrain", {}))
     var arr: Array = saved["units"]
     var seen_ids: Dictionary = {}
     for value in arr:
