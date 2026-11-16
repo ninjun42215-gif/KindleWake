@@ -686,16 +686,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         # Run the editor scan first so Godot 4.2 builds its global script-class
         # registry (class_name types) before autoloads and --script tests compile.
         code, out = run([str(godot), "--headless", "--editor", "--path", str(PROJECT), "--quit-after", "120"], env=env,
-                        log=logs / "import-pass-1.txt", timeout=900)
+                        log=logs / "import.txt", timeout=900)
         scan_errors = ("Parse Error" in out or "SCRIPT ERROR: Compile Error" in out or "Failed to load script" in out)
+        summary.append("import: exit %d, script errors %s" % (code, "yes" if scan_errors else "no"))
         if code != 0 or scan_errors:
-            say("  first editor scan reported script-registration/import problems; running a clean second scan ...")
-            code, out = run([str(godot), "--headless", "--editor", "--path", str(PROJECT), "--quit-after", "120"], env=env,
-                            log=logs / "import.txt", timeout=900)
-        remaining_scan_errors = ("Parse Error" in out or "SCRIPT ERROR: Compile Error" in out or "Failed to load script" in out)
-        summary.append("import: exit %d, script errors %s" % (code, "yes" if remaining_scan_errors else "no"))
-        if code != 0 or remaining_scan_errors:
-            raise BuildError("Godot editor import still reports script errors after two scans. See dist/logs/import.txt.")
+            raise BuildError("Godot editor import reported script errors on its first pass. See dist/logs/import.txt.")
 
         say("\n[4] Loading every authored scene in headless mode")
         code, out = run([str(godot), "--headless", "--path", str(PROJECT), "--script", "res://tests/scene_smoke_test.gd"],
