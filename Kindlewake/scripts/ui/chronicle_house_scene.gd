@@ -60,6 +60,10 @@ func _build() -> void:
  scroll.offset_right = -18
  scroll.offset_top = 16
  scroll.offset_bottom = -16
+ scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+ scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+ scroll.scroll_vertical_custom_step = 64.0
+ scroll.follow_focus = true
  add_child(scroll)
  var col := VBoxContainer.new()
  col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -78,6 +82,8 @@ func _build() -> void:
  col.add_child(members_box)
  _section(col,"RECORD A CHILD")
  parent_picker = OptionButton.new()
+ parent_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ parent_picker.focus_mode = Control.FOCUS_NONE
  col.add_child(parent_picker)
  child_name = LineEdit.new()
  child_name.placeholder_text = "Child's name"
@@ -91,7 +97,11 @@ func _build() -> void:
  col.add_child(_button("Record child",_add_child))
  _section(col,"MARRIAGE AND HOUSEHOLD")
  spouse_a = OptionButton.new()
+ spouse_a.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ spouse_a.focus_mode = Control.FOCUS_NONE
  spouse_b = OptionButton.new()
+ spouse_b.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ spouse_b.focus_mode = Control.FOCUS_NONE
  col.add_child(spouse_a)
  col.add_child(spouse_b)
  col.add_child(_button("Record marriage",_marry))
@@ -107,6 +117,8 @@ func _build() -> void:
  col.add_child(_button("Record an allied adult",_add_member))
  _section(col,"CHARACTER TRAITS")
  trait_picker = OptionButton.new()
+ trait_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ trait_picker.focus_mode = Control.FOCUS_NONE
  for trait_id in Dynasty.TRAITS.keys():
   trait_picker.add_item(str(trait_id).replace("_"," ").capitalize())
  if trait_picker.item_count > 0:
@@ -116,9 +128,13 @@ func _build() -> void:
  col.add_child(_button("Remove selected trait",_remove_trait))
  _section(col,"TITLES AND SUCCESSION")
  title_picker = OptionButton.new()
+ title_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ title_picker.focus_mode = Control.FOCUS_NONE
  col.add_child(title_picker)
  col.add_child(_button("Grant title to selected family member",_grant_title))
  title_rank_picker = OptionButton.new()
+ title_rank_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ title_rank_picker.focus_mode = Control.FOCUS_NONE
  for rank in Dynasty.RANKS:
   title_rank_picker.add_item(str(rank.name))
  if title_rank_picker.item_count > 0:
@@ -133,8 +149,12 @@ func _build() -> void:
  col.add_child(domain_name)
  col.add_child(_button("Found a new holding for selected member",_create_domain))
  domain_picker = OptionButton.new()
+ domain_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ domain_picker.focus_mode = Control.FOCUS_NONE
  col.add_child(domain_picker)
  policy_picker = OptionButton.new()
+ policy_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ policy_picker.focus_mode = Control.FOCUS_NONE
  for policy in Dynasty.SUCCESSION_POLICIES:
   policy_picker.add_item(str(policy).replace("_"," ").capitalize())
  if policy_picker.item_count > 0:
@@ -143,9 +163,13 @@ func _build() -> void:
  col.add_child(_button("Set succession law",_set_policy))
  _section(col,"EDUCATION AND GUARDIANSHIP")
  guardian_picker = OptionButton.new()
+ guardian_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ guardian_picker.focus_mode = Control.FOCUS_NONE
  col.add_child(guardian_picker)
  col.add_child(_button("Appoint guardian to selected child",_assign_guardian))
  education_picker = OptionButton.new()
+ education_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ education_picker.focus_mode = Control.FOCUS_NONE
  for focus in Dynasty.EDUCATION_FOCUSES:
   education_picker.add_item(str(focus).capitalize())
  if education_picker.item_count > 0:
@@ -155,10 +179,14 @@ func _build() -> void:
  col.add_child(_button("Complete education at age 16+",_complete_education))
  _section(col,"ADOPTION")
  adoptive_parent_picker = OptionButton.new()
+ adoptive_parent_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ adoptive_parent_picker.focus_mode = Control.FOCUS_NONE
  col.add_child(adoptive_parent_picker)
  col.add_child(_button("Record adoption for selected child",_adopt))
  _section(col,"HOUSEHOLD COUNCIL")
  council_role_picker = OptionButton.new()
+ council_role_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ council_role_picker.focus_mode = Control.FOCUS_NONE
  for role in Dynasty.COUNCIL_ROLES:
   council_role_picker.add_item(str(role).replace("_"," ").capitalize())
  if council_role_picker.item_count > 0:
@@ -167,8 +195,12 @@ func _build() -> void:
  col.add_child(_button("Appoint selected person to council",_appoint_council))
  _section(col,"TITLE CLAIMS")
  claim_title_picker = OptionButton.new()
+ claim_title_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ claim_title_picker.focus_mode = Control.FOCUS_NONE
  col.add_child(claim_title_picker)
  claim_basis_picker = OptionButton.new()
+ claim_basis_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ claim_basis_picker.focus_mode = Control.FOCUS_NONE
  for basis in ["inheritance","grant","service"]:
   claim_basis_picker.add_item(str(basis).capitalize())
  if claim_basis_picker.item_count > 0:
@@ -182,6 +214,8 @@ func _build() -> void:
  diplomacy_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
  col.add_child(diplomacy_summary)
  diplomacy_target_picker = OptionButton.new()
+ diplomacy_target_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ diplomacy_target_picker.focus_mode = Control.FOCUS_NONE
  col.add_child(diplomacy_target_picker)
  col.add_child(_button("Send envoy (-5 influence, +8 relation)",_diplomacy_envoy))
  col.add_child(_button("Offer public gift (-5 treasury, -3 influence, +12 relation)",_diplomacy_gift))
@@ -270,6 +304,8 @@ func _section(parent: VBoxContainer, text_value: String) -> void:
 
 func _button(text_value: String, callback: Callable) -> Button:
  var button := Button.new()
+ button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ button.focus_mode = Control.FOCUS_NONE
  button.text = text_value
  button.custom_minimum_size.y = 50
  button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -533,6 +569,8 @@ func _blocked() -> void:
  label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
  add_child(label)
  var button := Button.new()
+ button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+ button.focus_mode = Control.FOCUS_NONE
  button.text = "Return to title"
  button.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
  button.pressed.connect(func(): get_tree().change_scene_to_file("res://TitleScreen.tscn"))
