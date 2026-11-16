@@ -48,6 +48,10 @@ jobs:
           path: ~/.kindlewake_build
           key: kindlewake-build-${{ hashFiles('Kindlewake/tools/build_apk.py') }}
 
+      - name: Generate updated launcher icons
+        working-directory: Kindlewake
+        run: python tools/make_icon.py
+
       - name: Import project, headless scene smoke test, strict tests and APK export
         working-directory: Kindlewake
         run: python tools/build_apk.py --strict --with-balance
