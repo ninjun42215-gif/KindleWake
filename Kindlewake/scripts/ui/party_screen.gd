@@ -298,10 +298,21 @@ func _tile(caption: String, value: String, value_color: Color = COL_TEXT, value_
     return p
 
 
-func _portrait_texture(portrait_id: String) -> Texture2D:
-    if portrait_id == "":
+func _portrait_texture(portrait_id: String, character_id: String = "") -> Texture2D:
+    var resolved_id := portrait_id
+    # Old campaign saves may predate portrait metadata. Give those members a
+    # stable portrait based on their character ID instead of a blank level badge.
+    if resolved_id == "":
+        var fallback_ids: Array[String] = [
+            "auburn_ranger", "sunwarden", "iron_veteran", "silver_oracle",
+            "dusk_rogue", "shieldmaiden", "courtier", "ash_scout",
+            "briar_warden", "old_knight", "night_scholar"
+        ]
+        if not fallback_ids.is_empty():
+            resolved_id = fallback_ids[absi(character_id.hash()) % fallback_ids.size()]
+    if resolved_id == "":
         return null
-    var path := "res://assets/art/portraits/%s.svg" % portrait_id
+    var path := "res://assets/art/portraits/%s.svg" % resolved_id
     if not ResourceLoader.exists(path):
         return null
     return load(path) as Texture2D
@@ -498,7 +509,7 @@ func _build_roster() -> Control:
         var cbox: VBoxContainer = cp[1]
         var row := HBoxContainer.new()
         row.add_theme_constant_override("separation", 10)
-        var portrait := _portrait_texture(sh.portrait_id)
+        var portrait := _portrait_texture(sh.portrait_id, sh.character_id)
         if portrait != null:
             var avatar := TextureRect.new()
             avatar.texture = portrait
@@ -568,7 +579,7 @@ func _fill_sheet(box: VBoxContainer, sh: CharacterSheetScript) -> void:
     head.add_child(title)
     head.add_child(_button(">", _on_step.bind(1), Vector2(52, 52), 26))
     box.add_child(head)
-    var hero_portrait := _portrait_texture(sh.portrait_id)
+    var hero_portrait := _portrait_texture(sh.portrait_id, sh.character_id)
     if hero_portrait != null:
         var portrait_frame := PanelContainer.new()
         portrait_frame.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
