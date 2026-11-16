@@ -2,6 +2,8 @@ extends Node
 ## Runtime UI regression: exercise the actual town market button and commodity exchange controls.
 
 const LocationSceneScript = preload("res://scripts/ui/location_scene.gd")
+const MerchantScreenScript = preload("res://scripts/ui/merchant_screen.gd")
+const TradeSystemScript = preload("res://scripts/core/trade_system.gd")
 
 var failures: int = 0
 
@@ -18,7 +20,7 @@ func _check(condition: bool, label: String) -> void:
         push_error("FAIL: " + label)
 
 
-func _find_good_row(screen: Control, title_prefix: String) -> Control:
+func _find_good_row(screen: MerchantScreenScript, title_prefix: String) -> Control:
     for row_value in screen.goods_list.get_children():
         var row := row_value as Control
         if row == null or row.get_child_count() == 0:
@@ -38,7 +40,7 @@ func _run_market_ui_test() -> void:
     GameState.active_region_id = "sethmarch"
     GameState.pending_location = "crossing_shop"
     GameState.party.gold = 10000
-    GameState.trade_state = load("res://scripts/core/trade_system.gd").new_state()
+    GameState.trade_state = TradeSystemScript.new_state()
 
     var location := LocationSceneScript.new()
     get_tree().root.add_child(location)
@@ -63,7 +65,7 @@ func _run_market_ui_test() -> void:
         market_button.emit_signal("pressed")
     await get_tree().process_frame
 
-    var screen: Control = location.merchant_screen
+    var screen: MerchantScreenScript = location.merchant_screen
     _check(screen.visible, "market action opens the exchange overlay")
     _check(screen.goods_list.get_child_count() == 12, "exchange renders all twelve authored commodities")
 
