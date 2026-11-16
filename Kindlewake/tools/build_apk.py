@@ -743,6 +743,23 @@ def main(argv: Optional[List[str]] = None) -> int:
                     if args.strict:
                         raise BuildError("Regional commodity exchange UI interaction test failed.")
 
+            creator_test_scene = PROJECT / "tests" / "title_creator_ui_test.tscn"
+            if creator_test_scene.is_file():
+                say("\n[5a.2] Running title screen and protagonist creator UI interaction test")
+                code, out = run([str(godot), "--headless", "--path", str(PROJECT),
+                                 "res://tests/title_creator_ui_test.tscn"],
+                                env=env, log=logs / "title_creator_ui_test.txt", timeout=300)
+                creator_ui_ok = ("Title and creator UI failures: 0" in out and
+                                 "SCRIPT ERROR" not in out and "Parse Error" not in out)
+                summary.append("title_creator_ui: exit %d, pass marker %s" %
+                               (code, "yes" if creator_ui_ok else "no"))
+                if code != 0 or not creator_ui_ok:
+                    say("  TITLE / CREATOR UI TEST FAILED. See dist/logs/title_creator_ui_test.txt.")
+                    if args.strict:
+                        raise BuildError("Title screen and protagonist creator UI interaction test failed.")
+            elif args.strict:
+                raise BuildError("Strict QA requires tests/title_creator_ui_test.tscn.")
+
             campaign_test_scripts = [
                 "test_act_five.gd",
                 "test_campaign_continuity.gd",
