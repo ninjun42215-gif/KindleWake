@@ -20,8 +20,20 @@ func _check(condition: bool, label: String) -> void:
         push_error("FAIL: " + label)
 
 
+func _find_continue_button(title: TitleScreenScript) -> Button:
+    for child in title.content_box.get_children():
+        if child is Button and (child as Button).text == "CONTINUE":
+            return child as Button
+    return null
+
+
 func _run_ui_test() -> void:
     await get_tree().process_frame
+
+    _check(SaveSystem.set_test_save_directory("user://title_creator_ui_test"),
+        "title UI test redirects saves to an isolated test directory")
+    SaveSystem.delete_slot("1")
+    GameState.new_game()
 
     var creator := CharacterCreatorScript.new()
     get_tree().root.add_child(creator)
@@ -54,6 +66,15 @@ func _run_ui_test() -> void:
     await get_tree().process_frame
     _check(title.content_box != null and title.status_label != null, "title screen builds its menu and status region")
     _check(title.content_box.get_child_count() >= 5, "title screen exposes the primary campaign menu")
+    var continue_button := _find_continue_button(title)
+    _check(continue_button != null and continue_button.disabled,
+        "Continue is disabled when no valid campaign save exists")
+
+    _check(GameState.save_campaign("1"), "a valid campaign can be saved for the Continue menu test")
+    title._show_main()
+    continue_button = _find_continue_button(title)
+    _check(continue_button != null and not continue_button.disabled,
+        "Continue becomes available when a valid campaign save exists")
 
     title._new_game()
     await get_tree().process_frame
@@ -70,5 +91,6 @@ func _run_ui_test() -> void:
 
     title.queue_free()
     await get_tree().process_frame
+    SaveSystem.delete_slot("1")
     print("Title and creator UI failures: %d" % failures)
     get_tree().quit(1 if failures > 0 else 0)
