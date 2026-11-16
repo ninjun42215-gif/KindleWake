@@ -45,3 +45,8 @@ Painterly medieval realism translated into crisp, readable 2D/isometric game art
 - SVG source was parsed and raster-previewed locally; seven symbols are present in the intended order and remain distinct at the 38 px portrait presentation size.
 - The scene integration is isolated to GlobalAtlas.tscn plus a new draw-only child script. No gameplay rules, save data, save schema, project version, external dependency or Android permission was changed.
 - Godot editor import, headless scene smoke, Android APK export, in-editor screenshot inspection and physical-device viewport/touch/performance QA are pending for this branch. CI results must be checked against the exact PR head.
+
+
+## Reviewed candidate — not imported
+
+- Foozle Pixel Magic Effects: https://foozlecc.itch.io/pixel-magic-sprite-effects. The source page states CC0 1.0 and permits commercial use/modification. It remains a candidate only: the archive, frame layout and Godot import contract have not been reviewed or integrated in this project.
