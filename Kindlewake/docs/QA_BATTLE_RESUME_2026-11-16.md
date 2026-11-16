@@ -73,7 +73,7 @@ The existing deterministic balance report still classifies one Act I scenario as
 - Current main still has a tag-triggered routine build job that can create a GitHub Release with the CI candidate APK. There are eight legacy `apk-*` tags, no `v*` tags and no GitHub Releases at this check. Avoid pushing a `v*` tag until the release-publishing safeguards are refreshed and reviewed.
 - The production workflow's `android-production` environment settings, reviewer protections, secret presence and tag rules were not inspected. No production release was attempted.
 - GitHub Actions emitted non-blocking Node.js 20 deprecation warnings for current action versions; schedule a separate pinned-action maintenance change.
-- No physical Android device was available for install, launch, touch, suspend/resume or performance testing. CI success is not device QA.
+- No physical Android device QA was performed for install, launch, touch, suspend/resume or performance. CI success is not device QA.
 
 ## Next actions
 
