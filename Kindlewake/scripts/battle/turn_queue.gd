@@ -1,19 +1,21 @@
 class_name TurnQueue
 extends RefCounted
+
+const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 ## Charge-Time turn order: the lowest `ctb` acts next; faster units come around more often.
 
 const ACTION_BASE := 1000.0
 
 
-static func initial_ctb(unit: BattleUnit) -> float:
+static func initial_ctb(unit: BattleUnitScript) -> float:
     return ACTION_BASE / unit.effective_spd() * 0.5
 
 
 ## Unit that acts next (ties broken by id), without changing any state.
-static func peek_next(units: Array) -> BattleUnit:
-    var best: BattleUnit = null
+static func peek_next(units: Array) -> BattleUnitScript:
+    var best: BattleUnitScript = null
     for o in units:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         if not u.is_alive():
             continue
         if best == null or u.ctb < best.ctb - 0.0001 or (absf(u.ctb - best.ctb) <= 0.0001 and u.id < best.id):
@@ -22,16 +24,16 @@ static func peek_next(units: Array) -> BattleUnit:
 
 
 ## Moves time forward so that `next` reaches 0; everyone else loses the same amount.
-static func advance_to(units: Array, next: BattleUnit) -> void:
+static func advance_to(units: Array, next: BattleUnitScript) -> void:
     var dt: float = next.ctb
     for o in units:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         if u.is_alive():
             u.ctb = maxf(0.0, u.ctb - dt)
 
 
 ## Delay until the unit's next turn: full after acting, 0.75 after only moving, 0.5 after only waiting.
-static func delay_after_turn(unit: BattleUnit, moved: bool, acted: bool, weapon: Dictionary) -> float:
+static func delay_after_turn(unit: BattleUnitScript, moved: bool, acted: bool, weapon: Dictionary) -> float:
     var mult := 0.5
     if acted:
         mult = 1.0 * float(weapon.get("ctb_mult", 1.0))
@@ -45,7 +47,7 @@ static func timeline(units: Array, count: int) -> Array:
     var sim: Dictionary = {}
     var by_id: Dictionary = {}
     for o in units:
-        var u: BattleUnit = o
+        var u: BattleUnitScript = o
         if u.is_alive():
             sim[u.id] = u.ctb
             by_id[u.id] = u
@@ -66,7 +68,7 @@ static func timeline(units: Array, count: int) -> Array:
         var dt: float = sim[best_id]
         for k in sim.keys():
             sim[k] = maxf(0.0, float(sim[k]) - dt)
-        var bu: BattleUnit = by_id[best_id]
+        var bu: BattleUnitScript = by_id[best_id]
         sim[best_id] = ACTION_BASE / bu.effective_spd()
         out.append(bu)
     return out
