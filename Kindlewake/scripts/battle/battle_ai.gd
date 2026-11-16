@@ -1,15 +1,18 @@
 class_name BattleAI
 extends RefCounted
+
+const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
+const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
 ## Scoring AI. It is team-agnostic, so the test-suite can also run full AI-vs-AI battles.
 ## `ctl` is a BattleController (left untyped to avoid a script dependency cycle).
 const CompanionBehavior = preload("res://scripts/core/companion_behavior_system.gd")
 
 
-## Returns {"move_to": Vector2i, "action": "attack" | "skill" | "wait", "target": BattleUnit or null,
+## Returns {"move_to": Vector2i, "action": "attack" | "skill" | "wait", "target": BattleUnitScript or null,
 ## "skill_id": String (only for "skill")}.
 ## Also used for Auto Battle on the player's side, so it respects a turn that is already part-played:
 ## after moving the unit may still act from where it stands, after acting it does nothing.
-static func decide(unit: BattleUnit, ctl) -> Dictionary:
+static func decide(unit: BattleUnitScript, ctl) -> Dictionary:
     var plan: Dictionary = {"move_to": unit.cell, "action": "wait", "target": null}
     if unit.morale <= 0 or unit.has_acted:
         return plan
@@ -31,11 +34,11 @@ static func decide(unit: BattleUnit, ctl) -> Dictionary:
         return plan
     var best_score := -1.0e9
     var best_cell: Vector2i = origin
-    var best_target: BattleUnit = null
+    var best_target: BattleUnitScript = null
     for cand in candidates:
         var cell: Vector2i = cand
         unit.cell = cell                       # temporary: previews depend on the attacker's cell
-        var targets: Array[BattleUnit] = ctl.attack_targets(unit, cell)
+        var targets: Array[BattleUnitScript] = ctl.attack_targets(unit, cell)
         for t in targets:
             var s: float = _score_attack(unit, t, cell, ctl)
             if s > best_score:
@@ -62,7 +65,7 @@ static func decide(unit: BattleUnit, ctl) -> Dictionary:
 
 ## Support behaviour: a unit with a heal skill tops up a badly hurt ally (at or below 50% HP) before fighting.
 ## Returns {"cell", "skill_id", "target"} or an empty dictionary when nobody needs healing.
-static func _best_heal(unit: BattleUnit, ctl, candidates: Array[Vector2i]) -> Dictionary:
+static func _best_heal(unit: BattleUnitScript, ctl, candidates: Array[Vector2i]) -> Dictionary:
     var origin: Vector2i = unit.cell
     var best: Dictionary = {}
     var best_score := -1.0e9
@@ -74,7 +77,7 @@ static func _best_heal(unit: BattleUnit, ctl, candidates: Array[Vector2i]) -> Di
         for cand in candidates:
             var cell: Vector2i = cand
             unit.cell = cell                   # temporary: skill range depends on the caster's cell
-            var targets: Array[BattleUnit] = ctl.skill_targets(unit, skill_id)
+            var targets: Array[BattleUnitScript] = ctl.skill_targets(unit, skill_id)
             for t in targets:
                 var ratio: float = float(t.hp) / float(t.max_hp())
                 if ratio > 0.5:
@@ -83,7 +86,7 @@ static func _best_heal(unit: BattleUnit, ctl, candidates: Array[Vector2i]) -> Di
                 score += float(ctl.map.cover_at(cell)) * 0.15
                 score += CompanionBehavior.support_score(unit.traits, unit.personality, unit.companion_bonds, t.character_id, ctl.db.get("traits", {}))
                 score -= 1.5 * CompanionBehavior.threat_sensitivity(unit.traits, unit.personality, ctl.db.get("traits", {})) * _threat_at(unit, cell, ctl)
-                score -= 0.5 * float(BattleMap.manhattan(origin, cell))
+                score -= 0.5 * float(BattleMapScript.manhattan(origin, cell))
                 if score > best_score:
                     best_score = score
                     best = {"cell": cell, "skill_id": skill_id, "target": t}
@@ -93,7 +96,7 @@ static func _best_heal(unit: BattleUnit, ctl, candidates: Array[Vector2i]) -> Di
 
 ## Offensive magic: the best (cell, damage skill, enemy) by the same scoring scale as a weapon attack.
 ## Returns {"cell", "skill_id", "target", "score"} or an empty dictionary when no damage skill can be cast.
-static func _best_bolt(unit: BattleUnit, ctl, candidates: Array[Vector2i]) -> Dictionary:
+static func _best_bolt(unit: BattleUnitScript, ctl, candidates: Array[Vector2i]) -> Dictionary:
     var origin: Vector2i = unit.cell
     var best: Dictionary = {}
     var best_score := -1.0e9
@@ -105,7 +108,7 @@ static func _best_bolt(unit: BattleUnit, ctl, candidates: Array[Vector2i]) -> Di
         for cand in candidates:
             var cell: Vector2i = cand
             unit.cell = cell
-            var targets: Array[BattleUnit] = ctl.skill_targets(unit, skill_id)
+            var targets: Array[BattleUnitScript] = ctl.skill_targets(unit, skill_id)
             for t in targets:
                 var p: Dictionary = CombatCalc.skill_preview(unit, t, sk, skill_id, ctl.weapon_of(unit))
                 var avg: float = (float(p["dmg_min"]) + float(p["dmg_max"])) * 0.5
@@ -119,7 +122,7 @@ static func _best_bolt(unit: BattleUnit, ctl, candidates: Array[Vector2i]) -> Di
                 score += 10.0 * (1.0 - float(t.hp) / float(t.max_hp()))
                 score += float(ctl.map.cover_at(cell)) * 0.15 + float(ctl.map.height_at(cell)) * 1.5
                 score -= 1.5 * _threat_at(unit, cell, ctl)
-                score += 0.8 * float(BattleMap.manhattan(cell, t.cell))
+                score += 0.8 * float(BattleMapScript.manhattan(cell, t.cell))
                 score -= 2.0 * float(int(sk.get("mp", 0))) * 0.25     # slight preference for saving MP
                 if score > best_score:
                     best_score = score
@@ -128,7 +131,7 @@ static func _best_bolt(unit: BattleUnit, ctl, candidates: Array[Vector2i]) -> Di
     return best
 
 
-static func _score_attack(unit: BattleUnit, target: BattleUnit, cell: Vector2i, ctl) -> float:
+static func _score_attack(unit: BattleUnitScript, target: BattleUnitScript, cell: Vector2i, ctl) -> float:
     var p: Dictionary = ctl.preview_attack(unit, target)
     var hit: float = float(p["hit"]) / 100.0
     var avg: float = (float(p["dmg_min"]) + float(p["dmg_max"])) * 0.5
@@ -151,29 +154,29 @@ static func _score_attack(unit: BattleUnit, target: BattleUnit, cell: Vector2i, 
     score -= 1.5 * _threat_at(unit, cell, ctl)
     var w: Dictionary = ctl.weapon_of(unit)
     if bool(w.get("ranged", false)):
-        score += 0.8 * float(BattleMap.manhattan(cell, target.cell))
+        score += 0.8 * float(BattleMapScript.manhattan(cell, target.cell))
     return score
 
 
 ## Rough danger of a cell: opposing units that could reach and hit it next turn, weighted by offence.
-static func _threat_at(unit: BattleUnit, cell: Vector2i, ctl) -> float:
+static func _threat_at(unit: BattleUnitScript, cell: Vector2i, ctl) -> float:
     var threat := 0.0
     for o in ctl.units:
-        var other: BattleUnit = o
+        var other: BattleUnitScript = o
         if not other.is_alive() or other.team == unit.team:
             continue
         var w: Dictionary = ctl.weapon_of(other)
         var reach_range: int = other.move + int(w.get("range_max", 1))
-        if BattleMap.manhattan(cell, other.cell) <= reach_range:
+        if BattleMapScript.manhattan(cell, other.cell) <= reach_range:
             threat += float(other.stat("str") + other.stat("dex")) * 0.1
     return threat
 
 
 ## AI pathfinding treats allied occupied cells as blockers while player movement retains pass-through.
-static func _ai_reach(unit: BattleUnit, ctl, move_points: int) -> Dictionary:
+static func _ai_reach(unit: BattleUnitScript, ctl, move_points: int) -> Dictionary:
     var ally_cells: Dictionary = {}
     for o in ctl.units:
-        var ally: BattleUnit = o
+        var ally: BattleUnitScript = o
         if ally.is_alive() and ally.team == unit.team and ally.id != unit.id:
             ally_cells[ally.cell] = true
     return ctl.map.compute_reach(unit.cell, move_points, unit.jump, ctl.enemy_cell_map(unit), ally_cells, true)
@@ -181,15 +184,15 @@ static func _ai_reach(unit: BattleUnit, ctl, move_points: int) -> Dictionary:
 
 ## No attack possible this turn: walk along the shortest path toward a cell from which the nearest
 ## opposing unit can be attacked, stopping at the furthest legal cell within movement range.
-static func _approach_cell(unit: BattleUnit, ctl, reach: Dictionary) -> Vector2i:
+static func _approach_cell(unit: BattleUnitScript, ctl, reach: Dictionary) -> Vector2i:
     var origin: Vector2i = unit.cell
-    var target: BattleUnit = null
+    var target: BattleUnitScript = null
     var best_d := 9999
     for o in ctl.units:
-        var other: BattleUnit = o
+        var other: BattleUnitScript = o
         if not other.is_alive() or other.team == unit.team:
             continue
-        var d: int = BattleMap.manhattan(origin, other.cell)
+        var d: int = BattleMapScript.manhattan(origin, other.cell)
         if d < best_d:
             best_d = d
             target = other
@@ -205,12 +208,12 @@ static func _approach_cell(unit: BattleUnit, ctl, reach: Dictionary) -> Vector2i
     var goal_cost := 100000
     for k in full_cost.keys():
         var c: Vector2i = k
-        var dist: int = BattleMap.manhattan(c, target.cell)
+        var dist: int = BattleMapScript.manhattan(c, target.cell)
         if dist < rmin or dist > rmax:
             continue
         if ranged and not ctl.map.has_line_of_sight(c, target.cell):
             continue
-        var occupant: BattleUnit = ctl.unit_at(c)
+        var occupant: BattleUnitScript = ctl.unit_at(c)
         if occupant != null and occupant.id != unit.id:
             continue
         var cc: int = full_cost[c]
@@ -221,10 +224,10 @@ static func _approach_cell(unit: BattleUnit, ctl, reach: Dictionary) -> Vector2i
     if goal == origin:
         # Target cannot be reached by any path: just get as close as possible.
         var close: Vector2i = origin
-        var close_d: int = BattleMap.manhattan(origin, target.cell)
+        var close_d: int = BattleMapScript.manhattan(origin, target.cell)
         for k in cost.keys():
             var c2: Vector2i = k
-            var d2: int = BattleMap.manhattan(c2, target.cell)
+            var d2: int = BattleMapScript.manhattan(c2, target.cell)
             if d2 < close_d and ctl.unit_at(c2) == null:
                 close_d = d2
                 close = c2
