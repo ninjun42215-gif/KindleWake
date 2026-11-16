@@ -38,6 +38,7 @@ func _run_ui_test() -> void:
         emitted_profiles.append(profile)
     )
     creator.name_input.text = "QA Chronicle"
+    creator.name_input.emit_signal("text_changed", "QA Chronicle")
     creator._on_confirm()
     _check(emitted_profiles.size() == 1, "valid creator profile emits exactly one confirmation")
     if not emitted_profiles.is_empty():
