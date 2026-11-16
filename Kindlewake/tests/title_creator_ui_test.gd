@@ -45,6 +45,17 @@ func _run_ui_test() -> void:
     _check(creator.preview != null and is_instance_valid(creator.preview), "creator builds its live portrait preview")
     _check(creator.name_input != null and creator.confirm_button != null, "creator builds identity input and confirmation action")
     _check(creator.allocation_sliders.size() == 6, "creator builds all six attribute allocation controls")
+    _check(creator.presentation_buttons.size() == 3, "creator exposes all presentation radio choices")
+    if creator.presentation_buttons.has("feminine"):
+        (creator.presentation_buttons["feminine"] as CheckButton).button_pressed = true
+        _check(str(creator.profile.get("presentation", "")) == "feminine",
+            "presentation radio selection updates the live protagonist profile")
+    if creator.choices.has("face"):
+        var face_option: OptionButton = creator.choices["face"]
+        if face_option.item_count > 1:
+            creator._on_choice_selected(1, "face", face_option)
+            _check(str(creator.profile.get("face", "")) == str(face_option.get_item_metadata(1)),
+                "dropdown item selection updates the protagonist profile")
     _check(creator.confirm_button != null and not creator.confirm_button.disabled, "valid default profile enables Begin Chronicle")
 
     var emitted_profiles: Array = []
