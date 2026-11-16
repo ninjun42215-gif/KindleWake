@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "currency": "gold",
+  "cargo_capacity": 120,
+  "max_transaction_quantity": 99,
+  "sell_ratio": 0.68,
+  "goods": {
+    "trade_grain": {"name":"Frontier Grain","category":"Food","base_price":8,"weight":1,"description":"Hardy sacks of wheat and barley from the frontier farms."},
+    "trade_salt": {"name":"White Salt","category":"Provisions","base_price":14,"weight":1,"description":"Preserving salt harvested from the coastal pans."},
+    "trade_dried_fish": {"name":"Dried Fish","category":"Food","base_price":12,"weight":1,"description":"A durable coastal staple packed for long journeys."},
+    "trade_timber": {"name":"Oak Timber","category":"Materials","base_price":18,"weight":3,"description":"Cut timber for repairs, shipyards and construction."},
+    "trade_iron_ore": {"name":"Iron Ore","category":"Materials","base_price":26,"weight":3,"description":"Raw ore destined for the foundries and smithies."},
+    "trade_herbs": {"name":"Medicinal Herbs","category":"Medicine","base_price":20,"weight":1,"description":"Wild herbs gathered by frontier apothecaries."},
+    "trade_wool": {"name":"Fine Wool","category":"Textiles","base_price":16,"weight":1,"description":"Washed fleece from upland sheep farms."},
+    "trade_leather": {"name":"Tanned Leather","category":"Materials","base_price":22,"weight":2,"description":"Treated hides used for armour and saddlery."},
+    "trade_honey": {"name":"Forest Honey","category":"Food","base_price":19,"weight":1,"description":"Sweet honey from woodland apiaries."},
+    "trade_pearls": {"name":"Brinegate Pearls","category":"Luxury","base_price":65,"weight":1,"description":"Lustrous pearls harvested from sheltered reefs."},
+    "trade_glassware": {"name":"Blown Glassware","category":"Crafts","base_price":38,"weight":2,"description":"Fragile vessels from Brinegate's coastal workshops."},
+    "trade_spices": {"name":"Imported Spices","category":"Luxury","base_price":54,"weight":1,"description":"Aromatic spices brought through distant sea lanes."}
+  },
+  "markets": {
+    "sethmarch": {
+      "name":"Sethmarch Crossroads",
+      "initial_stock":30,
+      "sell_ratio":0.66,
+      "price_modifiers":{
+        "trade_grain":0.72,"trade_salt":1.18,"trade_dried_fish":1.18,
+        "trade_timber":1.08,"trade_iron_ore":1.12,"trade_herbs":0.96,
+        "trade_wool":0.9,"trade_leather":1.0,"trade_honey":0.92,
+        "trade_pearls":1.25,"trade_glassware":1.12,"trade_spices":1.2
+      }
+    },
+    "brinegate_coast": {
+      "name":"Brinegate Coast",
+      "initial_stock":24,
+      "sell_ratio":0.72,
+      "price_modifiers":{
+        "trade_grain":1.24,"trade_salt":0.68,"trade_dried_fish":0.64,
+        "trade_timber":1.16,"trade_iron_ore":1.2,"trade_herbs":1.05,
+        "trade_wool":1.12,"trade_leather":1.1,"trade_honey":1.08,
+        "trade_pearls":0.78,"trade_glassware":0.86,"trade_spices":0.94
+      }
+    }
+  }
+}
