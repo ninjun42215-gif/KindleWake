@@ -234,6 +234,10 @@ func _add_choice(parent: VBoxContainer, label_text: String, field: String, value
     var option := OptionButton.new()
     option.custom_minimum_size = Vector2(0, 50)
     option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    # Emit the OptionButton activation on touch-down, avoiding a separate
+    # release/focus tap on mobile devices.
+    option.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+    option.focus_mode = Control.FOCUS_NONE
     option.add_theme_font_size_override("font_size", 18)
     row.add_child(option)
     choices[field] = option
@@ -413,6 +417,10 @@ func _make_button(caption: String, min_width: float) -> Button:
     var button := Button.new()
     button.text = caption
     button.custom_minimum_size = Vector2(min_width, 58)
+    # Make one touch activate immediately rather than waiting for a second
+    # focus/release interaction.
+    button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+    button.focus_mode = Control.FOCUS_NONE
     button.add_theme_font_size_override("font_size", 18)
     return button
 
