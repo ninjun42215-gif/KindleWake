@@ -11,6 +11,7 @@ on:
     branches:
       - "main"
       - "feature/sethmarch-regional-network"
+      - "feature/creator-touch-portraits"
     tags:
       - "v*"
 
