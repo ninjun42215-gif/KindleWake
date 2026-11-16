@@ -10,82 +10,77 @@
     <linearGradient id="leaf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8c98a"/><stop offset="1" stop-color="#4c7653"/></linearGradient>
     <linearGradient id="storm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b6d4d9"/><stop offset="1" stop-color="#557c91"/></linearGradient>
     <linearGradient id="lantern" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f8e7b6"/><stop offset="1" stop-color="#9aa9bc"/></linearGradient>
-    <style>
-      .outline { stroke:#18242a; stroke-width:5; stroke-linecap:round; stroke-linejoin:round; }
-      .fine { fill:none; stroke:#f0d9a6; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
-      .darkline { fill:none; stroke:#34464a; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
-    </style>
   </defs>
   <!-- Eldrimar: the broken crown and the oath that survives it. -->
   <g transform="translate(0 0)">
-    <path class="outline" fill="url(#copper)" d="M31 88 L24 43 L45 57 L62 27 L81 57 L103 42 L96 88 Z"/>
-    <path class="outline" fill="url(#gold)" d="M28 87 H100 L94 101 H34 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="url(#copper)" d="M31 88 L24 43 L45 57 L62 27 L81 57 L103 42 L96 88 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="url(#gold)" d="M28 87 H100 L94 101 H34 Z"/>
     <path fill="#573c31" d="M42 68 L54 72 L63 61 L73 72 L86 67 L84 82 H44 Z"/>
-    <path class="fine" d="M62 31 L59 49 L66 60 L61 73"/>
+    <path fill="none" stroke="#f0d9a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M62 31 L59 49 L66 60 L61 73"/>
     <path fill="#f0d9a6" stroke="#18242a" stroke-width="3" d="M63 48 L69 56 L63 64 L57 56 Z"/>
-    <path class="darkline" d="M39 94 H89"/>
+    <path fill="none" stroke="#34464a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M39 94 H89"/>
     <path fill="#e9c58a" d="M28 40 L22 33 L28 30 L34 37 Z M101 39 L107 32 L101 29 L95 36 Z"/>
   </g>
   <!-- Thalassar: lighthouse, beacon and the crossing tide. -->
   <g transform="translate(128 0)">
-    <path class="outline" fill="url(#sea)" d="M48 52 H80 L87 99 H41 Z"/>
-    <path class="outline" fill="url(#gold)" d="M43 51 L47 35 H81 L85 51 Z"/>
-    <path class="outline" fill="#314b53" d="M51 34 V24 H77 V34 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="url(#sea)" d="M48 52 H80 L87 99 H41 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="url(#gold)" d="M43 51 L47 35 H81 L85 51 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="#314b53" d="M51 34 V24 H77 V34 Z"/>
     <path fill="#f4dfaa" stroke="#18242a" stroke-width="4" d="M56 37 H72 V48 H56 Z"/>
-    <path class="fine" d="M54 43 H74 M64 24 V16"/>
-    <path class="outline" fill="url(#gold)" d="M39 99 H89 L95 108 H33 Z"/>
-    <path class="fine" d="M23 78 Q40 68 55 78 T87 78 T111 78"/>
-    <path class="fine" d="M18 91 Q35 81 50 91 T82 91 T112 91"/>
+    <path fill="none" stroke="#f0d9a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M54 43 H74 M64 24 V16"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="url(#gold)" d="M39 99 H89 L95 108 H33 Z"/>
+    <path fill="none" stroke="#f0d9a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M23 78 Q40 68 55 78 T87 78 T111 78"/>
+    <path fill="none" stroke="#f0d9a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M18 91 Q35 81 50 91 T82 91 T112 91"/>
     <path fill="#f1d9a5" d="M64 7 L70 18 L64 22 L58 18 Z"/>
-    <path class="darkline" d="M29 112 H99"/>
+    <path fill="none" stroke="#34464a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M29 112 H99"/>
   </g>
   <!-- Varakhan: sun, water and the caravan road through the red expanse. -->
   <g transform="translate(256 0)">
-    <circle class="outline" cx="64" cy="42" r="23" fill="url(#sand)"/>
-    <path class="fine" d="M64 8 V15 M64 69 V76 M29 42 H36 M92 42 H99 M39 17 L44 23 M84 61 L89 67 M89 17 L84 23 M44 61 L39 67"/>
-    <path class="outline" fill="#9d6846" d="M16 91 Q39 62 62 85 Q81 64 112 89 L112 104 H16 Z"/>
-    <path class="outline" fill="#c28b52" d="M17 102 Q46 82 68 101 Q89 82 111 99 V111 H17 Z"/>
-    <path class="outline" fill="url(#gold)" d="M48 79 Q64 60 80 79 V96 H48 Z"/>
-    <path class="fine" d="M52 82 Q64 67 76 82 M64 83 V96"/>
-    <path class="darkline" d="M28 111 H100"/>
+    <circle stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" cx="64" cy="42" r="23" fill="url(#sand)"/>
+    <path fill="none" stroke="#f0d9a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M64 8 V15 M64 69 V76 M29 42 H36 M92 42 H99 M39 17 L44 23 M84 61 L89 67 M89 17 L84 23 M44 61 L39 67"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="#9d6846" d="M16 91 Q39 62 62 85 Q81 64 112 89 L112 104 H16 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="#c28b52" d="M17 102 Q46 82 68 101 Q89 82 111 99 V111 H17 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="url(#gold)" d="M48 79 Q64 60 80 79 V96 H48 Z"/>
+    <path fill="none" stroke="#f0d9a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M52 82 Q64 67 76 82 M64 83 V96"/>
+    <path fill="none" stroke="#34464a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M28 111 H100"/>
   </g>
   <!-- Nhalor: the old mountain road beneath the aurora. -->
   <g transform="translate(384 0)">
-    <path class="outline" fill="#536e86" d="M14 101 L43 49 L57 69 L76 29 L115 101 Z"/>
-    <path class="outline" fill="url(#ice)" d="M76 29 L63 56 L76 51 L88 63 L94 51 L115 101 H57 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="#536e86" d="M14 101 L43 49 L57 69 L76 29 L115 101 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="url(#ice)" d="M76 29 L63 56 L76 51 L88 63 L94 51 L115 101 H57 Z"/>
     <path fill="#f2f4e8" stroke="#18242a" stroke-width="4" stroke-linejoin="round" d="M76 29 L64 55 L76 50 L88 62 L94 50 Z"/>
-    <path class="fine" d="M20 35 Q43 12 64 29 T107 28"/>
+    <path fill="none" stroke="#f0d9a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M20 35 Q43 12 64 29 T107 28"/>
     <path fill="none" stroke="#83b6c4" stroke-width="5" stroke-linecap="round" d="M19 47 Q40 25 59 42 T101 39"/>
-    <path class="outline" fill="#304956" d="M48 88 H80 V105 H48 Z"/>
-    <path class="fine" d="M56 93 H72"/>
-    <path class="darkline" d="M17 110 H111"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="#304956" d="M48 88 H80 V105 H48 Z"/>
+    <path fill="none" stroke="#f0d9a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M56 93 H72"/>
+    <path fill="none" stroke="#34464a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M17 110 H111"/>
   </g>
   <!-- Veyrwood: the living leaf and its deep-rooted memory. -->
   <g transform="translate(512 0)">
-    <path class="outline" fill="url(#leaf)" d="M64 17 Q104 28 96 65 Q88 91 64 99 Q39 88 31 65 Q24 31 64 17 Z"/>
-    <path class="fine" d="M64 24 V88 M64 49 Q47 39 39 37 M64 61 Q82 48 88 43 M64 73 Q48 65 42 59"/>
-    <path class="outline" fill="none" d="M64 87 Q55 99 46 108 M64 87 Q72 99 83 108 M64 91 V113"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="url(#leaf)" d="M64 17 Q104 28 96 65 Q88 91 64 99 Q39 88 31 65 Q24 31 64 17 Z"/>
+    <path fill="none" stroke="#f0d9a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M64 24 V88 M64 49 Q47 39 39 37 M64 61 Q82 48 88 43 M64 73 Q48 65 42 59"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none" d="M64 87 Q55 99 46 108 M64 87 Q72 99 83 108 M64 91 V113"/>
     <path fill="#d8d7a0" d="M64 18 L69 29 L64 35 L59 29 Z"/>
-    <path class="darkline" d="M25 111 H103"/>
+    <path fill="none" stroke="#34464a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M25 111 H103"/>
   </g>
   <!-- Asterreach: a stormglass spire and the lightning that powers its routes. -->
   <g transform="translate(640 0)">
-    <path class="outline" fill="url(#storm)" d="M48 105 L57 37 L64 16 L71 37 L80 105 Z"/>
-    <path class="outline" fill="#334e5b" d="M55 51 H73 V65 H55 Z"/>
-    <path class="fine" d="M64 19 V42 M58 57 H70"/>
-    <path class="outline" fill="url(#gold)" d="M44 105 H84 L91 114 H37 Z"/>
-    <path class="outline" fill="#d8e5df" d="M90 22 L75 53 H88 L70 82 L78 55 H65 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="url(#storm)" d="M48 105 L57 37 L64 16 L71 37 L80 105 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="#334e5b" d="M55 51 H73 V65 H55 Z"/>
+    <path fill="none" stroke="#f0d9a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M64 19 V42 M58 57 H70"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="url(#gold)" d="M44 105 H84 L91 114 H37 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="#d8e5df" d="M90 22 L75 53 H88 L70 82 L78 55 H65 Z"/>
     <path fill="none" stroke="#91c1cb" stroke-width="4" stroke-linecap="round" d="M17 39 Q30 25 43 39 M84 33 Q99 19 111 34"/>
-    <path class="darkline" d="M22 117 H106"/>
+    <path fill="none" stroke="#34464a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M22 117 H106"/>
   </g>
   <!-- Ilyr: the far lantern, its star and the sevenfold line. -->
   <g transform="translate(768 0)">
-    <path class="outline" fill="url(#lantern)" d="M42 47 H86 L92 91 H36 Z"/>
-    <path class="outline" fill="#344b5b" d="M47 43 V31 H81 V43 Z"/>
-    <path class="outline" fill="url(#gold)" d="M34 91 H94 L86 104 H42 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="url(#lantern)" d="M42 47 H86 L92 91 H36 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="#344b5b" d="M47 43 V31 H81 V43 Z"/>
+    <path stroke="#18242a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="url(#gold)" d="M34 91 H94 L86 104 H42 Z"/>
     <path fill="#f6e7bc" stroke="#18242a" stroke-width="4" d="M52 52 H76 V83 H52 Z"/>
     <path fill="#e9bd69" d="M64 57 Q76 68 64 79 Q52 68 64 57 Z"/>
-    <path class="fine" d="M64 12 L69 25 L82 30 L69 35 L64 48 L59 35 L46 30 L59 25 Z"/>
-    <path class="darkline" d="M64 104 V115 M28 116 H100"/>
+    <path fill="none" stroke="#f0d9a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M64 12 L69 25 L82 30 L69 35 L64 48 L59 35 L46 30 L59 25 Z"/>
+    <path fill="none" stroke="#34464a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M64 104 V115 M28 116 H100"/>
   </g>
 </svg>
