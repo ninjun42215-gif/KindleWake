@@ -173,6 +173,7 @@ func _skin(b: Button, bg: Color, border: Color, text_col: Color = COL_TEXT) -> v
     b.add_theme_color_override("font_pressed_color", COL_GOLD)
     b.add_theme_color_override("font_disabled_color", COL_DIM.darkened(0.3))
     b.focus_mode = Control.FOCUS_NONE
+    b.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 
 
 func _button(text: String, handler: Callable, min_size: Vector2 = Vector2(0, 56), font_size: int = 20, primary: bool = false) -> Button:
