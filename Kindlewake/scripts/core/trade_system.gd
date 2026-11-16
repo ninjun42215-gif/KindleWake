@@ -54,17 +54,17 @@ static func has_market(region_id: String, goods: Dictionary) -> bool:
 static func market_state(state: Dictionary, region_id: String, goods: Dictionary) -> Dictionary:
     if not has_market(region_id, goods):
         return {}
-    if typeof(state.get("markets", {})) != TYPE_DICTIONARY:
+    if not state.has("markets") or typeof(state.get("markets")) != TYPE_DICTIONARY:
         state["markets"] = {}
     var markets: Dictionary = state["markets"]
-    if typeof(markets.get(region_id, {})) != TYPE_DICTIONARY:
+    if not markets.has(region_id) or typeof(markets.get(region_id)) != TYPE_DICTIONARY:
         markets[region_id] = {}
     var current: Dictionary = markets[region_id]
     var definition: Dictionary = goods["markets"][region_id]
     var initial := clampi(int(definition.get("initial_stock", 20)), 0, MAX_MARKET_STOCK)
-    if typeof(current.get("stock", {})) != TYPE_DICTIONARY:
+    if not current.has("stock") or typeof(current.get("stock")) != TYPE_DICTIONARY:
         current["stock"] = {}
-    if typeof(current.get("demand", {})) != TYPE_DICTIONARY:
+    if not current.has("demand") or typeof(current.get("demand")) != TYPE_DICTIONARY:
         current["demand"] = {}
     var stock: Dictionary = current["stock"]
     var demand: Dictionary = current["demand"]
