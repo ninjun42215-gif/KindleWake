@@ -160,6 +160,13 @@ func _run_lifecycle() -> void:
     _finish(true)
 
 
+func _check(condition: bool, label: String) -> void:
+    if condition:
+        print("  ok    " + label)
+    else:
+        _fail(label)
+
+
 func _fail(label: String) -> void:
     failures += 1
     push_error("FAIL: " + label)
