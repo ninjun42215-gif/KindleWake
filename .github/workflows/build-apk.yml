@@ -67,13 +67,20 @@ jobs:
           arch: x86_64
           profile: pixel_6
           script: |
+            # Match the HONOR 400's portrait logical viewport: 440 x 952 dp
+            # (1264 x 2736 at 460 dpi) while keeping emulator rendering light.
+            adb shell wm size 632x1368
+            adb shell wm density 230
+            adb shell settings put system font_scale 1.0
             adb install -r Kindlewake/dist/Kindlewake.apk
             adb logcat -c
             adb shell monkey -p com.kindlewake.game 1
-            sleep 20
+            sleep 25
             test -n "$(adb shell pidof com.kindlewake.game)"
-            if adb logcat -d | grep -E "FATAL EXCEPTION|Fatal signal"; then
-              echo "Android runtime crash detected"
+            adb shell screencap -p /sdcard/kindlewake-honor400-layout.png
+            adb pull /sdcard/kindlewake-honor400-layout.png Kindlewake/dist/honor400-emulator.png
+            if adb logcat -d | grep -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error"; then
+              echo "Android runtime or script error detected"
               exit 1
             fi
 
