@@ -6,7 +6,7 @@ Last workflow update: 2026-11-16. Canonical project: Godot 4.2.2 under `Kindlewa
 ## Live configuration snapshot — 2026-11-16
 
 - Engine: Godot 4.2.2; renderer: GL Compatibility; project version: `0.12.0`; Android version code: `1200`.
-- The `Build Android APK` workflow builds candidate artifacts for pull requests to `main`, pushes to `main` and `feature/sethmarch-regional-network`, `v*` tag pushes and manual dispatch. The QA candidate removes its automatic GitHub Release publishing job; only the protected production workflow should create a public release.
+- The `Build Android APK` workflow builds candidate artifacts for pull requests to `main`, pushes to `main` and `feature/sethmarch-regional-network`, `v*` tag pushes and manual dispatch. **Until QA PR #148 is merged, current main still has its legacy tag-triggered GitHub Release job; do not push a `v*` tag.** The QA candidate removes that job so only the protected production workflow creates a public release.
 - `Publish Android Production Release` is present on `main` and requires an existing `v*` tag, the exact `PUBLISH` confirmation and the `android-production` environment. The audit found eight legacy `apk-*` tags and no GitHub Releases; no `v*` tag was present. Environment secret values and reviewer rules were not inspected.
 - The QA candidate records `git rev-parse HEAD` after checking out the requested tag and uses that exact SHA in `release-manifest.json`. It also limits write permission to the production publish job.
 - GitHub Actions emitted non-blocking Node.js 20 deprecation warnings for current action versions. Update/pin action versions in a separately tested maintenance change rather than silently changing the release toolchain.
@@ -16,10 +16,10 @@ Last workflow update: 2026-11-16. Canonical project: Godot 4.2.2 under `Kindlewa
 
 | Lane | Trigger | Signing | Output | Publishing |
 |---|---|---|---|---|
-| Development / CI | Pull request to `main`; push to `main` or `feature/sethmarch-regional-network`; `v*` tag push; or manual dispatch | Existing sideload/test key configured for CI | `Kindlewake-APK` candidate artifact + test logs | Does not publish a GitHub Release |
+| Development / CI | Pull request to `main`; push to `main` or `feature/sethmarch-regional-network`; `v*` tag push; or manual dispatch | Existing sideload/test key configured for CI | `Kindlewake-APK` candidate artifact + test logs | Does not publish a GitHub Release after QA PR #148 is merged |
 | Production | Manual `Publish Android Production Release` dispatch for an existing `v*` tag | Private production keystore from protected GitHub Environment secrets | Production-signed APK, SHA-256 and manifest | Creates a new GitHub Release only after protected approval; refuses overwrite |
 
-The CI workflow and production publishing workflow are intentionally separate. A tag push creates a verified build candidate artifact; it does **not** publish a production release automatically.
+The CI workflow and production publishing workflow are intended to be separate. After QA PR #148 is merged, a tag push creates a verified candidate artifact only; it does **not** publish a GitHub Release. Until then, avoid pushing a `v*` tag because current main still has the legacy test-APK release job.
 
 ## Routine APK build
 
@@ -112,7 +112,7 @@ Production setup also requires the `ANDROID_RELEASE_CERT_SHA256` GitHub Environm
 
 ## Publishing safeguards
 
-The production workflow is on `main` as of 2026-11-16. It refuses to publish if a GitHub Release already exists for the requested tag. The matching QA candidate also removes automatic release creation from the routine `Build Android APK` workflow, so a `v*` tag build remains a candidate artifact and cannot pre-empt the protected production workflow. The candidate captures the SHA of the tag checkout itself for the release manifest and scopes write permission to the publish job.
+The production workflow is on `main` as of 2026-11-16. It refuses to publish if a GitHub Release already exists for the requested tag. Current main still has the legacy automatic tag-release job; avoid `v*` tags until QA PR #148 is merged. That candidate removes automatic release creation from routine builds, so tag builds remain candidate artifacts and cannot pre-empt the protected production workflow. The candidate captures the SHA of the tag checkout itself for the release manifest and scopes write permission to the publish job.
 
 
 ## Verified AI handoff pipeline (required)
