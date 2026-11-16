@@ -187,9 +187,12 @@ func _test_art_assets() -> void:
     var character_texture: Texture2D = load("res://assets/art/units/character_atlas.svg") as Texture2D
     check(character_texture != null, "original character and enemy atlas imports")
     if character_texture != null:
-        check(character_texture.get_size() == Vector2(512.0, 640.0), "4x4 character atlas matches sixteen 128x160 cells")
-    check(ArtScript.CHARACTER_CELLS.size() == 16, "all sixteen character archetypes have atlas cells")
+        check(character_texture.get_size() == Vector2(512.0, 960.0), "6x4 character atlas matches twenty-four 128x160 cells")
+    check(ArtScript.CHARACTER_CELLS.size() == 24, "all twenty-four character archetypes have atlas cells")
     check(ArtScript.character_for_npc("Village Guard") == "guard", "town guards receive a guard design")
+    check(ArtScript.character_for_npc("Torren Dunmarrow") == "chronicle_hero", "the protagonist receives a distinct Chronicle hero design")
+    check(ArtScript.character_for_npc("Blacksmith Harlan") == "blacksmith", "blacksmith NPCs receive a dedicated silhouette")
+    check(ArtScript.character_for_npc("Archivist Elowen") == "scholar", "scholar NPCs receive a dedicated silhouette")
     check(ArtScript.character_for_npc("Innkeeper Maud") == "merchant", "town merchants and innkeepers receive civilian designs")
     check(ArtScript.character_for_enemy("rootbound_warden") == "treant", "rootbound boss receives a unique monster design")
     check(ArtScript.character_for_enemy("bell_keeper") == "wraith", "bell keeper receives a unique spectral design")

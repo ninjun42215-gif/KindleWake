@@ -8,7 +8,7 @@ const WORLD_VECTOR_NAMES := ["house_a", "house_b", "house_c", "hut", "keep", "to
 const UNIT_DIR := "res://assets/art/units/"
 const PROP_ATLAS_PATH := "res://assets/art/props/field_props.svg"
 const CHARACTER_ATLAS_PATH := "res://assets/art/units/character_atlas.svg"
-const CHARACTER_CELLS := {"knight":Vector2i(0,0), "ranger":Vector2i(1,0), "paladin":Vector2i(2,0), "priestess":Vector2i(3,0), "mage":Vector2i(0,1), "rogue":Vector2i(1,1), "guard":Vector2i(2,1), "merchant":Vector2i(3,1), "goblin":Vector2i(0,2), "orc":Vector2i(1,2), "skeleton":Vector2i(2,2), "direwolf":Vector2i(3,2), "wraith":Vector2i(0,3), "cultist":Vector2i(1,3), "treant":Vector2i(2,3), "overlord":Vector2i(3,3)}
+const CHARACTER_CELLS := {"knight":Vector2i(0,0), "ranger":Vector2i(1,0), "paladin":Vector2i(2,0), "priestess":Vector2i(3,0), "mage":Vector2i(0,1), "rogue":Vector2i(1,1), "guard":Vector2i(2,1), "merchant":Vector2i(3,1), "goblin":Vector2i(0,2), "orc":Vector2i(1,2), "skeleton":Vector2i(2,2), "direwolf":Vector2i(3,2), "wraith":Vector2i(0,3), "cultist":Vector2i(1,3), "treant":Vector2i(2,3), "overlord":Vector2i(3,3), "chronicle_hero":Vector2i(0,4), "noble":Vector2i(1,4), "blacksmith":Vector2i(2,4), "scholar":Vector2i(3,4), "healer":Vector2i(0,5), "duelist":Vector2i(1,5), "hunter":Vector2i(2,5), "bard":Vector2i(3,5)}
 const PROP_CELLS := {"arch":Vector2i(0,0), "column":Vector2i(1,0), "rune_stone":Vector2i(2,0), "torch":Vector2i(3,0), "reeds":Vector2i(0,1), "crystals":Vector2i(1,1), "grave":Vector2i(2,1), "banner":Vector2i(3,1), "mushrooms":Vector2i(0,2), "stump":Vector2i(1,2), "barrel":Vector2i(2,2), "crate":Vector2i(3,2), "campfire":Vector2i(0,3), "frost_pine":Vector2i(1,3), "statue":Vector2i(2,3), "flower":Vector2i(3,3)}
 ## Frames per animation in the 100x100 horizontal strips of the Tiny RPG Soldier / Orc sheets.
 const UNIT_FRAMES := {"idle": 6, "walk": 8, "attack": 6, "hurt": 4, "death": 4}
@@ -84,7 +84,7 @@ static func draw_character_animated(canvas: CanvasItem, archetype: String, feet:
     canvas.draw_set_transform(feet + Vector2(0, bob), lean, Vector2(-sx if flip else sx, sy))
     canvas.draw_texture_rect_region(tex, Rect2(-64, -160, 128, 160), src, tint)
     # Human faces have visible eyes and a mouth at these atlas coordinates.
-    if archetype in ["knight", "ranger", "paladin", "priestess", "mage", "rogue", "guard", "merchant"]:
+    if archetype in ["knight", "ranger", "paladin", "priestess", "mage", "rogue", "guard", "merchant", "chronicle_hero", "noble", "blacksmith", "scholar", "healer", "duelist", "hunter", "bard"]:
         var blink_phase: float = fposmod(time + float(cell.x * 7 + cell.y * 3), 4.1)
         var blinking: bool = blink_phase > 3.91
         var eye_y: float = -108.0
@@ -140,19 +140,48 @@ static func draw_character(canvas: CanvasItem, archetype: String, feet: Vector2,
 
 static func character_for_npc(name: String, role: String = "") -> String:
     var key: String = (name + " " + role).to_lower()
-    if key.contains("guard") or key.contains("soldier") or key.contains("watch"):
+    if key.contains("torren"):
+        return "chronicle_hero"
+    if key.contains("sela"):
+        return "hunter"
+    if key.contains("bram"):
+        return "duelist"
+    if key.contains("wystan") or key.contains("brother"):
+        return "healer"
+    if key.contains("maren"):
+        return "bard"
+    if key.contains("archer"):
+        return "hunter"
+    if key.contains("swordsman") or key.contains("roadreaver"):
+        return "duelist"
+    if key.contains("cleric"):
+        return "healer"
+    if key.contains("mage"):
+        return "scholar"
+    # Distinct silhouettes for named professions and social roles; do not recolour one generic soldier.
+    if key.contains("blacksmith") or key.contains("smith") or key.contains("forge"):
+        return "blacksmith"
+    if key.contains("archivist") or key.contains("scribe") or key.contains("scholar") or key.contains("librarian") or key.contains("clerk"):
+        return "scholar"
+    if key.contains("noble") or key.contains("duke") or key.contains("duchess") or key.contains("heir") or key.contains("elder") or key.contains("lord") or key.contains("lady"):
+        return "noble"
+    if key.contains("duelist") or key.contains("fencer") or key.contains("champion"):
+        return "duelist"
+    if key.contains("bard") or key.contains("minstrel") or key.contains("musician"):
+        return "bard"
+    if key.contains("hunter") or key.contains("tracker") or key.contains("scout") or key.contains("ranger") or key.contains("bow"):
+        return "hunter"
+    if key.contains("priest") or key.contains("brother") or key.contains("sister") or key.contains("healer"):
+        return "healer"
+    if key.contains("guard") or key.contains("soldier") or key.contains("watch") or key.contains("sergeant"):
         return "guard"
     if key.contains("merchant") or key.contains("trader") or key.contains("innkeeper") or key.contains("carter"):
         return "merchant"
-    if key.contains("priest") or key.contains("brother") or key.contains("sister") or key.contains("healer"):
-        return "priestess"
-    if key.contains("scout") or key.contains("ranger") or key.contains("bow") or key.contains("hunter"):
-        return "ranger"
     if key.contains("mage") or key.contains("witch") or key.contains("seer"):
         return "mage"
-    if key.contains("captain") or key.contains("knight") or key.contains("lord"):
+    if key.contains("captain") or key.contains("knight"):
         return "knight"
-    var common: Array[String] = ["merchant", "guard", "ranger", "rogue", "priestess", "knight", "mage", "paladin"]
+    var common: Array[String] = ["merchant", "guard", "hunter", "rogue", "healer", "noble", "scholar", "duelist"]
     return common[posmod(hash(name), common.size())]
 
 

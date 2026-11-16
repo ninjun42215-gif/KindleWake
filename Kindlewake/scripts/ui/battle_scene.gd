@@ -1104,7 +1104,7 @@ func _draw_atlas_enemy(u: BattleUnitScript, p: Vector2, archetype: String, fdir:
         motion = "walk"
     elif str(u.class_id) in ["mage", "cleric"] and u.has_acted:
         motion = "skill"
-    if not Art.draw_character_animated(self, archetype, p + Vector2(0, 8), motion_time, motion, 0.72, tint, fdir.x < 0.0):
+    if not Art.draw_character_animated(self, archetype, p + Vector2(0, 8), motion_time, motion, 0.44, tint, fdir.x < 0.0):
         return false
     draw_line(p + Vector2(0, 2), p + Vector2(0, 2) + fdir * 16.0, Color(1, 1, 1, 0.55), 2.0)
     var ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
@@ -1245,6 +1245,18 @@ func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: V
     var tint: Color = _battle_sprite_tint(u, is_player)
     if anim == "hurt":
         tint = tint.lerp(Color(1.0, 0.58, 0.52), 0.58)
+    if is_player:
+        var player_archetype: String = Art.character_for_npc(u.display_name, str(u.class_id))
+        var player_motion: String = "walk" if anim == "walk" else ("attack" if anim == "attack" else "idle")
+        if Art.draw_character_animated(self, player_archetype, p + Vector2(0, 8), t, player_motion, 0.44, tint, fdir.x < 0.0):
+            _draw_sprite_identity_marks(u, p, is_player, 0.44, t)
+            var player_ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
+            draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40, 7)), Color(0.1, 0.08, 0.08))
+            draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40.0 * player_ratio, 7)), Color(0.85, 0.2, 0.2).lerp(Color(0.25, 0.85, 0.38), player_ratio))
+            _draw_unit_tag(u, p)
+            if u.morale <= 0:
+                draw_string(ThemeDB.fallback_font, p + Vector2(-40, -70), "ROUTED", HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color(1, 0.6, 0.3))
+            return true
     Art.draw_unit(self, kind, anim, t, p + Vector2(0, 4), scale, fdir.x < 0.0, tint)
     _draw_sprite_identity_marks(u, p, is_player, scale, t)
     var ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
