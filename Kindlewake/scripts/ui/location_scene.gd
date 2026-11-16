@@ -1147,7 +1147,7 @@ func _draw_tile(c: Vector2i) -> void:
                 var detail: float = WorldMap.hash01(c.x, c.y, 43)
                 if detail > 0.975:
                     var variants: Array[String] = ["flower", "mushrooms", "stump", "reeds", "rune_stone"]
-                    Art.draw_prop(self, variants[int(WorldMap.hash01(c.x, c.y, 47) * float(variants.size()))], prop_center + Vector2(0, -5), 0.20)
+                    Art.draw_prop(self, variants[mini(variants.size() - 1, int(WorldMap.hash01(c.x, c.y, 47) * float(variants.size())))], prop_center + Vector2(0, -5), 0.20)
     if indoor and t == "#" and c.y == 0:
         draw_rect(Rect2(o + Vector2(0, TILE - 6), Vector2(TILE, 6)), Color(0, 0, 0, 0.3))
 
