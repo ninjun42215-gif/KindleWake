@@ -56,6 +56,7 @@ var move_stick: VirtualStick
 var run_btn: Button
 var run_toggled: bool = false
 var moving_vector: Vector2 = Vector2.ZERO
+var title_confirm: ConfirmationDialog
 
 
 func _ready() -> void:
@@ -1324,6 +1325,16 @@ func _build_ui() -> void:
     root.add_child(journal_btn)
     journal_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
     journal_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    var title_btn := _btn("TITLE", _request_return_to_title, 17)
+    title_btn.custom_minimum_size = Vector2(150, 54)
+    root.add_child(title_btn)
+    title_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 74)
+    title_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+    title_confirm = ConfirmationDialog.new()
+    title_confirm.title = "Return to Title Screen?"
+    title_confirm.dialog_text = "Your current chronicle will be saved before returning to the title screen."
+    title_confirm.confirmed.connect(_return_to_title)
+    root.add_child(title_confirm)
 
     spot_panel = _hud_panel(0.97)
     var box := VBoxContainer.new()
@@ -1362,6 +1373,26 @@ func _build_ui() -> void:
     quest_journal = CompanionQuestJournalScript.new()
     root.add_child(quest_journal)
     quest_journal.visible = false
+
+
+func _request_return_to_title() -> void:
+    if leaving or panel_open or party_screen.visible or merchant_screen.visible or quest_journal.visible:
+        return
+    has_target = false
+    pressing = false
+    title_confirm.popup_centered()
+
+
+func _return_to_title() -> void:
+    leaving = true
+    GameState.pending_location = current_map_id
+    if GameState.save_campaign("auto_a"):
+        get_tree().change_scene_to_file("res://TitleScreen.tscn")
+    else:
+        leaving = false
+        spot_title.text = "Save failed"
+        spot_text.text = "Your progress could not be saved. You remain in the game."
+        spot_panel.visible = true
 
 
 func _open_quest_journal() -> void:
