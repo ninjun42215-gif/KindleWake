@@ -47,6 +47,12 @@ func _run_ui_test() -> void:
     _check(creator.allocation_sliders.size() == 6, "creator builds all six attribute allocation controls")
     _check(creator.presentation_buttons.size() == 3, "creator exposes all presentation radio choices")
     _check(creator.portrait_buttons.size() == 12, "creator exposes the complete twelve-portrait gallery")
+    var all_portraits_load := true
+    for portrait in GameData.character_creation.get("portraits", []):
+        var portrait_path := "res://assets/art/portraits/%s.svg" % str(portrait.get("id", ""))
+        if not ResourceLoader.exists(portrait_path) or load(portrait_path) == null:
+            all_portraits_load = false
+    _check(all_portraits_load, "all twelve portrait assets load as Godot textures")
     if creator.portrait_buttons.has("auburn_ranger"):
         creator._on_portrait_button_toggled(true, "auburn_ranger")
         _check(str(creator.profile.get("portrait_id", "")) == "auburn_ranger",
@@ -88,6 +94,8 @@ func _run_ui_test() -> void:
         _check(str(protagonist_def.get("creation", {}).get("portrait_id", "")) == "torren_redcloak",
             "the selected portrait ID is embedded in the actual protagonist definition")
         var sheet = CharacterSheet.from_def("torren", protagonist_def)
+        _check(str(protagonist_def.get("portrait_id", "")) == "torren_redcloak",
+            "battle-ready protagonist definition carries the selected portrait identity")
         _check(sheet.portrait_id == "torren_redcloak", "the protagonist character sheet receives the selected portrait")
         var restored_sheet = CharacterSheet.from_dict(sheet.to_dict())
         _check(restored_sheet.portrait_id == "torren_redcloak", "the selected portrait survives character save serialization")
