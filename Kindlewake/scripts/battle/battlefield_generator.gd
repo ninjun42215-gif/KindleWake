@@ -37,6 +37,7 @@ static func build_travel_map(source: Dictionary, world_map: RefCounted, cell: Ve
         "river":
             _rect(g,9,0,10,13,"~"); _rect(g,9,3+v,10,3+v,"w")
             _rect(g,9,9-v,10,9-v,"w"); _rect(g,9,6,10,7,"b")
+            _rect(g,9,9,10,10,"b")
             _rect(g,3,2,5,4,"f"); _rect(g,14,9,17,11,"f")
             _rect(g,7,5,8,8,"r"); _rect(g,11,5,12,8,"r")
             out["battlefield"]="river_crossing"; out["weather"]="clear"
