@@ -13,7 +13,9 @@ on:
 
 permissions:
   actions: read
-  contents: read
+  # Required by the pull-request merge REST endpoint. This workflow does not
+  # check out or execute PR code; all merge decisions remain exact-SHA gated.
+  contents: write
   pull-requests: write
 
 concurrency:
