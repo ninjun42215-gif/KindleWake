@@ -357,10 +357,20 @@ func _add_attribute_allocation(parent: VBoxContainer) -> void:
 
 func _on_stat_allocation_changed(value: float, stat: String) -> void:
     var allocation: Dictionary = profile.get("stat_allocation", {})
-    allocation[stat] = int(value)
+    var spent_elsewhere := 0
+    for key in ["str", "dex", "int", "vit", "spd", "lck"]:
+        if key != stat:
+            spent_elsewhere += int(allocation.get(key, 0))
+    var budget := int(config.get("stat_points", 8))
+    var allowed_value := clampi(int(value), 0, mini(5, maxi(0, budget - spent_elsewhere)))
+    allocation[stat] = allowed_value
     profile["stat_allocation"] = allocation
+    if allocation_sliders.has(stat):
+        var slider: HSlider = allocation_sliders[stat]
+        if int(slider.value) != allowed_value:
+            slider.set_value_no_signal(float(allowed_value))
     if allocation_labels.has(stat):
-        (allocation_labels[stat] as Label).text = str(int(value))
+        (allocation_labels[stat] as Label).text = str(allowed_value)
     _refresh_allocation_total()
     _refresh_preview()
 
