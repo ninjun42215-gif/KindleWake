@@ -24,7 +24,7 @@ func _find_continue_button(title: TitleScreenScript) -> Button:
     for child in title.content_box.get_children():
         if child.is_queued_for_deletion():
             continue
-        if child is Button and (child as Button).text == "CONTINUE":
+        if child is Button and ["CONTINUE", "RESUME BATTLE"].has((child as Button).text):
             return child as Button
     return null
 
@@ -76,8 +76,25 @@ func _run_ui_test() -> void:
     title._show_main()
     await get_tree().process_frame
     continue_button = _find_continue_button(title)
-    _check(continue_button != null and not continue_button.disabled,
-        "Continue becomes available when a valid campaign save exists")
+    _check(continue_button != null and not continue_button.disabled and continue_button.text == "CONTINUE",
+        "Continue becomes available for a normal campaign save")
+
+    var battle_resume_payload: Dictionary = GameState.campaign_payload()
+    battle_resume_payload["battle_resume"] = {
+        "battle": {"battle_id": "battle_01"},
+        "battle_def": GameData.battle_def("battle_01"),
+        "from_world": true
+    }
+    _check(SaveSystem.save_slot("1", battle_resume_payload, "battle resume UI fixture"),
+        "a campaign save can carry an optional tactical resume snapshot")
+    title._show_main()
+    await get_tree().process_frame
+    continue_button = _find_continue_button(title)
+    _check(continue_button != null and continue_button.text == "RESUME BATTLE" and not continue_button.disabled,
+        "title menu labels the latest resumable battle explicitly")
+    _check(GameState.load_campaign("1") and title._continue_scene_path() == "res://Main.tscn",
+        "Continue routes a battle-resume campaign to the tactical scene")
+    GameState.pending_battle_resume = {}
 
     title._new_game()
     await get_tree().process_frame
