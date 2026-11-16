@@ -208,3 +208,18 @@
 - The Safe Auto Merge run [#43794410915] succeeded and explicitly skipped draft PR #132 as ineligible. This verifies the mainline no-op fix against the QA PR; no merge was attempted.
 - QA PR #132 remains open/draft. At the validated implementation snapshot, head `5d9af862758e327d637667d655f4f41b3cdb3db6` passed all four core PR checks and produced APK artifact `14193309006` (41,200,583 bytes; SHA-256 `d0e54f24cf4bb28b1ecba3bb46287da4c68a06d450a0980c16fcf37368e25532`). The subsequent README/session-handoff refresh is documentation-only and will advance the branch again; recheck its exact-head PR workflows before final sign-off.
 - Current comparison: QA branch is 8 commits ahead / 1 behind main and GitHub reports the PR mergeable. The one-behind commit is the independent safe-auto-merge fix; no conflicting file changes were observed. Keep the PR draft and do not merge.
+
+
+---
+
+## Final QA candidate verification — 2026-11-16 02:52 UTC
+
+- Current main: `8a1f9e4227c3541c34e17593bb317a88c1c2d7a6`. Its exact-SHA build and all companion checks passed (Build APK #43794234232; Health Audit #43794234198; Version Sync #43794234203; YAML Lint #43794234269; source handoff #43794234231). APK artifact `14194230922`, SHA-256 `49873ba30a3eab807482734bf3881d84d72d6b03d1e769d43b73988d571d74f3`.
+- PR #132 current tested head: `48efab19c053d75a0177a7d1d05046490c6731c8`; draft; GitHub reports mergeable. Branch is 11 commits ahead / 1 behind current main. The single behind commit is the separate safe-auto-merge fix; no rebase or force-push was performed.
+- Exact-head checks all passed: Build APK [#43794533951], Version Sync [#43794533989], YAML Lint [#43794533927], Project Health Audit [#43794533921], plus push YAML Lint [#43794531073].
+- Exact-head APK artifact `14193353930`: 41,200,713-byte archive, SHA-256 `bf964a11df55627b31fd338315c77ec3114a48528abe7b97de50abdccacd6cff`. The build log confirms `Contents: read`, 18/18 scenes, 948 strict checks / 0 failures, 70 continuity checks, 39 dynasty checks, 19 family-development checks, balance report, valid signature and no Android permissions. Tag-release job skipped as intended.
+- Safe Auto Merge [#43794656387] completed successfully and skipped draft PR #132 without attempting a merge. The earlier red draft-refusal runs predate main's safe-no-op fix.
+- Current branch divergence against main: PR #81 trading 3 ahead / 30 behind; PR #42 bestiary 21 / 45; PR #46 empire 261 / 45; PR #78 headless CI 70 / 44 (stacked); boss simulation branches #63/#66 57 / 44. Keep stale/diverged candidates out of bulk integration.
+- Asset provenance remains consistent with runtime usage: active assets are verified; legacy voxel PNGs and restricted/unknown optional packs are unused; do not redistribute the Zerie source pack standalone.
+- Outstanding release work: test the tag-only release job with a non-production test tag before production use; investigate first-pass Godot global-class registration errors; complete physical Android touch/viewport/resume/memory QA; review GitHub Actions Node.js 20 deprecation warnings and migrate actions only after validating supported versions.
+- No merge, tag publication, device test or repository-setting change was performed in this run.
