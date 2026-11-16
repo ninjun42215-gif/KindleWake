@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-11-10",
+  "updated": "2026-11-16",
   "policy": "Do not mark an asset pack verified without an authoritative licence file or source-page evidence. Used assets with unverified rights block public/commercial release.",
   "assets": [
     {
@@ -93,6 +93,19 @@
       "used_in_game": true,
       "release_blocker": false,
       "notes": "Original vector replacements for house_a, house_b, house_c, hut, keep, tower_a, tower_b and tower_c. Loaded directly by Art.world()."
+    },
+    {
+      "id": "kindlewake-seven-continent-heraldry",
+      "name": "Seven-continent heraldic sigil atlas",
+      "author": "KindleWake project",
+      "source_reference": "Original vector artwork authored in this repository",
+      "source_url": null,
+      "license": "Original project content",
+      "license_evidence": "Repository source history; no third-party source material used",
+      "license_status": "verified",
+      "used_in_game": true,
+      "release_blocker": false,
+      "notes": "896x128 SVG with seven 128x128 cells. Runtime-loaded by GlobalAtlas.tscn through scripts/ui/continent_heraldry_layer.gd; mapped by stable continent ids. No external assets or fonts."
     }
   ]
 }
