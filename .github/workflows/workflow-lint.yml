@@ -46,8 +46,12 @@ jobs:
           jobs = build.get("jobs", {})
           if build.get("permissions", {}).get("contents") != "read":
               raise SystemExit("Build Android APK must default to contents: read.")
-          if jobs.get("apk", {}).get("permissions", {}).get("contents") != "read":
-              raise SystemExit("The APK build job must use contents: read.")
+          for job_name, job in jobs.items():
+              if job_name == "publish-tag-release":
+                  continue
+              effective = job.get("permissions", build.get("permissions", {}))
+              if effective.get("contents") != "read":
+                  raise SystemExit(f"Build job {job_name} must use contents: read.")
           publish = jobs.get("publish-tag-release", {})
           if publish.get("permissions", {}).get("contents") != "write":
               raise SystemExit("Only the tag-release job may use contents: write.")
