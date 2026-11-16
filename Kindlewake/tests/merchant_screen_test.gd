@@ -48,6 +48,14 @@ func _run_market_ui_test() -> void:
     _check(location.current_map_id == "crossing_shop", "town scene opens the requested market map")
     _check(location.merchant_screen != null and not location.merchant_screen.visible, "town scene owns a hidden exchange screen")
 
+    location.near_spot = {"kind":"party","name":"War Table","regional_exchange":false,"npc_active":true}
+    location._on_prompt_pressed()
+    var non_market_action := false
+    for child in location.spot_buttons.get_children():
+        if child is Button and (child as Button).text == "Open regional exchange":
+            non_market_action = true
+    _check(not non_market_action, "ordinary party counters do not expose regional trade access")
+
     location.near_spot = {
         "kind": "party",
         "name": "Shopkeeper Oswin",
