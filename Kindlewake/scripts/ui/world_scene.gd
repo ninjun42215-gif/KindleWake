@@ -605,14 +605,14 @@ func _draw_place(p: Dictionary) -> void:
         draw_colored_polygon(PackedVector2Array([c + Vector2(2, -30), c + Vector2(24, -18), c + Vector2(2, -6)]), Color("#7aaeb0"))
         top = 82.0
     elif kind == "village":
-        Art.draw_world(self, "house_a", c + Vector2(-20, 10), 0.29)
-        Art.draw_world(self, "house_c", c + Vector2(19, 9), 0.29)
+        Art.draw_world(self, "house_a", c + Vector2(-46, 10), 0.29)
+        Art.draw_world(self, "house_c", c + Vector2(46, 9), 0.29)
         Art.draw_world(self, "house_b", c + Vector2(0, 21), 0.29)
         top = 48.0
     elif kind == "ruin" or kind == "dungeon":
-        Art.draw_world(self, "dead_b", c + Vector2(-19, 16), 0.30)
+        Art.draw_world(self, "dead_b", c + Vector2(-42, 16), 0.30)
         Art.draw_world(self, "tower_a", c + Vector2(0, 18), 0.31, Color(0.82, 0.82, 0.82))
-        Art.draw_world(self, "rock_a", c + Vector2(19, 20), 0.32)
+        Art.draw_world(self, "rock_a", c + Vector2(42, 20), 0.32)
         top = 54.0
     elif kind == "gate":
         Art.draw_world(self, "tower_a", c + Vector2(0, 17), 0.34, Color(0.75, 0.68, 0.48))
@@ -625,8 +625,8 @@ func _draw_place(p: Dictionary) -> void:
     elif kind == "camp":
         var cleared: bool = bool(GameState.world_flags.get("camp_cleared", false))
         var tint: Color = Color(0.55, 0.55, 0.55) if cleared else Color(1.0, 0.82, 0.78)
-        Art.draw_world(self, "hut", c + Vector2(-19, 10), 0.29, tint)
-        Art.draw_world(self, "hut", c + Vector2(19, 10), 0.29, tint)
+        Art.draw_world(self, "hut", c + Vector2(-45, 10), 0.29, tint)
+        Art.draw_world(self, "hut", c + Vector2(45, 10), 0.29, tint)
         Art.draw_world(self, "hut", c + Vector2(0, 22), 0.29, tint)
         top = 48.0
     var font: Font = ThemeDB.fallback_font
