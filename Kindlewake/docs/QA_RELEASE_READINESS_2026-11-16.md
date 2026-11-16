@@ -107,9 +107,9 @@ The QA candidate branch changes only release workflow and release documentation 
 - Changes the production workflow's default permission to `contents: read`, grants `contents: write` only to the publish job and gives the rejected-confirmation job no repository permissions.
 - Refreshes `ANDROID_RELEASE_WORKFLOW.md` for the current 0.12.0 / Android version-code 1200 configuration, actual workflow names, current default-branch availability and outstanding release gates.
 
-**Candidate paths:** `.github/workflows/build-apk.yml`, `.github/workflows/publish-android-release.yml`, `Kindlewake/docs/ANDROID_RELEASE_WORKFLOW.md`, and this report. No game runtime code, save schema, campaign content, assets or player data is changed.
+**Candidate paths:** `.github/workflows/build-apk.yml`, `.github/workflows/publish-android-release.yml`, `.github/workflows/workflow-lint.yml`, `Kindlewake/docs/ANDROID_RELEASE_WORKFLOW.md`, and this report. No game runtime code, save schema, campaign content, assets or player data is changed.
 
-The candidate branch is based on `698765fd3b5d3cfbef13e301ebd544b8e93277cc`. It has not been merged. Run the branch's exact-head YAML lint and Android build checks before considering the changes complete.
+The candidate branch is based on `698765fd3b5d3cfbef13e301ebd544b8e93277cc`. The first YAML lint attempts failed because the repository's existing static contract still required the removed `publish-tag-release` job (`Only the tag-release job may use contents: write`). That obsolete assertion was replaced with checks that routine builds cannot publish, the protected publish job alone has write permission, and the release manifest uses the checked-out tag SHA. The updated lint contract is in commit `1e55970e288b5c0c476d378b432b474378f866a4`. Await the new exact-head checks before considering this candidate complete.
 
 ## Tags, production publishing and security
 
@@ -123,7 +123,7 @@ The candidate branch is based on `698765fd3b5d3cfbef13e301ebd544b8e93277cc`. It 
 
 ## Open PR and branch divergence
 
-All 13 open PR branches compared as **diverged** from main at `698765f`. Ahead/behind counts below are relative to that main SHA.
+The 13 pre-existing open PR branches compared as **diverged** from main at `698765f`. Ahead/behind counts below are relative to that main SHA. Newer PRs #147 (visual) and #148 (this QA candidate) are tracked separately below.
 
 | PR | Topic | Ahead | Behind |
 |---|---|---:|---:|
@@ -142,6 +142,21 @@ All 13 open PR branches compared as **diverged** from main at `698765f`. Ahead/b
 | [#22](https://github.com/ninjun42215-gif/KindleWake/pull/22) | Premium story/world direction | 1 | 97 |
 
 Do not merge these branches wholesale. In particular, #81 is 45 commits behind and should be selectively ported/re-tested from current main; #78, #66 and #63 contain broad, overlapping older code histories; #46 is substantially divergent. Resolve each feature in a fresh branch from current main and preserve its current data/save contracts.
+
+
+## Active visual branch blocker found
+
+PR [#147 — Rebuild Thornmere town and give the cast distinct character silhouettes](https://github.com/ninjun42215-gif/KindleWake/pull/147) is a separate, open visual branch at head `960de9e49984a3bc296ecfe84eb1a163f42889bb`. Its Workflow YAML Lint, Project Health Audit and Version Sync checks passed, but its Android build failed during the first Godot import:
+
+- [Build Android APK run](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43848357766) failed with `Cannot return value of type "null" because the function return type is "bool"` at `res://scripts/ui/battle_scene.gd:1259`.
+- `_draw_unit_sprite(...)->bool` uses a bare `return` after drawing the player atlas sprite. It must return `true` in that branch; otherwise Godot 4.2.2 rejects the script before the APK can be exported.
+- A review comment was posted on PR #147 with the exact line and suggested one-line correction. This QA branch did not modify the visual branch.
+
+Keep PR #147 unmerged until the owner fixes the parse error and reruns the Android build. No APK artifact was produced by the failed run; only the small failure log artifact was uploaded.
+
+## This QA candidate
+
+PR [#148 — QA: protect production release publishing and provenance](https://github.com/ninjun42215-gif/KindleWake/pull/148) is intentionally draft, based on main SHA `698765fd3b5d3cfbef13e301ebd544b8e93277cc`, with current head after the workflow-lint contract update pending verification. The repository's Safe Auto Merge run [43848459491](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43848459491) skipped this draft as intended. No merge is authorized.
 
 ## Remaining release gates and next actions
 
