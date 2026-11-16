@@ -1,5 +1,7 @@
 extends Node2D
 
+const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
+
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
 const BrinegateQuestSystem = preload("res://scripts/core/brinegate_quest_system.gd")
 const MarenQuestSystem = preload("res://scripts/core/maren_quest_system.gd")
@@ -820,7 +822,7 @@ func _rest_at_inn() -> void:
         return
     GameState.party.gold -= 20
     for cid in GameState.party.roster:
-        var sheet: CharacterSheet = GameState.party.sheet(cid)
+        var sheet: CharacterSheetScript = GameState.party.sheet(cid)
         if sheet != null:
             sheet.base_stats["mor"] = 70
     spot_text.text += "\n\nThe company rests. Morale is restored across the roster."
@@ -836,7 +838,7 @@ func _recruit(spot: Dictionary) -> void:
     if not bool(result.get("ok", false)):
         spot_text.text += "\n\n" + str(result.get("reason", "There is no available recruit."))
         return
-    var member: CharacterSheet = GameState.party.sheet(cid)
+    var member: CharacterSheetScript = GameState.party.sheet(cid)
     spot_text.text += "\n\n" + str(spot.get("name", "The traveller")) + " has joined the company. Loyalty: %d/100." % member.loyalty
     if not GameState.party.roster.is_empty():
         var leader_id: String = str(GameState.party.roster[0])
