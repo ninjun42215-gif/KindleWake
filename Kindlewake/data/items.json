@@ -1643,6 +1643,102 @@
       "price": 60,
       "trade_good": true,
       "description": "Strong woven kelp fibre used for nets, sail patches and waterproof bindings."
+    },
+    "trade_grain": {
+      "name": "Frontier Grain",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 8,
+      "trade_good": true,
+      "description": "Hardy sacks of wheat and barley from the frontier farms."
+    },
+    "trade_salt": {
+      "name": "White Salt",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 14,
+      "trade_good": true,
+      "description": "Preserving salt harvested from the coastal pans."
+    },
+    "trade_dried_fish": {
+      "name": "Dried Fish",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 12,
+      "trade_good": true,
+      "description": "A durable coastal staple packed for long journeys."
+    },
+    "trade_timber": {
+      "name": "Oak Timber",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 18,
+      "trade_good": true,
+      "description": "Cut timber for repairs, shipyards and construction."
+    },
+    "trade_iron_ore": {
+      "name": "Iron Ore",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 26,
+      "trade_good": true,
+      "description": "Raw ore destined for the foundries and smithies."
+    },
+    "trade_herbs": {
+      "name": "Medicinal Herbs",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 20,
+      "trade_good": true,
+      "description": "Wild herbs gathered by frontier apothecaries."
+    },
+    "trade_wool": {
+      "name": "Fine Wool",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 16,
+      "trade_good": true,
+      "description": "Washed fleece from upland sheep farms."
+    },
+    "trade_leather": {
+      "name": "Tanned Leather",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 22,
+      "trade_good": true,
+      "description": "Treated hides used for armour and saddlery."
+    },
+    "trade_honey": {
+      "name": "Forest Honey",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 19,
+      "trade_good": true,
+      "description": "Sweet honey from woodland apiaries."
+    },
+    "trade_pearls": {
+      "name": "Brinegate Pearls",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 65,
+      "trade_good": true,
+      "description": "Lustrous pearls harvested from sheltered reefs."
+    },
+    "trade_glassware": {
+      "name": "Blown Glassware",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 38,
+      "trade_good": true,
+      "description": "Fragile vessels from Brinegate's coastal workshops."
+    },
+    "trade_spices": {
+      "name": "Imported Spices",
+      "slot": "trade_good",
+      "rarity": "common",
+      "price": 54,
+      "trade_good": true,
+      "description": "Aromatic spices brought through distant sea lanes."
     }
   },
   "grades": {
