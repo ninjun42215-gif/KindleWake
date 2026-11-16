@@ -132,6 +132,8 @@ func _save() -> void:
 
 func _add(label: String, callback: Callable) -> void:
 	var button := Button.new()
+	button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+	button.focus_mode = Control.FOCUS_NONE
 	button.text = label
 	button.custom_minimum_size.y = 58
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -150,6 +152,8 @@ func _show_blocked() -> void:
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(label)
 	var button := Button.new()
+	button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+	button.focus_mode = Control.FOCUS_NONE
 	button.text = "Return to title"
 	button.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	button.pressed.connect(func(): get_tree().change_scene_to_file("res://TitleScreen.tscn"))

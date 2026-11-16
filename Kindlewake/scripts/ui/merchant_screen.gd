@@ -47,6 +47,8 @@ func _ready() -> void:
     title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     header.add_child(title)
     var close_button := Button.new()
+    close_button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+    close_button.focus_mode = Control.FOCUS_NONE
     close_button.text = "CLOSE"
     close_button.custom_minimum_size = Vector2(88, 44)
     PremiumUITheme.apply_button(close_button)
@@ -70,6 +72,9 @@ func _ready() -> void:
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+    scroll.scroll_vertical_custom_step = 64.0
+    scroll.follow_focus = true
     outer.add_child(scroll)
 
     goods_list = VBoxContainer.new()
@@ -150,6 +155,8 @@ func _build_good_row(quote: Dictionary) -> Control:
     actions.add_child(quantity)
 
     var buy_button := Button.new()
+    buy_button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+    buy_button.focus_mode = Control.FOCUS_NONE
     buy_button.text = "BUY"
     buy_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     buy_button.custom_minimum_size = Vector2(76, 42)
@@ -161,6 +168,8 @@ func _build_good_row(quote: Dictionary) -> Control:
     actions.add_child(buy_button)
 
     var sell_button := Button.new()
+    sell_button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+    sell_button.focus_mode = Control.FOCUS_NONE
     sell_button.text = "SELL"
     sell_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     sell_button.custom_minimum_size = Vector2(76, 42)
