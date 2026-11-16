@@ -34,6 +34,7 @@ func _build_ui() -> void:
     # preview, options, attributes and actions) moves naturally as one page.
     var viewport_size: Vector2 = get_viewport_rect().size
     var narrow: bool = viewport_size.x < 900.0
+    var landscape_layout: bool = viewport_size.x > viewport_size.y
     # Landscape phones can have a wide viewport but very little vertical room.
     # Compact the preview in that case so the first creator controls are visible
     # immediately instead of presenting a portrait that fills the whole screen.
@@ -62,30 +63,47 @@ func _build_ui() -> void:
     scroll.follow_focus = true
     margin.add_child(scroll)
 
-    var page := VBoxContainer.new()
+    var page: Container = HBoxContainer.new() if landscape_layout else VBoxContainer.new()
     page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    page.add_theme_constant_override("separation", 10 if short_viewport else (18 if narrow else 22))
+    page.add_theme_constant_override("separation", 18 if landscape_layout else (10 if short_viewport else (18 if narrow else 22)))
     scroll.add_child(page)
+
+    var intro_column: VBoxContainer
+    var options_column: VBoxContainer
+    if landscape_layout:
+        intro_column = VBoxContainer.new()
+        options_column = VBoxContainer.new()
+        intro_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        options_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        intro_column.size_flags_stretch_ratio = 0.85
+        options_column.size_flags_stretch_ratio = 1.5
+        intro_column.add_theme_constant_override("separation", 8)
+        options_column.add_theme_constant_override("separation", 10)
+        page.add_child(intro_column)
+        page.add_child(options_column)
+    else:
+        intro_column = page
+        options_column = page
 
     var heading := Label.new()
     heading.text = "CREATE YOUR HERO"
     heading.add_theme_font_size_override("font_size", 24 if short_viewport else (27 if narrow else 34))
     heading.add_theme_color_override("font_color", Color("#e5c98d"))
     heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    page.add_child(heading)
+    intro_column.add_child(heading)
 
     var subtitle := Label.new()
     subtitle.text = "Shape the heir who will reclaim Kaer Sethorn. Every choice helps define your place in the realm."
     subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     subtitle.add_theme_font_size_override("font_size", 13 if short_viewport else (14 if narrow else 16))
     subtitle.add_theme_color_override("font_color", Color("#b8c2cc"))
-    page.add_child(subtitle)
+    intro_column.add_child(subtitle)
     if short_viewport:
         var scroll_hint := Label.new()
         scroll_hint.text = "Scroll down to customize your hero and begin the chronicle."
         scroll_hint.add_theme_font_size_override("font_size", 12)
         scroll_hint.add_theme_color_override("font_color", Color("#e5c98d"))
-        page.add_child(scroll_hint)
+        intro_column.add_child(scroll_hint)
 
     var preview_panel := PanelContainer.new()
     preview_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -99,7 +117,7 @@ func _build_ui() -> void:
     preview_style.content_margin_top = 12
     preview_style.content_margin_bottom = 12
     preview_panel.add_theme_stylebox_override("panel", preview_style)
-    page.add_child(preview_panel)
+    intro_column.add_child(preview_panel)
 
     var preview_content := VBoxContainer.new()
     preview_content.add_theme_constant_override("separation", 8)
@@ -112,14 +130,14 @@ func _build_ui() -> void:
     preview_content.add_child(preview_title)
 
     preview = PreviewScript.new()
-    preview.custom_minimum_size = Vector2(150, 190) if short_viewport else (Vector2(260, 360) if narrow else Vector2(320, 400))
+    preview.custom_minimum_size = Vector2(130, 160) if landscape_layout else (Vector2(150, 190) if short_viewport else (Vector2(260, 360) if narrow else Vector2(320, 400)))
     preview.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
     preview.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
     preview_content.add_child(preview)
     preview_text = Label.new()
     preview_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     preview_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-    preview_text.add_theme_font_size_override("font_size", 12 if short_viewport else (14 if narrow else 15))
+    preview_text.add_theme_font_size_override("font_size", 11 if landscape_layout else (12 if short_viewport else (14 if narrow else 15)))
     preview_text.add_theme_color_override("font_color", Color("#c8d0d8"))
     preview_content.add_child(preview_text)
 
@@ -135,7 +153,7 @@ func _build_ui() -> void:
     form_style.content_margin_top = 14
     form_style.content_margin_bottom = 14
     form_panel.add_theme_stylebox_override("panel", form_style)
-    page.add_child(form_panel)
+    options_column.add_child(form_panel)
 
     var form := VBoxContainer.new()
     form.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -170,7 +188,7 @@ func _build_ui() -> void:
     var actions := VBoxContainer.new()
     actions.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     actions.add_theme_constant_override("separation", 10)
-    page.add_child(actions)
+    options_column.add_child(actions)
     status_label = Label.new()
     status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
