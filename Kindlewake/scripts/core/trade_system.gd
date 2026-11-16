@@ -91,7 +91,7 @@ static func cargo_weight(party: Variant, goods: Dictionary) -> int:
     for good_value in definitions.keys():
         var good_id := str(good_value)
         var definition: Dictionary = definitions[good_id]
-        total += maxi(0, party.item_count(good_id)) * maxi(0, int(definition.get("weight", 1)))
+        total += maxi(0, party.item_count(good_id)) * maxi(1, int(definition.get("weight", 1)))
     return total
 
 
@@ -135,7 +135,7 @@ static func quote(region_id: String, good_id: String, goods: Dictionary, state: 
         "sell_price": maxi(1, roundi(float(price) * sell_ratio)),
         "stock": int(local.get("stock", {}).get(good_id, 0)),
         "owned": 0,
-        "weight": maxi(0, int(good.get("weight", 1)))
+        "weight": maxi(1, int(good.get("weight", 1)))
     }
 
 
