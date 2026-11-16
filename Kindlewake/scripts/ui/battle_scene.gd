@@ -1094,7 +1094,17 @@ func _draw_atlas_enemy(u: BattleUnitScript, p: Vector2, archetype: String, fdir:
         tint = Color(0.90, 1.0, 0.84, 1.0)
     elif archetype == "cultist":
         tint = Color(1.0, 0.88, 0.84, 1.0)
-    if not Art.draw_character(self, archetype, p + Vector2(0, 8), 0.72, tint):
+    var motion: String = "idle"
+    var motion_time: float = anim_clock + float(u.id) * 0.31
+    var override: Dictionary = anim_override.get(u.id, {})
+    if not override.is_empty() and anim_clock - float(override.get("start", 0.0)) < Art.unit_duration("attack") + 0.12:
+        motion = "attack"
+        motion_time = anim_clock - float(override.get("start", 0.0))
+    elif visual_pos.get(u.id, p) != cell_to_world(u.cell):
+        motion = "walk"
+    elif str(u.class_id) in ["mage", "cleric"] and u.has_acted:
+        motion = "skill"
+    if not Art.draw_character_animated(self, archetype, p + Vector2(0, 8), motion_time, motion, 0.72, tint, fdir.x < 0.0):
         return false
     draw_line(p + Vector2(0, 2), p + Vector2(0, 2) + fdir * 16.0, Color(1, 1, 1, 0.55), 2.0)
     var ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
