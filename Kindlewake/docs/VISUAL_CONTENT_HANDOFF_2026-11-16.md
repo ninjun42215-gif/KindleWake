@@ -16,7 +16,7 @@
 - character_preview.gd still draws a procedural protagonist bust. It is not a finished portrait, and named recruit portraits must not be invented or assigned without matching the exact character sprite identity.
 - The project has seven authored continent records and vector map silhouettes. The atlas is a worldbuilding/navigation surface; it is not proof that all seven continents have playable regional maps.
 - Legacy voxel assets and optional sprite archives have unresolved or restrictive provenance and must remain excluded from runtime/release use unless authoritative rights are established. The used Quaternius and Zerie sources have recorded evidence; new art in this branch is original project-authored vector work.
-- Existing open engineering PRs touch core party state/tests, build workflows and README/handoff files. The visual tranche therefore avoids those files and confines runtime integration to the atlas scene child, its new script and original art/provenance documentation.
+- Existing open engineering PRs touch core party state/tests, build workflows, README/handoff files and selected world/battle UI files; a separate stale atlas-polish branch also changes global_atlas.gd. The visual tranche avoids those shared files and confines runtime integration to GlobalAtlas.tscn, its new draw-only child script and original art/provenance documentation.
 
 ## Delivered vertical slice
 
