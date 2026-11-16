@@ -2423,6 +2423,13 @@ func _test_shop_and_screen() -> void:
     check(ItemInfo.sigil_progress({"id": "mend", "ap": 50}, mend_def).contains("10 AP to next"), "rune progress names the AP still needed")
     # --- shop rules
     var ps: PartyState = PartyState.new_game(gd.start, gd.characters)
+    var guarded_count: int = ps.item_count("arming_sword")
+    ps.add_item("arming_sword", -1)
+    check(ps.item_count("arming_sword") == guarded_count, "negative item grants cannot consume existing inventory")
+    check(not ps.remove_item("arming_sword", -1) and ps.item_count("arming_sword") == guarded_count, "negative item removals are rejected without duplicating items")
+    check(not ps.remove_item("arming_sword", 0) and ps.item_count("arming_sword") == guarded_count, "zero-quantity removals are rejected as invalid operations")
+    ps.add_item("", 1)
+    check(ps.item_count("") == 0, "empty item identifiers cannot create inventory entries")
     var arming_price: int = ShopSystem.item_price("arming_sword", db)
     check(arming_price > 0, "the Wayfarer Blade has a price")
     ps.gold = arming_price - 1
