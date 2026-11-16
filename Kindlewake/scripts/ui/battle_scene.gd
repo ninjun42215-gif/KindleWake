@@ -1873,6 +1873,32 @@ func _preview_text() -> String:
     return "\n".join(PackedStringArray(lines)).strip_edges()
 
 
+## Resolve a real portrait for the turn-order strip. Allies use their selected character portrait;
+## enemies use their own species/archetype cell from the original character atlas.
+func _timeline_portrait(u: BattleUnitScript) -> Texture2D:
+    if u.team == "player" and u.portrait_id != "":
+        var portrait_path := "res://assets/art/portraits/%s.svg" % u.portrait_id
+        if ResourceLoader.exists(portrait_path):
+            var portrait := load(portrait_path) as Texture2D
+            if portrait != null:
+                return portrait
+    var archetype: String
+    if u.team == "enemy":
+        archetype = Art.character_for_enemy(u.character_id, u.display_name)
+    else:
+        archetype = Art.character_for_npc(u.display_name, u.class_id)
+    if not Art.CHARACTER_CELLS.has(archetype):
+        archetype = "guard" if u.team == "player" else "rogue"
+    var cell: Vector2i = Art.CHARACTER_CELLS[archetype]
+    var atlas := load(Art.CHARACTER_ATLAS_PATH) as Texture2D
+    if atlas == null:
+        return null
+    var portrait := AtlasTexture.new()
+    portrait.atlas = atlas
+    portrait.region = Rect2(Vector2(cell.x * 128, cell.y * 160), Vector2(128, 160))
+    return portrait
+
+
 func _refresh_timeline() -> void:
     for child in timeline_box.get_children():
         timeline_box.remove_child(child)
@@ -1888,15 +1914,31 @@ func _refresh_timeline() -> void:
         sb.border_color = Color(1.0, 0.86, 0.3) if first else Color(0, 0, 0, 0.6)
         sb.set_corner_radius_all(6)
         panel.add_theme_stylebox_override("panel", sb)
-        panel.custom_minimum_size = Vector2(78, 50)
+        panel.custom_minimum_size = Vector2(72, 82)
         panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        var stack := VBoxContainer.new()
+        stack.add_theme_constant_override("separation", 2)
+        stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        var portrait := TextureRect.new()
+        portrait.texture = _timeline_portrait(u)
+        portrait.custom_minimum_size = Vector2(58, 58)
+        portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+        portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+        portrait.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+        portrait.tooltip_text = u.display_name
+        portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        stack.add_child(portrait)
         var lbl := Label.new()
-        lbl.text = _short_name(u)
+        lbl.text = u.display_name
         lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
         lbl.clip_text = true
         lbl.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-        lbl.add_theme_font_size_override("font_size", 15)
+        lbl.add_theme_font_size_override("font_size", 10)
         lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-        panel.add_child(lbl)
+        lbl.custom_minimum_size = Vector2(64, 14)
+        lbl.tooltip_text = u.display_name
+        stack.add_child(lbl)
+        panel.add_child(stack)
+        panel.tooltip_text = "Next: %s (%s)" % [u.display_name, "Ally" if u.team == "player" else "Enemy"]
         timeline_box.add_child(panel)
         first = false

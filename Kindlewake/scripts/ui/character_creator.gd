@@ -20,7 +20,8 @@ var confirm_button: Button
 var weapon_option: Button
 var choice_popups: Dictionary = {}
 var allocation_labels: Dictionary = {}
-var allocation_sliders: Dictionary = {}
+var allocation_plus_buttons: Dictionary = {}
+var allocation_minus_buttons: Dictionary = {}
 var allocation_total_label: Label
 var compact_preview_summary := false
 
@@ -461,29 +462,50 @@ func _add_attribute_allocation(parent: VBoxContainer) -> void:
     for stat in ["str", "dex", "int", "vit", "spd", "lck"]:
         var row := HBoxContainer.new()
         row.add_theme_constant_override("separation", 8)
+        row.custom_minimum_size = Vector2(0, 48)
         parent.add_child(row)
         var caption := Label.new()
         caption.text = stat.to_upper()
-        caption.custom_minimum_size = Vector2(48, 0)
+        caption.custom_minimum_size = Vector2(52, 0)
+        caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
         row.add_child(caption)
-        var slider := HSlider.new()
-        slider.min_value = 0
-        slider.max_value = 5
-        slider.step = 1
-        slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-        slider.value = int(allocation.get(stat, 0))
-        row.add_child(slider)
+        var minus := _make_button("−", 0)
+        minus.custom_minimum_size = Vector2(54, 46)
+        minus.pressed.connect(_adjust_stat_allocation.bind(stat, -1))
+        row.add_child(minus)
         var value_label := Label.new()
-        value_label.custom_minimum_size = Vector2(24, 0)
-        value_label.text = str(int(slider.value))
+        value_label.custom_minimum_size = Vector2(42, 0)
+        value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+        value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+        value_label.add_theme_font_size_override("font_size", 20)
+        value_label.text = str(int(allocation.get(stat, 0)))
         row.add_child(value_label)
+        var plus := _make_button("+", 0)
+        plus.custom_minimum_size = Vector2(54, 46)
+        plus.pressed.connect(_adjust_stat_allocation.bind(stat, 1))
+        row.add_child(plus)
         allocation_labels[stat] = value_label
-        allocation_sliders[stat] = slider
-        slider.value_changed.connect(_on_stat_allocation_changed.bind(stat))
+        allocation_plus_buttons[stat] = plus
+        allocation_minus_buttons[stat] = minus
     allocation_total_label = Label.new()
     allocation_total_label.add_theme_color_override("font_color", Color("#b8c2cc"))
+    allocation_total_label.add_theme_font_size_override("font_size", 16)
     parent.add_child(allocation_total_label)
     _refresh_allocation_total()
+
+
+func _adjust_stat_allocation(stat: String, delta: int) -> void:
+    var allocation: Dictionary = profile.get("stat_allocation", {})
+    var current := int(allocation.get(stat, 0))
+    var budget := int(config.get("stat_points", 8))
+    var spent := 0
+    for key in ["str", "dex", "int", "vit", "spd", "lck"]:
+        spent += int(allocation.get(key, 0))
+    if delta > 0 and (current >= 5 or spent >= budget):
+        return
+    if delta < 0 and current <= 0:
+        return
+    _on_stat_allocation_changed(float(current + delta), stat)
 
 
 func _on_stat_allocation_changed(value: float, stat: String) -> void:
@@ -496,15 +518,10 @@ func _on_stat_allocation_changed(value: float, stat: String) -> void:
     var allowed_value := clampi(int(value), 0, mini(5, maxi(0, budget - spent_elsewhere)))
     allocation[stat] = allowed_value
     profile["stat_allocation"] = allocation
-    if allocation_sliders.has(stat):
-        var slider: HSlider = allocation_sliders[stat]
-        if int(slider.value) != allowed_value:
-            slider.set_value_no_signal(float(allowed_value))
     if allocation_labels.has(stat):
         (allocation_labels[stat] as Label).text = str(allowed_value)
     _refresh_allocation_total()
     _refresh_preview()
-
 
 func _refresh_allocation_total() -> void:
     if allocation_total_label == null:
@@ -514,7 +531,7 @@ func _refresh_allocation_total() -> void:
     for stat in ["str", "dex", "int", "vit", "spd", "lck"]:
         spent += int(allocation.get(stat, 0))
     var total := int(config.get("stat_points", 8))
-    allocation_total_label.text = "Attribute points: %d / %d" % [spent, total]
+    allocation_total_label.text = "Points remaining: %d / %d   •   Allocated: %d" % [total - spent, total, spent]
     allocation_total_label.add_theme_color_override("font_color", Color("#a8c7a0") if spent == total else Color("#e6a18f"))
 
 

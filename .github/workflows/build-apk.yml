@@ -87,10 +87,10 @@ jobs:
           script: |
             # Match the HONOR 400's portrait logical viewport: 440 x 952 dp
             # (1264 x 2736 at 460 dpi) while keeping emulator rendering light.
-            adb shell wm size 632x1368
+            adb shell wm size 1368x632
             adb shell wm density 230
             adb shell settings put system accelerometer_rotation 0
-            adb shell settings put system user_rotation 0
+            adb shell settings put system user_rotation 1
             adb shell settings put system font_scale 1.0
             adb install -r Kindlewake/dist/Kindlewake.apk
             adb logcat -c

@@ -42,11 +42,12 @@ func _run_ui_test() -> void:
     await get_tree().process_frame
 
     _check(creator.is_inside_tree(), "character creator enters the scene tree")
-    _check(int(ProjectSettings.get_setting("display/window/handheld/orientation", 0)) == 1,
-        "Android project orientation is locked to portrait for the phone-first interface")
+    _check(int(ProjectSettings.get_setting("display/window/handheld/orientation", 0)) == 0,
+        "Android project orientation remains landscape")
     _check(creator.preview != null and is_instance_valid(creator.preview), "creator builds its live portrait preview")
     _check(creator.name_input != null and creator.confirm_button != null, "creator builds identity input and confirmation action")
-    _check(creator.allocation_sliders.size() == 6, "creator builds all six attribute allocation controls")
+    _check(creator.allocation_plus_buttons.size() == 6 and creator.allocation_minus_buttons.size() == 6,
+        "creator builds plus and minus controls for all six attributes")
     _check(creator.presentation_buttons.size() == 3, "creator exposes all presentation radio choices")
     _check(creator.portrait_buttons.size() == 12, "creator exposes the complete twelve-portrait gallery")
     var all_portraits_load := true
@@ -55,6 +56,14 @@ func _run_ui_test() -> void:
         if not ResourceLoader.exists(portrait_path) or load(portrait_path) == null:
             all_portraits_load = false
     _check(all_portraits_load, "all twelve portrait assets load as Godot textures")
+    var every_character_has_portrait := true
+    for character_id in GameData.characters.keys():
+        var character: Dictionary = GameData.characters[character_id]
+        var portrait_id := str(character.get("portrait_id", ""))
+        var portrait_path := "res://assets/art/portraits/%s.svg" % portrait_id
+        if portrait_id == "" or not ResourceLoader.exists(portrait_path):
+            every_character_has_portrait = false
+    _check(every_character_has_portrait, "every character definition has an assigned portrait asset")
     if creator.portrait_buttons.has("auburn_ranger"):
         creator._on_portrait_button_toggled(true, "auburn_ranger")
         _check(str(creator.profile.get("portrait_id", "")) == "auburn_ranger",
@@ -85,12 +94,19 @@ func _run_ui_test() -> void:
             _check(choice_button.text.begins_with(expected_label), field + " selector displays the chosen value")
         else:
             _check(false, field + " exposes at least two selectable options")
-    creator._on_stat_allocation_changed(5.0, "str")
+    var before_plus := int(creator.profile.get("stat_allocation", {}).get("str", 0))
+    creator._adjust_stat_allocation("str", -1)
+    _check(int(creator.profile.get("stat_allocation", {}).get("str", 0)) == before_plus - 1,
+        "minus button refunds one attribute point")
+    creator._adjust_stat_allocation("str", 1)
+    _check(int(creator.profile.get("stat_allocation", {}).get("str", 0)) == before_plus,
+        "plus button allocates one attribute point")
+    creator._adjust_stat_allocation("str", 5)
     var allocated_after_clamp := 0
     for stat in ["str", "dex", "int", "vit", "spd", "lck"]:
         allocated_after_clamp += int(creator.profile.get("stat_allocation", {}).get(stat, 0))
     _check(allocated_after_clamp <= int(GameData.character_creation.get("stat_points", 8)),
-        "attribute sliders cannot overspend the starting point budget")
+        "plus and minus allocation controls cannot overspend the starting point budget")
     _check(creator.confirm_button != null and not creator.confirm_button.disabled, "valid default profile enables Begin Chronicle")
 
     var emitted_profiles: Array = []
@@ -112,6 +128,13 @@ func _run_ui_test() -> void:
         _check(str(protagonist_def.get("creation", {}).get("portrait_id", "")) == "torren_redcloak",
             "battle-ready protagonist definition carries the selected portrait identity")
         _check(sheet.portrait_id == "torren_redcloak", "the protagonist character sheet receives the selected portrait")
+        var party := PartyState.new_game(GameData.start, GameData.characters, protagonist_def)
+        var every_party_member_has_portrait := true
+        for member_id in party.roster:
+            var member_sheet = party.sheet(member_id)
+            if member_sheet == null or member_sheet.portrait_id == "" or not ResourceLoader.exists("res://assets/art/portraits/%s.svg" % member_sheet.portrait_id):
+                every_party_member_has_portrait = false
+        _check(every_party_member_has_portrait, "every starting party member receives a loadable portrait")
         var restored_sheet = CharacterSheet.from_dict(sheet.to_dict())
         _check(restored_sheet.portrait_id == "torren_redcloak", "the selected portrait survives character save serialization")
 

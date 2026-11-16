@@ -50,7 +50,7 @@ static func from_def(char_id: String, def: Dictionary):
     s.character_id = char_id
     s.display_name = str(def.get("name", char_id))
     var creation: Dictionary = def.get("creation", {})
-    s.portrait_id = str(creation.get("portrait_id", ""))
+    s.portrait_id = str(creation.get("portrait_id", def.get("portrait_id", "")))
     s.appearance = creation.duplicate(true)
     s.house = str(def.get("house", ""))
     s.class_id = str(def.get("class_id", ""))
