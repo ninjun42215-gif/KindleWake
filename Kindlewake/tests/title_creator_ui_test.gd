@@ -22,6 +22,8 @@ func _check(condition: bool, label: String) -> void:
 
 func _find_continue_button(title: TitleScreenScript) -> Button:
     for child in title.content_box.get_children():
+        if child.is_queued_for_deletion():
+            continue
         if child is Button and (child as Button).text == "CONTINUE":
             return child as Button
     return null
@@ -72,6 +74,7 @@ func _run_ui_test() -> void:
 
     _check(GameState.save_campaign("1"), "a valid campaign can be saved for the Continue menu test")
     title._show_main()
+    await get_tree().process_frame
     continue_button = _find_continue_button(title)
     _check(continue_button != null and not continue_button.disabled,
         "Continue becomes available when a valid campaign save exists")
