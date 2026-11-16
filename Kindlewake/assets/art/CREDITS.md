@@ -23,3 +23,11 @@ Structured machine-readable inventory: `Kindlewake/data/asset_provenance.json`. 
 ## 2026-11-10 visual asset upgrade
 
 Eight original vector settlement illustrations now replace the legacy unverified voxel-building sprites at runtime. The artwork uses a shared stone, timber, warm-window and muted roof palette, with distinct silhouettes for houses, frontier huts, keeps and towers. `scripts/ui/art.gd` routes these named assets to SVG textures. The legacy PNG files are retained only as historical source files and are not used by the game.
+
+
+## 2026-11-16 — Seven-continent heraldry atlas
+
+- atlas/continent_sigils.svg is original KindleWake vector artwork: seven 128×128 emblems in one 896×128 atlas.
+- The emblems represent existing canon only: Eldrimar (broken crown), Thalassar (beacon and tide), Varakhan (sun and caravan well), Nhalor (mountain and aurora), Veyrwood (leaf and roots), Asterreach (stormglass spire) and Ilyr (far lantern).
+- Runtime integration is the ContinentHeraldryLayer child of GlobalAtlas.tscn; the layer maps stable continent ids to atlas cells and ignores input.
+- Source: authored in this repository by the KindleWake project. No third-party image, font, sound or external asset was used.
