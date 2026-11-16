@@ -730,7 +730,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
             market_test_scene = PROJECT / "tests" / "merchant_screen_test.tscn"
             if market_test_scene.is_file():
-                say("\\n[5a.1] Running regional commodity exchange UI interaction test")
+                say("\n[5a.1] Running regional commodity exchange UI interaction test")
                 code, out = run([str(godot), "--headless", "--path", str(PROJECT),
                                  "res://tests/merchant_screen_test.tscn"],
                                 env=env, log=logs / "merchant_screen_test.txt", timeout=300)
