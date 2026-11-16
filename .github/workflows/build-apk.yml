@@ -59,6 +59,24 @@ jobs:
         working-directory: Kindlewake
         run: python tools/build_apk.py --strict --with-balance
 
+      - name: Install and launch APK in Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          script: |
+            adb install -r Kindlewake/dist/Kindlewake.apk
+            adb logcat -c
+            adb shell monkey -p com.kindlewake.game 1
+            sleep 20
+            test -n "$(adb shell pidof com.kindlewake.game)"
+            if adb logcat -d | grep -E "FATAL EXCEPTION|Fatal signal"; then
+              echo "Android runtime crash detected"
+              exit 1
+            fi
+
       - name: Upload the APK
         uses: actions/upload-artifact@v4
         with:
