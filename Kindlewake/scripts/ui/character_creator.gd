@@ -10,6 +10,7 @@ const PreviewScript = preload("res://scripts/ui/character_preview.gd")
 var config: Dictionary = {}
 var profile: Dictionary = {}
 var choices: Dictionary = {}
+var presentation_buttons: Dictionary = {}
 var name_input: LineEdit
 var preview: CharacterPreview
 var preview_text: Label
@@ -247,6 +248,7 @@ func _add_presentation_radios(parent: VBoxContainer) -> void:
         radio.add_theme_font_size_override("font_size", 14)
         radio.button_pressed = str(profile.get("presentation", "")) == id
         radio.toggled.connect(_on_presentation_toggled.bind(id))
+        presentation_buttons[id] = radio
         row.add_child(radio)
 
 
