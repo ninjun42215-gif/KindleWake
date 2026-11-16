@@ -1,0 +1,33 @@
+name: Portrait Coverage Audit
+
+on:
+  push:
+    branches:
+      - feature/complete-portrait-coverage-audit
+  pull_request:
+    paths:
+      - "Kindlewake/data/portrait_registry.json"
+      - "Kindlewake/data/characters.json"
+      - "Kindlewake/data/locations.json"
+      - "Kindlewake/data/character_creation.json"
+      - "Kindlewake/assets/art/portraits/**"
+      - "Kindlewake/scripts/core/game_data.gd"
+      - "Kindlewake/scripts/ui/party_screen.gd"
+      - "Kindlewake/tests/test_portrait_registry.py"
+      - ".github/workflows/portrait-coverage-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  registry-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Validate portrait registry and referenced assets
+        run: python3 Kindlewake/tests/test_portrait_registry.py
