@@ -1719,7 +1719,12 @@ func _request_return_to_title() -> void:
 
 
 func _return_to_title() -> void:
-    if not controller.units.is_empty() and controller.result == "":
+    if controller.result == "" and not controller.units.is_empty():
+        var active: BattleUnitScript = controller.active_unit()
+        if ai_busy or input_locked or active == null or active.team != "player":
+            _on_log("Wait for your turn to return to the title screen safely.")
+            menu_panel.visible = true
+            return
         _autosave()
     GameState.pending_battle = {}
     get_tree().change_scene_to_file("res://TitleScreen.tscn")
