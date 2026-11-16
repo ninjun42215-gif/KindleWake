@@ -42,6 +42,8 @@ func _run_ui_test() -> void:
     await get_tree().process_frame
 
     _check(creator.is_inside_tree(), "character creator enters the scene tree")
+    _check(int(ProjectSettings.get_setting("display/window/handheld/orientation", 0)) == 1,
+        "Android project orientation is locked to portrait for the phone-first interface")
     _check(creator.preview != null and is_instance_valid(creator.preview), "creator builds its live portrait preview")
     _check(creator.name_input != null and creator.confirm_button != null, "creator builds identity input and confirmation action")
     _check(creator.allocation_sliders.size() == 6, "creator builds all six attribute allocation controls")
