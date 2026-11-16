@@ -174,6 +174,7 @@ func _skin(b: Button, bg: Color, border: Color, text_col: Color = COL_TEXT) -> v
     b.add_theme_color_override("font_disabled_color", COL_DIM.darkened(0.3))
     b.focus_mode = Control.FOCUS_NONE
     b.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+    b.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 
 
 func _button(text: String, handler: Callable, min_size: Vector2 = Vector2(0, 56), font_size: int = 20, primary: bool = false) -> Button:
@@ -262,6 +263,9 @@ func _ignore_mouse(n: Node) -> void:
 func _scroll_box(separation: int = 8) -> Array:
     var scroll := ScrollContainer.new()
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+    scroll.scroll_vertical_custom_step = 64.0
+    scroll.follow_focus = true
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     var box := VBoxContainer.new()
