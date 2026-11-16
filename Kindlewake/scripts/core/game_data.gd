@@ -34,6 +34,7 @@ var companion_quests: Dictionary = {}     # authored recruitable-ally quest defi
 var world_expansion: Dictionary = {}      # authored dungeons and capturable locations
 var regional_boss_encounters: Dictionary = {} # regional guardian phase briefs
 var battles: Dictionary = {}
+var trade_economy: Dictionary = {}        # local commodity market definitions
 
 
 func _ready() -> void:
@@ -66,6 +67,7 @@ func reload() -> void:
     companion_quests = _load_json("companion_quests.json").get("quests", {})
     world_expansion = _load_json("world_expansion_catalog.json")
     regional_boss_encounters = _load_json("regional_boss_encounters.json").get("encounters", {})
+    trade_economy = _load_json("trade_goods.json")
     locations = _load_json("locations.json")
     character_creation = _load_json("character_creation.json")
     battles.clear()

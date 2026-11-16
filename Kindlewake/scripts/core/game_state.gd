@@ -11,6 +11,7 @@ const EmpireDevelopmentSystem = preload("res://scripts/core/empire_development_s
 const RelationshipSystem = preload("res://scripts/core/relationship_system.gd")
 const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 const ChronicleSystem = preload("res://scripts/core/chronicle_system.gd")
+const TradeSystemScript = preload("res://scripts/core/trade_system.gd")
 ## Runtime campaign state (autoload "GameState"). Milestone 2: the persistent party.
 ## Autoload scripts have no class_name; tests use PartyState / EncounterBuilder / ShopSystem directly instead.
 
@@ -32,6 +33,7 @@ var empire_state: Dictionary = EmpireSystemScript.new_campaign_state("house_dunm
 var companion_relationships: Dictionary = {}
 var companion_quests: Dictionary = {}
 var chronicle_state: Dictionary = ChronicleSystem.new_state()
+var trade_state: Dictionary = TradeSystemScript.new_state()
 
 
 
@@ -68,6 +70,7 @@ func new_game(profile: Dictionary = {}) -> void:
     companion_relationships = {}
     companion_quests = {}
     chronicle_state = ChronicleSystem.new_state()
+    trade_state = TradeSystemScript.new_state()
 
 
 
@@ -420,6 +423,27 @@ func take_pending_battle() -> Dictionary:
     return d
 
 
+## Regional commodity exchange. The market is selected from the current world region; no
+## cross-region route or tariff actions are exposed until those gates are fully implemented.
+func trade_market_available() -> bool:
+    return TradeSystemScript.has_market(active_region_id, GameData.trade_economy)
+
+func trade_quotes() -> Array:
+    return TradeSystemScript.quotes(active_region_id, GameData.trade_economy, trade_state, party)
+
+func trade_buy(good_id: String, quantity: int = 1) -> String:
+    return TradeSystemScript.buy(party, active_region_id, good_id, quantity, GameData.trade_economy, trade_state)
+
+func trade_sell(good_id: String, quantity: int = 1) -> String:
+    return TradeSystemScript.sell(party, active_region_id, good_id, quantity, GameData.trade_economy, trade_state)
+
+func trade_cargo_weight() -> int:
+    return TradeSystemScript.cargo_weight(party, GameData.trade_economy)
+
+func trade_cargo_capacity() -> int:
+    return TradeSystemScript.cargo_capacity(GameData.trade_economy)
+
+
 ## Campaign-level save data is separate from the tactical battle snapshot.
 func campaign_payload() -> Dictionary:
     return {
@@ -436,6 +460,7 @@ func campaign_payload() -> Dictionary:
         "companion_relationships": companion_relationships.duplicate(true),
         "companion_quests": companion_quests.duplicate(true),
         "chronicle_state": chronicle_state.duplicate(true),
+        "trade_state": trade_state.duplicate(true),
         "from_world": true
     }
 
@@ -466,6 +491,7 @@ func load_campaign(slot_id: String) -> bool:
     companion_relationships = RelationshipSystem.normalize_state(payload.get("companion_relationships", {}))
     companion_quests = CompanionQuestSystem.normalize_state(payload.get("companion_quests", {}), {"quests": GameData.companion_quests})
     chronicle_state = ChronicleSystem.normalize_state(payload.get("chronicle_state", {}))
+    trade_state = TradeSystemScript.normalize_state(payload.get("trade_state", {}), GameData.trade_economy)
     world_pos = region_state["world_pos"]
     active_region_id = str(region_state["active_region_id"])
     world_positions = region_state["world_positions"]

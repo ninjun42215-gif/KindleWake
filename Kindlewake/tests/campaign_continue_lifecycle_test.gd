@@ -24,6 +24,7 @@ func _run_lifecycle() -> void:
 
     owns_test_slot = true
     GameState.new_game()
+    GameState.trade_state = {"markets":{"sethmarch":{"stock":{"trade_grain":17},"demand":{"trade_grain":3}}},"transactions":4,"total_sales":99}
 
     if not GameState.save_campaign(TEST_SLOT):
         _fail("new campaign can be saved through GameState")
@@ -42,6 +43,8 @@ func _run_lifecycle() -> void:
         _fail("restored campaign contains valid overworld hand-off state")
     if GameState.campaign_slot != TEST_SLOT:
         _fail("restored campaign records the selected save slot")
+    if int(GameState.trade_state.get("transactions", 0)) != 4 or int(GameState.trade_state.get("markets", {}).get("sethmarch", {}).get("stock", {}).get("trade_grain", 0)) != 17:
+        _fail("regional market stock and transaction history survive campaign save and Continue")
 
     var world_packed := load("res://World.tscn") as PackedScene
     if world_packed == null:

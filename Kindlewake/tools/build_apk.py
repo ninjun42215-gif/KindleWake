@@ -728,6 +728,21 @@ def main(argv: Optional[List[str]] = None) -> int:
                     if args.strict:
                         raise BuildError("Campaign continue runtime lifecycle test failed.")
 
+            market_test_scene = PROJECT / "tests" / "merchant_screen_test.tscn"
+            if market_test_scene.is_file():
+                say("\n[5a.1] Running regional commodity exchange UI interaction test")
+                code, out = run([str(godot), "--headless", "--path", str(PROJECT),
+                                 "res://tests/merchant_screen_test.tscn"],
+                                env=env, log=logs / "merchant_screen_test.txt", timeout=300)
+                market_ui_ok = ("Merchant UI failures: 0" in out and
+                                "SCRIPT ERROR" not in out and "Parse Error" not in out)
+                summary.append("merchant_ui: exit %d, pass marker %s" %
+                               (code, "yes" if market_ui_ok else "no"))
+                if code != 0 or not market_ui_ok:
+                    say("  REGIONAL MARKET UI TEST FAILED. See dist/logs/merchant_screen_test.txt.")
+                    if args.strict:
+                        raise BuildError("Regional commodity exchange UI interaction test failed.")
+
             campaign_test_scripts = [
                 "test_act_five.gd",
                 "test_campaign_continuity.gd",

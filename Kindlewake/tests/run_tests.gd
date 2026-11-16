@@ -29,6 +29,7 @@ const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 const ArtScript = preload("res://scripts/ui/art.gd")
 const ChroniclePolitics = preload("res://scripts/core/chronicle_diplomacy_system.gd")
+const TradeSystemScript = preload("res://scripts/core/trade_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
 ##   godot --headless --path . --script res://tests/run_tests.gd
 ## Exit code 0 = every check passed. (Autoloads are not available in --script mode, so the
@@ -100,6 +101,7 @@ func _initialize() -> void:
     _test_neris_companion_quest()
     _test_region_save_compatibility()
     _test_locations()
+    _test_regional_market_trading()
     _test_shop_and_screen()
     _test_save_system()
     _test_campaign_restore_validation()
@@ -2055,6 +2057,12 @@ func _test_region_save_compatibility() -> void:
     var coastal: Dictionary = RegionSaveState.from_payload({"world_pos": [8.0, 9.0], "active_region_id": "brinegate_coast", "world_positions": {"sethmarch": [100.0, 200.0]}})
     check(str(coastal.get("active_region_id", "")) == "brinegate_coast" and coastal.get("world_pos", Vector2.ZERO) == Vector2(8.0, 9.0), "new saves restore the active Thalassar position")
     check((coastal.get("world_positions", {}) as Dictionary).get("sethmarch", []) == [100.0, 200.0], "switching continents preserves the other region's last position")
+    var legacy_party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    var legacy_payload := {"campaign": true, "party": legacy_party.to_dict()}
+    check(RegionSaveState.is_valid_campaign_payload(legacy_payload), "legacy schema-4 campaign payloads without market data remain valid")
+    var malformed_market_payload: Dictionary = legacy_payload.duplicate(true)
+    malformed_market_payload["trade_state"] = "corrupt"
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_market_payload), "malformed optional market state is rejected before campaign mutation")
 
 
 func _test_locations() -> void:
@@ -2100,6 +2108,12 @@ func _test_locations() -> void:
             if str((sp as Dictionary).get("kind", "")) == "party":
                 party_spots += 1
     check(party_spots >= 3, "the war table, shop counter and smithy open the party screen")
+    var exchange_spots := 0
+    for map_id in ["crossing_shop", "brinegate", "saltmere"]:
+        for spot_value in (maps[map_id] as LocalMap).spots:
+            if bool((spot_value as Dictionary).get("regional_exchange", false)):
+                exchange_spots += 1
+    check(exchange_spots == 3, "regional commodity exchange is limited to the three authored staffed market factors")
     var cm: LocalMap = maps["crossing"]
     check(cm.walkable(cm.entry) and cm.is_exit(Vector2i(11, 17)) and not cm.walkable(Vector2i(0, 0)) and not cm.walkable(Vector2i(-3, 4)), "walls and trees block, paths and exits are open, outside the map is blocked")
     check(not cm.door_at(Vector2i(4, 4)).is_empty() and cm.door_at(Vector2i(5, 4)).is_empty(), "door tiles lead somewhere and plain wall does not")
@@ -2372,6 +2386,58 @@ func _on_card_tapped() -> void:
 
 func _on_screen_closed() -> void:
     screen_closed += 1
+
+
+func _test_regional_market_trading() -> void:
+    print("[regional commodity markets]")
+    var goods: Dictionary = gd.trade_economy
+    var state: Dictionary = TradeSystemScript.new_state()
+    var party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    party.gold = 10000
+    check(goods.get("goods", {}).size() == 12 and goods.get("markets", {}).size() == 2, "trade database defines twelve goods and two canonical playable-region markets")
+    check(TradeSystemScript.has_market("sethmarch", goods) and TradeSystemScript.has_market("brinegate_coast", goods) and not TradeSystemScript.has_market("thornmere", goods), "market access is restricted to recognised world-region IDs")
+    var coastal_salt := TradeSystemScript.unit_price("brinegate_coast", "trade_salt", goods, state)
+    var inland_salt := TradeSystemScript.unit_price("sethmarch", "trade_salt", goods, state)
+    check(coastal_salt < inland_salt, "regional supply creates a cheaper coastal salt price")
+    var before_gold := party.gold
+    var stock_before := int(TradeSystemScript.quote("brinegate_coast", "trade_salt", goods, state).get("stock", 0))
+    check(TradeSystemScript.buy(party, "brinegate_coast", "trade_salt", 5, goods, state) == "", "buying regional cargo succeeds")
+    check(party.item_count("trade_salt") == 5 and party.gold == before_gold - coastal_salt * 5, "purchase atomically deducts gold and adds cargo")
+    check(int(TradeSystemScript.quote("brinegate_coast", "trade_salt", goods, state).get("stock", 0)) == stock_before - 5, "purchases reduce finite market stock")
+    check(TradeSystemScript.cargo_weight(party, goods) == 5, "cargo weight reflects trade goods only")
+    var inland_quote := TradeSystemScript.quote("sethmarch", "trade_salt", goods, state)
+    var gold_before_sale := party.gold
+    var sale_value := int(inland_quote.get("sell_price", 0)) * 3
+    check(TradeSystemScript.sell(party, "sethmarch", "trade_salt", 3, goods, state) == "", "cargo can be sold at another recognised regional market")
+    check(party.item_count("trade_salt") == 2 and party.gold == gold_before_sale + sale_value, "sale removes cargo and pays the quoted regional value")
+    check(int(state.get("transactions", 0)) == 2 and int(state.get("total_sales", 0)) == sale_value, "market transactions and sale totals are recorded")
+    var invalid_party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    invalid_party.gold = 10000
+    check(TradeSystemScript.buy(invalid_party, "thornmere", "trade_salt", 1, goods, state) != "", "unknown settlement IDs cannot bypass canonical region gating")
+    check(TradeSystemScript.buy(invalid_party, "sethmarch", "missing_good", 1, goods, state) == "Unknown trade good.", "unknown goods are rejected")
+    check(TradeSystemScript.sell(invalid_party, "sethmarch", "trade_grain", 1, goods, state) == "You do not have enough cargo.", "selling cargo the party does not own is rejected")
+    check(TradeSystemScript.sell(invalid_party, "sethmarch", "trade_grain", 0, goods, state) != "", "zero-quantity sales are rejected")
+    var poor_party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    poor_party.gold = 0
+    check(TradeSystemScript.buy(poor_party, "sethmarch", "trade_grain", 1, goods, state) == "Not enough gold." and poor_party.item_count("trade_grain") == 0, "insufficient funds leave gold and cargo unchanged")
+    var zero_weight_goods: Dictionary = goods.duplicate(true)
+    zero_weight_goods["goods"]["trade_grain"]["weight"] = 0
+    poor_party.add_item("trade_grain", 1)
+    check(TradeSystemScript.cargo_weight(poor_party, zero_weight_goods) == 1, "malformed zero-weight goods still consume at least one cargo unit")
+    check(TradeSystemScript.buy(invalid_party, "sethmarch", "trade_grain", 0, goods, state) != "" and TradeSystemScript.buy(invalid_party, "sethmarch", "trade_grain", -1, goods, state) != "", "zero and negative purchase quantities are rejected")
+    var limited_goods: Dictionary = goods.duplicate(true)
+    limited_goods["cargo_capacity"] = 2
+    var limited_state := TradeSystemScript.new_state()
+    check(TradeSystemScript.buy(invalid_party, "sethmarch", "trade_timber", 1, limited_goods, limited_state) == "Your cargo capacity is full.", "heavy cargo respects the configured capacity")
+    invalid_party.add_item("arming_sword", 1)
+    check(TradeSystemScript.cargo_weight(invalid_party, goods) == 0, "equipment and ordinary inventory do not consume trade cargo capacity")
+    var price_before := TradeSystemScript.unit_price("sethmarch", "trade_grain", goods, state)
+    check(TradeSystemScript.buy(invalid_party, "sethmarch", "trade_grain", 10, goods, state) == "", "a valid purchase succeeds after rejected transactions")
+    check(TradeSystemScript.unit_price("sethmarch", "trade_grain", goods, state) > price_before, "market prices react to stock and demand")
+    var normalized := TradeSystemScript.normalize_state(state, goods)
+    check(normalized["markets"]["brinegate_coast"]["stock"]["trade_salt"] == stock_before - 5 and normalized["transactions"] == 3, "regional stock and transaction history survive normalization")
+    var malformed := TradeSystemScript.normalize_state({"markets":"invalid","transactions":-5}, goods)
+    check(malformed["markets"].has("sethmarch") and malformed["transactions"] == 0, "malformed or legacy market saves normalize safely")
 
 
 func _test_shop_and_screen() -> void:

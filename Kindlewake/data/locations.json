@@ -340,7 +340,8 @@
             "Oswin rubs a thumb over a scar in the counter. 'A rune is not a bauble. It remembers every hand that has carried it.'",
             "'I can seat a rune safely, or draw one out without cracking the socket. A field swap is how good steel gets ruined.'",
             "'Bring me three of the same mark for the Forge. Their grades need not match, but a well-trained rune gives the ritual a steadier chance.'"
-          ]
+          ],
+          "regional_exchange": true
         }
       ]
     },
@@ -3067,7 +3068,8 @@
             0.77,
             0.55
           ],
-          "text": "Charts, rope, salt-proof mail and provisions. No one sails the outer shoals without a proper line."
+          "text": "Charts, rope, salt-proof mail and provisions. No one sails the outer shoals without a proper line.",
+          "regional_exchange": true
         },
         {
           "cell": [
@@ -3254,7 +3256,8 @@
           "npc_active": true,
           "shopkeeper_id": "saltmere_factor",
           "name": "Saltmere Reef Market",
-          "text": "A sheltered market where coastal traders exchange supplies and reef goods. Its stock depends on which route the company has opened."
+          "text": "A sheltered market where coastal traders exchange supplies and reef goods. Its stock depends on which route the company has opened.",
+          "regional_exchange": true
         },
         {
           "kind": "text",
