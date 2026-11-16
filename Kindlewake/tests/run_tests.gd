@@ -2057,6 +2057,12 @@ func _test_region_save_compatibility() -> void:
     var coastal: Dictionary = RegionSaveState.from_payload({"world_pos": [8.0, 9.0], "active_region_id": "brinegate_coast", "world_positions": {"sethmarch": [100.0, 200.0]}})
     check(str(coastal.get("active_region_id", "")) == "brinegate_coast" and coastal.get("world_pos", Vector2.ZERO) == Vector2(8.0, 9.0), "new saves restore the active Thalassar position")
     check((coastal.get("world_positions", {}) as Dictionary).get("sethmarch", []) == [100.0, 200.0], "switching continents preserves the other region's last position")
+    var legacy_party: PartyState = PartyState.new_game(gd.start, gd.characters)
+    var legacy_payload := {"campaign": true, "party": legacy_party.to_dict()}
+    check(RegionSaveState.is_valid_campaign_payload(legacy_payload), "legacy schema-4 campaign payloads without market data remain valid")
+    var malformed_market_payload: Dictionary = legacy_payload.duplicate(true)
+    malformed_market_payload["trade_state"] = "corrupt"
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_market_payload), "malformed optional market state is rejected before campaign mutation")
 
 
 func _test_locations() -> void:
