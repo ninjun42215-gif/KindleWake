@@ -55,21 +55,43 @@ def foreground(size: int) -> Image.Image:
     img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     cx = s / 2
-    # broken sword: blade pointing up, snapped near the top (the Sundered Vow)
-    blade_w = s * 0.075
-    top = s * 0.30
-    bottom = s * 0.70
-    d.polygon([(cx - blade_w, top + s * 0.03), (cx - blade_w * 0.2, top - s * 0.02), (cx + blade_w * 0.5, top + s * 0.05),
-               (cx + blade_w, top), (cx + blade_w, bottom), (cx - blade_w, bottom)], fill=STEEL)
-    d.polygon([(cx, top + s * 0.01), (cx + blade_w, top), (cx + blade_w, bottom), (cx, bottom)], fill=STEEL_DARK)
-    # cross-guard and grip
-    d.rectangle([cx - s * 0.20, bottom, cx + s * 0.20, bottom + s * 0.035], fill=PARCHMENT)
-    d.rectangle([cx - s * 0.03, bottom + s * 0.035, cx + s * 0.03, bottom + s * 0.14], fill=(96, 66, 40, 255))
-    d.ellipse([cx - s * 0.05, bottom + s * 0.13, cx + s * 0.05, bottom + s * 0.19], fill=PARCHMENT)
-    # ember flame rising from the break
-    flame(d, cx + s * 0.01, top + s * 0.03, s * 0.24, s * 0.12, EMBER_OUTER)
-    flame(d, cx + s * 0.01, top + s * 0.03, s * 0.18, s * 0.08, EMBER_MID)
-    flame(d, cx + s * 0.01, top + s * 0.03, s * 0.10, s * 0.045, EMBER_CORE)
+    # Layered heraldic sun and engraved frame.
+    d.rounded_rectangle([s*.055,s*.055,s*.945,s*.945], radius=s*.17, outline=(106,91,65,255), width=max(2,int(s*.018)))
+    d.rounded_rectangle([s*.085,s*.085,s*.915,s*.915], radius=s*.145, outline=(204,166,94,255), width=max(1,int(s*.007)))
+    for i in range(16):
+        a = i * 3.14159265 / 8
+        r1, r2 = s*.285, s*.405
+        p1=(cx+__import__("math").cos(a)*r1, cx+__import__("math").sin(a)*r1)
+        p2=(cx+__import__("math").cos(a)*r2, cx+__import__("math").sin(a)*r2)
+        d.line([p1,p2], fill=(177,132,62,255), width=max(2,int(s*.018)))
+        d.ellipse([p2[0]-s*.012,p2[1]-s*.012,p2[0]+s*.012,p2[1]+s*.012], fill=PARCHMENT)
+    d.ellipse([s*.20,s*.20,s*.80,s*.80], fill=(38,43,43,255), outline=(205,165,91,255), width=max(3,int(s*.025)))
+    d.ellipse([s*.245,s*.245,s*.755,s*.755], outline=(104,82,52,255), width=max(2,int(s*.012)))
+    # Broken, rune-cut sword with a bright ember seam.
+    blade_w, top, bottom = s*.082, s*.275, s*.705
+    d.polygon([(cx-blade_w, bottom),(cx-blade_w*.78,top+s*.055),(cx-s*.018,top-s*.035),
+               (cx+blade_w*.78,top+s*.025),(cx+blade_w,bottom)], fill=STEEL, outline=PARCHMENT)
+    d.polygon([(cx,bottom-s*.02),(cx+blade_w, bottom),(cx+blade_w*.78,top+s*.025),(cx,top+s*.012)], fill=STEEL_DARK)
+    d.line([(cx,top+s*.09),(cx,top+s*.34)], fill=(245,135,48,255), width=max(3,int(s*.024)))
+    d.line([(cx,top+s*.12),(cx,top+s*.31)], fill=EMBER_CORE, width=max(1,int(s*.009)))
+    # Ornate swept crossguard, wrapped grip and sun pommel.
+    d.polygon([(cx-s*.235,bottom-s*.005),(cx-s*.18,bottom-s*.055),(cx-s*.055,bottom+s*.015),
+               (cx+s*.055,bottom+s*.015),(cx+s*.18,bottom-s*.055),(cx+s*.235,bottom-s*.005),
+               (cx+s*.19,bottom+s*.055),(cx,bottom+s*.075),(cx-s*.19,bottom+s*.055)], fill=(180,143,80,255), outline=(239,207,133,255))
+    d.rounded_rectangle([cx-s*.038,bottom+s*.045,cx+s*.038,bottom+s*.19], radius=s*.018, fill=(71,48,35,255), outline=PARCHMENT, width=max(1,int(s*.009)))
+    for k in range(4):
+        y=bottom+s*(.07+k*.027)
+        d.line([(cx-s*.035,y),(cx+s*.035,y-s*.018)], fill=(184,145,83,255), width=max(1,int(s*.009)))
+    d.ellipse([cx-s*.075,bottom+s*.17,cx+s*.075,bottom+s*.32], fill=(100,76,43,255), outline=PARCHMENT, width=max(2,int(s*.014)))
+    d.ellipse([cx-s*.035,bottom+s*.21,cx+s*.035,bottom+s*.28], fill=EMBER_MID, outline=EMBER_CORE, width=max(1,int(s*.008)))
+    # Ember glow at the fracture.
+    flame(d, cx, top+s*.12, s*.18, s*.075, EMBER_OUTER)
+    flame(d, cx, top+s*.12, s*.13, s*.05, EMBER_MID)
+    flame(d, cx, top+s*.12, s*.075, s*.027, EMBER_CORE)
+    # Small corner studs catch light at launcher size.
+    for x in (s*.15,s*.85):
+        for y in (s*.15,s*.85):
+            d.ellipse([x-s*.018,y-s*.018,x+s*.018,y+s*.018], fill=PARCHMENT, outline=(74,58,39,255), width=max(1,int(s*.006)))
     return img.resize((size, size), Image.LANCZOS)
 
 
