@@ -27,6 +27,13 @@ static func validate(profile: Dictionary, config: Dictionary, classes: Dictionar
         return "Name must be between %d and %d characters." % [int(limits.get("name_min", 2)), int(limits.get("name_max", 24))]
     if not (config.get("presentations", []) as Array).has(str(profile.get("presentation", ""))):
         return "Choose a valid presentation."
+    var portrait_found := false
+    for portrait in config.get("portraits", []):
+        if str((portrait as Dictionary).get("id", "")) == str(profile.get("portrait_id", "")):
+            portrait_found = true
+            break
+    if not portrait_found:
+        return "Choose a valid hero portrait."
     if not (config.get("faces", []) as Array).has(str(profile.get("face", ""))):
         return "Choose a valid face preset."
     if not (config.get("hair", []) as Array).has(str(profile.get("hair", ""))):
@@ -96,6 +103,7 @@ static func build_definition(base: Dictionary, profile: Dictionary, config: Dict
     result["creation"] = {
         "schema_version": int(config.get("schema_version", 1)),
         "presentation": str(profile["presentation"]),
+        "portrait_id": str(profile["portrait_id"]),
         "face": str(profile["face"]),
         "hair": str(profile["hair"]),
         "skin": str(profile["skin"]),
