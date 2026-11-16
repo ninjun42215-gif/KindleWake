@@ -1,12 +1,15 @@
 extends Node2D
 
+const BattleControllerScript = preload("res://scripts/battle/battle_controller.gd")
+const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
+
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
 const PartyStateScript = preload("res://scripts/core/party_state.gd")
 const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
 ## Milestone 1 battle scene: isometric placeholder rendering, touch/mouse input and a HUD built in code.
-## All rules live in BattleController; this script only presents state and forwards player input.
+## All rules live in BattleControllerScript; this script only presents state and forwards player input.
 
 const TILE_W := 64.0
 const TILE_H := 32.0
@@ -22,7 +25,7 @@ const HAND_DRAWN_CLASSES: Array = ["swordsman", "knight", "archer", "cleric", "r
 
 enum Mode { IDLE, MOVE, ATTACK, SKILL }
 
-var controller: BattleController = BattleController.new()
+var controller: BattleControllerScript = BattleControllerScript.new()
 var camera: Camera2D
 var map_center: Vector2 = Vector2.ZERO
 var mode: Mode = Mode.IDLE
@@ -168,7 +171,7 @@ func _on_party_closed() -> void:
 
 
 func _center_camera() -> void:
-    var m: BattleMap = controller.map
+    var m: BattleMapScript = controller.map
     map_center = Vector2(float(m.width - m.height) * 0.25 * TILE_W, float(m.width + m.height) * 0.25 * TILE_H)
     camera.position = map_center
     _set_zoom(1.3)
@@ -201,7 +204,7 @@ func _pick_cell(world_pos: Vector2) -> Vector2i:
             best_unit = u
     if best_unit != null:
         return best_unit.cell
-    var m: BattleMap = controller.map
+    var m: BattleMapScript = controller.map
     var best: Vector2i = NO_CELL
     var best_order := -1
     for y in range(m.height):
@@ -889,7 +892,7 @@ func _draw_battle_vfx() -> void:
 func _draw() -> void:
     if controller.map == null:
         return
-    var m: BattleMap = controller.map
+    var m: BattleMapScript = controller.map
     for order in range(m.width + m.height - 1):
         for x in range(m.width):
             var y: int = order - x
@@ -914,7 +917,7 @@ func _outline(center: Vector2, color: Color, width: float, factor: float = 1.0) 
 
 
 func _draw_tile(cell: Vector2i) -> void:
-    var m: BattleMap = controller.map
+    var m: BattleMapScript = controller.map
     var top: Vector2 = cell_to_world(cell)
     var h: int = m.height_at(cell)
     var tid: String = m.terrain_id(cell)
@@ -1043,7 +1046,7 @@ func _draw_unit(u: BattleUnitScript, p: Vector2) -> void:
         ring.append(ring[0])
         draw_polyline(ring, Color(1, 1, 1, 0.9), 2.0)
     # facing marker on the ground
-    var f: Vector2i = BattleMap.DIRS[u.facing]
+    var f: Vector2i = BattleMapScript.DIRS[u.facing]
     var fdir: Vector2 = Vector2(float(f.x - f.y) * TILE_W * 0.5, float(f.x + f.y) * TILE_H * 0.5).normalized()
     if _draw_unit_sprite(u, p, is_player, fdir):
         return
@@ -1753,7 +1756,7 @@ func _info_text() -> String:
     lines.append(lv_line)
     lines.append("HP %d/%d   MP %d/%d" % [u.hp, u.max_hp(), u.mp, u.stat("mp")])
     lines.append("ATK %d  DEF %d  SPD %d  MOV %d" % [roundi(CombatCalcScript.attack_power(u, w)), roundi(CombatCalcScript.defense(u, "physical")), u.stat("spd"), u.move])
-    lines.append("Morale %d   Facing %s" % [u.morale, str(BattleMap.FACING_NAMES[u.facing])])
+    lines.append("Morale %d   Facing %s" % [u.morale, str(BattleMapScript.FACING_NAMES[u.facing])])
     lines.append("%s (range %d-%d)" % [str(w.get("name", "Unarmed")), int(w.get("range_min", 1)), int(w.get("range_max", 1))])
     var tdef: Dictionary = controller.map.terrain_def(u.cell)
     lines.append("On %s (cover %d, height %d)" % [str(tdef.get("name", "?")), controller.map.cover_at(u.cell), controller.map.height_at(u.cell)])
