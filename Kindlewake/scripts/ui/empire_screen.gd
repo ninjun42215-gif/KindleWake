@@ -68,6 +68,8 @@ func _label(value: String, size: int = 18, color: Color = TEXT) -> Label:
 
 func _button(value: String, callback: Callable) -> Button:
     var b := Button.new()
+    b.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+    b.focus_mode = Control.FOCUS_NONE
     b.text = value
     b.custom_minimum_size = Vector2(0, 48)
     b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -125,7 +127,9 @@ func _build() -> void:
     tabs.add_child(holdings_tab)
     holdings_tab.add_child(_label("SELECT A HOLDING", 13, DIM))
     holding_picker = OptionButton.new()
-    holding_picker.custom_minimum_size = Vector2(0, 46)
+    holding_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+    holding_picker.focus_mode = Control.FOCUS_NONE
+        holding_picker.custom_minimum_size = Vector2(0, 46)
     holding_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     holding_picker.item_selected.connect(_on_holding_selected)
     holdings_tab.add_child(holding_picker)
@@ -148,6 +152,10 @@ func _build() -> void:
     realm_scroll.name = "REALM"
     realm_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     realm_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    realm_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    realm_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+    realm_scroll.scroll_vertical_custom_step = 64.0
+    realm_scroll.follow_focus = true
     tabs.add_child(realm_scroll)
     realm_box = VBoxContainer.new()
     realm_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -234,6 +242,8 @@ func _refresh_realm_admin() -> void:
     realm_box.add_child(_label("TAX POLICY", 18, GOLD))
     realm_box.add_child(_label("Higher taxes increase income but can weaken stability. The treasury is your existing party gold; there is no separate realm currency.", 14, DIM))
     var tax_picker := OptionButton.new()
+    tax_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+    tax_picker.focus_mode = Control.FOCUS_NONE
     tax_picker.custom_minimum_size = Vector2(0, 46)
     tax_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     var tax_values: Array[float] = [0.0, 0.05, 0.10, 0.15, 0.20, 0.25]
@@ -263,6 +273,8 @@ func _refresh_realm_admin() -> void:
             region_card.add_child(region_column)
             region_column.add_child(_label(region_id.replace("_", " ").capitalize(), 17, GOLD))
             var picker := OptionButton.new()
+            picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+            picker.focus_mode = Control.FOCUS_NONE
             picker.custom_minimum_size = Vector2(0, 44)
             picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
             var current_governor := str(governors.get(region_id, ""))
@@ -380,6 +392,8 @@ func _refresh_detail() -> void:
     detail_box.add_child(governance_row)
     governance_row.add_child(_label("GOVERNANCE", 15, DIM))
     governance_picker = OptionButton.new()
+    governance_picker.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+    governance_picker.focus_mode = Control.FOCUS_NONE
     governance_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     var models := ["appointed_warden", "merchant_council", "local_compact", "military_command"]
     var labels := ["Appointed Warden", "Merchant Council", "Local Compact", "Military Command"]
