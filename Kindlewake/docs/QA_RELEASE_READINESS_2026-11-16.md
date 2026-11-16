@@ -5,7 +5,7 @@
 **Latest main at report update:** `a72ca6b1962733c1ef596699f42f391157991df5`  
 **QA candidate branch:** `qa/release-publish-gate-2026-11-16`  
 **Candidate base:** `698765fd3b5d3cfbef13e301ebd544b8e93277cc`  
-**Candidate head:** `a64cd4df28c5bf7c92a936e24bc54cd4c7dd6477`
+**Last fully validated candidate head:** `a64cd4df28c5bf7c92a936e24bc54cd4c7dd6477` (later report/guide-only commits are checked again on the live PR head)
 
 This is a dated evidence snapshot. Re-check live refs and Actions before relying on it for a later release.
 
@@ -155,7 +155,7 @@ The visual branch owner corrected it in head `c0855f11f9e62ddacd1de6be80b2c11b89
 
 ## This QA candidate
 
-PR [#148 — QA: protect production release publishing and provenance](https://github.com/ninjun42215-gif/KindleWake/pull/148) remains intentionally draft. It is based on main SHA `698765fd3b5d3cfbef13e301ebd544b8e93277cc`, is 7 commits ahead and 1 behind current main `a72ca6b`, and is mergeable without conflicts. Exact-head checks passed on `a64cd4df28c5bf7c92a936e24bc54cd4c7dd6477`: [Android build](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43848987986), [health audit](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43848988084), [YAML lint](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43848987901) and [version sync](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43848987997). The APK artifact is [14216477641](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43848987986/artifacts/14216477641), ZIP SHA-256 `6b58e9de3ba74743232d777278a356da28990fc660c62017da654f9e41e002b2`. Safe Auto Merge skipped the draft as intended. No merge is authorized.
+PR [#148 — QA: protect production release publishing and provenance](https://github.com/ninjun42215-gif/KindleWake/pull/148) remains intentionally draft. It is based on main SHA `698765fd3b5d3cfbef13e301ebd544b8e93277cc`, is 9 commits ahead and 1 behind current main `a72ca6b`, and is mergeable without conflicts. Its latest complete code/workflow validation passed on `a64cd4df28c5bf7c92a936e24bc54cd4c7dd6477`: [Android build](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43848987986), [health audit](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43848988084), [YAML lint](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43848987901) and [version sync](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43848987997). The APK artifact is [14216477641](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43848987986/artifacts/14216477641), ZIP SHA-256 `6b58e9de3ba74743232d777278a356da28990fc660c62017da654f9e41e002b2`. Two later commits only refresh handoff/release documentation after PR #147 merged; CI is rerun against the live PR head. Safe Auto Merge skipped the draft as intended. No merge is authorized.
 
 ## Remaining release gates and next actions
 
