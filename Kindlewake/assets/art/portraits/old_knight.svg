@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="300" viewBox="0 0 240 300">
+ <defs>
+ <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#b39a79"/><stop offset="1" stop-color="#343b3e"/></linearGradient>
+ <linearGradient id="cloth" x2="0" y2="1"><stop stop-color="#77746d"/><stop offset="1" stop-color="#171b20"/></linearGradient>
+ <radialGradient id="skin"><stop stop-color="#e0b995"/><stop offset="1" stop-color="#684c40"/></radialGradient>
+ <linearGradient id="gold" x2="1" y2="1"><stop stop-color="#f2d69a"/><stop offset="1" stop-color="#85613b"/></linearGradient>
+ </defs>
+ <rect width="240" height="300" fill="url(#bg)"/>
+ <path d="M0 0H240V300H0Z" fill="#101820" opacity=".2"/>
+ <path d="M10 300 Q20 220 68 198 L90 181 H150 L174 198 Q220 220 230 300Z" fill="url(#cloth)" stroke="#a4a19a" stroke-width="4"/>
+ <path d="M75 205 L105 183 L120 216 L136 183 L166 205 L148 300 H92Z" fill="#292b2d" stroke="#876e4f" stroke-width="3"/>
+ 
+ <path d="M70 116 Q70 42 120 48 Q177 43 172 120 L158 99 Q139 81 122 88 Q95 78 80 111Z" fill="#51463b"/>
+ <path d="M77 103 Q67 116 73 145 L85 160 L91 126Z M163 103 Q173 116 167 145 L155 160 L149 126Z" fill="url(#skin)"/>
+ <path d="M84 85 Q120 52 156 85 L161 132 Q157 171 120 183 Q83 171 79 132Z" fill="url(#skin)" stroke="#5b4339" stroke-width="3"/>
+ <path d="M83 146 Q120 198 157 146 Q153 201 120 204 Q87 201 83 146Z" fill="#51463b" opacity=".85"/>
+ <path d="M89 111 Q103 103 112 110 M128 110 Q140 103 151 111" fill="none" stroke="#51463b" stroke-width="6" stroke-linecap="round"/>
+ <path d="M92 121 Q102 115 111 121 M129 121 Q139 115 148 121" fill="none" stroke="#3b302c" stroke-width="3" stroke-linecap="round"/>
+ <ellipse cx="103" cy="124" rx="4" ry="5" fill="#292c2b"/><ellipse cx="137" cy="124" rx="4" ry="5" fill="#292c2b"/>
+ <path d="M120 125 L114 145 L123 148" fill="none" stroke="#8c6554" stroke-width="3" stroke-linecap="round"/>
+ <path d="M107 159 Q120 164 133 158" fill="none" stroke="#70453e" stroke-width="3" stroke-linecap="round"/>
+ <path d="M69 105 Q70 43 120 40 Q170 43 171 105 L155 89 L85 89Z" fill="#a4a19a" stroke="#352d27" stroke-width="6"/><path d="M78 104H162" stroke="#d7c39a" stroke-width="5"/>
+ <path d="M74 183 Q120 213 166 183 L183 216 Q120 256 57 216Z" fill="#77746d" stroke="#a4a19a" stroke-width="5"/>
+ <path d="M112 211 L120 224 L128 211 L137 228 L120 244 L103 228Z" fill="url(#gold)" stroke="#4d3c2d" stroke-width="3"/>
+ <circle cx="120" cy="228" r="7" fill="#392d27" stroke="#e0c18a" stroke-width="3"/>
+ <path d="M22 18H218 M22 282H218" stroke="#e0c18a" opacity=".35" stroke-width="2"/>
+ <text x="120" y="273" fill="#f0d9ac" font-size="12" font-family="serif" text-anchor="middle" letter-spacing="2">OLD KNIGHT</text>
+ </svg>
