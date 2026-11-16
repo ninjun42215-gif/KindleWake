@@ -32,7 +32,8 @@
         "mor": 65
       },
       "roster_wave": 1,
-      "loyalty": 72
+      "loyalty": 72,
+      "portrait_id": "torren_redcloak"
     },
     "bram": {
       "name": "Sir Bram Vosk",
@@ -66,7 +67,8 @@
         "mor": 60
       },
       "roster_wave": 1,
-      "loyalty": 84
+      "loyalty": 84,
+      "portrait_id": "auburn_ranger"
     },
     "sela": {
       "name": "Sela Wrenfield",
@@ -100,7 +102,8 @@
         "mor": 55
       },
       "roster_wave": 1,
-      "loyalty": 68
+      "loyalty": 68,
+      "portrait_id": "sunwarden"
     },
     "brother_wystan": {
       "name": "Brother Wystan",
@@ -140,7 +143,8 @@
         "mor": 55
       },
       "roster_wave": 1,
-      "loyalty": 66
+      "loyalty": 66,
+      "portrait_id": "iron_veteran"
     },
     "hask_gravelteeth": {
       "name": "Hask Gravelteeth",
@@ -169,7 +173,8 @@
         "eva": 8,
         "ldr": 12,
         "mor": 70
-      }
+      },
+      "portrait_id": "silver_oracle"
     },
     "roadreaver": {
       "name": "Roadwolf Reaver",
@@ -198,7 +203,8 @@
         "eva": 10,
         "ldr": 4,
         "mor": 50
-      }
+      },
+      "portrait_id": "dusk_rogue"
     },
     "roadbowman": {
       "name": "Roadwolf Bowman",
@@ -227,7 +233,8 @@
         "eva": 14,
         "ldr": 3,
         "mor": 50
-      }
+      },
+      "portrait_id": "shieldmaiden"
     },
     "rootbound_warden": {
       "name": "Rootbound Warden",
@@ -256,7 +263,8 @@
         "eva": 12,
         "ldr": 5,
         "mor": 65
-      }
+      },
+      "portrait_id": "courtier"
     },
     "bell_keeper": {
       "name": "The Bell-Keeper",
@@ -285,7 +293,8 @@
         "eva": 12,
         "ldr": 5,
         "mor": 65
-      }
+      },
+      "portrait_id": "ash_scout"
     },
     "ashen_reeve": {
       "name": "The Ashen Reeve",
@@ -314,7 +323,8 @@
         "eva": 12,
         "ldr": 5,
         "mor": 65
-      }
+      },
+      "portrait_id": "briar_warden"
     },
     "lucan_thorne": {
       "name": "Lucan Thorne",
@@ -351,7 +361,8 @@
         "method": "orrowen_favour",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "portrait_id": "old_knight"
     },
     "old_brisa": {
       "name": "Old Brisa",
@@ -388,7 +399,8 @@
         "method": "village_quest",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "portrait_id": "night_scholar"
     },
     "kestrel": {
       "name": "Kestrel",
@@ -425,7 +437,8 @@
         "method": "hidden_location",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "portrait_id": "auburn_ranger"
     },
     "anselm_pike": {
       "name": "Anselm Pike",
@@ -462,7 +475,8 @@
         "method": "barracks_event",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "portrait_id": "sunwarden"
     },
     "petra_quill": {
       "name": "Petra Quill",
@@ -499,7 +513,8 @@
         "method": "plague_ward_quest",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "portrait_id": "iron_veteran"
     },
     "dorian_vask": {
       "name": "Dorian Vask",
@@ -536,7 +551,8 @@
         "method": "negotiation",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "portrait_id": "silver_oracle"
     },
     "edda_stonehand": {
       "name": "Edda Stonehand",
@@ -577,7 +593,8 @@
             "found_tollhouse"
           ]
         }
-      }
+      },
+      "portrait_id": "dusk_rogue"
     },
     "joss_harrow": {
       "name": "Joss Harrow",
@@ -614,7 +631,8 @@
         "method": "tavern_rumour",
         "cost": 50,
         "requirements": {}
-      }
+      },
+      "portrait_id": "shieldmaiden"
     },
     "isaure_vessmoor": {
       "name": "Lady Isaure Vessmoor",
@@ -655,7 +673,8 @@
             "vessmoor_gate_passed"
           ]
         }
-      }
+      },
+      "portrait_id": "courtier"
     },
     "bram_cullen": {
       "name": "Bram Cullen",
@@ -696,7 +715,8 @@
             "camp_cleared"
           ]
         }
-      }
+      },
+      "portrait_id": "ash_scout"
     },
     "verra_nightsong": {
       "name": "Verra Nightsong",
@@ -737,7 +757,8 @@
             "joss_harrow"
           ]
         }
-      }
+      },
+      "portrait_id": "briar_warden"
     },
     "tomas_wren": {
       "name": "Tomas Wren",
@@ -774,7 +795,8 @@
         "method": "side_quest",
         "cost": 0,
         "requirements": {}
-      }
+      },
+      "portrait_id": "old_knight"
     },
     "orlan_pike": {
       "name": "Orlan Pike",
@@ -815,7 +837,8 @@
             "dungeon_bell_cleared"
           ]
         }
-      }
+      },
+      "portrait_id": "night_scholar"
     },
     "sister_odaly": {
       "name": "Sister Odalys",
@@ -856,7 +879,8 @@
             "dungeon_catacombs_cleared"
           ]
         }
-      }
+      },
+      "portrait_id": "auburn_ranger"
     },
     "willem_roake": {
       "name": "Ser Willem Roake",
@@ -897,7 +921,8 @@
             "isaure_vessmoor"
           ]
         }
-      }
+      },
+      "portrait_id": "sunwarden"
     },
     "ysolde_marrow": {
       "name": "Ysolde Marrow",
@@ -938,7 +963,8 @@
             "verra_nightsong"
           ]
         }
-      }
+      },
+      "portrait_id": "iron_veteran"
     },
     "garrick_holt": {
       "name": "Garrick Holt",
@@ -979,7 +1005,8 @@
             "dungeon_catacombs_cleared"
           ]
         }
-      }
+      },
+      "portrait_id": "silver_oracle"
     },
     "corwin_brennhallow": {
       "name": "Lord Corwin Brennhallow",
@@ -1020,7 +1047,8 @@
             "act_4_unlocked"
           ]
         }
-      }
+      },
+      "portrait_id": "dusk_rogue"
     },
     "seraphine_tarnholt": {
       "name": "Seraphine Tarnholt",
@@ -1061,7 +1089,8 @@
             "act_4_unlocked"
           ]
         }
-      }
+      },
+      "portrait_id": "shieldmaiden"
     },
     "ilyan_voss": {
       "name": "Ilyan Voss",
@@ -1102,7 +1131,8 @@
             "act_4_unlocked"
           ]
         }
-      }
+      },
+      "portrait_id": "courtier"
     },
     "maren_vey": {
       "name": "Maren Vey",
@@ -1169,7 +1199,8 @@
             "trust": -5
           }
         }
-      }
+      },
+      "portrait_id": "ash_scout"
     },
     "reefwarden": {
       "name": "The Reef Warden",
@@ -1198,7 +1229,8 @@
         "eva": 11,
         "ldr": 6,
         "mor": 68
-      }
+      },
+      "portrait_id": "briar_warden"
     },
     "saltcutthroat": {
       "name": "Salt-Cut Cutthroat",
@@ -1227,7 +1259,8 @@
         "eva": 12,
         "ldr": 3,
         "mor": 48
-      }
+      },
+      "portrait_id": "old_knight"
     },
     "saltbow": {
       "name": "Salt-Reef Lookout",
@@ -1256,7 +1289,8 @@
         "eva": 15,
         "ldr": 3,
         "mor": 48
-      }
+      },
+      "portrait_id": "night_scholar"
     },
     "blackwake_captain": {
       "name": "Blackwake Salvage Captain",
@@ -1285,7 +1319,8 @@
         "eva": 13,
         "ldr": 7,
         "mor": 78
-      }
+      },
+      "portrait_id": "auburn_ranger"
     },
     "neris_quell": {
       "name": "Neris Quell",
@@ -1349,7 +1384,8 @@
             "affection": 3
           }
         }
-      }
+      },
+      "portrait_id": "sunwarden"
     },
     "boss_hollow_hart": {
       "name": "The Hollow Hart",
@@ -1378,7 +1414,8 @@
         "eva": 15,
         "ldr": 18,
         "mor": 90
-      }
+      },
+      "portrait_id": "iron_veteran"
     },
     "boss_drowned_crown": {
       "name": "Admiral Veyr, the Drowned Crown",
@@ -1407,7 +1444,8 @@
         "eva": 15,
         "ldr": 18,
         "mor": 90
-      }
+      },
+      "portrait_id": "silver_oracle"
     },
     "boss_ash_regent": {
       "name": "Kharzug the Ash Regent",
@@ -1436,7 +1474,8 @@
         "eva": 15,
         "ldr": 18,
         "mor": 90
-      }
+      },
+      "portrait_id": "dusk_rogue"
     },
     "boss_pale_matriarch": {
       "name": "The Pale Matriarch",
@@ -1465,7 +1504,8 @@
         "eva": 15,
         "ldr": 18,
         "mor": 90
-      }
+      },
+      "portrait_id": "shieldmaiden"
     },
     "boss_briar_sovereign": {
       "name": "The Briar Sovereign",
@@ -1494,7 +1534,8 @@
         "eva": 15,
         "ldr": 18,
         "mor": 90
-      }
+      },
+      "portrait_id": "courtier"
     },
     "boss_star_eater": {
       "name": "The Star-Eater",
@@ -1523,7 +1564,8 @@
         "eva": 15,
         "ldr": 18,
         "mor": 90
-      }
+      },
+      "portrait_id": "ash_scout"
     },
     "boss_last_cantor": {
       "name": "The Last Cantor",
@@ -1552,7 +1594,8 @@
         "eva": 15,
         "ldr": 18,
         "mor": 90
-      }
+      },
+      "portrait_id": "briar_warden"
     },
     "hask_convoy_champion": {
       "name": "Hask Gravelteeth, Roadwolf Captain",
@@ -1583,7 +1626,8 @@
         "eva": 8,
         "ldr": 12,
         "mor": 90
-      }
+      },
+      "portrait_id": "old_knight"
     },
     "ash_bailiff": {
       "name": "The Ash Bailiff",
@@ -1615,7 +1659,8 @@
         "eva": 12,
         "ldr": 15,
         "mor": 90
-      }
+      },
+      "portrait_id": "night_scholar"
     },
     "checkpoint_sergeant": {
       "name": "Writ-Captain Odran Vale",
@@ -1646,7 +1691,8 @@
         "eva": 12,
         "ldr": 11,
         "mor": 75
-      }
+      },
+      "portrait_id": "auburn_ranger"
     },
     "river_marshal": {
       "name": "River Marshal Edrik Vane",
@@ -1678,7 +1724,8 @@
         "ldr": 11,
         "mor": 82
       },
-      "loyalty": 0
+      "loyalty": 0,
+      "portrait_id": "sunwarden"
     },
     "quillon_warden": {
       "name": "Quillon Warden",
@@ -1709,7 +1756,8 @@
         "eva": 14,
         "ldr": 15,
         "mor": 90
-      }
+      },
+      "portrait_id": "iron_veteran"
     }
   }
 }
