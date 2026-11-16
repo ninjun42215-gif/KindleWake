@@ -87,12 +87,12 @@ func _run_ui_test() -> void:
         else:
             _check(false, field + " exposes at least two selectable options")
     var before_plus := int(creator.profile.get("stat_allocation", {}).get("str", 0))
-    creator._adjust_stat_allocation("str", 1)
-    _check(int(creator.profile.get("stat_allocation", {}).get("str", 0)) == before_plus + 1,
-        "plus button allocates one attribute point")
     creator._adjust_stat_allocation("str", -1)
-    _check(int(creator.profile.get("stat_allocation", {}).get("str", 0)) == before_plus,
+    _check(int(creator.profile.get("stat_allocation", {}).get("str", 0)) == before_plus - 1,
         "minus button refunds one attribute point")
+    creator._adjust_stat_allocation("str", 1)
+    _check(int(creator.profile.get("stat_allocation", {}).get("str", 0)) == before_plus,
+        "plus button allocates one attribute point")
     creator._adjust_stat_allocation("str", 5)
     var allocated_after_clamp := 0
     for stat in ["str", "dex", "int", "vit", "spd", "lck"]:
@@ -120,7 +120,7 @@ func _run_ui_test() -> void:
         _check(str(protagonist_def.get("creation", {}).get("portrait_id", "")) == "torren_redcloak",
             "battle-ready protagonist definition carries the selected portrait identity")
         _check(sheet.portrait_id == "torren_redcloak", "the protagonist character sheet receives the selected portrait")
-        var party := PartyState.new_game(GameData.campaign_start, GameData.characters, protagonist_def)
+        var party := PartyState.new_game(GameData.start, GameData.characters, protagonist_def)
         var every_party_member_has_portrait := true
         for member_id in party.roster:
             var member_sheet = party.sheet(member_id)
