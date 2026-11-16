@@ -162,3 +162,36 @@
 - Current scope is backend foundation only. No diplomacy screen, automatic war simulation, AI faction turns or strategic battle layer is claimed complete.
 - Validation on code head `f7b31035e4651a4a6854cc5ad644beff88c2148b`: Build Android APK run #683 passed Godot 4.2.2 import (clean retry), 8/8 scene smoke loads, 447 strict checks / 0 failures, balance report and signed APK export for arm64-v8a + armeabi-v7a with no requested Android permissions. APK artifact `13733346417` (~41.0 MB); test logs artifact `13732869336`. Version Sync #188, Workflow YAML Lint #666 and Project Health Audit #458 also passed on that exact code head. The first CI attempt caught a missing `GameData.factions` declaration and a strict-test type inference error; both were fixed before the successful rerun. Documentation commits after that code head require a fresh exact-head gate. Physical Android QA remains outstanding.
 - Next implementation slice after this foundation: connect authored quests/choices to relation changes, then add a compact faction dossier UI before enabling player-initiated treaty/war actions. Preserve offline-only architecture, existing saves and schema 4.
+
+
+---
+
+## QA and Android release-readiness refresh — 2026-11-16
+
+### Live baseline and verified build
+- Current `main`: `da4d220de7cdbfeae0d2bc182a3c191b997cd861` (Godot 4.2.2, game/Android 0.12.0 / code 1200, save schema 4).
+- Exact-main Android build: [run #42821049869](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42821049869). Result: 18/18 scene loads; 948 strict checks / 0 failures; campaign lifecycle, Act V, 70 campaign continuity, 39 Chronicle dynasty and 19 Chronicle family-development checks passed; balance report passed; APK signature valid; no Android permissions requested.
+- Exact-SHA companion checks: Project Health Audit [#42821049944](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42821049944), Version Sync [#42821049780](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42821049780), Workflow YAML Lint [#42821049916](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42821049916), source handoff [#42821050055](https://github.com/ninjun42215-gif/KindleWake/actions/runs/42821050055).
+- Exact-main APK artifact: `13767016313`, archive 41,200,735 bytes, SHA-256 `676584a761743ebbaf60fca1011fe458b6ab39d3c2c45da4f1e2bc029e3077d2`; artifact metadata ties it to run #42821049869 and SHA `da4d220de7cdbfeae0d2bc182a3c191b997cd861`. Build log confirms signature validity and zero requested Android permissions.
+- Import diagnostics: first import scan reported unresolved global classes (`CharacterSheet`, `BattleUnit`, `BattleMap`); clean retry then completed, 18 scenes loaded and strict suites passed. Continue investigating this startup/import-order warning rather than hiding it. Headless custom-cursor and Actions Node.js runtime deprecation warnings remain.
+ 
+### Current PR and workflow triage
+- PR #130 (`docs/authentication-security-model`, head `d2ab36d73e71e69965f6658aa18e8642f3e52daa)): Build APK #43792465999, Version Sync #43792465983, Workflow YAML Lint #43792465988 and Project Health Audit #43792465990 all passed on its exact head. It remains draft.
+- Safe Auto Merge run [#43792636541](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43792636541) failed at its eligibility gate because PR #130 is draft. The log explicitly says it refused to merge; this is an intentional fail-closed refusal, not a game/build test failure. Do not merge or mark the PR ready without authorization.
+- PR #81 trading branch: 3 ahead / 29 behind main, diverged; keep blocked pending cargo inventory separation, tariff/route ownership, canonical region/story-gate validation and mobile layout fixes.
+- PR #42 bestiary: 21 ahead / 44 behind main, diverged; rebase and exact-head test before integration.
+- PR #46 empire system: 261 ahead / 44 behind main, diverged; use only as a reference, extract reviewed slices rather than bulk merge.
+- PR #78 headless test gate: 70 ahead / 43 behind main and stacked on the boss simulation branch; preserve dependency order.
+- PR #130: 2 ahead / 0 behind main, documentation-only.
+- Production publishing remains a separate manual workflow requiring a version tag, explicit `PUBLISH` confirmation and the `android-production` environment. Never use it as a routine QA build.
+
+### Asset and release gates
+- The live provenance ledger marks runtime-used assets verified: Quaternius nature art (CC0), Zerie's Free Soldier/Orc subset (author terms permit game use/modification; no standalone source-pack redistribution), and original KindleWake vector art.
+- Legacy voxel-building PNGs are recorded as unused and replaced in-game by original SVG settlement illustrations. Restricted/unknown optional packs remain unused. The current ledger has no unverified asset marked as used in-game; keep it synchronized with `assets/art/CREDITS.md` and inspect before each release.
+- Physical Android QA is still outstanding: test touch targets, viewport/safe areas, app pause/resume, long sessions, thermal/memory behavior and install/update/save preservation on low-memory and modern devices.
+
+### QA workflow hardening candidate
+- Dedicated branch: `qa/least-privilege-apk-build`, based on exact main SHA `da4d220de7cdbfeae0d2bc182a3c191b997cd861`.
+- Commit `507d41d0eb25372d16a4330ea85f96688f66b4fb`: routine APK build workflow now defaults to `contents: read`; write access is isolated to a tag-only release job that depends on the successful APK build and downloads that run's artifact.
+- Commit `d1a7f3c41fa3f5bb734d943793b9df6ffff48956`: added a YAML-lint policy assertion for read-only build permissions and isolated tag release. Follow-up refinement may extend the guard to every non-release job.
+- PR CI for the final documentation-inclusive head must be inspected before calling the candidate validated. Do not merge.
