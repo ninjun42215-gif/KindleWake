@@ -142,6 +142,10 @@ func _build() -> void:
     var detail_scroll := ScrollContainer.new()
     detail_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     detail_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    detail_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    detail_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+    detail_scroll.scroll_vertical_custom_step = 64.0
+    detail_scroll.follow_focus = true
     detail_panel.add_child(detail_scroll)
     detail_box = VBoxContainer.new()
     detail_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
