@@ -8,8 +8,8 @@
  <g id="human">
   <ellipse cx="64" cy="148" rx="31" ry="7" fill="#101719" opacity=".42"/>
   <path d="M46 111l-5 29 12 3 8-24zm26 0 7 29-12 3-8-24" fill="#302c2b" stroke="#171b1c" stroke-width="3"/>
-  <path d="M43 66l-9 38 17 9 13-10 13 10 17-9-9-38-21-9z" fill="url(#body)" stroke="#22292b" stroke-width="4" stroke-linejoin="round"/>
-  <path d="M43 69l-13 28 13 12 12-10-3-25zm42 0 13 28-13 12-12-10 3-25z" fill="url(#body)" stroke="#22292b" stroke-width="4"/>
+  <path d="M43 66l-9 38 17 9 13-10 13 10 17-9-9-38-21-9z" fill="url(#leather)" stroke="#22292b" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M43 69l-13 28 13 12 12-10-3-25zm42 0 13 28-13 12-12-10 3-25z" fill="url(#leather)" stroke="#22292b" stroke-width="4"/>
   <path d="M49 43q15-16 30 0l-3 24q-12 13-24 0z" fill="#c99a72" stroke="#292727" stroke-width="3"/>
   <path d="M48 45q1-24 17-24t17 24l-8-8-7 4-9-4z" fill="#342b29"/>
   <path d="M54 52h4m12 0h4" stroke="#252323" stroke-width="3" stroke-linecap="round"/>
