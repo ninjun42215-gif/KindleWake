@@ -71,10 +71,17 @@ func item_count(item_id: String) -> int:
 
 
 func add_item(item_id: String, n: int = 1) -> void:
+    # Inventory quantities are always positive; reject invalid grants instead of
+    # allowing a negative reward to silently consume or corrupt existing stock.
+    if item_id.is_empty() or n <= 0:
+        return
     inventory[item_id] = item_count(item_id) + n
 
 
 func remove_item(item_id: String, n: int = 1) -> bool:
+    # A negative removal previously passed the balance check and added items.
+    if item_id.is_empty() or n <= 0:
+        return false
     if item_count(item_id) < n:
         return false
     var left: int = item_count(item_id) - n
