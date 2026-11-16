@@ -8,6 +8,7 @@ const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
+const BattlefieldGenerator = preload("res://scripts/battle/battlefield_generator.gd")
 ## Overworld (Milestone 7, first step): walk freely over the Sallow Marches, find places, get ambushed.
 ## Touch: tap to walk to a spot, hold and drag to steer. Terrain changes speed; forests are more dangerous.
 ## All rules live in WorldMap; battles reuse the battle scene through GameState.start_battle_from_world().
@@ -275,6 +276,9 @@ func _launch_ambush() -> void:
     if def.is_empty():
         banner.visible = false
         return
+    # Build the tactical map from the tile neighbourhood where the ambush actually happened.
+    var encounter_cell := wmap.wrap_cell(Vector2i(floori(player_pos.x / TILE), floori(player_pos.y / TILE)))
+    def = BattlefieldGenerator.build_travel_map(def, wmap, encounter_cell, GameState.active_region_id, rng.randi())
     _go_to_battle(def)
 
 
