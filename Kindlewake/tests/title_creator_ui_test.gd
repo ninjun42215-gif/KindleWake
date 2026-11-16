@@ -56,6 +56,14 @@ func _run_ui_test() -> void:
         if not ResourceLoader.exists(portrait_path) or load(portrait_path) == null:
             all_portraits_load = false
     _check(all_portraits_load, "all twelve portrait assets load as Godot textures")
+    var every_character_has_portrait := true
+    for character_id in GameData.characters.keys():
+        var character: Dictionary = GameData.characters[character_id]
+        var portrait_id := str(character.get("portrait_id", ""))
+        var portrait_path := "res://assets/art/portraits/%s.svg" % portrait_id
+        if portrait_id == "" or not ResourceLoader.exists(portrait_path):
+            every_character_has_portrait = false
+    _check(every_character_has_portrait, "every character definition has an assigned portrait asset")
     if creator.portrait_buttons.has("auburn_ranger"):
         creator._on_portrait_button_toggled(true, "auburn_ranger")
         _check(str(creator.profile.get("portrait_id", "")) == "auburn_ranger",
