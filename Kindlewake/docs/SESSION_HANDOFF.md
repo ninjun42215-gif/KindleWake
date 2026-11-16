@@ -193,5 +193,6 @@
 ### QA workflow hardening candidate
 - Dedicated branch: `qa/least-privilege-apk-build`, based on exact main SHA `da4d220de7cdbfeae0d2bc182a3c191b997cd861`.
 - Commit `507d41d0eb25372d16a4330ea85f96688f66b4fb`: routine APK build workflow now defaults to `contents: read`; write access is isolated to a tag-only release job that depends on the successful APK build and downloads that run's artifact.
-- Commit `d1a7f3c41fa3f5bb734d943793b9df6ffff48956`: added a YAML-lint policy assertion for read-only build permissions and isolated tag release. Follow-up refinement may extend the guard to every non-release job.
+- Commit `d1a7f3c41fa3f5bb734d943793b9df6ffff48956`: added a YAML-lint policy assertion for read-only build permissions and isolated tag release.
+- Commit `ceb4e9f1a5d24d4ecec253d56c6b4d30f7bdd0fe`: extended the lint guard to every non-release build job, so a future job cannot silently inherit write access.
 - PR CI for the final documentation-inclusive head must be inspected before calling the candidate validated. Do not merge.
