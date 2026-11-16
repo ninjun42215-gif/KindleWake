@@ -52,6 +52,12 @@ def main():
             if entity_id not in by_id:
                 errors.append(f"NPC dialogue spot missing from registry: {entity_id}")
 
+    if registry.get("status") != "AUDIT_BASELINE_NOT_COMPLETE":
+        errors.append("Registry status must remain explicitly incomplete until artistic QA is approved.")
+
+    if "portrait_registry" not in load_json(ROOT / "data" / "portrait_registry.json"):
+        errors.append("Portrait registry payload is missing.")
+
     for entry in entities:
         portrait_id = entry.get("portrait_id")
         if portrait_id:
@@ -77,6 +83,9 @@ def main():
     print(f"Creator appearances: {len(creator.get('portraits', []))}")
     print(f"Reused legacy portrait IDs: {sum(1 for n in duplicate_ids.values() if n > 1)}")
     print(f"Missing/unreviewed records: {sum(1 for e in entities if e.get('status') != 'approved')}")
+    party_script = (ROOT / "scripts" / "ui" / "party_screen.gd").read_text(encoding="utf-8")
+    if "character_id.hash()" in party_script or "fallback_ids" in party_script:
+        errors.append("Party screen still randomly reuses unrelated portraits as a fallback.")
     if errors:
         print("FAIL")
         for error in errors:
