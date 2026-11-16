@@ -114,7 +114,7 @@ static func character_for_enemy(character_id: String, display_name: String = "")
         return "treant"
     if key.contains("bell_keeper") or key.contains("wraith") or key.contains("ghost") or key.contains("spect"):
         return "wraith"
-    if key.contains("ashen") or key.contains("cult") or key.contains("matriarch"):
+    if key.contains("ashen") or key.contains("ash_regent") or key.contains("cult") or key.contains("matriarch") or key.contains("last_cantor"):
         return "cultist"
     if key.contains("skeleton") or key.contains("bone") or key.contains("drowned"):
         return "skeleton"
