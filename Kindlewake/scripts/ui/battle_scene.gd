@@ -125,6 +125,14 @@ func _start_battle() -> void:
     battle_rewards = {}
     input_locked = false
     result_panel.visible = false
+
+    var resume_payload: Dictionary = GameState.take_pending_battle_resume()
+    if not resume_payload.is_empty():
+        if _restore_battle_payload(resume_payload):
+            return
+        battle_def = resume_payload.get("battle_def", {})
+        _on_log("The saved battle could not be restored. The encounter can be restarted from its briefing.")
+
     if battle_def.is_empty():
         battle_def = GameState.take_pending_battle()
     if battle_def.is_empty():
@@ -135,6 +143,73 @@ func _start_battle() -> void:
         var u: BattleUnitScript = o
         visual_pos[u.id] = cell_to_world(u.cell)
     _show_prep()
+
+
+func _battle_save_payload() -> Dictionary:
+    var payload: Dictionary = GameState.campaign_payload()
+    payload["from_world"] = GameState.from_world
+    payload["battle_resume"] = {
+        "battle": controller.to_dict(),
+        "battle_def": battle_def.duplicate(true),
+        "from_world": GameState.from_world
+    }
+    return payload
+
+
+func _restore_battle_payload(payload: Dictionary, from_backup: bool = false) -> bool:
+    var battle_payload_value: Variant = payload.get("battle_resume", payload)
+    if typeof(battle_payload_value) != TYPE_DICTIONARY:
+        return false
+    var battle_payload: Dictionary = battle_payload_value
+    var saved_value: Variant = battle_payload.get("battle", {})
+    var saved_def_value: Variant = battle_payload.get("battle_def", payload.get("battle_def", {}))
+    if typeof(saved_value) != TYPE_DICTIONARY or typeof(saved_def_value) != TYPE_DICTIONARY:
+        return false
+    var saved: Dictionary = saved_value
+    var saved_def: Dictionary = saved_def_value
+    if saved.is_empty() or saved_def.is_empty():
+        return false
+
+    if payload.has("party"):
+        GameState.party = PartyStateScript.from_dict(payload["party"])
+    var creation_value: Variant = payload.get("creation_profile", {})
+    if typeof(creation_value) == TYPE_DICTIONARY:
+        GameState.creation_profile = (creation_value as Dictionary).duplicate(true)
+    var flags_value: Variant = payload.get("world_flags", {})
+    if typeof(flags_value) == TYPE_DICTIONARY:
+        GameState.world_flags = (flags_value as Dictionary).duplicate(true)
+    var saved_world_pos: Variant = payload.get("world_pos", [])
+    if typeof(saved_world_pos) == TYPE_ARRAY and (saved_world_pos as Array).size() >= 2:
+        GameState.world_pos = Vector2(float(saved_world_pos[0]), float(saved_world_pos[1]))
+    GameState.from_world = bool(battle_payload.get("from_world", payload.get("from_world", GameState.from_world)))
+
+    battle_def = saved_def.duplicate(true)
+    popups.clear()
+    battle_vfx.clear()
+    visual_pos.clear()
+    last_turn_count = -1
+    suppress_autosave = true
+    var ok: bool = controller.restore(battle_def, GameState.battle_db(), saved)
+    suppress_autosave = false
+    if not ok:
+        return false
+
+    prep_active = false
+    prep_panel.visible = false
+    input_locked = false
+    exp_awarded = controller.result != ""
+    battle_rewards = {}
+    _center_camera()
+    for o in controller.units:
+        var u: BattleUnitScript = o
+        visual_pos[u.id] = cell_to_world(u.cell)
+    if controller.result != "":
+        _show_result()
+    _refresh_ui()
+    queue_redraw()
+    if from_backup:
+        _on_log("Main save was damaged; loaded the backup copy.")
+    return true
 
 
 ## Before the first turn: briefing plus "Party, Gear and Shop". Units are built from the party's current
@@ -739,13 +814,20 @@ func _save_summary() -> String:
     return "%s | turn %d" % [str(controller.def.get("title", "Battle")), controller.turn_count]
 
 
-func _autosave() -> void:
+func _autosave() -> bool:
     if suppress_autosave or controller.result != "" or controller.units.is_empty():
-        return
+        return false
     var a: BattleUnitScript = controller.active_unit()
     if a == null or a.team != "player" or ai_busy or input_locked:
-        return
-    SaveSystem.autosave({"battle": controller.to_dict(), "party": GameState.party.to_dict(), "battle_def": controller.def, "creation_profile": GameState.creation_profile.duplicate(true), "world_flags": GameState.world_flags.duplicate(true), "world_pos": [GameState.world_pos.x, GameState.world_pos.y], "from_world": GameState.from_world}, _save_summary())
+        return false
+    return SaveSystem.autosave(_battle_save_payload(), _save_summary())
+
+
+func _save_before_return_to_title() -> bool:
+    if controller.result == "" and not prep_active and not controller.units.is_empty():
+        return _autosave()
+    GameState.pending_battle_resume = {}
+    return GameState.save_campaign("auto_a")
 
 
 func _on_save_pressed() -> void:
@@ -755,7 +837,7 @@ func _on_save_pressed() -> void:
         else:
             _on_log("You can only save during your own turn.")
         return
-    if SaveSystem.save_slot("1", {"battle": controller.to_dict(), "party": GameState.party.to_dict(), "battle_def": controller.def, "creation_profile": GameState.creation_profile.duplicate(true), "world_flags": GameState.world_flags.duplicate(true), "world_pos": [GameState.world_pos.x, GameState.world_pos.y], "from_world": GameState.from_world}, _save_summary()):
+    if SaveSystem.save_slot("1", _battle_save_payload(), _save_summary()):
         _on_log("Game saved to slot 1.")
     else:
         _on_log("Save failed.")
@@ -774,40 +856,8 @@ func _on_load_pressed() -> void:
     if not bool(res.get("ok", false)):
         _on_log(str(res.get("error", "Load failed.")))
         return
-    var payload: Dictionary = res["payload"]
-    var saved: Dictionary = payload.get("battle", {})
-    popups.clear()
-    visual_pos.clear()
-    last_turn_count = -1
-    if payload.has("party"):
-        var saved_party: Dictionary = payload["party"]
-        GameState.party = PartyStateScript.from_dict(saved_party)
-    GameState.creation_profile = (payload.get("creation_profile", {}) as Dictionary).duplicate(true)
-    GameState.world_flags = (payload.get("world_flags", {}) as Dictionary).duplicate(true)
-    var saved_world_pos: Array = payload.get("world_pos", [0.0, 0.0])
-    if saved_world_pos.size() >= 2:
-        GameState.world_pos = Vector2(float(saved_world_pos[0]), float(saved_world_pos[1]))
-    GameState.from_world = bool(payload.get("from_world", false))
-    suppress_autosave = true
-    var saved_def: Dictionary = payload.get("battle_def", GameData.battle_def(BATTLE_ID))
-    var ok: bool = controller.restore(saved_def, GameState.battle_db(), saved)
-    suppress_autosave = false
-    if not ok:
-        _on_log("That save does not match this battle.")
-        return
-    battle_def = saved_def
-    result_panel.visible = false
-    prep_active = false
-    prep_panel.visible = false
-    input_locked = false
-    _refresh_ui()
-    queue_redraw()
-    exp_awarded = controller.result != ""      # a finished battle was already paid out
-    battle_rewards = {}
-    if controller.result != "":
-        _show_result()
-    if bool(res.get("from_backup", false)):
-        _on_log("Main save was damaged; loaded the backup copy.")
+    if not _restore_battle_payload(res.get("payload", {}), bool(res.get("from_backup", false))):
+        _on_log("That save does not contain a valid battle snapshot.")
 
 
 ## "Load" restores the most recent save: manual slot 1 or either autosave.
@@ -1689,7 +1739,7 @@ func _build_ui() -> void:
     title_confirm = ConfirmationDialog.new()
     title_confirm.name = "ReturnToTitleConfirm"
     title_confirm.title = "Return to Title Screen?"
-    title_confirm.dialog_text = "The current battle will be autosaved when it is safe to do so."
+    title_confirm.dialog_text = "Your progress will be saved. An in-progress battle can be resumed from Continue."
     title_confirm.confirmed.connect(_return_to_title)
     root.add_child(title_confirm)
     menu_panel.add_child(mbox)
@@ -1719,14 +1769,18 @@ func _request_return_to_title() -> void:
 
 
 func _return_to_title() -> void:
-    if controller.result == "" and not controller.units.is_empty():
+    if controller.result == "" and not prep_active and not controller.units.is_empty():
         var active: BattleUnitScript = controller.active_unit()
         if ai_busy or input_locked or active == null or active.team != "player":
             _on_log("Wait for your turn to return to the title screen safely.")
             menu_panel.visible = true
             return
-        _autosave()
+    if not _save_before_return_to_title():
+        _on_log("Could not save. Return cancelled to protect your progress.")
+        menu_panel.visible = true
+        return
     GameState.pending_battle = {}
+    GameState.pending_battle_resume = {}
     get_tree().change_scene_to_file("res://TitleScreen.tscn")
 
 
