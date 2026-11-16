@@ -26,6 +26,7 @@ var shop: Dictionary = {}                # shop.json: stock lists and sell ratio
 var start: Dictionary = {}               # campaign_start.json: starting party, gold, inventory
 var locations: Dictionary = {}           # locations.json: town and interior maps
 var character_creation: Dictionary = {}   # protagonist creator options and stat effects
+var portrait_registry: Dictionary = {}    # canonical entity-to-portrait mapping and coverage state
 var world: Dictionary = {}               # world.json: the Eldrimar regional overworld
 var thalassar_world: Dictionary = {}     # thalassar_world.json: Brinegate Coast
 var continents: Dictionary = {}          # continents.json: the seven-continent campaign atlas
@@ -70,6 +71,7 @@ func reload() -> void:
     trade_economy = _load_json("trade_goods.json")
     locations = _load_json("locations.json")
     character_creation = _load_json("character_creation.json")
+    portrait_registry = _load_json("portrait_registry.json")
     battles.clear()
     for battle_file in BATTLE_FILES:
         var def: Dictionary = _load_json("battles/" + str(battle_file) + ".json")
@@ -106,7 +108,7 @@ func rules_db() -> Dictionary:
 
 ## Everything the party screen needs to compute and describe gear, sigils and skills.
 func party_db() -> Dictionary:
-    return {"classes": classes, "weapons": weapons, "items": items, "runes": runes, "sigils": runes, "skills": skills, "traits": traits, "trait_events": trait_events}
+    return {"classes": classes, "weapons": weapons, "items": items, "runes": runes, "sigils": runes, "skills": skills, "traits": traits, "trait_events": trait_events, "portrait_registry": portrait_registry}
 
 
 func battle_def(battle_id: String) -> Dictionary:
@@ -139,6 +141,25 @@ func item_def(item_id: String) -> Dictionary:
 
 func character_def(character_id: String) -> Dictionary:
     return characters.get(character_id, {})
+
+
+## Resolve a canonical portrait record without inventing or randomly reusing another identity. Legacy
+## portrait IDs are retained for save compatibility, but their audit status remains explicitly unverified.
+func portrait_record(entity_id: String) -> Dictionary:
+    var entities: Array = portrait_registry.get("entities", [])
+    for raw_entry in entities:
+        var entry: Dictionary = raw_entry
+        if str(entry.get("id", "")) == entity_id:
+            return entry.duplicate(true)
+    return {}
+
+
+func portrait_asset_path(entity_id: String) -> String:
+    var entry := portrait_record(entity_id)
+    var path := str(entry.get("asset_path", ""))
+    if path == "" or not ResourceLoader.exists(path):
+        return ""
+    return path
 
 
 func _load_json(rel_path: String) -> Dictionary:
