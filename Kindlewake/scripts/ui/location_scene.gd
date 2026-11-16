@@ -264,7 +264,7 @@ func _on_prompt_pressed() -> void:
     if near_spot.has("companion_quest_id"):
         _build_companion_quest_actions(near_spot)
     elif spot_kind == "party":
-        if GameState.trade_market_available():
+        if bool(near_spot.get("regional_exchange", false)) and GameState.trade_market_available():
             spot_buttons.add_child(_btn("Open regional exchange", _open_trade_market))
         spot_buttons.add_child(_btn("Open market and company stores", _open_party))
     elif spot_kind == "inn":
@@ -938,8 +938,8 @@ func _challenge_boss(spot: Dictionary) -> void:
 
 
 func _open_trade_market() -> void:
-    if near_spot.is_empty() or str(near_spot.get("kind", "")) != "party":
-        spot_text.text += "\\n\\nThe regional exchange is available only beside a staffed market."
+    if near_spot.is_empty() or str(near_spot.get("kind", "")) != "party" or not bool(near_spot.get("regional_exchange", false)):
+        spot_text.text += "\\n\\nThe regional exchange is available only beside a designated market factor."
         return
     var keeper_id := str(near_spot.get("shopkeeper_id", ""))
     if not bool(near_spot.get("npc_active", true)) or (keeper_id != "" and not bool(GameState.world_flags.get("npc_active_" + keeper_id, true))):
