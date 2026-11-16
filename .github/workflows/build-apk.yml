@@ -65,7 +65,8 @@ jobs:
           api-level: 35
           target: google_apis
           arch: x86_64
-          profile: pixel_6
+          profile: pixel_5
+          disable-animations: true
           script: |
             # Match the HONOR 400's portrait logical viewport: 440 x 952 dp
             # (1264 x 2736 at 460 dpi) while keeping emulator rendering light.
