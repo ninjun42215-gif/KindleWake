@@ -95,6 +95,7 @@ var hud_root: Control                    # everything in the HUD lives here (ins
 var preview_panel: PanelContainer        # attack / skill / move preview above Confirm and Cancel
 var preview_label: Label
 var menu_panel: PanelContainer           # Save / Load popup
+var title_confirm: ConfirmationDialog
 
 
 func _ready() -> void:
@@ -1685,7 +1686,7 @@ func _build_ui() -> void:
     mbox.add_child(_make_button("Load", _on_menu_load, Vector2(300, 72), 26))
     mbox.add_child(_make_button("Return to Title", _request_return_to_title, Vector2(300, 72), 26))
     mbox.add_child(_make_button("Close", _on_menu_pressed, Vector2(300, 72), 26))
-    var title_confirm := ConfirmationDialog.new()
+    title_confirm = ConfirmationDialog.new()
     title_confirm.name = "ReturnToTitleConfirm"
     title_confirm.title = "Return to Title Screen?"
     title_confirm.dialog_text = "The current battle will be autosaved when it is safe to do so."
@@ -1713,9 +1714,8 @@ func _on_menu_pressed() -> void:
 
 func _request_return_to_title() -> void:
     menu_panel.visible = false
-    var dialog := get_node_or_null("ReturnToTitleConfirm")
-    if dialog is ConfirmationDialog:
-        (dialog as ConfirmationDialog).popup_centered()
+    if title_confirm != null:
+        title_confirm.popup_centered()
 
 
 func _return_to_title() -> void:
