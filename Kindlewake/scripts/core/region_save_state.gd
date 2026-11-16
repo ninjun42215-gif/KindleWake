@@ -134,6 +134,10 @@ static func is_valid_campaign_payload(payload: Dictionary) -> bool:
         return false
     if typeof(payload.get("chronicle_state", {})) != TYPE_DICTIONARY:
         return false
+    # Additive regional market data is optional for legacy schema-4 saves, but
+    # when present it must be a dictionary before GameState normalizes it.
+    if typeof(payload.get("trade_state", {})) != TYPE_DICTIONARY:
+        return false
     return true
 
 
