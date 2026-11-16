@@ -1,4 +1,6 @@
 extends Control
+
+const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
 ## Scrollable mobile-first regional commodity exchange. All transactions are validated by GameState.
 
 signal closed
@@ -25,6 +27,7 @@ func _ready() -> void:
     panel.offset_top = 12
     panel.offset_right = -12
     panel.offset_bottom = -12
+    panel.add_theme_stylebox_override("panel", PremiumUITheme.panel_style(0.98))
     add_child(panel)
 
     var margin := MarginContainer.new()
@@ -40,25 +43,27 @@ func _ready() -> void:
     var title := Label.new()
     title.text = "REGIONAL EXCHANGE"
     title.add_theme_font_size_override("font_size", 24)
+    title.add_theme_color_override("font_color", PremiumUITheme.BRASS_LIGHT)
     title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     header.add_child(title)
     var close_button := Button.new()
     close_button.text = "CLOSE"
     close_button.custom_minimum_size = Vector2(88, 44)
+    PremiumUITheme.apply_button(close_button)
     close_button.pressed.connect(_close)
     header.add_child(close_button)
     outer.add_child(header)
 
     summary_label = Label.new()
     summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    summary_label.add_theme_color_override("font_color", Color("#e5c98d"))
+    summary_label.add_theme_color_override("font_color", PremiumUITheme.PARCHMENT)
     summary_label.add_theme_font_size_override("font_size", 15)
     outer.add_child(summary_label)
 
     status_label = Label.new()
     status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     status_label.add_theme_font_size_override("font_size", 15)
-    status_label.add_theme_color_override("font_color", Color("#e7d7b5"))
+    status_label.add_theme_color_override("font_color", PremiumUITheme.MUTED)
     outer.add_child(status_label)
 
     scroll = ScrollContainer.new()
@@ -109,6 +114,7 @@ func _build_good_row(quote: Dictionary) -> Control:
     var good_id := str(quote.get("id", ""))
     var card := PanelContainer.new()
     card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    card.add_theme_stylebox_override("panel", PremiumUITheme.panel_style(0.82))
     var outer := VBoxContainer.new()
     outer.add_theme_constant_override("separation", 5)
     card.add_child(outer)
@@ -120,6 +126,7 @@ func _build_good_row(quote: Dictionary) -> Control:
     ]
     heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     heading.add_theme_font_size_override("font_size", 16)
+    heading.add_theme_color_override("font_color", PremiumUITheme.PARCHMENT)
     outer.add_child(heading)
 
     var detail := Label.new()
@@ -129,7 +136,7 @@ func _build_good_row(quote: Dictionary) -> Control:
     ]
     detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     detail.add_theme_font_size_override("font_size", 13)
-    detail.add_theme_color_override("font_color", Color("#b9b3a8"))
+    detail.add_theme_color_override("font_color", PremiumUITheme.MUTED)
     outer.add_child(detail)
 
     var actions := HBoxContainer.new()
@@ -147,6 +154,7 @@ func _build_good_row(quote: Dictionary) -> Control:
     buy_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     buy_button.custom_minimum_size = Vector2(76, 42)
     buy_button.disabled = int(quote.get("stock", 0)) <= 0
+    PremiumUITheme.apply_button(buy_button)
     buy_button.pressed.connect(func():
         _buy_good(good_id, int(quantity.value))
     )
@@ -157,6 +165,7 @@ func _build_good_row(quote: Dictionary) -> Control:
     sell_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     sell_button.custom_minimum_size = Vector2(76, 42)
     sell_button.disabled = int(quote.get("owned", 0)) <= 0
+    PremiumUITheme.apply_button(sell_button)
     sell_button.pressed.connect(func():
         _sell_good(good_id, int(quantity.value))
     )
