@@ -60,6 +60,9 @@ func _build_ui() -> void:
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+    # Keep scrolling vertical-only and use a phone-friendly wheel/trackpad step.
+    # Focused fields are brought into view when the Android keyboard appears.
+    scroll.scroll_vertical_custom_step = 64.0
     scroll.follow_focus = true
     margin.add_child(scroll)
 
