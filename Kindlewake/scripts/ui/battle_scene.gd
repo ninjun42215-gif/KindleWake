@@ -1669,6 +1669,8 @@ func _on_menu_load() -> void:
 
 func _make_button(text: String, handler: Callable, min_size: Vector2 = Vector2(220, 76), font_size: int = 26) -> Button:
     var b := Button.new()
+    b.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+    b.focus_mode = Control.FOCUS_NONE
     b.text = text
     b.custom_minimum_size = min_size
     b.add_theme_font_size_override("font_size", font_size)
