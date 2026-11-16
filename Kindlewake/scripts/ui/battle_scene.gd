@@ -1683,7 +1683,14 @@ func _build_ui() -> void:
     mbox.add_child(mtitle)
     mbox.add_child(_make_button("Save", _on_menu_save, Vector2(300, 72), 26))
     mbox.add_child(_make_button("Load", _on_menu_load, Vector2(300, 72), 26))
+    mbox.add_child(_make_button("Return to Title", _request_return_to_title, Vector2(300, 72), 26))
     mbox.add_child(_make_button("Close", _on_menu_pressed, Vector2(300, 72), 26))
+    var title_confirm := ConfirmationDialog.new()
+    title_confirm.name = "ReturnToTitleConfirm"
+    title_confirm.title = "Return to Title Screen?"
+    title_confirm.dialog_text = "The current battle will be autosaved when it is safe to do so."
+    title_confirm.confirmed.connect(_return_to_title)
+    root.add_child(title_confirm)
     menu_panel.add_child(mbox)
     root.add_child(menu_panel)
     menu_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
@@ -1702,6 +1709,20 @@ func _build_ui() -> void:
 func _on_menu_pressed() -> void:
     if menu_panel != null:
         menu_panel.visible = not menu_panel.visible
+
+
+func _request_return_to_title() -> void:
+    menu_panel.visible = false
+    var dialog := get_node_or_null("ReturnToTitleConfirm")
+    if dialog is ConfirmationDialog:
+        (dialog as ConfirmationDialog).popup_centered()
+
+
+func _return_to_title() -> void:
+    if not controller.units.is_empty() and controller.result == "":
+        _autosave()
+    GameState.pending_battle = {}
+    get_tree().change_scene_to_file("res://TitleScreen.tscn")
 
 
 func _on_menu_save() -> void:
