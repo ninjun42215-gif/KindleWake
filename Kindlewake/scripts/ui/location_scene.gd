@@ -15,6 +15,7 @@ const ExplorationControls = preload("res://scripts/ui/exploration_controls.gd")
 const VirtualStick = preload("res://scripts/ui/virtual_stick.gd")
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
 const CompanionQuestJournalScript = preload("res://scripts/ui/companion_quest_journal.gd")
+const MerchantScreenScript = preload("res://scripts/ui/merchant_screen.gd")
 const PersonalitySystemScript = preload("res://scripts/core/personality_system.gd")
 ## Towns and building interiors (data/locations.json, rules in LocalMap).
 ## Walk with tap / drag like the overworld. Walking into a door loads the next map (town -> house -> town) inside this
@@ -49,6 +50,7 @@ var spot_title: Label
 var spot_text: Label
 var spot_buttons: VBoxContainer
 var party_screen: PartyScreen
+var merchant_screen: MerchantScreenScript
 var quest_journal: CompanionQuestJournal
 var move_stick: VirtualStick
 var run_btn: Button
@@ -101,7 +103,7 @@ func _load_map(id: String, spawn: Vector2i) -> void:
 # ------------------------------------------------------------------ input and movement
 
 func _unhandled_input(event: InputEvent) -> void:
-    if panel_open or party_screen.visible or quest_journal.visible or leaving:
+    if panel_open or party_screen.visible or merchant_screen.visible or quest_journal.visible or leaving:
         return
     if event is InputEventMouseButton:
         var mb := event as InputEventMouseButton
@@ -129,7 +131,7 @@ func _free_at(p: Vector2) -> bool:
 func _process(delta: float) -> void:
     if leaving:
         return
-    if not panel_open and not party_screen.visible and not quest_journal.visible:
+    if not panel_open and not party_screen.visible and not merchant_screen.visible and not quest_journal.visible:
         moving_vector = ExplorationControls.movement_vector()
         if move_stick != null and move_stick.value.length() > moving_vector.length():
             moving_vector = move_stick.value
@@ -262,6 +264,8 @@ func _on_prompt_pressed() -> void:
     if near_spot.has("companion_quest_id"):
         _build_companion_quest_actions(near_spot)
     elif spot_kind == "party":
+        if GameState.trade_market_available():
+            spot_buttons.add_child(_btn("Open regional exchange", _open_trade_market))
         spot_buttons.add_child(_btn("Open market and company stores", _open_party))
     elif spot_kind == "inn":
         spot_buttons.add_child(_btn("Rest the company — 20 gold", _rest_at_inn))
@@ -933,6 +937,31 @@ func _challenge_boss(spot: Dictionary) -> void:
     get_tree().change_scene_to_file("res://Main.tscn")
 
 
+func _open_trade_market() -> void:
+    if near_spot.is_empty() or str(near_spot.get("kind", "")) != "party":
+        spot_text.text += "\\n\\nThe regional exchange is available only beside a staffed market."
+        return
+    var keeper_id := str(near_spot.get("shopkeeper_id", ""))
+    if not bool(near_spot.get("npc_active", true)) or (keeper_id != "" and not bool(GameState.world_flags.get("npc_active_" + keeper_id, true))):
+        spot_text.text += "\\n\\nThe shopkeeper is away. The exchange is closed."
+        return
+    if not ShopSystem.market_available(GameData.shop, current_map_id, GameState.world_flags):
+        spot_text.text += "\\n\\nThe local market is not currently open."
+        return
+    if not GameState.trade_market_available():
+        spot_text.text += "\\n\\nThere is no recognised commodity exchange in this region yet."
+        return
+    has_target = false
+    pressing = false
+    panel_open = false
+    spot_panel.visible = false
+    merchant_screen.open_exchange()
+
+
+func _on_trade_market_closed() -> void:
+    _close_panel()
+
+
 func _open_party() -> void:
     # Company stores are a staffed service, not a remote menu. The player must
     # still be beside the actual market/company NPC to open this screen.
@@ -1294,13 +1323,19 @@ func _build_ui() -> void:
     party_screen.visible = false
     party_screen.closed.connect(_on_party_closed)
 
+    merchant_screen = MerchantScreenScript.new()
+    root.add_child(merchant_screen)
+    merchant_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    merchant_screen.visible = false
+    merchant_screen.closed.connect(_on_trade_market_closed)
+
     quest_journal = CompanionQuestJournalScript.new()
     root.add_child(quest_journal)
     quest_journal.visible = false
 
 
 func _open_quest_journal() -> void:
-    if panel_open or party_screen.visible:
+    if panel_open or party_screen.visible or merchant_screen.visible:
         return
     has_target = false
     pressing = false
