@@ -1104,7 +1104,7 @@ func _draw_atlas_enemy(u: BattleUnitScript, p: Vector2, archetype: String, fdir:
         motion = "walk"
     elif str(u.class_id) in ["mage", "cleric"] and u.has_acted:
         motion = "skill"
-    if not Art.draw_character_animated(self, archetype, p + Vector2(0, 8), motion_time, motion, 0.72, tint, fdir.x < 0.0):
+    if not Art.draw_character_animated(self, archetype, p + Vector2(0, 8), motion_time, motion, 0.44, tint, fdir.x < 0.0):
         return false
     draw_line(p + Vector2(0, 2), p + Vector2(0, 2) + fdir * 16.0, Color(1, 1, 1, 0.55), 2.0)
     var ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
