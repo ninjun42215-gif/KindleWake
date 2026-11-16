@@ -1,0 +1,2531 @@
+{
+  "schema_version": 1,
+  "generated_from_branch": "main",
+  "generated_at": "2026-11-17",
+  "status": "AUDIT_BASELINE_NOT_COMPLETE",
+  "asset_root": "res://assets/art/portraits/",
+  "existing_assets": [
+    "ash_scout.svg",
+    "auburn_ranger.svg",
+    "briar_warden.svg",
+    "courtier.svg",
+    "dusk_rogue.svg",
+    "iron_veteran.svg",
+    "night_scholar.svg",
+    "old_knight.svg",
+    "shieldmaiden.svg",
+    "silver_oracle.svg",
+    "sunwarden.svg",
+    "torren_redcloak.svg"
+  ],
+  "protagonist_creator_appearances": [
+    {
+      "portrait_id": "torren_redcloak",
+      "asset_path": "res://assets/art/portraits/torren_redcloak.svg",
+      "appearance": {
+        "presentation": "masculine",
+        "face": "weathered",
+        "hair": "short_dark",
+        "skin": "warm",
+        "build": "athletic"
+      },
+      "status": "asset_exists_identity_unverified"
+    },
+    {
+      "portrait_id": "auburn_ranger",
+      "asset_path": "res://assets/art/portraits/auburn_ranger.svg",
+      "appearance": {
+        "presentation": "feminine",
+        "face": "soft",
+        "hair": "tied_brown",
+        "skin": "fair",
+        "build": "lean"
+      },
+      "status": "asset_exists_identity_unverified"
+    },
+    {
+      "portrait_id": "sunwarden",
+      "asset_path": "res://assets/art/portraits/sunwarden.svg",
+      "appearance": {
+        "presentation": "masculine",
+        "face": "sharp",
+        "hair": "cropped_red",
+        "skin": "warm",
+        "build": "athletic"
+      },
+      "status": "asset_exists_identity_unverified"
+    },
+    {
+      "portrait_id": "iron_veteran",
+      "asset_path": "res://assets/art/portraits/iron_veteran.svg",
+      "appearance": {
+        "presentation": "masculine",
+        "face": "scarred",
+        "hair": "shaved",
+        "skin": "deep",
+        "build": "sturdy"
+      },
+      "status": "asset_exists_identity_unverified"
+    },
+    {
+      "portrait_id": "silver_oracle",
+      "asset_path": "res://assets/art/portraits/silver_oracle.svg",
+      "appearance": {
+        "presentation": "feminine",
+        "face": "sharp",
+        "hair": "long_dark",
+        "skin": "fair",
+        "build": "lean"
+      },
+      "status": "asset_exists_identity_unverified"
+    },
+    {
+      "portrait_id": "dusk_rogue",
+      "asset_path": "res://assets/art/portraits/dusk_rogue.svg",
+      "appearance": {
+        "presentation": "androgynous",
+        "face": "sharp",
+        "hair": "cropped_red",
+        "skin": "olive",
+        "build": "lean"
+      },
+      "status": "asset_exists_identity_unverified"
+    },
+    {
+      "portrait_id": "shieldmaiden",
+      "asset_path": "res://assets/art/portraits/shieldmaiden.svg",
+      "appearance": {
+        "presentation": "feminine",
+        "face": "weathered",
+        "hair": "long_dark",
+        "skin": "warm",
+        "build": "sturdy"
+      },
+      "status": "asset_exists_identity_unverified"
+    },
+    {
+      "portrait_id": "courtier",
+      "asset_path": "res://assets/art/portraits/courtier.svg",
+      "appearance": {
+        "presentation": "androgynous",
+        "face": "soft",
+        "hair": "tied_brown",
+        "skin": "fair",
+        "build": "athletic"
+      },
+      "status": "asset_exists_identity_unverified"
+    },
+    {
+      "portrait_id": "ash_scout",
+      "asset_path": "res://assets/art/portraits/ash_scout.svg",
+      "appearance": {
+        "presentation": "masculine",
+        "face": "scarred",
+        "hair": "short_dark",
+        "skin": "olive",
+        "build": "lean"
+      },
+      "status": "asset_exists_identity_unverified"
+    },
+    {
+      "portrait_id": "briar_warden",
+      "asset_path": "res://assets/art/portraits/briar_warden.svg",
+      "appearance": {
+        "presentation": "feminine",
+        "face": "sharp",
+        "hair": "tied_brown",
+        "skin": "deep",
+        "build": "athletic"
+      },
+      "status": "asset_exists_identity_unverified"
+    },
+    {
+      "portrait_id": "old_knight",
+      "asset_path": "res://assets/art/portraits/old_knight.svg",
+      "appearance": {
+        "presentation": "masculine",
+        "face": "weathered",
+        "hair": "shaved",
+        "skin": "fair",
+        "build": "sturdy"
+      },
+      "status": "asset_exists_identity_unverified"
+    },
+    {
+      "portrait_id": "night_scholar",
+      "asset_path": "res://assets/art/portraits/night_scholar.svg",
+      "appearance": {
+        "presentation": "androgynous",
+        "face": "soft",
+        "hair": "long_dark",
+        "skin": "deep",
+        "build": "lean"
+      },
+      "status": "asset_exists_identity_unverified"
+    }
+  ],
+  "entities": [
+    {
+      "id": "torren",
+      "name": "Torren Dunmarrow",
+      "category": "story_or_party_character",
+      "class_id": "swordsman",
+      "portrait_id": "torren_redcloak",
+      "asset_path": "res://assets/art/portraits/torren_redcloak.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "bram",
+      "name": "Sir Bram Vosk",
+      "category": "story_or_party_character",
+      "class_id": "knight",
+      "portrait_id": "auburn_ranger",
+      "asset_path": "res://assets/art/portraits/auburn_ranger.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "sela",
+      "name": "Sela Wrenfield",
+      "category": "story_or_party_character",
+      "class_id": "archer",
+      "portrait_id": "sunwarden",
+      "asset_path": "res://assets/art/portraits/sunwarden.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "brother_wystan",
+      "name": "Brother Wystan",
+      "category": "story_or_party_character",
+      "class_id": "cleric",
+      "portrait_id": "iron_veteran",
+      "asset_path": "res://assets/art/portraits/iron_veteran.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "hask_gravelteeth",
+      "name": "Hask Gravelteeth",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "silver_oracle",
+      "asset_path": "res://assets/art/portraits/silver_oracle.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "roadreaver",
+      "name": "Roadwolf Reaver",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "dusk_rogue",
+      "asset_path": "res://assets/art/portraits/dusk_rogue.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "roadbowman",
+      "name": "Roadwolf Bowman",
+      "category": "enemy",
+      "class_id": "archer",
+      "portrait_id": "shieldmaiden",
+      "asset_path": "res://assets/art/portraits/shieldmaiden.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "rootbound_warden",
+      "name": "Rootbound Warden",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "courtier",
+      "asset_path": "res://assets/art/portraits/courtier.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "bell_keeper",
+      "name": "The Bell-Keeper",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "ash_scout",
+      "asset_path": "res://assets/art/portraits/ash_scout.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "ashen_reeve",
+      "name": "The Ashen Reeve",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "briar_warden",
+      "asset_path": "res://assets/art/portraits/briar_warden.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "lucan_thorne",
+      "name": "Lucan Thorne",
+      "category": "recruitable",
+      "class_id": "longbow_master",
+      "portrait_id": "old_knight",
+      "asset_path": "res://assets/art/portraits/old_knight.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "old_brisa",
+      "name": "Old Brisa",
+      "category": "recruitable",
+      "class_id": "cleric",
+      "portrait_id": "night_scholar",
+      "asset_path": "res://assets/art/portraits/night_scholar.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "kestrel",
+      "name": "Kestrel",
+      "category": "recruitable",
+      "class_id": "assassin",
+      "portrait_id": "auburn_ranger",
+      "asset_path": "res://assets/art/portraits/auburn_ranger.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "anselm_pike",
+      "name": "Anselm Pike",
+      "category": "recruitable",
+      "class_id": "lancer",
+      "portrait_id": "sunwarden",
+      "asset_path": "res://assets/art/portraits/sunwarden.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "petra_quill",
+      "name": "Petra Quill",
+      "category": "recruitable",
+      "class_id": "battle_medic",
+      "portrait_id": "iron_veteran",
+      "asset_path": "res://assets/art/portraits/iron_veteran.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "dorian_vask",
+      "name": "Dorian Vask",
+      "category": "recruitable",
+      "class_id": "crossbowman",
+      "portrait_id": "silver_oracle",
+      "asset_path": "res://assets/art/portraits/silver_oracle.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "edda_stonehand",
+      "name": "Edda Stonehand",
+      "category": "recruitable",
+      "class_id": "engineer",
+      "portrait_id": "dusk_rogue",
+      "asset_path": "res://assets/art/portraits/dusk_rogue.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "joss_harrow",
+      "name": "Joss Harrow",
+      "category": "recruitable",
+      "class_id": "thief",
+      "portrait_id": "shieldmaiden",
+      "asset_path": "res://assets/art/portraits/shieldmaiden.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "isaure_vessmoor",
+      "name": "Lady Isaure Vessmoor",
+      "category": "recruitable",
+      "class_id": "cavalier",
+      "portrait_id": "courtier",
+      "asset_path": "res://assets/art/portraits/courtier.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "bram_cullen",
+      "name": "Bram Cullen",
+      "category": "recruitable",
+      "class_id": "berserker",
+      "portrait_id": "ash_scout",
+      "asset_path": "res://assets/art/portraits/ash_scout.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "verra_nightsong",
+      "name": "Verra Nightsong",
+      "category": "recruitable",
+      "class_id": "bard",
+      "portrait_id": "briar_warden",
+      "asset_path": "res://assets/art/portraits/briar_warden.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "tomas_wren",
+      "name": "Tomas Wren",
+      "category": "recruitable",
+      "class_id": "scout",
+      "portrait_id": "old_knight",
+      "asset_path": "res://assets/art/portraits/old_knight.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "orlan_pike",
+      "name": "Orlan Pike",
+      "category": "recruitable",
+      "class_id": "fire_mage",
+      "portrait_id": "night_scholar",
+      "asset_path": "res://assets/art/portraits/night_scholar.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "sister_odaly",
+      "name": "Sister Odalys",
+      "category": "recruitable",
+      "class_id": "cleric",
+      "portrait_id": "auburn_ranger",
+      "asset_path": "res://assets/art/portraits/auburn_ranger.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "willem_roake",
+      "name": "Ser Willem Roake",
+      "category": "recruitable",
+      "class_id": "duelist",
+      "portrait_id": "sunwarden",
+      "asset_path": "res://assets/art/portraits/sunwarden.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "ysolde_marrow",
+      "name": "Ysolde Marrow",
+      "category": "recruitable",
+      "class_id": "ice_mage",
+      "portrait_id": "iron_veteran",
+      "asset_path": "res://assets/art/portraits/iron_veteran.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "garrick_holt",
+      "name": "Garrick Holt",
+      "category": "recruitable",
+      "class_id": "heavy_knight",
+      "portrait_id": "silver_oracle",
+      "asset_path": "res://assets/art/portraits/silver_oracle.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "corwin_brennhallow",
+      "name": "Lord Corwin Brennhallow",
+      "category": "recruitable",
+      "class_id": "knight",
+      "portrait_id": "dusk_rogue",
+      "asset_path": "res://assets/art/portraits/dusk_rogue.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "seraphine_tarnholt",
+      "name": "Seraphine Tarnholt",
+      "category": "recruitable",
+      "class_id": "paladin",
+      "portrait_id": "shieldmaiden",
+      "asset_path": "res://assets/art/portraits/shieldmaiden.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "ilyan_voss",
+      "name": "Ilyan Voss",
+      "category": "recruitable",
+      "class_id": "battle_mage",
+      "portrait_id": "courtier",
+      "asset_path": "res://assets/art/portraits/courtier.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "maren_vey",
+      "name": "Maren Vey",
+      "category": "recruitable",
+      "class_id": "archer",
+      "portrait_id": "ash_scout",
+      "asset_path": "res://assets/art/portraits/ash_scout.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "reefwarden",
+      "name": "The Reef Warden",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "briar_warden",
+      "asset_path": "res://assets/art/portraits/briar_warden.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "saltcutthroat",
+      "name": "Salt-Cut Cutthroat",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "old_knight",
+      "asset_path": "res://assets/art/portraits/old_knight.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "saltbow",
+      "name": "Salt-Reef Lookout",
+      "category": "enemy",
+      "class_id": "archer",
+      "portrait_id": "night_scholar",
+      "asset_path": "res://assets/art/portraits/night_scholar.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "blackwake_captain",
+      "name": "Blackwake Salvage Captain",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "auburn_ranger",
+      "asset_path": "res://assets/art/portraits/auburn_ranger.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "neris_quell",
+      "name": "Neris Quell",
+      "category": "recruitable",
+      "class_id": "scout",
+      "portrait_id": "sunwarden",
+      "asset_path": "res://assets/art/portraits/sunwarden.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "boss_hollow_hart",
+      "name": "The Hollow Hart",
+      "category": "enemy",
+      "class_id": "swordsman",
+      "portrait_id": "iron_veteran",
+      "asset_path": "res://assets/art/portraits/iron_veteran.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "boss_drowned_crown",
+      "name": "Admiral Veyr, the Drowned Crown",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "silver_oracle",
+      "asset_path": "res://assets/art/portraits/silver_oracle.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "boss_ash_regent",
+      "name": "Kharzug the Ash Regent",
+      "category": "enemy",
+      "class_id": "knight",
+      "portrait_id": "dusk_rogue",
+      "asset_path": "res://assets/art/portraits/dusk_rogue.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "boss_pale_matriarch",
+      "name": "The Pale Matriarch",
+      "category": "enemy",
+      "class_id": "cleric",
+      "portrait_id": "shieldmaiden",
+      "asset_path": "res://assets/art/portraits/shieldmaiden.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "boss_briar_sovereign",
+      "name": "The Briar Sovereign",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "courtier",
+      "asset_path": "res://assets/art/portraits/courtier.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "boss_star_eater",
+      "name": "The Star-Eater",
+      "category": "enemy",
+      "class_id": "cleric",
+      "portrait_id": "ash_scout",
+      "asset_path": "res://assets/art/portraits/ash_scout.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "boss_last_cantor",
+      "name": "The Last Cantor",
+      "category": "enemy",
+      "class_id": "swordsman",
+      "portrait_id": "briar_warden",
+      "asset_path": "res://assets/art/portraits/briar_warden.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "hask_convoy_champion",
+      "name": "Hask Gravelteeth, Roadwolf Captain",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "old_knight",
+      "asset_path": "res://assets/art/portraits/old_knight.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "ash_bailiff",
+      "name": "The Ash Bailiff",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "night_scholar",
+      "asset_path": "res://assets/art/portraits/night_scholar.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "checkpoint_sergeant",
+      "name": "Writ-Captain Odran Vale",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "auburn_ranger",
+      "asset_path": "res://assets/art/portraits/auburn_ranger.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "river_marshal",
+      "name": "River Marshal Edrik Vane",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "sunwarden",
+      "asset_path": "res://assets/art/portraits/sunwarden.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "quillon_warden",
+      "name": "Quillon Warden",
+      "category": "enemy",
+      "class_id": "roadreaver",
+      "portrait_id": "iron_veteran",
+      "asset_path": "res://assets/art/portraits/iron_veteran.svg",
+      "status": "legacy_assignment_unverified",
+      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+    },
+    {
+      "id": "npc.crossing.1.carter_wen",
+      "name": "Carter Wen",
+      "category": "npc",
+      "map_id": "crossing",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing.2.village_guard",
+      "name": "Village Guard",
+      "category": "npc",
+      "map_id": "crossing",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing.3.freed_debtor",
+      "name": "Freed Debtor",
+      "category": "npc",
+      "map_id": "crossing",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing.4.muster_clerk",
+      "name": "Muster Clerk",
+      "category": "npc",
+      "map_id": "crossing",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing.5.the_far_marker",
+      "name": "The Far Marker",
+      "category": "npc",
+      "map_id": "crossing",
+      "spot_index": 4,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing.6.carter_wen_convoy_master",
+      "name": "Carter Wen, Convoy Master",
+      "category": "npc",
+      "map_id": "crossing",
+      "spot_index": 5,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing.7.the_changed_escort",
+      "name": "The Changed Escort",
+      "category": "npc",
+      "map_id": "crossing",
+      "spot_index": 6,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing.8.the_price_of_a_crossing",
+      "name": "The Price of a Crossing",
+      "category": "npc",
+      "map_id": "crossing",
+      "spot_index": 7,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing_inn.1.innkeeper_maud",
+      "name": "Innkeeper Maud",
+      "category": "npc",
+      "map_id": "crossing_inn",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing_inn.2.drover",
+      "name": "Drover",
+      "category": "npc",
+      "map_id": "crossing_inn",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing_inn.3.chain_yard_witness",
+      "name": "Chain Yard Witness",
+      "category": "npc",
+      "map_id": "crossing_inn",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing_inn.4.tracks_that_turn_back",
+      "name": "Tracks That Turn Back",
+      "category": "npc",
+      "map_id": "crossing_inn",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing_shop.1.shopkeeper_oswin",
+      "name": "Shopkeeper Oswin",
+      "category": "npc",
+      "map_id": "crossing_shop",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing_elder.1.elder_hale",
+      "name": "Elder Hale",
+      "category": "npc",
+      "map_id": "crossing_elder",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing_elder.2.drill_sergeant",
+      "name": "Drill Sergeant",
+      "category": "npc",
+      "map_id": "crossing_elder",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.crossing_elder.3.the_homeward_hearing",
+      "name": "The Homeward Hearing",
+      "category": "npc",
+      "map_id": "crossing_elder",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sethorn.1.gate_warden",
+      "name": "Gate Warden",
+      "category": "npc",
+      "map_id": "sethorn",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sethorn.2.the_prisoner_s_petition",
+      "name": "The Prisoner's Petition",
+      "category": "npc",
+      "map_id": "sethorn",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sethorn.3.mira_the_wellkeeper",
+      "name": "Mira, the Wellkeeper",
+      "category": "npc",
+      "map_id": "sethorn",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sethorn.4.hobb_the_carpenter",
+      "name": "Hobb, the Carpenter",
+      "category": "npc",
+      "map_id": "sethorn",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sethorn_hall.1.steward_brannoch",
+      "name": "Steward Brannoch",
+      "category": "npc",
+      "map_id": "sethorn_hall",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sethorn_hall.3.master_smith_rurik",
+      "name": "Master Smith Rurik",
+      "category": "npc",
+      "map_id": "sethorn_hall",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sethorn_hall.4.furnace_broker",
+      "name": "Furnace Broker",
+      "category": "npc",
+      "map_id": "sethorn_hall",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sethorn_hall.5.former_spearman",
+      "name": "Former Spearman",
+      "category": "npc",
+      "map_id": "sethorn_hall",
+      "spot_index": 4,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sethorn_hall.6.the_two_witnesses",
+      "name": "The Two Witnesses",
+      "category": "npc",
+      "map_id": "sethorn_hall",
+      "spot_index": 5,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sethorn_barracks.1.sergeant_voss",
+      "name": "Sergeant Voss",
+      "category": "npc",
+      "map_id": "sethorn_barracks",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sethorn_barracks.2.the_returned_commander",
+      "name": "The Returned Commander",
+      "category": "npc",
+      "map_id": "sethorn_barracks",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere.1.town_crier",
+      "name": "Town Crier",
+      "category": "npc",
+      "map_id": "thornmere",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere.2.signal_keeper_s_assistant",
+      "name": "Signal Keeper's Assistant",
+      "category": "npc",
+      "map_id": "thornmere",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere.3.convoy_survivor",
+      "name": "Convoy Survivor",
+      "category": "npc",
+      "map_id": "thornmere",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere.4.the_messenger_s_purse",
+      "name": "The Messenger's Purse",
+      "category": "npc",
+      "map_id": "thornmere",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere.5.the_boundary_tree",
+      "name": "The Boundary Tree",
+      "category": "npc",
+      "map_id": "thornmere",
+      "spot_index": 4,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere.6.three_bridges",
+      "name": "Three Bridges",
+      "category": "npc",
+      "map_id": "thornmere",
+      "spot_index": 5,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere_inn.1.innkeeper",
+      "name": "Innkeeper",
+      "category": "npc",
+      "map_id": "thornmere_inn",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere_inn.2.retired_road_scout",
+      "name": "Retired Road Scout",
+      "category": "npc",
+      "map_id": "thornmere_inn",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere_inn.3.roadside_fletcher",
+      "name": "Roadside Fletcher",
+      "category": "npc",
+      "map_id": "thornmere_inn",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere_inn.4.cellar_ledger_broker",
+      "name": "Cellar Ledger Broker",
+      "category": "npc",
+      "map_id": "thornmere_inn",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere_market.1.market_factor",
+      "name": "Market Factor",
+      "category": "npc",
+      "map_id": "thornmere_market",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere_market.2.former_garrison_clerk",
+      "name": "Former Garrison Clerk",
+      "category": "npc",
+      "map_id": "thornmere_market",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere_market.3.quartermaster_s_runner",
+      "name": "Quartermaster's Runner",
+      "category": "npc",
+      "map_id": "thornmere_market",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere_market.4.the_refugee_cart",
+      "name": "The Refugee Cart",
+      "category": "npc",
+      "map_id": "thornmere_market",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere_recruit.1.lucan_thorne",
+      "name": "Lucan Thorne",
+      "category": "npc",
+      "map_id": "thornmere_recruit",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere_recruit.2.joss_harrow",
+      "name": "Joss Harrow",
+      "category": "npc",
+      "map_id": "thornmere_recruit",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere_recruit.3.tomas_wren",
+      "name": "Tomas Wren",
+      "category": "npc",
+      "map_id": "thornmere_recruit",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.thornmere_recruit.4.verra_nightsong",
+      "name": "Verra Nightsong",
+      "category": "npc",
+      "map_id": "thornmere_recruit",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.foxglove.1.town_crier",
+      "name": "Town Crier",
+      "category": "npc",
+      "map_id": "foxglove",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.foxglove_inn.1.innkeeper",
+      "name": "Innkeeper",
+      "category": "npc",
+      "map_id": "foxglove_inn",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.foxglove_inn.2.foundry_hand",
+      "name": "Foundry Hand",
+      "category": "npc",
+      "map_id": "foxglove_inn",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.foxglove_inn.3.recovered_patient",
+      "name": "Recovered Patient",
+      "category": "npc",
+      "map_id": "foxglove_inn",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.foxglove_market.1.market_factor",
+      "name": "Market Factor",
+      "category": "npc",
+      "map_id": "foxglove_market",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.foxglove_market.2.apothecary_s_ledger_keeper",
+      "name": "Apothecary's Ledger Keeper",
+      "category": "npc",
+      "map_id": "foxglove_market",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.foxglove_recruit.1.old_brisa",
+      "name": "Old Brisa",
+      "category": "npc",
+      "map_id": "foxglove_recruit",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.foxglove_recruit.2.edda_stonehand",
+      "name": "Edda Stonehand",
+      "category": "npc",
+      "map_id": "foxglove_recruit",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.foxglove_recruit.3.bram_cullen",
+      "name": "Bram Cullen",
+      "category": "npc",
+      "map_id": "foxglove_recruit",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.foxglove_recruit.4.foundry_tool_clerk",
+      "name": "Foundry Tool Clerk",
+      "category": "npc",
+      "map_id": "foxglove_recruit",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.foxglove_recruit.5.debt_runner",
+      "name": "Debt Runner",
+      "category": "npc",
+      "map_id": "foxglove_recruit",
+      "spot_index": 4,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.foxglove_recruit.6.ward_s_former_steward",
+      "name": "Ward's Former Steward",
+      "category": "npc",
+      "map_id": "foxglove_recruit",
+      "spot_index": 5,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough.1.town_crier",
+      "name": "Town Crier",
+      "category": "npc",
+      "map_id": "elderbough",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough.2.carved_waystone",
+      "name": "Carved Waystone",
+      "category": "npc",
+      "map_id": "elderbough",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough.3.the_sealed_vessmoor_summons",
+      "name": "The Sealed Vessmoor Summons",
+      "category": "npc",
+      "map_id": "elderbough",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough.4.the_orrowen_hearing",
+      "name": "The Orrowen Hearing",
+      "category": "npc",
+      "map_id": "elderbough",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough.5.the_banner_in_the_reeds",
+      "name": "The Banner in the Reeds",
+      "category": "npc",
+      "map_id": "elderbough",
+      "spot_index": 4,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough.6.the_witness_who_recanted",
+      "name": "The Witness Who Recanted",
+      "category": "npc",
+      "map_id": "elderbough",
+      "spot_index": 5,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough_inn.1.innkeeper",
+      "name": "Innkeeper",
+      "category": "npc",
+      "map_id": "elderbough_inn",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough_inn.2.safehouse_caretaker",
+      "name": "Safehouse Caretaker",
+      "category": "npc",
+      "map_id": "elderbough_inn",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough_inn.3.household_muster_clerk",
+      "name": "Household Muster Clerk",
+      "category": "npc",
+      "map_id": "elderbough_inn",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough_market.1.market_factor",
+      "name": "Market Factor",
+      "category": "npc",
+      "map_id": "elderbough_market",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough_market.2.protected_witness",
+      "name": "Protected Witness",
+      "category": "npc",
+      "map_id": "elderbough_market",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough_market.3.the_gatehouse_challenge",
+      "name": "The Gatehouse Challenge",
+      "category": "npc",
+      "map_id": "elderbough_market",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough_recruit.1.kestrel",
+      "name": "Kestrel",
+      "category": "npc",
+      "map_id": "elderbough_recruit",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough_recruit.2.lady_isaure_vessmoor",
+      "name": "Lady Isaure Vessmoor",
+      "category": "npc",
+      "map_id": "elderbough_recruit",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough_recruit.3.ser_willem_roake",
+      "name": "Ser Willem Roake",
+      "category": "npc",
+      "map_id": "elderbough_recruit",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.cindermead.1.town_crier",
+      "name": "Town Crier",
+      "category": "npc",
+      "map_id": "cindermead",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.cindermead.2.the_challenge_at_dawn",
+      "name": "The Challenge at Dawn",
+      "category": "npc",
+      "map_id": "cindermead",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.cindermead.3.the_unclaimed_brennhallow_seal",
+      "name": "The Unclaimed Brennhallow Seal",
+      "category": "npc",
+      "map_id": "cindermead",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.cindermead_inn.1.innkeeper",
+      "name": "Innkeeper",
+      "category": "npc",
+      "map_id": "cindermead_inn",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.cindermead_inn.2.witnesses_to_honour",
+      "name": "Witnesses to Honour",
+      "category": "npc",
+      "map_id": "cindermead_inn",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.cindermead_inn.3.the_charter_examiner",
+      "name": "The Charter Examiner",
+      "category": "npc",
+      "map_id": "cindermead_inn",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.cindermead_market.1.market_factor",
+      "name": "Market Factor",
+      "category": "npc",
+      "map_id": "cindermead_market",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.cindermead_market.2.the_unarmed_yard",
+      "name": "The Unarmed Yard",
+      "category": "npc",
+      "map_id": "cindermead_market",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.cindermead_market.3.the_hall_of_retainers",
+      "name": "The Hall of Retainers",
+      "category": "npc",
+      "map_id": "cindermead_market",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.cindermead_recruit.1.anselm_pike",
+      "name": "Anselm Pike",
+      "category": "npc",
+      "map_id": "cindermead_recruit",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.cindermead_recruit.2.garrick_holt",
+      "name": "Garrick Holt",
+      "category": "npc",
+      "map_id": "cindermead_recruit",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.cindermead_recruit.3.lord_corwin_brennhallow",
+      "name": "Lord Corwin Brennhallow",
+      "category": "npc",
+      "map_id": "cindermead_recruit",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.redwater.1.town_crier",
+      "name": "Town Crier",
+      "category": "npc",
+      "map_id": "redwater",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.redwater.2.the_sanctuary_bell",
+      "name": "The Sanctuary Bell",
+      "category": "npc",
+      "map_id": "redwater",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.redwater_inn.1.innkeeper",
+      "name": "Innkeeper",
+      "category": "npc",
+      "map_id": "redwater_inn",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.redwater_inn.2.the_rule_of_shelter",
+      "name": "The Rule of Shelter",
+      "category": "npc",
+      "map_id": "redwater_inn",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.redwater_market.1.market_factor",
+      "name": "Market Factor",
+      "category": "npc",
+      "map_id": "redwater_market",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.redwater_market.2.at_the_threshold",
+      "name": "At the Threshold",
+      "category": "npc",
+      "map_id": "redwater_market",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.redwater_recruit.1.petra_quill",
+      "name": "Petra Quill",
+      "category": "npc",
+      "map_id": "redwater_recruit",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.redwater_recruit.2.sister_odalys",
+      "name": "Sister Odalys",
+      "category": "npc",
+      "map_id": "redwater_recruit",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.redwater_recruit.3.seraphine_tarnholt",
+      "name": "Seraphine Tarnholt",
+      "category": "npc",
+      "map_id": "redwater_recruit",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.milefort.1.town_crier",
+      "name": "Town Crier",
+      "category": "npc",
+      "map_id": "milefort",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.milefort.2.the_misbound_volume",
+      "name": "The Misbound Volume",
+      "category": "npc",
+      "map_id": "milefort",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.milefort_inn.1.innkeeper",
+      "name": "Innkeeper",
+      "category": "npc",
+      "map_id": "milefort_inn",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.milefort_inn.2.the_marginal_hand",
+      "name": "The Marginal Hand",
+      "category": "npc",
+      "map_id": "milefort_inn",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.milefort_market.1.market_factor",
+      "name": "Market Factor",
+      "category": "npc",
+      "map_id": "milefort_market",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.milefort_market.2.the_archive_custodian",
+      "name": "The Archive Custodian",
+      "category": "npc",
+      "map_id": "milefort_market",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.milefort_recruit.1.dorian_vask",
+      "name": "Dorian Vask",
+      "category": "npc",
+      "map_id": "milefort_recruit",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.milefort_recruit.2.orlan_pike",
+      "name": "Orlan Pike",
+      "category": "npc",
+      "map_id": "milefort_recruit",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.milefort_recruit.3.ysolde_marrow",
+      "name": "Ysolde Marrow",
+      "category": "npc",
+      "map_id": "milefort_recruit",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.milefort_recruit.4.ilyan_voss",
+      "name": "Ilyan Voss",
+      "category": "npc",
+      "map_id": "milefort_recruit",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.dungeon_hollowroot.2.the_rootbound_warden",
+      "name": "The Rootbound Warden",
+      "category": "npc",
+      "map_id": "dungeon_hollowroot",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.dungeon_hollowroot.3.the_containment_lattice",
+      "name": "The Containment Lattice",
+      "category": "npc",
+      "map_id": "dungeon_hollowroot",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.dungeon_bell.2.the_bell_keeper",
+      "name": "The Bell-Keeper",
+      "category": "npc",
+      "map_id": "dungeon_bell",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.dungeon_bell.3.the_missing_tower_page",
+      "name": "The Missing Tower Page",
+      "category": "npc",
+      "map_id": "dungeon_bell",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.dungeon_catacombs.2.the_ashen_reeve",
+      "name": "The Ashen Reeve",
+      "category": "npc",
+      "map_id": "dungeon_catacombs",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.dungeon_catacombs.3.the_apprentice_s_signal",
+      "name": "The Apprentice's Signal",
+      "category": "npc",
+      "map_id": "dungeon_catacombs",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.brinegate.1.captain_ilyra_venn",
+      "name": "Captain Ilyra Venn",
+      "category": "npc",
+      "map_id": "brinegate",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.brinegate.2.tidebound_factor",
+      "name": "Tidebound Factor",
+      "category": "npc",
+      "map_id": "brinegate",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.brinegate.3.maren_vey",
+      "name": "Maren Vey",
+      "category": "npc",
+      "map_id": "brinegate",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.brinegate.4.the_lantern_keel",
+      "name": "The Lantern & Keel",
+      "category": "npc",
+      "map_id": "brinegate",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.brinegate.5.maren_s_chart_table",
+      "name": "Maren's Chart Table",
+      "category": "npc",
+      "map_id": "brinegate",
+      "spot_index": 4,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.brinegate.6.the_borrowed_verse",
+      "name": "The Borrowed Verse",
+      "category": "npc",
+      "map_id": "brinegate",
+      "spot_index": 5,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.brinegate.7.the_salt_register",
+      "name": "The Salt Register",
+      "category": "npc",
+      "map_id": "brinegate",
+      "spot_index": 6,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.brinegate.8.the_missing_passenger_leaf",
+      "name": "The Missing Passenger Leaf",
+      "category": "npc",
+      "map_id": "brinegate",
+      "spot_index": 7,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.saltmere.1.net_mender_ossa",
+      "name": "Net-mender Ossa",
+      "category": "npc",
+      "map_id": "saltmere",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.saltmere.2.the_brackish_cup",
+      "name": "The Brackish Cup",
+      "category": "npc",
+      "map_id": "saltmere",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.saltmere.3.the_hidden_reef_marker",
+      "name": "The Hidden Reef Marker",
+      "category": "npc",
+      "map_id": "saltmere",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.saltmere.4.saltmere_reef_market",
+      "name": "Saltmere Reef Market",
+      "category": "npc",
+      "map_id": "saltmere",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.saltmere.5.the_troupe_s_copybook",
+      "name": "The Troupe's Copybook",
+      "category": "npc",
+      "map_id": "saltmere",
+      "spot_index": 4,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.saltmere.6.tide_marks",
+      "name": "Tide Marks",
+      "category": "npc",
+      "map_id": "saltmere",
+      "spot_index": 5,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.saltmere.7.the_families_safe_passage",
+      "name": "The Families' Safe Passage",
+      "category": "npc",
+      "map_id": "saltmere",
+      "spot_index": 6,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.lantern_quay.1.beacon_apprentice",
+      "name": "Beacon Apprentice",
+      "category": "npc",
+      "map_id": "lantern_quay",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.lantern_quay.2.quay_provisioner",
+      "name": "Quay Provisioner",
+      "category": "npc",
+      "map_id": "lantern_quay",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.lantern_quay.3.the_silent_signal_post",
+      "name": "The Silent Signal Post",
+      "category": "npc",
+      "map_id": "lantern_quay",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.lantern_quay.4.neris_quell",
+      "name": "Neris Quell",
+      "category": "npc",
+      "map_id": "lantern_quay",
+      "spot_index": 3,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.lantern_quay.5.neris_s_chart",
+      "name": "Neris's Chart",
+      "category": "npc",
+      "map_id": "lantern_quay",
+      "spot_index": 4,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.lantern_quay.6.the_public_stage",
+      "name": "The Public Stage",
+      "category": "npc",
+      "map_id": "lantern_quay",
+      "spot_index": 5,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.lantern_quay.7.the_wharf_hearing",
+      "name": "The Wharf Hearing",
+      "category": "npc",
+      "map_id": "lantern_quay",
+      "spot_index": 6,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.dungeon_tideglass.2.the_reef_warden",
+      "name": "The Reef Warden",
+      "category": "npc",
+      "map_id": "dungeon_tideglass",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.dungeon_northstar_wreck.2.blackwake_salvage_captain",
+      "name": "Blackwake Salvage Captain",
+      "category": "npc",
+      "map_id": "dungeon_northstar_wreck",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.dungeon_northstar_wreck.3.the_wreck_s_cargo_lien",
+      "name": "The Wreck's Cargo Lien",
+      "category": "npc",
+      "map_id": "dungeon_northstar_wreck",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.tarnholt.1.the_unread_oath",
+      "name": "The Unread Oath",
+      "category": "npc",
+      "map_id": "tarnholt",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.tarnholt_inn.1.guest_hall_keeper",
+      "name": "Guest Hall Keeper",
+      "category": "npc",
+      "map_id": "tarnholt_inn",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.tarnholt_inn.2.the_quiet_chapter_records",
+      "name": "The Quiet Chapter Records",
+      "category": "npc",
+      "map_id": "tarnholt_inn",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.tarnholt_chapter_house.1.the_chapter_s_hearing",
+      "name": "The Chapter's Hearing",
+      "category": "npc",
+      "map_id": "tarnholt_chapter_house",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sallow_ford_keep.1.castellan_edric",
+      "name": "Castellan Edric",
+      "category": "npc",
+      "map_id": "sallow_ford_keep",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sallow_ford_keep.2.quartermaster_lysa",
+      "name": "Quartermaster Lysa",
+      "category": "npc",
+      "map_id": "sallow_ford_keep",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sallow_keep_hall.1.steward_of_the_ford",
+      "name": "Steward of the Ford",
+      "category": "npc",
+      "map_id": "sallow_keep_hall",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.sallow_keep_barracks.1.sergeant_harl",
+      "name": "Sergeant Harl",
+      "category": "npc",
+      "map_id": "sallow_keep_barracks",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough_watch.1.warden_captain_sella",
+      "name": "Warden-Captain Sella",
+      "category": "npc",
+      "map_id": "elderbough_watch",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough_watch.2.trail_keeper",
+      "name": "Trail Keeper",
+      "category": "npc",
+      "map_id": "elderbough_watch",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.redwater_granary.1.freeholder_mara",
+      "name": "Freeholder Mara",
+      "category": "npc",
+      "map_id": "redwater_granary",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.redwater_granary.2.grain_factor",
+      "name": "Grain Factor",
+      "category": "npc",
+      "map_id": "redwater_granary",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.elderbough_watch_hall.1.bell_keeper",
+      "name": "Bell Keeper",
+      "category": "npc",
+      "map_id": "elderbough_watch_hall",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.redwater_storehouse.1.seed_warden",
+      "name": "Seed Warden",
+      "category": "npc",
+      "map_id": "redwater_storehouse",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.morrowtide_exchange.1.diver_guild_factor",
+      "name": "Diver-Guild Factor",
+      "category": "npc",
+      "map_id": "morrowtide_exchange",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.morrowtide_exchange.2.guild_diver",
+      "name": "Guild Diver",
+      "category": "npc",
+      "map_id": "morrowtide_exchange",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.veyhaven_beacon.1.beacon_keeper",
+      "name": "Beacon Keeper",
+      "category": "npc",
+      "map_id": "veyhaven_beacon",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.veyhaven_beacon.2.harbour_pilot",
+      "name": "Harbour Pilot",
+      "category": "npc",
+      "map_id": "veyhaven_beacon",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.quillon_archive.1.archive_registrar",
+      "name": "Archive Registrar",
+      "category": "npc",
+      "map_id": "quillon_archive",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.quillon_archive.2.index_keeper",
+      "name": "Index Keeper",
+      "category": "npc",
+      "map_id": "quillon_archive",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.quillon_archive.3.custodian_of_seals",
+      "name": "Custodian of Seals",
+      "category": "npc",
+      "map_id": "quillon_archive",
+      "spot_index": 2,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.aurelmont.1.the_last_audience",
+      "name": "The Last Audience",
+      "category": "npc",
+      "map_id": "aurelmont",
+      "spot_index": 0,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "npc.aurelmont.2.aurelmont_gate_warden",
+      "name": "Aurelmont Gate Warden",
+      "category": "npc",
+      "map_id": "aurelmont",
+      "spot_index": 1,
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Interactive NPC/event speaker has no authored portrait assignment."
+    },
+    {
+      "id": "king_osric_iv",
+      "name": "King Osric IV",
+      "category": "named_story_character",
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Named story figure appears in the project lore; no dedicated portrait asset/record found in character definitions."
+    },
+    {
+      "id": "lord_edmer",
+      "name": "Lord Edmer",
+      "category": "named_story_character",
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Named story figure appears in the project lore; no dedicated portrait asset/record found in character definitions."
+    },
+    {
+      "id": "regent_maelor",
+      "name": "Regent Maelor",
+      "category": "named_story_character",
+      "portrait_id": null,
+      "asset_path": null,
+      "status": "missing",
+      "note": "Named story figure appears in the project lore; no dedicated portrait asset/record found in character definitions."
+    }
+  ],
+  "audit_summary": {
+    "entity_records": 208,
+    "by_category": {
+      "story_or_party_character": 4,
+      "enemy": 22,
+      "recruitable": 22,
+      "npc": 157,
+      "named_story_character": 3
+    },
+    "existing_asset_assignments_unverified": 48,
+    "missing_portrait_assignments": 160,
+    "reused_legacy_portrait_ids": 11,
+    "unverified_reuse_groups": [
+      {
+        "portrait_id": "auburn_ranger",
+        "entity_count": 5,
+        "entities": [
+          "bram",
+          "kestrel",
+          "sister_odaly",
+          "blackwake_captain",
+          "checkpoint_sergeant"
+        ]
+      },
+      {
+        "portrait_id": "sunwarden",
+        "entity_count": 5,
+        "entities": [
+          "sela",
+          "anselm_pike",
+          "willem_roake",
+          "neris_quell",
+          "river_marshal"
+        ]
+      },
+      {
+        "portrait_id": "iron_veteran",
+        "entity_count": 5,
+        "entities": [
+          "brother_wystan",
+          "petra_quill",
+          "ysolde_marrow",
+          "boss_hollow_hart",
+          "quillon_warden"
+        ]
+      },
+      {
+        "portrait_id": "silver_oracle",
+        "entity_count": 4,
+        "entities": [
+          "hask_gravelteeth",
+          "dorian_vask",
+          "garrick_holt",
+          "boss_drowned_crown"
+        ]
+      },
+      {
+        "portrait_id": "dusk_rogue",
+        "entity_count": 4,
+        "entities": [
+          "roadreaver",
+          "edda_stonehand",
+          "corwin_brennhallow",
+          "boss_ash_regent"
+        ]
+      },
+      {
+        "portrait_id": "shieldmaiden",
+        "entity_count": 4,
+        "entities": [
+          "roadbowman",
+          "joss_harrow",
+          "seraphine_tarnholt",
+          "boss_pale_matriarch"
+        ]
+      },
+      {
+        "portrait_id": "courtier",
+        "entity_count": 4,
+        "entities": [
+          "rootbound_warden",
+          "isaure_vessmoor",
+          "ilyan_voss",
+          "boss_briar_sovereign"
+        ]
+      },
+      {
+        "portrait_id": "ash_scout",
+        "entity_count": 4,
+        "entities": [
+          "bell_keeper",
+          "bram_cullen",
+          "maren_vey",
+          "boss_star_eater"
+        ]
+      },
+      {
+        "portrait_id": "briar_warden",
+        "entity_count": 4,
+        "entities": [
+          "ashen_reeve",
+          "verra_nightsong",
+          "reefwarden",
+          "boss_last_cantor"
+        ]
+      },
+      {
+        "portrait_id": "old_knight",
+        "entity_count": 4,
+        "entities": [
+          "lucan_thorne",
+          "tomas_wren",
+          "saltcutthroat",
+          "hask_convoy_champion"
+        ]
+      },
+      {
+        "portrait_id": "night_scholar",
+        "entity_count": 4,
+        "entities": [
+          "old_brisa",
+          "orlan_pike",
+          "saltbow",
+          "ash_bailiff"
+        ]
+      }
+    ]
+  }
+}
