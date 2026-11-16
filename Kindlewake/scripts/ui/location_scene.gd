@@ -264,7 +264,7 @@ func _on_prompt_pressed() -> void:
     if near_spot.has("companion_quest_id"):
         _build_companion_quest_actions(near_spot)
     elif spot_kind == "party":
-        if bool(near_spot.get("regional_exchange", false)) and GameState.trade_market_available():
+        if bool(near_spot.get("regional_exchange", false)) and GameState.trade_market_available() and ShopSystem.market_available(GameData.shop, current_map_id, GameState.world_flags):
             spot_buttons.add_child(_btn("Open regional exchange", _open_trade_market))
         spot_buttons.add_child(_btn("Open market and company stores", _open_party))
     elif spot_kind == "inn":
