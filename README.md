@@ -10,7 +10,7 @@
 
 > **Current gameplay systems:** AI pathfinding routes around occupied allies while ordinary player movement preserves ally pass-through. Realm administration has a mobile-first Holdings/Realm UI, shared-treasury summary, tax controls, governor appointments and royal policy cards; it unlocks after the first external stronghold is claimed. Governor assignments are unique, cleared on loss of territory and normalized against current ownership/roster. Existing holding governance, garrisons, buildings, recruitment and siege actions remain available. Governor-specific stat bonuses are not yet implemented.
 
-> **Next priorities and release gates:** Regional trading PR #81 remains blocked: its branch is 3 commits ahead / 29 behind main (diverged), with cargo-inventory, tariff/route authorization, story-gate, canonical-region and mobile-layout issues from prior review. PR #42 is 21 ahead / 44 behind; PR #46 is 261 ahead / 44 behind and too broad for bulk integration; PR #78 remains a stacked test/CI chain. PRs #130 and #132 remain drafts. Physical Android viewport, touch, pause/resume, long-session and low-memory testing remain outstanding.
+> **Next priorities and release gates:** Regional trading PR #81 remains blocked: its branch is 3 commits ahead / 29 behind main (diverged), with cargo-inventory, tariff/route authorization, story-gate, canonical-region and mobile-layout issues from prior review. PR #42 is 21 ahead / 45 behind; PR #46 is 261 ahead / 45 behind and too broad for bulk integration; PR #78 remains a stacked test/CI chain. PRs #130 and #132 remain drafts. Physical Android viewport, touch, pause/resume, long-session and low-memory testing remain outstanding.
 ---
 
 
