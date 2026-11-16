@@ -1256,7 +1256,7 @@ func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: V
             _draw_unit_tag(u, p)
             if u.morale <= 0:
                 draw_string(ThemeDB.fallback_font, p + Vector2(-40, -70), "ROUTED", HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color(1, 0.6, 0.3))
-            return
+            return true
     Art.draw_unit(self, kind, anim, t, p + Vector2(0, 4), scale, fdir.x < 0.0, tint)
     _draw_sprite_identity_marks(u, p, is_player, scale, t)
     var ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
