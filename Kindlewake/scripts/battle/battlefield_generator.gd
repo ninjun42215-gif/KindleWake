@@ -78,7 +78,7 @@ static func build_travel_map(source: Dictionary, world_map: RefCounted, cell: Ve
     var legend := {".":base,"f":"forest","r":"road","h":"hill","w":"ford","~":"deep_water","b":"bridge","#":"rock","m":"marsh","s":"snow","a":"ash","u":"ruins"}
     var rows: Array[String]=[]; var heights: Array[String]=[]
     for y in range(H):
-        rows.append("".join(g[y])); heights.append("".join(h[y]))
+        rows.append("".join(PackedStringArray(g[y]))); heights.append("".join(PackedStringArray(h[y])))
     out["legend"]=legend; out["terrain"]=rows; out["heights"]=heights
     out["battlefield_region"]=region_id
     out["battlefield_tile"]=str(profile.dominant_name)
