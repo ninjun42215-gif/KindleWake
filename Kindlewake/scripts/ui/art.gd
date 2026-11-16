@@ -105,7 +105,7 @@ static func character_for_npc(name: String, role: String = "") -> String:
     if key.contains("captain") or key.contains("knight") or key.contains("lord"):
         return "knight"
     var common: Array[String] = ["merchant", "guard", "ranger", "rogue", "priestess", "knight", "mage", "paladin"]
-    return common[posmod(absi(hash(name)), common.size())]
+    return common[posmod(hash(name), common.size())]
 
 
 static func character_for_enemy(character_id: String, display_name: String = "") -> String:
