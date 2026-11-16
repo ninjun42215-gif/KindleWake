@@ -23,12 +23,13 @@ The registry preserves existing `portrait_id` values as *legacy assignments only
 
 ## Confirmed gaps
 
-1. The twelve creator gallery SVGs are the only portrait files in the inspected portrait directory. They do not constitute individual coverage for the roster, enemies, named story characters and NPC population.
+1. The twelve creator gallery SVGs are the only portrait files in the inspected portrait directory. The inspected Torren SVG uses simplified vector shapes and gradients rather than the requested painterly semi-realistic finish; it is a useful legacy UI asset, not an approved final-art reference. These twelve files do not constitute individual coverage for the roster, enemies, named story characters and NPC population.
 2. The current character data assigns the same twelve IDs to many distinct people. These are legacy references, not approved likeness matches.
 3. Ordinary enemy types (including Roadwolf Reaver and Roadwolf Bowman) currently point into the generic creator portrait set. Hask Gravelteeth also has a reused portrait assignment that is not identity-approved.
 4. The creator's `CharacterPreview` draws a procedural geometric bust whenever its portrait asset cannot load. That fallback conflicts with the requested art standard.
 5. The location data contains many dialogue/event speakers without portrait IDs. NPCs need stable IDs and an assignment rule based on actual authored identity/type/variant.
 6. King Osric IV, Lord Edmer and Regent Maelor are named in the lore but are not separate portrait-backed character definitions in the inspected character data.
+7. The requested supplied portrait reference set was not present as a separate reference-art collection in the inspected repository; the only files in the runtime portrait directory are the twelve legacy SVGs.
 
 ## Required next work
 
