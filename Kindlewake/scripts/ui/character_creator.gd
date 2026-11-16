@@ -17,7 +17,8 @@ var preview: CharacterPreview
 var preview_text: Label
 var status_label: Label
 var confirm_button: Button
-var weapon_option: OptionButton
+var weapon_option: Button
+var choice_popups: Dictionary = {}
 var allocation_labels: Dictionary = {}
 var allocation_sliders: Dictionary = {}
 var allocation_total_label: Label
@@ -343,42 +344,91 @@ func _apply_portrait(portrait: Dictionary) -> void:
     _refresh_preview()
 
 
-func _add_choice(parent: VBoxContainer, label_text: String, field: String, values: Array) -> OptionButton:
+func _add_choice(parent: VBoxContainer, label_text: String, field: String, values: Array) -> Button:
     var row := VBoxContainer.new()
-    row.add_theme_constant_override("separation", 3)
+    row.add_theme_constant_override("separation", 5)
     parent.add_child(row)
     var label := Label.new()
     label.text = label_text
     label.add_theme_font_size_override("font_size", 15)
     row.add_child(label)
-    var option := OptionButton.new()
-    option.custom_minimum_size = Vector2(0, 50)
-    option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    # Native popup lists must remain open for the full Android touch gesture.
-    option.action_mode = BaseButton.ACTION_MODE_BUTTON_RELEASE
-    option.focus_mode = Control.FOCUS_ALL
-    option.add_theme_font_size_override("font_size", 18)
-    row.add_child(option)
-    choices[field] = option
-    _fill_option(option, field, values)
-    option.item_selected.connect(_on_choice_selected.bind(field, option))
-    return option
+    # An in-flow menu avoids Android native popup-window hit-testing problems.
+    var selected_button := Button.new()
+    selected_button.custom_minimum_size = Vector2(0, 56)
+    selected_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    selected_button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+    selected_button.focus_mode = Control.FOCUS_NONE
+    selected_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+    selected_button.add_theme_font_size_override("font_size", 17)
+    row.add_child(selected_button)
+    var option_list := VBoxContainer.new()
+    option_list.visible = false
+    option_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    option_list.add_theme_constant_override("separation", 4)
+    row.add_child(option_list)
+    choices[field] = selected_button
+    choice_popups[field] = option_list
+    _fill_option(selected_button, field, values)
+    selected_button.pressed.connect(_toggle_choice.bind(field))
+    return selected_button
 
 
-func _fill_option(option: OptionButton, field: String, values: Array) -> void:
-    option.clear()
-    var selected_id: String = str(profile.get(field, ""))
-    var selected_index: int = 0
+func _fill_option(selected_button: Button, field: String, values: Array) -> void:
+    if not choice_popups.has(field):
+        return
+    var option_list: VBoxContainer = choice_popups[field]
+    for child in option_list.get_children():
+        option_list.remove_child(child)
+        child.queue_free()
+    var selected_id := str(profile.get(field, ""))
+    selected_button.text = "%s   ▼" % _display_name(field, selected_id) if selected_id != "" else "Choose %s   ▼" % field.replace("_", " ")
     for value in values:
-        var id: String = str(value)
-        var label: String = _display_name(field, id)
-        option.add_item(label)
-        option.set_item_metadata(option.item_count - 1, id)
-        if id == selected_id:
-            selected_index = option.item_count - 1
-    if option.item_count > 0:
-        option.select(selected_index)
+        var id := str(value)
+        var item := Button.new()
+        item.text = _display_name(field, id)
+        item.custom_minimum_size = Vector2(0, 50)
+        item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        item.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+        item.focus_mode = Control.FOCUS_NONE
+        item.alignment = HORIZONTAL_ALIGNMENT_LEFT
+        item.add_theme_font_size_override("font_size", 16)
+        item.pressed.connect(_on_choice_option_pressed.bind(id, field))
+        option_list.add_child(item)
+    if values.is_empty():
+        var empty := Label.new()
+        empty.text = "No options available"
+        option_list.add_child(empty)
 
+
+func _toggle_choice(field: String) -> void:
+    if not choice_popups.has(field):
+        return
+    var target: VBoxContainer = choice_popups[field]
+    var should_open := not target.visible
+    for key in choice_popups.keys():
+        (choice_popups[key] as VBoxContainer).visible = false
+    target.visible = should_open
+
+
+func _on_choice_option_pressed(id: String, field: String) -> void:
+    profile[field] = id
+    for key in choice_popups.keys():
+        (choice_popups[key] as VBoxContainer).visible = false
+    if choices.has(field):
+        var values: Array = []
+        if field == "origin":
+            values = _dictionary_options(config.get("origins", {}))
+        elif field == "discipline":
+            values = _dictionary_options(config.get("disciplines", {}))
+        elif field == "temperament":
+            values = _dictionary_options(config.get("temperaments", {}))
+        elif field == "weapon_preference":
+            var discipline: Dictionary = config.get("disciplines", {}).get(str(profile.get("discipline", "")), {})
+            values = discipline.get("weapon_preferences", [])
+        _fill_option(choices[field] as Button, field, values)
+    if field == "discipline":
+        _refresh_weapon_options()
+    _refresh_preview()
 
 func _dictionary_options(source: Dictionary) -> Array:
     var result: Array = []
@@ -479,13 +529,10 @@ func _refresh_weapon_options() -> void:
 
 
 func _on_choice_selected(index: int, field: String, option: OptionButton) -> void:
+    # Compatibility shim for legacy test fixtures; player controls use touch menus.
     if index < 0 or index >= option.item_count:
         return
-    profile[field] = str(option.get_item_metadata(index))
-    if field == "discipline":
-        _refresh_weapon_options()
-    _refresh_preview()
-
+    _on_choice_option_pressed(str(option.get_item_metadata(index)), field)
 
 func _on_name_changed(value: String) -> void:
     profile["name"] = value

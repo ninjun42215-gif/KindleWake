@@ -42,6 +42,8 @@ func _run_ui_test() -> void:
     await get_tree().process_frame
 
     _check(creator.is_inside_tree(), "character creator enters the scene tree")
+    _check(int(ProjectSettings.get_setting("display/window/handheld/orientation", 0)) == 1,
+        "Android project orientation is locked to portrait for the phone-first interface")
     _check(creator.preview != null and is_instance_valid(creator.preview), "creator builds its live portrait preview")
     _check(creator.name_input != null and creator.confirm_button != null, "creator builds identity input and confirmation action")
     _check(creator.allocation_sliders.size() == 6, "creator builds all six attribute allocation controls")
@@ -64,12 +66,25 @@ func _run_ui_test() -> void:
         _check((creator.presentation_buttons["feminine"] as CheckButton).button_pressed,
             "portrait selection synchronizes the presentation radio")
     creator._on_portrait_button_toggled(true, "torren_redcloak")
-    if creator.choices.has("origin"):
-        var origin_option: OptionButton = creator.choices["origin"]
-        if origin_option.item_count > 1:
-            creator._on_choice_selected(1, "origin", origin_option)
-            _check(str(creator.profile.get("origin", "")) == str(origin_option.get_item_metadata(1)),
-                "native dropdown selection updates the protagonist background")
+    for field in ["origin", "discipline", "weapon_preference", "temperament"]:
+        if not creator.choices.has(field) or not creator.choice_popups.has(field):
+            _check(false, "creator builds touch menu for " + field)
+            continue
+        var choice_button: Button = creator.choices[field]
+        var option_list: VBoxContainer = creator.choice_popups[field]
+        _check(choice_button.action_mode == BaseButton.ACTION_MODE_BUTTON_PRESS,
+            field + " selector activates on initial touch press")
+        choice_button.emit_signal("pressed")
+        _check(option_list.visible, field + " touch opens its in-flow option list")
+        if option_list.get_child_count() > 1:
+            var selected_option: Button = option_list.get_child(1)
+            var expected_label := selected_option.text
+            selected_option.emit_signal("pressed")
+            _check(not option_list.visible, field + " option selection closes its list")
+            _check(str(creator.profile.get(field, "")) != "", field + " selection updates protagonist profile")
+            _check(choice_button.text.begins_with(expected_label), field + " selector displays the chosen value")
+        else:
+            _check(false, field + " exposes at least two selectable options")
     creator._on_stat_allocation_changed(5.0, "str")
     var allocated_after_clamp := 0
     for stat in ["str", "dex", "int", "vit", "spd", "lck"]:

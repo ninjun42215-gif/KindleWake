@@ -89,15 +89,20 @@ jobs:
             # (1264 x 2736 at 460 dpi) while keeping emulator rendering light.
             adb shell wm size 632x1368
             adb shell wm density 230
+            adb shell settings put system accelerometer_rotation 0
+            adb shell settings put system user_rotation 0
             adb shell settings put system font_scale 1.0
             adb install -r Kindlewake/dist/Kindlewake.apk
             adb logcat -c
             adb shell monkey -p com.kindlewake.game 1
-            sleep 25
+            sleep 30
             test -n "$(adb shell pidof com.kindlewake.game)"
+            adb shell dumpsys window displays > Kindlewake/dist/android-window-displays.txt
+            adb shell dumpsys activity activities > Kindlewake/dist/android-activities.txt
             adb shell screencap -p /sdcard/kindlewake-honor400-layout.png
             adb pull /sdcard/kindlewake-honor400-layout.png Kindlewake/dist/honor400-emulator.png
-            if adb logcat -d | grep -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error"; then
+            adb logcat -d -v time > Kindlewake/dist/android-logcat.txt
+            if grep -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error" Kindlewake/dist/android-logcat.txt; then
               echo "Android runtime or script error detected"
               exit 1
             fi
@@ -110,6 +115,9 @@ jobs:
           path: |
             Kindlewake/dist/logs/
             Kindlewake/dist/honor400-emulator.png
+            Kindlewake/dist/android-logcat.txt
+            Kindlewake/dist/android-window-displays.txt
+            Kindlewake/dist/android-activities.txt
           if-no-files-found: ignore
 
   # Only immutable version-tag builds may publish a GitHub Release. Keep the
