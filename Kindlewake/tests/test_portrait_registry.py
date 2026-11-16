@@ -35,6 +35,16 @@ def main():
     if len(by_id) != len(entities):
         errors.append("Registry contains duplicate entity IDs.")
 
+    starting_roster = {"torren", "bram", "sela", "brother_wystan"}
+    wave_one_recruits = {cid for cid, definition in characters.items() if isinstance(definition.get("recruit"), dict) and int(definition["recruit"].get("wave", 0)) == 1}
+    wave_two_recruits = {cid for cid, definition in characters.items() if isinstance(definition.get("recruit"), dict) and int(definition["recruit"].get("wave", 0)) == 2}
+    if not starting_roster.issubset(characters):
+        errors.append("One or more of the four named starting roster characters are missing.")
+    if len(wave_one_recruits) != 20:
+        errors.append(f"Expected 20 Wave 1 recruits in addition to four starters; found {len(wave_one_recruits)}.")
+    if len(wave_two_recruits) != 2:
+        errors.append(f"Expected the two authored Wave 2 recruits; found {len(wave_two_recruits)}.")
+
     for character_id, definition in characters.items():
         if character_id not in by_id:
             errors.append(f"Character definition missing from registry: {character_id}")
