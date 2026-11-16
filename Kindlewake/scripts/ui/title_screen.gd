@@ -136,7 +136,14 @@ func _clear_content() -> void:
 func _show_main() -> void:
     _clear_content()
     var latest := GameState.newest_campaign_slot()
-    var continue_btn := _button("CONTINUE", _continue_game, true)
+    var continue_label := "CONTINUE"
+    if latest != "":
+        var latest_save: Dictionary = SaveSystem.load_slot(latest)
+        var latest_payload: Dictionary = latest_save.get("payload", {})
+        var resume_value: Variant = latest_payload.get("battle_resume", {})
+        if bool(latest_save.get("ok", false)) and typeof(resume_value) == TYPE_DICTIONARY and not (resume_value as Dictionary).is_empty():
+            continue_label = "RESUME BATTLE"
+    var continue_btn := _button(continue_label, _continue_game, true)
     continue_btn.disabled = latest == ""
     content_box.add_child(continue_btn)
     content_box.add_child(_button("NEW GAME", _new_game))
@@ -147,12 +154,18 @@ func _show_main() -> void:
     status_label.text = "A chronicle awaits." if latest == "" else "A saved chronicle is ready."
 
 
+func _continue_scene_path() -> String:
+    if not GameState.pending_battle_resume.is_empty():
+        return "res://Main.tscn"
+    return "res://Location.tscn" if GameState.pending_location != "" else "res://World.tscn"
+
+
 func _continue_game() -> void:
     var slot := GameState.newest_campaign_slot()
     if slot == "" or not GameState.load_campaign(slot):
         status_label.text = "No valid campaign save was found."
         return
-    get_tree().change_scene_to_file("res://Location.tscn" if GameState.pending_location != "" else "res://World.tscn")
+    get_tree().change_scene_to_file(_continue_scene_path())
 
 
 func _new_game() -> void:
@@ -207,7 +220,7 @@ func _show_load() -> void:
 
 func _load_slot(slot: String) -> void:
     if GameState.load_campaign(slot):
-        get_tree().change_scene_to_file("res://Location.tscn" if GameState.pending_location != "" else "res://World.tscn")
+        get_tree().change_scene_to_file(_continue_scene_path())
     else:
         status_label.text = "That save is not a valid campaign."
 
