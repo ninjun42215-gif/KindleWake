@@ -160,7 +160,7 @@ func to_battle_def(db: Dictionary) -> Dictionary:
     var sdefs: Dictionary = db.get("sigils", {})
     var arm: Dictionary = armor_totals(items)
     return {
-        "name": display_name, "class_id": class_id, "level": level, "house": house,
+        "name": display_name, "class_id": class_id, "level": level, "house": house, "portrait_id": portrait_id,
         "weapon_id": weapon_id(items), "armor_def": int(arm["def"]), "armor_res": int(arm["res"]),
         "skills": all_skills(items, sdefs, db.get("classes", {})), "stats": total_stats(items, sdefs, db.get("traits", {})),
         "traits": traits.duplicate(),
