@@ -300,20 +300,20 @@ func _tile(caption: String, value: String, value_color: Color = COL_TEXT, value_
 
 func _portrait_texture(portrait_id: String, character_id: String = "") -> Texture2D:
     var resolved_id := portrait_id
-    # Old campaign saves may predate portrait metadata. Give those members a
-    # stable portrait based on their character ID instead of a blank level badge.
-    if resolved_id == "":
-        var fallback_ids: Array[String] = [
-            "auburn_ranger", "sunwarden", "iron_veteran", "silver_oracle",
-            "dusk_rogue", "shieldmaiden", "courtier", "ash_scout",
-            "briar_warden", "old_knight", "night_scholar"
-        ]
-        if not fallback_ids.is_empty():
-            resolved_id = fallback_ids[absi(character_id.hash()) % fallback_ids.size()]
+    # Old saves may not carry portrait metadata. Consult the canonical registry
+    # by character identity; never select a random/unrelated portrait.
+    if resolved_id == "" and character_id != "":
+        var registry: Dictionary = db.get("portrait_registry", {})
+        for raw_entry in registry.get("entities", []):
+            var entry: Dictionary = raw_entry
+            if str(entry.get("id", "")) == character_id:
+                resolved_id = str(entry.get("portrait_id", ""))
+                break
     if resolved_id == "":
         return null
     var path := "res://assets/art/portraits/%s.svg" % resolved_id
     if not ResourceLoader.exists(path):
+        push_warning("PartyScreen: portrait asset missing for identity '%s' (portrait_id '%s')." % [character_id, resolved_id])
         return null
     return load(path) as Texture2D
 
