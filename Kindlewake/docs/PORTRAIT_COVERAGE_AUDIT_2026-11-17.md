@@ -31,6 +31,10 @@ The registry preserves existing `portrait_id` values as *legacy assignments only
 6. King Osric IV, Lord Edmer and Regent Maelor are named in the lore but are not separate portrait-backed character definitions in the inspected character data.
 7. The requested supplied portrait reference set was not present as a separate reference-art collection in the inspected repository; the only files in the runtime portrait directory are the twelve legacy SVGs.
 
+## Runtime integration progress (feature branch)
+
+The feature branch now loads `portrait_registry.json` through the `GameData` autoload, exposes registry lookup helpers (`portrait_record` and `portrait_asset_path`), and passes the registry through `GameData.party_db()`. The party screen now consults the registry by stable character ID when an older save has no portrait ID. Its previous hash-based random selection from an unrelated gallery portrait list has been removed. This is a compatibility-safe resolver foundation; existing legacy portrait IDs remain explicitly unverified and NPC/dialogue/shop/battle/creator surfaces are not yet fully integrated.
+
 ## Required next work
 
 - Commission/generate original, individually art-directed portraits for each named hero, story character, boss and distinct enemy variant.
