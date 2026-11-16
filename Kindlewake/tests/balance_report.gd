@@ -1,4 +1,9 @@
 extends SceneTree
+
+const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
+const BattleControllerScript = preload("res://scripts/battle/battle_controller.gd")
+const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
+const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
 ## Balance report: the AI plays BOTH sides, so this shows how hard each enemy group is for the starting party and how fast
 ## the grind pays off. It changes nothing. Run from the project folder:
 ##   godot --headless --path . --script res://tests/balance_report.gd           (30 battles per scenario)
@@ -42,7 +47,7 @@ func _scenario_table(n: int) -> void:
         _run_scenario(sc, n)
 
 
-func _play(c: BattleController) -> void:
+func _play(c: BattleControllerScript) -> void:
     c.begin()
     var guard := 0
     while c.result == "" and guard < 800:
@@ -62,12 +67,12 @@ func _run_scenario(def: Dictionary, n: int) -> void:
     var ap_sum := 0
     var gold_sum := 0
     for i in range(n):
-        var c := BattleController.new()
+        var c := BattleControllerScript.new()
         c.setup(def, db, 7000 + i)
         _play(c)
         turns += c.turn_count
         for o in c.units:
-            var u: BattleUnit = o
+            var u: BattleUnitScript = o
             if u.team == "player":
                 hp_max += u.max_hp()
                 hp_now += maxi(0, u.hp)
@@ -105,7 +110,7 @@ func _grind_curve(battles: int) -> void:
     var wins := 0
     for b in range(1, battles + 1):
         var def: Dictionary = EncounterBuilder.build_skirmish(gd.encounters, gd.battles, rng)
-        var c := BattleController.new()
+        var c := BattleControllerScript.new()
         c.setup(def, party.battle_db(gd.as_db()), 5000 + b)
         _play(c)
         party.apply_battle_result(c.units, c.result, rng, gd.rules_db())
@@ -114,7 +119,7 @@ func _grind_curve(battles: int) -> void:
         if b == 1 or b % 5 == 0:
             var parts: Array[String] = []
             for id in party.roster:
-                var sh: CharacterSheet = party.sheet(id)
+                var sh: CharacterSheetScript = party.sheet(id)
                 parts.append("%s L%d" % [sh.display_name.get_slice(" ", 0), sh.level])
             print("  battle %2d  won %2d  gold %5d  bag sigils %d   %s" % [b, wins, party.gold, party.sigil_inv.size(), "  ".join(PackedStringArray(parts))])
     print("")

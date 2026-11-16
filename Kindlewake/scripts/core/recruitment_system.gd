@@ -1,4 +1,6 @@
 extends RefCounted
+
+const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 ## Data-driven recruitment checks and atomic roster/flag/gold updates.
 
 const RelationshipSystem = preload("res://scripts/core/relationship_system.gd")
@@ -38,7 +40,7 @@ static func recruit(party: PartyState, character_id: String, definition: Diction
     var cost: int = int(availability.get("cost", 0))
     party.gold -= cost
     party.add_member(character_id, definition)
-    var member: CharacterSheet = party.sheet(character_id)
+    var member: CharacterSheetScript = party.sheet(character_id)
     var recruit_data: Dictionary = definition.get("recruit", {})
     var traits_applied := 0
     if not trait_definitions.is_empty():
