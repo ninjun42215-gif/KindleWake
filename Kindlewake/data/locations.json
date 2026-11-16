@@ -334,7 +334,7 @@
             0.9,
             0.6
           ],
-          "text": "Blades, mail, charms and sigils, all honestly priced. And your company's kit can be sorted out right here at the counter.",
+          "text": "Blades, mail, charms and runes, all honestly priced. And your company's kit can be sorted out right here at the counter.",
           "rune_service": true,
           "dialogue": [
             "Oswin rubs a thumb over a scar in the counter. 'A rune is not a bauble. It remembers every hand that has carried it.'",
@@ -593,7 +593,7 @@
             0.8,
             0.5
           ],
-          "text": "The road is open, my lord, but it is not safe. Train the company, forge sigils, and clear the Roadwolf Camp.",
+          "text": "The road is open, my lord, but it is not safe. Train the company, forge runes, and clear the Roadwolf Camp.",
           "dialogue": [
             "'Your house held this valley by oath, not by walls. Walls can be raised again; trust takes longer.'",
             "'The quartermaster has sent word of a smith at the lower gate. He can temper any weapon or piece of armor to +15, though the price rises with every strike.'",
@@ -609,7 +609,7 @@
           "kind": "party",
           "npc": false,
           "name": "War Table",
-          "text": "The war table: sort your company, gear, sigils and promotions here, or send for the market stock.",
+          "text": "The war table: sort your company, gear, runes and promotions here, or send for the market stock.",
           "dialogue": [
             "'Scouts have marked three approaches: river, ridge and forest. Each battlefield will answer differently to the ground beneath your boots.'",
             "'Take the high ground where you can. A narrow ford is a fine place to hold a line, and a poor place to retreat.'"

@@ -8,7 +8,7 @@ const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
 ## the grind pays off. It changes nothing. Run from the project folder:
 ##   godot --headless --path . --script res://tests/balance_report.gd           (30 battles per scenario)
 ##   godot --headless --path . --script res://tests/balance_report.gd -- 100    (100 battles per scenario)
-## Paste the printed table back into the chat to tune HP_GAIN, enemy rewards, item and sigil values.
+## Paste the printed table back into the chat to tune HP_GAIN, enemy rewards, item and rune values.
 ## (Autoloads are not used: GameData is created by hand, like in tests/run_tests.gd.)
 
 var gd: Node
@@ -121,7 +121,7 @@ func _grind_curve(battles: int) -> void:
             for id in party.roster:
                 var sh: CharacterSheetScript = party.sheet(id)
                 parts.append("%s L%d" % [sh.display_name.get_slice(" ", 0), sh.level])
-            print("  battle %2d  won %2d  gold %5d  bag sigils %d   %s" % [b, wins, party.gold, party.sigil_inv.size(), "  ".join(PackedStringArray(parts))])
+            print("  battle %2d  won %2d  gold %5d  bag runes %d   %s" % [b, wins, party.gold, party.sigil_inv.size(), "  ".join(PackedStringArray(parts))])
     print("")
-    print("Reading the numbers: Win% 60-90 is a fair fight for the starting party; EXP/AP/Gold are per VICTORY.")
+    print("Reading the numbers: Win% 60-90 is a fair AI-vs-AI starting-party benchmark, not a substitute for human playtesting; EXP/AP/Gold are per VICTORY.")
     print("If levels climb too fast or too slowly, tune enemy `reward` blocks in data/characters.json and HP_GAIN in scripts/core/character_sheet.gd.")

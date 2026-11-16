@@ -8,7 +8,7 @@ const PersonalitySystemScript = preload("res://scripts/core/personality_system.g
 const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 const RelationshipSystemScript = preload("res://scripts/core/relationship_system.gd")
 ## Full-screen party management in one touch UI (v0.8.0 layout): a compact top bar, a roster of cards, a character
-## sheet made of stat tiles, and a right panel with three tabs: Equipment, Sigils and Shop.
+## sheet made of stat tiles, and a right panel with three tabs: Equipment, Runes and Shop.
 ## It owns no rules: every action goes through PartyStateScript / CharacterSheetScript / ShopSystem, the same code paths the
 ## headless tests cover. It reads no autoloads, so it can be built in tests.
 ## Usage: setup(party, db, shop) then open(); listen to `closed`.
@@ -57,8 +57,8 @@ var blacksmith_access: bool = false
 var selected_id: String = ""
 var tab: int = TAB_GEAR
 var focus_slot: String = ""           # Equipment tab: the slot whose choices are open
-var focus_group: String = ""          # Sigils tab: "weapon" or "armor"
-var focus_index: int = -1             # Sigils tab: the socket whose choices are open
+var focus_group: String = ""          # Runes tab: "weapon" or "armor"
+var focus_index: int = -1             # Runes tab: the socket whose choices are open
 var shop_selling: bool = false
 var shop_pick: String = ""            # Shop tab: the card that is open for compare + confirm ("buy:item:<id>", "sell:item:<id>", "sell:rune:<n>")
 var message: String = ""
@@ -918,7 +918,7 @@ func _fill_bag_overview(box: VBoxContainer) -> void:
     box.add_child(_label("runes in the bag: %d" % party.sigil_inv.size(), 15, COL_DIM))
 
 
-# ---------------------------------------------------------------- Sigils tab
+# ---------------------------------------------------------------- Runes tab
 
 func _linked(sh: CharacterSheetScript, group: String, a: int, b: int, items: Dictionary) -> bool:
     return sh.linked_indices(group, a, items).has(b)
