@@ -103,14 +103,10 @@ jobs:
             adb shell screencap -p /sdcard/kindlewake-honor400-layout.png
             adb pull /sdcard/kindlewake-honor400-layout.png Kindlewake/dist/honor400-emulator.png
             adb logcat -d -v time > Kindlewake/dist/android-logcat.txt
-            if ! adb shell pidof com.kindlewake.game; then
-              echo "Kindlewake did not remain running after explicit launcher activity start"
-              exit 1
-            fi
-            if grep -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error" Kindlewake/dist/android-logcat.txt; then
-              echo "Android runtime or script error detected"
-              exit 1
-            fi
+            # android-emulator-runner executes script lines as individual shell commands.
+            # Keep assertions single-line so shell control-flow blocks are not truncated.
+            adb shell pidof com.kindlewake.game | grep -q . || python3 -c 'raise SystemExit("Kindlewake did not remain running after explicit launcher activity start")'
+            python3 -c 'import pathlib,re,sys; log=pathlib.Path("Kindlewake/dist/android-logcat.txt").read_text(errors="replace"); match=re.search(r"FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error", log); sys.exit("Android runtime or script error detected: "+match.group(0) if match else 0)'
 
       - name: Upload test and build logs
         if: always()
