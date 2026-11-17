@@ -9,11 +9,42 @@ const UNIT_DIR := "res://assets/art/units/"
 const PROP_ATLAS_PATH := "res://assets/art/props/field_props.svg"
 const KINDLEWAKE_LEAD_ATLAS_PATH := "res://assets/art/units/kindlewake_lead_atlas.svg"
 
+## Resolve the portrait's approved clothing accent without coupling the renderer to a specific gallery order.
+static func lead_accent_for_profile(profile: Dictionary, portrait_options: Array) -> Color:
+    var portrait_id := str(profile.get("portrait_id", ""))
+    if portrait_id.is_empty():
+        return Color("#c59a54")
+    for entry in portrait_options:
+        if not (entry is Dictionary):
+            continue
+        var portrait: Dictionary = entry
+        if str(portrait.get("id", "")) == portrait_id:
+            return Color.from_string(str(portrait.get("sprite_accent", "#c59a54")), Color("#c59a54"))
+    return Color("#c59a54")
+
+
+static func _current_lead_accent() -> Color:
+    var tree := Engine.get_main_loop() as SceneTree
+    if tree == null or tree.root == null:
+        return Color("#c59a54")
+    var game_state := tree.root.get_node_or_null("GameState")
+    var game_data := tree.root.get_node_or_null("GameData")
+    if game_state == null or game_data == null:
+        return Color("#c59a54")
+    var profile_value: Variant = game_state.get("creation_profile")
+    var config_value: Variant = game_data.get("character_creation")
+    if profile_value is Dictionary and config_value is Dictionary:
+        var options: Variant = config_value.get("portraits", [])
+        if options is Array:
+            return lead_accent_for_profile(profile_value, options)
+    return Color("#c59a54")
+
 ## Dedicated male/female protagonist atlas: four facing directions and four animation frames.
 static func draw_kindlewake_lead(canvas: CanvasItem, female: bool, feet: Vector2, time: float, motion: String, facing: Vector2, scale: float = 0.72) -> bool:
     var tex: Texture2D = _load(KINDLEWAKE_LEAD_ATLAS_PATH)
     if tex == null:
         return false
+    var portrait_accent: Color = _current_lead_accent()
     var direction := 0
     if absf(facing.x) > absf(facing.y):
         direction = 1 if facing.x < 0.0 else 2
@@ -36,6 +67,12 @@ static func draw_kindlewake_lead(canvas: CanvasItem, female: bool, feet: Vector2
     var lean := -0.06 if motion == "attack" else (0.02 * sin(time * 8.0) if motion == "walk" else 0.0)
     canvas.draw_set_transform(feet + Vector2(0, bob), lean, Vector2(scale, scale))
     canvas.draw_texture_rect_region(tex, Rect2(-64, -160, 128, 160), src)
+    # A small heraldic chest mark carries the selected portrait's costume palette
+    # into the animated field/battle sprite without tinting skin or metal.
+    canvas.draw_colored_polygon(PackedVector2Array([
+        Vector2(0, -86), Vector2(5, -79), Vector2(0, -72), Vector2(-5, -79)
+    ]), portrait_accent)
+    canvas.draw_circle(Vector2(0, -79), 1.8, Color("#f1e5c7"))
     if motion == "attack":
         canvas.draw_arc(Vector2(29, -77), 34.0, -1.2, 1.15, 16, Color(1.0, 0.86, 0.58, 0.9), 3.0)
     elif motion == "skill":
