@@ -84,12 +84,9 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
           script: |
-            # Match the HONOR 400's portrait logical viewport: 440 x 952 dp
-            # (1264 x 2736 at 460 dpi) while keeping emulator rendering light.
-            adb shell wm size 1368x632
-            adb shell wm density 230
-            adb shell settings put system accelerometer_rotation 0
-            adb shell settings put system user_rotation 1
+            # Keep the emulator's Pixel 5 20:9 display defaults. The project
+            # requests landscape; changing wm size/density during ATD startup
+            # causes a delayed display reconfiguration while Godot is launching.
             adb shell settings put system font_scale 1.0
             adb install -r Kindlewake/dist/Kindlewake.apk
             adb logcat -c
@@ -103,10 +100,12 @@ jobs:
             adb shell screencap -p /sdcard/kindlewake-honor400-layout.png
             adb pull /sdcard/kindlewake-honor400-layout.png Kindlewake/dist/honor400-emulator.png
             adb logcat -d -v time > Kindlewake/dist/android-logcat.txt
+            # Emit concise diagnostics before assertions so a failed launch remains actionable.
+            grep -n -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error|USER ERROR|USER WARNING|GodotActivity|Process com.kindlewake.game" Kindlewake/dist/android-logcat.txt | tail -n 120 || true
             # android-emulator-runner executes script lines as individual shell commands.
             # Keep assertions single-line so shell control-flow blocks are not truncated.
+            python3 -c 'import pathlib,re,sys; lines=pathlib.Path("Kindlewake/dist/android-logcat.txt").read_text(errors="replace").splitlines(); hits=[f"{i+1}: {line}" for i,line in enumerate(lines) if re.search(r"FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error", line)]; print("\\n".join(hits[-80:])); sys.exit(1 if hits else 0)'
             adb shell pidof com.kindlewake.game | grep -q . || python3 -c 'raise SystemExit("Kindlewake did not remain running after explicit launcher activity start")'
-            python3 -c 'import pathlib,re,sys; log=pathlib.Path("Kindlewake/dist/android-logcat.txt").read_text(errors="replace"); match=re.search(r"FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error", log); sys.exit("Android runtime or script error detected: "+match.group(0) if match else 0)'
 
       - name: Upload test and build logs
         if: always()
