@@ -32,7 +32,7 @@ Exact-code checks:
 - [Project Health Audit #44010138457](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138457) — passed.
 - [Workflow YAML Lint #44010138493](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138493) — passed.
 - [Version Sync #44010138445](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138445) — passed.
-- [Build Android APK #44010138501](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138501) — import, scene/test and APK export stages passed; emulator diagnostic was still running at handoff. Exact-code APK candidate artifact [14296332096](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138501/artifacts/14296332096), 63,042,548 bytes. Re-check the live run before treating the overall workflow as complete.
+- [Build Android APK #44010138501](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138501) — passed on exact code SHA `62a65c5a8a78c0b6ed8f1e4b3705cdc698b384c0`: 20/20 scenes, 995 strict checks / 0 failures, campaign lifecycle / merchant UI / title-creator UI 0 failures, Act V 0 failures, continuity 70, Chronicle dynasty 39 and family development 19 checks. Exact-code APK artifact [14296332096](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138501/artifacts/14296332096), 63,042,548 bytes; valid signature; no permissions. Emulator boot and install completed, but `pidof com.kindlewake.game` returned exit code 1 after launch; the diagnostic is `continue-on-error: true` and produced no screenshot/logcat. Process launch remains unverified.
 
 PR #156 is unmerged. Review the exact current PR head and require final checks before marking ready. Never merge as part of this workflow.
 
@@ -48,9 +48,9 @@ PR #156 is unmerged. Review the exact current PR head and require final checks b
 ## Open PR coordination
 
 - [#156](https://github.com/ninjun42215-gif/KindleWake/pull/156): isolated campaign save-validation candidate described above.
-- [#151](https://github.com/ninjun42215-gif/KindleWake/pull/151): draft QA battle-resume work; older base and conflicted. It touches GameState/save/battle flow. Do not duplicate or merge wholesale.
-- [#152](https://github.com/ninjun42215-gif/KindleWake/pull/152): draft QA release-publishing safeguards; older base and conflicted. Keep release-workflow changes with QA/release ownership.
-- [#81](https://github.com/ninjun42215-gif/KindleWake/pull/81): draft regional trading integration; not mergeable. Prior handoff lists cargo inventory, tariff/route authority, region/story gating, canonical route endpoints and mobile layout as unresolved. Rebuild a focused vertical slice from current main; do not merge the old branch wholesale.
+- [#151](https://github.com/ninjun42215-gif/KindleWake/pull/151): draft QA battle-resume work; old base `081759f7204bc43ea1acf84b5f4d282d00ceec84`, not mergeable. It touches GameState/save/battle flow. Do not duplicate or merge wholesale.
+- [#152](https://github.com/ninjun42215-gif/KindleWake/pull/152): draft QA release-publishing safeguards; same old base, technically mergeable but not revalidated against current main. Keep release-workflow changes with QA/release ownership.
+- [#81](https://github.com/ninjun42215-gif/KindleWake/pull/81): draft regional trading integration; old base `a9b6097e11`, not mergeable. Prior handoff lists cargo inventory, tariff/route authority, region/story gating, canonical route endpoints and mobile layout as unresolved. Rebuild a focused vertical slice from current main; do not merge the old branch wholesale.
 
 ## Remaining gates
 
