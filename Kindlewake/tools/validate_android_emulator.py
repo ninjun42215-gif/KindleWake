@@ -90,8 +90,11 @@ def main() -> int:
         print("Installing " + str(APK))
         adb("install", "-r", str(APK), timeout=180)
         adb("logcat", "-c", timeout=20)
-        print("Launching com.kindlewake.game")
-        adb("shell", "monkey", "-p", "com.kindlewake.game", "1", timeout=30)
+        print("Launching the Godot activity without injecting random Monkey input")
+        # Monkey with an event count of 1 can randomly tap a title-menu button
+        # (including Exit Game). Use ActivityManager so this is a deterministic launch.
+        adb("shell", "am", "start", "-W", "-n",
+            "com.kindlewake.game/com.godot.game.GodotApp", timeout=45)
         time.sleep(30)
 
         # Capture logs before the process assertion so a startup crash is diagnosable.
