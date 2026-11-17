@@ -1210,7 +1210,15 @@ func _draw_player() -> void:
     var sprinting: bool = walking and (run_toggled or ExplorationControls.running())
     var hero_motion: String = "walk" if walking else "idle"
     var hero_clock: float = t * (1.35 if sprinting else 1.0)
-    if not Art.draw_character_animated(self, "chronicle_hero", p + Vector2(0, 8), hero_clock, hero_motion, 0.46, Color.WHITE, facing_left):
+    var hero_facing: Vector2 = Vector2.LEFT if facing_left else Vector2.DOWN
+    if moving_vector.length() > 0.12:
+        hero_facing = moving_vector.normalized()
+    elif has_target and target.distance_to(p) > 2.0:
+        hero_facing = (target - p).normalized()
+    var lead_profile: Dictionary = GameState.creation_profile if GameState.creation_profile is Dictionary else {}
+    var lead_presentation: String = str(lead_profile.get("presentation", "masculine"))
+    var drew_custom_lead: bool = Art.draw_kindlewake_lead(self, lead_presentation == "feminine", p + Vector2(0, 8), hero_clock, hero_motion, hero_facing, 0.46)
+    if not drew_custom_lead and not Art.draw_character_animated(self, "chronicle_hero", p + Vector2(0, 8), hero_clock, hero_motion, 0.46, Color.WHITE, facing_left):
         draw_rect(Rect2(p + Vector2(-8, -24), Vector2(16, 28)), Color(0.22, 0.50, 0.88))
 
 
