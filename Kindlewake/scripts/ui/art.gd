@@ -19,6 +19,27 @@ const UNIT_FPS := {"idle": 7.0, "walk": 12.0, "attack": 14.0, "hurt": 10.0, "dea
 static var _cache: Dictionary = {}
 
 
+
+const NAMED_NPC_ATLAS_PATH := "res://assets/art/units/named_npc_atlas.svg"
+const NAMED_NPC_NAMES := ["Carter Wen","Village Guard","Freed Debtor","Muster Clerk","The Far Marker","Carter Wen, Convoy Master","The Changed Escort","The Price of a Crossing","Innkeeper Maud","Drover","Chain Yard Witness","Tracks That Turn Back","Shopkeeper Oswin","Elder Hale","Drill Sergeant","The Homeward Hearing","Gate Warden","The Prisoner's Petition","Mira, the Wellkeeper","Hobb, the Carpenter","Steward Brannoch","Master Smith Rurik","Furnace Broker","Former Spearman","The Two Witnesses","Sergeant Voss","The Returned Commander","Town Crier","Signal Keeper's Assistant","Convoy Survivor","The Messenger's Purse","The Boundary Tree","Three Bridges","Innkeeper","Retired Road Scout","Roadside Fletcher","Cellar Ledger Broker","Market Factor","Former Garrison Clerk","Quartermaster's Runner","The Refugee Cart","Lucan Thorne","Joss Harrow","Tomas Wren","Verra Nightsong","Foundry Hand","Recovered Patient","Apothecary's Ledger Keeper","Old Brisa","Edda Stonehand","Bram Cullen","Foundry Tool Clerk","Debt Runner","Ward's Former Steward","Carved Waystone","The Sealed Vessmoor Summons","The Orrowen Hearing","The Banner in the Reeds","The Witness Who Recanted","Safehouse Caretaker","Household Muster Clerk","Protected Witness","The Gatehouse Challenge","Kestrel","Lady Isaure Vessmoor","Ser Willem Roake","The Challenge at Dawn","The Unclaimed Brennhallow Seal","Witnesses to Honour","The Charter Examiner","The Unarmed Yard","The Hall of Retainers","Anselm Pike","Garrick Holt","Lord Corwin Brennhallow","The Sanctuary Bell","The Rule of Shelter","At the Threshold","Petra Quill","Sister Odalys","Seraphine Tarnholt","The Misbound Volume","The Marginal Hand","The Archive Custodian","Dorian Vask","Orlan Pike","Ysolde Marrow","Ilyan Voss","The Rootbound Warden","The Containment Lattice","The Bell-Keeper","The Missing Tower Page","The Ashen Reeve","The Apprentice's Signal","Captain Ilyra Venn","Tidebound Factor","Maren Vey","The Lantern & Keel","Maren's Chart Table","The Borrowed Verse","The Salt Register","The Missing Passenger Leaf","Net-mender Ossa","The Brackish Cup","The Hidden Reef Marker","Saltmere Reef Market","The Troupe's Copybook","Tide Marks","The Families' Safe Passage","Beacon Apprentice","Quay Provisioner","The Silent Signal Post","Neris Quell","Neris's Chart","The Public Stage","The Wharf Hearing","The Reef Warden","Blackwake Salvage Captain","The Wreck's Cargo Lien","The Unread Oath","Guest Hall Keeper","The Quiet Chapter Records","The Chapter's Hearing","Castellan Edric","Quartermaster Lysa","Steward of the Ford","Sergeant Harl","Warden-Captain Sella","Trail Keeper","Freeholder Mara","Grain Factor","Bell Keeper","Seed Warden","Diver-Guild Factor","Guild Diver","Beacon Keeper","Harbour Pilot","Archive Registrar","Index Keeper","Custodian of Seals","The Last Audience","Aurelmont Gate Warden"]
+
+## Dedicated NPC cell: all named local-map characters have distinct outfit/hair palettes.
+static func draw_named_npc(canvas: CanvasItem, npc_name: String, feet: Vector2, time: float, motion: String = "idle", scale: float = 0.44, tint: Color = Color.WHITE, flip: bool = false) -> bool:
+    var idx: int = NAMED_NPC_NAMES.find(npc_name)
+    if idx < 0:
+        return false
+    var tex: Texture2D = _load(NAMED_NPC_ATLAS_PATH)
+    if tex == null:
+        return false
+    var cell := Vector2i(idx % 8, int(idx / 8))
+    var src := Rect2(Vector2(cell) * Vector2(128.0, 160.0), Vector2(128.0, 160.0))
+    var phase: float = time * (9.0 if motion == "walk" else 2.8)
+    var bob: float = sin(phase) * (2.4 if motion == "walk" else 0.8)
+    canvas.draw_set_transform(feet + Vector2(0, bob), 0.0, Vector2(-scale if flip else scale, scale))
+    canvas.draw_texture_rect_region(tex, Rect2(-64, -160, 128, 160), src, tint)
+    canvas.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+    return true
+
 const ROSTER_ATLAS_PATH := "res://assets/art/units/character_roster_atlas.svg"
 const ROSTER_CHARACTER_IDS := ["torren","bram","sela","brother_wystan","hask_gravelteeth","roadreaver","roadbowman","rootbound_warden","bell_keeper","ashen_reeve","lucan_thorne","old_brisa","kestrel","anselm_pike","petra_quill","dorian_vask","edda_stonehand","joss_harrow","isaure_vessmoor","bram_cullen","verra_nightsong","tomas_wren","orlan_pike","sister_odaly","willem_roake","ysolde_marrow","garrick_holt","corwin_brennhallow","seraphine_tarnholt","ilyan_voss","maren_vey","reefwarden","saltcutthroat","saltbow","blackwake_captain","neris_quell","boss_hollow_hart","boss_drowned_crown","boss_ash_regent","boss_pale_matriarch","boss_briar_sovereign","boss_star_eater","boss_last_cantor","hask_convoy_champion","ash_bailiff","checkpoint_sergeant","river_marshal","quillon_warden"]
 
