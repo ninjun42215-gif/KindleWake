@@ -206,6 +206,9 @@ func _test_art_assets() -> void:
     check(ArtScript.character_for_enemy("rootbound_warden") == "treant", "rootbound boss receives a unique monster design")
     check(ArtScript.character_for_enemy("bell_keeper") == "wraith", "bell keeper receives a unique spectral design")
     check(ArtScript.character_for_enemy("hollow_hart") == "direwolf", "Hollow Hart receives a unique beast design")
+    check(ArtScript.character_for_enemy("roadwolf_reaver", "Roadwolf Reaver") == "rogue", "Roadwolf faction raiders use humanoid raider portraits, not wolf-monster portraits")
+    check(ArtScript.character_for_enemy("bandit") == "rogue", "ordinary bandits use the humanoid raider archetype")
+    check(ArtScript.character_for_enemy("elite_raider") == "rogue", "elite raiders use the humanoid raider archetype")
 
     for kind in ["soldier", "orc"]:
         for anim in ["idle", "walk", "attack", "hurt", "death"]:
