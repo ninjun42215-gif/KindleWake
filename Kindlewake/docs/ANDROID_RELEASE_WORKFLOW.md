@@ -1,8 +1,10 @@
 # Kindlewake Android build and release workflow
 
-Last workflow update: 2026-11-10. Canonical project: Godot 4.2+ under `Kindlewake/`.
+Last workflow update: 2026-11-17. Canonical project: Godot 4.2+ under `Kindlewake/`.
 
 ## Release lanes
+
+> **Checkpoint 2026-11-17:** app version `0.12.0`, Android version code `1200`, save schema `4`, Godot `4.2.2`. The portrait-audit feature branch has a passing APK export and automated creator UI test. See [Mobile RC1 readiness gates](MOBILE_RELEASE_CANDIDATE_1_READINESS.md) for the exact commit evidence, unresolved physical-device/art/save/content gates and branch-integration warning.
 
 | Lane | Trigger | Signing | Output | Publishing |
 |---|---|---|---|---|
@@ -14,7 +16,7 @@ The CI workflow and production publishing workflow are intentionally separate. A
 ## Routine APK build
 
 1. Push changes to the authorized working branch or open/update a pull request.
-2. Open GitHub → Actions → **Build Android APK and Source Handoff**.
+2. Open GitHub → Actions → **Build Android APK**.
 3. Wait for the `android-build` job. It checks that `project.godot` and the Android export preset use the same version, imports Godot, runs strict tests and the balance report, exports the APK, and verifies the APK archive, ARM64 library, signature and offline permission policy.
 4. Download **Kindlewake-APK**. It contains:
    - `Kindlewake.apk`
@@ -48,9 +50,9 @@ The production workflow writes the decoded key only to the ephemeral GitHub runn
 
 ## Publishing a production APK
 
-1. Create and push an immutable version tag that points to the reviewed release commit, for example `v0.10.0`.
+1. Create and push an immutable version tag that points to the reviewed release commit, for example `v0.12.0`.
 2. Ensure `Kindlewake/project.godot` version and `Kindlewake/export_presets.cfg` `version/name` both equal the tag without the leading `v`.
-3. Ensure Android `version/code` is greater than the previous published build. It is currently `1000` for version `0.10.0`; increment it for every subsequent store update. Do not reuse or decrease a published version code.
+3. Ensure Android `version/code` is greater than the previous published build. It is currently `1200` for version `0.12.0`; increment it for every subsequent store update. Do not reuse or decrease a published version code.
 4. Open Actions → **Publish Android Production Release** → Run workflow.
 5. Enter the exact existing tag and type `PUBLISH`. The `android-production` environment's required reviewers must approve deployment.
 6. The workflow checks the exact tag, checks version consistency, imports the project, runs strict tests and balance report, builds with the protected production key, verifies the APK signature and offline permission policy, and creates a GitHub Release with the APK, checksum and manifest.
@@ -62,7 +64,7 @@ If the confirmation text is not exactly `PUBLISH`, the publishing job is rejecte
 
 - `project.godot` `config/version` and Android preset `version/name` must match.
 - Android `version/code` is a monotonically increasing integer. It is not safely derived from semantic version text; bump it deliberately.
-- The current project version is `0.10.0`; the Android preset was aligned to version name `0.10.0` and version code `1000`.
+- The reviewed project version is `0.12.0`; `project.godot` and the Android preset use version name `0.12.0` and version code `1200`.
 - CI fails early on project/export-preset version-name mismatch.
 - A tag build is a candidate only. Production release creation requires the separate manual workflow and protected environment.
 
