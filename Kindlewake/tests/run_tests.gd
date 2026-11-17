@@ -190,6 +190,9 @@ func _test_art_assets() -> void:
     if character_texture != null:
         check(character_texture.get_size() == Vector2(512.0, 960.0), "6x4 character atlas matches twenty-four 128x160 cells")
     check(ArtScript.CHARACTER_CELLS.size() == 24, "all twenty-four character archetypes have atlas cells")
+    for archetype_value in ArtScript.CHARACTER_CELLS.keys():
+        var archetype_id := str(archetype_value)
+        check(ArtScript.character_portrait_texture(archetype_id) != null, "portrait atlas crop resolves: " + archetype_id)
     var registry_portrait: Texture2D = ArtScript.portrait_texture("torren", "", gd.portrait_registry)
     check(registry_portrait != null, "canonical portrait registry resolves a character identity to its asset")
     var stale_portrait: Texture2D = ArtScript.portrait_texture("torren", "missing_legacy_portrait", gd.portrait_registry)
