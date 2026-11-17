@@ -103,7 +103,7 @@ def main():
         errors.append("NPC portrait resolver still hashes names into arbitrary profession portraits.")
     if 'return "guard"' not in art_script:
         errors.append("NPC portrait resolver has no safe authored-role fallback.")
-    if "static func portrait_texture(" not in art_script or "GameData.portrait_asset_path(entity_id)" not in art_script:
+    if "static func portrait_texture(" not in art_script or "registry.get(\"entities\", [])" not in art_script:
         errors.append("Shared portrait asset resolver is missing or bypasses the canonical registry.")
     if "static func character_portrait_texture(" not in art_script:
         errors.append("NPC dialogue portrait atlas resolver is missing.")
@@ -114,7 +114,7 @@ def main():
     if "spot_portrait.texture = Art.character_portrait_texture(" not in location_script:
         errors.append("NPC dialogue panel does not display the shared archetype portrait.")
     battle_script = (ROOT / "scripts" / "ui" / "battle_scene.gd").read_text(encoding="utf-8")
-    if "Art.portrait_texture(u.character_id, u.portrait_id)" not in battle_script or "Art.character_portrait_texture(Art.character_for_enemy" not in battle_script:
+    if "Art.portrait_texture(u.character_id, u.portrait_id, GameData.portrait_registry)" not in battle_script or "Art.character_portrait_texture(Art.character_for_enemy" not in battle_script:
         errors.append("Battle turn-order portraits do not use the shared identity/archetype resolver.")
     if errors:
         print("FAIL")
