@@ -7,6 +7,42 @@ const WORLD_DIR := "res://assets/art/world/"
 const WORLD_VECTOR_NAMES := ["house_a", "house_b", "house_c", "hut", "keep", "tower_a", "tower_b", "tower_c"]
 const UNIT_DIR := "res://assets/art/units/"
 const PROP_ATLAS_PATH := "res://assets/art/props/field_props.svg"
+const KINDLEWAKE_LEAD_ATLAS_PATH := "res://assets/art/units/kindlewake_lead_atlas.svg"
+
+## Dedicated male/female protagonist atlas: four facing directions and four animation frames.
+static func draw_kindlewake_lead(canvas: CanvasItem, female: bool, feet: Vector2, time: float, motion: String, facing: Vector2, scale: float = 0.72) -> bool:
+    var tex: Texture2D = _load(KINDLEWAKE_LEAD_ATLAS_PATH)
+    if tex == null:
+        return false
+    var direction := 0
+    if absf(facing.x) > absf(facing.y):
+        direction = 1 if facing.x < 0.0 else 2
+    elif facing.y < -0.25:
+        direction = 3
+    var frame := 0
+    if motion == "walk":
+        frame = posmod(int(floor(time * 8.0)), 4)
+    elif motion == "attack" or motion == "skill":
+        frame = clampi(int(floor(time * 10.0)), 0, 3)
+    elif motion == "hurt":
+        frame = 2
+    elif motion == "death":
+        frame = 3
+    else:
+        frame = posmod(int(floor(time * 2.0)), 2)
+    var row := frame + (4 if female else 0)
+    var src := Rect2(Vector2(float(direction * 128), float(row * 160)), Vector2(128, 160))
+    var bob := sin(time * (10.0 if motion == "walk" else 3.0)) * (2.2 if motion == "walk" else 0.7)
+    var lean := -0.06 if motion == "attack" else (0.02 * sin(time * 8.0) if motion == "walk" else 0.0)
+    canvas.draw_set_transform(feet + Vector2(0, bob), lean, Vector2(scale, scale))
+    canvas.draw_texture_rect_region(tex, Rect2(-64, -160, 128, 160), src)
+    if motion == "attack":
+        canvas.draw_arc(Vector2(29, -77), 34.0, -1.2, 1.15, 16, Color(1.0, 0.86, 0.58, 0.9), 3.0)
+    elif motion == "skill":
+        canvas.draw_arc(Vector2(0, -78), 28.0 + sin(time * 5.0) * 3.0, 0.0, TAU, 20, Color(0.72, 0.82, 1.0, 0.85), 2.5)
+    canvas.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+    return true
+
 const CHARACTER_ATLAS_PATH := "res://assets/art/units/character_atlas.svg"
 const CHARACTER_CELLS := {"knight":Vector2i(0,0), "ranger":Vector2i(1,0), "paladin":Vector2i(2,0), "priestess":Vector2i(3,0), "mage":Vector2i(0,1), "rogue":Vector2i(1,1), "guard":Vector2i(2,1), "merchant":Vector2i(3,1), "goblin":Vector2i(0,2), "orc":Vector2i(1,2), "skeleton":Vector2i(2,2), "direwolf":Vector2i(3,2), "wraith":Vector2i(0,3), "cultist":Vector2i(1,3), "treant":Vector2i(2,3), "overlord":Vector2i(3,3), "chronicle_hero":Vector2i(0,4), "noble":Vector2i(1,4), "blacksmith":Vector2i(2,4), "scholar":Vector2i(3,4), "healer":Vector2i(0,5), "duelist":Vector2i(1,5), "hunter":Vector2i(2,5), "bard":Vector2i(3,5)}
 const PROP_CELLS := {"arch":Vector2i(0,0), "column":Vector2i(1,0), "rune_stone":Vector2i(2,0), "torch":Vector2i(3,0), "reeds":Vector2i(0,1), "crystals":Vector2i(1,1), "grave":Vector2i(2,1), "banner":Vector2i(3,1), "mushrooms":Vector2i(0,2), "stump":Vector2i(1,2), "barrel":Vector2i(2,2), "crate":Vector2i(3,2), "campfire":Vector2i(0,3), "frost_pine":Vector2i(1,3), "statue":Vector2i(2,3), "flower":Vector2i(3,3)}
