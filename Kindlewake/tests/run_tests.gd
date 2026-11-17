@@ -195,6 +195,11 @@ func _test_art_assets() -> void:
     if lead_texture != null:
         check(lead_texture.get_size() == Vector2(512.0, 1280.0), "lead atlas contains two 4x4 directional animation sheets")
     check(ArtScript.KINDLEWAKE_LEAD_ATLAS_PATH == "res://assets/art/units/kindlewake_lead_atlas.svg", "protagonist renderer uses the committed lead atlas")
+    var location_source := FileAccess.get_file_as_string("res://scripts/ui/location_scene.gd")
+    check(location_source.contains("Art.draw_kindlewake_lead"), "town and interior exploration render the custom protagonist sprite")
+    check(location_source.contains("GameState.creation_profile"), "exploration sprite uses the saved protagonist presentation")
+    var battle_source := FileAccess.get_file_as_string("res://scripts/ui/battle_scene.gd")
+    check(battle_source.contains("anim if anim in"), "battle protagonist forwards combat animation states to the custom sprite")
     var roster_texture: Texture2D = load("res://assets/art/units/character_roster_atlas.svg") as Texture2D
     check(roster_texture != null, "full named-character roster atlas imports")
     if roster_texture != null:
