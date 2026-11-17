@@ -1221,6 +1221,16 @@ func _draw_sprite_identity_marks(u: BattleUnitScript, p: Vector2, is_player: boo
 ## Animated pixel sprite (Tiny RPG Soldier for the player's side, Orc for the enemy). Returns false without the art,
 ## and _draw_unit then falls back to the drawn figure.
 func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: Vector2) -> bool:
+    if not is_player:
+        var roster_motion: String = "walk" if visual_pos.get(u.id, p) != cell_to_world(u.cell) else "idle"
+        var roster_tint: Color = _battle_sprite_tint(u, false)
+        if Art.draw_roster_character(self, u.character_id, p + Vector2(0, 8), anim_clock + float(u.id) * 0.37, roster_motion, 0.44, roster_tint, fdir.x < 0.0):
+            _draw_sprite_identity_marks(u, p, false, 0.44, anim_clock)
+            var enemy_ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
+            draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40, 7)), Color(0.1, 0.08, 0.08))
+            draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40.0 * enemy_ratio, 7)), Color(0.85, 0.2, 0.2).lerp(Color(0.25, 0.85, 0.38), enemy_ratio))
+            _draw_unit_tag(u, p)
+            return true
     # Named monsters and bosses use distinct original atlas art; other units keep their animated sheets.
     if not is_player:
         var identity: String = Art.character_for_enemy(u.character_id, u.display_name)
