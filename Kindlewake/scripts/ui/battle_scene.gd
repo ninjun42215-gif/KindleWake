@@ -1264,7 +1264,7 @@ func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: V
             if u.morale <= 0:
                 draw_string(ThemeDB.fallback_font, p + Vector2(-40, -70), "ROUTED", HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color(1, 0.6, 0.3))
             return true
-        if Art.draw_character_animated(self, player_archetype, p + Vector2(0, 8), t, player_motion, 0.44, tint, fdir.x < 0.0):
+        if Art.draw_roster_character(self, u.character_id, p + Vector2(0, 8), t, player_motion, 0.44, tint, fdir.x < 0.0) or Art.draw_character_animated(self, player_archetype, p + Vector2(0, 8), t, player_motion, 0.44, tint, fdir.x < 0.0):
             _draw_sprite_identity_marks(u, p, is_player, 0.44, t)
             var player_ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
             draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40, 7)), Color(0.1, 0.08, 0.08))
