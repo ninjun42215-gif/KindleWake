@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<title>Nyra Briar — original KindleWake portrait</title>
+<defs>
+ <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#526f59"/><stop offset=".5" stop-color="#263d38"/><stop offset="1" stop-color="#111e20"/></linearGradient>
+ <radialGradient id="glow"><stop stop-color="#d2c38b" stop-opacity=".36"/><stop offset="1" stop-color="#d2c38b" stop-opacity="0"/></radialGradient>
+ <linearGradient id="skin" x2=".7" y2="1"><stop stop-color="#a86f50"/><stop offset=".52" stop-color="#754936"/><stop offset="1" stop-color="#3e2d29"/></linearGradient>
+ <linearGradient id="hair" x2="1" y2="1"><stop stop-color="#4d352b"/><stop offset=".55" stop-color="#241f1d"/><stop offset="1" stop-color="#15191a"/></linearGradient>
+ <linearGradient id="cloak" x2="0" y2="1"><stop stop-color="#55775b"/><stop offset=".5" stop-color="#294c3b"/><stop offset="1" stop-color="#142b24"/></linearGradient>
+ <linearGradient id="leather" x2="1" y2="1"><stop stop-color="#8b6541"/><stop offset="1" stop-color="#3a3026"/></linearGradient>
+ <linearGradient id="bronze" x2="1" y2="1"><stop stop-color="#e2c181"/><stop offset="1" stop-color="#77502f"/></linearGradient>
+</defs>
+<rect width="512" height="512" fill="url(#bg)"/><circle cx="254" cy="186" r="215" fill="url(#glow)"/>
+<path d="M0 512Q33 395 105 350Q159 314 205 302H310Q366 313 415 352Q483 410 512 512Z" fill="#14251f"/>
+<path d="M37 512Q59 386 144 342L199 307H313L368 342Q452 387 477 512Z" fill="url(#cloak)" stroke="#b18a54" stroke-width="5"/>
+<path d="M118 512L165 351L213 312L256 378L299 312L347 351L394 512Z" fill="#203d31" stroke="#8fa17c" stroke-width="4"/>
+<path d="M175 338L218 307L256 366L294 307L337 338L314 391L256 419L198 391Z" fill="url(#leather)" stroke="#c29b61" stroke-width="4"/>
+<path d="M218 236H294L307 339Q257 375 205 339Z" fill="url(#skin)"/>
+<path d="M146 140Q151 45 253 25Q364 36 366 156L350 286L322 342L191 342L159 278Z" fill="url(#hair)" stroke="#151b19" stroke-width="5"/>
+<path d="M185 111Q204 62 256 61Q311 62 329 115L326 211Q316 270 256 289Q195 271 185 211Z" fill="url(#skin)" stroke="#4b332c" stroke-width="4"/>
+<path d="M151 139Q155 64 214 41L237 55L255 33L277 54L301 40Q359 71 365 143L339 153L319 112L293 128L258 98L225 128L194 111L173 157Z" fill="url(#hair)"/>
+<path d="M173 121Q153 187 173 274L196 301L202 174Z M339 120Q365 187 343 274L318 303L311 174Z" fill="url(#hair)"/>
+<path d="M172 132Q137 214 162 322L185 349L199 278L186 189Z M340 132Q378 214 350 322L327 349L313 278L326 189Z" fill="url(#hair)" stroke="#4e382a" stroke-width="3"/>
+<path d="M163 205Q133 255 177 302M349 205Q381 255 335 302" fill="none" stroke="#98724b" stroke-width="5"/>
+<g fill="url(#bronze)"><circle cx="173" cy="253" r="6"/><circle cx="340" cy="253" r="6"/><circle cx="181" cy="292" r="5"/><circle cx="331" cy="292" r="5"/></g>
+<path d="M198 164Q218 151 240 163M273 163Q295 151 314 164" fill="none" stroke="#382923" stroke-width="8" stroke-linecap="round"/>
+<path d="M202 180Q220 173 239 180M274 180Q294 173 310 180" fill="none" stroke="#241f1d" stroke-width="3"/>
+<ellipse cx="222" cy="184" rx="5" ry="7" fill="#201d1b"/><ellipse cx="291" cy="184" rx="5" ry="7" fill="#201d1b"/>
+<circle cx="224" cy="182" r="1.5" fill="#e5cba4"/><circle cx="293" cy="182" r="1.5" fill="#e5cba4"/>
+<path d="M256 184L246 221L259 225" fill="none" stroke="#55372e" stroke-width="4" stroke-linecap="round"/>
+<path d="M235 248Q256 257 278 247" fill="none" stroke="#512f2a" stroke-width="4" stroke-linecap="round"/>
+<path d="M204 128Q255 101 309 129" fill="none" stroke="#1b211e" stroke-width="9"/>
+<path d="M218 307L256 356L294 307L321 349L256 405L191 349Z" fill="#294d39" stroke="#9fa47a" stroke-width="4"/>
+<path d="M256 348Q235 365 236 388Q257 380 276 388Q277 365 256 348Z" fill="url(#bronze)" stroke="#3e3024" stroke-width="3"/>
+<path d="M252 357L256 375L261 357" fill="none" stroke="#4c714c" stroke-width="3"/>
+<path d="M75 512Q105 415 188 368L211 396L178 512Z M437 512Q407 415 324 368L301 396L334 512Z" fill="#1c382c" stroke="#67805d" stroke-width="4"/>
+<path d="M103 423L128 400L147 421L127 512M409 423L384 400L365 421L385 512" fill="none" stroke="#b18a54" stroke-width="4" opacity=".7"/>
+</svg>

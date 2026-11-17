@@ -5,6 +5,7 @@ extends Node
 const TitleScreenScript = preload("res://scripts/ui/title_screen.gd")
 const CharacterCreatorScript = preload("res://scripts/ui/character_creator.gd")
 const PortraitResolverScript = preload("res://scripts/ui/portrait_resolver.gd")
+const ArtScript = preload("res://scripts/ui/art.gd")
 
 var failures := 0
 
@@ -51,7 +52,7 @@ func _run_ui_test() -> void:
     _check(creator.allocation_plus_buttons.size() == 6 and creator.allocation_minus_buttons.size() == 6,
         "creator builds plus and minus controls for all six attributes")
     _check(creator.presentation_buttons.size() == 3, "creator exposes all presentation radio choices")
-    _check(creator.portrait_buttons.size() == 12, "creator exposes the complete twelve-portrait gallery")
+    _check(creator.portrait_buttons.size() == 16, "creator exposes the complete sixteen-portrait gallery")
     _check(PortraitResolverScript.resolve_path("torren_redcloak").ends_with(".webp"), "Torren uses the new raster portrait ahead of its SVG fallback")
     _check(PortraitResolverScript.resolve_path("auburn_ranger").ends_with(".webp"), "Auburn Ranger uses the new raster portrait ahead of its SVG fallback")
     _check(PortraitResolverScript.resolve_path("sunwarden").ends_with(".svg"), "unconverted portraits retain the SVG fallback")
@@ -61,7 +62,44 @@ func _run_ui_test() -> void:
         var portrait_path := PortraitResolverScript.resolve_path(portrait_id)
         if portrait_path == "" or PortraitResolverScript.load_texture(portrait_id) == null:
             all_portraits_load = false
-    _check(all_portraits_load, "all twelve portrait assets load as Godot textures")
+    _check(all_portraits_load, "all sixteen portrait assets load as Godot textures")
+    for new_portrait_id in ["maelin_tidecaller", "kellan_ashward", "nyra_briar", "orin_lantern"]:
+        _check(creator.portrait_buttons.has(new_portrait_id), "new portrait is selectable in the creator gallery: " + new_portrait_id)
+    var selected_sprite_accent: Color = ArtScript.lead_accent_for_profile(
+        {"portrait_id": "auburn_ranger"}, GameData.character_creation.get("portraits", []))
+    _check(selected_sprite_accent == Color("#4f684d"),
+        "selected portrait palette is available to the shared exploration and battle sprite renderer")
+    var selected_identity: Dictionary = ArtScript.lead_appearance_for_profile(
+        {"portrait_id": "auburn_ranger"}, GameData.character_creation.get("portraits", []))
+    _check(str(selected_identity.get("presentation", "")) == "feminine"
+        and str(selected_identity.get("face", "")) == "soft"
+        and str(selected_identity.get("hair", "")) == "tied_brown"
+        and str(selected_identity.get("skin", "")) == "fair"
+        and str(selected_identity.get("build", "")) == "lean",
+        "selected portrait resolves its matching face, hair, skin, build and presentation for the runtime sprite")
+    var every_portrait_has_sprite_identity := true
+    for portrait in GameData.character_creation.get("portraits", []):
+        var portrait_id := str(portrait.get("id", ""))
+        var identity: Dictionary = ArtScript.lead_appearance_for_profile(
+            {"portrait_id": portrait_id}, GameData.character_creation.get("portraits", []))
+        for field in ["presentation", "face", "hair", "skin", "build"]:
+            if str(identity.get(field, "")).is_empty():
+                every_portrait_has_sprite_identity = false
+        if not (identity.get("accent", null) is Color):
+            every_portrait_has_sprite_identity = false
+    _check(every_portrait_has_sprite_identity,
+        "all sixteen gallery portraits provide complete identity cues for the animated protagonist sprite")
+    var lead_renderers_integrated := true
+    for scene_script_path in [
+        "res://scripts/ui/world_scene.gd",
+        "res://scripts/ui/location_scene.gd",
+        "res://scripts/ui/battle_scene.gd"
+    ]:
+        var scene_source := FileAccess.get_file_as_string(scene_script_path)
+        if not scene_source.contains("Art.draw_kindlewake_lead"):
+            lead_renderers_integrated = false
+    _check(lead_renderers_integrated,
+        "overworld, town/interior and tactical battle use the same portrait-aware protagonist renderer")
     var every_character_has_portrait := true
     for character_id in GameData.characters.keys():
         var character: Dictionary = GameData.characters[character_id]
@@ -80,6 +118,14 @@ func _run_ui_test() -> void:
             "selected portrait synchronizes presentation and physical appearance")
         _check((creator.presentation_buttons["feminine"] as CheckButton).button_pressed,
             "portrait selection synchronizes the presentation radio")
+    creator._on_portrait_button_toggled(true, "maelin_tidecaller")
+    _check(str(creator.profile.get("hair", "")) == "long_silver"
+        and CharacterCreation.validate(creator.profile, GameData.character_creation, GameData.classes) == "",
+        "Maelin's silver hair identity is supported by the creation validator and runtime sprite palette")
+    creator._on_portrait_button_toggled(true, "kellan_ashward")
+    _check(str(creator.profile.get("hair", "")) == "short_ash"
+        and CharacterCreation.validate(creator.profile, GameData.character_creation, GameData.classes) == "",
+        "Kellan's ash-brown hair identity is supported by the creation validator and runtime sprite palette")
     creator._on_portrait_button_toggled(true, "torren_redcloak")
     for field in ["origin", "discipline", "weapon_preference", "temperament"]:
         if not creator.choices.has(field) or not creator.choice_popups.has(field):

@@ -42,7 +42,9 @@
     "long_dark",
     "tied_brown",
     "cropped_red",
-    "shaved"
+    "shaved",
+    "long_silver",
+    "short_ash"
   ],
   "skin": [
     "fair",
@@ -210,7 +212,8 @@
       "face": "weathered",
       "hair": "short_dark",
       "skin": "warm",
-      "build": "athletic"
+      "build": "athletic",
+      "sprite_accent": "#27717a"
     },
     {
       "id": "auburn_ranger",
@@ -219,7 +222,8 @@
       "face": "soft",
       "hair": "tied_brown",
       "skin": "fair",
-      "build": "lean"
+      "build": "lean",
+      "sprite_accent": "#4f684d"
     },
     {
       "id": "sunwarden",
@@ -228,7 +232,8 @@
       "face": "sharp",
       "hair": "cropped_red",
       "skin": "warm",
-      "build": "athletic"
+      "build": "athletic",
+      "sprite_accent": "#34485f"
     },
     {
       "id": "iron_veteran",
@@ -237,7 +242,8 @@
       "face": "scarred",
       "hair": "shaved",
       "skin": "deep",
-      "build": "sturdy"
+      "build": "sturdy",
+      "sprite_accent": "#6a6256"
     },
     {
       "id": "silver_oracle",
@@ -246,7 +252,8 @@
       "face": "sharp",
       "hair": "long_dark",
       "skin": "fair",
-      "build": "lean"
+      "build": "lean",
+      "sprite_accent": "#4b405e"
     },
     {
       "id": "dusk_rogue",
@@ -255,7 +262,8 @@
       "face": "sharp",
       "hair": "cropped_red",
       "skin": "olive",
-      "build": "lean"
+      "build": "lean",
+      "sprite_accent": "#3b454a"
     },
     {
       "id": "shieldmaiden",
@@ -264,7 +272,8 @@
       "face": "weathered",
       "hair": "long_dark",
       "skin": "warm",
-      "build": "sturdy"
+      "build": "sturdy",
+      "sprite_accent": "#596c70"
     },
     {
       "id": "courtier",
@@ -273,7 +282,8 @@
       "face": "soft",
       "hair": "tied_brown",
       "skin": "fair",
-      "build": "athletic"
+      "build": "athletic",
+      "sprite_accent": "#66536e"
     },
     {
       "id": "ash_scout",
@@ -282,7 +292,8 @@
       "face": "scarred",
       "hair": "short_dark",
       "skin": "olive",
-      "build": "lean"
+      "build": "lean",
+      "sprite_accent": "#5a4d3e"
     },
     {
       "id": "briar_warden",
@@ -291,7 +302,8 @@
       "face": "sharp",
       "hair": "tied_brown",
       "skin": "deep",
-      "build": "athletic"
+      "build": "athletic",
+      "sprite_accent": "#465f4d"
     },
     {
       "id": "old_knight",
@@ -300,7 +312,8 @@
       "face": "weathered",
       "hair": "shaved",
       "skin": "fair",
-      "build": "sturdy"
+      "build": "sturdy",
+      "sprite_accent": "#77746d"
     },
     {
       "id": "night_scholar",
@@ -309,7 +322,48 @@
       "face": "soft",
       "hair": "long_dark",
       "skin": "deep",
-      "build": "lean"
+      "build": "lean",
+      "sprite_accent": "#45475d"
+    },
+    {
+      "id": "maelin_tidecaller",
+      "name": "Tidecaller",
+      "presentation": "feminine",
+      "face": "soft",
+      "hair": "long_silver",
+      "skin": "fair",
+      "build": "lean",
+      "sprite_accent": "#477486"
+    },
+    {
+      "id": "kellan_ashward",
+      "name": "Ashward Veteran",
+      "presentation": "masculine",
+      "face": "scarred",
+      "hair": "short_ash",
+      "skin": "warm",
+      "build": "sturdy",
+      "sprite_accent": "#65717a"
+    },
+    {
+      "id": "nyra_briar",
+      "name": "Briar Sentinel",
+      "presentation": "feminine",
+      "face": "sharp",
+      "hair": "tied_brown",
+      "skin": "deep",
+      "build": "athletic",
+      "sprite_accent": "#55775b"
+    },
+    {
+      "id": "orin_lantern",
+      "name": "Lantern Scholar",
+      "presentation": "androgynous",
+      "face": "soft",
+      "hair": "short_dark",
+      "skin": "fair",
+      "build": "lean",
+      "sprite_accent": "#465a83"
     }
   ]
 }

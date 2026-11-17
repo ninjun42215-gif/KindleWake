@@ -153,7 +153,7 @@ func _draw_face_details(cx: float, head_y: float, style: String) -> void:
 func _draw_hair(cx: float, head_y: float, color: Color, style: String) -> void:
     draw_arc(Vector2(cx, head_y - 4.0), 48.0, PI, TAU, 40, color.darkened(0.16), 16.0)
     draw_arc(Vector2(cx, head_y - 5.0), 46.0, PI, TAU, 40, color, 9.0)
-    if style == "long_dark" or style == "tied_brown":
+    if style == "long_dark" or style == "long_silver" or style == "tied_brown":
         draw_colored_polygon(PackedVector2Array([Vector2(cx - 45, head_y - 8), Vector2(cx - 42, head_y + 55), Vector2(cx - 34, head_y + 73), Vector2(cx - 32, head_y - 8)]), color.darkened(0.08))
         draw_colored_polygon(PackedVector2Array([Vector2(cx + 45, head_y - 8), Vector2(cx + 42, head_y + 55), Vector2(cx + 34, head_y + 73), Vector2(cx + 32, head_y - 8)]), color.darkened(0.08))
     elif style == "shaved":
@@ -177,6 +177,10 @@ func _skin_color(id: String) -> Color:
 
 
 func _hair_color(id: String) -> Color:
+    if id == "long_silver":
+        return Color("#c4c9c7")
+    if id == "short_ash":
+        return Color("#766a5b")
     if id == "tied_brown":
         return Color("#65422f")
     if id == "cropped_red":

@@ -27,3 +27,12 @@ The generated 4x4 concept sheet is a visual reference only; its cells must be sl
 - [ ] Add matching unit sprites and animation strips for playable/recruitable characters.
 - [ ] Run the portrait coverage test and Godot headless scene smoke tests.
 - [ ] Verify Android export and inspect portraits on narrow phone screens.
+
+## 2026-11-17 protagonist gallery increment
+
+The creator now offers sixteen selectable portrait identities. Four original vector concepts were added: Maelin Tidecaller, Kellan Ashward, Nyra Briar and Orin Lantern. Each has a stable portrait ID, presentation/appearance metadata and a sprite accent color. Narrow phone layouts now show two larger portrait tiles per row.
+
+The chosen portrait ID and its appearance metadata remain part of the confirmed creation profile and are preserved by the existing campaign save path. The exploration and battle protagonist renderer now translates presentation, face style, hair style/colour, skin tone and build into the directional sprite, alongside the portrait's palette accent. The animation poses and core body atlas remain shared by presentation, so this is a readable identity translation rather than a pixel-perfect painted likeness.
+
+These four assets are original project-authored SVGs, not third-party pack imports. They are concept-level vector portraits and do not replace the approved painterly semi-realistic final-art target.
+

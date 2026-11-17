@@ -691,18 +691,37 @@ func _draw_place_fallback(p: Dictionary) -> void:
 
 func _draw_player() -> void:
     var p: Vector2 = player_pos
+    draw_colored_polygon(_ellipse(p + Vector2(0, 6), 14.0, 5.0), Color(0, 0, 0, 0.35))
+    var t: float = float(Time.get_ticks_msec()) / 1000.0
+    var moving: bool = (has_target or moving_vector.length() > 0.12) and not panel_open
+    var sprinting: bool = moving and (run_toggled or ExplorationControls.running())
+
+    # Use the same selected protagonist identity in the overworld, town and
+    # battle. The 0.46 scale keeps the lead readable without dwarfing 48 px tiles.
+    var lead_profile: Dictionary = GameState.creation_profile if GameState.creation_profile is Dictionary else {}
+    var lead_presentation: String = str(lead_profile.get("presentation", "masculine"))
+    var lead_facing: Vector2 = Vector2.LEFT if facing_left else Vector2.RIGHT
+    if moving_vector.length() > 0.12:
+        lead_facing = moving_vector.normalized()
+    elif has_target and target.distance_to(p) > 2.0:
+        lead_facing = (target - p).normalized()
+    var lead_motion: String = "walk" if moving else "idle"
+    var lead_clock: float = t * (1.35 if sprinting else 1.0)
+    if Art.draw_kindlewake_lead(self, lead_presentation == "feminine",
+        p + Vector2(0, 8), lead_clock, lead_motion, lead_facing, 0.46):
+        if has_target and not panel_open:
+            draw_arc(target, 8.0, 0.0, TAU, 16, Color(1, 1, 1, 0.5), 2.0)
+        return
+
+    # Keep the legacy sheet and primitive fallbacks for projects missing the
+    # original KindleWake lead atlas; normal builds use the identity-aware lead.
     if Art.unit_sheet("soldier", "idle") != null:
-        draw_colored_polygon(_ellipse(p + Vector2(0, 6), 14.0, 5.0), Color(0, 0, 0, 0.35))
-        var t: float = float(Time.get_ticks_msec()) / 1000.0
-        var moving: bool = (has_target or moving_vector.length() > 0.12) and not panel_open
-        var sprinting: bool = moving and (run_toggled or ExplorationControls.running())
         var motion_state: String = "run" if sprinting and Art.unit_sheet("soldier", "run") != null else ("walk" if moving else "idle")
         Art.draw_unit(self, "soldier", motion_state, t, p + Vector2(0, 8), 2.0, facing_left)
         if has_target and not panel_open:
             draw_arc(target, 8.0, 0.0, TAU, 16, Color(1, 1, 1, 0.5), 2.0)
         return
     var bob: float = absf(sin(walk_phase)) * 3.0 if has_target else 0.0
-    draw_colored_polygon(_ellipse(p + Vector2(0, 6), 13.0, 5.0), Color(0, 0, 0, 0.35))
     var q: Vector2 = p + Vector2(0, -bob)
     draw_rect(Rect2(q + Vector2(-8, -18), Vector2(16, 22)), Color(0.22, 0.50, 0.88))
     draw_rect(Rect2(q + Vector2(-6, -28), Vector2(12, 11)), Color(0.72, 0.73, 0.70))

@@ -9,11 +9,69 @@ const UNIT_DIR := "res://assets/art/units/"
 const PROP_ATLAS_PATH := "res://assets/art/props/field_props.svg"
 const KINDLEWAKE_LEAD_ATLAS_PATH := "res://assets/art/units/kindlewake_lead_atlas.svg"
 
+## Resolve the portrait's approved clothing accent without coupling the renderer to a specific gallery order.
+static func lead_accent_for_profile(profile: Dictionary, portrait_options: Array) -> Color:
+    var portrait_id := str(profile.get("portrait_id", ""))
+    if portrait_id.is_empty():
+        return Color("#c59a54")
+    for entry in portrait_options:
+        if not (entry is Dictionary):
+            continue
+        var portrait: Dictionary = entry
+        if str(portrait.get("id", "")) == portrait_id:
+            return Color.from_string(str(portrait.get("sprite_accent", "#c59a54")), Color("#c59a54"))
+    return Color("#c59a54")
+
+
+static func lead_appearance_for_profile(profile: Dictionary, portrait_options: Array) -> Dictionary:
+    var portrait_id := str(profile.get("portrait_id", ""))
+    var appearance: Dictionary = {
+        "portrait_id": portrait_id,
+        "presentation": str(profile.get("presentation", "masculine")),
+        "face": str(profile.get("face", "weathered")),
+        "hair": str(profile.get("hair", "short_dark")),
+        "skin": str(profile.get("skin", "warm")),
+        "build": str(profile.get("build", "athletic")),
+        "accent": lead_accent_for_profile(profile, portrait_options),
+    }
+    # Older saves may carry only the stable portrait ID. Recover the matching
+    # appearance metadata from the gallery rather than silently drawing Torren.
+    for entry in portrait_options:
+        if typeof(entry) != TYPE_DICTIONARY:
+            continue
+        var portrait: Dictionary = entry
+        if str(portrait.get("id", "")) != portrait_id:
+            continue
+        for key in ["presentation", "face", "hair", "skin", "build"]:
+            if not profile.has(key) or str(profile.get(key, "")).is_empty():
+                appearance[key] = str(portrait.get(key, appearance[key]))
+        break
+    return appearance
+
+
+static func _current_lead_appearance() -> Dictionary:
+    var tree := Engine.get_main_loop() as SceneTree
+    if tree == null or tree.root == null:
+        return lead_appearance_for_profile({}, [])
+    var game_state := tree.root.get_node_or_null("GameState")
+    var game_data := tree.root.get_node_or_null("GameData")
+    if game_state == null or game_data == null:
+        return lead_appearance_for_profile({}, [])
+    var profile_value: Variant = game_state.get("creation_profile")
+    var config_value: Variant = game_data.get("character_creation")
+    if profile_value is Dictionary and config_value is Dictionary:
+        var options: Variant = config_value.get("portraits", [])
+        if options is Array:
+            return lead_appearance_for_profile(profile_value, options)
+    return lead_appearance_for_profile({}, [])
+
 ## Dedicated male/female protagonist atlas: four facing directions and four animation frames.
 static func draw_kindlewake_lead(canvas: CanvasItem, female: bool, feet: Vector2, time: float, motion: String, facing: Vector2, scale: float = 0.72) -> bool:
     var tex: Texture2D = _load(KINDLEWAKE_LEAD_ATLAS_PATH)
     if tex == null:
         return false
+    var appearance: Dictionary = _current_lead_appearance()
+    var portrait_accent: Color = appearance.get("accent", Color("#c59a54"))
     var direction := 0
     if absf(facing.x) > absf(facing.y):
         direction = 1 if facing.x < 0.0 else 2
@@ -36,12 +94,176 @@ static func draw_kindlewake_lead(canvas: CanvasItem, female: bool, feet: Vector2
     var lean := -0.06 if motion == "attack" else (0.02 * sin(time * 8.0) if motion == "walk" else 0.0)
     canvas.draw_set_transform(feet + Vector2(0, bob), lean, Vector2(scale, scale))
     canvas.draw_texture_rect_region(tex, Rect2(-64, -160, 128, 160), src)
+    _draw_lead_identity(canvas, appearance, direction)
+    # A small heraldic chest mark carries the selected portrait's costume palette
+    # into the animated field/battle sprite without tinting skin or metal.
+    canvas.draw_colored_polygon(PackedVector2Array([
+        Vector2(0, -86), Vector2(5, -79), Vector2(0, -72), Vector2(-5, -79)
+    ]), portrait_accent)
+    canvas.draw_circle(Vector2(0, -79), 1.8, Color("#f1e5c7"))
     if motion == "attack":
         canvas.draw_arc(Vector2(29, -77), 34.0, -1.2, 1.15, 16, Color(1.0, 0.86, 0.58, 0.9), 3.0)
     elif motion == "skill":
         canvas.draw_arc(Vector2(0, -78), 28.0 + sin(time * 5.0) * 3.0, 0.0, TAU, 20, Color(0.72, 0.82, 1.0, 0.85), 2.5)
     canvas.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
     return true
+
+static func _draw_lead_identity(canvas: CanvasItem, appearance: Dictionary, direction: int) -> void:
+    var hair_style := str(appearance.get("hair", "short_dark"))
+    var hair_color := _lead_hair_color(hair_style)
+    var skin_color := _lead_skin_color(str(appearance.get("skin", "warm")))
+    var face_style := str(appearance.get("face", "weathered"))
+    var presentation := str(appearance.get("presentation", "masculine"))
+    var build_style := str(appearance.get("build", "athletic"))
+    var accent: Color = appearance.get("accent", Color("#c59a54"))
+
+    # The rear cell has no visible face; preserve its silhouette and translate
+    # the selected hair length and colour into the back-facing sprite.
+    if direction == 3:
+        var rear_cap := PackedVector2Array([
+            Vector2(-28, -127), Vector2(-31, -142), Vector2(-20, -152),
+            Vector2(-8, -148), Vector2(0, -154), Vector2(11, -148),
+            Vector2(23, -152), Vector2(31, -140), Vector2(28, -120),
+            Vector2(17, -127), Vector2(0, -123), Vector2(-17, -127)
+        ])
+        canvas.draw_colored_polygon(rear_cap, hair_color)
+        if hair_style == "long_dark" or hair_style == "long_silver" or hair_style == "tied_brown":
+            canvas.draw_colored_polygon(PackedVector2Array([
+                Vector2(-25, -130), Vector2(-28, -111), Vector2(-24, -96),
+                Vector2(-16, -101), Vector2(-16, -126)
+            ]), hair_color.darkened(0.08))
+            canvas.draw_colored_polygon(PackedVector2Array([
+                Vector2(24, -130), Vector2(28, -111), Vector2(24, -96),
+                Vector2(16, -101), Vector2(16, -126)
+            ]), hair_color.darkened(0.08))
+        elif hair_style == "shaved":
+            canvas.draw_arc(Vector2(0, -137), 24.0, PI, TAU, 24, hair_color.lightened(0.12), 1.2)
+        return
+
+    var center_x: float = 2.0 if direction == 1 else (6.0 if direction == 2 else 4.0)
+    var jaw_half_width: float = 13.0 if presentation == "feminine" else 15.0
+    if build_style == "sturdy":
+        jaw_half_width += 1.0
+
+    # Repaint the face plane at sprite scale so skin tone and jaw proportions
+    # follow the chosen portrait instead of the shared atlas default.
+    canvas.draw_colored_polygon(PackedVector2Array([
+        Vector2(center_x - 19, -134), Vector2(center_x - 15, -139),
+        Vector2(center_x + 14, -139), Vector2(center_x + 21, -133),
+        Vector2(center_x + 20, -114), Vector2(center_x + 10, -101),
+        Vector2(center_x, -97), Vector2(center_x - jaw_half_width, -102),
+        Vector2(center_x - 18, -114)
+    ]), skin_color)
+    canvas.draw_line(Vector2(center_x - 14, -111), Vector2(center_x - 8, -106), skin_color.darkened(0.14), 1.0)
+    canvas.draw_line(Vector2(center_x + 14, -111), Vector2(center_x + 8, -106), skin_color.darkened(0.10), 1.0)
+
+    var cap_points := PackedVector2Array([
+        Vector2(center_x - 27, -126), Vector2(center_x - 31, -140),
+        Vector2(center_x - 20, -151), Vector2(center_x - 10, -147),
+        Vector2(center_x, -153), Vector2(center_x + 10, -147),
+        Vector2(center_x + 22, -151), Vector2(center_x + 32, -140),
+        Vector2(center_x + 27, -126), Vector2(center_x + 18, -132),
+        Vector2(center_x + 8, -129), Vector2(center_x, -134),
+        Vector2(center_x - 10, -129), Vector2(center_x - 20, -132)
+    ])
+    if hair_style == "shaved":
+        cap_points = PackedVector2Array([
+            Vector2(center_x - 23, -128), Vector2(center_x - 22, -140),
+            Vector2(center_x - 13, -147), Vector2(center_x, -149),
+            Vector2(center_x + 14, -146), Vector2(center_x + 24, -139),
+            Vector2(center_x + 23, -128), Vector2(center_x + 13, -132),
+            Vector2(center_x, -134), Vector2(center_x - 14, -132)
+        ])
+    elif hair_style == "cropped_red":
+        cap_points = PackedVector2Array([
+            Vector2(center_x - 28, -126), Vector2(center_x - 32, -140),
+            Vector2(center_x - 19, -151), Vector2(center_x - 9, -144),
+            Vector2(center_x, -155), Vector2(center_x + 9, -145),
+            Vector2(center_x + 22, -152), Vector2(center_x + 31, -139),
+            Vector2(center_x + 27, -126), Vector2(center_x + 15, -132),
+            Vector2(center_x + 4, -129), Vector2(center_x - 8, -133),
+            Vector2(center_x - 20, -130)
+        ])
+    canvas.draw_colored_polygon(cap_points, hair_color)
+    canvas.draw_line(Vector2(center_x - 18, -145), Vector2(center_x - 6, -150), hair_color.lightened(0.16), 1.0)
+    canvas.draw_line(Vector2(center_x + 4, -150), Vector2(center_x + 18, -144), hair_color.darkened(0.16), 1.0)
+
+    if hair_style == "long_dark" or hair_style == "long_silver" or hair_style == "tied_brown":
+        canvas.draw_colored_polygon(PackedVector2Array([
+            Vector2(center_x - 20, -130), Vector2(center_x - 25, -116),
+            Vector2(center_x - 23, -97), Vector2(center_x - 16, -101),
+            Vector2(center_x - 15, -125)
+        ]), hair_color.darkened(0.08))
+        canvas.draw_colored_polygon(PackedVector2Array([
+            Vector2(center_x + 21, -130), Vector2(center_x + 25, -116),
+            Vector2(center_x + 23, -97), Vector2(center_x + 16, -101),
+            Vector2(center_x + 15, -125)
+        ]), hair_color.darkened(0.08))
+        if hair_style == "tied_brown":
+            canvas.draw_circle(Vector2(center_x + 24, -128), 3.0, hair_color)
+            canvas.draw_line(Vector2(center_x + 21, -128), Vector2(center_x + 27, -128), accent, 1.0)
+
+    var brow_color := hair_color.darkened(0.28)
+    for side in [-1.0, 1.0]:
+        var eye_x: float = center_x + side * 8.5
+        canvas.draw_line(Vector2(eye_x - 3.2, -121), Vector2(eye_x + 3.2, -120), brow_color, 1.4)
+        canvas.draw_line(Vector2(eye_x - 2.5, -117), Vector2(eye_x + 2.5, -117), Color("#3b302c"), 1.0)
+        canvas.draw_circle(Vector2(eye_x, -117), 1.1, Color("#202326"))
+    canvas.draw_line(Vector2(center_x + 1, -114), Vector2(center_x - 1, -107), skin_color.darkened(0.28), 1.0)
+    canvas.draw_line(Vector2(center_x - 3, -103), Vector2(center_x + 3, -103), Color("#714b42"), 1.0)
+
+    if face_style == "scarred":
+        canvas.draw_line(Vector2(center_x + 14, -128), Vector2(center_x + 7, -108), Color("#75483f"), 1.8)
+    elif face_style == "sharp":
+        canvas.draw_line(Vector2(center_x - 12, -123), Vector2(center_x - 4, -121), brow_color, 1.8)
+        canvas.draw_line(Vector2(center_x + 4, -121), Vector2(center_x + 12, -123), brow_color, 1.8)
+    elif face_style == "soft":
+        canvas.draw_circle(Vector2(center_x - 13, -108), 2.4, Color(0.72, 0.42, 0.38, 0.18))
+        canvas.draw_circle(Vector2(center_x + 13, -108), 2.4, Color(0.72, 0.42, 0.38, 0.18))
+    else:
+        canvas.draw_line(Vector2(center_x - 12, -130), Vector2(center_x - 7, -129), skin_color.darkened(0.20), 0.9)
+        canvas.draw_line(Vector2(center_x + 7, -129), Vector2(center_x + 12, -130), skin_color.darkened(0.20), 0.9)
+
+    if build_style == "sturdy":
+        for side in [-1.0, 1.0]:
+            var shoulder_x: float = side * 25.0
+            canvas.draw_colored_polygon(PackedVector2Array([
+                Vector2(shoulder_x - 7.0, -95), Vector2(shoulder_x, -101),
+                Vector2(shoulder_x + 8.0, -95), Vector2(shoulder_x + 5.0, -86),
+                Vector2(shoulder_x - 5.0, -86)
+            ]), accent.darkened(0.28))
+            canvas.draw_line(Vector2(shoulder_x - 3.0, -94), Vector2(shoulder_x + 3.0, -94), accent.lightened(0.18), 1.0)
+
+
+static func _lead_skin_color(id: String) -> Color:
+    match id:
+        "fair":
+            return Color("#e6c6a7")
+        "olive":
+            return Color("#b98a65")
+        "deep":
+            return Color("#81543e")
+        _:
+            return Color("#d2a17c")
+
+
+static func _lead_hair_color(id: String) -> Color:
+    match id:
+        "long_dark":
+            return Color("#33303a")
+        "long_silver":
+            return Color("#c4c9c7")
+        "short_ash":
+            return Color("#766a5b")
+        "tied_brown":
+            return Color("#65422f")
+        "cropped_red":
+            return Color("#9b493b")
+        "shaved":
+            return Color("#393b3c")
+        _:
+            return Color("#282b35")
+
 
 const CHARACTER_ATLAS_PATH := "res://assets/art/units/character_atlas.svg"
 const CHARACTER_CELLS := {"knight":Vector2i(0,0), "ranger":Vector2i(1,0), "paladin":Vector2i(2,0), "priestess":Vector2i(3,0), "mage":Vector2i(0,1), "rogue":Vector2i(1,1), "guard":Vector2i(2,1), "merchant":Vector2i(3,1), "goblin":Vector2i(0,2), "orc":Vector2i(1,2), "skeleton":Vector2i(2,2), "direwolf":Vector2i(3,2), "wraith":Vector2i(0,3), "cultist":Vector2i(1,3), "treant":Vector2i(2,3), "overlord":Vector2i(3,3), "chronicle_hero":Vector2i(0,4), "noble":Vector2i(1,4), "blacksmith":Vector2i(2,4), "scholar":Vector2i(3,4), "healer":Vector2i(0,5), "duelist":Vector2i(1,5), "hunter":Vector2i(2,5), "bard":Vector2i(3,5)}

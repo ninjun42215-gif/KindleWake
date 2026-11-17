@@ -1,6 +1,6 @@
 # KindleWake runtime visual asset manifest
 
-**Baseline:** main 8a1f9e4227c3541c34e17593bb317a88c1c2d7a6 · Godot 4.2.2 · GL Compatibility · Android · offline-first.
+**Baseline:** main adf3d44bbeef1e1e048f2aa244a1a80bf95147fc · Godot 4.2.2 · GL Compatibility · Android · offline-first.
 
 ## Art direction
 
@@ -15,6 +15,7 @@ Painterly medieval realism translated into crisp, readable 2D/isometric game art
 | Field props | assets/art/props/field_props.svg; 512×512 SVG, 4×4 cells at 128×128; rendered by Art.draw_prop() | Original KindleWake vector art: arch, column, rune stone, torch, reeds, crystals, grave, banner, mushrooms, stump, barrel, crate, campfire, frost pine, statue and flower. |
 | Tactical / exploration units | assets/art/units/soldier_*, orc_*, arrow.png; 100×100 horizontal animation frames interpreted by scripts/ui/art.gd | Tiny RPG Character Asset Pack 01 free Soldier/Orc subset by Zerie. The author's official terms permit personal/commercial game use and modification; do not redistribute the source pack standalone. |
 | Seven-continent heraldry | assets/art/atlas/continent_sigils.svg; 896×128 SVG, seven 128×128 cells; rendered by the non-interactive ContinentHeraldryLayer child of GlobalAtlas.tscn | Original KindleWake vector artwork. The id-to-cell mapping follows data/continents.json and is documented in scripts/ui/continent_heraldry_layer.gd. |
+| New protagonist portrait concepts | assets/art/portraits/maelin_tidecaller.svg, kellan_ashward.svg, nyra_briar.svg and orin_lantern.svg; 512×512 SVG; resolved by PortraitResolver for creator and party views; appearance metadata is consumed by Art.draw_kindlewake_lead() | Four original KindleWake vector concepts. Provenance is recorded in data/asset_provenance.json; these are concept assets, not final painterly portrait masters. |
 
 ## Excluded or historical material
 
@@ -26,7 +27,8 @@ Painterly medieval realism translated into crisp, readable 2D/isometric game art
 
 ## Known production gaps
 
-- The creator portrait remains a procedural bust preview, not finished character portrait art.
+- The four new protagonist portraits load as original vector concept art; they are not yet the approved final painterly semi-realistic masters.
+- Named companion, NPC, enemy and boss portrait coverage still needs unique, approved final artwork.
 - Named recruit portraits must be matched to the exact approved sprite identity; do not fabricate portrait-to-sprite links.
 - The current Soldier/Orc subset does not provide a complete class-specific companion, human-enemy and boss roster.
 - The seven-continent atlas is inspectable, but regional maps, quests, encounters and travel gates are not complete for every continent. Do not label locked regions as playable.
@@ -50,3 +52,13 @@ Painterly medieval realism translated into crisp, readable 2D/isometric game art
 ## Reviewed candidate — not imported
 
 - Foozle Pixel Magic Effects: https://foozlecc.itch.io/pixel-magic-sprite-effects. The source page states CC0 1.0 and permits commercial use/modification. It remains a candidate only: the archive, frame layout and Godot import contract have not been reviewed or integrated in this project.
+
+## 2026-11-17 — Protagonist portrait gallery expansion
+
+- Added four original 512×512 SVG portrait concepts: Maelin Tidecaller, Kellan Ashward, Nyra Briar and Orin Lantern. They are new protagonist appearance choices, not new canonical party members or named NPCs.
+- The creator gallery now has 16 stable portrait IDs. Portrait textures are resolved through the existing PNG → WebP → JPG → SVG resolver; no existing portrait or save ID was renamed.
+- Each gallery record includes a sprite_accent palette value. The shared protagonist renderer reads the saved creation_profile.portrait_id and draws a small matching chest mark in exploration and tactical battle. The current directional sprite still shares its base face/hair silhouette by presentation; this is a palette bridge, not full individualized sprite anatomy.
+- The mobile gallery uses two columns below 460 px, three below 900 px and four on wider viewports, with larger portrait tiles on narrow screens.
+- All four SVGs are project-authored and use gradients, paths and basic shapes only. No third-party images, fonts, audio or filters were used.
+- A 512×512 RGBA import would be approximately 1 MiB per portrait before driver/compression overhead. The creator gallery loads the four new portrait textures alongside its existing choices; this is an estimate, not measured Android GPU memory.
+
