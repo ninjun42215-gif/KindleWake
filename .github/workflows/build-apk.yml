@@ -75,8 +75,8 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Install and launch APK in Android emulator
-        # Emulator compatibility is diagnostic only; never block APK delivery.
-        continue-on-error: true
+        # Required release-candidate smoke test. The APK artifact is uploaded above,
+        # so a device-validation failure still leaves the build available for diagnosis.
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -103,9 +103,12 @@ jobs:
             adb shell screencap -p /sdcard/kindlewake-honor400-layout.png
             adb pull /sdcard/kindlewake-honor400-layout.png Kindlewake/dist/honor400-emulator.png
             adb logcat -d -v time > Kindlewake/dist/android-logcat.txt
-            if grep -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error" Kindlewake/dist/android-logcat.txt; then
-              echo "Android runtime or script error detected"
+            if grep -qE "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error" Kindlewake/dist/android-logcat.txt; then
+              echo "Android runtime or script error detected:"
+              grep -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error" Kindlewake/dist/android-logcat.txt
               exit 1
+            else
+              echo "Android emulator launch and runtime log scan passed."
             fi
 
       - name: Upload test and build logs
