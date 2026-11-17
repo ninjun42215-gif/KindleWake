@@ -1268,7 +1268,7 @@ func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: V
         tint = tint.lerp(Color(1.0, 0.58, 0.52), 0.58)
     if is_player:
         var player_archetype: String = Art.character_for_npc(u.display_name, str(u.class_id))
-        var player_motion: String = "walk" if anim == "walk" else ("attack" if anim == "attack" else "idle")
+        var player_motion: String = anim if anim in ["walk", "attack", "skill", "hurt", "death", "victory"] else "idle"
         var lead_def: Dictionary = GameData.character_def(u.character_id)
         var lead_creation: Dictionary = lead_def.get("creation", {})
         var lead_presentation := str(lead_creation.get("presentation", lead_def.get("presentation", "masculine")))
