@@ -301,7 +301,7 @@ func _tile(caption: String, value: String, value_color: Color = COL_TEXT, value_
 func _portrait_texture(portrait_id: String, character_id: String = "") -> Texture2D:
     # Route all party portraits through the shared resolver. Explicit IDs retain
     # compatibility with existing saves; registry identity handles missing IDs.
-    var texture := Art.portrait_texture(character_id, portrait_id)
+    var texture := Art.portrait_texture(character_id, portrait_id, db.get("portrait_registry", {}))
     if texture == null:
         push_warning("PartyScreen: no portrait asset for identity '%s' (portrait_id '%s')." % [character_id, portrait_id])
     return texture
