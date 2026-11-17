@@ -68,7 +68,7 @@
       },
       "roster_wave": 1,
       "loyalty": 84,
-      "portrait_id": "auburn_ranger"
+      "portrait_id": "bram"
     },
     "sela": {
       "name": "Sela Wrenfield",
@@ -103,7 +103,7 @@
       },
       "roster_wave": 1,
       "loyalty": 68,
-      "portrait_id": "sunwarden"
+      "portrait_id": "sela"
     },
     "brother_wystan": {
       "name": "Brother Wystan",
@@ -144,7 +144,7 @@
       },
       "roster_wave": 1,
       "loyalty": 66,
-      "portrait_id": "iron_veteran"
+      "portrait_id": "brother_wystan"
     },
     "hask_gravelteeth": {
       "name": "Hask Gravelteeth",
@@ -174,7 +174,7 @@
         "ldr": 12,
         "mor": 70
       },
-      "portrait_id": "silver_oracle"
+      "portrait_id": "hask_gravelteeth"
     },
     "roadreaver": {
       "name": "Roadwolf Reaver",
@@ -204,7 +204,7 @@
         "ldr": 4,
         "mor": 50
       },
-      "portrait_id": "dusk_rogue"
+      "portrait_id": "roadreaver"
     },
     "roadbowman": {
       "name": "Roadwolf Bowman",
@@ -234,7 +234,7 @@
         "ldr": 3,
         "mor": 50
       },
-      "portrait_id": "shieldmaiden"
+      "portrait_id": "roadbowman"
     },
     "rootbound_warden": {
       "name": "Rootbound Warden",
@@ -264,7 +264,7 @@
         "ldr": 5,
         "mor": 65
       },
-      "portrait_id": "courtier"
+      "portrait_id": "rootbound_warden"
     },
     "bell_keeper": {
       "name": "The Bell-Keeper",
@@ -294,7 +294,7 @@
         "ldr": 5,
         "mor": 65
       },
-      "portrait_id": "ash_scout"
+      "portrait_id": "bell_keeper"
     },
     "ashen_reeve": {
       "name": "The Ashen Reeve",
@@ -324,7 +324,7 @@
         "ldr": 5,
         "mor": 65
       },
-      "portrait_id": "briar_warden"
+      "portrait_id": "ashen_reeve"
     },
     "lucan_thorne": {
       "name": "Lucan Thorne",
