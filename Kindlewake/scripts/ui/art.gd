@@ -214,10 +214,12 @@ static func character_for_npc(name: String, role: String = "") -> String:
         return "hunter"
     if key.contains("priest") or key.contains("brother") or key.contains("sister") or key.contains("healer"):
         return "healer"
-    if key.contains("guard") or key.contains("soldier") or key.contains("watch") or key.contains("sergeant") or key.contains("warden") or key.contains("reeve") or key.contains("keeper") or key.contains("marshal"):
-        return "guard"
+    # Check civilian trade roles before the broad "keeper" guard alias:
+    # "innkeeper" contains "keeper" and must not become a guard.
     if key.contains("merchant") or key.contains("trader") or key.contains("innkeeper") or key.contains("carter") or key.contains("factor") or key.contains("broker") or key.contains("shopkeeper") or key.contains("provisioner") or key.contains("drover"):
         return "merchant"
+    if key.contains("guard") or key.contains("soldier") or key.contains("watch") or key.contains("sergeant") or key.contains("warden") or key.contains("reeve") or key.contains("keeper") or key.contains("marshal"):
+        return "guard"
     if key.contains("mage") or key.contains("witch") or key.contains("seer"):
         return "mage"
     if key.contains("captain") or key.contains("knight"):
