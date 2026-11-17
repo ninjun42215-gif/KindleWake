@@ -1250,6 +1250,20 @@ func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: V
     if is_player:
         var player_archetype: String = Art.character_for_npc(u.display_name, str(u.class_id))
         var player_motion: String = "walk" if anim == "walk" else ("attack" if anim == "attack" else "idle")
+        var lead_def: Dictionary = GameData.character_def(u.character_id)
+        var lead_creation: Dictionary = lead_def.get("creation", {})
+        var lead_presentation := str(lead_creation.get("presentation", lead_def.get("presentation", "masculine")))
+        var is_kindlewake_lead := u.character_id == "torren" or u.character_id == "player_lead"
+        var drew_lead := is_kindlewake_lead and Art.draw_kindlewake_lead(self, lead_presentation == "feminine", p + Vector2(0, 8), t, player_motion, fdir, 0.72)
+        if drew_lead:
+            _draw_sprite_identity_marks(u, p, is_player, 0.44, t)
+            var lead_ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
+            draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40, 7)), Color(0.1, 0.08, 0.08))
+            draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40.0 * lead_ratio, 7)), Color(0.85, 0.2, 0.2).lerp(Color(0.25, 0.85, 0.38), lead_ratio))
+            _draw_unit_tag(u, p)
+            if u.morale <= 0:
+                draw_string(ThemeDB.fallback_font, p + Vector2(-40, -70), "ROUTED", HORIZONTAL_ALIGNMENT_CENTER, 80, 14, Color(1, 0.6, 0.3))
+            return true
         if Art.draw_character_animated(self, player_archetype, p + Vector2(0, 8), t, player_motion, 0.44, tint, fdir.x < 0.0):
             _draw_sprite_identity_marks(u, p, is_player, 0.44, t)
             var player_ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
