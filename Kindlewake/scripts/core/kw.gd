@@ -81,8 +81,15 @@ func _build_theme() -> Theme:
     var theme := Theme.new()
     if ResourceLoader.exists(FONT_BODY):
         theme.default_font = load(FONT_BODY) as Font
+    # The project currently ships without optional custom font files. Explicitly
+    # bind Godot's embedded fallback so a custom root Theme never leaves mobile
+    # controls with an unresolved font.
+    if theme.default_font == null:
+        theme.default_font = ThemeDB.fallback_font
     if ResourceLoader.exists(FONT_TITLE):
         title_font = load(FONT_TITLE) as Font
+    if title_font == null:
+        title_font = theme.default_font
     theme.default_font_size = 18
     for type_name in ["Button", "OptionButton", "MenuButton", "CheckButton"]:
         theme.set_stylebox("normal", type_name, _box(INK_RAISED, BRASS))
