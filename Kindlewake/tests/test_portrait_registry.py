@@ -127,6 +127,11 @@ def main():
     preview_script = (ROOT / "scripts" / "ui" / "character_preview.gd").read_text(encoding="utf-8")
     if "Art.portrait_texture(" not in preview_script:
         errors.append("Character creator preview does not use the shared portrait resolver.")
+    if "GameData." in preview_script or "registry: Dictionary = {}" not in preview_script:
+        errors.append("Character preview must receive its registry explicitly instead of depending on the GameData autoload.")
+    creator_script = (ROOT / "scripts" / "ui" / "character_creator.gd").read_text(encoding="utf-8")
+    if "preview.set_profile(profile, GameData.portrait_registry)" not in creator_script:
+        errors.append("Character creator does not inject the canonical portrait registry into its preview.")
     location_script = (ROOT / "scripts" / "ui" / "location_scene.gd").read_text(encoding="utf-8")
     if "spot_portrait.texture = Art.character_portrait_texture(" not in location_script:
         errors.append("NPC dialogue panel does not display the shared archetype portrait.")
