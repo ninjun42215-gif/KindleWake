@@ -47,6 +47,7 @@ var info_label: Label
 var prompt_btn: Button
 var spot_panel: PanelContainer
 var spot_title: Label
+var spot_portrait: TextureRect
 var spot_text: Label
 var spot_buttons: VBoxContainer
 var party_screen: PartyScreen
@@ -254,6 +255,11 @@ func _on_prompt_pressed() -> void:
     pressing = false
     prompt_btn.visible = false
     spot_title.text = str(near_spot.get("name", ""))
+    var speaker_name := str(near_spot.get("name", ""))
+    var speaker_role := str(near_spot.get("role", near_spot.get("profession", "")))
+    var speaker_archetype := Art.character_for_npc(speaker_name, speaker_role)
+    spot_portrait.texture = Art.character_portrait_texture(speaker_archetype)
+    spot_portrait.visible = spot_portrait.texture != null
     spot_text.text = str(near_spot.get("text", ""))
     var extra_dialogue: Array = near_spot.get("dialogue", [])
     for line in extra_dialogue:
@@ -1339,6 +1345,14 @@ func _build_ui() -> void:
     spot_panel = _hud_panel(0.97)
     var box := VBoxContainer.new()
     box.add_theme_constant_override("separation", 12)
+    spot_portrait = TextureRect.new()
+    spot_portrait.custom_minimum_size = Vector2(112, 140)
+    spot_portrait.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+    spot_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    spot_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+    spot_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+    spot_portrait.visible = false
+    box.add_child(spot_portrait)
     spot_title = Label.new()
     spot_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     spot_title.add_theme_font_size_override("font_size", 36)
