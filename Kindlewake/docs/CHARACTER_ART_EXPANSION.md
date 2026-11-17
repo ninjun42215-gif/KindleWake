@@ -32,7 +32,7 @@ The generated 4x4 concept sheet is a visual reference only; its cells must be sl
 
 The creator now offers sixteen selectable portrait identities. Four original vector concepts were added: Maelin Tidecaller, Kellan Ashward, Nyra Briar and Orin Lantern. Each has a stable portrait ID, presentation/appearance metadata and a sprite accent color. Narrow phone layouts now show two larger portrait tiles per row.
 
-The chosen portrait ID remains part of the confirmed creation profile and is preserved by the existing campaign save path. The exploration and battle protagonist renderer now adds a small chest mark using that portrait's palette accent. This improves visual continuity, but the directional lead sprite still shares its underlying face, hair and body silhouette by presentation. Full per-portrait sprite anatomy, facial likeness and hair silhouettes remain pending; do not treat the palette mark as complete portrait-to-sprite identity.
+The chosen portrait ID and its appearance metadata remain part of the confirmed creation profile and are preserved by the existing campaign save path. The exploration and battle protagonist renderer now translates presentation, face style, hair style/colour, skin tone and build into the directional sprite, alongside the portrait's palette accent. The animation poses and core body atlas remain shared by presentation, so this is a readable identity translation rather than a pixel-perfect painted likeness.
 
 These four assets are original project-authored SVGs, not third-party pack imports. They are concept-level vector portraits and do not replace the approved painterly semi-realistic final-art target.
 
