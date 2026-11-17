@@ -2,15 +2,15 @@ extends RefCounted
 ## Shared portrait resolver. Raster artwork takes priority while legacy SVGs remain compatible.
 
 const PORTRAIT_DIR := "res://assets/art/portraits/"
-const EXTENSIONS := [".png", ".webp", ".jpg", ".svg"]
+const EXTENSIONS: Array[String] = [".png", ".webp", ".jpg", ".svg"]
 
 
 static func resolve_path(portrait_id: String) -> String:
-    var normalized_id := portrait_id.strip_edges()
+    var normalized_id: String = portrait_id.strip_edges()
     if normalized_id.is_empty():
         return ""
-    for extension in EXTENSIONS:
-        var path := PORTRAIT_DIR + normalized_id + extension
+    for extension: String in EXTENSIONS:
+        var path: String = PORTRAIT_DIR + normalized_id + extension
         if ResourceLoader.exists(path):
             return path
     return ""
