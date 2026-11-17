@@ -42,7 +42,9 @@
     "long_dark",
     "tied_brown",
     "cropped_red",
-    "shaved"
+    "shaved",
+    "long_silver",
+    "short_ash"
   ],
   "skin": [
     "fair",
@@ -328,7 +330,7 @@
       "name": "Tidecaller",
       "presentation": "feminine",
       "face": "soft",
-      "hair": "long_dark",
+      "hair": "long_silver",
       "skin": "fair",
       "build": "lean",
       "sprite_accent": "#477486"
@@ -338,7 +340,7 @@
       "name": "Ashward Veteran",
       "presentation": "masculine",
       "face": "scarred",
-      "hair": "short_dark",
+      "hair": "short_ash",
       "skin": "warm",
       "build": "sturdy",
       "sprite_accent": "#65717a"
