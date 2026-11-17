@@ -558,7 +558,7 @@ func _on_name_changed(value: String) -> void:
 
 func _refresh_preview() -> void:
     if preview != null:
-        preview.set_profile(profile)
+        preview.set_profile(profile, GameData.portrait_registry)
     if preview_text != null:
         var origin: Dictionary = (config.get("origins", {}) as Dictionary).get(str(profile.get("origin", "")), {})
         var discipline: Dictionary = (config.get("disciplines", {}) as Dictionary).get(str(profile.get("discipline", "")), {})
