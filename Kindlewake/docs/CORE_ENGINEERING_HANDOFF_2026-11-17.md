@@ -39,10 +39,8 @@ No save schema/version bump, destructive migration, story change or player-data 
 - [Project Health Audit #44010138457](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138457) — passed.
 - [Workflow YAML Lint #44010138493](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138493) — passed.
 - [Version Sync #44010138445](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138445) — passed.
-- [Build Android APK #44010138501](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138501) — at handoff time, Godot import, scene/test suite and APK export stage passed; APK artifact was uploaded. The optional emulator diagnostic step was still running, so the overall workflow had not yet completed.
-- Exact-head APK candidate artifact: [14296332096](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138501/artifacts/14296332096), 63,042,548 bytes. This is a PR candidate, not a production release.
-
-Re-check the live run before treating the pending emulator diagnostic or overall build conclusion as final. No physical Android device test is claimed.
+- [Build Android APK #44010138501](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138501) — passed on exact code SHA `62a65c5a8a78c0b6ed8f1e4b3705cdc698b384c0`: 20/20 scenes loaded; **995 strict checks / 0 failures**; campaign lifecycle, merchant UI and title/creator UI 0 failures; Act V 0 failures; campaign continuity 70 checks; Chronicle dynasty 39 checks; family development 19 checks. APK artifact [14296332096](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138501/artifacts/14296332096), 63,042,548 bytes; signature valid; Android permissions requested: none.
+- **Emulator diagnostic caveat:** the emulator booted and the APK install command completed, but the `pidof com.kindlewake.game` assertion returned exit code 1 after the launch attempt. The step is configured `continue-on-error: true`, so the workflow remained green. The script stopped before screenshot/logcat capture; process launch is unverified. No physical Android device test is claimed.
 
 ## Current-main baseline
 
@@ -59,9 +57,9 @@ Main SHA `8c512a063f6ef63c88f33489d118cad6b0a29c6c` passed [Build Android APK #4
 ## Open PR / branch coordination
 
 - [PR #156](https://github.com/ninjun42215-gif/KindleWake/pull/156): this isolated save-validation candidate; review exact head and checks. Do not merge automatically.
-- [PR #151](https://github.com/ninjun42215-gif/KindleWake/pull/151): draft QA battle-resume work; based on an older main SHA and currently conflicted. It touches GameState, save flow and battle UI; do not overlap or merge wholesale.
-- [PR #152](https://github.com/ninjun42215-gif/KindleWake/pull/152): draft release-workflow safeguards; based on an older main SHA and currently conflicted. Keep release workflow work with QA/release ownership.
-- [PR #81](https://github.com/ninjun42215-gif/KindleWake/pull/81): draft regional trading integration; still not mergeable. The earlier handoff records cargo inventory, tariff/route authority, region/story gates, canonical route endpoints and mobile layout as unresolved. Rebuild a fresh slice from current main rather than merging the old branch wholesale.
+- [PR #151](https://github.com/ninjun42215-gif/KindleWake/pull/151): draft QA battle-resume work; base SHA `081759f7204bc43ea1acf84b5f4d282d00ceec84`, currently not mergeable. It touches GameState, save flow and battle UI; do not overlap or merge wholesale.
+- [PR #152](https://github.com/ninjun42215-gif/KindleWake/pull/152): draft release-workflow safeguards; base SHA `081759f7204bc43ea1acf84b5f4d282d00ceec84`, technically mergeable but stale relative to main and not validated against current main. Keep release workflow work with QA/release ownership.
+- [PR #81](https://github.com/ninjun42215-gif/KindleWake/pull/81): draft regional trading integration; base SHA `a9b6097e11`, currently not mergeable. The earlier handoff records cargo inventory, tariff/route authority, region/story gates, canonical route endpoints and mobile layout as unresolved. Rebuild a fresh slice from current main rather than merging the old branch wholesale.
 
 ## Next steps
 
