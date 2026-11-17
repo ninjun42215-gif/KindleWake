@@ -67,8 +67,8 @@ Do not mark portrait coverage complete based only on registry/file existence tes
 
 Run a content audit against the current authoritative `Kindlewake/docs/GDD.md`, not the archived root `GDD_Kindlewake.md`.
 
-- [ ] Verify the intended four-continent world structure, map boundaries, regions, settlements, dungeons, landmarks and discoverability.
-- [ ] Verify travel links, gates, transport unlocks, travel costs/time and return routes; no inaccessible or stranded locations.
+- [ ] Verify the seven-continent atlas (the original four-continent blueprint plus Veyrwood, Asterreach and Ilyr), map boundaries, region metadata, settlements, dungeons, landmarks and discoverability.
+- [ ] Verify playable travel links, gates, transport unlocks, travel costs/time and return routes; no inaccessible or stranded locations. Current authored playable scope is Eldrimar/Sethmarch plus the first Thalassar region, Brinegate Coast. The remaining atlas continents/regions are not yet fully explorable and must remain clearly labelled as future/locked content.
 - [ ] Play every main-act critical path from a fresh save through the current campaign ending; confirm quest flags and transitions.
 - [ ] Test recruitment availability, one-time rewards, mutually exclusive choices, defeat/retry and party limits.
 - [ ] Verify level cap 250, XP curve, stat growth, skill unlocks, equipment progression and enemy scaling with automated simulations plus representative play.
@@ -76,7 +76,7 @@ Run a content audit against the current authoritative `Kindlewake/docs/GDD.md`, 
 - [ ] Verify tactical combat: turn order, movement/pathfinding, targeting, range/line of sight, statuses, AI, victory/defeat and battle aftermath.
 - [ ] Check economy and all currencies/resources for softlocks, runaway inflation, impossible costs and duplicate rewards.
 - [ ] Verify every ending/major decision and chronicle/legacy outcome that the current scope promises.
-- [ ] Keep unimplemented systems and future content clearly labelled; do not imply a complete four-continent campaign if only some regions are playable.
+- [ ] Keep unimplemented systems and future content clearly labelled; do not imply all seven continents are explorable. If the intended final product requires the whole seven-continent atlas to be playable, treat the five not-yet-playable continent/region groups as a major content milestone beyond RC1.
 
 ### D. Save integrity and migration — BLOCKING
 
