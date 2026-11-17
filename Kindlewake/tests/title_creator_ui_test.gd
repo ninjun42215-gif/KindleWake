@@ -89,6 +89,17 @@ func _run_ui_test() -> void:
             every_portrait_has_sprite_identity = false
     _check(every_portrait_has_sprite_identity,
         "all sixteen gallery portraits provide complete identity cues for the animated protagonist sprite")
+    var lead_renderers_integrated := true
+    for scene_script_path in [
+        "res://scripts/ui/world_scene.gd",
+        "res://scripts/ui/location_scene.gd",
+        "res://scripts/ui/battle_scene.gd"
+    ]:
+        var scene_source := FileAccess.get_file_as_string(scene_script_path)
+        if not scene_source.contains("Art.draw_kindlewake_lead"):
+            lead_renderers_integrated = false
+    _check(lead_renderers_integrated,
+        "overworld, town/interior and tactical battle use the same portrait-aware protagonist renderer")
     var every_character_has_portrait := true
     for character_id in GameData.characters.keys():
         var character: Dictionary = GameData.characters[character_id]
