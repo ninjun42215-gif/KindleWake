@@ -1,6 +1,7 @@
 extends SceneTree
 
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
+const CharacterCreationScript = preload("res://scripts/core/character_creation.gd")
 const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
 const BattleControllerScript = preload("res://scripts/battle/battle_controller.gd")
@@ -219,6 +220,12 @@ func _test_art_assets() -> void:
         var expected_accent := Color.from_string(str(portrait.get("sprite_accent", "#c59a54")), Color("#c59a54"))
         if resolved_accent != expected_accent:
             portrait_accents_match = false
+        var portrait_profile: Dictionary = CharacterCreationScript.default_profile(gd.character_creation)
+        portrait_profile["portrait_id"] = portrait_id
+        for appearance_field in ["presentation", "face", "hair", "skin", "build"]:
+            portrait_profile[appearance_field] = str(portrait.get(appearance_field, portrait_profile.get(appearance_field, "")))
+        if CharacterCreationScript.validate(portrait_profile, gd.character_creation, gd.classes) != "":
+            portrait_assets_load = false
     check(creator_portraits.size() == 16 and portrait_ids.size() == 16, "creator offers sixteen stable, unique portrait identities")
     check(portrait_assets_load, "all sixteen creator portraits resolve to loadable Godot textures and carry sprite palette accents")
     check(portrait_accents_match, "each selected portrait resolves its matching protagonist sprite accent")
