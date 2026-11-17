@@ -34,7 +34,7 @@ Known release gates include:
 
 1. Physical Android testing on the actual target phone, especially New Game → Choose Your Lead → character creation, touch/scroll/keyboard, save/load, resume and long-session stability.
 2. Original, individually art-directed and reviewed portrait coverage. The current audit tracks 208 character/NPC/royal records; the existing 12 legacy SVGs are not the requested final painterly art.
-3. End-to-end campaign, four-continent world/travel, recruitment, combat, progression and economy acceptance against [the current GDD](docs/GDD.md).
+3. End-to-end campaign, seven-continent atlas accuracy, current playable travel (Eldrimar/Sethmarch and Thalassar/Brinegate), recruitment, combat, progression and economy acceptance against [the current GDD](docs/GDD.md).
 4. Save migration/recovery testing for all supported schema versions.
 5. Branch reconciliation, exact-SHA CI, production signing and distribution setup.
 6. Asset provenance, permissions, privacy and performance review.
