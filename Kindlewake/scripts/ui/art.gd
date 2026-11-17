@@ -32,15 +32,21 @@ static func _load(path: String) -> Texture2D:
 ## Canonical portrait lookup. Explicit save-compatible portrait IDs win; missing IDs resolve by stable entity ID.
 static func portrait_texture(entity_id: String, portrait_id: String = "", registry: Dictionary = {}) -> Texture2D:
     var path := ""
+    # Preserve explicit, save-compatible portrait IDs when their asset exists.
     if portrait_id != "":
-        path = "res://assets/art/portraits/%s.svg" % portrait_id
+        var explicit_path := "res://assets/art/portraits/%s.svg" % portrait_id
+        if ResourceLoader.exists(explicit_path):
+            path = explicit_path
+    # A stale or missing legacy ID must not block the stable registry fallback.
     if path == "" and entity_id != "":
         for raw_entry in registry.get("entities", []):
             var entry: Dictionary = raw_entry
             if str(entry.get("id", "")) == entity_id:
-                path = str(entry.get("asset_path", ""))
+                var registry_path := str(entry.get("asset_path", ""))
+                if registry_path != "" and ResourceLoader.exists(registry_path):
+                    path = registry_path
                 break
-    if path == "" or not ResourceLoader.exists(path):
+    if path == "":
         return null
     return _load(path)
 
