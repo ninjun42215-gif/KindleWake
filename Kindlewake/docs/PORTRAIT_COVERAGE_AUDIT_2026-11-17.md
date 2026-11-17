@@ -53,3 +53,16 @@ The feature branch now loads `portrait_registry.json` through the `GameData` aut
 Coverage is complete only when every registry entity resolves to a valid, reviewed asset; every distinct identity/variant has the intended art; every relevant UI surface uses the resolver; no placeholder/geometric fallback/missing-image state is reachable; and the test suite plus Android verification pass.
 
 **This audit does not claim complete portrait coverage.**
+
+## Runtime integration status update
+
+- The exploration dialogue panel already includes a portrait frame and now resolves named NPC/profession archetypes through `Art.character_for_npc()` and `Art.character_portrait_texture()`.
+- The battle turn-order strip resolves allies through the central portrait registry and enemies through enemy archetype mapping.
+- Party/roster portrait lookup now delegates to the same `Art.portrait_texture()` registry resolver.
+- Removed 22 legacy hero-gallery portrait assignments from enemy records. Enemies now use their battle archetype mapping rather than accidentally displaying hero-gallery identities.
+- Hask Gravelteeth and other named bandit bosses no longer resolve to the paladin hero archetype; they use the rogue/bandit silhouette pending dedicated enemy art.
+- Added regression checks for the shared resolver, dialogue/battle integration, enemy portrait separation, and the 24-character Wave 1 roster.
+
+These are UI/archetype integration steps, not approval of final portrait artwork. The 12 legacy gallery SVGs remain unreviewed and do not satisfy the requested painterly semi-realistic art direction. Creator appearance combinations, dedicated enemy/NPC portrait assets, additional story-character portraits, and full Android/runtime QA remain open.
+
+## Remaining gaps
