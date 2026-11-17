@@ -192,6 +192,8 @@ func _test_art_assets() -> void:
     check(ArtScript.CHARACTER_CELLS.size() == 24, "all twenty-four character archetypes have atlas cells")
     var registry_portrait: Texture2D = ArtScript.portrait_texture("torren", "", gd.portrait_registry)
     check(registry_portrait != null, "canonical portrait registry resolves a character identity to its asset")
+    var stale_portrait: Texture2D = ArtScript.portrait_texture("torren", "missing_legacy_portrait", gd.portrait_registry)
+    check(stale_portrait != null, "stale legacy portrait IDs fall back to the canonical registry asset")
     var explicit_portrait: Texture2D = ArtScript.portrait_texture("unknown_legacy", "torren_redcloak")
     check(explicit_portrait != null, "explicit legacy portrait IDs remain save-compatible")
     var npc_portrait: Texture2D = ArtScript.character_portrait_texture("guard")
