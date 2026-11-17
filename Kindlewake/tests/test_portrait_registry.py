@@ -106,6 +106,9 @@ def main():
         errors.append("NPC portrait resolver still hashes names into arbitrary profession portraits.")
     if 'return "guard"' not in art_script:
         errors.append("NPC portrait resolver has no safe authored-role fallback.")
+    for royal_title in ["king", "queen", "regent", "monarch"]:
+        if royal_title not in art_script:
+            errors.append(f"NPC portrait resolver does not recognize royal title: {royal_title}")
     if "static func portrait_texture(" not in art_script or "registry.get(\"entities\", [])" not in art_script:
         errors.append("Shared portrait asset resolver is missing or bypasses the canonical registry.")
     if "static func character_portrait_texture(" not in art_script:
