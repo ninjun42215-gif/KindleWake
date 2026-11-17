@@ -107,6 +107,15 @@ def main():
         errors.append("Shared portrait asset resolver is missing or bypasses the canonical registry.")
     if "static func character_portrait_texture(" not in art_script:
         errors.append("NPC dialogue portrait atlas resolver is missing.")
+    enemy_entries = [entry for entry in entities if entry.get("category") == "enemy"]
+    if any(entry.get("portrait_id") for entry in enemy_entries):
+        errors.append("Enemy entities still borrow hero-gallery portrait IDs instead of enemy archetype portraits.")
+    enemy_resolver = art_script[art_script.find("static func character_for_enemy"): ]
+    if 'return "paladin"' in enemy_resolver:
+        errors.append("Enemy archetype resolver still maps a boss to the hero paladin portrait.")
+    party_method = party_script[party_script.find("func _portrait_texture"):party_script.find("func _class_title")]
+    if "Art.portrait_texture(character_id, portrait_id, registry)" not in party_method:
+        errors.append("Party screen bypasses the shared portrait resolver.")
     preview_script = (ROOT / "scripts" / "ui" / "character_preview.gd").read_text(encoding="utf-8")
     if "Art.portrait_texture(" not in preview_script:
         errors.append("Character creator preview does not use the shared portrait resolver.")
