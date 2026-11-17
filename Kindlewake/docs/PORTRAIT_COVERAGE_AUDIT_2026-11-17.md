@@ -37,7 +37,7 @@ The design document defines a 24-character Wave 1 roster: four starting characte
 
 ## Runtime integration progress (feature branch)
 
-The feature branch now loads `portrait_registry.json` through the `GameData` autoload, exposes registry lookup helpers (`portrait_record` and `portrait_asset_path`), and passes the registry through `GameData.party_db()`. The party screen now consults the registry by stable character ID when an older save has no portrait ID. Its previous hash-based random selection from an unrelated gallery portrait list has been removed. This is a compatibility-safe resolver foundation; existing legacy portrait IDs remain explicitly unverified and NPC/dialogue/shop/battle/creator surfaces are not yet fully integrated.
+The feature branch now loads `portrait_registry.json` through the `GameData` autoload, exposes registry lookup helpers (`portrait_record` and `portrait_asset_path`), and passes the registry through `GameData.party_db()`. The party screen now consults the registry by stable character ID when an older save has no portrait ID. Its previous hash-based random selection from an unrelated gallery portrait list has been removed. This is a compatibility-safe resolver foundation. Runtime integration now covers the creator preview, party/roster, named NPC dialogue, battle turn order, the regional exchange and the party Shop tab. Existing legacy portrait IDs remain explicitly unverified; the creator still uses a finite static gallery and does not render every possible appearance combination.
 
 ## Required next work
 
@@ -61,7 +61,10 @@ Coverage is complete only when every registry entity resolves to a valid, review
 - Party/roster portrait lookup now delegates to the same `Art.portrait_texture()` registry resolver.
 - Removed 22 legacy hero-gallery portrait assignments from enemy records. Enemies now use their battle archetype mapping rather than accidentally displaying hero-gallery identities.
 - Hask Gravelteeth and other named bandit bosses no longer resolve to the paladin hero archetype; they use the rogue/bandit silhouette pending dedicated enemy art.
-- Added regression checks for the shared resolver, dialogue/battle integration, enemy portrait separation, and the 24-character Wave 1 roster.
+- Roadwolf faction raiders are resolved as humanoid raiders before the generic wolf-creature rule; true beasts such as Hollow Hart retain the direwolf archetype.
+- Regional exchange and party Shop interfaces now show a resolved merchant/shopkeeper archetype portrait; named blacksmith stalls can resolve to the blacksmith archetype.
+- Fixed a role-precedence regression where Innkeeper Maud was classified as a guard because `innkeeper` contains `keeper`.
+- Added regression checks for the shared resolver, dialogue/battle/shop integration, enemy faction-vs-creature mapping, and the 24-character Wave 1 roster.
 
 These are UI/archetype integration steps, not approval of final portrait artwork. The 12 legacy gallery SVGs remain unreviewed and do not satisfy the requested painterly semi-realistic art direction. Creator appearance combinations, dedicated enemy/NPC portrait assets, additional story-character portraits, and full Android/runtime QA remain open.
 
