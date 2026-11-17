@@ -74,8 +74,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Install and launch APK in Android emulator
-        # Emulator compatibility is diagnostic only; never block APK delivery.
-        continue-on-error: true
+        # A package that installs but cannot launch is not runtime-verified.
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -94,14 +93,20 @@ jobs:
             adb shell settings put system font_scale 1.0
             adb install -r Kindlewake/dist/Kindlewake.apk
             adb logcat -c
-            adb shell monkey -p com.kindlewake.game 1
+            # Godot 4.2.2 exports this explicit launcher activity. Monkey's
+            # category discovery did not find it on the API 35 ATD image.
+            adb shell cmd package resolve-activity --brief com.kindlewake.game
+            adb shell am start -W -n com.kindlewake.game/com.godot.game.GodotApp
             sleep 30
-            test -n "$(adb shell pidof com.kindlewake.game)"
             adb shell dumpsys window displays > Kindlewake/dist/android-window-displays.txt
             adb shell dumpsys activity activities > Kindlewake/dist/android-activities.txt
             adb shell screencap -p /sdcard/kindlewake-honor400-layout.png
             adb pull /sdcard/kindlewake-honor400-layout.png Kindlewake/dist/honor400-emulator.png
             adb logcat -d -v time > Kindlewake/dist/android-logcat.txt
+            if ! adb shell pidof com.kindlewake.game; then
+              echo "Kindlewake did not remain running after explicit launcher activity start"
+              exit 1
+            fi
             if grep -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error" Kindlewake/dist/android-logcat.txt; then
               echo "Android runtime or script error detected"
               exit 1
