@@ -255,11 +255,17 @@ func _on_prompt_pressed() -> void:
     pressing = false
     prompt_btn.visible = false
     spot_title.text = str(near_spot.get("name", ""))
-    var speaker_name := str(near_spot.get("name", ""))
-    var speaker_role := str(near_spot.get("role", near_spot.get("profession", "")))
-    var speaker_archetype := Art.character_for_npc(speaker_name, speaker_role)
-    spot_portrait.texture = Art.character_portrait_texture(speaker_archetype)
-    spot_portrait.visible = spot_portrait.texture != null
+    var is_person := bool(near_spot.get("npc", false))
+    if is_person:
+        var speaker_name := str(near_spot.get("name", ""))
+        var speaker_role := str(near_spot.get("role", near_spot.get("profession", "")))
+        var speaker_archetype := Art.character_for_npc(speaker_name, speaker_role)
+        spot_portrait.texture = Art.character_portrait_texture(speaker_archetype)
+        spot_portrait.visible = spot_portrait.texture != null
+    else:
+        # Evidence, doors, signs and quest objects are not speakers.
+        spot_portrait.texture = null
+        spot_portrait.visible = false
     spot_text.text = str(near_spot.get("text", ""))
     var extra_dialogue: Array = near_spot.get("dialogue", [])
     for line in extra_dialogue:
