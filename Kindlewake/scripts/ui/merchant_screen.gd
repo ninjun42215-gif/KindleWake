@@ -40,6 +40,14 @@ func _ready() -> void:
     margin.add_child(outer)
 
     var header := HBoxContainer.new()
+    var merchant_portrait := TextureRect.new()
+    merchant_portrait.texture = Art.character_portrait_texture("merchant")
+    merchant_portrait.custom_minimum_size = Vector2(48, 60)
+    merchant_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    merchant_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+    merchant_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+    merchant_portrait.tooltip_text = "Regional merchant"
+    header.add_child(merchant_portrait)
     var title := Label.new()
     title.text = "REGIONAL EXCHANGE"
     title.add_theme_font_size_override("font_size", 24)
