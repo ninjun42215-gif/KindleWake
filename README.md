@@ -17,7 +17,7 @@ The root-level `GDD_Kindlewake.md` is an archived legacy snapshot. Do not use it
 - App version: **0.12.0** · Android version code: **1200** · save schema: **4** · Godot: **4.2.2**.
 - Active portrait audit branch: `feature/complete-portrait-coverage-audit`.
 - Reviewed commit: `a5d845164b10de2de2270636c8b13aacea4baee6`.
-- Default branch `main) is separate and has not been modified by the portrait-audit work.
+- Default branch `main` is separate and has not been modified by the portrait-audit work.
 - Android CI build, strict tests, APK export and configured emulator install/launch passed on the reviewed commit: [Build run 44011454711](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44011454711).
 - The portrait coverage audit remains explicitly incomplete; original individually approved painterly portraits and physical-device QA remain outstanding.
 
