@@ -50,3 +50,13 @@ Painterly medieval realism translated into crisp, readable 2D/isometric game art
 ## Reviewed candidate — not imported
 
 - Foozle Pixel Magic Effects: https://foozlecc.itch.io/pixel-magic-sprite-effects. The source page states CC0 1.0 and permits commercial use/modification. It remains a candidate only: the archive, frame layout and Godot import contract have not been reviewed or integrated in this project.
+
+## 2026-11-17 — Protagonist portrait gallery expansion
+
+- Added four original 512×512 SVG portrait concepts: Maelin Tidecaller, Kellan Ashward, Nyra Briar and Orin Lantern. They are new protagonist appearance choices, not new canonical party members or named NPCs.
+- The creator gallery now has 16 stable portrait IDs. Portrait textures are resolved through the existing PNG → WebP → JPG → SVG resolver; no existing portrait or save ID was renamed.
+- Each gallery record includes a sprite_accent palette value. The shared protagonist renderer reads the saved creation_profile.portrait_id and draws a small matching chest mark in exploration and tactical battle. The current directional sprite still shares its base face/hair silhouette by presentation; this is a palette bridge, not full individualized sprite anatomy.
+- The mobile gallery uses two columns below 460 px, three below 900 px and four on wider viewports, with larger portrait tiles on narrow screens.
+- All four SVGs are project-authored and use gradients, paths and basic shapes only. No third-party images, fonts, audio or filters were used.
+- A 512×512 RGBA import would be approximately 1 MiB per portrait before driver/compression overhead. The creator gallery loads the four new portrait textures alongside its existing choices; this is an estimate, not measured Android GPU memory.
+
