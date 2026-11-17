@@ -84,8 +84,8 @@ jobs:
           arch: x86_64
           profile: pixel_5
           disable-animations: true
-          # Compare ANGLE's GLES path with the prior direct SwiftShader capture; this is still a CI software-renderer diagnostic, not device certification.
-          emulator-options: -no-window -gpu angle_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
+          # Compare the supported ANGLE GLES mode with the prior direct SwiftShader capture; this is still a CI software-renderer diagnostic, not device certification.
+          emulator-options: -no-window -gpu angle -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
           script: |
             # Keep the emulator's Pixel 5 20:9 display defaults. The project
             # requests landscape; changing wm size/density during ATD startup
