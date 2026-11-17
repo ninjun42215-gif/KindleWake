@@ -103,6 +103,16 @@ def main():
         errors.append("NPC portrait resolver still hashes names into arbitrary profession portraits.")
     if 'return "guard"' not in art_script:
         errors.append("NPC portrait resolver has no safe authored-role fallback.")
+    if "static func portrait_texture(" not in art_script or "GameData.portrait_asset_path(entity_id)" not in art_script:
+        errors.append("Shared portrait asset resolver is missing or bypasses the canonical registry.")
+    if "static func character_portrait_texture(" not in art_script:
+        errors.append("NPC dialogue portrait atlas resolver is missing.")
+    preview_script = (ROOT / "scripts" / "ui" / "character_preview.gd").read_text(encoding="utf-8")
+    if "Art.portrait_texture(" not in preview_script:
+        errors.append("Character creator preview does not use the shared portrait resolver.")
+    location_script = (ROOT / "scripts" / "ui" / "location_scene.gd").read_text(encoding="utf-8")
+    if "spot_portrait.texture = Art.character_portrait_texture(" not in location_script:
+        errors.append("NPC dialogue panel does not display the shared archetype portrait.")
     if errors:
         print("FAIL")
         for error in errors:
