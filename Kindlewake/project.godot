@@ -36,6 +36,9 @@ import/blender/enabled=false
 [rendering]
 
 textures/vram_compression/import_etc2_astc=true
+; Keep the Compatibility renderer's global uniform buffer within mobile limits.
+; The game does not define global shader uniforms, so the 1024-slot limit is ample.
+limits/global_shader_variables/buffer_size=1024
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/canvas_textures/default_texture_filter=0
