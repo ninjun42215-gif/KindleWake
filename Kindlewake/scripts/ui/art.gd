@@ -19,6 +19,33 @@ const UNIT_FPS := {"idle": 7.0, "walk": 12.0, "attack": 14.0, "hurt": 10.0, "dea
 static var _cache: Dictionary = {}
 
 
+const ROSTER_ATLAS_PATH := "res://assets/art/units/character_roster_atlas.svg"
+const ROSTER_CHARACTER_IDS := ["torren","bram","sela","brother_wystan","hask_gravelteeth","roadreaver","roadbowman","rootbound_warden","bell_keeper","ashen_reeve","lucan_thorne","old_brisa","kestrel","anselm_pike","petra_quill","dorian_vask","edda_stonehand","joss_harrow","isaure_vessmoor","bram_cullen","verra_nightsong","tomas_wren","orlan_pike","sister_odaly","willem_roake","ysolde_marrow","garrick_holt","corwin_brennhallow","seraphine_tarnholt","ilyan_voss","maren_vey","reefwarden","saltcutthroat","saltbow","blackwake_captain","neris_quell","boss_hollow_hart","boss_drowned_crown","boss_ash_regent","boss_pale_matriarch","boss_briar_sovereign","boss_star_eater","boss_last_cantor","hask_convoy_champion","ash_bailiff","checkpoint_sergeant","river_marshal","quillon_warden"]
+
+## Every named party member, enemy and boss has a dedicated cell in the roster atlas.
+static func draw_roster_character(canvas: CanvasItem, character_id: String, feet: Vector2, time: float, motion: String = "idle", scale: float = 0.8, tint: Color = Color.WHITE, flip: bool = false) -> bool:
+    var idx: int = ROSTER_CHARACTER_IDS.find(character_id)
+    if idx < 0:
+        return false
+    var tex: Texture2D = _load(ROSTER_ATLAS_PATH)
+    if tex == null:
+        return false
+    var cell := Vector2i(idx % 8, int(idx / 8))
+    var src := Rect2(Vector2(cell) * Vector2(128.0, 160.0), Vector2(128.0, 160.0))
+    var phase: float = time * (10.0 if motion == "walk" else 3.0)
+    var bob: float = sin(phase) * (2.8 if motion == "walk" else 0.9)
+    var lean: float = -0.07 if motion == "attack" else (0.025 * sin(phase) if motion == "walk" else 0.0)
+    canvas.draw_set_transform(feet + Vector2(0, bob), lean, Vector2(-scale if flip else scale, scale))
+    canvas.draw_texture_rect_region(tex, Rect2(-64, -160, 128, 160), src, tint)
+    if motion == "attack":
+        canvas.draw_arc(Vector2(30, -76), 31.0, -1.2, 1.1, 16, Color(1.0, 0.84, 0.5, 0.9), 3.0)
+    elif motion == "skill":
+        canvas.draw_arc(Vector2(0, -78), 26.0 + sin(time * 5.0) * 3.0, 0.0, TAU, 20, Color(0.75, 0.7, 1.0, 0.8), 2.0)
+    canvas.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+    return true
+
+
+
 static func _load(path: String) -> Texture2D:
     if _cache.has(path):
         return _cache[path] as Texture2D
