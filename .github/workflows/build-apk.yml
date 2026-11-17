@@ -12,6 +12,7 @@ on:
       - "main"
       - "feature/sethmarch-regional-network"
       - "feature/creator-touch-portraits"
+      - "feature/complete-portrait-coverage-audit"
     tags:
       - "v*"
 
