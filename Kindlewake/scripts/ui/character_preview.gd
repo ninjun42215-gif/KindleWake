@@ -177,6 +177,10 @@ func _skin_color(id: String) -> Color:
 
 
 func _hair_color(id: String) -> Color:
+    if id == "long_silver":
+        return Color("#c4c9c7")
+    if id == "short_ash":
+        return Color("#766a5b")
     if id == "tied_brown":
         return Color("#65422f")
     if id == "cropped_red":
