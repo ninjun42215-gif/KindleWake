@@ -17,8 +17,8 @@ static func jaw_ratio_for_presentation(presentation_id: String) -> float:
 func set_profile(value: Dictionary) -> void:
     profile = value.duplicate(true)
     var portrait_id := str(profile.get("portrait_id", ""))
-    var portrait_path := "res://assets/art/portraits/%s.svg" % portrait_id
-    portrait_texture = load(portrait_path) as Texture2D if portrait_id != "" and ResourceLoader.exists(portrait_path) else null
+    # Creator presets and party portraits share the same asset resolver.
+    portrait_texture = Art.portrait_texture("torren", portrait_id)
     queue_redraw()
 
 
