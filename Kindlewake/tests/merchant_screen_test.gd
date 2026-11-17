@@ -50,6 +50,7 @@ func _run_market_ui_test() -> void:
 
     location.near_spot = {"kind":"party","name":"War Table","regional_exchange":false,"npc_active":true}
     location._on_prompt_pressed()
+    _check(not location.spot_portrait.visible, "non-person party counters do not display a speaker portrait")
     var non_market_action := false
     for child in location.spot_buttons.get_children():
         if child is Button and (child as Button).text == "Open regional exchange":
@@ -59,10 +60,12 @@ func _run_market_ui_test() -> void:
     location.near_spot = {
         "kind": "party",
         "name": "Shopkeeper Oswin",
+        "npc": true,
         "regional_exchange": true,
         "npc_active": true
     }
     location._on_prompt_pressed()
+    _check(location.spot_portrait.visible, "named shopkeeper dialogue displays a merchant portrait")
     var market_button: Button
     for child in location.spot_buttons.get_children():
         if child is Button and (child as Button).text == "Open regional exchange":
