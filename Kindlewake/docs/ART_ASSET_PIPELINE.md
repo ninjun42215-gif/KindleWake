@@ -18,16 +18,16 @@ Suikoden II is a craft benchmark only. Do not copy its characters, compositions,
 5. **Keep a readable silhouette.** Hair, hood, collar, weapon and shoulder armor must remain recognizable when the portrait is reduced to the creator-gallery size.
 6. **Use a consistent crop.** Square bust portraits are the current reference format. Keep the eyes above the midpoint, retain enough shoulder/garment detail to identify the role, and do not let weapons obscure the face.
 
-Proko's head-construction lessons emphasize skull mass, jaw placement, centerline, tilt, and perspective before facial detail. Apply that construction discipline while keeping the final Kindlewake rendering painterly and original: https://www.proko.com/course-lesson/planes-and-forms-of-the-head/
+Proko's head-construction lesson emphasizes the cranial mass, side plane, jaw, centerline, tilt, and perspective before facial detail. Apply that construction discipline while keeping the final Kindlewake rendering painterly and original: https://www.proko.com/course-lesson/how-to-draw-the-head-from-any-angle/
 
 ## Runtime asset pipeline
 
 - Stable IDs remain the source of truth; do not derive file names from display names.
 - `scripts/ui/portrait_resolver.gd` resolves in this order: **PNG → WebP → JPG → SVG**.
-- `torren_redcloak.webp` and `auburn_ranger.webp` are the first raster portrait pilots, exported at **256×256 WebP, quality 80** from the approved user-supplied portrait references. The original high-resolution reference images remain in the conversation; these are game-ready derivatives for the current UI scale.
+- `torren_redcloak.webp` and `auburn_ranger.webp` are the first raster portrait pilots, exported at **192×192 WebP, quality 70** from the approved user-supplied portrait references. The original high-resolution reference images remain in the conversation; these are game-ready derivatives for the current UI scale.
 - The legacy SVGs remain in place as fallbacks. Godot documents WebP as a supported raster import format and notes that complex SVG support is limited, so raster artwork is the preferred route for painterly portraits: https://docs.godotengine.org/en/4.1/tutorials/assets_pipeline/importing_images.html
 - The creator gallery and live preview resolve the selected portrait. The party sheet and battle timeline use raster overrides only for the stable protagonist ID `torren`; other named characters retain their existing SVGs until their own unique artwork is ready. This avoids accidentally applying Torren's or the ranger's face to unrelated companions.
-- Keep layered source masters at 512 px or higher when possible. Export runtime sizes according to the largest actual UI display, ideally at least 2× that display size. The current 256 px pilots cover the existing 128 px portrait target; revisit if the UI is enlarged.
+- Keep layered source masters at 512 px or higher when possible. Export runtime sizes according to the largest actual UI display, ideally at least 2× that display size. The current 192 px pilots are a first runtime pass for the existing compact gallery and battle timeline. They are not final high-resolution masters; increase to at least 384–512 px before a larger character-sheet presentation or final art lock.
 
 ## Portrait-to-sprite translation
 
