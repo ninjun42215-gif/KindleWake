@@ -56,7 +56,7 @@ Coverage is complete only when every registry entity resolves to a valid, review
 
 ## Runtime integration status update
 
-- The exploration dialogue panel already includes a portrait frame and now resolves named NPC/profession archetypes through `Art.character_for_npc()` and `Art.character_portrait_texture()`.
+- The exploration dialogue panel already includes a portrait frame and now resolves named NPC/profession archetypes through `Art.character_for_npc()` and `Art.character_portrait_texture()`. Non-person map interactions explicitly hide that frame, so evidence, doors and quest objects are not mistaken for speakers.
 - The battle turn-order strip resolves allies through the central portrait registry and enemies through enemy archetype mapping.
 - Party/roster portrait lookup now delegates to the same `Art.portrait_texture()` registry resolver.
 - Removed 22 legacy hero-gallery portrait assignments from enemy records. Enemies now use their battle archetype mapping rather than accidentally displaying hero-gallery identities.
