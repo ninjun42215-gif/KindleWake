@@ -130,6 +130,8 @@ def main():
     location_script = (ROOT / "scripts" / "ui" / "location_scene.gd").read_text(encoding="utf-8")
     if "spot_portrait.texture = Art.character_portrait_texture(" not in location_script:
         errors.append("NPC dialogue panel does not display the shared archetype portrait.")
+    if "var is_person := bool(near_spot.get(\"npc\", false))" not in location_script or "spot_portrait.visible = false" not in location_script:
+        errors.append("Non-person interactable spots are not guaranteed to hide the dialogue portrait.")
     battle_script = (ROOT / "scripts" / "ui" / "battle_scene.gd").read_text(encoding="utf-8")
     if "Art.portrait_texture(u.character_id, u.portrait_id, GameData.portrait_registry)" not in battle_script or "Art.character_portrait_texture(Art.character_for_enemy" not in battle_script:
         errors.append("Battle turn-order portraits do not use the shared identity/archetype resolver.")
