@@ -44,7 +44,7 @@ Block the sprite silhouette first, then add proportion and a compact material pa
 
 The protagonist creator now has **16 selectable portrait IDs**: the twelve legacy gallery choices plus four original SVG concepts (Maelin Tidecaller, Kellan Ashward, Nyra Briar and Orin Lantern). The 48 character definitions still reuse legacy portrait assignments; the four new creator portraits are cosmetic protagonist options and are not assigned to named companions, NPCs, enemies or bosses. They do **not** solve full-cast portrait coverage.
 
-The protagonist's exploration and tactical sprite now receives a small chest accent resolved from the saved portrait ID. Presentation still selects the masculine/feminine directional base sheet. Hair, facial structure, skin tone and body silhouette are not yet individually rebuilt per portrait. Do not claim that the selected portrait is already a fully identical movement/battle sprite; the accent is a first identity bridge.
+The protagonist's exploration and tactical sprite now resolves the saved portrait's presentation, face, hair, skin, build and costume accent. The renderer translates those cues into a sprite-scale face plane, hair silhouette/length, skin palette, face detail and (for sturdy builds) shoulder armour in all four facing directions. This is an identity translation, not a pixel-perfect miniature of the painted portrait; the underlying animation poses and weapon silhouettes remain shared by presentation.
 
 Enemy and ordinary NPC battle representations still use the shared character atlas/archetype mapping rather than individual painted portrait assets. Do not claim that every enemy or NPC now has a unique portrait.
 
@@ -52,7 +52,7 @@ Enemy and ordinary NPC battle representations still use the shared character atl
 
 - Four new original 512×512 SVG portrait concepts are available in the creator gallery. They use Godot-compatible gradients and paths; no SVG filters, external fonts or third-party assets were introduced.
 - Gallery records carry a stable ID, presentation/appearance metadata and a sprite accent color. The same portrait ID is retained in the confirmed creation profile and campaign save.
-- The shared protagonist renderer reads the active saved profile and draws a small palette-matched chest mark in both exploration and tactical battle. It deliberately does not tint skin or metal.
+- The shared protagonist renderer reads the active saved profile and applies matching skin, hair, face-detail and build cues in both exploration and tactical battle, plus a palette-matched chest mark. It does not tint the whole sprite, skin or metal.
 - On narrow phones the portrait grid uses two columns below 460 px, three below 900 px and four on wider screens. This gives the portrait artwork more room without changing the existing single-scroll creator flow.
 - The four new 512×512 RGBA imports are approximately 1 MiB each before compression/driver overhead. This is a planning estimate; Godot/Android memory and frame pacing still require device measurement.
 
