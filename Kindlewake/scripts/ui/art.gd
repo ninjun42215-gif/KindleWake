@@ -127,7 +127,7 @@ static func _draw_lead_identity(canvas: CanvasItem, appearance: Dictionary, dire
             Vector2(17, -127), Vector2(0, -123), Vector2(-17, -127)
         ])
         canvas.draw_colored_polygon(rear_cap, hair_color)
-        if hair_style == "long_dark" or hair_style == "tied_brown":
+        if hair_style == "long_dark" or hair_style == "long_silver" or hair_style == "tied_brown":
             canvas.draw_colored_polygon(PackedVector2Array([
                 Vector2(-25, -130), Vector2(-28, -111), Vector2(-24, -96),
                 Vector2(-16, -101), Vector2(-16, -126)
@@ -188,7 +188,7 @@ static func _draw_lead_identity(canvas: CanvasItem, appearance: Dictionary, dire
     canvas.draw_line(Vector2(center_x - 18, -145), Vector2(center_x - 6, -150), hair_color.lightened(0.16), 1.0)
     canvas.draw_line(Vector2(center_x + 4, -150), Vector2(center_x + 18, -144), hair_color.darkened(0.16), 1.0)
 
-    if hair_style == "long_dark" or hair_style == "tied_brown":
+    if hair_style == "long_dark" or hair_style == "long_silver" or hair_style == "tied_brown":
         canvas.draw_colored_polygon(PackedVector2Array([
             Vector2(center_x - 20, -130), Vector2(center_x - 25, -116),
             Vector2(center_x - 23, -97), Vector2(center_x - 16, -101),
@@ -251,6 +251,10 @@ static func _lead_hair_color(id: String) -> Color:
     match id:
         "long_dark":
             return Color("#33303a")
+        "long_silver":
+            return Color("#c4c9c7")
+        "short_ash":
+            return Color("#766a5b")
         "tied_brown":
             return Color("#65422f")
         "cropped_red":
