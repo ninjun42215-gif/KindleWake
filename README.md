@@ -23,7 +23,7 @@ The root-level `GDD_Kindlewake.md` is an archived legacy snapshot. Do not use it
 
 ## Branch safety
 
-The portrait-audit branch is currently **diverged** from `main` (61 commits ahead / 5 behind at the reviewed checkpoint). Do not bulk-merge it or force-push it. Reconcile and review the branch against current main, then run all required checks on the exact candidate commit before merging.
+The portrait-audit branch is currently **diverged** from `main` (67 commits ahead / 5 behind at the reviewed checkpoint). Do not bulk-merge it or force-push it. Reconcile and review the branch against current main, then run all required checks on the exact candidate commit before merging.
 
 ## Project constraints
 
