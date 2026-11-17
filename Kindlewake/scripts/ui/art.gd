@@ -59,6 +59,12 @@ static func character_portrait_texture(archetype: String) -> Texture2D:
     if atlas_texture == null:
         return null
     var cell: Vector2i = CHARACTER_CELLS[archetype]
+    var required_width := (cell.x + 1) * 128
+    var required_height := (cell.y + 1) * 160
+    var atlas_size := atlas_texture.get_size()
+    if atlas_size.x < required_width or atlas_size.y < required_height:
+        push_warning("Character portrait atlas is too small for archetype: " + archetype)
+        return null
     var portrait := AtlasTexture.new()
     portrait.atlas = atlas_texture
     portrait.region = Rect2(Vector2(cell.x * 128, cell.y * 160), Vector2(128, 160))
