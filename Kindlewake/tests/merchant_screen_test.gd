@@ -75,6 +75,7 @@ func _run_market_ui_test() -> void:
 
     var screen: MerchantScreenScript = location.merchant_screen
     _check(screen.visible, "market action opens the exchange overlay")
+    _check(screen.merchant_portrait != null and screen.merchant_portrait.texture != null, "regional exchange displays a resolved merchant portrait")
     _check(screen.goods_list.get_child_count() == 12, "exchange renders all twelve authored commodities")
 
     var grain_row := _find_good_row(screen, "Frontier Grain")
