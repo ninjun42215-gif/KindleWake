@@ -77,6 +77,11 @@ def main() -> int:
         return 1
 
     try:
+        # android-emulator-runner applies device-profile overlays after boot.
+        # Let those display/configuration updates finish before launching Godot,
+        # otherwise Android can recreate the Activity during its first frame.
+        print("Waiting for emulator profile overlays to settle")
+        time.sleep(10)
         for args in [
             ("shell", "wm", "size", "1368x632"),
             ("shell", "wm", "density", "230"),
@@ -86,6 +91,7 @@ def main() -> int:
         ]:
             print("adb " + " ".join(args))
             adb(*args, timeout=20)
+        time.sleep(5)
 
         print("Installing " + str(APK))
         adb("install", "-r", str(APK), timeout=180)
