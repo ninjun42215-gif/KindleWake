@@ -89,8 +89,6 @@ func _build_theme() -> Theme:
         mobile_body_font.font_names = PackedStringArray(["sans-serif", "Roboto"])
         mobile_body_font.allow_system_fallback = true
         theme.default_font = mobile_body_font
-    if theme.default_font == null:
-        theme.default_font = ThemeDB.fallback_font
     if ResourceLoader.exists(FONT_TITLE):
         title_font = load(FONT_TITLE) as Font
     if title_font == null:
@@ -98,6 +96,8 @@ func _build_theme() -> Theme:
         mobile_title_font.font_names = PackedStringArray(["serif", "Noto Serif"])
         mobile_title_font.allow_system_fallback = true
         title_font = mobile_title_font
+    if theme.default_font == null:
+        theme.default_font = ThemeDB.fallback_font
     if title_font == null:
         title_font = theme.default_font
     theme.default_font_size = 18
