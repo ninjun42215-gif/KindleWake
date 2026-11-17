@@ -1,28 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="240" height="300" viewBox="0 0 240 300">
- <defs>
- <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#b39a79"/><stop offset="1" stop-color="#343b3e"/></linearGradient>
- <linearGradient id="cloth" x2="0" y2="1"><stop stop-color="#8b3d2d"/><stop offset="1" stop-color="#171b20"/></linearGradient>
- <radialGradient id="skin"><stop stop-color="#c39a70"/><stop offset="1" stop-color="#684c40"/></radialGradient>
- <linearGradient id="gold" x2="1" y2="1"><stop stop-color="#f2d69a"/><stop offset="1" stop-color="#85613b"/></linearGradient>
- </defs>
- <rect width="240" height="300" fill="url(#bg)"/>
- <path d="M0 0H240V300H0Z" fill="#101820" opacity=".2"/>
- <path d="M10 300 Q20 220 68 198 L90 181 H150 L174 198 Q220 220 230 300Z" fill="url(#cloth)" stroke="#4b5360" stroke-width="4"/>
- <path d="M75 205 L105 183 L120 216 L136 183 L166 205 L148 300 H92Z" fill="#292b2d" stroke="#876e4f" stroke-width="3"/>
- 
- <path d="M70 116 Q70 42 120 48 Q177 43 172 120 L158 99 Q139 81 122 88 Q95 78 80 111Z" fill="#292a31"/>
- <path d="M77 103 Q67 116 73 145 L85 160 L91 126Z M163 103 Q173 116 167 145 L155 160 L149 126Z" fill="url(#skin)"/>
- <path d="M84 85 Q120 52 156 85 L161 132 Q157 171 120 183 Q83 171 79 132Z" fill="url(#skin)" stroke="#5b4339" stroke-width="3"/>
- <path d="M83 146 Q120 198 157 146 Q153 201 120 204 Q87 201 83 146Z" fill="#292a31" opacity=".85"/>
- <path d="M89 111 Q103 103 112 110 M128 110 Q140 103 151 111" fill="none" stroke="#292a31" stroke-width="6" stroke-linecap="round"/>
- <path d="M92 121 Q102 115 111 121 M129 121 Q139 115 148 121" fill="none" stroke="#3b302c" stroke-width="3" stroke-linecap="round"/>
- <ellipse cx="103" cy="124" rx="4" ry="5" fill="#292c2b"/><ellipse cx="137" cy="124" rx="4" ry="5" fill="#292c2b"/>
- <path d="M120 125 L114 145 L123 148" fill="none" stroke="#8c6554" stroke-width="3" stroke-linecap="round"/>
- <path d="M107 159 Q120 164 133 158" fill="none" stroke="#70453e" stroke-width="3" stroke-linecap="round"/>
- 
- <path d="M74 183 Q120 213 166 183 L183 216 Q120 256 57 216Z" fill="#8b3d2d" stroke="#4b5360" stroke-width="5"/>
- <path d="M112 211 L120 224 L128 211 L137 228 L120 244 L103 228Z" fill="url(#gold)" stroke="#4d3c2d" stroke-width="3"/>
- <circle cx="120" cy="228" r="7" fill="#392d27" stroke="#e0c18a" stroke-width="3"/>
- <path d="M22 18H218 M22 282H218" stroke="#e0c18a" opacity=".35" stroke-width="2"/>
- <text x="120" y="273" fill="#f0d9ac" font-size="12" font-family="serif" text-anchor="middle" letter-spacing="2">TORREN</text>
- </svg>
+<defs>
+ <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#304d55"/><stop offset="1" stop-color="#111d28"/></linearGradient>
+ <linearGradient id="coat" x2="0" y2="1"><stop stop-color="#27717a"/><stop offset="1" stop-color="#123b48"/></linearGradient>
+ <linearGradient id="skin"><stop stop-color="#e0b28b"/><stop offset="1" stop-color="#9a684f"/></linearGradient>
+ <linearGradient id="gold" x2="1" y2="1"><stop stop-color="#f4d89a"/><stop offset="1" stop-color="#956b35"/></linearGradient>
+</defs>
+<rect width="240" height="300" fill="url(#bg)"/>
+<path d="M18 300Q25 211 73 192L91 178H150L171 194Q217 218 224 300Z" fill="url(#coat)" stroke="#bd9558" stroke-width="4"/>
+<path d="M76 199L105 181L120 213L137 181L166 199L150 300H91Z" fill="#182b35" stroke="#b58a4d" stroke-width="3"/>
+<path d="M49 164Q30 59 120 25Q211 57 191 164L165 144Q160 73 120 63Q80 75 75 145Z" fill="#171b23" stroke="#27343b" stroke-width="4"/>
+<path d="M73 113Q77 48 122 48Q170 48 171 116L156 101Q139 82 120 88Q97 80 81 111Z" fill="#20232a"/>
+<path d="M77 104Q68 118 74 146L87 161L91 125Z M163 104Q172 118 166 146L153 161L149 125Z" fill="url(#skin)"/>
+<path d="M84 86Q120 53 156 86L161 132Q157 171 120 183Q83 171 79 132Z" fill="url(#skin)" stroke="#704c3d" stroke-width="3"/>
+<path d="M89 112Q102 105 112 111M128 111Q140 105 151 112" fill="none" stroke="#25232a" stroke-width="5" stroke-linecap="round"/>
+<ellipse cx="103" cy="124" rx="4" ry="5" fill="#20252b"/><ellipse cx="137" cy="124" rx="4" ry="5" fill="#20252b"/>
+<path d="M120 126L115 145L123 148M107 159Q120 164 133 158" fill="none" stroke="#805747" stroke-width="3" stroke-linecap="round"/>
+<path d="M65 167Q120 194 175 167L163 209Q120 236 77 209Z" fill="#e5ddc7" stroke="#a68c62" stroke-width="4"/>
+<path d="M75 185Q120 218 165 185L158 226Q120 248 82 226Z" fill="#c9c0aa"/>
+<path d="M44 220L73 195L91 212L81 300H43Z M196 220L167 195L149 212L159 300H197Z" fill="url(#coat)" stroke="#bd9558" stroke-width="3"/>
+<path d="M108 225L120 239L132 225L139 248L120 266L101 248Z" fill="url(#gold)" stroke="#4a3927" stroke-width="3"/>
+<path d="M181 78L202 91L190 236L178 232Z" fill="#4b382b" stroke="#c39a5c" stroke-width="3"/><circle cx="192" cy="86" r="7" fill="url(#gold)"/>
+<path d="M22 18H218M22 282H218" stroke="#e0c18a" opacity=".35" stroke-width="2"/>
+<text x="120" y="276" fill="#f0d9ac" font-size="12" font-family="serif" text-anchor="middle" letter-spacing="2">THE FALLEN HEIR</text>
+</svg>
