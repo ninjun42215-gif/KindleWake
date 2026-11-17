@@ -50,7 +50,10 @@ def main():
             errors.append(f"Character definition missing from registry: {character_id}")
             continue
         entry = by_id[character_id]
-        if entry.get("portrait_id") != definition.get("portrait_id"):
+        if entry.get("category") == "enemy":
+            if entry.get("portrait_id"):
+                errors.append(f"Enemy still carries a legacy hero-gallery portrait assignment: {character_id}")
+        elif entry.get("portrait_id") != definition.get("portrait_id"):
             errors.append(f"Registry legacy portrait reference drift: {character_id}")
 
     for map_id, map_data in locations.items():
