@@ -40,3 +40,13 @@ Eight original vector settlement illustrations now replace the legacy unverified
 - Town NPCs use role-aware atlas assignments with deterministic fallback variety; named monsters and bosses use distinct atlas identities in tactical battles.
 - Existing Zerie animated Soldier/Orc strips remain in use for the protagonist, companions and generic units. Their animation and licensing terms are unchanged.
 - Town building facades and roofs are drawn with inset tile art while preserving collision cells, doors and map data. Overworld settlement illustrations are reduced in scale; terrain props are layered deterministically.
+
+## 2026-11-17 — Protagonist portrait gallery expansion
+
+- portraits/maelin_tidecaller.svg — original KindleWake vector portrait concept.
+- portraits/kellan_ashward.svg — original KindleWake vector portrait concept.
+- portraits/nyra_briar.svg — original KindleWake vector portrait concept.
+- portraits/orin_lantern.svg — original KindleWake vector portrait concept.
+- All four were authored for this repository. No third-party image, font, sound or external asset was used.
+- Their stable IDs and matching protagonist sprite accent colors are recorded in data/character_creation.json; provenance is tracked in data/asset_provenance.json.
+
