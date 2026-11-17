@@ -235,7 +235,7 @@ static func character_for_enemy(character_id: String, display_name: String = "")
     if key.contains("star_eater") or key.contains("overlord"):
         return "overlord"
     if key.contains("hask") or key.contains("boss") or key.contains("chieftain"):
-        return "paladin"
+        return "rogue"
     if key.contains("bow") or key.contains("archer") or key.contains("scout"):
         return "ranger"
     if key.contains("shaman") or key.contains("witch") or key.contains("mage"):
