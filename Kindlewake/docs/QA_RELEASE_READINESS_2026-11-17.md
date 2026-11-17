@@ -149,3 +149,8 @@ Godot's 4.2 docs identify `SCREEN_LANDSCAPE = 0` and document that Compatibility
 - Workflow commit `04732f1621fad90da9204228a0639e84e5240c10` removes the manual `wm size`, `wm density` and rotation overrides, keeps the Pixel 5 20:9 profile defaults, and prints filtered Android/Godot error and lifecycle lines before process assertions.
 - This commit is on PR #159. Exact-head Build Android APK, Project Health Audit, Workflow YAML Lint and Version Sync are pending; do not mark the emulator issue resolved until the app remains running and the captured screenshot shows the game.
 - Next diagnostic if it still exits: compare a standard `google_apis` emulator image against `aosp_atd`, then inspect the first activity-finish reason and full Godot startup log. Keep the runtime and save files unchanged until a reproducible game-side cause is found.
+
+
+### Emulator-image isolation follow-up
+
+The same captured log shows the AOSP ATD `MultiDisplayService` starting during Godot startup, followed shortly by the Godot activity's orderly `onDestroy` path. This is a correlation, not proof that the service caused the exit. To isolate the test environment, workflow commit `9d74bf63b7eb5532a91e32ffdec726ce1643a4ff` switches the smoke-test AVD from `aosp_atd` to the standard `google_apis` image, retains the Pixel 5 profile and default display geometry, and keeps the process/logcat gates. This does not alter the app's Android export or gameplay. Exact-head emulator verification is pending.
