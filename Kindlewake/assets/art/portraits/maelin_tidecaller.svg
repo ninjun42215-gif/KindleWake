@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<title>Maelin Tidecaller — original KindleWake portrait</title>
+<defs>
+ <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#6c8990"/><stop offset=".48" stop-color="#263e4c"/><stop offset="1" stop-color="#111c28"/></linearGradient>
+ <radialGradient id="halo"><stop stop-color="#d4c6a2" stop-opacity=".42"/><stop offset="1" stop-color="#d4c6a2" stop-opacity="0"/></radialGradient>
+ <linearGradient id="hair" x2="1" y2="1"><stop stop-color="#e0e0d7"/><stop offset=".45" stop-color="#9caab2"/><stop offset="1" stop-color="#526675"/></linearGradient>
+ <linearGradient id="skin" x2=".8" y2="1"><stop stop-color="#f0d1b5"/><stop offset=".55" stop-color="#c99478"/><stop offset="1" stop-color="#805a51"/></linearGradient>
+ <linearGradient id="cloak" x2="0" y2="1"><stop stop-color="#477486"/><stop offset=".55" stop-color="#244b5d"/><stop offset="1" stop-color="#142b3a"/></linearGradient>
+ <linearGradient id="silver" x2="1" y2="1"><stop stop-color="#f0e9d5"/><stop offset=".5" stop-color="#aab8bc"/><stop offset="1" stop-color="#526875"/></linearGradient>
+ <linearGradient id="leather" x2="0" y2="1"><stop stop-color="#7b5c48"/><stop offset="1" stop-color="#352d2b"/></linearGradient>
+</defs>
+<rect width="512" height="512" fill="url(#bg)"/>
+<circle cx="260" cy="186" r="210" fill="url(#halo)"/>
+<path d="M0 512Q22 393 98 337Q147 303 197 295H317Q378 304 420 344Q490 407 512 512Z" fill="#172b37"/>
+<path d="M45 512Q68 377 153 333L205 302H310L362 333Q444 378 468 512Z" fill="url(#cloak)" stroke="#9caa9d" stroke-width="5"/>
+<path d="M138 512L169 353L218 315L256 371L294 315L344 353L374 512Z" fill="#1c3948" stroke="#b3c0b9" stroke-width="4"/>
+<path d="M182 334L220 306L256 358L292 306L330 334L299 395L256 420L213 395Z" fill="#d8d2bd" stroke="#778d93" stroke-width="5"/>
+<path d="M220 241H292L309 339Q257 376 203 339Z" fill="url(#skin)"/>
+<path d="M155 150Q139 45 255 23Q378 36 361 171L353 307L314 345L198 342L158 292Z" fill="url(#hair)" stroke="#536b78" stroke-width="5"/>
+<path d="M185 113Q191 58 255 52Q322 53 334 117L326 210Q319 260 257 282Q194 263 184 210Z" fill="url(#skin)" stroke="#8b6257" stroke-width="4"/>
+<path d="M178 124Q177 52 244 39Q320 28 346 104L329 141L313 106Q280 78 250 91Q218 78 191 130L181 202L163 257Q137 196 155 128Z" fill="url(#hair)"/>
+<path d="M182 136Q166 216 188 293L215 318L206 195Z M330 130Q350 208 326 299L297 326L308 196Z" fill="url(#hair)" stroke="#627783" stroke-width="3"/>
+<path d="M204 160Q225 149 241 160M272 160Q290 148 309 158" fill="none" stroke="#59616a" stroke-width="7" stroke-linecap="round"/>
+<path d="M207 177Q224 168 239 177M275 177Q291 167 306 176" fill="none" stroke="#38434c" stroke-width="3" stroke-linecap="round"/>
+<ellipse cx="224" cy="181" rx="5" ry="7" fill="#34454b"/><ellipse cx="289" cy="180" rx="5" ry="7" fill="#34454b"/>
+<circle cx="226" cy="179" r="1.5" fill="#eee8d8"/><circle cx="291" cy="178" r="1.5" fill="#eee8d8"/>
+<path d="M257 181L246 218L259 224" fill="none" stroke="#946a5c" stroke-width="4" stroke-linecap="round"/>
+<path d="M235 246Q257 255 279 244" fill="none" stroke="#88594f" stroke-width="4" stroke-linecap="round"/>
+<path d="M201 130Q255 102 313 130" fill="none" stroke="url(#silver)" stroke-width="8"/>
+<path d="M255 111L265 96L275 111L265 124Z" fill="#9bc6cc" stroke="#eee4ce" stroke-width="3"/>
+<path d="M156 164Q143 267 190 335L165 326Q126 269 137 188Z M356 158Q374 264 324 335L348 325Q388 261 377 186Z" fill="url(#hair)" opacity=".9"/>
+<path d="M211 310L256 355L301 310L320 345L256 400L192 345Z" fill="url(#silver)" stroke="#526b78" stroke-width="4"/>
+<path d="M238 354L256 370L274 354L270 388L256 402L242 388Z" fill="#75aeb7" stroke="#e0d6bb" stroke-width="4"/>
+<circle cx="256" cy="382" r="7" fill="#d8e4dd"/>
+<path d="M83 512Q116 411 184 367L203 390L171 512Z M429 512Q398 411 329 367L309 390L341 512Z" fill="#203d4a" stroke="#607b82" stroke-width="4"/>
+<path d="M65 512L99 419L129 434L112 512M447 512L413 419L383 434L400 512" fill="none" stroke="#b6b7a4" stroke-width="4" opacity=".65"/>
+<path d="M177 295Q194 316 216 323M336 294Q317 318 296 324" fill="none" stroke="#f0d6ba" stroke-width="3" opacity=".5"/>
+</svg>
