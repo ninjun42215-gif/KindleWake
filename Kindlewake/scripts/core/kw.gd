@@ -81,9 +81,8 @@ func _build_theme() -> Theme:
     var theme := Theme.new()
     if ResourceLoader.exists(FONT_BODY):
         theme.default_font = load(FONT_BODY) as Font
-    # The project currently ships without optional custom font files. Explicitly
-    # bind Godot's embedded fallback so a custom root Theme never leaves mobile
-    # controls with an unresolved font.
+    # The project currently ships without custom font files. Prefer Android's
+    # native sans-serif face, then fall back to Godot's embedded font.
     if theme.default_font == null:
         var mobile_body_font := SystemFont.new()
         mobile_body_font.font_names = PackedStringArray(["sans-serif", "Roboto"])
