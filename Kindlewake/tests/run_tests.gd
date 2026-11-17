@@ -29,6 +29,7 @@ const EmpireSystemScript = preload("res://scripts/core/empire_system.gd")
 const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 const ArtScript = preload("res://scripts/ui/art.gd")
+const PortraitResolverScript = preload("res://scripts/ui/portrait_resolver.gd")
 const ChroniclePolitics = preload("res://scripts/core/chronicle_diplomacy_system.gd")
 const TradeSystemScript = preload("res://scripts/core/trade_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
@@ -195,6 +196,34 @@ func _test_art_assets() -> void:
     if lead_texture != null:
         check(lead_texture.get_size() == Vector2(512.0, 1280.0), "lead atlas contains two 4x4 directional animation sheets")
     check(ArtScript.KINDLEWAKE_LEAD_ATLAS_PATH == "res://assets/art/units/kindlewake_lead_atlas.svg", "protagonist renderer uses the committed lead atlas")
+    var creator_portraits: Array = gd.character_creation.get("portraits", [])
+    var portrait_ids: Dictionary = {}
+    var portrait_assets_load := true
+    var portrait_accents_match := true
+    for portrait_value in creator_portraits:
+        if not (portrait_value is Dictionary):
+            portrait_assets_load = false
+            portrait_accents_match = false
+            continue
+        var portrait: Dictionary = portrait_value
+        var portrait_id := str(portrait.get("id", ""))
+        if portrait_id.is_empty() or portrait_ids.has(portrait_id):
+            portrait_assets_load = false
+            portrait_accents_match = false
+            continue
+        portrait_ids[portrait_id] = true
+        var portrait_texture: Texture2D = PortraitResolverScript.load_texture(portrait_id)
+        if portrait_texture == null or str(portrait.get("sprite_accent", "")) == "":
+            portrait_assets_load = false
+        var resolved_accent: Color = ArtScript.lead_accent_for_profile({"portrait_id": portrait_id}, creator_portraits)
+        var expected_accent := Color.from_string(str(portrait.get("sprite_accent", "#c59a54")), Color("#c59a54"))
+        if resolved_accent != expected_accent:
+            portrait_accents_match = false
+    check(creator_portraits.size() == 16 and portrait_ids.size() == 16, "creator offers sixteen stable, unique portrait identities")
+    check(portrait_assets_load, "all sixteen creator portraits resolve to loadable Godot textures and carry sprite palette accents")
+    check(portrait_accents_match, "each selected portrait resolves its matching protagonist sprite accent")
+    for new_portrait_id in ["maelin_tidecaller", "kellan_ashward", "nyra_briar", "orin_lantern"]:
+        check(PortraitResolverScript.resolve_path(new_portrait_id).ends_with(".svg"), "new original portrait imports through the shared resolver: " + new_portrait_id)
     var location_source := FileAccess.get_file_as_string("res://scripts/ui/location_scene.gd")
     check(location_source.contains("Art.draw_kindlewake_lead"), "town and interior exploration render the custom protagonist sprite")
     check(location_source.contains("GameState.creation_profile"), "exploration sprite uses the saved protagonist presentation")
