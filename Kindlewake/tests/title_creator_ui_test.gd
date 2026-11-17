@@ -42,6 +42,10 @@ func _run_ui_test() -> void:
     await get_tree().process_frame
 
     _check(creator.is_inside_tree(), "character creator enters the scene tree")
+    var root_theme: Theme = get_tree().root.theme
+    _check(root_theme != null and root_theme.default_font != null,
+        "mobile UI root theme has a valid fallback font")
+    _check(KW.title_font != null, "title typography resolves to an embedded fallback font")
     _check(int(ProjectSettings.get_setting("display/window/handheld/orientation", 0)) == 0,
         "Android project orientation remains landscape")
     _check(creator.preview != null and is_instance_valid(creator.preview), "creator builds its live portrait preview")
