@@ -29,6 +29,32 @@ static func _load(path: String) -> Texture2D:
     return tex
 
 
+## Canonical portrait lookup. Explicit save-compatible portrait IDs win; missing IDs resolve by stable entity ID.
+static func portrait_texture(entity_id: String, portrait_id: String = "") -> Texture2D:
+    var path := ""
+    if portrait_id != "":
+        path = "res://assets/art/portraits/%s.svg" % portrait_id
+    if path == "" and entity_id != "":
+        path = GameData.portrait_asset_path(entity_id)
+    if path == "" or not ResourceLoader.exists(path):
+        return null
+    return _load(path)
+
+
+## Returns a cropped character-atlas portrait for NPC/dialogue panels.
+static func character_portrait_texture(archetype: String) -> Texture2D:
+    if not CHARACTER_CELLS.has(archetype):
+        return null
+    var atlas_texture := _load(CHARACTER_ATLAS_PATH)
+    if atlas_texture == null:
+        return null
+    var cell: Vector2i = CHARACTER_CELLS[archetype]
+    var portrait := AtlasTexture.new()
+    portrait.atlas = atlas_texture
+    portrait.region = Rect2(Vector2(cell.x * 128, cell.y * 160), Vector2(128, 160))
+    return portrait
+
+
 static func world(name: String) -> Texture2D:
     if WORLD_VECTOR_NAMES.has(name):
         return _load(WORLD_DIR + name + ".svg")
