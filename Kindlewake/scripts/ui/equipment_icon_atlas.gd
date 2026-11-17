@@ -93,6 +93,7 @@ static func _icon(category: String, size: int) -> TextureRect:
     var icon := TextureRect.new()
     icon.texture = atlas_region
     icon.custom_minimum_size = Vector2(size, size)
+    icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
     icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
     icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
     return icon

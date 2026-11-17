@@ -58,6 +58,7 @@ func _run() -> void:
         _check(region.atlas != null, "atlas texture preloads successfully")
         _check(region.region == Rect2(192, 128, 64, 64), "helm region uses the expected 64px cell")
     _check(icon.custom_minimum_size == Vector2(48, 48), "icon respects the requested mobile size")
+    _check(icon.get_combined_minimum_size() == Vector2(48, 48), "64px source cell does not inflate the requested mobile size")
     icon.free()
 
     var slot_icon := EquipmentIconAtlas.icon_for_slot("offhand", 42)
