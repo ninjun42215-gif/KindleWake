@@ -1877,7 +1877,7 @@ func _preview_text() -> String:
 ## enemies use their own species/archetype cell from the original character atlas.
 func _timeline_portrait(u: BattleUnitScript) -> Texture2D:
     if u.team == "player":
-        var personal_portrait := Art.portrait_texture(u.character_id, u.portrait_id)
+        var personal_portrait := Art.portrait_texture(u.character_id, u.portrait_id, GameData.portrait_registry)
         if personal_portrait != null:
             return personal_portrait
         return Art.character_portrait_texture(Art.character_for_npc(u.display_name, u.class_id))
