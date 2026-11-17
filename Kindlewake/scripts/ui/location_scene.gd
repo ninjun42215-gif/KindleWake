@@ -1181,7 +1181,7 @@ func _draw_spot(s: Dictionary) -> void:
         elif fposmod(npc_clock, 17.0) < 2.2:
             npc_motion = "walk"
         var npc_id: String = str(s.get("character_id", s.get("id", "")))
-        if not Art.draw_roster_character(self, npc_id, foot, npc_clock, npc_motion, 0.44, tint, c.x > player_pos.x) and not Art.draw_character_animated(self, npc_sprite, foot, npc_clock, npc_motion, 0.44, tint, c.x > player_pos.x):
+        if not Art.draw_named_npc(self, str(s.get("name", "")), foot, npc_clock, npc_motion, 0.44, tint, c.x > player_pos.x) and not Art.draw_roster_character(self, npc_id, foot, npc_clock, npc_motion, 0.44, tint, c.x > player_pos.x) and not Art.draw_character_animated(self, npc_sprite, foot, npc_clock, npc_motion, 0.44, tint, c.x > player_pos.x):
             if not Art.draw_unit(self, "soldier", "idle", t + c.x * 0.01, foot, 0.78, c.x > player_pos.x, tint):
                 draw_rect(Rect2(foot + Vector2(-8, -30), Vector2(16, 28)), tint)
         if near and bool(s.get("npc", false)):
