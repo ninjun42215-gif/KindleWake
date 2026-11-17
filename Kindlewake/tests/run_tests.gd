@@ -199,6 +199,11 @@ func _test_art_assets() -> void:
     for roster_id in ArtScript.ROSTER_CHARACTER_IDS:
         roster_ids_unique[str(roster_id)] = true
     check(roster_ids_unique.size() == ArtScript.ROSTER_CHARACTER_IDS.size(), "roster sprite IDs contain no duplicates")
+    var npc_texture: Texture2D = load("res://assets/art/units/named_npc_atlas.svg") as Texture2D
+    check(npc_texture != null, "named NPC atlas imports")
+    if npc_texture != null:
+        check(npc_texture.get_size() == Vector2(1024.0, 2880.0), "named NPC atlas has 142 individual cells")
+    check(ArtScript.NAMED_NPC_NAMES.size() == 142, "all named local-map NPCs have individual sprite cells")
     var roster_texture: Texture2D = load("res://assets/art/units/character_roster_atlas.svg") as Texture2D
     check(roster_texture != null, "full named-character roster atlas imports")
     if roster_texture != null:
