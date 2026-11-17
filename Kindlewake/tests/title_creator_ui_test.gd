@@ -118,6 +118,14 @@ func _run_ui_test() -> void:
             "selected portrait synchronizes presentation and physical appearance")
         _check((creator.presentation_buttons["feminine"] as CheckButton).button_pressed,
             "portrait selection synchronizes the presentation radio")
+    creator._on_portrait_button_toggled(true, "maelin_tidecaller")
+    _check(str(creator.profile.get("hair", "")) == "long_silver"
+        and CharacterCreation.validate(creator.profile, GameData.character_creation, GameData.classes) == "",
+        "Maelin's silver hair identity is supported by the creation validator and runtime sprite palette")
+    creator._on_portrait_button_toggled(true, "kellan_ashward")
+    _check(str(creator.profile.get("hair", "")) == "short_ash"
+        and CharacterCreation.validate(creator.profile, GameData.character_creation, GameData.classes) == "",
+        "Kellan's ash-brown hair identity is supported by the creation validator and runtime sprite palette")
     creator._on_portrait_button_toggled(true, "torren_redcloak")
     for field in ["origin", "discipline", "weapon_preference", "temperament"]:
         if not creator.choices.has(field) or not creator.choice_popups.has(field):
