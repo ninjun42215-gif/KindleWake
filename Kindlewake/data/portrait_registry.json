@@ -2335,7 +2335,8 @@
       "portrait_id": null,
       "asset_path": null,
       "status": "missing",
-      "note": "Named story figure appears in the project lore; no dedicated portrait asset/record found in character definitions."
+      "note": "Named royal is routed to the noble dialogue archetype; a unique approved portrait asset is still missing.",
+      "archetype_id": "noble"
     },
     {
       "id": "lord_edmer",
@@ -2344,7 +2345,8 @@
       "portrait_id": null,
       "asset_path": null,
       "status": "missing",
-      "note": "Named story figure appears in the project lore; no dedicated portrait asset/record found in character definitions."
+      "note": "Named royal is routed to the noble dialogue archetype; a unique approved portrait asset is still missing.",
+      "archetype_id": "noble"
     },
     {
       "id": "regent_maelor",
@@ -2353,7 +2355,8 @@
       "portrait_id": null,
       "asset_path": null,
       "status": "missing",
-      "note": "Named story figure appears in the project lore; no dedicated portrait asset/record found in character definitions."
+      "note": "Named royal is routed to the noble dialogue archetype; a unique approved portrait asset is still missing.",
+      "archetype_id": "noble"
     }
   ],
   "audit_summary": {
