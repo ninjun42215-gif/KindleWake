@@ -106,6 +106,8 @@ def main():
         errors.append("NPC portrait resolver still hashes names into arbitrary profession portraits.")
     if 'return "guard"' not in art_script:
         errors.append("NPC portrait resolver has no safe authored-role fallback.")
+    if 'return ""' not in art_script[art_script.find("static func character_for_npc"):art_script.find("static func character_for_enemy")]:
+        errors.append("NPC portrait resolver does not suppress portraits for non-person interactable objects.")
     for royal_title in ["king", "queen", "regent", "monarch"]:
         if royal_title not in art_script:
             errors.append(f"NPC portrait resolver does not recognize royal title: {royal_title}")
