@@ -171,3 +171,14 @@ The follow-up build log `logs/run_tests.txt` confirms the 1,009-check suite incl
 The campaign Continue lifecycle test also passed: a restored campaign entered the World scene, initialized its regional map and remained alive through battle preparation/opening. These are automated headless tests; they do not replace testing actual user save files on physical Android devices.
 
 The AI-vs-AI balance report ran 30 battles per scenario. It labels one encounter **hard** at 57% win rate, one **fair** at 80%, and three **easy** at 97–100%. The 60-skirmish grind sample ended at levels 11/10/10/10 with 59 wins and 4,714 gold. The report itself cautions that this is a starting-party AI benchmark, not human playtesting. Recommendation: keep the current data intact for now; review the hard encounter and three easy scenarios in human playtests before adjusting rewards or enemy stats.
+
+
+### AOSP ATD control run — no manual display overrides
+
+Build [#44067308537](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44067308537), head `04732f1621fad90da9204228a0639e84e5240c10`, still failed the process-liveness assertion after manual `wm size` / density / rotation changes were removed. Its [test-logs artifact 14319993744](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44067308537/artifacts/14319993744) shows:
+- the AOSP ATD `MultiDisplayService` starts immediately after Godot startup, attempts to create displays 0–10, then logs `invalid parameters for add/modify display`;
+- shortly afterwards GodotActivity is destroyed and force-quits the engine; the app process exits with signal 9;
+- the 30-second screenshot is black, with the home activity resumed;
+- no Java fatal exception, native fatal signal, GDScript error or parse error is present.
+
+Removing display overrides alone did not solve the failure. The timing strongly implicates the AOSP ATD multi-display path, but does not prove it caused the activity finish. The next exact-head run on `google_apis` is the control experiment. The APK artifact from #44067308537 is [ID 14321765232](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44067308537/artifacts/14321765232), 65.2 MB zipped, and is not release-approved because the smoke test failed.
