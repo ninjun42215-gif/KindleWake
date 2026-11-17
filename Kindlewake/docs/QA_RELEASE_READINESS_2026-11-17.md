@@ -182,3 +182,25 @@ Build [#44067308537](https://github.com/ninjun42215-gif/KindleWake/actions/runs/
 - no Java fatal exception, native fatal signal, GDScript error or parse error is present.
 
 Removing display overrides alone did not solve the failure. The timing strongly implicates the AOSP ATD multi-display path, but does not prove it caused the activity finish. The next exact-head run on `google_apis` is the control experiment. The APK artifact from #44067308537 is [ID 14321765232](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44067308537/artifacts/14321765232), 65.2 MB zipped, and is not release-approved because the smoke test failed.
+
+
+## Google APIs emulator control result — 2026-11-17
+
+The standard google_apis control run completed successfully, including the emulator process-liveness assertion. It resolves the previous AOSP ATD-only process-exit failure for this CI image, but the first captured frame was still obscured by Android's first-run immersive-mode confirmation.
+
+- Build run [#44067632954](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44067632954) ran the emulator workflow revision at commit 9d74bf63b7eb5532a91e32ffdec726ce1643a4ff. Its job 133985333772 completed successfully. The later PR head 9a5329d4e365b2614629edf73d0be12f2f9f2f69 also passed Project Health Audit and Version Sync; the build run predates that later report/workflow follow-up.
+- Godot 4.2.2 import passed; 20/20 authored scenes loaded; strict core suite passed 1,009 checks / 0 failures; campaign lifecycle, merchant UI, title/creator UI, Act V, continuity (70), dynasty (39), family development (19) and the 30-battle-per-scenario balance report all passed.
+- Android 35 google_apis / Pixel 5 / x86_64: APK install succeeded, explicit GodotApp launch reached OnGodotMainLoopStarted, and the app process remained alive through the 30-second capture. No Java fatal exception, native fatal signal, GDScript SCRIPT ERROR or parse error was found.
+- **Visual capture is not yet accepted:** the screenshot shows Android's "Viewing full screen" confirmation over the game. The activity dump shows topResumedActivity is KindleWake's GodotApp, but mCurrentFocus is ImmersiveModeConfirmation. This is an Android system overlay, not a game dialog. The prior process-only gate therefore passed without proving an unobscured title screen.
+- APK artifact [14320862167](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44067632954/artifacts/14320862167), artifact ZIP digest sha256:58071da988be0914a452d0bc665437a4cddb0ad604aecd68eaaeba693e2bd772. Extracted APK: 65,770,402 bytes; SHA-256 54fc967279a7750e3eae448d55945f0581dad054df90a4b7f875d913dd7b5be2. Builder verified the signature; ABIs are arm64-v8a, armeabi-v7a and x86_64; no Android permissions were requested. This is a CI/test-signed artifact, not a production-signed release.
+- Logs and screenshot: [test-logs artifact 14319719932](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44067632954/artifacts/14319719932).
+
+### SwiftShader renderer diagnostic
+
+The emulator log records a global shader-variable buffer-size warning (device limit 16,384 bytes) and repeated SceneShaderGLES3 link failures reporting GL_MAX_FRAGMENT_UNIFORM_VECTORS (261), followed by a shader-bind warning. These messages did not terminate the process, and the current project file does not explicitly override the global shader buffer or per-object light limit. Godot issue [#109550](https://github.com/godotengine/godot/issues/109550) records the same uniform-vector message on Android Google SwiftShader; a Godot rendering maintainer attributed it most likely to SwiftShader's shader compiler and noted it should only produce startup logging rather than break the game. That is supporting context, not proof about every device or KindleWake's final rendering. Do not change renderer limits or remove lighting based only on this software-emulator diagnostic; inspect a clean screenshot and test a physical Android GPU before deciding.
+
+### QA workflow refinement
+
+Commit b61f8087d8c831614bf4edd2105dbaeaffb681d5 adds the immersive_mode_confirmations=confirmed setting before launch, then checks that the foreground activity is com.kindlewake.game/com.godot.game.GodotApp and that the focused window is no longer ImmersiveModeConfirmation before taking the screenshot. This is CI workflow-only; no game code, data, save schema, permissions, signing or player saves changed. The exact updated-head Android build is pending and must produce an unobscured screenshot before visual smoke is marked passed.
+
+**Current disposition:** the Google APIs emulator now proves package installation, launcher startup and process survival for its tested workflow revision; the clean visual capture is still pending. CI emulator results are not physical-device certification. No PR was merged and no release was published.
