@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<title>Kellan Ashward — original KindleWake portrait</title>
+<defs>
+ <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#75665c"/><stop offset=".52" stop-color="#353b40"/><stop offset="1" stop-color="#141b22"/></linearGradient>
+ <radialGradient id="light"><stop stop-color="#d2b58a" stop-opacity=".35"/><stop offset="1" stop-color="#d2b58a" stop-opacity="0"/></radialGradient>
+ <linearGradient id="skin" x2=".7" y2="1"><stop stop-color="#d3a17e"/><stop offset=".55" stop-color="#9b6b55"/><stop offset="1" stop-color="#4e3a34"/></linearGradient>
+ <linearGradient id="hair" x2="0" y2="1"><stop stop-color="#766a5b"/><stop offset=".55" stop-color="#3d3835"/><stop offset="1" stop-color="#24272a"/></linearGradient>
+ <linearGradient id="steel" x2="1" y2="1"><stop stop-color="#9ba4a4"/><stop offset=".45" stop-color="#4c5961"/><stop offset="1" stop-color="#222c35"/></linearGradient>
+ <linearGradient id="cloth" x2="0" y2="1"><stop stop-color="#754d42"/><stop offset="1" stop-color="#302a2b"/></linearGradient>
+ <linearGradient id="gold" x2="1" y2="1"><stop stop-color="#e2c58a"/><stop offset="1" stop-color="#755438"/></linearGradient>
+</defs>
+<rect width="512" height="512" fill="url(#bg)"/><circle cx="260" cy="183" r="214" fill="url(#light)"/>
+<path d="M0 512Q35 389 109 347Q167 309 208 303H309Q371 309 416 348Q481 407 512 512Z" fill="#171e25"/>
+<path d="M32 512Q62 378 144 338L196 306H316L368 338Q447 379 480 512Z" fill="url(#steel)" stroke="#b09a77" stroke-width="5"/>
+<path d="M119 512L163 352L212 316L256 384L300 316L350 352L393 512Z" fill="#333b42" stroke="#7e8a8c" stroke-width="5"/>
+<path d="M173 337L219 306L256 366L293 306L339 337L315 390L256 423L197 390Z" fill="url(#cloth)" stroke="#c1a26e" stroke-width="4"/>
+<path d="M211 236H301L316 340Q256 376 196 340Z" fill="url(#skin)"/>
+<path d="M166 147Q154 55 255 31Q356 49 348 151L332 247L310 311L200 314L176 250Z" fill="url(#hair)" stroke="#24272a" stroke-width="5"/>
+<path d="M185 115Q206 67 255 69Q309 65 326 117L329 208Q321 274 256 291Q190 274 181 207Z" fill="url(#skin)" stroke="#62483d" stroke-width="4"/>
+<path d="M167 144Q158 73 218 45L241 55L256 40L275 53L300 43Q353 74 348 148L325 135L308 111L284 121L258 99L232 119L203 106L184 139Z" fill="url(#hair)"/>
+<path d="M190 117L177 176L189 242L207 254L204 162Z M322 116L336 177L323 247L306 261L309 162Z" fill="url(#hair)"/>
+<path d="M197 167Q218 153 240 165M272 165Q296 152 315 165" fill="none" stroke="#3b302b" stroke-width="8" stroke-linecap="round"/>
+<path d="M201 180Q220 173 239 181M274 181Q294 172 310 179" fill="none" stroke="#282a2c" stroke-width="3"/>
+<ellipse cx="221" cy="185" rx="5" ry="7" fill="#272a2b"/><ellipse cx="291" cy="185" rx="5" ry="7" fill="#272a2b"/>
+<path d="M255 181L245 220L260 225" fill="none" stroke="#714b3e" stroke-width="4" stroke-linecap="round"/>
+<path d="M211 245Q255 267 301 243L292 281Q255 310 219 281Z" fill="#40322e"/>
+<path d="M193 215Q202 253 221 267L237 283L256 274L275 283L292 267Q311 247 319 214L305 284Q282 324 256 324Q224 323 202 284Z" fill="url(#hair)"/>
+<path d="M299 140L275 206L289 214L311 151" fill="none" stroke="#6b4139" stroke-width="7" stroke-linecap="round"/>
+<path d="M299 140L287 164" stroke="#e0b18a" stroke-width="2" opacity=".7"/>
+<path d="M174 117Q193 81 229 76M279 77Q318 84 335 118" fill="none" stroke="#b4a18a" stroke-width="4" opacity=".55"/>
+<path d="M145 353L196 321L225 375L198 512H75Z M367 353L316 321L287 375L314 512H437Z" fill="#252f37" stroke="#9da2a0" stroke-width="4"/>
+<path d="M179 351L213 331L256 398L299 331L333 351L310 419L256 451L202 419Z" fill="#4d5151" stroke="#d1b47e" stroke-width="4"/>
+<path d="M242 384L256 399L270 384L278 413L256 434L234 413Z" fill="url(#gold)" stroke="#43362c" stroke-width="4"/>
+<path d="M58 512L108 414L139 426L122 512M454 512L404 414L373 426L390 512" fill="none" stroke="#c0b08e" stroke-width="5" opacity=".55"/>
+</svg>
