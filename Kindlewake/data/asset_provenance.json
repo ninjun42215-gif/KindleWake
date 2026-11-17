@@ -131,7 +131,7 @@
       "license_status": "verified",
       "used_in_game": true,
       "release_blocker": false,
-      "notes": "Adds Maelin Tidecaller, Kellan Ashward, Nyra Briar and Orin Lantern to the 16-choice protagonist gallery. The four 512x512 SVG portraits use Godot-compatible gradients and paths without filters. Each gallery choice also carries a sprite_accent used by the protagonist's animated field/battle renderer. This is a cosmetic palette cue, not a claim of fully individualized face/hair sprites."
+      "notes": "Adds Maelin Tidecaller, Kellan Ashward, Nyra Briar and Orin Lantern to the 16-choice protagonist gallery. The four 512x512 SVG portraits use Godot-compatible gradients and paths without filters. Each gallery choice carries presentation, face, hair, skin, build and sprite_accent metadata. The animated field/battle renderer translates those cues into a per-profile face, hair silhouette, skin palette, build detail and chest accent; animation poses remain shared by presentation."
     }
   ]
 }
