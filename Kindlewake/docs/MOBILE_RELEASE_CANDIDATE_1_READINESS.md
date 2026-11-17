@@ -5,7 +5,7 @@
 **Project:** KindleWake — The Sundered Vow  
 **Engine:** Godot 4.2.2 · **App version:** 0.12.0 · **Android version code:** 1200 · **Save schema:** 4  
 **Working branch:** `feature/complete-portrait-coverage-audit`  
-**Latest verified branch head:** `ed91c20c1d7abde81bee8796bf683217e1c78986`  
+**Latest verified game-code SHA:** `ed91c20c1d7abde81bee8796bf683217e1c78986` (subsequent commits in this review only refresh release documentation)  
 **Default branch:** `main` at `8c512a063f6ef63c88f33489d118cad6b0a29c6c`
 
 This document is the release gate checklist. A green CI build is necessary but does not mean that all art, campaign content, physical-device behaviour, signing, or store-release requirements are complete.
@@ -14,7 +14,7 @@ This document is the release gate checklist. A green CI build is necessary but d
 
 Latest verified source: [`ed91c20c1d7abde81bee8796bf683217e1c78986`](https://github.com/ninjun42215-gif/KindleWake/commit/ed91c20c1d7abde81bee8796bf683217e1c78986). The Android workflow [44014768595](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44014768595) completed successfully on this exact SHA. Its APK export, artifact upload, Android emulator install/launch and diagnostic upload steps all succeeded. The `Kindlewake-APK` artifact is present (artifact ID `14297418946`). This is the latest verified candidate in this review; do not use the older `a5d845...` SHA as the current build.
 
-## 1. Verified at the latest branch head
+### Verified check matrix
 
 | Check | Result | Evidence |
 |---|---|---|
@@ -29,7 +29,7 @@ Latest verified source: [`ed91c20c1d7abde81bee8796bf683217e1c78986`](https://git
 | Workflow YAML lint | PASS | [44014768639](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44014768639) |
 | Source handoff snapshot | PASS | [44014768691](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44014768691) |
 
-**Interpretation:** CI proves that this commit can be imported, tested, exported, installed and launched in the configured emulator. It does not prove a complete playthrough, correct rendering on the owner's phone, long-session stability, production signing, or artistic completeness.
+**Interpretation:** CI proves that the game-code SHA above can be imported, tested, exported, installed and launched in the configured emulator. The later commits in this review only edit the README and this readiness document; a fresh CI run is still required on the resulting documentation head. It does not prove a complete playthrough, correct rendering on the owner's phone, long-session stability, production signing, or artistic completeness.
 
 ## 2. Release blockers and required work
 
@@ -126,7 +126,7 @@ Run a content audit against the current authoritative `Kindlewake/docs/GDD.md`, 
 
 ## 3. Branch and integration safety
 
-At this review, `feature/complete-portrait-coverage-audit` is **67 commits ahead and 5 commits behind** `main` (merge-base `b874936960b20ce536dcc385579152a659130020`). It is therefore diverged, even though the current tree comparison identifies a focused set of portrait-related file changes.
+At this review, `feature/complete-portrait-coverage-audit` is **85 commits ahead and 5 commits behind** `main` (merge-base `b874936960b20ce536dcc385579152a659130020`; comparison status `diverged`). GitHub's comparison reports 24 changed paths, including build workflow, project settings, portrait registry/resolver/UI, emulator validation and documentation. This is not a trivial portrait-only cherry-pick; the branch must be reconciled carefully and reviewed path-by-path.
 
 - [ ] Reconcile the five newer mainline commits with this feature branch.
 - [ ] Re-run the complete CI suite on the reconciled exact SHA.
