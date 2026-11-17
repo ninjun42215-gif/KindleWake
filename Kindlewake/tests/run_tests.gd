@@ -190,6 +190,11 @@ func _test_art_assets() -> void:
     if character_texture != null:
         check(character_texture.get_size() == Vector2(512.0, 960.0), "6x4 character atlas matches twenty-four 128x160 cells")
     check(ArtScript.CHARACTER_CELLS.size() == 24, "all twenty-four character archetypes have atlas cells")
+    var lead_texture: Texture2D = load("res://assets/art/units/kindlewake_lead_atlas.svg") as Texture2D
+    check(lead_texture != null, "male and female lead atlas imports")
+    if lead_texture != null:
+        check(lead_texture.get_size() == Vector2(512.0, 1280.0), "lead atlas contains two 4x4 directional animation sheets")
+    check(ArtScript.KINDLEWAKE_LEAD_ATLAS_PATH == "res://assets/art/units/kindlewake_lead_atlas.svg", "protagonist renderer uses the committed lead atlas")
     var roster_texture: Texture2D = load("res://assets/art/units/character_roster_atlas.svg") as Texture2D
     check(roster_texture != null, "full named-character roster atlas imports")
     if roster_texture != null:
