@@ -19,7 +19,7 @@ static func jaw_ratio_for_presentation(presentation_id: String) -> float:
 func set_profile(value: Dictionary) -> void:
     profile = value.duplicate(true)
     var portrait_id := str(profile.get("portrait_id", ""))
-    portrait_texture = Art.portrait_texture("torren", portrait_id)
+    portrait_texture = Art.portrait_texture("torren", portrait_id, GameData.portrait_registry)
     fallback_texture = Art.character_portrait_texture("chronicle_hero")
     queue_redraw()
 
