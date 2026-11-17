@@ -69,6 +69,26 @@ func _run_ui_test() -> void:
         {"portrait_id": "auburn_ranger"}, GameData.character_creation.get("portraits", []))
     _check(selected_sprite_accent == Color("#4f684d"),
         "selected portrait palette is available to the shared exploration and battle sprite renderer")
+    var selected_identity: Dictionary = ArtScript.lead_appearance_for_profile(
+        {"portrait_id": "auburn_ranger"}, GameData.character_creation.get("portraits", []))
+    _check(str(selected_identity.get("presentation", "")) == "feminine"
+        and str(selected_identity.get("face", "")) == "soft"
+        and str(selected_identity.get("hair", "")) == "tied_brown"
+        and str(selected_identity.get("skin", "")) == "fair"
+        and str(selected_identity.get("build", "")) == "lean",
+        "selected portrait resolves its matching face, hair, skin, build and presentation for the runtime sprite")
+    var every_portrait_has_sprite_identity := true
+    for portrait in GameData.character_creation.get("portraits", []):
+        var portrait_id := str(portrait.get("id", ""))
+        var identity: Dictionary = ArtScript.lead_appearance_for_profile(
+            {"portrait_id": portrait_id}, GameData.character_creation.get("portraits", []))
+        for field in ["presentation", "face", "hair", "skin", "build"]:
+            if str(identity.get(field, "")).is_empty():
+                every_portrait_has_sprite_identity = false
+        if not (identity.get("accent", null) is Color):
+            every_portrait_has_sprite_identity = false
+    _check(every_portrait_has_sprite_identity,
+        "all sixteen gallery portraits provide complete identity cues for the animated protagonist sprite")
     var every_character_has_portrait := true
     for character_id in GameData.characters.keys():
         var character: Dictionary = GameData.characters[character_id]
