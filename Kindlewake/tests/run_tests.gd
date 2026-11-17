@@ -190,6 +190,15 @@ func _test_art_assets() -> void:
     if character_texture != null:
         check(character_texture.get_size() == Vector2(512.0, 960.0), "6x4 character atlas matches twenty-four 128x160 cells")
     check(ArtScript.CHARACTER_CELLS.size() == 24, "all twenty-four character archetypes have atlas cells")
+    var roster_texture: Texture2D = load("res://assets/art/units/character_roster_atlas.svg") as Texture2D
+    check(roster_texture != null, "full named-character roster atlas imports")
+    if roster_texture != null:
+        check(roster_texture.get_size() == Vector2(1024.0, 960.0), "roster atlas is an 8x6 grid of 128x160 character cells")
+    check(ArtScript.ROSTER_CHARACTER_IDS.size() == 48, "all 48 named roster characters have unique sprite cells")
+    var roster_ids_unique: Dictionary = {}
+    for roster_id in ArtScript.ROSTER_CHARACTER_IDS:
+        roster_ids_unique[str(roster_id)] = true
+    check(roster_ids_unique.size() == ArtScript.ROSTER_CHARACTER_IDS.size(), "roster sprite IDs contain no duplicates")
     check(ArtScript.character_for_npc("Village Guard") == "guard", "town guards receive a guard design")
     check(ArtScript.character_for_npc("Torren Dunmarrow") == "chronicle_hero", "the protagonist receives a distinct Chronicle hero design")
     check(ArtScript.character_for_npc("Blacksmith Harlan") == "blacksmith", "blacksmith NPCs receive a dedicated silhouette")
