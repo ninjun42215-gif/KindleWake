@@ -277,7 +277,8 @@ func _add_portrait_gallery(parent: VBoxContainer) -> void:
     hint.add_theme_color_override("font_color", Color("#b8c2cc"))
     parent.add_child(hint)
     var grid := GridContainer.new()
-    grid.columns = 3 if get_viewport_rect().size.x < 600.0 else 4
+    var gallery_width: float = get_viewport_rect().size.x
+    grid.columns = 2 if gallery_width < 460.0 else (3 if gallery_width < 900.0 else 4)
     grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     grid.add_theme_constant_override("h_separation", 7)
     grid.add_theme_constant_override("v_separation", 7)
@@ -292,13 +293,13 @@ func _add_portrait_gallery(parent: VBoxContainer) -> void:
         button.toggle_mode = true
         button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
         button.button_group = group
-        button.custom_minimum_size = Vector2(0, 116)
+        button.custom_minimum_size = Vector2(0, 136 if grid.columns == 2 else (126 if grid.columns == 3 else 116))
         button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         button.clip_text = true
         button.text = str(portrait.get("name", id))
         button.icon = PortraitResolverScript.load_texture(id)
         button.expand_icon = true
-        button.add_theme_constant_override("icon_max_width", 78)
+        button.add_theme_constant_override("icon_max_width", 104 if grid.columns == 2 else (90 if grid.columns == 3 else 78))
         button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
         button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
         button.add_theme_font_size_override("font_size", 11)
