@@ -239,6 +239,10 @@ static func character_for_enemy(character_id: String, display_name: String = "")
         return "cultist"
     if key.contains("skeleton") or key.contains("bone") or key.contains("drowned"):
         return "skeleton"
+    # Roadwolves are a human raider faction, not wolf monsters. Resolve the
+    # faction name before the generic wolf creature rule.
+    if key.contains("roadwolf") or key.contains("roadreaver") or key.contains("bandit") or key.contains("raider") or key.contains("hask") or key.contains("chieftain"):
+        return "rogue"
     if key.contains("wolf") or key.contains("hart") or key.contains("beast"):
         return "direwolf"
     if key.contains("goblin"):
