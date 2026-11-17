@@ -44,7 +44,7 @@ def capture_diagnostics() -> str:
         ("android-logcat.txt", ("logcat", "-d", "-v", "time")),
     ]:
         try:
-            result = adb(*args, timeout=45, check=False)
+            result = adb(*args, timeout=10, check=False)
             write_text(name, result.stdout)
             chunks.append("===== " + name + " =====\n" + result.stdout[-16000:])
         except Exception as exc:  # diagnostics must not mask the original failure
@@ -93,7 +93,7 @@ def main() -> int:
         print("Launching the Godot activity without injecting random Monkey input")
         # Monkey with an event count of 1 can randomly tap a title-menu button
         # (including Exit Game). Use ActivityManager so this is a deterministic launch.
-        adb("shell", "am", "start", "-W", "-n",
+        adb("shell", "am", "start", "-n",
             "com.kindlewake.game/com.godot.game.GodotApp", timeout=45)
         time.sleep(30)
 
