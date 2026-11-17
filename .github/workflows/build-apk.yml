@@ -67,6 +67,14 @@ jobs:
           path: Kindlewake/dist/Kindlewake.apk
           if-no-files-found: error
 
+      - name: Install screenshot OCR tool
+        run: |
+          if ! command -v tesseract >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y tesseract-ocr
+          fi
+          tesseract --version | head -n 1
+
       - name: Enable KVM acceleration for Android emulator
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -78,18 +86,21 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
-          target: aosp_atd
+          # AOSP ATD starts MultiDisplayService during Godot startup and the
+          # activity is then destroyed; use a standard image to isolate that path.
+          target: google_apis
           arch: x86_64
           profile: pixel_5
           disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
+          # Compare the supported ANGLE GLES mode with the prior direct SwiftShader capture; this is still a CI software-renderer diagnostic, not device certification.
+          emulator-options: -no-window -gpu angle -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
           script: |
-            # Match the HONOR 400's portrait logical viewport: 440 x 952 dp
-            # (1264 x 2736 at 460 dpi) while keeping emulator rendering light.
-            adb shell wm size 1368x632
-            adb shell wm density 230
-            adb shell settings put system accelerometer_rotation 0
-            adb shell settings put system user_rotation 1
+            # Keep the emulator's Pixel 5 20:9 display defaults. The project
+            # requests landscape; changing wm size/density during ATD startup
+            # causes a delayed display reconfiguration while Godot is launching.
+            # Suppress Android's first-run immersive-mode confirmation so the
+            # captured frame shows the game rather than a system-owned overlay.
+            adb shell settings put secure immersive_mode_confirmations confirmed
             adb shell settings put system font_scale 1.0
             adb install -r Kindlewake/dist/Kindlewake.apk
             adb logcat -c
@@ -100,17 +111,25 @@ jobs:
             sleep 30
             adb shell dumpsys window displays > Kindlewake/dist/android-window-displays.txt
             adb shell dumpsys activity activities > Kindlewake/dist/android-activities.txt
+            # A live process alone is insufficient: require the Godot activity to
+            # remain resumed and the immersive-mode confirmation to be dismissed.
+            python3 -c 'import pathlib,sys; s=pathlib.Path("Kindlewake/dist/android-window-displays.txt").read_text(errors="replace"); focus=next((line.strip() for line in s.splitlines() if "mCurrentFocus=" in line), ""); print("Focused window:", focus); sys.exit(1 if "ImmersiveModeConfirmation" in focus or not focus else 0)'
+            python3 -c 'import pathlib,sys; s=pathlib.Path("Kindlewake/dist/android-activities.txt").read_text(errors="replace"); ok=any(("topResumedActivity=" in line or "ResumedActivity:" in line) and "com.kindlewake.game/com.godot.game.GodotApp" in line for line in s.splitlines()); print("Godot activity resumed:", ok); sys.exit(0 if ok else 1)'
             adb shell screencap -p /sdcard/kindlewake-honor400-layout.png
             adb pull /sdcard/kindlewake-honor400-layout.png Kindlewake/dist/honor400-emulator.png
+            # Fail visual smoke if the title/menu text is absent even when the
+            # Godot process is alive and the window is in the foreground.
+            tesseract Kindlewake/dist/honor400-emulator.png stdout --psm 6 > Kindlewake/dist/android-screen-ocr.txt 2> Kindlewake/dist/tesseract.txt
+            grep -qi "KINDLEWAKE" Kindlewake/dist/android-screen-ocr.txt || { echo "::error::Title text was not visible in the Android screenshot."; cat Kindlewake/dist/android-screen-ocr.txt; exit 1; }
+            grep -qi "NEW GAME" Kindlewake/dist/android-screen-ocr.txt || { echo "::error::New Game menu text was not visible in the Android screenshot."; cat Kindlewake/dist/android-screen-ocr.txt; exit 1; }
+            grep -qi "SETTINGS" Kindlewake/dist/android-screen-ocr.txt || { echo "::error::Settings menu text was not visible in the Android screenshot."; cat Kindlewake/dist/android-screen-ocr.txt; exit 1; }
             adb logcat -d -v time > Kindlewake/dist/android-logcat.txt
-            if ! adb shell pidof com.kindlewake.game; then
-              echo "Kindlewake did not remain running after explicit launcher activity start"
-              exit 1
-            fi
-            if grep -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error" Kindlewake/dist/android-logcat.txt; then
-              echo "Android runtime or script error detected"
-              exit 1
-            fi
+            # Emit concise diagnostics before assertions so a failed launch remains actionable.
+            grep -n -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error|USER ERROR|USER WARNING|GodotActivity|Process com.kindlewake.game" Kindlewake/dist/android-logcat.txt | tail -n 120 || true
+            # android-emulator-runner executes script lines as individual shell commands.
+            # Keep assertions single-line so shell control-flow blocks are not truncated.
+            python3 -c 'import pathlib,re,sys; lines=pathlib.Path("Kindlewake/dist/android-logcat.txt").read_text(errors="replace").splitlines(); hits=[f"{i+1}: {line}" for i,line in enumerate(lines) if re.search(r"FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error", line)]; print("\\n".join(hits[-80:])); sys.exit(1 if hits else 0)'
+            adb shell pidof com.kindlewake.game | grep -q . || python3 -c 'raise SystemExit("Kindlewake did not remain running after explicit launcher activity start")'
 
       - name: Upload test and build logs
         if: always()
@@ -123,6 +142,8 @@ jobs:
             Kindlewake/dist/android-logcat.txt
             Kindlewake/dist/android-window-displays.txt
             Kindlewake/dist/android-activities.txt
+            Kindlewake/dist/android-screen-ocr.txt
+            Kindlewake/dist/tesseract.txt
           if-no-files-found: ignore
 
   # Only immutable version-tag builds may publish a GitHub Release. Keep the
