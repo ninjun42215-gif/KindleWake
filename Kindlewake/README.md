@@ -10,7 +10,7 @@ Offline-first medieval tactical RPG built with **Godot 4.2.2**, GDScript and the
 - Level cap: **250**
 - Canonical project directory: this `Kindlewake/` folder
 - Active working branch: `feature/complete-portrait-coverage-audit`
-- Reviewed branch commit: `a5d845164b10de2de2270636c8b13aacea4baee6`
+- Reviewed branch commit: `ed91c20c1d7abde81bee8796bf683217e1c78986`
 - Default branch `main` was not changed by this feature work.
 
 ## Latest verified CI
@@ -24,7 +24,7 @@ The following checks passed on the exact reviewed commit:
 - Portrait registry structural audit
 - Project Health Audit, workflow YAML lint and source handoff
 
-See [Android build run 44011454711](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44011454711). Emulator success is not physical-device QA and does not prove a complete campaign playthrough.
+See [latest Android build run 44014768595](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44014768595), which passed APK export, artifact upload, and emulator install/launch on the exact branch head. This remains emulator QA, not physical-device QA. Emulator success is not physical-device QA and does not prove a complete campaign playthrough.
 
 ## Release status
 
