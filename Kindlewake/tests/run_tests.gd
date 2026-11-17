@@ -199,6 +199,16 @@ func _test_art_assets() -> void:
     for roster_id in ArtScript.ROSTER_CHARACTER_IDS:
         roster_ids_unique[str(roster_id)] = true
     check(roster_ids_unique.size() == ArtScript.ROSTER_CHARACTER_IDS.size(), "roster sprite IDs contain no duplicates")
+    var all_character_ids_have_art := true
+    for character_id in gd.characters.keys():
+        if not ArtScript.ROSTER_CHARACTER_IDS.has(str(character_id)):
+            all_character_ids_have_art = false
+            check(false, "missing dedicated roster sprite: " + str(character_id))
+    check(all_character_ids_have_art and gd.characters.size() == ArtScript.ROSTER_CHARACTER_IDS.size(), "every playable, recruitable and named combat character has dedicated sprite art")
+    var npc_names_unique: Dictionary = {}
+    for npc_name in ArtScript.NAMED_NPC_NAMES:
+        npc_names_unique[str(npc_name)] = true
+    check(npc_names_unique.size() == ArtScript.NAMED_NPC_NAMES.size(), "named NPC sprite index contains no duplicate names")
     var npc_texture: Texture2D = load("res://assets/art/units/named_npc_atlas.svg") as Texture2D
     check(npc_texture != null, "named NPC atlas imports")
     if npc_texture != null:
