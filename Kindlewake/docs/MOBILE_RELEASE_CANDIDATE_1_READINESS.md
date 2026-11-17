@@ -5,25 +5,29 @@
 **Project:** KindleWake — The Sundered Vow  
 **Engine:** Godot 4.2.2 · **App version:** 0.12.0 · **Android version code:** 1200 · **Save schema:** 4  
 **Working branch:** `feature/complete-portrait-coverage-audit`  
-**Reviewed branch head:** `a5d845164b10de2de2270636c8b13aacea4baee6`  
+**Latest verified branch head:** `ed91c20c1d7abde81bee8796bf683217e1c78986`  
 **Default branch:** `main` at `8c512a063f6ef63c88f33489d118cad6b0a29c6c`
 
 This document is the release gate checklist. A green CI build is necessary but does not mean that all art, campaign content, physical-device behaviour, signing, or store-release requirements are complete.
 
-## 1. Verified at the reviewed branch head
+## 1. Verified at the latest branch head
+
+Latest verified source: [`ed91c20c1d7abde81bee8796bf683217e1c78986`](https://github.com/ninjun42215-gif/KindleWake/commit/ed91c20c1d7abde81bee8796bf683217e1c78986). The Android workflow [44014768595](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44014768595) completed successfully on this exact SHA. Its APK export, artifact upload, Android emulator install/launch and diagnostic upload steps all succeeded. The `Kindlewake-APK` artifact is present (artifact ID `14297418946`). This is the latest verified candidate in this review; do not use the older `a5d845...` SHA as the current build.
+
+## 1. Verified at the latest branch head
 
 | Check | Result | Evidence |
 |---|---|---|
-| Godot project import | PASS | Android workflow run [44011454711](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44011454711) |
+| Godot project import | PASS | Android workflow run [44014768595](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44014768595) |
 | Headless scene smoke test | PASS | Same run |
 | Strict automated test suite | PASS | Same run |
 | Balance report requested by CI | PASS | Same run |
 | Android APK export and artifact upload | PASS | Same run |
 | Android emulator install and launch | PASS | Same run; job step succeeded |
-| Portrait registry structural audit | PASS | [44011454802](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44011454802) |
-| Project Health Audit | PASS | [44011454717](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44011454717) |
-| Workflow YAML lint | PASS | [44011454723](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44011454723) |
-| Source handoff snapshot | PASS | [44011454689](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44011454689) |
+| Portrait registry structural audit | PASS | [44014768637](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44014768637) |
+| Project Health Audit | PASS | [44014768574](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44014768574) |
+| Workflow YAML lint | PASS | [44014768639](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44014768639) |
+| Source handoff snapshot | PASS | [44014768691](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44014768691) |
 
 **Interpretation:** CI proves that this commit can be imported, tested, exported, installed and launched in the configured emulator. It does not prove a complete playthrough, correct rendering on the owner's phone, long-session stability, production signing, or artistic completeness.
 
