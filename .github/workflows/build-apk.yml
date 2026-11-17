@@ -67,6 +67,14 @@ jobs:
           path: Kindlewake/dist/Kindlewake.apk
           if-no-files-found: error
 
+      - name: Install screenshot OCR tool
+        run: |
+          if ! command -v tesseract >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y tesseract-ocr
+          fi
+          tesseract --version | head -n 1
+
       - name: Enable KVM acceleration for Android emulator
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -109,6 +117,12 @@ jobs:
             python3 -c 'import pathlib,sys; s=pathlib.Path("Kindlewake/dist/android-activities.txt").read_text(errors="replace"); ok=any(("topResumedActivity=" in line or "ResumedActivity:" in line) and "com.kindlewake.game/com.godot.game.GodotApp" in line for line in s.splitlines()); print("Godot activity resumed:", ok); sys.exit(0 if ok else 1)'
             adb shell screencap -p /sdcard/kindlewake-honor400-layout.png
             adb pull /sdcard/kindlewake-honor400-layout.png Kindlewake/dist/honor400-emulator.png
+            # Fail visual smoke if the title/menu text is absent even when the
+            # Godot process is alive and the window is in the foreground.
+            tesseract Kindlewake/dist/honor400-emulator.png stdout --psm 6 > Kindlewake/dist/android-screen-ocr.txt 2> Kindlewake/dist/tesseract.txt
+            grep -qi "KINDLEWAKE" Kindlewake/dist/android-screen-ocr.txt || { echo "::error::Title text was not visible in the Android screenshot."; cat Kindlewake/dist/android-screen-ocr.txt; exit 1; }
+            grep -qi "NEW GAME" Kindlewake/dist/android-screen-ocr.txt || { echo "::error::New Game menu text was not visible in the Android screenshot."; cat Kindlewake/dist/android-screen-ocr.txt; exit 1; }
+            grep -qi "SETTINGS" Kindlewake/dist/android-screen-ocr.txt || { echo "::error::Settings menu text was not visible in the Android screenshot."; cat Kindlewake/dist/android-screen-ocr.txt; exit 1; }
             adb logcat -d -v time > Kindlewake/dist/android-logcat.txt
             # Emit concise diagnostics before assertions so a failed launch remains actionable.
             grep -n -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error|USER ERROR|USER WARNING|GodotActivity|Process com.kindlewake.game" Kindlewake/dist/android-logcat.txt | tail -n 120 || true
@@ -128,6 +142,8 @@ jobs:
             Kindlewake/dist/android-logcat.txt
             Kindlewake/dist/android-window-displays.txt
             Kindlewake/dist/android-activities.txt
+            Kindlewake/dist/android-screen-ocr.txt
+            Kindlewake/dist/tesseract.txt
           if-no-files-found: ignore
 
   # Only immutable version-tag builds may publish a GitHub Release. Keep the
