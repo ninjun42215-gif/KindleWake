@@ -1158,7 +1158,24 @@ func _fill_shop(box: VBoxContainer) -> void:
     mode_row.add_child(_tab_button("Buy", _on_shop_mode.bind(false), not shop_selling))
     mode_row.add_child(_tab_button("Sell", _on_shop_mode.bind(true), shop_selling))
     box.add_child(mode_row)
-    _add_section(box, str(shop.get("name", "Shop")))
+    # Keep the seller visible while browsing the shop tab. Named smiths use
+    # the blacksmith archetype; ordinary stalls use the merchant archetype.
+    var shop_header := HBoxContainer.new()
+    shop_header.add_theme_constant_override("separation", 10)
+    var shop_name := str(shop.get("name", "Shop"))
+    var shop_archetype := Art.character_for_npc(shop_name, "merchant")
+    var shop_portrait := TextureRect.new()
+    shop_portrait.texture = Art.character_portrait_texture(shop_archetype)
+    shop_portrait.custom_minimum_size = Vector2(48, 60)
+    shop_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    shop_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+    shop_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+    shop_portrait.tooltip_text = shop_name
+    shop_header.add_child(shop_portrait)
+    var shop_heading := _label(shop_name, 19, COL_GOLD)
+    shop_heading.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+    shop_header.add_child(shop_heading)
+    box.add_child(shop_header)
     if not shop_selling:
         for entry in ShopSystem.stock(shop, db):
             var e: Dictionary = entry
