@@ -210,60 +210,48 @@
       "name": "Hask Gravelteeth",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "silver_oracle",
-      "asset_path": "res://assets/art/portraits/silver_oracle.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "roadreaver",
       "name": "Roadwolf Reaver",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "dusk_rogue",
-      "asset_path": "res://assets/art/portraits/dusk_rogue.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "roadbowman",
       "name": "Roadwolf Bowman",
       "category": "enemy",
       "class_id": "archer",
-      "portrait_id": "shieldmaiden",
-      "asset_path": "res://assets/art/portraits/shieldmaiden.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "rootbound_warden",
       "name": "Rootbound Warden",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "courtier",
-      "asset_path": "res://assets/art/portraits/courtier.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "bell_keeper",
       "name": "The Bell-Keeper",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "ash_scout",
-      "asset_path": "res://assets/art/portraits/ash_scout.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "ashen_reeve",
       "name": "The Ashen Reeve",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "briar_warden",
-      "asset_path": "res://assets/art/portraits/briar_warden.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "lucan_thorne",
@@ -480,40 +468,32 @@
       "name": "The Reef Warden",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "briar_warden",
-      "asset_path": "res://assets/art/portraits/briar_warden.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "saltcutthroat",
       "name": "Salt-Cut Cutthroat",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "old_knight",
-      "asset_path": "res://assets/art/portraits/old_knight.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "saltbow",
       "name": "Salt-Reef Lookout",
       "category": "enemy",
       "class_id": "archer",
-      "portrait_id": "night_scholar",
-      "asset_path": "res://assets/art/portraits/night_scholar.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "blackwake_captain",
       "name": "Blackwake Salvage Captain",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "auburn_ranger",
-      "asset_path": "res://assets/art/portraits/auburn_ranger.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "neris_quell",
@@ -530,120 +510,96 @@
       "name": "The Hollow Hart",
       "category": "enemy",
       "class_id": "swordsman",
-      "portrait_id": "iron_veteran",
-      "asset_path": "res://assets/art/portraits/iron_veteran.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "boss_drowned_crown",
       "name": "Admiral Veyr, the Drowned Crown",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "silver_oracle",
-      "asset_path": "res://assets/art/portraits/silver_oracle.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "boss_ash_regent",
       "name": "Kharzug the Ash Regent",
       "category": "enemy",
       "class_id": "knight",
-      "portrait_id": "dusk_rogue",
-      "asset_path": "res://assets/art/portraits/dusk_rogue.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "boss_pale_matriarch",
       "name": "The Pale Matriarch",
       "category": "enemy",
       "class_id": "cleric",
-      "portrait_id": "shieldmaiden",
-      "asset_path": "res://assets/art/portraits/shieldmaiden.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "boss_briar_sovereign",
       "name": "The Briar Sovereign",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "courtier",
-      "asset_path": "res://assets/art/portraits/courtier.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "boss_star_eater",
       "name": "The Star-Eater",
       "category": "enemy",
       "class_id": "cleric",
-      "portrait_id": "ash_scout",
-      "asset_path": "res://assets/art/portraits/ash_scout.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "boss_last_cantor",
       "name": "The Last Cantor",
       "category": "enemy",
       "class_id": "swordsman",
-      "portrait_id": "briar_warden",
-      "asset_path": "res://assets/art/portraits/briar_warden.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "hask_convoy_champion",
       "name": "Hask Gravelteeth, Roadwolf Captain",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "old_knight",
-      "asset_path": "res://assets/art/portraits/old_knight.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "ash_bailiff",
       "name": "The Ash Bailiff",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "night_scholar",
-      "asset_path": "res://assets/art/portraits/night_scholar.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "checkpoint_sergeant",
       "name": "Writ-Captain Odran Vale",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "auburn_ranger",
-      "asset_path": "res://assets/art/portraits/auburn_ranger.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "river_marshal",
       "name": "River Marshal Edrik Vane",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "sunwarden",
-      "asset_path": "res://assets/art/portraits/sunwarden.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "quillon_warden",
       "name": "Quillon Warden",
       "category": "enemy",
       "class_id": "roadreaver",
-      "portrait_id": "iron_veteran",
-      "asset_path": "res://assets/art/portraits/iron_veteran.svg",
-      "status": "legacy_assignment_unverified",
-      "note": "Existing asset is present, but identity match is not approved; reused IDs require review."
+      "status": "archetype_portrait_pending_review",
+      "note": "Legacy hero-gallery portrait removed; battle archetype mapping is used until dedicated enemy portrait art is reviewed."
     },
     {
       "id": "npc.crossing.1.carter_wen",
@@ -2526,6 +2482,7 @@
           "ash_bailiff"
         ]
       }
-    ]
+    ],
+    "enemy_legacy_assignments_removed": 22
   }
 }
