@@ -89,6 +89,9 @@ jobs:
             # Keep the emulator's Pixel 5 20:9 display defaults. The project
             # requests landscape; changing wm size/density during ATD startup
             # causes a delayed display reconfiguration while Godot is launching.
+            # Suppress Android's first-run immersive-mode confirmation so the
+            # captured frame shows the game rather than a system-owned overlay.
+            adb shell settings put secure immersive_mode_confirmations confirmed
             adb shell settings put system font_scale 1.0
             adb install -r Kindlewake/dist/Kindlewake.apk
             adb logcat -c
@@ -99,6 +102,10 @@ jobs:
             sleep 30
             adb shell dumpsys window displays > Kindlewake/dist/android-window-displays.txt
             adb shell dumpsys activity activities > Kindlewake/dist/android-activities.txt
+            # A live process alone is insufficient: require the Godot activity to
+            # remain resumed and the immersive-mode confirmation to be dismissed.
+            python3 -c 'import pathlib,sys; s=pathlib.Path("Kindlewake/dist/android-window-displays.txt").read_text(errors="replace"); focus=next((line.strip() for line in s.splitlines() if "mCurrentFocus=" in line), ""); print("Focused window:", focus); sys.exit(1 if "ImmersiveModeConfirmation" in focus or not focus else 0)'
+            python3 -c 'import pathlib,sys; s=pathlib.Path("Kindlewake/dist/android-activities.txt").read_text(errors="replace"); ok=any(("topResumedActivity=" in line or "ResumedActivity:" in line) and "com.kindlewake.game/com.godot.game.GodotApp" in line for line in s.splitlines()); print("Godot activity resumed:", ok); sys.exit(0 if ok else 1)'
             adb shell screencap -p /sdcard/kindlewake-honor400-layout.png
             adb pull /sdcard/kindlewake-honor400-layout.png Kindlewake/dist/honor400-emulator.png
             adb logcat -d -v time > Kindlewake/dist/android-logcat.txt
