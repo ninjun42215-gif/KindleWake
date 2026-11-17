@@ -74,6 +74,8 @@ func _build() -> void:
     var title := Label.new()
     title.text = "K I N D L E W A K E"
     title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    if KW.title_font != null:
+        title.add_theme_font_override("font", KW.title_font)
     title.add_theme_font_size_override("font_size", 28 if get_viewport_rect().size.x < 480.0 else 34)
     title.add_theme_color_override("font_color", Color("#e4c58a"))
     root_box.add_child(title)
