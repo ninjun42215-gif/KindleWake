@@ -5,6 +5,7 @@ extends Node
 const TitleScreenScript = preload("res://scripts/ui/title_screen.gd")
 const CharacterCreatorScript = preload("res://scripts/ui/character_creator.gd")
 const PortraitResolverScript = preload("res://scripts/ui/portrait_resolver.gd")
+const ArtScript = preload("res://scripts/ui/art.gd")
 
 var failures := 0
 
@@ -51,7 +52,7 @@ func _run_ui_test() -> void:
     _check(creator.allocation_plus_buttons.size() == 6 and creator.allocation_minus_buttons.size() == 6,
         "creator builds plus and minus controls for all six attributes")
     _check(creator.presentation_buttons.size() == 3, "creator exposes all presentation radio choices")
-    _check(creator.portrait_buttons.size() == 12, "creator exposes the complete twelve-portrait gallery")
+    _check(creator.portrait_buttons.size() == 16, "creator exposes the complete sixteen-portrait gallery")
     _check(PortraitResolverScript.resolve_path("torren_redcloak").ends_with(".webp"), "Torren uses the new raster portrait ahead of its SVG fallback")
     _check(PortraitResolverScript.resolve_path("auburn_ranger").ends_with(".webp"), "Auburn Ranger uses the new raster portrait ahead of its SVG fallback")
     _check(PortraitResolverScript.resolve_path("sunwarden").ends_with(".svg"), "unconverted portraits retain the SVG fallback")
@@ -61,7 +62,13 @@ func _run_ui_test() -> void:
         var portrait_path := PortraitResolverScript.resolve_path(portrait_id)
         if portrait_path == "" or PortraitResolverScript.load_texture(portrait_id) == null:
             all_portraits_load = false
-    _check(all_portraits_load, "all twelve portrait assets load as Godot textures")
+    _check(all_portraits_load, "all sixteen portrait assets load as Godot textures")
+    for new_portrait_id in ["maelin_tidecaller", "kellan_ashward", "nyra_briar", "orin_lantern"]:
+        _check(creator.portrait_buttons.has(new_portrait_id), "new portrait is selectable in the creator gallery: " + new_portrait_id)
+    var selected_sprite_accent: Color = ArtScript.lead_accent_for_profile(
+        {"portrait_id": "auburn_ranger"}, GameData.character_creation.get("portraits", []))
+    _check(selected_sprite_accent == Color("#4f684d"),
+        "selected portrait palette is available to the shared exploration and battle sprite renderer")
     var every_character_has_portrait := true
     for character_id in GameData.characters.keys():
         var character: Dictionary = GameData.characters[character_id]
