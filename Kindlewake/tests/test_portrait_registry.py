@@ -113,6 +113,9 @@ def main():
     location_script = (ROOT / "scripts" / "ui" / "location_scene.gd").read_text(encoding="utf-8")
     if "spot_portrait.texture = Art.character_portrait_texture(" not in location_script:
         errors.append("NPC dialogue panel does not display the shared archetype portrait.")
+    battle_script = (ROOT / "scripts" / "ui" / "battle_scene.gd").read_text(encoding="utf-8")
+    if "Art.portrait_texture(u.character_id, u.portrait_id)" not in battle_script or "Art.character_portrait_texture(Art.character_for_enemy" not in battle_script:
+        errors.append("Battle turn-order portraits do not use the shared identity/archetype resolver.")
     if errors:
         print("FAIL")
         for error in errors:
