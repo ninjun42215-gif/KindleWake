@@ -2,56 +2,71 @@
 
 **Canonical repository:** https://github.com/ninjun42215-gif/KindleWake  
 **Project directory:** `Kindlewake/`  
-**Live main SHA at handoff:** `9ac0b8c229337d3ac890403d7d359862359b9e97`  
+**Live main SHA:** `8c512a063f6ef63c88f33489d118cad6b0a29c6c`  
 **Engine:** Godot 4.2.2 · GL Compatibility · Android  
 **Game / Android version:** `0.12.0 / 1200` · **Save schema:** `4` · **Level cap:** `250`
 
-## Verified current build
+## Latest main build
 
-Main commit `9ac0b8c229337d3ac890403d7d359862359b9e97` passed:
+Main SHA `8c512a063f6ef63c88f33489d118cad6b0a29c6c` passed [Build Android APK #44007769755](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44007769755):
+- **994 strict checks / 0 failures**.
+- Campaign lifecycle, merchant UI and title/creator UI: 0 failures.
+- Campaign continuity: 70 checks; Chronicle dynasty: 39 checks; family development: 19 checks.
+- APK artifact [14294529347](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44007769755/artifacts/14294529347), 63,042,418 bytes; valid signature; no Android permissions requested.
 
-- [Build Android APK #43831250188](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43831250188): first editor import clean (no script/parse errors), 18/18 scene smoke loads, **952 strict checks / 0 failures**, campaign lifecycle 0 failures, campaign continuity 70/70, Chronicle dynasty 39 checks, family development 19 checks, Act V and balance simulation.
-- Signed APK verified for `arm64-v8a` and `armeabi-v7a`; no Android permissions requested. APK artifact ID: `14208059689`.
-- [Project Health Audit #43831250533](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43831250533), [Workflow YAML Lint #43831250108](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43831250108), [Version Sync #43831250104](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43831250104) and [source handoff #43831250102](https://github.com/ninjun42215-gif/KindleWake/actions/runs/43831250102) passed on the same SHA.
+**Important diagnostic caveat:** the optional emulator step in this main build did not confirm a running `com.kindlewake.game` process (`pidof` returned exit code 1). The workflow marks the emulator step `continue-on-error: true`; overall build success therefore does not prove emulator launch. No physical-device QA is recorded.
 
-CI success is not physical Android device certification.
+## Current core engineering candidate
+
+[PR #156 — Reject malformed empire state before campaign restoration](https://github.com/ninjun42215-gif/KindleWake/pull/156)  
+Branch: `fix/campaign-empire-save-validation-2026-11-17`  
+Base: main SHA `8c512a063f6ef63c88f33489d118cad6b0a29c6c`
+
+A malformed non-Dictionary `empire_state` could pass campaign payload validation, then be passed by `GameState.load_campaign()` to the typed `EmpireSystem.normalize_state(raw: Dictionary, ...)` function, raising a runtime type error. The candidate rejects malformed types while preserving absent-field defaults for legacy schema-4 saves. No schema bump or player-data rewrite.
+
+Code commits:
+- `f4bdf15c602addf3e2e2a8293dd181008c9c0538`
+- `62a65c5a8a78c0b6ed8f1e4b3705cdc698b384c0`
+
+Exact-code checks:
+- [Project Health Audit #44010138457](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138457) — passed.
+- [Workflow YAML Lint #44010138493](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138493) — passed.
+- [Version Sync #44010138445](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138445) — passed.
+- [Build Android APK #44010138501](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138501) — import, scene/test and APK export stages passed; emulator diagnostic was still running at handoff. Exact-code APK candidate artifact [14296332096](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44010138501/artifacts/14296332096), 63,042,548 bytes. Re-check the live run before treating the overall workflow as complete.
+
+PR #156 is unmerged. Review the exact current PR head and require final checks before marking ready. Never merge as part of this workflow.
 
 ## What is in main
 
 - Offline-first tactical fantasy RPG; no accounts, backend, multiplayer or INTERNET permission.
-- Toroidal campaign overworld, controller/touch exploration and saved regional positions.
-- Playable Sethmarch / Brinegate Coast vertical slice; seven-continent atlas and original heraldry. The other six continents are **not all playable** yet.
-- Tactical combat, ally-aware AI pathfinding, class progression, equipment/runes, traits, companions, quests, faction diplomacy, holdings/realm administration, Chronicle and family progression.
+- Toroidal campaign overworld, touch/controller exploration and saved regional positions.
+- Playable Sethmarch / Brinegate Coast vertical slice; seven-continent atlas and original heraldry. The other six continents are not all playable.
+- Tactical combat, ally-aware AI pathfinding, class progression, equipment/runes, traits, companions/quests, faction diplomacy, realm administration, Chronicle and family progression.
 - Save schema 4 with semantic validation, backup recovery and campaign lifecycle tests.
-- Android build workflow uses read-only repository access; write access is isolated to version-tag release publishing.
-- Godot bootstrap now uses explicit preloads and the build fails on first-pass import errors rather than retrying over them.
+- Android build workflow creates signed candidate artifacts; a green export is not physical-device certification.
 
-## Current blockers and limits
+## Open PR coordination
 
-1. **Physical Android QA outstanding:** verify portrait/landscape, 20:9 screens, safe areas/notches, title → creator → new game, Chapter 1 courtyard touch, map travel/wrap, battle controls, pause/resume, long sessions, low-memory behavior and save → kill/relaunch → Continue.
-2. **Regional trading PR #81 is not merge-ready:** stale/diverged branch; cargo inventory, tariff/route authority, story/region gating, canonical route endpoints and mobile layout need a fresh implementation based on current main. Do not merge it wholesale.
-3. **Content breadth:** the global atlas is not the same as seven fully playable continents. Complete one tested regional vertical slice at a time.
-4. Governor-specific stat bonuses are not yet implemented. Confirm feature behavior against current code/tests before extending it.
+- [#156](https://github.com/ninjun42215-gif/KindleWake/pull/156): isolated campaign save-validation candidate described above.
+- [#151](https://github.com/ninjun42215-gif/KindleWake/pull/151): draft QA battle-resume work; older base and conflicted. It touches GameState/save/battle flow. Do not duplicate or merge wholesale.
+- [#152](https://github.com/ninjun42215-gif/KindleWake/pull/152): draft QA release-publishing safeguards; older base and conflicted. Keep release-workflow changes with QA/release ownership.
+- [#81](https://github.com/ninjun42215-gif/KindleWake/pull/81): draft regional trading integration; not mergeable. Prior handoff lists cargo inventory, tariff/route authority, region/story gating, canonical route endpoints and mobile layout as unresolved. Rebuild a focused vertical slice from current main; do not merge the old branch wholesale.
+
+## Remaining gates
+
+1. Physical Android QA: portrait/landscape, 20:9 screens, safe areas/notches, title → creator → new game, Chapter 1 courtyard touch, world map travel/wrap, battle controls, pause/resume, long sessions, low-memory behavior and save → kill/relaunch → Continue.
+2. Confirm emulator install/launch with actual process, logcat and screenshot evidence; current main diagnostic did not confirm process launch.
+3. Complete one tested regional vertical slice at a time; the atlas does not mean seven fully playable continents.
+4. Governor-specific stat bonuses remain unimplemented; verify current code before extending.
 5. Recheck `Kindlewake/data/asset_provenance.json` and `Kindlewake/assets/art/CREDITS.md` before distribution. Only runtime-used assets marked verified should ship.
-
-## Open PR triage at this checkpoint
-
-- [#81 Regional trading](https://github.com/ninjun42215-gif/KindleWake/pull/81): blocked; rebuild on current main.
-- [#130 Authentication / offline credential documentation](https://github.com/ninjun42215-gif/KindleWake/pull/130): draft documentation; review for accuracy before marking ready.
-- Older stacked or heavily diverged PRs (#42, #46, #63, #66, #78 and old lore branches) are references only. Inspect their diffs and port small reviewed slices; do not bulk merge.
 
 ## Workflow rules
 
-1. Inspect live `main`, open PRs and exact-head CI before editing. This checkpoint SHA is historical once main advances.
-2. Use a short-lived branch and focused PR. Never edit main directly, force-push, or bypass checks.
-3. Preserve existing story, systems, JSON data, player saves and schema compatibility. Add migrations and regression tests before any schema change.
-4. Keep the game fully offline. Do not add accounts, servers, multiplayer or INTERNET permission.
-5. Require Build Android APK, Project Health Audit, Workflow YAML Lint and Version Sync on the exact PR head. Use expected-head-SHA merge.
-6. A headless scene load or APK export is not physical-device QA. Report the distinction accurately.
-7. Update `docs/SESSION_HANDOFF.md`, this file and relevant design docs when a meaningful change is merged.
+- Inspect live main, open PRs, active branches and exact-head CI before editing.
+- Use a dedicated short-lived branch and focused PR. Never write directly to main, merge PRs, force-push, delete branches or overwrite user work.
+- Preserve story, content, JSON data, player saves and schema compatibility. Add migrations and regression tests before any schema change.
+- Keep the game fully offline. Do not add accounts, servers, multiplayer or INTERNET permission.
+- Require Build Android APK, Project Health Audit, Workflow YAML Lint and Version Sync on the exact final PR head. Treat emulator diagnostics and physical-device QA separately.
+- Update `docs/SESSION_HANDOFF.md`, this file and a dated engineering handoff after meaningful work.
 
-## Best next engineering step
-
-Complete a fresh, reviewed regional trading vertical slice only after mapping current region IDs, market locations, player cargo inventory, tariff ownership and route unlock flags. Keep the first increment limited to safe local buy/sell transactions and save/load persistence; add caravans, route travel and smuggling only after their authority, destination and story-gate rules are testable.
-
-For full context, read `Kindlewake/docs/SESSION_HANDOFF.md`, `Kindlewake/docs/GDD.md`, `Kindlewake/docs/PRODUCTION_AUDIT_2026-11-10.md`, and `Kindlewake/docs/CORE_ENGINEERING_HANDOFF_2026-11-16.md`.
+For details, read `Kindlewake/docs/CORE_ENGINEERING_HANDOFF_2026-11-17.md`, `Kindlewake/docs/SESSION_HANDOFF.md`, `Kindlewake/docs/GDD.md`, and `Kindlewake/docs/PRODUCTION_AUDIT_2026-11-10.md`.
