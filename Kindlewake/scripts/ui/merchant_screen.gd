@@ -9,6 +9,7 @@ var summary_label: Label
 var status_label: Label
 var goods_list: VBoxContainer
 var scroll: ScrollContainer
+var merchant_portrait: TextureRect
 
 
 func _ready() -> void:
@@ -40,7 +41,7 @@ func _ready() -> void:
     margin.add_child(outer)
 
     var header := HBoxContainer.new()
-    var merchant_portrait := TextureRect.new()
+    merchant_portrait = TextureRect.new()
     merchant_portrait.texture = Art.character_portrait_texture("merchant")
     merchant_portrait.custom_minimum_size = Vector2(48, 60)
     merchant_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
