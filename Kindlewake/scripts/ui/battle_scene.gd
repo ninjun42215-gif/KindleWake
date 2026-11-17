@@ -1222,9 +1222,18 @@ func _draw_sprite_identity_marks(u: BattleUnitScript, p: Vector2, is_player: boo
 ## and _draw_unit then falls back to the drawn figure.
 func _draw_unit_sprite(u: BattleUnitScript, p: Vector2, is_player: bool, fdir: Vector2) -> bool:
     if not is_player:
-        var roster_motion: String = "walk" if visual_pos.get(u.id, p) != cell_to_world(u.cell) else "idle"
+        var roster_motion: String = "idle"
+        var roster_time: float = anim_clock + float(u.id) * 0.37
+        var roster_override: Dictionary = anim_override.get(u.id, {})
         var roster_tint: Color = _battle_sprite_tint(u, false)
-        if Art.draw_roster_character(self, u.character_id, p + Vector2(0, 8), anim_clock + float(u.id) * 0.37, roster_motion, 0.44, roster_tint, fdir.x < 0.0):
+        if not roster_override.is_empty() and anim_clock - float(roster_override.get("start", 0.0)) < Art.unit_duration(str(roster_override.get("anim", "idle"))) + 0.1:
+            roster_motion = str(roster_override.get("anim", "idle"))
+            roster_time = anim_clock - float(roster_override.get("start", 0.0))
+            if roster_motion == "hurt":
+                roster_tint = roster_tint.lerp(Color(1.0, 0.58, 0.52), 0.58)
+        elif visual_pos.get(u.id, p) != cell_to_world(u.cell):
+            roster_motion = "walk"
+        if Art.draw_roster_character(self, u.character_id, p + Vector2(0, 8), roster_time, roster_motion, 0.44, roster_tint, fdir.x < 0.0):
             _draw_sprite_identity_marks(u, p, false, 0.44, anim_clock)
             var enemy_ratio: float = clampf(float(u.hp) / float(u.max_hp()), 0.0, 1.0)
             draw_rect(Rect2(p + Vector2(-20, -50), Vector2(40, 7)), Color(0.1, 0.08, 0.08))
