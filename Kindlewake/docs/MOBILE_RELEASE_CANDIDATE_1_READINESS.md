@@ -122,7 +122,7 @@ Run a content audit against the current authoritative `Kindlewake/docs/GDD.md`, 
 
 ## 3. Branch and integration safety
 
-At this review, `feature/complete-portrait-coverage-audit` is **61 commits ahead and 5 commits behind** `main` (merge-base `b874936960b20ce536dcc385579152a659130020`). It is therefore diverged, even though the current tree comparison identifies a focused set of portrait-related file changes.
+At this review, `feature/complete-portrait-coverage-audit` is **67 commits ahead and 5 commits behind** `main` (merge-base `b874936960b20ce536dcc385579152a659130020`). It is therefore diverged, even though the current tree comparison identifies a focused set of portrait-related file changes.
 
 - [ ] Reconcile the five newer mainline commits with this feature branch.
 - [ ] Re-run the complete CI suite on the reconciled exact SHA.
