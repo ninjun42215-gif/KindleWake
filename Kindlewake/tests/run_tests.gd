@@ -227,7 +227,7 @@ func _test_art_assets() -> void:
         if CharacterCreationScript.validate(portrait_profile, gd.character_creation, gd.classes) != "":
             portrait_assets_load = false
     check(creator_portraits.size() == 16 and portrait_ids.size() == 16, "creator offers sixteen stable, unique portrait identities")
-    check(portrait_assets_load, "all sixteen creator portraits resolve to loadable Godot textures and carry sprite palette accents")
+    check(portrait_assets_load, "all sixteen creator portraits load, carry sprite palette accents and pass profile validation")
     check(portrait_accents_match, "each selected portrait resolves its matching protagonist sprite accent")
     for new_portrait_id in ["maelin_tidecaller", "kellan_ashward", "nyra_briar", "orin_lantern"]:
         check(PortraitResolverScript.resolve_path(new_portrait_id).ends_with(".svg"), "new original portrait imports through the shared resolver: " + new_portrait_id)
