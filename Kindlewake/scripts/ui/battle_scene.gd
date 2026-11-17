@@ -1876,27 +1876,14 @@ func _preview_text() -> String:
 ## Resolve a real portrait for the turn-order strip. Allies use their selected character portrait;
 ## enemies use their own species/archetype cell from the original character atlas.
 func _timeline_portrait(u: BattleUnitScript) -> Texture2D:
-    if u.team == "player" and u.portrait_id != "":
-        var portrait_path := "res://assets/art/portraits/%s.svg" % u.portrait_id
-        if ResourceLoader.exists(portrait_path):
-            var portrait := load(portrait_path) as Texture2D
-            if portrait != null:
-                return portrait
-    var archetype: String
-    if u.team == "enemy":
-        archetype = Art.character_for_enemy(u.character_id, u.display_name)
-    else:
-        archetype = Art.character_for_npc(u.display_name, u.class_id)
-    if not Art.CHARACTER_CELLS.has(archetype):
-        archetype = "guard" if u.team == "player" else "rogue"
-    var cell: Vector2i = Art.CHARACTER_CELLS[archetype]
-    var atlas := load(Art.CHARACTER_ATLAS_PATH) as Texture2D
-    if atlas == null:
-        return null
-    var portrait := AtlasTexture.new()
-    portrait.atlas = atlas
-    portrait.region = Rect2(Vector2(cell.x * 128, cell.y * 160), Vector2(128, 160))
-    return portrait
+    if u.team == "player":
+        var personal_portrait := Art.portrait_texture(u.character_id, u.portrait_id)
+        if personal_portrait != null:
+            return personal_portrait
+        return Art.character_portrait_texture(Art.character_for_npc(u.display_name, u.class_id))
+    # Enemy portraits are selected by authored enemy identity/type, never by a
+    # reused hero gallery ID.
+    return Art.character_portrait_texture(Art.character_for_enemy(u.character_id, u.display_name))
 
 
 func _refresh_timeline() -> void:
