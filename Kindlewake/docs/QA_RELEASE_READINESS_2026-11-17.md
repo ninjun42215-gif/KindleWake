@@ -6,7 +6,7 @@
 **QA branch:** `qa/android-emulator-script-guard-2026-11-17`  
 **QA implementation commit:** `15c6c054a1a33907e3fdc4cee55a652a96581b8b`  
 **QA PR:** [#159 — fix Android emulator smoke-test shell assertions](https://github.com/ninjun42215-gif/KindleWake/pull/159)  
-**Report status (2026-11-17 11:28 UTC):** QA PR remains draft. Exact head `cae7a5741eedf67332341d217daa7eeea298f447` has passing Project Health Audit, Workflow YAML Lint and Version Sync; its Android build is still running the Google APIs / ANGLE emulator and OCR visual gate. APK artifact ID `14323990772` was uploaded from that exact SHA, but the overall run is not yet complete and the artifact is not release-approved.
+**Report status (2026-11-17 11:36 UTC):** QA PR remains draft. Tested head `03ebaf3b67ce6ed6dcc263f23f4a9500ff1e298f` passed Project Health Audit, Workflow YAML Lint, Version Sync and the full Android build/emulator/OCR workflow. Exact-head APK artifact ID `14324163144` and test-logs artifact ID `14325425812` are verified below. This is a CI/test-signed artifact, not a production release. The report-only refresh after this tested head will trigger a new CI cycle.
 
 ## Executive result
 
@@ -80,7 +80,7 @@ All comparisons below use main `adf3d44bbeef1e1e048f2aa244a1a80bf95147fc` as the
 
 | PR | Head SHA | Main comparison | QA disposition |
 |---|---|---:|---|
-| [#159 emulator script fix](https://github.com/ninjun42215-gif/KindleWake/pull/159) | `cae7a5741eedf67332341d217daa7eeea298f447` | 14 ahead / 0 behind | Focused QA draft; exact-head audit/lint/version checks pass; Android emulator + OCR gate still running |
+| [#159 emulator script fix](https://github.com/ninjun42215-gif/KindleWake/pull/159) | `03ebaf3b67ce6ed6dcc263f23f4a9500ff1e298f` | 16 ahead / 0 behind | Focused QA draft; exact-head audit, lint, version sync, Android emulator and OCR gates pass |
 | [#158 equipment icons](https://github.com/ninjun42215-gif/KindleWake/pull/158) | `2a0df2d9bb868ed537d6603bcd2f8b4ba01fac87` | 4 ahead / 0 behind | Draft; Android workflow failure is the same emulator-script defect |
 | [#157 protagonist identity / portraits](https://github.com/ninjun42215-gif/KindleWake/pull/157) | `b9545c5e3fab1ebd5a095bfcf807573bbfc1973c` | 34 ahead / 0 behind | Draft; Android workflow failure is the same emulator-script defect |
 | [#156 empire save validation](https://github.com/ninjun42215-gif/KindleWake/pull/156) | `5b250870d3380e68183b7dde955acc7bbcf238fb` | 8 ahead / 79 behind; diverged | Do not merge as-is; rebase/reconcile and rerun save migration tests |
@@ -220,3 +220,26 @@ Commit b61f8087d8c831614bf4edd2105dbaeaffb681d5 adds the immersive_mode_confirma
 - The `PROJECT_HEALTH_AUDIT.md` asset paragraph was stale: it still claimed the legacy voxel pack was used and release-blocking. This QA branch now corrects the guidance to match the current `asset_provenance.json` and `CREDITS.md`: all runtime-used packs are marked verified; the legacy voxel pack is retained but unused; LimeZu and MountainRocks remain unused with restrictive/unknown terms.
 - Release workflow remains a separate readiness concern: `publish-android-release.yml` grants `contents: write` at workflow scope, so the rejected-confirmation job inherits a permission it does not need. Duplicate hardening PRs #148 and #152 are both heavily diverged from current main and touch the same workflow files; do not merge either wholesale. There are currently no published GitHub Releases.
 - No physical Android device test was performed. Emulator success does not certify the user's phone, touch controls, long-session memory or save retention.
+
+
+## Final exact-head Android emulator and APK verification — 2026-11-17 11:36 UTC
+
+The current QA implementation head `03ebaf3b67ce6ed6dcc263f23f4a9500ff1e298f` passed the complete workflow. This is the first successful exact-head run that verifies both process/foreground stability and visible title/menu text.
+
+- [Build Android APK #44074946535](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44074946535): **success** for exact SHA `03ebaf3b67ce6ed6dcc263f23f4a9500ff1e298f`.
+- [Project Health Audit #44074946534](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44074946534): **success** for the same SHA.
+- [Workflow YAML Lint #44074946615](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44074946615): **success** for the same SHA.
+- [Version Sync #44074946562](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44074946562): **success** for the same SHA.
+- Godot 4.2.2 import: exit 0, no script errors. Scene smoke: 20/20 scenes loaded, 0 failures.
+- Core regression suite: 1,009 checks, 0 failures. Campaign lifecycle, merchant UI and title/creator UI passed. Act V 0 failures; campaign continuity 70 checks / 0 failures; Chronicle dynasty 39 / 0 failures; family development 19 / 0 failures.
+- Title/creator coverage specifically verified all 12 portrait assets load; portrait choice updates the live preview, saved protagonist identity, character sheet and save serialization; presentation radio synchronization; origin/discipline/weapon/temperament selectors open and accept their first touch press; attribute controls enforce the point budget; Continue stays disabled without a valid save and enables after a valid save.
+- Balance simulation: 30 AI-vs-AI battles per scenario. Win rates were 57% (hard), 80% (fair), and 97%, 100%, 100% (easy). This is a deterministic starting-party benchmark, not human balance testing.
+- Android emulator: API 35, standard `google_apis`, Pixel 5 profile, x86_64, ANGLE renderer. APK install and explicit GodotApp launch succeeded. After 30 seconds, `mCurrentFocus` and `topResumedActivity` both identify `com.kindlewake.game/com.godot.game.GodotApp`. The process-liveness gate passed.
+- Tesseract OCR output from the captured screenshot contains `KINDLEWAKE`, `NEW GAME` and `SETTINGS`; all three CI assertions passed. The screenshot shows the landscape title screen and complete menu without the Android immersive-mode confirmation overlay. No `FATAL EXCEPTION`, native `Fatal signal`, `SCRIPT ERROR` or `Parse Error` was detected.
+- APK artifact [14324163144](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44074946535/artifacts/14324163144): artifact ZIP 65,216,060 bytes; GitHub digest `sha256:91e6da40d8eaae5544a73e1fca711df4721cc8fc7724b526941d44ead9b6f779`. Extracted APK size 65,770,402 bytes; SHA-256 `fafe659b49ccbe8f684034345aff9241ac2bef71276bab0cffb89668aa3bf47b`. Builder reports a valid signature (test signing certificate SHA-256 prefix `c04a7792715ad8f5`), no Android permissions requested, and native ABIs `arm64-v8a`, `armeabi-v7a`, `x86_64`.
+- Test logs and screenshot artifact [14325425812](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44074946535/artifacts/14325425812): 473,497 bytes; GitHub digest `sha256:c53d2b532a32aa22cb9394ec88ebd8db7b13caa430cfe69c40a14abd14e0565d`.
+- The older build [#44072410290](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44072410290) for the earlier `cae7a574` head remained in progress after the later exact-head run passed; it is not the artifact source and is not used as release evidence.
+- The tested APK is from the exact PR head above. The documentation refresh that records this result is a subsequent docs-only commit; do not label the APK as built from that later documentation commit until its own CI completes.
+- Emulator verification is not physical-device QA. No physical Android handset was available; touch behavior on the user's device, long-session memory, real GPU rendering and save retention across an actual app update remain unverified.
+
+**Disposition:** PR #159 remains draft and unmerged as required. No main change, production signing, GitHub Release or public release publication occurred.
