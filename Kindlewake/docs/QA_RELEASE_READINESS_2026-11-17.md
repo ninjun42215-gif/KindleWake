@@ -154,3 +154,20 @@ Godot's 4.2 docs identify `SCREEN_LANDSCAPE = 0` and document that Compatibility
 ### Emulator-image isolation follow-up
 
 The same captured log shows the AOSP ATD `MultiDisplayService` starting during Godot startup, followed shortly by the Godot activity's orderly `onDestroy` path. This is a correlation, not proof that the service caused the exit. To isolate the test environment, workflow commit `9d74bf63b7eb5532a91e32ffdec726ce1643a4ff` switches the smoke-test AVD from `aosp_atd` to the standard `google_apis` image, retains the Pixel 5 profile and default display geometry, and keeps the process/logcat gates. This does not alter the app's Android export or gameplay. Exact-head emulator verification is pending.
+
+
+## Save integrity and combat/data checks
+
+The follow-up build log `logs/run_tests.txt` confirms the 1,009-check suite includes:
+- v1-to-v2 and v2/v3-to-v4 migration preservation;
+- real v1 save migration and schema-4 restore compatibility;
+- corrupt primary save fallback to a verified backup;
+- checksum mismatch rejection;
+- rejection of checksum-valid but malformed campaign metadata;
+- semantic backup fallback for a checksum-valid but semantically invalid primary;
+- protection against silently downgrading a future-version primary to an older backup;
+- malformed party, inventory, equipment, relationship, personality, trait-history and chronicle state validation.
+
+The campaign Continue lifecycle test also passed: a restored campaign entered the World scene, initialized its regional map and remained alive through battle preparation/opening. These are automated headless tests; they do not replace testing actual user save files on physical Android devices.
+
+The AI-vs-AI balance report ran 30 battles per scenario. It labels one encounter **hard** at 57% win rate, one **fair** at 80%, and three **easy** at 97–100%. The 60-skirmish grind sample ended at levels 11/10/10/10 with 59 wins and 4,714 gold. The report itself cautions that this is a starting-party AI benchmark, not human playtesting. Recommendation: keep the current data intact for now; review the hard encounter and three easy scenarios in human playtests before adjusting rewards or enemy stats.
