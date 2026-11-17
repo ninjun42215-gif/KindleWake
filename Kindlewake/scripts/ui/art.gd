@@ -193,7 +193,7 @@ static func character_for_npc(name: String, role: String = "") -> String:
         return "blacksmith"
     if key.contains("archivist") or key.contains("scribe") or key.contains("scholar") or key.contains("librarian") or key.contains("clerk"):
         return "scholar"
-    if key.contains("noble") or key.contains("duke") or key.contains("duchess") or key.contains("heir") or key.contains("elder") or key.contains("lord") or key.contains("lady"):
+    if key.contains("noble") or key.contains("king") or key.contains("queen") or key.contains("regent") or key.contains("monarch") or key.contains("duke") or key.contains("duchess") or key.contains("heir") or key.contains("elder") or key.contains("lord") or key.contains("lady") or key.contains("baron"):
         return "noble"
     if key.contains("duelist") or key.contains("fencer") or key.contains("champion"):
         return "duelist"
