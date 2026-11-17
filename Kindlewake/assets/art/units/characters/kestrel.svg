@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="160" viewBox="0 0 240 300">
+<defs><linearGradient id="c" x2="0" y2="1"><stop stop-color="#55432f"/><stop offset="1" stop-color="#111d25"/></linearGradient><linearGradient id="s" x2="0" y2="1"><stop stop-color="#a8755c"/><stop offset="1" stop-color="#704d3d"/></linearGradient></defs>
+<ellipse cx="120" cy="286" rx="54" ry="9" fill="#080b0d" opacity=".45"/>
+<path d="M77 173L49 195L39 265L58 270L86 218L92 294H116L120 226L130 294H154L160 216L185 270L204 263L190 194L163 173Z" fill="#282b32" stroke="#171a20" stroke-width="5"/>
+<path d="M91 222L113 222L112 292H88Z M128 222L150 222L153 292H130Z" fill="#46362b" stroke="#c39a4d" stroke-width="4"/>
+<path d="M76 89Q120 63 164 89L188 203L161 247L79 247L52 203Z" fill="url(#c)" stroke="#c39a4d" stroke-width="6"/>
+<path d="M78 111L120 148L162 111L149 193L120 218L91 193Z" fill="#1b2930" stroke="#c39a4d" stroke-width="4"/>
+<path d="M91 94L120 139L149 94L163 113L120 164L77 113Z" fill="#c39a4d" stroke="#4b3928" stroke-width="4"/>
+<path d="M83 48Q120 20 157 48L158 97Q151 129 120 137Q89 129 82 97Z" fill="url(#s)" stroke="#694b3c" stroke-width="4"/>
+<path d="M73 47Q48 60 57 118L48 165L79 153L83 91Z" fill="#34231f"/><path d="M167 47Q192 60 183 118L192 165L161 153L157 91Z" fill="#34231f"/>
+<path d="M84 71Q99 62 111 70M129 70Q141 62 156 71" stroke="#201d1c" stroke-width="6" fill="none"/><ellipse cx="102" cy="83" rx="4" ry="5" fill="#17191d"/><ellipse cx="138" cy="83" rx="4" ry="5" fill="#17191d"/><path d="M120 87L115 104L124 107M106 117Q120 123 134 116" fill="none" stroke="#70483a" stroke-width="3"/>
+
+<path d="M48 181L25 226L47 240L83 199M192 181L215 226L193 240L157 199" fill="url(#c)" stroke="#c39a4d" stroke-width="5"/>
+<path d="M182 85L206 184" stroke="#6d482b" stroke-width="8"/><path d="M204 177L218 214" stroke="#cbd0d2" stroke-width="7"/><path d="M173 85L191 91" stroke="#c39a4d" stroke-width="9"/>
+<path d="M105 164L120 179L135 164L131 197L120 211L109 197Z" fill="#c39a4d" stroke="#32271f" stroke-width="3"/>
+<path d="M18 14H222M18 286H222" stroke="#c39a4d" opacity=".25" stroke-width="2"/>
+</svg>
