@@ -122,3 +122,30 @@ The legacy voxel-building pack has unverified provenance but is marked unused an
 8. Confirm production environment reviewers, signing secrets, certificate fingerprint and immutable tag rules before any public release.
 
 **No physical-device test was performed in this run. No PR was merged and no release was published.**
+
+
+## Follow-up emulator evidence — 2026-11-17
+
+The first PR-head build after replacing the broken multi-line shell blocks completed Godot import, all strict tests and APK export, then failed the new process-liveness assertion. This is a separate finding from the original shell parser defect.
+
+- Follow-up build: [#44065627411](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44065627411), source head `d167853258d63b6931776ca3d3b5ec4d2f4ea03a`.
+- Strict checks again passed: 20 scenes, 1,009 core checks / 0 failures, campaign lifecycle 0, merchant UI 0, title/creator UI 0, Act V 0, continuity 70, dynasty 39 and family development 19.
+- APK artifact: [ID 14319014751](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44065627411/artifacts/14319014751). Builder reported 65.8 MB, valid signature and no Android permissions. The workflow failed after APK upload; do not treat it as a release candidate.
+- Emulator diagnostics: [test-logs artifact ID 14320716062](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44065627411/artifacts/14320716062). It contains the black screenshot, logcat, activity/window dumps and build logs.
+
+### What the captured logcat proves
+
+- Godot 4.2.2 loaded, created an OpenGL ES 3.0 SwiftShader context and reached `OnGodotMainLoopStarted`.
+- No `FATAL EXCEPTION`, native `Fatal signal`, `SCRIPT ERROR` or `Parse Error` was found in the captured log.
+- The renderer logged `SceneShaderGLES3: Program linking failed` with `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)` and a warning that the default `rendering/limits/global_shader_variables/buffer_size` exceeds the device's 16,384-byte uniform-buffer limit.
+- Approximately two seconds after startup, `GodotActivity` logged `Destroying Godot app` / `Force quitting Godot instance`; Android then recorded the app process exiting with signal 9. The 30-second screenshot was black and the activity dump showed the emulator home activity, not KindleWake.
+
+The log does **not** establish why the Android activity was destroyed. The SceneShader/SwiftShader messages are not proven to be the cause: a similar GLES3 uniform-link error has been reported upstream on Android SwiftShader, where a Godot maintainer suspected a SwiftShader issue rather than a game-level shader limit ([Godot issue #109550](https://github.com/godotengine/godot/issues/109550)). The project contains no custom `shader_type` or `global uniform` declarations in the current main source search. Treat the renderer messages as a compatibility warning to investigate, not as a confirmed crash root cause.
+
+Godot's 4.2 docs identify `SCREEN_LANDSCAPE = 0` and document that Compatibility mobile devices can have much smaller global shader uniform limits than desktop ([DisplayServer orientation](https://docs.godotengine.org/en/4.2/classes/class_displayserver.html), [ProjectSettings](https://docs.godotengine.org/en/4.2/classes/class_projectsettings.html)). The project currently selects landscape orientation. The old workflow also changed emulator size/density/rotation while starting the app; the new follow-up commit removes those overrides to rule out an ATD display-reconfiguration interaction and prints filtered diagnostics before assertions.
+
+### Follow-up implementation
+
+- Workflow commit `04732f1621fad90da9204228a0639e84e5240c10` removes the manual `wm size`, `wm density` and rotation overrides, keeps the Pixel 5 20:9 profile defaults, and prints filtered Android/Godot error and lifecycle lines before process assertions.
+- This commit is on PR #159. Exact-head Build Android APK, Project Health Audit, Workflow YAML Lint and Version Sync are pending; do not mark the emulator issue resolved until the app remains running and the captured screenshot shows the game.
+- Next diagnostic if it still exits: compare a standard `google_apis` emulator image against `aosp_atd`, then inspect the first activity-finish reason and full Godot startup log. Keep the runtime and save files unchanged until a reproducible game-side cause is found.
