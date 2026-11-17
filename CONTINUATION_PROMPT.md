@@ -142,7 +142,7 @@ Answer in plain English. Lead with what you did and what I should do next. Keep 
 
 ## v0.7.7 — Interactive protagonist creator
 - `CharacterCreator.tscn` and `scripts/ui/character_creator.gd` provide the touch-first New Chronicle overlay with name, presentation, face, hair, skin, build, origin, starting discipline, compatible weapon preference and temperament selectors, validation, Confirm and Back.
-- `scripts/ui/character_preview.gd` draws the geometric bust and stat/choice summary. It is a UI preview, not production portrait art.
+- `scripts/ui/portrait_resolver.gd` resolves portrait assets in PNG → WebP → JPG → SVG order. The creator gallery/preview use it; the protagonist (`torren`) also uses the selected raster portrait in party and battle UI, while other named characters keep their current SVGs until they receive unique art. See `Kindlewake/docs/ART_ASSET_PIPELINE.md` for the portrait standards and current coverage gap.
 - Confirm routes through `GameState.new_game(profile)` and `PartyState.new_game(..., protagonist_definition)`. Stable id `torren` and the four-member starting roster remain; companion definitions are unchanged. Back does not replace the current party.
 - Battle manual saves/autosaves carry `creation_profile`; save schema v2 migrates v1 by adding an empty profile while preserving battle and party payloads. Tests cover party initialization and save/migration behavior.
 - Limitations: weapon preference remains metadata only; origin tags have no story consumers; world/interior/full-campaign persistence is incomplete. Static check and APK preflight passed at that checkpoint; Godot runtime was not run.

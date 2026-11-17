@@ -6,6 +6,7 @@ signal confirmed(profile: Dictionary)
 signal cancelled
 
 const PreviewScript = preload("res://scripts/ui/character_preview.gd")
+const PortraitResolverScript = preload("res://scripts/ui/portrait_resolver.gd")
 
 var config: Dictionary = {}
 var profile: Dictionary = {}
@@ -295,7 +296,7 @@ func _add_portrait_gallery(parent: VBoxContainer) -> void:
         button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         button.clip_text = true
         button.text = str(portrait.get("name", id))
-        button.icon = load("res://assets/art/portraits/%s.svg" % id)
+        button.icon = PortraitResolverScript.load_texture(id)
         button.expand_icon = true
         button.add_theme_constant_override("icon_max_width", 78)
         button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER

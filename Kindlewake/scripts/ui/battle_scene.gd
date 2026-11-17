@@ -8,6 +8,7 @@ const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
 const PartyStateScript = preload("res://scripts/core/party_state.gd")
 const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
+const PortraitResolverScript = preload("res://scripts/ui/portrait_resolver.gd")
 ## Milestone 1 battle scene: isometric placeholder rendering, touch/mouse input and a HUD built in code.
 ## All rules live in BattleControllerScript; this script only presents state and forwards player input.
 
@@ -1877,11 +1878,15 @@ func _preview_text() -> String:
 ## enemies use their own species/archetype cell from the original character atlas.
 func _timeline_portrait(u: BattleUnitScript) -> Texture2D:
     if u.team == "player" and u.portrait_id != "":
-        var portrait_path := "res://assets/art/portraits/%s.svg" % u.portrait_id
-        if ResourceLoader.exists(portrait_path):
-            var portrait := load(portrait_path) as Texture2D
-            if portrait != null:
-                return portrait
+        var portrait: Texture2D = null
+        if u.character_id == "torren":
+            portrait = PortraitResolverScript.load_texture(u.portrait_id)
+        else:
+            var portrait_path := "res://assets/art/portraits/%s.svg" % u.portrait_id
+            if ResourceLoader.exists(portrait_path):
+                portrait = load(portrait_path) as Texture2D
+        if portrait != null:
+            return portrait
     var archetype: String
     if u.team == "enemy":
         archetype = Art.character_for_enemy(u.character_id, u.display_name)

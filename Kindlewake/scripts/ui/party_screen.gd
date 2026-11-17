@@ -7,6 +7,7 @@ const RuneSystem = preload("res://scripts/core/rune_system.gd")
 const PersonalitySystemScript = preload("res://scripts/core/personality_system.gd")
 const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 const RelationshipSystemScript = preload("res://scripts/core/relationship_system.gd")
+const PortraitResolverScript = preload("res://scripts/ui/portrait_resolver.gd")
 ## Full-screen party management in one touch UI (v0.8.0 layout): a compact top bar, a roster of cards, a character
 ## sheet made of stat tiles, and a right panel with three tabs: Equipment, Runes and Shop.
 ## It owns no rules: every action goes through PartyStateScript / CharacterSheetScript / ShopSystem, the same code paths the
@@ -312,6 +313,10 @@ func _portrait_texture(portrait_id: String, character_id: String = "") -> Textur
             resolved_id = fallback_ids[absi(character_id.hash()) % fallback_ids.size()]
     if resolved_id == "":
         return null
+    # Only the stable protagonist uses the newly approved raster portrait exports.
+    # Companions keep their existing per-character SVGs until unique art is assigned.
+    if character_id == "torren":
+        return PortraitResolverScript.load_texture(resolved_id)
     var path := "res://assets/art/portraits/%s.svg" % resolved_id
     if not ResourceLoader.exists(path):
         return null

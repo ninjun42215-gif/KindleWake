@@ -4,6 +4,7 @@ extends Node
 
 const TitleScreenScript = preload("res://scripts/ui/title_screen.gd")
 const CharacterCreatorScript = preload("res://scripts/ui/character_creator.gd")
+const PortraitResolverScript = preload("res://scripts/ui/portrait_resolver.gd")
 
 var failures := 0
 
@@ -45,27 +46,32 @@ func _run_ui_test() -> void:
     _check(int(ProjectSettings.get_setting("display/window/handheld/orientation", 0)) == 0,
         "Android project orientation remains landscape")
     _check(creator.preview != null and is_instance_valid(creator.preview), "creator builds its live portrait preview")
+    _check(creator.preview.portrait_texture != null, "creator preview loads the default portrait artwork")
     _check(creator.name_input != null and creator.confirm_button != null, "creator builds identity input and confirmation action")
     _check(creator.allocation_plus_buttons.size() == 6 and creator.allocation_minus_buttons.size() == 6,
         "creator builds plus and minus controls for all six attributes")
     _check(creator.presentation_buttons.size() == 3, "creator exposes all presentation radio choices")
     _check(creator.portrait_buttons.size() == 12, "creator exposes the complete twelve-portrait gallery")
+    _check(PortraitResolverScript.resolve_path("torren_redcloak").ends_with(".webp"), "Torren uses the new raster portrait ahead of its SVG fallback")
+    _check(PortraitResolverScript.resolve_path("auburn_ranger").ends_with(".webp"), "Auburn Ranger uses the new raster portrait ahead of its SVG fallback")
+    _check(PortraitResolverScript.resolve_path("sunwarden").ends_with(".svg"), "unconverted portraits retain the SVG fallback")
     var all_portraits_load := true
     for portrait in GameData.character_creation.get("portraits", []):
-        var portrait_path := "res://assets/art/portraits/%s.svg" % str(portrait.get("id", ""))
-        if not ResourceLoader.exists(portrait_path) or load(portrait_path) == null:
+        var portrait_id := str(portrait.get("id", ""))
+        var portrait_path := PortraitResolverScript.resolve_path(portrait_id)
+        if portrait_path == "" or PortraitResolverScript.load_texture(portrait_id) == null:
             all_portraits_load = false
     _check(all_portraits_load, "all twelve portrait assets load as Godot textures")
     var every_character_has_portrait := true
     for character_id in GameData.characters.keys():
         var character: Dictionary = GameData.characters[character_id]
         var portrait_id := str(character.get("portrait_id", ""))
-        var portrait_path := "res://assets/art/portraits/%s.svg" % portrait_id
-        if portrait_id == "" or not ResourceLoader.exists(portrait_path):
+        if portrait_id == "" or PortraitResolverScript.load_texture(portrait_id) == null:
             every_character_has_portrait = false
     _check(every_character_has_portrait, "every character definition has an assigned portrait asset")
     if creator.portrait_buttons.has("auburn_ranger"):
         creator._on_portrait_button_toggled(true, "auburn_ranger")
+        _check(creator.preview.portrait_texture != null, "selected raster portrait updates the live creator preview")
         _check(str(creator.profile.get("portrait_id", "")) == "auburn_ranger",
             "portrait selection updates the saved protagonist identity")
         _check(str(creator.profile.get("presentation", "")) == "feminine"
@@ -132,7 +138,7 @@ func _run_ui_test() -> void:
         var every_party_member_has_portrait := true
         for member_id in party.roster:
             var member_sheet = party.sheet(member_id)
-            if member_sheet == null or member_sheet.portrait_id == "" or not ResourceLoader.exists("res://assets/art/portraits/%s.svg" % member_sheet.portrait_id):
+            if member_sheet == null or member_sheet.portrait_id == "" or PortraitResolverScript.load_texture(member_sheet.portrait_id) == null:
                 every_party_member_has_portrait = false
         _check(every_party_member_has_portrait, "every starting party member receives a loadable portrait")
         var restored_sheet = CharacterSheet.from_dict(sheet.to_dict())

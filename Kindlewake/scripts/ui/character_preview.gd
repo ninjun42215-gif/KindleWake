@@ -1,6 +1,7 @@
 class_name CharacterPreview
 extends Control
-## Original geometric bust preview for creator choices. This is a UI preview, not production portrait art.
+const PortraitResolverScript = preload("res://scripts/ui/portrait_resolver.gd")
+## Portrait-backed creator preview. The geometric bust remains a fallback when no asset resolves.
 
 var profile: Dictionary = {}
 var portrait_texture: Texture2D = null
@@ -17,8 +18,7 @@ static func jaw_ratio_for_presentation(presentation_id: String) -> float:
 func set_profile(value: Dictionary) -> void:
     profile = value.duplicate(true)
     var portrait_id := str(profile.get("portrait_id", ""))
-    var portrait_path := "res://assets/art/portraits/%s.svg" % portrait_id
-    portrait_texture = load(portrait_path) as Texture2D if portrait_id != "" and ResourceLoader.exists(portrait_path) else null
+    portrait_texture = PortraitResolverScript.load_texture(portrait_id)
     queue_redraw()
 
 
