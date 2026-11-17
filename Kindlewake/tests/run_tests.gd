@@ -209,6 +209,7 @@ func _test_art_assets() -> void:
     check(ArtScript.character_for_enemy("bell_keeper") == "wraith", "bell keeper receives a unique spectral design")
     check(ArtScript.character_for_enemy("hollow_hart") == "direwolf", "Hollow Hart receives a unique beast design")
     check(ArtScript.character_for_enemy("roadwolf_reaver", "Roadwolf Reaver") == "rogue", "Roadwolf faction raiders use humanoid raider portraits, not wolf-monster portraits")
+    check(ArtScript.character_for_enemy("roadbowman", "Roadwolf Bowman") == "ranger", "Roadwolf ranged units preserve their archer portrait archetype")
     check(ArtScript.character_for_enemy("bandit") == "rogue", "ordinary bandits use the humanoid raider archetype")
     check(ArtScript.character_for_enemy("elite_raider") == "rogue", "elite raiders use the humanoid raider archetype")
 
