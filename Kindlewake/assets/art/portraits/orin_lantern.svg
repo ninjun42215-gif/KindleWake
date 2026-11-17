@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<title>Orin Lantern — original KindleWake portrait</title>
+<defs>
+ <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#596b88"/><stop offset=".5" stop-color="#30394f"/><stop offset="1" stop-color="#151d2b"/></linearGradient>
+ <radialGradient id="glow"><stop stop-color="#d6c38f" stop-opacity=".38"/><stop offset="1" stop-color="#d6c38f" stop-opacity="0"/></radialGradient>
+ <linearGradient id="skin" x2=".8" y2="1"><stop stop-color="#e7c6a6"/><stop offset=".55" stop-color="#bd8d70"/><stop offset="1" stop-color="#71544c"/></linearGradient>
+ <linearGradient id="hair" x2="1" y2="1"><stop stop-color="#4b4a58"/><stop offset=".6" stop-color="#252b3b"/><stop offset="1" stop-color="#171e2a"/></linearGradient>
+ <linearGradient id="robe" x2="0" y2="1"><stop stop-color="#465a83"/><stop offset=".5" stop-color="#273b61"/><stop offset="1" stop-color="#17243d"/></linearGradient>
+ <linearGradient id="trim" x2="1" y2="1"><stop stop-color="#e3cf9e"/><stop offset="1" stop-color="#8b714b"/></linearGradient>
+ <linearGradient id="glass" x2="1" y2="1"><stop stop-color="#c1d4d5"/><stop offset="1" stop-color="#637e96"/></linearGradient>
+</defs>
+<rect width="512" height="512" fill="url(#bg)"/><circle cx="256" cy="184" r="215" fill="url(#glow)"/>
+<path d="M0 512Q32 396 107 350Q164 312 205 304H309Q369 313 414 350Q482 410 512 512Z" fill="#161e2c"/>
+<path d="M37 512Q65 382 145 340L199 307H313L367 340Q449 383 475 512Z" fill="url(#robe)" stroke="#9c9e9b" stroke-width="5"/>
+<path d="M122 512L166 352L214 315L256 375L298 315L346 352L390 512Z" fill="#263959" stroke="#7183a0" stroke-width="4"/>
+<path d="M177 339L219 308L256 365L293 308L335 339L311 391L256 421L201 391Z" fill="#d4d0c3" stroke="#7d8ba0" stroke-width="4"/>
+<path d="M216 238H296L306 340Q257 376 206 340Z" fill="url(#skin)"/>
+<path d="M126 155Q132 47 256 21Q380 46 385 157L357 294L326 345H185L154 294Z" fill="url(#hair)" stroke="#20283a" stroke-width="5"/>
+<path d="M171 120Q195 65 256 64Q317 65 341 120L331 213Q319 273 256 291Q193 273 181 213Z" fill="url(#skin)" stroke="#785b4e" stroke-width="4"/>
+<path d="M124 160Q126 74 198 43L220 55L256 32L291 55L314 43Q382 79 387 161L357 169L340 128L316 143L286 108L256 126L225 108L195 143L171 128L154 174Z" fill="url(#hair)"/>
+<path d="M147 134Q137 209 164 290L187 318L190 183Z M365 134Q375 209 348 290L325 318L322 183Z" fill="url(#hair)"/>
+<path d="M201 165Q222 152 241 164M271 164Q292 152 311 165" fill="none" stroke="#3d3c48" stroke-width="7" stroke-linecap="round"/>
+<path d="M205 181Q222 174 240 181M272 181Q290 174 307 181" fill="none" stroke="#2b2e3b" stroke-width="3"/>
+<ellipse cx="222" cy="184" rx="5" ry="7" fill="#292d39"/><ellipse cx="290" cy="184" rx="5" ry="7" fill="#292d39"/>
+<path d="M256 185L246 220L259 224" fill="none" stroke="#8c6658" stroke-width="4" stroke-linecap="round"/>
+<path d="M235 247Q256 255 278 247" fill="none" stroke="#80584d" stroke-width="4" stroke-linecap="round"/>
+<g fill="none" stroke="url(#glass)" stroke-width="5"><circle cx="222" cy="184" r="20"/><circle cx="290" cy="184" r="20"/><path d="M242 183Q256 176 270 183"/></g>
+<path d="M205 164L238 158M273 158L307 164" stroke="#2a2d39" stroke-width="4" opacity=".8"/>
+<path d="M256 113L268 91L280 113L268 126Z" fill="url(#trim)" stroke="#4b4350" stroke-width="3"/>
+<path d="M172 120Q188 49 256 36Q324 49 340 120L320 116Q292 91 256 96Q220 91 192 116Z" fill="#222a3b" stroke="#7d8ba0" stroke-width="4"/>
+<path d="M177 307L219 326L256 376L293 326L335 307L316 363L256 418L196 363Z" fill="url(#robe)" stroke="#b9a77c" stroke-width="4"/>
+<path d="M242 366L256 381L270 366L277 395L256 415L235 395Z" fill="url(#trim)" stroke="#534735" stroke-width="3"/>
+<circle cx="256" cy="389" r="7" fill="#d9c68f"/>
+<path d="M79 512Q110 416 190 370L210 395L178 512Z M433 512Q402 416 322 370L302 395L334 512Z" fill="#202f4c" stroke="#6d7f9d" stroke-width="4"/>
+<path d="M112 420L148 397L166 423L144 512M400 420L364 397L346 423L368 512" fill="none" stroke="#c5b88e" stroke-width="4" opacity=".7"/>
+</svg>
