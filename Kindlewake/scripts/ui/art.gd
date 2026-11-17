@@ -170,6 +170,17 @@ static func draw_character(canvas: CanvasItem, archetype: String, feet: Vector2,
 
 static func character_for_npc(name: String, role: String = "") -> String:
     var key: String = (name + " " + role).to_lower()
+    # Interactive map spots also include evidence and quest objects, not only people.
+    # Suppress portraits for non-person spots instead of showing a misleading guard.
+    for non_person_term in ["marker", "petition", "price of", "hearing", "tree", "bridges", "purse", "boundary", "banner", "challenge", "seal", "unarmed yard", "hall of retainers", "rule of shelter", "sanctuary bell", "volume", "signal", "copybook", "register", "passage", "chart", "leaf", "public stage", "oath", "records", "audience", "lattice", "missing tower page", "lantern & keel"]:
+        if key.contains(non_person_term):
+            return ""
+    if key.contains("the changed escort"):
+        return "guard"
+    if key.contains("the returned commander"):
+        return "knight"
+    if key.contains("the witness who recanted"):
+        return "scholar"
     if key.contains("torren"):
         return "chronicle_hero"
     if key.contains("sela"):
@@ -203,9 +214,9 @@ static func character_for_npc(name: String, role: String = "") -> String:
         return "hunter"
     if key.contains("priest") or key.contains("brother") or key.contains("sister") or key.contains("healer"):
         return "healer"
-    if key.contains("guard") or key.contains("soldier") or key.contains("watch") or key.contains("sergeant"):
+    if key.contains("guard") or key.contains("soldier") or key.contains("watch") or key.contains("sergeant") or key.contains("warden") or key.contains("reeve") or key.contains("keeper") or key.contains("marshal"):
         return "guard"
-    if key.contains("merchant") or key.contains("trader") or key.contains("innkeeper") or key.contains("carter"):
+    if key.contains("merchant") or key.contains("trader") or key.contains("innkeeper") or key.contains("carter") or key.contains("factor") or key.contains("broker") or key.contains("shopkeeper") or key.contains("provisioner") or key.contains("drover"):
         return "merchant"
     if key.contains("mage") or key.contains("witch") or key.contains("seer"):
         return "mage"
