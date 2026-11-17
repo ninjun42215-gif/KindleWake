@@ -85,31 +85,7 @@ jobs:
           profile: pixel_5
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
-          script: |
-            # Match the HONOR 400's portrait logical viewport: 440 x 952 dp
-            # (1264 x 2736 at 460 dpi) while keeping emulator rendering light.
-            adb shell wm size 1368x632
-            adb shell wm density 230
-            adb shell settings put system accelerometer_rotation 0
-            adb shell settings put system user_rotation 1
-            adb shell settings put system font_scale 1.0
-            adb install -r Kindlewake/dist/Kindlewake.apk
-            adb logcat -c
-            adb shell monkey -p com.kindlewake.game 1
-            sleep 30
-            test -n "$(adb shell pidof com.kindlewake.game)"
-            adb shell dumpsys window displays > Kindlewake/dist/android-window-displays.txt
-            adb shell dumpsys activity activities > Kindlewake/dist/android-activities.txt
-            adb shell screencap -p /sdcard/kindlewake-honor400-layout.png
-            adb pull /sdcard/kindlewake-honor400-layout.png Kindlewake/dist/honor400-emulator.png
-            adb logcat -d -v time > Kindlewake/dist/android-logcat.txt
-            if grep -qE "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error" Kindlewake/dist/android-logcat.txt; then
-              echo "Android runtime or script error detected:"
-              grep -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error" Kindlewake/dist/android-logcat.txt
-              exit 1
-            else
-              echo "Android emulator launch and runtime log scan passed."
-            fi
+          script: python3 Kindlewake/tools/validate_android_emulator.py
 
       - name: Upload test and build logs
         if: always()
