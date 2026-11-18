@@ -106,6 +106,8 @@ jobs:
             sleep 30
             adb shell dumpsys window displays > Kindlewake/dist/android-window-displays.txt
             adb shell dumpsys activity activities > Kindlewake/dist/android-activities.txt
+            # Capture logcat before smoke assertions so failed screenshots retain renderer and crash diagnostics.
+            adb logcat -d -v time > Kindlewake/dist/android-logcat.txt
             # Require the Godot activity to remain resumed and the system overlay to be dismissed.
             python3 -c 'import pathlib,sys; s=pathlib.Path("Kindlewake/dist/android-window-displays.txt").read_text(errors="replace"); focus=next((line.strip() for line in s.splitlines() if "mCurrentFocus=" in line), ""); print("Focused window:", focus); sys.exit(1 if "ImmersiveModeConfirmation" in focus or not focus else 0)'
             python3 -c 'import pathlib,sys; s=pathlib.Path("Kindlewake/dist/android-activities.txt").read_text(errors="replace"); ok=any(("topResumedActivity=" in line or "ResumedActivity:" in line) and "com.kindlewake.game/com.godot.game.GodotApp" in line for line in s.splitlines()); print("Godot activity resumed:", ok); sys.exit(0 if ok else 1)'
@@ -116,7 +118,6 @@ jobs:
             grep -qi "KINDLEWAKE" Kindlewake/dist/android-screen-ocr.txt || { echo "::error::Title text was not visible in the Android screenshot."; cat Kindlewake/dist/android-screen-ocr.txt; exit 1; }
             grep -qi "NEW GAME" Kindlewake/dist/android-screen-ocr.txt || { echo "::error::New Game menu text was not visible in the Android screenshot."; cat Kindlewake/dist/android-screen-ocr.txt; exit 1; }
             grep -qi "SETTINGS" Kindlewake/dist/android-screen-ocr.txt || { echo "::error::Settings menu text was not visible in the Android screenshot."; cat Kindlewake/dist/android-screen-ocr.txt; exit 1; }
-            adb logcat -d -v time > Kindlewake/dist/android-logcat.txt
             grep -n -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error|USER ERROR|USER WARNING|GodotActivity|Process com.kindlewake.game" Kindlewake/dist/android-logcat.txt | tail -n 120 || true
             # android-emulator-runner executes each script line with /usr/bin/sh; keep assertions single-line.
             python3 -c 'import pathlib,re,sys; lines=pathlib.Path("Kindlewake/dist/android-logcat.txt").read_text(errors="replace").splitlines(); hits=[f"{i+1}: {line}" for i,line in enumerate(lines) if re.search(r"FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error", line)]; print("\n".join(hits[-80:])); sys.exit(1 if hits else 0)'
