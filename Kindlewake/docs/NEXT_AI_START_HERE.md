@@ -1,3 +1,15 @@
+> **CURRENT LIVE CHECKPOINT — 2026-11-18:** Canonical repository `ninjun42215-gif/KindleWake`; project directory `Kindlewake/`; Godot 4.2.2, GL Compatibility, Android; game/version code `0.12.0 / 1200`; save schema `4`; level cap `250`. Main at this run's start: `751b2f3f6b1104aa30e107659094ae2e221dbe3d`. Current core candidate: [PR #160](https://github.com/ninjun42215-gif/KindleWake/pull/160), branch `fix/campaign-empire-state-validation-2026-11-18`; code commits `7faad4ab0a638cf95ad28ea1571ebeabd29149be` and `a89ae2eb64b48b52b2012492a27d0aaeaab76c7b`. The candidate rejects malformed optional `empire_state` before campaign restore while preserving schema-4 saves that omit it. No schema bump, migration, player-data rewrite or main-branch write.
+>
+> **Current main Android caveat:** Build Android APK [#44225653213](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44225653213) passed import, 20/20 scene loads, 1,009 strict checks / 0 failures, campaign/UI/Act V/continuity/dynasty/family suites and APK export, but failed its AOSP ATD / SwiftShader emulator smoke step. Logcat reports a GLES3 scene shader uniform-limit link error (261 > device limit); screenshot is black and the game process is absent at 30 seconds. Do not mark this emulator run passed or release-ready. QA PR [#159](https://github.com/ninjun42215-gif/KindleWake/pull/159) owns the emulator image/script correction; its separate exact-head run [#44076962703](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44076962703) passed and captured the title menu on a Google APIs emulator. This is not physical-device QA.
+>
+> **Active ownership boundaries:** PR #151 owns battle-resume/save-title work; #157/#158 own portrait and equipment visuals; #159 owns emulator workflow; #152 owns release workflow permissions. Their branches are stale/diverged to varying degrees; compare against live main before any integration. PR #156 is an older save-validation candidate (8 ahead / 83 behind); PR #160 is the focused current-main port. Do not merge PRs, force-push, delete branches or alter repository settings.
+>
+> **Additional release-security finding:** `.github/workflows/publish-android-release.yml` grants `contents: write` at workflow scope, so the no-confirmation rejection job inherits write access. Narrow this to the actual protected publish job when QA/release work is reconciled. The routine APK workflow already scopes write access to its tag-publishing job.
+>
+> See [CORE_ENGINEERING_HANDOFF_2026-11-18.md](CORE_ENGINEERING_HANDOFF_2026-11-18.md) for branch comparisons, CI evidence, asset-provenance review and remaining gates. The live PR head and Actions checks supersede this checkpoint as they advance.
+
+---
+
 # KindleWake — Next AI Start Here
 
 **Canonical repository:** https://github.com/ninjun42215-gif/KindleWake  
