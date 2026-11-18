@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <title>Ilyan Voss — KindleWake original companion portrait</title>
+  <defs>
+    <linearGradient id="sky" x2="0.1" y2="1"><stop stop-color="#405666"/><stop offset=".48" stop-color="#202f3c"/><stop offset="1" stop-color="#101820"/></linearGradient>
+    <radialGradient id="halo"><stop stop-color="#c4a878" stop-opacity=".34"/><stop offset="1" stop-color="#c4a878" stop-opacity="0"/></radialGradient>
+    <linearGradient id="skin" x1=".1" y1="0" x2=".85" y2="1"><stop stop-color="#e0b48f"/><stop offset=".42" stop-color="#bd896c"/><stop offset=".78" stop-color="#8c5e50"/><stop offset="1" stop-color="#553c37"/></linearGradient>
+    <linearGradient id="skinLight" x2="1" y2="1"><stop stop-color="#f0cba8"/><stop offset="1" stop-color="#b77f67"/></linearGradient>
+    <linearGradient id="hair" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#55545a"/><stop offset=".34" stop-color="#30323a"/><stop offset=".72" stop-color="#1d242c"/><stop offset="1" stop-color="#111820"/></linearGradient>
+    <linearGradient id="greyHair" x2="1" y2="1"><stop stop-color="#c1b9a8"/><stop offset=".55" stop-color="#817e7b"/><stop offset="1" stop-color="#454b52"/></linearGradient>
+    <linearGradient id="coat" x2="0" y2="1"><stop stop-color="#3d5a6a"/><stop offset=".46" stop-color="#223a49"/><stop offset="1" stop-color="#111e29"/></linearGradient>
+    <linearGradient id="steel" x2="1" y2="1"><stop stop-color="#b8c1bf"/><stop offset=".32" stop-color="#667b83"/><stop offset=".72" stop-color="#344751"/><stop offset="1" stop-color="#18252e"/></linearGradient>
+    <linearGradient id="bronze" x2="1" y2="1"><stop stop-color="#e5cb91"/><stop offset=".45" stop-color="#aa8150"/><stop offset="1" stop-color="#59432f"/></linearGradient>
+    <linearGradient id="leather" x2="0" y2="1"><stop stop-color="#795d49"/><stop offset="1" stop-color="#332c2a"/></linearGradient>
+    <radialGradient id="eye"><stop stop-color="#b99b69"/><stop offset=".55" stop-color="#66513d"/><stop offset="1" stop-color="#25252a"/></radialGradient>
+    <linearGradient id="shadow" x2="0" y2="1"><stop stop-color="#17232d" stop-opacity="0"/><stop offset="1" stop-color="#080d13" stop-opacity=".72"/></linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#sky)"/>
+  <circle cx="258" cy="190" r="228" fill="url(#halo)"/>
+  <!-- The Silent Tower: distant stone ribs and a restrained rune ring. -->
+  <path d="M26 338L55 116L78 77L100 338M412 338L435 105L459 66L483 338" fill="#101c27" opacity=".7"/>
+  <path d="M42 338L66 140L78 117L91 338M423 338L447 130L459 107L471 338" fill="none" stroke="#81909a" stroke-opacity=".2" stroke-width="5"/>
+  <path d="M72 184Q256 -18 440 184M91 204Q256 18 421 204" fill="none" stroke="#c4a878" stroke-opacity=".22" stroke-width="2"/>
+  <g fill="none" stroke="#d5bd8b" stroke-opacity=".32" stroke-width="2">
+    <path d="M256 43L263 57L279 60L267 71L270 87L256 79L242 87L245 71L233 60L249 57Z"/>
+    <circle cx="256" cy="63" r="5"/><path d="M125 183L137 195L125 207L113 195Z M387 183L399 195L387 207L375 195Z"/>
+  </g>
+  <!-- Shoulders, travel mantle and tower-guard armour. -->
+  <path d="M0 512Q28 407 91 367Q143 332 206 324H307Q378 334 425 377Q487 430 512 512Z" fill="#101922"/>
+  <path d="M28 512Q54 393 127 354L190 323L256 372L322 323L386 355Q458 394 486 512Z" fill="url(#coat)" stroke="#8e7957" stroke-width="4"/>
+  <path d="M77 512L116 391L181 333L226 369L192 512Z" fill="url(#steel)" stroke="#b89a67" stroke-width="3"/>
+  <path d="M435 512L396 391L331 333L286 369L320 512Z" fill="url(#steel)" stroke="#b89a67" stroke-width="3"/>
+  <path d="M113 393L164 352L199 373L165 423L139 512H92Z" fill="url(#leather)" stroke="#b18c5a" stroke-width="3"/>
+  <path d="M399 393L348 352L313 373L347 423L373 512H420Z" fill="url(#leather)" stroke="#b18c5a" stroke-width="3"/>
+  <path d="M183 325L216 303H296L329 325L306 390L256 429L206 390Z" fill="#1a2a35" stroke="#c3a16a" stroke-width="4"/>
+  <path d="M204 333L256 384L308 333L295 397L256 426L217 397Z" fill="url(#coat)" stroke="#72838a" stroke-width="2"/>
+  <!-- Neck and face. -->
+  <path d="M215 255H297L309 344Q257 383 203 344Z" fill="url(#skin)"/>
+  <path d="M216 279Q256 307 296 279L300 337Q256 366 212 337Z" fill="#744f47" opacity=".34"/>
+  <path d="M166 145Q176 78 255 72Q337 78 346 145L337 226Q332 283 256 309Q180 286 175 226Z" fill="url(#skin)" stroke="#61443d" stroke-width="3"/>
+  <path d="M183 158Q199 111 244 105Q223 136 224 177L206 249Q198 268 187 238Z" fill="#f0c6a1" opacity=".18"/>
+  <path d="M329 157Q315 118 281 106Q303 142 297 181L317 247Q327 262 334 229Z" fill="#4d3434" opacity=".3"/>
+  <path d="M184 223Q198 273 232 290Q256 301 280 289Q314 270 328 222Q319 293 256 311Q190 294 184 223Z" fill="#5a3d38" opacity=".28"/>
+  <!-- Ears and a small old scar, not a heroic caricature. -->
+  <path d="M177 187Q157 172 159 199Q161 225 184 229M335 187Q355 172 353 199Q351 225 328 229" fill="url(#skinLight)" stroke="#714b42" stroke-width="3"/>
+  <path d="M166 194Q175 188 179 205M345 194Q336 188 332 205" fill="none" stroke="#865c4f" stroke-width="3"/>
+  <path d="M298 158L287 181L280 191" fill="none" stroke="#e6c19b" stroke-width="2" opacity=".72"/>
+  <!-- Hairline, short ash-dark hair and greying temples. -->
+  <path d="M165 178Q148 111 196 73Q224 49 263 55Q316 54 347 105Q363 132 344 190L328 159L315 127L291 116L271 129L247 109L224 128L199 120L183 155Z" fill="url(#hair)" stroke="#141b22" stroke-width="4"/>
+  <path d="M170 150Q165 111 204 82Q221 69 240 67Q215 93 212 118L190 157L184 193Z" fill="url(#greyHair)" opacity=".78"/>
+  <path d="M319 91Q348 119 340 171L327 194L317 139L299 111Z" fill="url(#greyHair)" opacity=".42"/>
+  <path d="M188 111Q211 76 242 75M262 69Q306 67 329 103M183 140Q194 113 211 103M300 91Q326 106 334 135" fill="none" stroke="#a7a6a0" stroke-opacity=".48" stroke-width="4" stroke-linecap="round"/>
+  <path d="M185 160Q178 201 193 235M324 158Q335 203 318 237" fill="none" stroke="#171f27" stroke-width="12" opacity=".55"/>
+  <!-- Brows, eyes, nose and mouth. -->
+  <path d="M193 174Q215 158 241 169M271 169Q296 157 319 174" fill="none" stroke="#343038" stroke-width="8" stroke-linecap="round"/>
+  <path d="M195 188Q218 179 241 188M272 188Q295 179 317 188" fill="none" stroke="#5a4038" stroke-width="3"/>
+  <path d="M197 190Q218 182 240 190Q221 200 199 194Z M273 190Q295 182 315 190Q294 200 274 194Z" fill="#e2c1a0"/>
+  <ellipse cx="219" cy="191" rx="5" ry="6" fill="url(#eye)"/><ellipse cx="294" cy="191" rx="5" ry="6" fill="url(#eye)"/>
+  <circle cx="220" cy="190" r="2" fill="#f4dfc0"/><circle cx="294" cy="190" r="2" fill="#f4dfc0"/>
+  <path d="M256 184Q250 213 244 232Q250 242 268 233" fill="none" stroke="#80574b" stroke-width="4" stroke-linecap="round"/>
+  <path d="M244 240Q257 245 269 239" fill="none" stroke="#f0c4a2" stroke-width="2" opacity=".72"/>
+  <path d="M221 258Q256 266 291 255Q278 282 256 284Q232 282 221 258Z" fill="#5d3d39" opacity=".62"/>
+  <path d="M232 260Q256 264 280 257" fill="none" stroke="#d39b83" stroke-width="3" stroke-linecap="round"/>
+  <!-- Restrained stubble and age texture. -->
+  <path d="M184 230Q192 278 229 298Q256 313 284 298Q322 278 330 230Q325 296 256 316Q187 296 184 230Z" fill="#302b30" opacity=".36"/>
+  <path d="M205 249Q214 284 238 291M307 248Q296 284 274 291M219 268L222 273M231 276L233 280M280 276L278 281M294 267L291 273" fill="none" stroke="#28262b" stroke-width="2.8" opacity=".72" stroke-linecap="round"/>
+  <path d="M197 214L205 217M308 214L300 217M207 145L220 142M294 143L306 147" fill="none" stroke="#8e5e50" stroke-width="2" opacity=".5"/>
+  <path d="M243 245Q256 249 269 244M235 270Q256 277 277 269" fill="none" stroke="#2d282b" stroke-width="2" opacity=".6"/>
+  <!-- Raised collar, runic clasp and worn brass edges. -->
+  <path d="M188 313L215 299L256 348L297 299L324 313L310 371L256 414L202 371Z" fill="url(#steel)" stroke="#b48b58" stroke-width="4"/>
+  <path d="M211 313L256 359L301 313L288 366L256 391L224 366Z" fill="#263d49" stroke="#d0b27a" stroke-width="2"/>
+  <path d="M256 347L270 365L256 385L242 365Z" fill="url(#bronze)" stroke="#e2c990" stroke-width="2"/>
+  <circle cx="256" cy="365" r="5" fill="#a9c1c2"/>
+  <path d="M213 338L202 377M299 338L310 377M225 393L256 415L287 393" fill="none" stroke="#c6a66e" stroke-width="3"/>
+  <g fill="none" stroke="#e1c58b" stroke-width="2" opacity=".78">
+    <path d="M154 394L163 405L154 416L145 405Z M358 394L367 405L358 416L349 405Z"/>
+    <path d="M151 439L160 448L151 457L142 448Z M361 439L370 448L361 457L352 448Z"/>
+  </g>
+  <path d="M0 480Q256 450 512 480V512H0Z" fill="url(#shadow)"/>
+  <rect x="8" y="8" width="496" height="496" rx="18" fill="none" stroke="#c4a878" stroke-opacity=".48" stroke-width="3"/>
+  <path d="M22 72V22H72M440 22H490V72M22 440V490H72M440 490H490V440" fill="none" stroke="#d7bd8c" stroke-opacity=".62" stroke-width="3"/>
+</svg>

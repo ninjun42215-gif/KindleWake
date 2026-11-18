@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <title>Maren Vey — KindleWake original companion portrait</title>
+  <defs>
+    <linearGradient id="sea" x2="0.15" y2="1"><stop stop-color="#587d82"/><stop offset=".42" stop-color="#294b56"/><stop offset="1" stop-color="#111f2a"/></linearGradient>
+    <radialGradient id="horizonGlow"><stop stop-color="#d5c39b" stop-opacity=".43"/><stop offset="1" stop-color="#d5c39b" stop-opacity="0"/></radialGradient>
+    <linearGradient id="skin" x1=".12" y1="0" x2=".88" y2="1"><stop stop-color="#e2b995"/><stop offset=".4" stop-color="#bd8969"/><stop offset=".78" stop-color="#8d604e"/><stop offset="1" stop-color="#563d36"/></linearGradient>
+    <linearGradient id="skinLight" x2="1" y2="1"><stop stop-color="#f1d3b1"/><stop offset="1" stop-color="#c28c70"/></linearGradient>
+    <linearGradient id="hair" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#a56d4d"/><stop offset=".36" stop-color="#674536"/><stop offset=".72" stop-color="#392a27"/><stop offset="1" stop-color="#211e20"/></linearGradient>
+    <linearGradient id="hairLight" x2="1" y2="1"><stop stop-color="#c58b62"/><stop offset="1" stop-color="#5a3a30"/></linearGradient>
+    <linearGradient id="cloak" x2="0" y2="1"><stop stop-color="#805b4e"/><stop offset=".5" stop-color="#503a37"/><stop offset="1" stop-color="#211e25"/></linearGradient>
+    <linearGradient id="leather" x2="1" y2="1"><stop stop-color="#9a7452"/><stop offset=".48" stop-color="#654b39"/><stop offset="1" stop-color="#302b2a"/></linearGradient>
+    <linearGradient id="bronze" x2="1" y2="1"><stop stop-color="#ead19a"/><stop offset=".48" stop-color="#b58b56"/><stop offset="1" stop-color="#61452f"/></linearGradient>
+    <linearGradient id="steel" x2="1" y2="1"><stop stop-color="#d0d0bd"/><stop offset=".48" stop-color="#7c9292"/><stop offset="1" stop-color="#334d56"/></linearGradient>
+    <radialGradient id="eye"><stop stop-color="#9aab9c"/><stop offset=".55" stop-color="#596d68"/><stop offset="1" stop-color="#2d3739"/></radialGradient>
+    <linearGradient id="shade" x2="0" y2="1"><stop stop-color="#101a23" stop-opacity="0"/><stop offset="1" stop-color="#071017" stop-opacity=".72"/></linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#sea)"/>
+  <circle cx="262" cy="190" r="230" fill="url(#horizonGlow)"/>
+  <!-- Coastal beacon and distant water establish her Thalassar identity. -->
+  <path d="M48 310L62 158L79 117L96 158L110 310Z" fill="#172b34" opacity=".78"/>
+  <path d="M57 170L101 170M62 201L96 201M68 235L90 235" stroke="#b6c2b2" stroke-opacity=".22" stroke-width="4"/>
+  <path d="M62 158L79 116L96 158Z" fill="#bd9b68" opacity=".5"/>
+  <path d="M64 116L79 94L94 116Z" fill="#d8c69c" opacity=".52"/>
+  <path d="M0 300Q64 278 128 296T256 296T384 294T512 300V512H0Z" fill="#132b37" opacity=".58"/>
+  <g fill="none" stroke="#b8c6bd" stroke-opacity=".25" stroke-width="3">
+    <path d="M0 327Q62 311 124 327T248 327T372 327T512 327"/>
+    <path d="M0 350Q62 336 124 350T248 350T372 350T512 350"/>
+  </g>
+  <path d="M92 187Q256 -4 420 187M109 209Q256 44 403 209" fill="none" stroke="#d9c69b" stroke-opacity=".2" stroke-width="2"/>
+  <g fill="none" stroke="#d7c08f" stroke-opacity=".38" stroke-width="2">
+    <path d="M256 43L263 57L279 60L267 71L270 87L256 79L242 87L245 71L233 60L249 57Z"/>
+    <circle cx="256" cy="63" r="5"/><path d="M112 194L123 205L112 216L101 205Z M400 194L411 205L400 216L389 205Z"/>
+  </g>
+  <!-- Shoulders, weathered sea cloak and practical archer's harness. -->
+  <path d="M0 512Q27 413 97 369Q148 335 206 324H307Q376 335 425 378Q486 430 512 512Z" fill="#111d27"/>
+  <path d="M27 512Q55 393 128 354L192 324L256 370L320 324L384 355Q457 395 485 512Z" fill="url(#cloak)" stroke="#b18b5c" stroke-width="4"/>
+  <path d="M65 512L107 390L173 334L224 372L195 512Z" fill="#3e3334" stroke="#a77e59" stroke-width="3"/>
+  <path d="M447 512L405 390L339 334L288 372L317 512Z" fill="#3e3334" stroke="#a77e59" stroke-width="3"/>
+  <path d="M87 392L143 349L187 367L158 423L133 512H79Z" fill="url(#leather)" stroke="#c09a64" stroke-width="3"/>
+  <path d="M425 392L369 349L325 367L354 423L379 512H433Z" fill="url(#leather)" stroke="#c09a64" stroke-width="3"/>
+  <path d="M178 322L214 301H298L334 322L311 391L256 429L201 391Z" fill="#443638" stroke="#b38b57" stroke-width="4"/>
+  <path d="M203 329L256 379L309 329L294 399L256 424L218 399Z" fill="#31444a" stroke="#8fa5a0" stroke-width="2"/>
+  <!-- Neck and face. -->
+  <path d="M216 255H296L309 344Q256 382 203 344Z" fill="url(#skin)"/>
+  <path d="M214 280Q256 309 298 280L300 339Q256 367 212 339Z" fill="#694941" opacity=".3"/>
+  <path d="M179 143Q188 82 256 75Q326 82 337 145L328 220Q317 278 256 307Q195 279 184 220Z" fill="url(#skin)" stroke="#704c40" stroke-width="3"/>
+  <path d="M185 155Q202 114 239 105Q221 137 223 177L205 247Q197 266 188 237Z" fill="#f5d0aa" opacity=".18"/>
+  <path d="M328 157Q314 118 279 106Q300 141 296 181L317 247Q326 261 333 229Z" fill="#563b36" opacity=".26"/>
+  <path d="M191 224Q204 265 235 282Q256 292 277 281Q307 263 321 223Q312 287 256 309Q199 287 191 224Z" fill="#65463f" opacity=".24"/>
+  <path d="M177 188Q157 174 159 199Q161 224 184 230M335 188Q355 174 353 199Q351 224 328 230" fill="url(#skinLight)" stroke="#805747" stroke-width="3"/>
+  <path d="M165 196Q174 190 179 207M347 196Q338 190 333 207" fill="none" stroke="#8e6250" stroke-width="3"/>
+  <!-- Auburn hair tied for travel, with wind-lifted strands. -->
+  <path d="M165 178Q148 110 195 72Q228 47 264 56Q318 54 347 107Q364 138 344 191L327 162L313 128L290 116L270 130L246 108L223 128L198 119L183 155Z" fill="url(#hair)" stroke="#332521" stroke-width="4"/>
+  <path d="M176 138Q184 83 229 68Q208 98 207 135L191 186L181 219Z" fill="url(#hairLight)" opacity=".78"/>
+  <path d="M314 89Q353 110 347 171L332 207L323 146L301 112Z" fill="#302324"/>
+  <path d="M314 101Q364 91 382 124Q365 133 351 152L334 176L322 149Z" fill="url(#hair)" stroke="#37251f" stroke-width="3"/>
+  <path d="M354 111Q386 109 404 136Q377 137 359 160" fill="none" stroke="#9c6849" stroke-width="7" stroke-linecap="round"/>
+  <path d="M181 125Q210 80 242 72M258 68Q301 69 325 105M186 153Q199 119 216 107M300 93Q327 112 335 142" fill="none" stroke="#d09a6c" stroke-opacity=".55" stroke-width="4" stroke-linecap="round"/>
+  <path d="M185 161Q178 201 193 235M324 158Q335 203 318 237" fill="none" stroke="#2a2021" stroke-width="12" opacity=".48"/>
+  <path d="M357 150Q381 143 397 161Q385 185 359 187" fill="none" stroke="#a66e4d" stroke-width="8" stroke-linecap="round"/>
+  <path d="M179 155Q148 193 158 245Q166 278 151 313" fill="none" stroke="#382725" stroke-width="20" stroke-linecap="round"/>
+  <path d="M177 169Q157 195 164 222Q175 245 160 267Q174 286 154 309" fill="none" stroke="#9a6548" stroke-width="7" stroke-linecap="round"/>
+  <path d="M165 187L180 198M161 218L177 230M164 250L178 261M158 279L172 290" fill="none" stroke="#c18a60" stroke-width="3" stroke-linecap="round"/>
+  <path d="M365 169Q379 180 374 199" fill="none" stroke="#c9a06e" stroke-width="3"/>
+  <circle cx="374" cy="202" r="6" fill="url(#bronze)" stroke="#e4c991" stroke-width="2"/>
+  <!-- Brows, sea-grey eyes, nose, mouth and small freckles. -->
+  <path d="M194 174Q216 155 241 168M272 168Q296 155 318 174" fill="none" stroke="#50372f" stroke-width="8" stroke-linecap="round"/>
+  <path d="M196 189Q217 174 241 188M273 188Q296 174 316 189" fill="none" stroke="#7a5546" stroke-width="3"/>
+  <path d="M197 190Q218 176 241 189Q222 205 200 195Z M273 189Q296 176 315 190Q294 205 274 195Z" fill="#efd1b1"/>
+  <ellipse cx="219" cy="190" rx="6" ry="7.5" fill="url(#eye)"/><ellipse cx="294" cy="190" rx="6" ry="7.5" fill="url(#eye)"/>
+  <circle cx="220" cy="190" r="2" fill="#f6e7ce"/><circle cx="294" cy="190" r="2" fill="#f6e7ce"/>
+  <path d="M256 184Q253 216 249 232Q255 239 264 232" fill="none" stroke="#94634f" stroke-width="4" stroke-linecap="round"/>
+  <path d="M244 240Q257 245 269 239" fill="none" stroke="#f0c6a5" stroke-width="2" opacity=".72"/>
+  <path d="M229 256Q256 266 284 255Q275 281 256 282Q236 280 229 256Z" fill="#754b43" opacity=".54"/>
+  <path d="M236 258Q256 263 277 256" fill="none" stroke="#e0a88d" stroke-width="3" stroke-linecap="round"/>
+  <g fill="#704b3d" opacity=".68"><circle cx="197" cy="220" r="2"/><circle cx="207" cy="226" r="1.5"/><circle cx="216" cy="221" r="1.4"/><circle cx="225" cy="226" r="1.2"/><circle cx="302" cy="222" r="1.6"/><circle cx="311" cy="217" r="1.6"/><circle cx="319" cy="224" r="1.2"/></g>
+  <path d="M205 248L211 250M302 248L308 246" stroke="#b47d64" stroke-width="2" opacity=".6"/>
+  <path d="M188 235L197 243L205 244" fill="none" stroke="#e5b995" stroke-width="2" opacity=".7"/>
+  <path d="M181 199Q174 211 184 221" fill="none" stroke="#8a5b4b" stroke-width="2"/>
+  <!-- Tideglass pendant, leather harness and bow-carry strap. -->
+  <path d="M184 311L214 298L256 348L298 298L328 311L311 370L256 410L201 370Z" fill="url(#steel)" stroke="#b38a57" stroke-width="4"/>
+  <path d="M208 314L256 358L304 314L291 373L256 395L221 373Z" fill="#34454a" stroke="#b9a176" stroke-width="2"/>
+  <path d="M256 340Q235 361 243 386Q256 378 269 386Q277 361 256 340Z" fill="#6ca5a5" stroke="#e0d0a8" stroke-width="4"/>
+  <path d="M256 349Q247 364 253 375Q260 368 263 356" fill="none" stroke="#dce6d5" stroke-width="3"/>
+  <circle cx="256" cy="379" r="4" fill="#e7d7ad"/>
+  <path d="M163 348L195 375L232 418M349 348L317 375L280 418" fill="none" stroke="#b78b57" stroke-width="9"/>
+  <path d="M179 361L201 381M333 361L311 381" stroke="#e2c28b" stroke-width="2"/>
+  <path d="M0 480Q256 450 512 480V512H0Z" fill="url(#shade)"/>
+  <rect x="8" y="8" width="496" height="496" rx="18" fill="none" stroke="#c4a878" stroke-opacity=".48" stroke-width="3"/>
+  <path d="M22 72V22H72M440 22H490V72M22 440V490H72M440 490H490V440" fill="none" stroke="#d7bd8c" stroke-opacity=".62" stroke-width="3"/>
+</svg>
