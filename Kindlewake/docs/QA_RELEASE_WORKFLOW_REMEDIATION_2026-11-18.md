@@ -141,3 +141,53 @@ The exact branch heads and comparisons must be refreshed before any integration.
 - Review all runtime asset licences and retain authoritative evidence. Do not mark an unused pack as cleared for use.
 - Pin third-party GitHub Actions to reviewed commit SHAs in a separate tested maintenance change.
 - Revisit branch protection and required status checks through an explicitly authorized repository-settings change; this QA run leaves settings untouched.
+
+
+---
+
+## Follow-up verification — 18 November 2026, 12:00 UTC
+
+This section supersedes the earlier “latest head pending” status above.
+
+### Current-main emulator workflow result
+
+- Audited base main remains `751b2f3f6b1104aa30e107659094ae2e221dbe3d`.
+- Validated workflow implementation head: `e05e78e5d238c7233e3e2abde81df19eda377868`.
+- PR: [#164](https://github.com/ninjun42215-gif/KindleWake/pull/164), still draft and unmerged.
+- [Build Android APK #44299182157](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44299182157) — **passed end to end** on the exact implementation head, including import, all strict suites, APK export, API 35 Google APIs emulator launch, resumed Godot activity, process liveness and screenshot OCR.
+- [Workflow YAML Lint #44299182154](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44299182154), [Project Health Audit #44299182169](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44299182169), and [Version Sync #44299182254](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44299182254) — **passed** on the same exact head.
+- Import: exit 0, no script errors. Scene smoke: 20/20, zero failures. Strict core suite: 1,009 checks, zero failures. Campaign lifecycle, merchant UI, title/creator UI, Act V, continuity (70), dynasty (39), family development (19), and balance report all passed.
+- The emulator log reports OpenGL ES 3.1 through ANGLE/Mesa llvmpipe. It contains no SceneShader uniform-limit error, GDScript parse/runtime error or Android fatal exception. OCR detected `KINDLEWAKE`, `NEW GAME`, and `SETTINGS`; the screenshot shows the full title menu.
+- APK artifact: [14424848564](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44299182157/artifacts/14424848564). Extracted APK: 65,848,438 bytes; SHA-256 `d8b659cfb5f67ae3c3acd8d10f3cd7f86a9ea30b88b08da7c508427afe13b96d`. Build summary reports a valid test signature, ABIs arm64-v8a / armeabi-v7a / x86_64, and no Android permissions. Diagnostic artifact: [14424728655](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44299182157/artifacts/14424728655).
+- This is a CI test-signed candidate tied to the exact PR head, not a production-signed release and not physical-device certification.
+
+### Emulator renderer regression and correction
+
+- Intermediate exact head `02e6b89f776d0219bcf4d301ef15d95b4e52b039`, [Build Android APK #44298087749](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44298087749), failed the emulator screenshot gate.
+- Its automatic GPU selection chose OpenGL ES 3.0 SwiftShader. Godot logged `SceneShaderGLES3` program-link failures because 261 active fragment uniforms exceeded the reported limit; the project also warned that the configured global shader-variable buffer exceeded the emulator's 16,384-byte uniform-buffer limit. The screenshot showed a Pixel Launcher “isn't responding” dialog over an unrendered/blank title UI. The Godot activity was still resumed and the app process remained visible; no Android fatal exception or GDScript parse error was captured.
+- The earlier passing candidate had used the `-gpu angle` hint and selected OpenGL ES 3.1 ANGLE/Mesa. Restoring that validated hint on `e05e78e5d238c7233e3e2abde81df19eda377868` removed the shader-limit errors and restored the visible title menu. The OCR gate remains strict; it was not weakened.
+- The workflow now captures logcat before smoke assertions so a failed OCR/foreground assertion still uploads renderer and crash diagnostics.
+- This establishes an emulator-backend compatibility difference. It does not establish that all physical Android GPUs are affected or that a real handset has been tested.
+
+### Repository and release integrity follow-up
+
+- Main remains unchanged at `751b2f3f6b1104aa30e107659094ae2e221dbe3d`; no merge, force-push, branch deletion, repository-setting change or production release occurred.
+- Main [Build Android APK #44225653213](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44225653213) remains overall failed at its old AOSP ATD / SwiftShader emulator step, despite successful import/tests/export. Its exact-main APK artifact [14393186073](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44225653213/artifacts/14393186073) was independently re-downloaded and verified: 65,848,438 bytes; SHA-256 `046d7cd0006b4cdfdb1c6937e586b392879444a62a12d9ae01e01bd18b069c2f`. Do not present it as a fully passing release candidate.
+- Main source handoff [run #44225653270](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44225653270), artifact [14392014166](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44225653270/artifacts/14392014166), was downloaded and fully reassembled. Manifest archive size 73,960,538 bytes and SHA-256 `84918cec1bdc1fb7cf8855e87ff9b0c40420cb2ade6ece91ce7eb06dc815ed5e` matched. All three parts passed their individual hashes and size limits; ZIP CRC and all 369 tracked-file hashes passed.
+- The live main asset ledger records 10 entries; every asset marked runtime-used is marked verified. The LimeZu restricted pack, legacy voxel-building pack and MountainRocks archive remain unused. The new Ilyan/Maren SVG portrait concepts are in stacked draft PR [#162](https://github.com/ninjun42215-gif/KindleWake/pull/162) with a dedicated original-project provenance note; they are concept vectors, not final painterly masters.
+- No published GitHub Releases were returned. Production Environment reviewer rules and signing secrets were not inspected. No secret values were accessed.
+
+### New workflow safety finding
+
+- Main branch protection is disabled (`protected: false`). The custom Safe Auto Merge workflow has `contents: write` and `pull-requests: write` and does not check whether a PR contains the current default branch.
+- PR [#22](https://github.com/ninjun42215-gif/KindleWake/pull/22) is non-draft and GitHub reports it mergeable, but its head is 1 commit ahead / **193 behind** main; its four required workflow runs are green on the old head. PR #23 is 6 ahead / 193 behind and conflicted. A new successful Build Android APK workflow_run for a stale non-draft PR could therefore reach the existing gate.
+- Draft QA PR [#165](https://github.com/ninjun42215-gif/KindleWake/pull/165), branch `qa/safe-auto-merge-base-freshness-2026-11-18`, adds a `behind_by == 0` requirement at initial eligibility and immediately before merge. Its exact head at opening is `b59251a4202c51e39fae810e0fb976b04769a295`; its checks are separate and must be reviewed on their exact head. No merge is requested or performed.
+- Recent Safe Auto Merge run [#44295485528](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44295485528) succeeded as a no-op: it found the PR #164 candidate was draft and skipped the merge steps. Later main runs also skipped. No PR was merged during this audit.
+
+### Remaining gates
+
+1. Keep PR #164 and #165 draft and unmerged; re-check their exact current heads and all four workflows after this documentation update.
+2. Review the nested empire-state validation gap in core PR [#160](https://github.com/ninjun42215-gif/KindleWake/pull/160): `EmpireSystem.normalize_state()` iterates `processed_months` and `history` without confirming they are Arrays. A checksum-valid Dictionary containing an integer in either field can still fail after `GameState.load_campaign()` has assigned party/profile/faction state. Preserve schema-4 saves that omit the additive field; add nested malformed-value tests before considering the candidate safe.
+3. Physical Android handset QA remains outstanding: touch input, creator selection/scroll, orientation/safe areas, pause/resume, save/kill/relaunch/Continue, active battle resume, long session and low-memory behavior.
+4. Confirm production GitHub Environment reviewer rules and protected signing configuration privately before any production release.
+5. Pin remaining floating third-party Actions references in a separate reviewed maintenance change.
