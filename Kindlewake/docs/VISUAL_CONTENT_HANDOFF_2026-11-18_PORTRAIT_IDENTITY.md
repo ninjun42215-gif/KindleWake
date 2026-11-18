@@ -57,3 +57,13 @@ A dependent visual branch, `art/ilyan-maren-companion-portraits-2026-11-18`, now
 Both are 512×512 project-authored SVG concepts with no third-party image, font, external package or copied game artwork. The new files use the exact stable IDs already present in `characters.json`. When this dependent branch is combined with the resolver/journal work above, the Companion Chronicle can resolve all 21 companion quest portraits to character-specific files instead of falling back to a shared `courtier` or `ash_scout` face for Ilyan and Maren.
 
 The branch is stacked on the exact PR 161 head and changes no gameplay, roster data, story, save schema, battle logic or shared UI files. A separate provenance note records authorship and import/performance caveats. The project-health audit on the dependent PR must confirm the updated portrait inventory; Godot import, rendered crop review and physical Android QA are still required. These are interim vector identity concepts, not final painterly masters.
+
+
+## Dependent portrait PR reference
+
+- Dependent PR: https://github.com/ninjun42215-gif/KindleWake/pull/162
+- Branch: `art/ilyan-maren-companion-portraits-2026-11-18`
+- Initial dependent implementation head: `0b2a1ec7d54b1bf9ac29cd533f98c00d1c22be05`
+- Parent PR #161 remains the prerequisite and must be reconciled first.
+- The dependent PR is intentionally based on the parent branch; only workflow YAML lint runs for that non-main base. Project-health audit and Android build must be run after the stack is retargeted/rebased onto main.
+- The central asset credits/provenance ledgers are not modified in this dependent PR because the separate portrait-gallery PR #157 is already changing those files. The per-asset provenance note is included now; consolidate it into the central ledgers when the overlapping portrait-gallery work is reconciled.
