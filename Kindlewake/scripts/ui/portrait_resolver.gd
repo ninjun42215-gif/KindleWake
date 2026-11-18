@@ -44,6 +44,14 @@ static func resolve_character_path(portrait_id: String, character_id: String) ->
         var raster_path := resolve_path(raster_id)
         if not raster_path.is_empty() and not raster_path.ends_with(".svg"):
             return raster_path
+
+    # Prefer an original portrait authored for this exact character before
+    # falling back to a legacy ID that may be shared by several characters.
+    if not normalized_character_id.is_empty():
+        var character_svg_path := PORTRAIT_DIR + normalized_character_id + ".svg"
+        if ResourceLoader.exists(character_svg_path):
+            return character_svg_path
+
     if normalized_portrait_id.is_empty():
         return ""
     var legacy_svg_path := PORTRAIT_DIR + normalized_portrait_id + ".svg"
