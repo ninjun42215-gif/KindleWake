@@ -67,3 +67,27 @@ The branch is stacked on the exact PR 161 head and changes no gameplay, roster d
 - Parent PR #161 remains the prerequisite and must be reconciled first.
 - The dependent PR is intentionally based on the parent branch; only workflow YAML lint runs for that non-main base. Project-health audit and Android build must be run after the stack is retargeted/rebased onto main.
 - The central asset credits/provenance ledgers are not modified in this dependent PR because the separate portrait-gallery PR #157 is already changing those files. The per-asset provenance note is included now; consolidate it into the central ledgers when the overlapping portrait-gallery work is reconciled.
+
+
+## Runtime and branch coordination — 18 November 2026
+
+### Parent PR #161 exact verification
+
+- PR #161 head: `c8e4782ffb6dae4f06ad54a1639e01ad92c8757d`, base `main` at `751b2f3f6b1104aa30e107659094ae2e221dbe3d`.
+- Project Health Audit: passed — https://github.com/ninjun42215-gif/KindleWake/actions/runs/44255293372
+- Workflow YAML Lint: passed — https://github.com/ninjun42215-gif/KindleWake/actions/runs/44255293618
+- Version sync: passed — https://github.com/ninjun42215-gif/KindleWake/actions/runs/44255293483
+- Android build/import/headless checks and strict suites completed successfully: 20 scenes loaded, 0 scene failures; `run_tests`, campaign lifecycle, merchant UI, title/creator UI, Act V, campaign continuity, dynasty and family-development checks exited without reported failures.
+- APK artifact: `Kindlewake-APK`, artifact ID `14406156517`, 65,293,159 bytes. Build summary reports a valid signature and no requested Android permissions. Test/log artifact: `test-logs`, ID `14406057005`.
+- Android emulator smoke did **not** pass: the screenshot is black and `com.kindlewake.game` did not remain running. Logcat records a configuration change (`0x80000000`), then `GodotActivity` logs “Destroying Godot app” / “Force quitting Godot instance” and the process exits with SIGKILL. No Java fatal exception, native fatal signal, GDScript error or parse error was found in the captured log. GLES3 also logs a 261-fragment-uniform SwiftShader link diagnostic; upstream discussion says this diagnostic can be SwiftShader-specific and not itself fatal, so it is not established as the termination cause: https://github.com/godotengine/godot/issues/109550
+- Main itself at the same base SHA `751b2f3f6b1104aa30e107659094ae2e221dbe3d` also has an Android build run that fails at the emulator launch step: https://github.com/ninjun42215-gif/KindleWake/actions/runs/44225653213. This is a pre-existing main-line emulator/runtime-readiness blocker, not evidence that PR #161 or these portrait assets caused the exit.
+
+### Other active visual branches
+
+- PR #157 `art/portrait-gallery-identity-2026-11-17`: head `b9545c5e3fab1ebd5a095bfcf807573bbfc1973c`; based on `adf3d44bbeef1e1e048f2aa244a1a80bf95147fc`; compare against current main reports 34 commits ahead / 4 behind. It changes the central art credits/provenance files plus `art.gd`, creator/preview/world-scene integration and the creator UI test. Reconcile its old base and preserve its ownership of those overlapping files before ledger consolidation.
+- PR #158 `art/equipment-icon-atlas-2026-11-17`: head `2a0df2d9bb868ed537d6603bcd2f8b4ba01fac87`; same old base; 4 commits ahead / 4 behind. It adds an equipment atlas and party-screen integration, plus a build helper/test. Its equipment tests reported zero failures; its Android job failed in the old emulator runner shell with an unexpected `fi` syntax error. Rebase and rerun rather than treating that old run as a current gameplay failure.
+- The parent PR #161 is based on current main. This PR #162 remains stacked on #161 and changes only the two portrait assets, their provenance note and this handoff document.
+
+### Verification boundary
+
+PR #162 itself only triggers Workflow YAML Lint because its base is another feature branch. That lint passed on head `bb1addba5f3884998ae31540df827855da0918e3`: https://github.com/ninjun42215-gif/KindleWake/actions/runs/44258218834. The new SVGs were XML-parsed and rasterized locally at 512×512 and 76×76. No Godot import, editor screenshot, Android emulator pass or physical-device QA has been completed for these new assets. Re-run project-health, Godot import/scene tests and Android build after the parent stack is reconciled onto main.
