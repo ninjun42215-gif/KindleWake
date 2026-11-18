@@ -103,14 +103,9 @@ jobs:
             adb shell screencap -p /sdcard/kindlewake-honor400-layout.png
             adb pull /sdcard/kindlewake-honor400-layout.png Kindlewake/dist/honor400-emulator.png
             adb logcat -d -v time > Kindlewake/dist/android-logcat.txt
-            if ! adb shell pidof com.kindlewake.game; then
-              echo "Kindlewake did not remain running after explicit launcher activity start"
-              exit 1
-            fi
-            if grep -E "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error" Kindlewake/dist/android-logcat.txt; then
-              echo "Android runtime or script error detected"
-              exit 1
-            fi
+            # Keep this POSIX-sh compatible: the emulator action invokes /usr/bin/sh.
+            adb shell pidof com.kindlewake.game >/dev/null || { echo "Kindlewake did not remain running after launcher start" >&2; exit 1; }
+            grep -Eq "FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error" Kindlewake/dist/android-logcat.txt && { echo "Android runtime or script error detected" >&2; exit 1; } || true
 
       - name: Upload test and build logs
         if: always()
