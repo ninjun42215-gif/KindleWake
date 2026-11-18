@@ -1,4 +1,4 @@
-> **AUTHORITATIVE LIVE CHECKPOINT — 2026-11-18 07:24 UTC:** Canonical repository `ninjun42215-gif/KindleWake`; project directory `Kindlewake/`; default branch `main`; current main commit `751b2f3f6b1104aa30e107659094ae2e221dbe3d`. Godot 4.2.2, GL Compatibility, game/Android version `0.12.0 / 1200`, save schema `4`, level cap `250`; offline-first.
+> **AUTHORITATIVE LIVE CHECKPOINT — 2026-11-18:** Canonical repository `ninjun42215-gif/KindleWake`; project directory `Kindlewake/`; default branch `main`; current main commit `751b2f3f6b1104aa30e107659094ae2e221dbe3d`. Godot 4.2.2, GL Compatibility, game/Android version `0.12.0 / 1200`, save schema `4`, level cap `250`; offline-first.
 
 > **Mainline QA:** [Build Android APK #44225653213](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44225653213) on this exact SHA completed import, 20/20 scene smoke, 1,009 strict checks / 0 failures, lifecycle, merchant, title/creator, Act V, continuity, dynasty, family and balance tests, and exported a signed 65,848,438-byte APK (SHA-256 `046d7cd0006b4cdfdb1c6937e586b392879444a62a12d9ae01e01bd18b069c2f`; no Android permissions). **The overall workflow failed at the AOSP ATD / SwiftShader emulator smoke stage**: the app activity exited and the screenshot was black. Do not call this a fully passing Android build or release-ready. Project Health Audit [#44225653218](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44225653218), YAML Lint [#44225653214](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44225653214), Version Sync [#44225653230](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44225653230) and source handoff [#44225653270](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44225653270) passed on the same SHA.
 
@@ -8,7 +8,6 @@
 
 > **Release gates:** Current main still has a tag-triggered auto-publish job and a production workflow with workflow-wide `contents: write`; PR #152 proposes least-privilege separation. The provenance ledger has no unverified runtime-used assets. There are zero published releases. Physical Android device QA remains outstanding. Full findings and exact evidence: [QA release-readiness report](Kindlewake/docs/QA_RELEASE_READINESS_2026-11-18.md).
 
----
 ---
 
 
