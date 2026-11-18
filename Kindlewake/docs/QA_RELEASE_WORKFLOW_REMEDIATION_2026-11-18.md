@@ -7,7 +7,7 @@
 - Audited main SHA: `751b2f3f6b1104aa30e107659094ae2e221dbe3d`
 - Godot 4.2.2 · GL Compatibility · Android version `0.12.0` · Android version code `1200` · save schema `4`
 - QA branch: `qa/android-release-workflow-hardening-2026-11-18`
-- Workflow implementation checkpoint (before this report file): `3e11da43fd28a0d2db9cf5b81063c65eef0c8de7`
+- Workflow implementation checkpoint after the emulator GPU fallback correction: `4b2e9a114f41c8f2fbbaaebfafd72c72bf44cebc`
 - This is a draft QA proposal. No merge, release publication, branch deletion, force-push, repository setting change, secret read, gameplay/data change or save/schema change was performed.
 
 ## Mainline verification on the exact audited SHA
