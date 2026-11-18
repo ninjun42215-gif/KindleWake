@@ -4,7 +4,6 @@ extends RefCounted
 const PORTRAIT_DIR := "res://assets/art/portraits/"
 const EXTENSIONS: Array[String] = [".png", ".webp", ".jpg", ".svg"]
 const CHARACTER_RASTER_OVERRIDES := {
-    "torren": "torren_redcloak",
     "sela": "auburn_ranger",
     "kestrel": "kestrel"
 }
@@ -34,7 +33,11 @@ static func load_texture(portrait_id: String) -> Texture2D:
 static func resolve_character_path(portrait_id: String, character_id: String) -> String:
     var normalized_portrait_id: String = portrait_id.strip_edges()
     var normalized_character_id: String = character_id.strip_edges()
-    var raster_id: String = str(CHARACTER_RASTER_OVERRIDES.get(normalized_character_id, ""))
+    var raster_id: String = ""
+    if normalized_character_id == "torren":
+        raster_id = normalized_portrait_id if not normalized_portrait_id.is_empty() else "torren_redcloak"
+    else:
+        raster_id = str(CHARACTER_RASTER_OVERRIDES.get(normalized_character_id, ""))
     if raster_id.is_empty() and normalized_character_id == normalized_portrait_id:
         raster_id = normalized_character_id
     if not raster_id.is_empty():
