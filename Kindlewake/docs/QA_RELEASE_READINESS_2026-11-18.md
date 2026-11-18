@@ -66,7 +66,7 @@ Downloaded and verified locally:
 
 ## Repository, branch and PR health
 
-The repository currently has 166 branches and 23 open pull requests. There is substantial branch sprawl; many older branches are stacked or far behind main. Do not bulk-merge or cherry-pick stale branches without a fresh diff and exact-SHA checks.
+At the start of this audit (before opening this report PR), the repository had 166 branches and 23 open pull requests; this QA run adds draft PR #163, bringing the current open count to 24. This report is proposed on branch `qa/release-readiness-handoff-2026-11-18` via draft [PR #163](https://github.com/ninjun42215-gif/KindleWake/pull/163). There is substantial branch sprawl; many older branches are stacked or far behind main. Do not bulk-merge or cherry-pick stale branches without a fresh diff and exact-SHA checks.
 
 Priority open PRs:
 - **#159 — Android emulator script guard:** head `df58cfded03c7a85f8e9e7d36719e6a80528b010`, 18 ahead / 4 behind main, draft, mergeable false. It contains the currently demonstrated emulator workaround; rebase and rerun.
