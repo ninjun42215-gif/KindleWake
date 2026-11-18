@@ -24,9 +24,10 @@ Proko's head-construction lesson emphasizes the cranial mass, side plane, jaw, c
 
 - Stable IDs remain the source of truth; do not derive file names from display names.
 - `scripts/ui/portrait_resolver.gd` resolves in this order: **PNG → WebP → JPG → SVG**.
-- `torren_redcloak.webp` and `auburn_ranger.webp` are the first raster portrait pilots, exported at **192×192 WebP, quality 70** from the approved user-supplied portrait references. The original high-resolution reference images remain in the conversation; these are game-ready derivatives for the current UI scale.
+- `torren_redcloak.webp` and `auburn_ranger.webp` are the first raster portrait pilots, exported at **192×192 WebP, quality 70** from the user's two supplied reference portraits. Torren uses the male swordsman reference; Sela Wrenfield (archer) uses the auburn ranger reference in party and battle presentation, while it remains available as a creator option.
+- `kestrel.webp` is a **256×256 WebP, quality 74** original Kindlewake portrait crop assigned to Kestrel, the silent assassin. It was cropped from the project's existing 4×3 portrait concept sheet; the 512×512 PNG working master is retained in the project Library. The crop is an effective runtime asset, not a final layered master—repaint at 1024 px or larger before final art lock.
 - The legacy SVGs remain in place as fallbacks. Godot 4.2 supports WebP as a raster import format and notes that complex SVG support is limited; its 2D defaults use lossless texture compression, which is the preferred import setting for final painterly portraits: https://docs.godotengine.org/en/4.2/tutorials/assets_pipeline/importing_images.html
-- The creator gallery and live preview resolve the selected portrait. The party sheet and battle timeline use raster overrides only for the stable protagonist ID `torren`; other named characters retain their existing SVGs until their own unique artwork is ready. This avoids accidentally applying Torren's or the ranger's face to unrelated companions.
+- The creator gallery and live preview resolve the selected portrait. The party sheet and battle timeline now use `load_character_texture(portrait_id, character_id)`: explicit raster overrides map `torren` → `torren_redcloak`, `sela` → `auburn_ranger`, and `kestrel` → `kestrel`. Other characters that still share a generic portrait ID remain on their legacy SVGs unless a character-specific raster override is explicitly approved. This prevents one painterly face from leaking across unrelated companions, enemies, or NPCs.
 - Keep layered source masters at 512 px or higher when possible. Export runtime sizes according to the largest actual UI display, ideally at least 2× that display size. The current 192 px pilots are a first runtime pass for the existing compact gallery and battle timeline. They are not final high-resolution masters; increase to at least 384–512 px before a larger character-sheet presentation or final art lock.
 
 ## Portrait-to-sprite translation
@@ -42,7 +43,7 @@ Block the sprite silhouette first, then add proportion and a compact material pa
 
 ## Current coverage gap
 
-The current data has **48 character definitions but only 12 distinct portrait IDs**. Many named characters therefore share an existing portrait. The first two raster pilots improve the protagonist's selectable portrait experience; they do **not** solve unique portrait coverage for the full cast.
+The current data has **48 character definitions and 22 distinct portrait IDs** after Kestrel received a unique ID. **11 portrait IDs are still shared by multiple definitions**, so the cast does not yet have one distinct portrait per named character. Torren, Sela, and Kestrel now have character-aware raster presentation; the remaining shared IDs stay on legacy SVGs until dedicated art is approved.
 
 Enemy and ordinary NPC battle representations still use the shared character atlas/archetype mapping rather than individual painted portrait assets. Do not claim that every enemy or NPC now has a unique portrait.
 
@@ -55,4 +56,21 @@ Enemy and ordinary NPC battle representations still use the shared character atl
 - [ ] Reads clearly in the 78 px creator gallery and 58 px battle timeline
 - [ ] Character sheet crop does not cut off defining features
 - [ ] The chosen portrait ID matches the same character in creator, party sheet and battle UI
+- [ ] A raster portrait is assigned through an explicit character-aware override or a unique character ID; shared legacy IDs never inherit another character's raster face
 - [ ] Android import/render checked before calling the asset complete
+
+
+## Daily production note — 18 November 2026: character-specific portrait routing
+
+**Highest-impact weakness:** painterly portrait files existed, but the party sheet and battle timeline only allowed raster overrides for Torren. Several character definitions also shared IDs such as `auburn_ranger`; simply enabling raster-first loading globally would incorrectly show the same face on unrelated characters.
+
+**Iteration:** added a character-aware resolver and routed both the party sheet and battle timeline through it. Torren resolves to `torren_redcloak.webp`; Sela Wrenfield resolves to the approved auburn ranger portrait; Kestrel resolves to her new `kestrel.webp`. Shared IDs remain on SVG fallback unless explicitly mapped. Kestrel's data record now has its own stable portrait ID.
+
+**Research applied:** Proko's head-construction method stresses the cranial mass, side plane, jaw, head tilt and perspective before facial detail. Krita's layer/mask workflow supports non-destructive changes to individual materials and composition. For future masters, keep skin, hair, cloth, leather, metal, lighting and background on separate named layers; do not rely on texture noise to create realism.
+
+**Sources:**
+- Proko, [How to Draw the Head from Any Angle](https://www.proko.com/course-lesson/how-to-draw-the-head-from-any-angle/)
+- Krita Manual, [Introduction to Layers and Masks](https://www.krita.org/en/reference_manual/layers_and_masks.html)
+- Godot 4.2 Manual, [Importing Images](https://docs.godotengine.org/en/4.2/tutorials/assets_pipeline/importing_images.html)
+
+**Verification target:** run the title/creator UI regression and the Android build after integration. The 256 px Kestrel export is suitable for the current compact UI; it is not the final 1024 px layered master.

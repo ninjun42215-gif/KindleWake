@@ -55,6 +55,10 @@ func _run_ui_test() -> void:
     _check(PortraitResolverScript.resolve_path("torren_redcloak").ends_with(".webp"), "Torren uses the new raster portrait ahead of its SVG fallback")
     _check(PortraitResolverScript.resolve_path("auburn_ranger").ends_with(".webp"), "Auburn Ranger uses the new raster portrait ahead of its SVG fallback")
     _check(PortraitResolverScript.resolve_path("sunwarden").ends_with(".svg"), "unconverted portraits retain the SVG fallback")
+    _check(PortraitResolverScript.resolve_character_path("torren_redcloak", "torren").ends_with("torren_redcloak.webp"), "Torren resolves his approved raster portrait")
+    _check(PortraitResolverScript.resolve_character_path("sela", "sela").ends_with("auburn_ranger.webp"), "Sela resolves the approved auburn ranger portrait")
+    _check(PortraitResolverScript.resolve_character_path("kestrel", "kestrel").ends_with("kestrel.webp"), "Kestrel resolves her unique raster portrait")
+    _check(PortraitResolverScript.resolve_character_path("auburn_ranger", "sister_odaly").ends_with("auburn_ranger.svg"), "shared legacy IDs do not leak another character's raster portrait")
     var all_portraits_load := true
     for portrait in GameData.character_creation.get("portraits", []):
         var portrait_id := str(portrait.get("id", ""))
@@ -66,7 +70,7 @@ func _run_ui_test() -> void:
     for character_id in GameData.characters.keys():
         var character: Dictionary = GameData.characters[character_id]
         var portrait_id := str(character.get("portrait_id", ""))
-        if portrait_id == "" or PortraitResolverScript.load_texture(portrait_id) == null:
+        if portrait_id == "" or PortraitResolverScript.load_character_texture(portrait_id, str(character_id)) == null:
             every_character_has_portrait = false
     _check(every_character_has_portrait, "every character definition has an assigned portrait asset")
     if creator.portrait_buttons.has("auburn_ranger"):
@@ -138,7 +142,7 @@ func _run_ui_test() -> void:
         var every_party_member_has_portrait := true
         for member_id in party.roster:
             var member_sheet = party.sheet(member_id)
-            if member_sheet == null or member_sheet.portrait_id == "" or PortraitResolverScript.load_texture(member_sheet.portrait_id) == null:
+            if member_sheet == null or member_sheet.portrait_id == "" or PortraitResolverScript.load_character_texture(member_sheet.portrait_id, member_id) == null:
                 every_party_member_has_portrait = false
         _check(every_party_member_has_portrait, "every starting party member receives a loadable portrait")
         var restored_sheet = CharacterSheet.from_dict(sheet.to_dict())

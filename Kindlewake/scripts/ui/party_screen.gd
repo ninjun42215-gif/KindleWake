@@ -313,14 +313,7 @@ func _portrait_texture(portrait_id: String, character_id: String = "") -> Textur
             resolved_id = fallback_ids[absi(character_id.hash()) % fallback_ids.size()]
     if resolved_id == "":
         return null
-    # Only the stable protagonist uses the newly approved raster portrait exports.
-    # Companions keep their existing per-character SVGs until unique art is assigned.
-    if character_id == "torren":
-        return PortraitResolverScript.load_texture(resolved_id)
-    var path := "res://assets/art/portraits/%s.svg" % resolved_id
-    if not ResourceLoader.exists(path):
-        return null
-    return load(path) as Texture2D
+    return PortraitResolverScript.load_character_texture(resolved_id, character_id)
 
 
 func _class_title(class_id: String) -> String:

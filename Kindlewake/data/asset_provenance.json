@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-11-16",
+  "updated": "2026-11-18",
   "policy": "Do not mark an asset pack verified without an authoritative licence file or source-page evidence. Used assets with unverified rights block public/commercial release.",
   "assets": [
     {
@@ -119,6 +119,19 @@
       "used_in_game": true,
       "release_blocker": false,
       "notes": "16-cell SVG atlas used for town NPC variety and named monster/boss battlefield identities. Does not replace the licensed animated Soldier/Orc sheets."
+    },
+    {
+      "id": "kindlewake-kestrel-portrait",
+      "name": "Kestrel painterly assassin portrait",
+      "author": "Kindlewake project",
+      "source_reference": "Original Kindlewake 4x3 character portrait concept sheet in project workspace; Kestrel panel cropped as a square bust",
+      "source_url": null,
+      "license": "Original project content",
+      "license_evidence": "Project-generated concept art and project-local crop; no third-party game artwork used",
+      "license_status": "verified",
+      "used_in_game": true,
+      "release_blocker": false,
+      "notes": "Runtime export: assets/art/portraits/kestrel.webp (256x256 WebP, quality 74). Derived from a 328x328 crop; 512x512 PNG working master retained in the project Library. Repaint a 1024px+ layered master before final art lock."
     }
   ]
 }
