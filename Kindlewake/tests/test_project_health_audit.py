@@ -12,13 +12,25 @@ class ProjectHealthAuditTests(unittest.TestCase):
     def fixture(self, root):
         project = root / "Kindlewake"
         (project / "data").mkdir(parents=True)
-        (project / "assets" / "art").mkdir(parents=True)
+        (project / "assets" / "art" / "portraits").mkdir(parents=True)
+        (project / "scripts" / "ui").mkdir(parents=True)
         (project / "project.godot").write_text('config/version="1.2.3"\n')
         (project / "README.md").write_text("# Test v1.2.3\n")
         (project / "export_presets.cfg").write_text('version/name="1.2.3"\nversion/code=123\n')
         (project / "data" / "valid.json").write_text('{"ok": true}\n')
         (project / "data" / "asset_provenance.json").write_text('{"schema_version": 1, "assets": []}')
         (project / "assets" / "art" / "CREDITS.md").write_text("# Credits\n")
+        (project / "data" / "characters.json").write_text(json.dumps({
+            "characters": {"test_hero": {"portrait_id": "test_portrait"}}
+        }))
+        (project / "assets" / "art" / "portraits" / "test_portrait.svg").write_text("<svg/>")
+        (project / "assets" / "art" / "portraits" / "test_hero.svg").write_text("<svg/>")
+        (project / "scripts" / "ui" / "portrait_resolver.gd").write_text(
+            'var character_svg_path := PORTRAIT_DIR + normalized_character_id + ".svg"\\n'
+        )
+        (project / "scripts" / "ui" / "companion_quest_journal.gd").write_text(
+            "PortraitResolverScript.load_character_texture(portrait_id, companion_id)\\n"
+        )
         return project
 
     def run_audit(self, root, fail_on_warnings=False):
@@ -52,6 +64,56 @@ class ProjectHealthAuditTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertTrue(any(item["code"] == "INVALID_JSON" for item in report["findings"]))
 
+
+    def test_character_specific_portraits_are_counted_as_unique_identity_assets(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            project = self.fixture(root)
+            characters = {
+                "characters": {
+                    "hero_a": {"portrait_id": "shared"},
+                    "hero_b": {"portrait_id": "shared"},
+                }
+            }
+            (project / "data" / "characters.json").write_text(json.dumps(characters))
+            portraits = project / "assets" / "art" / "portraits"
+            (portraits / "shared.svg").write_text("<svg/>")
+            (portraits / "hero_a.svg").write_text("<svg/>")
+            (portraits / "hero_b.svg").write_text("<svg/>")
+            result, report = self.run_audit(root)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(report["counts"]["characters_with_dedicated_portraits"], 2)
+            self.assertEqual(report["counts"]["characters_with_shared_portrait_fallbacks"], 0)
+            self.assertFalse(any(item["code"] == "SHARED_PORTRAIT_FALLBACKS" for item in report["findings"]))
+
+    def test_missing_portrait_asset_is_an_error(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            project = self.fixture(root)
+            (project / "assets" / "art" / "portraits" / "test_portrait.svg").unlink()
+            (project / "assets" / "art" / "portraits" / "test_hero.svg").unlink()
+            result, report = self.run_audit(root)
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(report["counts"]["missing_portrait_assets"], 1)
+            self.assertTrue(any(item["code"] == "PORTRAIT_ASSET_MISSING" for item in report["findings"]))
+
+    def test_shared_legacy_portrait_without_character_art_is_reported(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            project = self.fixture(root)
+            characters = {
+                "characters": {
+                    "hero_a": {"portrait_id": "shared"},
+                    "hero_b": {"portrait_id": "shared"},
+                }
+            }
+            (project / "data" / "characters.json").write_text(json.dumps(characters))
+            portraits = project / "assets" / "art" / "portraits"
+            (portraits / "shared.svg").write_text("<svg/>")
+            result, report = self.run_audit(root)
+            self.assertEqual(result.returncode, 0)
+            self.assertEqual(report["counts"]["characters_with_shared_portrait_fallbacks"], 2)
+            self.assertTrue(any(item["code"] == "SHARED_PORTRAIT_FALLBACKS" for item in report["findings"]))
 
     def test_android_export_version_drift_is_reported(self):
         with tempfile.TemporaryDirectory() as temp:
