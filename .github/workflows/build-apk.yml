@@ -91,8 +91,8 @@ jobs:
           arch: x86_64
           profile: pixel_5
           disable-animations: true
-          # ANGLE is a more reliable GLES path for this CI emulator; this remains diagnostic, not device certification.
-          emulator-options: -no-window -gpu angle -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
+          # Let the Google APIs image select its supported GLES backend; do not force an unsupported renderer flag.
+          emulator-options: -no-window -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
           script: |
             # Keep the emulator's Pixel 5 display defaults; runtime rotation follows the project's landscape request.
             # Avoid wm size/density changes during Android startup because they trigger delayed display reconfiguration.
