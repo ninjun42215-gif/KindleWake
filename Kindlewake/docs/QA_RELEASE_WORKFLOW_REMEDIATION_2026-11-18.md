@@ -55,9 +55,21 @@ The evidence proves an emulator smoke failure, but does not isolate a game-code 
 
 A useful prior diagnostic exists on an older branch:
 - [PR #159](https://github.com/ninjun42215-gif/KindleWake/pull/159), tested head `df58cfded03c7a85f8e9e7d36719e6a80528b010`.
-- [Build #44076962703](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44076962703) passed using API 35 `google_apis` and ANGLE with Pixel 5 defaults.
+- [Build #44076962703](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44076962703) passed using API 35 `google_apis` with Pixel 5 defaults. Its explicit ANGLE option was rejected by the emulator, which fell back to auto GPU selection; the app still remained alive and rendered the title screen.
 - [Diagnostic artifact 14324334765](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44076962703/artifacts/14324334765) was downloaded; OCR reported `KINDLEWAKE`, `NEW GAME`, and `SETTINGS`, and the screenshot showed the title menu.
 - PR #159 is stale/diverged from current main (18 ahead / 4 behind at audit). Its workflow-only correction is being ported to a fresh branch; its old successful run is evidence for a candidate configuration, not validation of current main.
+
+### Current-main QA branch verification — first validated workflow revision
+
+On exact PR head `b23a4770ce4ebe8650c2fe5ea47f23f30e78df7f`:
+
+- [Build Android APK #44294749875](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44294749875) — **passed end to end**, including API 35 Google APIs emulator launch, resumed Godot activity, screenshot capture, OCR assertions and process-liveness check.
+- [Workflow YAML Lint #44294749739](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44294749739), [Project Health Audit #44294749888](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44294749888) and [Version Sync #44294749734](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44294749734) — passed.
+- APK artifact [14422403529](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44294749875/artifacts/14422403529), extracted APK SHA-256 `28951949ac145f1a63e14df7e409efd3d0997e33dc4ad93a018a807ec0f5ef95`, 65,848,438 bytes; valid test signature, ABIs arm64-v8a / armeabi-v7a / x86_64, no Android permissions.
+- Diagnostic artifact [14424035153](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44294749875/artifacts/14424035153): OCR detected KINDLEWAKE, NEW GAME and SETTINGS; the screenshot shows the title screen, and the log contains no GDScript parse/runtime error or Android fatal exception.
+- The emulator rejected the explicit `-gpu angle` option and fell back to its automatic GPU backend. The app nevertheless remained foreground/resumed and passed the process check. The log also contains a non-fatal MultiDisplayService invalid-display-parameters warning. To remove the unsupported renderer request and reduce misleading error noise, the next workflow revision removes the explicit GPU flag and will be re-tested on its new exact head.
+
+This is emulator CI evidence only. It is not physical-device QA.
 
 ## Structural audit, data and provenance
 
@@ -89,12 +101,12 @@ This branch changes workflow and release documentation only; it does not modify 
 - Remove the routine tag-release job. Tag builds remain CI candidates; only the protected production workflow may create public releases.
 - Default production workflow permission to `contents: read`; grant `contents: write` only to the `publish` job; set `rejected` to `contents: none`.
 - Capture `git rev-parse HEAD` immediately after checkout of the requested tag and use that exact SHA in the release manifest.
-- Port the previously demonstrated Google APIs / ANGLE emulator setup to a fresh current-main branch; avoid runtime display-size mutations that trigger the ATD display reconfiguration path.
+- Port the previously demonstrated Google APIs emulator setup to a fresh current-main branch; leave GPU selection automatic because the emulator rejects the explicit ANGLE flag, and avoid runtime display-size mutations that trigger the ATD display reconfiguration path.
 - Keep process, resumed activity, fatal-log and OCR assertions as single-line commands because the emulator runner invokes script lines with `/usr/bin/sh`.
 - Extend workflow YAML lint to enforce the release permission and provenance boundaries.
 - Refresh the Android release guide to version `0.12.0 / 1200`, the separate handoff workflow and the protected production lane.
 
-Candidate CI on this new branch is pending at the time this report was authored. Do not describe the proposed changes as passing until the exact PR head's Project Health Audit, Workflow YAML Lint, Version Sync and Android build have completed successfully.
+The first current-main workflow revision passed all four checks on exact head `b23a4770ce4ebe8650c2fe5ea47f23f30e78df7f`. A follow-up commit removes the emulator's rejected explicit ANGLE flag; that new head's checks are pending and must pass before the PR can be considered validated.
 
 ## Branch and PR health
 
