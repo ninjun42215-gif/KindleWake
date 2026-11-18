@@ -45,3 +45,15 @@ No new artwork or third-party asset was imported. The implementation reuses port
 - Ilyan Voss and Maren Vey need dedicated companion portraits before the 21-person companion roster can be called fully portrait-complete.
 - Current SVG portraits improve identity coverage but do not replace the approved painterly semi-realistic portrait direction. A higher-resolution master and sprite-identity review remain necessary.
 - Inspect the Companion Chronicle on portrait and landscape layouts, then verify portrait crops and frame pacing on a physical Android device.
+
+
+## 18 November addendum — dedicated companion portrait assets
+
+A dependent visual branch, `art/ilyan-maren-companion-portraits-2026-11-18`, now adds two original character-ID portrait SVGs:
+
+- `assets/art/portraits/ilyan_voss.svg` — Silent Tower guard / House Quillon battle mage; ash-dark hair, greying temples, tower-guard mantle and muted steel/bronze.
+- `assets/art/portraits/maren_vey.svg` — Thalassar pilot / archer; wind-tied auburn hair, practical brown leather, tideglass pendant and coastal beacon backdrop.
+
+Both are 512×512 project-authored SVG concepts with no third-party image, font, external package or copied game artwork. The new files use the exact stable IDs already present in `characters.json`. When this dependent branch is combined with the resolver/journal work above, the Companion Chronicle can resolve all 21 companion quest portraits to character-specific files instead of falling back to a shared `courtier` or `ash_scout` face for Ilyan and Maren.
+
+The branch is stacked on the exact PR 161 head and changes no gameplay, roster data, story, save schema, battle logic or shared UI files. A separate provenance note records authorship and import/performance caveats. The project-health audit on the dependent PR must confirm the updated portrait inventory; Godot import, rendered crop review and physical Android QA are still required. These are interim vector identity concepts, not final painterly masters.
