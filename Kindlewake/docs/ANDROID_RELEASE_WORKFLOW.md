@@ -9,7 +9,7 @@ See [`QA_RELEASE_WORKFLOW_REMEDIATION_2026-11-18.md`](QA_RELEASE_WORKFLOW_REMEDI
 - Routine APK builds produce candidate artifacts only. They must not create GitHub Releases or use a production signing identity.
 - The production workflow defaults to `contents: read`; only its protected publish job receives `contents: write`, and the rejected-confirmation job receives no repository permissions.
 - The production manifest records the exact commit checked out from the requested immutable tag, not the manual-dispatch event SHA.
-- The candidate Android smoke step uses an API 35 `google_apis` x86_64 emulator with ANGLE, checks the resumed Godot activity, captures a screenshot, OCR-checks the title/menu labels, checks fatal log markers and confirms the app process remains alive.
+- The candidate Android smoke step uses an API 35 `google_apis` x86_64 emulator with its auto-selected GPU backend (no forced renderer flag), checks the resumed Godot activity, captures a screenshot, OCR-checks the title/menu labels, checks fatal log markers and confirms the app process remains alive.
 - Emulator success is not physical-device QA. The candidate's Pixel 5 profile is a CI smoke target, not a substitute for testing the actual target phone, touch behavior, save/load, rotation, memory and long sessions.
 
 ## Release lanes
