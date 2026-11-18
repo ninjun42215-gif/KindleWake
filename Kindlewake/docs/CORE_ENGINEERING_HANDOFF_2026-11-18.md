@@ -44,6 +44,24 @@ Main SHA `751b2f3f6b1104aa30e107659094ae2e221dbe3d`:
 
 QA owns [PR #159](https://github.com/ninjun42215-gif/KindleWake/pull/159), which changes the emulator image/script. Its exact branch head at this checkpoint was `df58cfded03c7a85f8e9e7d36719e6a80528b010`; [Build Android APK #44076962703](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44076962703) passed and its diagnostic artifact `14324334765` shows the KindleWake title menu with OCR matches and no GLES uniform-limit error. That is emulator evidence on a separate, stale-base QA branch—not physical-device certification and not proof that the same workflow has been fixed on main.
 
+## Candidate code SHA verification
+
+Code/test SHA: `a89ae2eb64b48b52b2012492a27d0aaeaab76c7b`.
+
+- [Project Health Audit #44230363462](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44230363462) — passed.
+- [Workflow YAML Lint #44230363479](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44230363479) — passed.
+- [Version Sync #44230363619](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44230363619) — passed.
+- [Build Android APK #44230363682](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44230363682) — overall failed only at emulator smoke. Import clean; 20/20 scenes; **1,011 strict checks / 0 failures**; campaign lifecycle, merchant UI, title/creator UI, Act V, continuity (70), dynasty (39), family development (19) and balance simulation passed.
+- Exact-code APK artifact [14395201564](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44230363682/artifacts/14395201564), 65,848,438 bytes. Downloaded APK SHA-256: `f8eceb7abf3c646ba2a3775b7ee54d87847e66b571d34f0db272fa57ac89d82d`. Build summary reports valid test signature, arm64-v8a / armeabi-v7a / x86_64, and no Android permissions. Diagnostic artifact: [test logs #14394388122](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44230363682/artifacts/14394388122).
+- Emulator stage used AOSP ATD / SwiftShader and logged `SceneShaderGLES3` fragment uniform limit 261 > reported device limit; the screenshot is black and the app process was absent at the 30-second check. Treat the APK as a CI-exported candidate, not an emulator- or device-verified release.
+
+Handoff documentation commits on this branch:
+- `91b2560d3ea4490f3114883cd9d27a3070fba30a` — dated core handoff.
+- `365c038f2531def2ed15c9a3442eefe5ed454605` — next-AI checkpoint.
+- `09b06b42b2ac8ec8fb7a81184c5c2433b9e2bc9a` — session checkpoint.
+
+The docs-updated PR head has a separate Actions set; check live PR #160 for exact-head status. Do not treat code-SHA results as final-head results.
+
 ## PR / branch coordination at this checkpoint
 
 All counts compare the branch against current main; branches are references only unless the PR is explicitly current:
