@@ -131,7 +131,7 @@
       "license_status": "verified",
       "used_in_game": true,
       "release_blocker": false,
-      "notes": "Runtime export: assets/art/portraits/kestrel.webp (256x256 WebP, quality 74). Derived from a 328x328 crop; 512x512 PNG working master retained in the project Library. Repaint a 1024px+ layered master before final art lock."
+      "notes": "Runtime export: assets/art/portraits/kestrel.webp (256x256 WebP, quality 74). Derived from a 328x328 crop; 512x512 PNG working master is attached to the 18 November design run. Persistent Library upload was rejected by file-service indexing permissions. Repaint a 1024px+ layered master before final art lock."
     }
   ]
 }
