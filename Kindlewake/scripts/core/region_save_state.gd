@@ -126,6 +126,10 @@ static func is_valid_campaign_payload(payload: Dictionary) -> bool:
             return false
     if typeof(payload.get("active_region_id", "sethmarch")) != TYPE_STRING:
         return false
+    # Realm state is additive; older schema-4 saves may omit it.
+    # Reject malformed present values before GameState calls the typed normalizer.
+    if typeof(payload.get("empire_state", {})) != TYPE_DICTIONARY:
+        return false
     if typeof(payload.get("faction_state", {})) != TYPE_DICTIONARY:
         return false
     if typeof(payload.get("companion_relationships", {})) != TYPE_DICTIONARY:
