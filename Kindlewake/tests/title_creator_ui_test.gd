@@ -59,7 +59,8 @@ func _run_ui_test() -> void:
     _check(PortraitResolverScript.resolve_character_path("auburn_ranger", "torren").ends_with("auburn_ranger.webp"), "Torren keeps the portrait selected in the creator when shown in party and battle views")
     _check(PortraitResolverScript.resolve_character_path("sela", "sela").ends_with("auburn_ranger.webp"), "Sela resolves the approved auburn ranger portrait")
     _check(PortraitResolverScript.resolve_character_path("kestrel", "kestrel").ends_with("kestrel.webp"), "Kestrel resolves her unique raster portrait")
-    _check(PortraitResolverScript.resolve_character_path("auburn_ranger", "sister_odaly").ends_with("auburn_ranger.svg"), "shared legacy IDs do not leak another character's raster portrait")
+    _check(PortraitResolverScript.resolve_character_path("auburn_ranger", "sister_odaly").ends_with("sister_odaly.svg"), "Sister Odaly resolves her character-specific portrait before the shared legacy ID")
+    _check(PortraitResolverScript.resolve_character_path("auburn_ranger", "blackwake_captain").ends_with("auburn_ranger.svg"), "shared legacy IDs do not leak another character's raster portrait")
     var all_portraits_load := true
     for portrait in GameData.character_creation.get("portraits", []):
         var portrait_id := str(portrait.get("id", ""))
