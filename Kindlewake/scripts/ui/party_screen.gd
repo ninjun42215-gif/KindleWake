@@ -8,6 +8,7 @@ const PersonalitySystemScript = preload("res://scripts/core/personality_system.g
 const TraitSystemScript = preload("res://scripts/core/trait_system.gd")
 const RelationshipSystemScript = preload("res://scripts/core/relationship_system.gd")
 const PortraitResolverScript = preload("res://scripts/ui/portrait_resolver.gd")
+const EquipmentIconAtlasScript = preload("res://scripts/ui/equipment_icon_atlas.gd")
 ## Full-screen party management in one touch UI (v0.8.0 layout): a compact top bar, a roster of cards, a character
 ## sheet made of stat tiles, and a right panel with three tabs: Equipment, Runes and Shop.
 ## It owns no rules: every action goes through PartyStateScript / CharacterSheetScript / ShopSystem, the same code paths the
@@ -859,6 +860,8 @@ func _fill_gear(box: VBoxContainer) -> void:
         var cbox: VBoxContainer = cp[1]
         var row := HBoxContainer.new()
         row.add_theme_constant_override("separation", 8)
+        var equipped_icon: TextureRect = EquipmentIconAtlasScript.icon_for_item(iid, items.get(iid, {}), 42) if iid != "" else EquipmentIconAtlasScript.icon_for_slot(slot, 42)
+        row.add_child(equipped_icon)
         var texts := VBoxContainer.new()
         texts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         texts.add_theme_constant_override("separation", 1)
@@ -921,7 +924,11 @@ func _fill_slot_choices(box: VBoxContainer, sh: CharacterSheetScript, slot: Stri
             cp = _card(_on_blocked.bind(problem))
         var holder: PanelContainer = cp[0]
         var cbox: VBoxContainer = cp[1]
-        cbox.add_child(_label("%s   x%d" % [str(it.get("name", iid)), party.item_count(iid)], 19, _rarity_color(iid)))
+        var item_heading := HBoxContainer.new()
+        item_heading.add_theme_constant_override("separation", 8)
+        item_heading.add_child(EquipmentIconAtlasScript.icon_for_item(iid, it, 42))
+        item_heading.add_child(_label("%s   x%d" % [str(it.get("name", iid)), party.item_count(iid)], 19, _rarity_color(iid)))
+        cbox.add_child(item_heading)
         if problem == "":
             var after: Dictionary = sh.with_item(slot, iid, items).derived(db)
             cbox.add_child(_delta_row(current, after))
@@ -1128,12 +1135,14 @@ func _on_fuse_rune(rune_id: String, grade: String) -> void:
 
 # ---------------------------------------------------------------- Shop tab
 
-func _price_card(handler: Callable, title: String, title_color: Color, desc: String, price_text: String, price_color: Color, disabled: bool, note: String = "", selected: bool = false) -> Control:
+func _price_card(handler: Callable, title: String, title_color: Color, desc: String, price_text: String, price_color: Color, disabled: bool, note: String = "", selected: bool = false, item_icon: TextureRect = null) -> Control:
     var cp: Array = _card(handler, selected, disabled)
     var holder: PanelContainer = cp[0]
     var cbox: VBoxContainer = cp[1]
     var row := HBoxContainer.new()
     row.add_theme_constant_override("separation", 10)
+    if item_icon != null:
+        row.add_child(item_icon)
     var texts := VBoxContainer.new()
     texts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     texts.add_theme_constant_override("separation", 1)
@@ -1199,7 +1208,8 @@ func _fill_shop(box: VBoxContainer) -> void:
                 price_col = COL_BAD
             var key: String = "buy:%s:%s" % [kind, id]
             var picked: bool = shop_pick == key
-            box.add_child(_price_card(_on_shop_pick.bind(key), str(e["name"]), name_col, desc, "%d g" % price, price_col, false, note, picked))
+            var item_icon: TextureRect = EquipmentIconAtlasScript.icon_for_item(id, items.get(id, {}), 42) if kind == "item" else _rune_icon({"id": id}, 42)
+            box.add_child(_price_card(_on_shop_pick.bind(key), str(e["name"]), name_col, desc, "%d g" % price, price_col, false, note, picked, item_icon))
             if picked:
                 var confirm_text: String = "Confirm: buy for %d g" % price
                 if not afford:
@@ -1224,7 +1234,7 @@ func _fill_shop(box: VBoxContainer) -> void:
         if not sellable:
             price_text = "-"
             snote = "cannot be sold"
-        box.add_child(_price_card(_on_shop_pick.bind(skey), title, _rarity_color(iid), ItemInfo.item_line(iid, items, weapons, false), price_text, COL_GOLD if sellable else COL_DIM, not sellable, snote, spicked))
+        box.add_child(_price_card(_on_shop_pick.bind(skey), title, _rarity_color(iid), ItemInfo.item_line(iid, items, weapons, false), price_text, COL_GOLD if sellable else COL_DIM, not sellable, snote, spicked, EquipmentIconAtlasScript.icon_for_item(iid, it, 42)))
         if spicked and sellable:
             _fill_shop_detail(box, "item", iid, _on_confirm_sell_item.bind(iid), "Confirm: sell for %d g" % sell_for, true, true)
         listed += 1
@@ -1234,7 +1244,7 @@ func _fill_shop(box: VBoxContainer) -> void:
         var sigil_for: int = ShopSystem.sell_price(int(bd.get("price", 0)), shop)
         var gkey: String = "sell:rune:%d" % bag_i
         var gpicked: bool = shop_pick == gkey
-        box.add_child(_price_card(_on_shop_pick.bind(gkey), str(bd.get("name", "?")), COL_GOLD, ItemInfo.sigil_progress(bi, bd), "%d g" % sigil_for, COL_GOLD, false, "", gpicked))
+        box.add_child(_price_card(_on_shop_pick.bind(gkey), str(bd.get("name", "?")), COL_GOLD, ItemInfo.sigil_progress(bi, bd), "%d g" % sigil_for, COL_GOLD, false, "", gpicked, _rune_icon(bi, 42)))
         if gpicked:
             _fill_shop_detail(box, "rune", "", _on_confirm_sell_sigil.bind(bag_i), "Confirm: sell for %d g" % sigil_for, true, true)
         listed += 1

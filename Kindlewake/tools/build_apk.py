@@ -745,6 +745,23 @@ def main(argv: Optional[List[str]] = None) -> int:
                     if args.strict:
                         raise BuildError("Regional commodity exchange UI interaction test failed.")
 
+            equipment_icon_test = PROJECT / "tests" / "equipment_icon_atlas_test.gd"
+            if equipment_icon_test.is_file():
+                say("\n[5a.15] Running equipment icon atlas and category mapping test")
+                code, out = run([str(godot), "--headless", "--path", str(PROJECT),
+                                 "--script", "res://tests/equipment_icon_atlas_test.gd"],
+                                env=env, log=logs / "equipment_icon_atlas_test.txt", timeout=300)
+                equipment_icon_ok = ("Equipment icon atlas failures: 0" in out and
+                                     "SCRIPT ERROR" not in out and "Parse Error" not in out)
+                summary.append("equipment_icons: exit %d, pass marker %s" %
+                               (code, "yes" if equipment_icon_ok else "no"))
+                if code != 0 or not equipment_icon_ok:
+                    say("  EQUIPMENT ICON ATLAS TEST FAILED. See dist/logs/equipment_icon_atlas_test.txt.")
+                    if args.strict:
+                        raise BuildError("Equipment icon atlas test failed.")
+            elif args.strict:
+                raise BuildError("Strict QA requires tests/equipment_icon_atlas_test.gd.")
+
             creator_test_scene = PROJECT / "tests" / "title_creator_ui_test.tscn"
             if creator_test_scene.is_file():
                 say("\n[5a.2] Running title screen and protagonist creator UI interaction test")
