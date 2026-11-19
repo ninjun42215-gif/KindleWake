@@ -1,7 +1,8 @@
 extends Node2D
 
-# Original 11-cell, 48px atlas for local roofs, timber facades, doors and masonry.
+# Original base and detail atlases for 48px local roofs, facades, doors and masonry.
 const LOCAL_ARCHITECTURE_ATLAS: Texture2D = preload("res://assets/art/tiles/local_architecture.svg")
+const LOCAL_ARCHITECTURE_DETAIL_ATLAS: Texture2D = preload("res://assets/art/tiles/local_architecture_detail.svg")
 
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 
@@ -1062,16 +1063,23 @@ func _draw_tile(c: Vector2i) -> void:
             var stone_variant: int = 9 if h <= 0.5 else 10
             draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(stone_variant) * TILE, 0.0, TILE, TILE))
         "r":
-            var clay_variant: int = 0 if h <= 0.5 else 1
-            draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(clay_variant) * TILE, 0.0, TILE, TILE))
+            var clay_variant: int = mini(3, int(h * 4.0))
+            if clay_variant < 2:
+                draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(clay_variant) * TILE, 0.0, TILE, TILE))
+            else:
+                draw_texture_rect_region(LOCAL_ARCHITECTURE_DETAIL_ATLAS, full, Rect2(float(clay_variant - 2) * TILE, 0.0, TILE, TILE))
         "b":
-            var slate_variant: int = 2 if h <= 0.5 else 3
-            draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(slate_variant) * TILE, 0.0, TILE, TILE))
+            var slate_variant: int = mini(3, int(h * 4.0))
+            if slate_variant < 2:
+                draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(slate_variant + 2) * TILE, 0.0, TILE, TILE))
+            else:
+                draw_texture_rect_region(LOCAL_ARCHITECTURE_DETAIL_ATLAS, full, Rect2(float(slate_variant) * TILE, 0.0, TILE, TILE))
         "w":
-            var facade_variant: int = 4 if h <= 0.5 else 5
-            if h > 0.82:
-                facade_variant = 6 if h <= 0.91 else 7
-            draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(facade_variant) * TILE, 0.0, TILE, TILE))
+            var facade_variant: int = mini(7, int(h * 8.0))
+            if facade_variant < 4:
+                draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(facade_variant + 4) * TILE, 0.0, TILE, TILE))
+            else:
+                draw_texture_rect_region(LOCAL_ARCHITECTURE_DETAIL_ATLAS, full, Rect2(float(facade_variant) * TILE, 0.0, TILE, TILE))
         "1", "2", "3", "4":
             draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(8.0 * TILE, 0.0, TILE, TILE))
         "E":
