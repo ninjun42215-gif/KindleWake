@@ -111,6 +111,14 @@ static func normalize_state(raw: Dictionary) -> Dictionary:
  state["house_name"] = str(state.get("house_name","House of the Open Hand"))
  if not SUCCESSION_POLICIES.has(str(state.get("succession_policy",""))):
   state["succession_policy"] = "primogeniture"
+ # Domain IDs are validated before person records are normalized. A malformed
+ # saved catalog must never reach _valid_ids(), which requires a Dictionary.
+ var raw_domains: Variant = state.get("domains", {})
+ var clean_domains: Dictionary = raw_domains.duplicate(true) if typeof(raw_domains) == TYPE_DICTIONARY else {}
+ for domain_id in clean_domains.keys():
+  if typeof(clean_domains[domain_id]) != TYPE_DICTIONARY:
+   clean_domains.erase(domain_id)
+ state["domains"] = clean_domains
  var people: Dictionary = state["people"]
  for id in people.keys():
   if typeof(people[id]) != TYPE_DICTIONARY:

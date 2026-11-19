@@ -200,3 +200,10 @@ docs/            GDD.md, SESSION_HANDOFF.md, CONTINUATION_PROMPT.md
 ## Campaign politics foundation (implementation in review)
 
 The current feature branch adds data-driven factions across the seven-continent atlas, regional political affiliations, bounded diplomatic relations, non-aggression/trade/alliance/war states, alliance trust gating, validated territory transfers and campaign history. Political state is stored as an optional campaign payload field; legacy schema-4 saves receive safe defaults. Code head `f7b31035e4651a4a6854cc5ad644beff88c2148b` passed the Android build, 8/8 scene smoke tests, 447 strict checks / 0 failures, balance report, version sync, workflow lint and project health audit. Physical Android QA remains outstanding. This is the rules/data foundation only: no player-facing kingdom UI, autonomous faction turns or complete strategic-war system is claimed yet. See `docs/GDD.md` section 19 and `docs/SESSION_HANDOFF.md`.
+
+
+## 2026-11-19 — Chronicle save normalization hardening (in review)
+
+- The Chronicle of Houses normalizer now cleans the saved domain catalog before validating family members' domain links. Malformed catalog types and non-Dictionary entries are safely discarded, and references to removed domains are pruned.
+- Added regression coverage for malformed domain catalogs. No save-schema bump or changes to story, valid family state, titles, succession or player data.
+- Candidate branch: `fix/chronicle-dynasty-save-normalization-2026-11-19`, based on main `13f66ec19476c9af5ed2b5c81af95e4d8a026876`. Verification remains pending exact-head GitHub Actions; this is not yet a release claim.

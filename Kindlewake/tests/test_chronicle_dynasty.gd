@@ -62,6 +62,17 @@ func _initialize() -> void:
  check(not restored.is_empty() and restored.people.size() == state.people.size(),"family and relationship state survives JSON save normalization")
  var corrupt := Dynasty.normalize_state({"founder_id":"missing","people":{"bad":"not a person"},"titles":{"broken":"not a title"},"domains":[]})
  check(corrupt.is_empty(),"corrupted family saves without a founder anchor are rejected safely")
+ var malformed_domains := state.duplicate(true)
+ malformed_domains["domains"] = []
+ malformed_domains["people"]["heir_1"]["domain_ids"] = ["kaer_sethorn"]
+ var normalized_domains := Dynasty.normalize_state(malformed_domains)
+ check(not normalized_domains.is_empty() and normalized_domains.domains.is_empty(),"non-dictionary saved domain catalogs normalize safely")
+ check(normalized_domains.people["heir_1"].domain_ids.is_empty(),"person domain references are pruned against the normalized catalog")
+ var malformed_domain_entries := state.duplicate(true)
+ malformed_domain_entries["domains"] = {"kaer_sethorn":"not a domain"}
+ malformed_domain_entries["people"]["heir_1"]["domain_ids"] = ["kaer_sethorn"]
+ var normalized_domain_entries := Dynasty.normalize_state(malformed_domain_entries)
+ check(not normalized_domain_entries.is_empty() and normalized_domain_entries.domains.is_empty() and normalized_domain_entries.people["heir_1"].domain_ids.is_empty(),"non-dictionary domain entries are discarded before relationship normalization")
  var aged := restored.duplicate(true)
  aged.people["heir_2"].age = Dynasty.NATURAL_OLD_AGE-1
  var year := Dynasty.advance_year(aged)

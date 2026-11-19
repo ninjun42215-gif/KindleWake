@@ -980,3 +980,10 @@ The campaign overworld is a continuous wraparound surface: east-to-west, west-to
 - Governor assignments are unique per companion, cleared when a region leaves House Dunmarrow, and pruned against held regions/current roster during save normalization. Existing holding governance, garrison, development, recruitment and siege controls remain available.
 - Governor-specific stat bonuses and actual Android viewport/touch QA remain future work. No version or save-schema bump was needed.
 - Main commit `68523bbbd78b5aa780ae15b2d06c47262536f0bc` passed 18 scene loads, 948 strict checks / 0 failures, campaign/Chronicle checks, balance simulation and signed Android export.
+
+
+## Revision log — Chronicle save normalization hardening (2026-11-19)
+
+- Chronicle of Houses save restoration now sanitizes the saved domain catalog before validating each person's domain references. Non-Dictionary catalogs become empty; non-Dictionary domain entries are discarded; dangling person domain IDs are pruned against the cleaned catalog.
+- Added regression cases for an Array-valued domain catalog and a Dictionary containing a malformed domain entry. Valid Chronicle state, succession, titles, domains, family records and save schema remain unchanged.
+- Implementation branch: `fix/chronicle-dynasty-save-normalization-2026-11-19`, based on main `13f66ec19476c9af5ed2b5c81af95e4d8a026876`. Code commits: `29c3ab3f25dcbe2cad673bd225ae0f1149dc1ef2`, `896b850bae2facee5f9e2d74fdb9d5780eeb9cfd`. Automated verification is pending exact-head CI.
