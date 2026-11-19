@@ -185,6 +185,19 @@ func _test_art_assets() -> void:
     if prop_texture != null:
         check(prop_texture.get_size() == Vector2(512.0, 512.0), "4x4 prop atlas matches sixteen 128px cells")
 
+    var architecture_texture: Texture2D = load("res://assets/art/tiles/local_architecture.svg") as Texture2D
+    check(architecture_texture != null, "base local architecture atlas imports")
+    if architecture_texture != null:
+        check(architecture_texture.get_size() == Vector2(528.0, 48.0), "base local architecture atlas retains eleven 48px cells")
+    var architecture_detail_texture: Texture2D = load("res://assets/art/tiles/local_architecture_detail.svg") as Texture2D
+    check(architecture_detail_texture != null, "local architecture detail atlas imports")
+    if architecture_detail_texture != null:
+        check(architecture_detail_texture.get_size() == Vector2(384.0, 48.0), "detail atlas contains eight 48px cells")
+    var location_architecture_source := FileAccess.get_file_as_string("res://scripts/ui/location_scene.gd")
+    check(location_architecture_source.contains("LOCAL_ARCHITECTURE_DETAIL_ATLAS"), "local settlement renderer loads the detail atlas")
+    check(location_architecture_source.contains("mini(3, int(h * 4.0))"), "clay and slate roofs select four deterministic variants")
+    check(location_architecture_source.contains("mini(7, int(h * 8.0))"), "town facades select eight deterministic variants")
+
     var character_texture: Texture2D = load("res://assets/art/units/character_atlas.svg") as Texture2D
     check(character_texture != null, "original character and enemy atlas imports")
     if character_texture != null:
