@@ -31,6 +31,13 @@ def main() -> int:
         "rune_kinds": {},
         "unverified_asset_entries": 0,
         "unverified_used_assets": 0,
+        "character_count": 0,
+        "portrait_asset_files": 0,
+        "characters_with_dedicated_portraits": 0,
+        "characters_with_shared_portrait_fallbacks": 0,
+        "shared_portrait_id_groups": 0,
+        "missing_portrait_assets": 0,
+        "companion_journal_portrait_integration": 0,
     }
 
     def add(level: str, code: str, message: str, path: str = "") -> None:
@@ -53,6 +60,96 @@ def main() -> int:
         counts["resource_files"] = sum(
             1 for pattern in ("*.tres", "*.res") for _ in project.rglob(pattern)
         )
+
+        # Portrait identity integrity: prefer a character-specific asset over a
+        # legacy portrait ID shared by multiple characters.
+        characters_path = project / "data" / "characters.json"
+        portrait_dir = project / "assets" / "art" / "portraits"
+        resolver_path = project / "scripts" / "ui" / "portrait_resolver.gd"
+        journal_path = project / "scripts" / "ui" / "companion_quest_journal.gd"
+        if characters_path.is_file():
+            try:
+                character_data = json.loads(characters_path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+                add("error", "CHARACTER_DATA_INVALID", f"Could not parse character definitions: {exc}", characters_path.relative_to(root).as_posix())
+            else:
+                characters = character_data.get("characters") if isinstance(character_data, dict) else None
+                if not isinstance(characters, dict):
+                    add("error", "CHARACTER_DATA_SCHEMA_INVALID", "Expected characters.json to contain a characters object.", characters_path.relative_to(root).as_posix())
+                else:
+                    counts["character_count"] = len(characters)
+                    supported_extensions = (".png", ".webp", ".jpg", ".svg")
+                    portrait_files = [
+                        path for path in portrait_dir.iterdir()
+                        if path.is_file() and path.suffix.lower() in supported_extensions
+                    ] if portrait_dir.is_dir() else []
+                    counts["portrait_asset_files"] = len(portrait_files)
+                    portrait_groups: Counter[str] = Counter()
+                    missing_portraits: list[str] = []
+                    character_assets: dict[str, bool] = {}
+                    for character_id, definition in characters.items():
+                        if not isinstance(definition, dict):
+                            missing_portraits.append(str(character_id))
+                            continue
+                        portrait_id = str(definition.get("portrait_id", "")).strip()
+                        if portrait_id:
+                            portrait_groups[portrait_id] += 1
+                        has_character_asset = any(
+                            (portrait_dir / f"{character_id}{extension}").is_file()
+                            for extension in supported_extensions
+                        )
+                        character_assets[str(character_id)] = has_character_asset
+                        if not portrait_id or not any(
+                            (portrait_dir / f"{portrait_id}{extension}").is_file()
+                            for extension in supported_extensions
+                        ):
+                            missing_portraits.append(str(character_id))
+                    shared_groups = {portrait_id for portrait_id, count in portrait_groups.items() if count > 1}
+                    shared_fallbacks = [
+                        character_id
+                        for character_id, definition in characters.items()
+                        if isinstance(definition, dict)
+                        and str(definition.get("portrait_id", "")).strip() in shared_groups
+                        and not character_assets.get(str(character_id), False)
+                    ]
+                    counts["characters_with_dedicated_portraits"] = sum(character_assets.values())
+                    counts["characters_with_shared_portrait_fallbacks"] = len(shared_fallbacks)
+                    counts["shared_portrait_id_groups"] = len(shared_groups)
+                    counts["missing_portrait_assets"] = len(missing_portraits)
+                    if missing_portraits:
+                        add(
+                            "error",
+                            "PORTRAIT_ASSET_MISSING",
+                            f"{len(missing_portraits)} character definition(s) have no resolvable portrait asset: {', '.join(missing_portraits[:8])}.",
+                            "Kindlewake/data/characters.json;Kindlewake/assets/art/portraits",
+                        )
+                    if shared_fallbacks:
+                        add(
+                            "warning",
+                            "SHARED_PORTRAIT_FALLBACKS",
+                            f"{len(shared_fallbacks)} character(s) still rely on shared legacy portrait IDs without a character-specific asset; commission or approve unique artwork before claiming full portrait coverage.",
+                            "Kindlewake/data/characters.json;Kindlewake/assets/art/portraits",
+                        )
+                    resolver_text = resolver_path.read_text(encoding="utf-8", errors="replace") if resolver_path.is_file() else ""
+                    if 'PORTRAIT_DIR + normalized_character_id + ".svg"' not in resolver_text:
+                        add(
+                            "error",
+                            "PORTRAIT_RESOLVER_PRIORITY_MISSING",
+                            "Portrait resolver does not prefer an exact character-ID SVG before shared legacy SVG fallback.",
+                            "Kindlewake/scripts/ui/portrait_resolver.gd",
+                        )
+                    journal_text = journal_path.read_text(encoding="utf-8", errors="replace") if journal_path.is_file() else ""
+                    journal_integrated = "PortraitResolverScript.load_character_texture(portrait_id, companion_id)" in journal_text
+                    counts["companion_journal_portrait_integration"] = 1 if journal_integrated else 0
+                    if not journal_integrated:
+                        add(
+                            "warning",
+                            "COMPANION_JOURNAL_PORTRAITS_MISSING",
+                            "Companion Chronicle cards do not resolve portraits through the character-aware portrait pipeline.",
+                            "Kindlewake/scripts/ui/companion_quest_journal.gd",
+                        )
+        else:
+            add("warning", "CHARACTER_DATA_MISSING", "No data/characters.json found for portrait identity audit.", "Kindlewake/data/characters.json")
 
         godot_text = (project / "project.godot").read_text(encoding="utf-8", errors="replace")
         version_match = re.search(r'^config/version="([^"]+)"', godot_text, re.M)
@@ -204,7 +301,7 @@ def main() -> int:
     add(
         "info",
         "AUDIT_SCOPE",
-        "Read-only structural audit. It does not execute Godot, inspect every GDScript semantic, test scenes, validate external licence terms, or prove Android device compatibility.",
+        "Read-only structural audit. It checks character portrait file coverage and resolver wiring, but does not render portraits, inspect every GDScript semantic, test scenes, validate external licence terms, or prove Android device compatibility.",
     )
     errors = sum(f["level"] == "error" for f in findings)
     warnings = sum(f["level"] == "warning" for f in findings)
