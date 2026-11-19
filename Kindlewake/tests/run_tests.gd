@@ -2747,6 +2747,9 @@ func _test_campaign_restore_validation() -> void:
     var malformed_chronicle: Dictionary = payload.duplicate(true)
     malformed_chronicle["chronicle_state"] = []
     check(not RegionSaveState.is_valid_campaign_payload(malformed_chronicle), "campaign restore rejects malformed chronicle milestone state")
+    var malformed_empire_state: Dictionary = payload.duplicate(true)
+    malformed_empire_state["empire_state"] = []
+    check(not RegionSaveState.is_valid_campaign_payload(malformed_empire_state), "campaign restore rejects malformed empire state before realm normalization")
     var missing_party: Dictionary = payload.duplicate(true)
     missing_party.erase("party")
     check(not RegionSaveState.is_valid_campaign_payload(missing_party), "campaign restore rejects a missing party")

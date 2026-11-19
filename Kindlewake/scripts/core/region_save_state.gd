@@ -126,6 +126,10 @@ static func is_valid_campaign_payload(payload: Dictionary) -> bool:
             return false
     if typeof(payload.get("active_region_id", "sethmarch")) != TYPE_STRING:
         return false
+    # GameState passes this value to EmpireSystem.normalize_state(raw: Dictionary).
+    # Reject malformed types here so a corrupt save is refused before any live state changes.
+    if typeof(payload.get("empire_state", {})) != TYPE_DICTIONARY:
+        return false
     if typeof(payload.get("faction_state", {})) != TYPE_DICTIONARY:
         return false
     if typeof(payload.get("companion_relationships", {})) != TYPE_DICTIONARY:
