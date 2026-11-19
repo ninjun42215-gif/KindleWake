@@ -1,20 +1,30 @@
 # Kindlewake Android build and release workflow
 
-Last workflow update: 2026-11-10. Canonical project: Godot 4.2+ under `Kindlewake/`.
+Last workflow update: 2026-11-16. Canonical project: Godot 4.2.2 under `Kindlewake/`.
+
+
+## Live configuration snapshot — 2026-11-16
+
+- Engine: Godot 4.2.2; renderer: GL Compatibility; project version: `0.12.0`; Android version code: `1200`.
+- The `Build Android APK` workflow builds candidate artifacts for pull requests to `main`, pushes to `main` and `feature/sethmarch-regional-network`, `v*` tag pushes and manual dispatch. **Until QA PR #148 is merged, current main still has its legacy tag-triggered GitHub Release job; do not push a `v*` tag.** The QA candidate removes that job so only the protected production workflow creates a public release.
+- `Publish Android Production Release` is present on `main` and requires an existing `v*` tag, the exact `PUBLISH` confirmation and the `android-production` environment. The audit found eight legacy `apk-*` tags and no GitHub Releases; no `v*` tag was present. Environment secret values and reviewer rules were not inspected.
+- The QA candidate records `git rev-parse HEAD` after checking out the requested tag and uses that exact SHA in `release-manifest.json`. It also limits write permission to the production publish job.
+- GitHub Actions emitted non-blocking Node.js 20 deprecation warnings for current action versions. Update/pin action versions in a separately tested maintenance change rather than silently changing the release toolchain.
+- The repository's `Safe Auto Merge` workflow remains active for eligible non-draft PRs. QA PRs created by this process remain drafts; this process does not merge to `main`.
 
 ## Release lanes
 
 | Lane | Trigger | Signing | Output | Publishing |
 |---|---|---|---|---|
-| Development / CI | Push to any branch, PR to any branch, tag push, or manual dispatch | Existing sideload/test key configured for CI | `Kindlewake-APK` artifact + reports | Never publishes a production release |
-| Production | Manual `Publish Android Production Release` dispatch for an existing `v*` tag | Private production keystore from protected GitHub Environment secrets | Production-signed APK, SHA-256 and manifest | Creates/updates the requested GitHub Release only after approval |
+| Development / CI | Pull request to `main`; push to `main` or `feature/sethmarch-regional-network`; `v*` tag push; or manual dispatch | Existing sideload/test key configured for CI | `Kindlewake-APK` candidate artifact + test logs | Does not publish a GitHub Release after QA PR #148 is merged |
+| Production | Manual `Publish Android Production Release` dispatch for an existing `v*` tag | Private production keystore from protected GitHub Environment secrets | Production-signed APK, SHA-256 and manifest | Creates a new GitHub Release only after protected approval; refuses overwrite |
 
-The CI workflow and production publishing workflow are intentionally separate. A tag push creates a verified build candidate artifact; it does **not** publish a production release automatically.
+The CI workflow and production publishing workflow are intended to be separate. After QA PR #148 is merged, a tag push creates a verified candidate artifact only; it does **not** publish a GitHub Release. Until then, avoid pushing a `v*` tag because current main still has the legacy test-APK release job.
 
 ## Routine APK build
 
 1. Push changes to the authorized working branch or open/update a pull request.
-2. Open GitHub → Actions → **Build Android APK and Source Handoff**.
+2. Open GitHub → Actions → **Build Android APK**. The source handoff is a separate **Manual Source Handoff Snapshot** workflow.
 3. Wait for the `android-build` job. It checks that `project.godot` and the Android export preset use the same version, imports Godot, runs strict tests and the balance report, exports the APK, and verifies the APK archive, ARM64 library, signature and offline permission policy.
 4. Download **Kindlewake-APK**. It contains:
    - `Kindlewake.apk`
@@ -30,7 +40,7 @@ The source handoff uses `git ls-files` from the triggering checkout. It does not
 Do not run production publishing until all of these are configured:
 
 1. In GitHub repository Settings → Environments, create an environment named `android-production`.
-2. The production workflow must first exist on the repository's default branch before GitHub exposes it for `workflow_dispatch`. This project keeps `main` untouched until the draft PR is explicitly approved and merged; therefore do not expect the production dispatch to be available while this workflow exists only on the feature branch.
+2. The production workflow is present on `main` as of 2026-11-16 and is available for `workflow_dispatch`. This does not prove the `android-production` environment has its required reviewers or secrets configured; verify those settings before any production run.
 3. Add required reviewers / deployment protection rules to that environment. The workflow references this environment; the approval rule is configured in GitHub settings, not in YAML.
 4. Add these **environment secrets** to `android-production`:
    - `ANDROID_RELEASE_KEYSTORE_BASE64`: base64-encoded private `.keystore` or `.jks` file.
@@ -48,9 +58,9 @@ The production workflow writes the decoded key only to the ephemeral GitHub runn
 
 ## Publishing a production APK
 
-1. Create and push an immutable version tag that points to the reviewed release commit, for example `v0.10.0`.
+1. Create and push a protected, immutable version tag that points to the reviewed release commit, for example `v0.12.0`. Verify that the repository's tag ruleset actually protects `v*`; this audit does not establish that protection is configured.
 2. Ensure `Kindlewake/project.godot` version and `Kindlewake/export_presets.cfg` `version/name` both equal the tag without the leading `v`.
-3. Ensure Android `version/code` is greater than the previous published build. It is currently `1000` for version `0.10.0`; increment it for every subsequent store update. Do not reuse or decrease a published version code.
+3. Ensure Android `version/code` is greater than the previous published build. The current source configuration is version `0.12.0` with Android version code `1200`; increment the code for every subsequent store update. Do not reuse or decrease a published version code.
 4. Open Actions → **Publish Android Production Release** → Run workflow.
 5. Enter the exact existing tag and type `PUBLISH`. The `android-production` environment's required reviewers must approve deployment.
 6. The workflow checks the exact tag, checks version consistency, imports the project, runs strict tests and balance report, builds with the protected production key, verifies the APK signature and offline permission policy, and creates a GitHub Release with the APK, checksum and manifest.
@@ -62,7 +72,7 @@ If the confirmation text is not exactly `PUBLISH`, the publishing job is rejecte
 
 - `project.godot` `config/version` and Android preset `version/name` must match.
 - Android `version/code` is a monotonically increasing integer. It is not safely derived from semantic version text; bump it deliberately.
-- The current project version is `0.10.0`; the Android preset was aligned to version name `0.10.0` and version code `1000`.
+- The current project version is `0.12.0`; `project.godot` and the Android preset both use version name `0.12.0`, with Android version code `1200`.
 - CI fails early on project/export-preset version-name mismatch.
 - A tag build is a candidate only. Production release creation requires the separate manual workflow and protected environment.
 
@@ -102,7 +112,7 @@ Production setup also requires the `ANDROID_RELEASE_CERT_SHA256` GitHub Environm
 
 ## Publishing safeguards
 
-The production workflow refuses to publish if a GitHub Release already exists for the requested tag; published releases are not overwritten. GitHub only exposes a `workflow_dispatch` workflow after its YAML exists on the repository's default branch. This production workflow currently exists on `feature/rune-system-v1` only, so it will not be manually dispatchable until the reviewed PR is merged to the default branch. Do not merge PR #4 or modify `main` without explicit authorization.
+The production workflow is on `main` as of 2026-11-16. It refuses to publish if a GitHub Release already exists for the requested tag. Current main still has the legacy automatic tag-release job; avoid `v*` tags until QA PR #148 is merged. That candidate removes automatic release creation from routine builds, so tag builds remain candidate artifacts and cannot pre-empt the protected production workflow. The candidate captures the SHA of the tag checkout itself for the release manifest and scopes write permission to the publish job.
 
 
 ## Verified AI handoff pipeline (required)
@@ -135,4 +145,4 @@ See docs/MANUAL_GITHUB_WORKFLOWS.md for user-operated Actions workflows: reposit
 - Added docs/MANUAL_GITHUB_WORKFLOWS.md with instructions and safety limits for each manual workflow.
 - Fixed a source-handoff workflow summary-path bug: the packaging step no longer references an undefined REPORT_PATH.
 - Validation: test_repository_organizer.py and the new workflows have been added, but the GitHub Actions run on the final branch head must still verify syntax/runtime behavior. Do not claim the new workflows passed until that run completes.
-- GitHub dispatch limitation: these new manual workflows are currently on feature/rune-system-v1. They generally become available in Actions -> Run workflow only after the workflow YAML is present on the default branch. PR #4 remains draft; no merge to main was performed.
+- GitHub dispatch status checked 2026-11-16: the manual maintenance, backup, handoff and protected release workflows are present on `main`. A workflow appearing in Actions does not prove that its environment secrets, reviewers or tag protection are configured.

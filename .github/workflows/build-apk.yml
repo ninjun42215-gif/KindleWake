@@ -1,5 +1,5 @@
-# Builds the Android installer from the extracted Godot source tree.
-# The extracted Kindlewake/ source tree is canonical; no project ZIP upload is required.
+# Builds a non-production Android candidate from the extracted Godot source tree.
+# Production releases are published only by publish-android-release.yml after protected approval.
 name: Build Android APK
 
 on:
@@ -120,27 +120,3 @@ jobs:
             Kindlewake/dist/android-activities.txt
           if-no-files-found: ignore
 
-  # Only immutable version-tag builds may publish a GitHub Release. Keep the
-  # write-capable token out of pull-request and ordinary branch build jobs.
-  publish-tag-release:
-    name: Attach APK to version-tag release
-    if: startsWith(github.ref, 'refs/tags/')
-    needs: apk
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: write
-    steps:
-      - name: Download APK produced by this workflow run
-        uses: actions/download-artifact@v4
-        with:
-          name: Kindlewake-APK
-          path: dist
-
-      - name: Verify APK artifact exists
-        run: test -s dist/Kindlewake.apk
-
-      - name: Attach the APK to the release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist/Kindlewake.apk
