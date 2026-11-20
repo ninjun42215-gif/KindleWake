@@ -16,7 +16,7 @@ Version 0.12.0 Brinegate Coast Expansion (released baseline) (data-driven protag
 4. **Choices cost something.** Political decisions, loyalty, deaths and legacy carry across the campaign.
 5. **Small phone, big depth.** Touch-first UI, short sessions (10–20 min per battle), fully offline, battery-conscious.
 
-**Target:** core RPG/strategy players on mobile. Campaign 25–35 hours; New Game+ and Legacy Mode for replay.
+**Target:** core RPG/strategy players on mobile. Campaign 25–35 hours; New Game+ is a replay target. The Chronicle of Houses is a separate post-campaign generational mode and is locked behind the Last Emperor ending, formal imperial dissolution, late-life epilogue and the protagonist's natural death from old age.
 **Tone:** dark medieval fantasy, muted palette, grounded politics, light low-magic fantasy (mages are rare and feared).
 **Orientation:** landscape (1280×720 base, scales to any aspect ratio with safe-area margins).
 
@@ -393,63 +393,74 @@ The player starts with ruins; facilities are unlocked by story chapters and Reno
 | Library | Ch. 3 | Research tree: tactics, logistics, medicine, siegecraft |
 | Mage Tower | Ch. 4 | Spell research, enchant gear, mage recruits |
 | Siege Workshop | Ch. 4 | Build ballistae/rams/trebuchets for army and siege battles |
-| Residential Quarters | Ch. 2 | Housing for family, marriage, heirs, mentors (Legacy Mode) |
+| Residential Quarters | Ch. 2 | Housing for company members, guests and mentors; family-household functions are reserved for the post-campaign Chronicle of Houses |
 
 Weekly upkeep scales with buildings and roster. Raids on the keep can occur as optional defence battles.
 
 ---
 
-## 9. Generational System (Legacy Mode — optional)
+## 9. Post-campaign generational system — Chronicle of Houses
 
-Toggle at New Game (and later in Options for future events). When off, characters do not age or die of age; battle death still follows the permadeath setting.
+**This supersedes the older optional “Legacy Mode” toggle described in archived GDD notes.** Generational family simulation is not available at New Game, during the five-act campaign, or through an Options toggle.
 
-- **Ageing:** time advances by the campaign calendar. Stats peak at ages 25–40; physical stats decline gradually after 50, INT/LDR keep rising.
-- **Marriage and children:** available to eligible characters with a high Bond and Residential Quarters. The protagonist's marriage affects house alliances.
-- **Heirs:** a child reaches age 16 after ~16 in-game years. The Chronicle chapters after Act III can skip time in jumps of 2–5 years, so the player does not wait in real time.
-- **Inheritance:** an heir receives (a) stat bonuses from both parents (~20% of parental growth), (b) up to 2 learned skills chosen from parents, (c) 1 inherited trait, (d) family relationships (loyalties and grudges), and (e) a chance at a **Bloodline Ability** unique to the family.
-- **Retire and mentor:** aged characters retire from combat but remain at HQ as **Mentors**, granting EXP/skill bonuses to a chosen student or platoon.
-- **Death and legacy:** a hero's death (battle or age) creates a **Legacy entry** (memorial in the keep's Hall, an Heirloom to pass on, relationship effects). If the protagonist dies with no heir, the campaign ends.
-- **Not mandatory:** only the Dunmarrow line and selected characters can have heirs. Non-family characters are optionally generational.
+The only valid first unlock sequence is:
+
+1. Complete the main campaign's designated true-ending route.
+2. The protagonist is invested as the **Last Emperor** under the dormant imperial settlement.
+3. The protagonist formally abolishes the imperial office and central imperial claim, signs/records the Dissolution Charter and establishes the Concord of Free Realms.
+4. Complete the authored late-life epilogue.
+5. The protagonist dies naturally of old age; the death and completed life are written to the Founder Chronicle.
+6. The game opens the Chronicle of Houses and transfers control to an eligible descendant or lawful chosen successor.
+
+Battle death, scripted sacrifice, ordinary defeat, retirement, a non-Emperor ending, or an ending without the formal dissolution does not unlock this system. The main campaign may still record companions' bonds, memorials, personal histories and the protagonist's household, but those are not a playable marriage/child/inheritance simulation.
+
+The Chronicle of Houses is a separate generational campaign with a versioned save linked to the completed campaign origin. It follows family/household relationships, aging, education, inherited and learned traits, titles, domains, succession, diplomacy and generational consequences. Use bounded inheritance with individual variation; do not use fixed parental stat percentages or guaranteed bloodline abilities. The detailed implementation contract and acceptance tests are in docs/MECHANICS_BIBLE.md §15 and the narrative canon is in docs/LORE_BIBLE.md §2.1 and §13–14.
+
+Older GDD descriptions of age skips, marriage, heirs, Bloodline Abilities and mentors are historical concepts only where they conflict with this locked post-campaign model. They must not be implemented as an early-game toggle.
 
 ---
 
 ## 10. Main Storyline
 
-**Setting:** Eldrimar, a feudal kingdom founded on the *Covenant of the Seven Flames*, sworn by seven great houses to protect the throne. King Osric IV has died suddenly. The seventh house, **Dunmarrow**, the Oath's keeper, was destroyed when Lord Edmer Dunmarrow was executed for treason weeks earlier.
+**Canonical expanded story:** see [Lore Bible §15 — Full campaign story treatment](LORE_BIBLE.md) for the chapter-by-chapter sequence, branch logic, companion arcs, ending matrix and production packet requirements. This GDD section is the concise implementation-facing summary.
 
-**The secret.** Dying and without a strong heir, Osric wrote a **Hidden Codicil** dissolving the single crown into a council of the seven houses. Edmer, the keeper, held the sealed Hidden Codicil. Lord Regent **Maelor Brennhallow**, believing only a strong crown prevents civil war, had Edmer executed and the Hidden Codicil suppressed. He is not a villain: he is trying to save the realm in a way that he knows is a lie.
+**Setting:** Eldrimar's Crownlands, a successor monarchy that survived the fragmentation of the old Eldrimar Empire. King Osric IV has died suddenly. The Covenant of the Seven Flames is the ancient public compact sworn by seven great houses; the later secret organisation using the same name is distinct. Edmer Dunmarrow, keeper of the Hidden Codicil, was executed and the Dunmarrow estate burned. Torren is the player-controlled surviving heir (stable protagonist ID: `torren`).
 
-**Structure (prologue + 5 acts + epilogue)**
-| Act | Title | Beats |
-|---|---|---|
-| Prologue | Smoke on the Wind | Torren, Bram, Sela and Brother Wystan escape the burning estate, reach Kaer Sethorn, fight roadwolves (tutorial battle). |
-| I | Cold Hearth | Rebuild the keep; first recruits; tax collectors; discover Edmer's letter naming a missing witness. |
-| II | Broken Seals | Travel to Orrowen and Ysmark; witnesses; the first army battle; join or oppose a house. |
-| III | The River Campaign | Vessmoor duel, Tarnholt trial, siege of Brinegate; war escalates; time skip in Legacy Mode. |
-| IV | Winter of Knives | Betrayals; Quillon's library holds the Hidden Codicil's seal; loyalties tested; a beloved ally may fall. |
-| V | The Kindling | Final campaign for Aurelmont; the Hidden Codicil is read, burned, or weaponised; choose the realm's future. |
-| Epilogue | The Chronicle | Outcomes by faction reputation, loyalty, deaths and heirs. |
+**The central conflict:** Lord Regent Maelor Brennhallow suppressed the Hidden Codicil because he believes a sudden constitutional crisis will cause famine, invasion and civil war. His fear is credible; his methods and the harm they cause remain subject to judgment. The Codicil reveals the Covenant's obligations and a lawful route for transferring the Crownlands' single-crown authority to a Council of the Seven Houses. It does not automatically place all continents under a new empire.
 
-**Multiple endings**
-1. **Restored Crown:** Dunmarrow takes the throne (high Renown, Brennhallow defeated).
-2. **Council of Seven:** follow the Hidden Codicil (alliances with most houses).
-3. **Iron Regency:** side with Brennhallow (stability, cost in freedom).
-4. **Mercenary Principality:** carve out your own domain (independent route).
-5. **Embers:** destroy the Hidden Codicil and let the realm burn (dark route).
-6. **Legacy ending:** an heir completes what the protagonist could not (Legacy Mode).
+**Structure (prologue + five acts + epilogue):**
+| Chapter block | Story progression |
+|---|---|
+| Prologue — Smoke on the Wind | The Dunmarrow estate burns; Torren and survivors escape. Rescue priorities, evidence and the first account establish the player's values and the limits of memory. |
+| Act I — Cold Hearth | Protect Sallow Crossing's winter stores, discover the ledger behind the raid, make a costly food decision and establish Kaer Sethorn as a refuge. |
+| Act II — Broken Seals | Seek an Orrowen hearing, protect a pressured witness, escort a disputed road and authenticate the first Covenant evidence. |
+| Act III — The River Campaign | Resolve the false-banner refugee convoy, plan a river crossing, fight a multi-stage operation and negotiate the price of passage. |
+| Act IV — Winter of Knives | Enter the Quillon archive, discover Edmer's concealed clause, resolve company disagreements and hear Maelor's credible offer. |
+| Act V — The Kindling | Convene the Seven Houses, manage the Aurelmont crisis, confront Maelor, constitute the Council where ratifications permit and decide the constitutional settlement. |
+| Epilogue — The Chronicle | Show consequences for companions, settlements, Houses and signatories. Only the designated true-ending route proceeds through Last Emperor investiture, formal imperial dissolution, Concord ratification, late-life epilogue and natural old-age death. |
 
-**Antagonists are not purely evil:** Brennhallow (order at any cost), Ysmark's Lady Sabela (profit as peace), Tarnholt's Archprelate Anselm (faith used as a leash), Vessmoor's Lord Casimir (honour that kills).
+Every major chapter follows a legible rhythm: personal problem → investigation → tactical or non-combat operation → consequential choice → aftermath. Choices should have immediate and delayed callbacks; do not reduce them to hidden morality points. Use the narrative state variables and branch safeguards in Lore Bible §15.1.
 
----
+**Ending matrix:**
+1. **Restored Crown:** a reformed Crownlands monarchy survives under enforceable Covenant limits; no Last Emperor office is created.
+2. **Council of Seven:** the Crownlands' single-crown authority transfers to a lawful Council, but the dormant imperial office is not reconstituted or dissolution requirements remain incomplete.
+3. **Concord of Free Realms — True Ending:** after Council formation and required house/realm ratifications, the protagonist is temporarily invested as Last Emperor solely to dissolve the imperial office and central claim and establish the voluntary Concord. Only completion of the late-life epilogue followed by natural death of old age records the Founder Chronicle and unlocks Chronicle of Houses.
+4. **Fractured Peace:** immediate conflict ends through a narrow settlement or military outcome, but unresolved Houses or regions remain outside a stable compact.
+5. **Ashen Victory:** Maelor is defeated, but coercive conduct undermines public trust and leaves a brittle settlement.
+
+The true ending is defined by constitutional completion and the exact unlock sequence, not a perfect approval score. The older “Dunmarrow takes the throne,” “Iron Regency,” “Mercenary Principality” and “Embers” labels are superseded as canonical ending definitions; any retained route must be rewritten to fit the reconciled constitutional timeline. House Ysmark's seat remains unconfirmed; Brinegate is the Tidebound Assembly's seat, not Ysmark's.
+
+**Companion arcs:** Bram Vosk's “Weight of the Shield” challenges obedience; Sela Wrenfield's “Witness Who Chooses” protects informants' agency; Brother Wystan's “Mercy and the Measure of Justice” tests sanctuary and restitution. Edmer's legacy remains morally mixed and is revealed through evidence, not resurrection. Maelor is accountable even if he survives. Captain Ilyra Venn and pilot Maren Vey remain grounded in the Thalassar/Brinegate storyline. Full outcomes and production guidance are in Lore Bible §15.9–15.11.
+
 
 ## 11. World and Faction Design
 
-**Regions:** Sethmarch (home, Kaer Sethorn) · Orrowen Weald (forest, yeomen) · Ysmark Coast (Brinegate, ports) · Vessmoor Plains (Cindermead, horse-lords) · Quillon Heights (tower-city, scholars) · Tarnholt Cloisters (monasteries, relic roads) · Brennhallow Highlands (Brennhold, fortress marches) · Aurelmont (capital).
+**Regions:** Sethmarch (home, Kaer Sethorn) · Orrowen Weald (forest, yeomen) · Brinegate Coast (Tidebound Assembly ports) · Vessmoor Plains (Cindermead, horse-lords) · Quillon Heights (tower-city, scholars) · Tarnholt Cloisters (monasteries, relic roads) · Brennhallow Highlands (Brennhold, fortress marches) · Aurelmont (Crownlands capital). House Ysmark's seat remains unconfirmed; Brinegate is not its seat.
 
 | House | Seat | Identity | Strengths | Heraldry | Recruits |
 |---|---|---|---|---|---|
 | Brennhallow | Brennhold | Order, discipline, regency | Heavy knights, siege | Iron tower on black | Knights, engineers |
-| Ysmark | Brinegate | Trade, ships, money | Gold, spies, crossbows | Silver scales on blue | Bards, thieves, crossbowmen |
+| Ysmark | Unconfirmed | House identity and seat remain reserved for an authored reveal; do not conflate it with Brinegate or the Tidebound Assembly. | To be established in story | Silver scales on blue (legacy GDD motif; verify before asset production) | To be established |
 | Quillon | Quillon Tower | Knowledge, magic, secrecy | Mages, research | Open book and star on violet | Mages, scholars |
 | Vessmoor | Cindermead | Honour, horses, duels | Cavalry | Red horse on gold | Cavaliers, duelists |
 | Tarnholt | Cloisters | Faith, healing, relics | Priests, paladins | White flame on grey | Clerics, medics, paladins |
