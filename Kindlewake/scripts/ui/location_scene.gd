@@ -3,6 +3,7 @@ extends Node2D
 # Original base and detail atlases for 48px local roofs, facades, doors and masonry.
 const LOCAL_ARCHITECTURE_ATLAS: Texture2D = preload("res://assets/art/tiles/local_architecture.svg")
 const LOCAL_ARCHITECTURE_DETAIL_ATLAS: Texture2D = preload("res://assets/art/tiles/local_architecture_detail.svg")
+const RegionalArchitectureStyleScript = preload("res://scripts/ui/regional_architecture_style.gd")
 
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 
@@ -33,6 +34,8 @@ const SPOT_RADIUS := 1.6                 # tiles
 
 var maps: Dictionary = {}
 var current_map_id: String = ""
+var architecture_tint: Color = Color.WHITE
+var architecture_seed: int = 17
 var lmap: LocalMap
 var camera: Camera2D
 var player_pos: Vector2 = Vector2.ZERO
@@ -86,6 +89,8 @@ func cell_of(pos: Vector2) -> Vector2i:
 
 func _load_map(id: String, spawn: Vector2i) -> void:
     current_map_id = id
+    architecture_tint = RegionalArchitectureStyleScript.tint_for_location(id)
+    architecture_seed = RegionalArchitectureStyleScript.seed_for_location(id)
     lmap = maps[id]
     # Reapply discovered secret passages when a map is revisited.
     for secret_spot in lmap.spots:
@@ -1048,6 +1053,7 @@ func _draw_tile(c: Vector2i) -> void:
     var o := Vector2(float(c.x), float(c.y)) * TILE
     var full := Rect2(o, Vector2(TILE + 0.5, TILE + 0.5))
     var h: float = WorldMap.hash01(c.x, c.y, 17)
+    var architecture_h: float = RegionalArchitectureStyleScript.variant_for_cell(architecture_seed, c, 17)
     var indoor: bool = lmap.kind == "interior"
     # ground under everything that stands on it
     if "=BSKXHUPCN+".contains(t):
@@ -1060,28 +1066,28 @@ func _draw_tile(c: Vector2i) -> void:
         draw_rect(full, _shade(Color(0.30, 0.50, 0.30), c, 0.12))
     match t:
         "#":
-            var stone_variant: int = 9 if h <= 0.5 else 10
-            draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(stone_variant) * TILE, 0.0, TILE, TILE))
+            var stone_variant: int = 9 if architecture_h <= 0.5 else 10
+            draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(stone_variant) * TILE, 0.0, TILE, TILE), architecture_tint)
         "r":
-            var clay_variant: int = mini(3, int(h * 4.0))
+            var clay_variant: int = mini(3, int(architecture_h * 4.0))
             if clay_variant < 2:
-                draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(clay_variant) * TILE, 0.0, TILE, TILE))
+                draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(clay_variant) * TILE, 0.0, TILE, TILE), architecture_tint)
             else:
-                draw_texture_rect_region(LOCAL_ARCHITECTURE_DETAIL_ATLAS, full, Rect2(float(clay_variant - 2) * TILE, 0.0, TILE, TILE))
+                draw_texture_rect_region(LOCAL_ARCHITECTURE_DETAIL_ATLAS, full, Rect2(float(clay_variant - 2) * TILE, 0.0, TILE, TILE), architecture_tint)
         "b":
-            var slate_variant: int = mini(3, int(h * 4.0))
+            var slate_variant: int = mini(3, int(architecture_h * 4.0))
             if slate_variant < 2:
-                draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(slate_variant + 2) * TILE, 0.0, TILE, TILE))
+                draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(slate_variant + 2) * TILE, 0.0, TILE, TILE), architecture_tint)
             else:
-                draw_texture_rect_region(LOCAL_ARCHITECTURE_DETAIL_ATLAS, full, Rect2(float(slate_variant) * TILE, 0.0, TILE, TILE))
+                draw_texture_rect_region(LOCAL_ARCHITECTURE_DETAIL_ATLAS, full, Rect2(float(slate_variant) * TILE, 0.0, TILE, TILE), architecture_tint)
         "w":
-            var facade_variant: int = mini(7, int(h * 8.0))
+            var facade_variant: int = mini(7, int(architecture_h * 8.0))
             if facade_variant < 4:
-                draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(facade_variant + 4) * TILE, 0.0, TILE, TILE))
+                draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(facade_variant + 4) * TILE, 0.0, TILE, TILE), architecture_tint)
             else:
-                draw_texture_rect_region(LOCAL_ARCHITECTURE_DETAIL_ATLAS, full, Rect2(float(facade_variant) * TILE, 0.0, TILE, TILE))
+                draw_texture_rect_region(LOCAL_ARCHITECTURE_DETAIL_ATLAS, full, Rect2(float(facade_variant) * TILE, 0.0, TILE, TILE), architecture_tint)
         "1", "2", "3", "4":
-            draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(8.0 * TILE, 0.0, TILE, TILE))
+            draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(8.0 * TILE, 0.0, TILE, TILE), architecture_tint)
         "E":
             draw_colored_polygon(PackedVector2Array([o + Vector2(TILE * 0.3, TILE * 0.3), o + Vector2(TILE * 0.7, TILE * 0.3), o + Vector2(TILE * 0.5, TILE * 0.72)]), Color(1, 1, 1, 0.35))
         "~":
