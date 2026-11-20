@@ -29,6 +29,7 @@ const EmpireSystemScript = preload("res://scripts/core/empire_system.gd")
 const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 const ArtScript = preload("res://scripts/ui/art.gd")
+const RegionalArchitectureStyleScript = preload("res://scripts/ui/regional_architecture_style.gd")
 const ChroniclePolitics = preload("res://scripts/core/chronicle_diplomacy_system.gd")
 const TradeSystemScript = preload("res://scripts/core/trade_system.gd")
 ## Headless test-suite + AI-vs-AI battle simulator. Run from the project folder:
@@ -56,6 +57,7 @@ func _initialize() -> void:
     check(ss.slot_path("auto_a").begins_with(isolated_test_dir), "save-system tests use an isolated per-process directory")
     _test_data()
     _test_art_assets()
+    _test_regional_architecture_style()
     _test_class_tree()
     _test_character_creation()
     _test_map()
@@ -197,6 +199,9 @@ func _test_art_assets() -> void:
     check(location_architecture_source.contains("LOCAL_ARCHITECTURE_DETAIL_ATLAS"), "local settlement renderer loads the detail atlas")
     check(location_architecture_source.contains("mini(3, int(h * 4.0))"), "clay and slate roofs select four deterministic variants")
     check(location_architecture_source.contains("mini(7, int(h * 8.0))"), "town facades select eight deterministic variants")
+    check(location_architecture_source.contains("RegionalArchitectureStyleScript.tint_for_location(id)"), "town renderer selects a region-specific architecture tint")
+    check(location_architecture_source.contains("variant_for_cell(architecture_seed, c, 17)"), "architecture variation is seeded per settlement rather than shared by map coordinates")
+    check(location_architecture_source.contains("architecture_tint)"), "base and detail architecture atlas draws use the selected regional tint")
 
     var character_texture: Texture2D = load("res://assets/art/units/character_atlas.svg") as Texture2D
     check(character_texture != null, "original character and enemy atlas imports")
@@ -262,6 +267,34 @@ func _test_art_assets() -> void:
                 check(final_frame == frame_count - 1, "%s one-shot animation clamps at its final frame" % anim)
             else:
                 check(final_frame >= 0 and final_frame < frame_count, "%s looping animation remains inside its frame range" % anim)
+
+
+func _test_regional_architecture_style() -> void:
+    print("[regional architecture style]")
+    check(RegionalArchitectureStyleScript.region_for_location("crossing_inn") == "sethmarch", "Sethmarch interiors inherit their settlement region")
+    check(RegionalArchitectureStyleScript.region_for_location("elderbough_watch_hall") == "orrowen_weald", "Elderbough Watch facilities inherit the Weald palette")
+    check(RegionalArchitectureStyleScript.region_for_location("redwater_storehouse") == "vessmoor_plains", "Redwater facilities inherit the Vessmoor palette")
+    check(RegionalArchitectureStyleScript.region_for_location("quillon_archive") == "quillon_heights", "Quillon archive uses the Heights palette")
+    check(RegionalArchitectureStyleScript.region_for_location("brinegate") == "brinegate_coast", "Brinegate uses the Thalassar coast palette")
+    check(RegionalArchitectureStyleScript.region_for_location("veyhaven_beacon") == "isles_of_vey", "Veyhaven uses the Isles of Vey palette")
+    check(RegionalArchitectureStyleScript.region_for_location("morrowtide_exchange") == "kelpward", "Morrowtide uses the Kelpward palette")
+    check(RegionalArchitectureStyleScript.region_for_location("unmapped_future_settlement") == "", "unmapped locations do not inherit an unrelated region palette")
+    check(RegionalArchitectureStyleScript.tint_for_location("unmapped_future_settlement") == Color.WHITE, "unmapped locations retain the neutral legacy architecture appearance")
+    check(RegionalArchitectureStyleScript.REGION_TINTS.size() == 31, "subtle architecture palettes are defined for all 31 canonical continent regions")
+    var palette_valid := true
+    for region_id in RegionalArchitectureStyleScript.REGION_TINTS.keys():
+        var tint: Color = RegionalArchitectureStyleScript.REGION_TINTS[region_id]
+        if tint.r < 0.75 or tint.g < 0.75 or tint.b < 0.75 or tint.r > 1.0 or tint.g > 1.0 or tint.b > 1.0:
+            palette_valid = false
+    check(palette_valid, "regional architecture tints remain within the restrained material-color range")
+    var crossing_seed: int = RegionalArchitectureStyleScript.seed_for_location("crossing")
+    var brinegate_seed: int = RegionalArchitectureStyleScript.seed_for_location("brinegate")
+    check(crossing_seed > 0 and crossing_seed == RegionalArchitectureStyleScript.seed_for_location("crossing"), "settlement style seed is stable across repeated loads")
+    check(crossing_seed != brinegate_seed, "different settlements receive independent architecture variation seeds")
+    var cell := Vector2i(3, 5)
+    var crossing_variant: float = RegionalArchitectureStyleScript.variant_for_cell(crossing_seed, cell, 17)
+    check(crossing_variant == RegionalArchitectureStyleScript.variant_for_cell(crossing_seed, cell, 17), "same settlement and tile coordinates always select the same architecture variant")
+    check(crossing_variant >= 0.0 and crossing_variant < 1.0 and crossing_variant != RegionalArchitectureStyleScript.variant_for_cell(brinegate_seed, cell, 17), "same tile coordinates can select different variants in different settlements")
 
 
 func _test_companion_quests() -> void:
