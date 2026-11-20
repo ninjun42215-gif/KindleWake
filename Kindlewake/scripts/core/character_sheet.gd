@@ -407,7 +407,10 @@ static func from_dict(d: Dictionary):
     s.character_id = str(d.get("character_id", ""))
     s.display_name = str(d.get("name", s.character_id))
     s.portrait_id = str(d.get("portrait_id", ""))
-    s.appearance = (d.get("appearance", {}) as Dictionary).duplicate(true)
+    # Appearance is optional cosmetic save data. Older saves omit it, and a malformed
+    # value must not abort restoration of the entire party.
+    var appearance_value: Variant = d.get("appearance", {})
+    s.appearance = (appearance_value as Dictionary).duplicate(true) if typeof(appearance_value) == TYPE_DICTIONARY else {}
     s.house = str(d.get("house", ""))
     s.class_id = str(d.get("class_id", ""))
     s.level = clampi(int(d.get("level", 1)), 1, MAX_LEVEL)
