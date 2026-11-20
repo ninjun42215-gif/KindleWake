@@ -48,15 +48,47 @@ Changed implementation/test/build files:
 - `Kindlewake/tests/test_character_sheet_persistence.gd`
 - `Kindlewake/tools/build_apk.py`
 
-## Verification status
+## Exact-head verification — PR #168
 
-Exact-head PR Actions are pending. No test pass or APK verification is claimed until GitHub Actions completes on the final PR head. The new regression suite is expected to report seven checks; the actual count and result must be read from its build log.
+- Final code/test/build-runner commit: `4ea41f84b56dbf7104959fa4f3aae3ca34c3ce61`.
+- PR head tested by the Android workflow: `25bf4bd6e80669e303542ac2d4960355019eab73`.
+- [Build Android APK #44665609160](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44665609160) — overall **failed only at the Android emulator launch/liveness step**. Godot import, scene smoke, strict regression suites, APK export and artifact upload passed.
+- [Project Health Audit #44665609182](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44665609182) — passed on the exact tested PR head.
+- [Workflow YAML Lint #44665609122](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44665609122) — passed on the exact tested PR head.
+- [Version Sync #44665609264](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44665609264) — passed on the exact tested PR head.
 
-Main at the start of this run, SHA `13f66ec19476c9af5ed2b5c81af95e4d8a026876`:
-- Project Health Audit #44446304110 — passed.
-- Workflow YAML Lint #44446304180 — passed.
-- Version Sync #44446304299 — passed.
-- Android Build #44446304169 — failed at the Android emulator process-survival stage after import, 20/20 scene loads, 1,009 strict checks and APK export. This is not a physical-device result. QA owns emulator/release workflow work in PRs #159 and #164.
+### Automated results
+
+- Godot 4.2.2 import: exit 0, no script errors.
+- Scene smoke: 20 scenes loaded, 0 failures.
+- Core strict regression suite: 1,009 checks, 0 failures.
+- Campaign lifecycle: 0 failures; restored campaign entered World and initialized its regional map; first tactical battle initialized and remained alive through its opening combat window.
+- Merchant UI and title/creator UI: passed.
+- Act V, campaign continuity (70 checks), Chronicle dynasty (39 checks) and Chronicle family development (19 checks): passed.
+- New `test_character_sheet_persistence.gd`: **7 checks, 0 failures** (valid appearance preservation; Array/String fallback; legacy omission; party restoration and preservation of character identity).
+- Balance report: completed successfully.
+
+Full logs are in [test-log artifact #14596704880](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44665609160/artifacts/14596704880). Its archive SHA-256 is `b6f93997ba4370b726a910e7692602709293540b4a29e80bc50d43764a3efadf`.
+
+### APK artifact provenance
+
+- [APK artifact #14597682561](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44665609160/artifacts/14597682561) was produced by run #44665609160, whose GitHub artifact metadata identifies the exact head `25bf4bd6e80669e303542ac2d4960355019eab73`.
+- Artifact archive size: 65,297,997 bytes.
+- Artifact archive SHA-256: `209cfa25922e8d41235edde6eceff643693bc5f69e864770f91a7094dfaeacf0` (independently matched after download; ZIP integrity test passed).
+- Extracted APK: 65,852,762 bytes.
+- Extracted APK SHA-256: `de3c530af4ea8af00ae390ddc9af124a8d7037b6adf1bf7fa5cf578aeb36ff8a`.
+- Build summary: valid test signature (key fingerprint prefix `c04a7792715ad8f5`), ABIs arm64-v8a / armeabi-v7a / x86_64, no Android permissions requested.
+- This is an exact-head CI candidate, not a production-signed release and not a physical-device-tested APK.
+
+### Android emulator failure
+
+The AOSP ATD / SwiftShader emulator step failed after launch:
+- Godot logged repeated `SceneShaderGLES3: Program linking failed` messages because 261 active fragment uniforms exceeded the emulator-reported `GL_MAX_FRAGMENT_UNIFORM_VECTORS`.
+- The Godot main loop started, then `GodotActivity` destroyed the app and the process was killed with SIGKILL. The 30-second process-liveness assertion failed.
+- No Android `FATAL EXCEPTION` or GDScript parse/runtime error was reported in the captured logcat.
+- This is an emulator/backend compatibility failure; it does not establish the same failure on a physical Android handset.
+
+The QA-owned PR #164 proposes moving the smoke test to the Google APIs emulator and improving the visual/liveness assertions, but it is currently 12 commits ahead / 5 behind current main and needs revalidation on a fresh current-main base. Do not bulk-merge its stale branch.
 
 ## Coordination
 
