@@ -279,6 +279,22 @@ func _test_regional_architecture_style() -> void:
     check(RegionalArchitectureStyleScript.region_for_location("veyhaven_beacon") == "isles_of_vey", "Veyhaven uses the Isles of Vey palette")
     check(RegionalArchitectureStyleScript.region_for_location("morrowtide_exchange") == "kelpward", "Morrowtide uses the Kelpward palette")
     check(RegionalArchitectureStyleScript.region_for_location("unmapped_future_settlement") == "", "unmapped locations do not inherit an unrelated region palette")
+    var local_map_catalog: Dictionary = gd.locations.get("maps", {})
+    var non_dungeon_map_count := 0
+    var styled_map_count := 0
+    var dungeons_remain_neutral := true
+    for location_id in local_map_catalog.keys():
+        var map_id := str(location_id)
+        var region_id := RegionalArchitectureStyleScript.region_for_location(map_id)
+        if map_id.begins_with("dungeon_"):
+            if region_id != "":
+                dungeons_remain_neutral = false
+        else:
+            non_dungeon_map_count += 1
+            if region_id != "":
+                styled_map_count += 1
+    check(non_dungeon_map_count == 48 and styled_map_count == non_dungeon_map_count, "all 48 current town and interior maps inherit their documented region palette")
+    check(dungeons_remain_neutral, "all ten dungeon maps remain neutral until their own environment kits are authored")
     check(RegionalArchitectureStyleScript.tint_for_location("unmapped_future_settlement") == Color.WHITE, "unmapped locations retain the neutral legacy architecture appearance")
     check(RegionalArchitectureStyleScript.REGION_TINTS.size() == 31, "subtle architecture palettes are defined for all 31 canonical continent regions")
     var palette_valid := true
