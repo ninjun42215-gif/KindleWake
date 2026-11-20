@@ -89,3 +89,69 @@ The APK is a CI/test-signed candidate, not a production-signed release. Its arti
 - The candidate APK is test-signed, not production-signed.
 - Emulator success is CI evidence only; physical Android install, touch/gameplay, save/load and performance testing remain outstanding.
 - Keep PR #164 draft until human review of the workflow/security diff. No merge to main is performed.
+
+
+---
+
+## Latest exact-head verification — 20 November 2026
+
+This section supersedes the earlier 20 November candidate checkpoint above for the current PR head. Earlier SHA/run/artifact records remain historical and must not be reused as the latest build.
+
+### Exact source refs
+
+- Base `main`: `13f66ec19476c9af5ed2b5c81af95e4d8a026876`.
+- Latest QA branch head: `ad3200b9b007a63e0f4db0bf3e33ce4eff46ffff`.
+- Branch: `qa/android-release-workflow-hardening-2026-11-18`.
+- PR #164: 15 commits ahead / 0 behind `main`; GitHub reports mergeable. PR remains draft.
+- Latest commit: `qa: isolate credentials in manual maintenance workflows`.
+- No merge, main write, force-push, branch deletion, repository-setting change, or secret access was performed.
+
+### Exact-head CI results
+
+All four PR checks ran against the exact head above and completed successfully:
+
+- [Build Android APK #44725189995](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44725189995) — passed end-to-end, including Android emulator installation, explicit activity launch, resumed-activity assertion, screenshot OCR, logcat assertions and process liveness.
+- [Project Health Audit #44725190132](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44725190132) — passed; report records 0 errors and 0 warnings, project version 0.12.0 and Android version code 1200.
+- [Workflow YAML Lint #44725190041](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44725190041) — passed; all 11 active workflow YAML files validated, including candidate-only CI publishing, least-privilege permissions, exact tag provenance and manual-maintenance credential isolation.
+- [Version Sync #44725190094](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44725190094) — passed; project/README/export metadata check reports synchronized.
+
+Build details from the exact-head log artifact:
+
+- Godot 4.2.2 import: exit 0; no script errors.
+- Scene smoke: 20 scenes loaded, 0 failures.
+- Core regression suite: 1,009 checks, 0 failures.
+- Campaign lifecycle, merchant UI, title/creator UI and Act V: passed.
+- Campaign continuity: 70 checks, 0 failures.
+- Chronicle dynasty: 39 checks, 0 failures.
+- Chronicle family development: 19 checks, 0 failures.
+- Balance report: exit 0.
+- APK signature: valid CI/test signature (certificate fingerprint prefix `c04a7792715ad8f5`).
+- ABIs: `arm64-v8a`, `armeabi-v7a`, `x86_64`.
+- Android permissions requested: none.
+
+### Android emulator result and screenshot review
+
+The exact-head workflow used API 35 Google APIs x86_64 with the emulator's default graphics selection. Logcat identifies ANGLE backed by Vulkan SwiftShader. The Godot activity remained resumed/foreground. OCR detected `KINDLEWAKE`, `NEW GAME` and `SETTINGS`; the captured logcat contains no `FATAL EXCEPTION`, `Fatal signal`, `SCRIPT ERROR` or `Parse Error`. The process remained alive after the 30-second launch interval.
+
+The screenshot in the test-log artifact was also visually inspected: the title card is centered in landscape, title/subtitle and menu controls are visible, and the menu text is legible. `CONTINUE` is disabled on the fresh emulator install, consistent with the absence of a saved campaign; this is not a failure of the smoke test.
+
+- [Exact-head test-log artifact #14623248375](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44725189995/artifacts/14623248375), archive SHA-256 `fc1688d9da9596671f8d7019a03ebb2c9d90f5f8d6915971bf014a0f3330133f`. Contains screenshot, OCR text, 2.2 MB logcat, activity/window state and suite logs.
+
+### Exact-head APK provenance
+
+- [Exact-head APK artifact #14624006308](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44725189995/artifacts/14624006308).
+- Downloaded ZIP size: 65,297,808 bytes; ZIP integrity test passed.
+- Downloaded ZIP SHA-256: `0f56241f485147633db2c717ca53a3d2fc8423f0a094b8ec2c66dd3ea0800f58`, matching GitHub's artifact digest.
+- Extracted APK: 65,852,762 bytes.
+- Extracted APK SHA-256 independently computed from the downloaded bytes: `3d06bfc9bc2c42a1316d19fb75936c27b9d025857fd75df2866bf5f04765cbb3`.
+- The artifact's GitHub workflow metadata identifies source head `ad3200b9b007a63e0f4db0bf3e33ce4eff46ffff`; it must not be reused for another commit.
+- This is a CI/test-signed candidate, not a production-signed release.
+
+### Remaining release limitations and follow-up
+
+- The earlier AOSP ATD / forced SwiftShader failure on current main remains a real CI configuration failure. This candidate changes the emulator image/backend and launch assertions; it does not modify the game's GLES3 shader code or prove compatibility with all Android GPUs.
+- No physical Android device has been tested. Touch/gameplay, save/load on-device, orientation changes, memory/performance and vendor GPU compatibility remain unverified.
+- Production signing-secret presence and `android-production` environment reviewer rules were not inspected; no secret values were read. No GitHub Releases exist.
+- The successful workflow emits GitHub Node.js 20 deprecation warnings for pinned actions. They are non-fatal but should be addressed in a separate tested dependency-maintenance change.
+- Visual PR #167 / stacked #169 still need central asset-ledger and credits reconciliation for their runtime-loaded architecture detail atlas before integration.
+- Keep PR #164 draft for human workflow/security review. Do not merge it or claim physical-device release readiness.
