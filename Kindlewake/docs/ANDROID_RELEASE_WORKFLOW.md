@@ -1,6 +1,6 @@
 # Kindlewake Android build and release workflow
 
-Last workflow update: 2026-11-18. Canonical project: Godot 4.2.2 under `Kindlewake/`.
+Last workflow update: 2026-11-20. Canonical project: Godot 4.2.2 under `Kindlewake/`.
 
 See [`QA_RELEASE_WORKFLOW_REMEDIATION_2026-11-18.md`](QA_RELEASE_WORKFLOW_REMEDIATION_2026-11-18.md) for the exact QA checkpoint, emulator diagnosis, artifact provenance and workflow-hardening candidate.
 

@@ -74,3 +74,20 @@ Enemy and ordinary NPC battle representations still use the shared character atl
 - Godot 4.2 Manual, [Importing Images](https://docs.godotengine.org/en/4.2/tutorials/assets_pipeline/importing_images.html)
 
 **Verification target:** run the title/creator UI regression and the Android build after integration. The 256 px Kestrel export is suitable for the current compact UI; it is not the final 1024 px layered master.
+
+
+## Daily production note — 19 November 2026: Sallow Crossing architecture atlas
+
+**Highest-impact weakness:** the 48px local-map renderer drew roof cells as inset red/blue rectangles, facade cells as flat tan blocks with occasional simple windows, and stone walls as repeated grid lines. The result lacked a convincing construction system and repeated visibly across the settlement.
+
+**Iteration:** added `assets/art/tiles/local_architecture.svg`, an original 528×48 SVG atlas with eleven exact 48×48 cells: two muted clay roof variants, two slate roof variants, two timber-and-lime-plaster facade variants, two recessed window facade variants, a recessed plank door, and two irregular stone-wall variants. `location_scene.gd` now selects deterministic variants from the existing cell hash and draws atlas regions for the existing `r`, `b`, `w`, `1`–`4`, and `#` glyphs.
+
+**Preserved contracts:** no edits to `locations.json`, map dimensions, the 48px orthogonal tile size, `LocalMap.validate()`, collision rules, door destinations/spawns, NPC interaction cells, quest hooks, Y-sorting or player movement. Existing ground fill and other prop drawing remain in place. The atlas uses original project-authored vector art only; its provenance is recorded in `data/asset_provenance.json` and `assets/art/CREDITS.md`.
+
+**Research applied:** Historic England's timber-frame guidance describes the relationship between structural timber frames and infill panels, including wattle-and-daub, and identifies moisture vulnerabilities around low plinths and frame/infill junctions. This informed the visible post/beam structure, matte plaster panels and heavier stone base. Godot 4.2's CanvasItem documentation confirms that a Node2D can draw texture regions through its custom drawing API; using one atlas draw per architecture cell also replaces many individual primitive calls in this hot redraw path.
+
+**Sources:**
+- Historic England, [Timber-framed Buildings](https://historicengland.org.uk/advice/technical-advice/flooding-and-historic-buildings/building-construction/timber-framed-buildings/)
+- Godot 4.2 Manual, [CanvasItem](https://docs.godotengine.org/en/4.2/classes/class_canvasitem.html)
+
+**Verification status:** source and atlas commits are pushed. SVG/XML validation, Godot import, map scene smoke test and Android device-scale rendering still need to run in CI or a Godot-capable environment. Do not call the atlas visually verified until those checks pass.
