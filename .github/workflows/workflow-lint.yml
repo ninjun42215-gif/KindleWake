@@ -41,23 +41,65 @@ jobs:
               print("PASS:", path)
           print("Validated", len(paths), "workflow YAML files.")
 
-          # Guard the Android build workflow's least-privilege boundary.
+          # Routine builds must never publish a public release with the CI signing key.
           build = yaml.safe_load(Path(".github/workflows/build-apk.yml").read_text(encoding="utf-8"))
-          jobs = build.get("jobs", {})
+          build_jobs = build.get("jobs", {})
           if build.get("permissions", {}).get("contents") != "read":
               raise SystemExit("Build Android APK must default to contents: read.")
-          for job_name, job in jobs.items():
-              if job_name == "publish-tag-release":
-                  continue
+          if "publish-tag-release" in build_jobs:
+              raise SystemExit("Routine APK workflow must not publish GitHub Releases.")
+          for job_name, job in build_jobs.items():
               effective = job.get("permissions", build.get("permissions", {}))
               if effective.get("contents") != "read":
                   raise SystemExit(f"Build job {job_name} must use contents: read.")
-          publish = jobs.get("publish-tag-release", {})
+
+          # Only the protected production workflow may write releases, and its
+          # manifest must identify the exact tag checkout rather than dispatch context.
+          release = yaml.safe_load(Path(".github/workflows/publish-android-release.yml").read_text(encoding="utf-8"))
+          release_jobs = release.get("jobs", {})
+          publish = release_jobs.get("publish", {})
+          rejected = release_jobs.get("rejected", {})
+          if release.get("permissions", {}).get("contents") != "read":
+              raise SystemExit("Production workflow must default to contents: read.")
           if publish.get("permissions", {}).get("contents") != "write":
-              raise SystemExit("Only the tag-release job may use contents: write.")
-          if publish.get("needs") != "apk" or "refs/tags/" not in publish.get("if", ""):
-              raise SystemExit("The write-capable release job must depend on the APK build and be tag-only.")
-          print("PASS: Android build permissions are read-only; tag release is isolated.")
+              raise SystemExit("Only the production publish job may use contents: write.")
+          if rejected.get("permissions", {}).get("contents") != "none":
+              raise SystemExit("The rejected-confirmation job must have no repository permissions.")
+          source_step = next((step for step in publish.get("steps", []) if step.get("id") == "release-source"), {})
+          manifest_step = next((step for step in publish.get("steps", []) if step.get("name") == "Create production release checksums and manifest"), {})
+          if "git rev-parse HEAD" not in source_step.get("run", ""):
+              raise SystemExit("Production workflow must capture the exact checked-out tag SHA.")
+          expected_source = "$" + "{{ steps.release-source.outputs.sha }}"
+          if manifest_step.get("env", {}).get("SOURCE_SHA") != expected_source:
+              raise SystemExit("Release manifest SOURCE_SHA must come from the checked-out tag.")
+          # Manual maintenance workflows execute scripts from the selected/merged
+          # source tree. Never leave the write token in .git/config during those
+          # scripts; only the final publisher step receives GH_TOKEN.
+          manual_workflows = (
+              (".github/workflows/repository-organizer.yml", "organize", "Commit safe moves and open draft PR"),
+              (".github/workflows/safe-branch-integration.yml", "prepare", "Push isolated candidate and open draft pull request"),
+          )
+          for workflow_path, job_name, publisher_name in manual_workflows:
+              manual = yaml.safe_load(Path(workflow_path).read_text(encoding="utf-8"))
+              if manual.get("permissions", {}).get("contents") != "read":
+                  raise SystemExit(f"{workflow_path} must default to contents: read.")
+              job = manual.get("jobs", {}).get(job_name, {})
+              if job.get("permissions", {}).get("contents") != "write" or job.get("permissions", {}).get("pull-requests") != "write":
+                  raise SystemExit(f"{workflow_path} must scope write permissions to its single publishing job.")
+              steps = job.get("steps", [])
+              checkout = next((step for step in steps if str(step.get("uses", "")).startswith("actions/checkout@")), None)
+              if not checkout or checkout.get("with", {}).get("persist-credentials") is not False:
+                  raise SystemExit(f"{workflow_path} must disable persisted checkout credentials.")
+              publisher = next((step for step in steps if step.get("name") == publisher_name), None)
+              if not publisher or "GH_TOKEN" not in publisher.get("env", {}):
+                  raise SystemExit(f"{workflow_path} must provide GH_TOKEN only to its final publisher step.")
+              run = publisher.get("run", "")
+              if "gh auth setup-git" not in run or "git push" not in run or run.index("gh auth setup-git") > run.index("git push"):
+                  raise SystemExit(f"{workflow_path} must configure git auth inside the final publisher step.")
+              if any("GH_TOKEN" in step.get("env", {}) for step in steps if step is not publisher):
+                  raise SystemExit(f"{workflow_path} must not expose GH_TOKEN to audit/merge/test steps.")
+          print("PASS: manual maintenance workflows do not persist checkout credentials; write token is confined to final publication steps.")
+          print("PASS: routine APK builds cannot publish; protected release owns write access and exact tag provenance.")
           PY
 
       - name: Test source handoff and organizer safety tools
