@@ -28,6 +28,7 @@ Offline-first medieval tactical RPG for Android and iOS, built with Godot 4.2+ (
 Design document: `docs/GDD.md` · Session notes: `docs/SESSION_HANDOFF.md` · Next-session prompt: `docs/CONTINUATION_PROMPT.md` · Start here: `docs/NEXT_AI_START_HERE.md`
 
 Manual repository workflows: `docs/MANUAL_GITHUB_WORKFLOWS.md`.
+Authentication and credential model: `docs/AUTHENTICATION_AND_CREDENTIALS.md` (documents why player login/tokens are intentionally absent, local save flow, and Android/GitHub release-key handling).
 
 ## Source-of-truth and GitHub workflow
 - Version source of truth: `project.godot`; GitHub Actions automatically synchronizes the README and Android export version on main. See `docs/VERSIONING.md` and run `python tools/sync_version.py --check` locally.
