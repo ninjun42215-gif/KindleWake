@@ -15,11 +15,11 @@
 
 - Added `scripts/ui/regional_architecture_style.gd`.
 - Defined restrained material-color palettes for all **31 canonical regions** in the seven-continent `data/continents.json` catalogue.
-- Mapped existing authored local settlement/interior IDs to their established regions: Sethmarch, Orrowen Weald, Vessmoor Plains, Quillon Heights, Tarnholt Cloisters, Aurelmont, Brinegate Coast, Isles of Vey and Kelpward.
+- Mapped all **48 current town/interior maps** to their established regions: Sethmarch, Orrowen Weald, Vessmoor Plains, Quillon Heights, Tarnholt Cloisters, Aurelmont, Brinegate Coast, Isles of Vey and Kelpward. The ten existing dungeon maps intentionally remain neutral until their own regional environment kits are authored.
 - Unmapped future locations remain neutral; the style system does not invent playable maps or assign a future settlement to an unsupported region.
 - `location_scene.gd` caches the current location's tint and stable seed when loading a map. The existing base/detail roof, facade, wall and door atlas cells are drawn with the region tint.
 - Roof, facade and stone variants now use a deterministic seed derived from the location ID plus cell coordinates. Re-entering the same settlement preserves its appearance, while different settlements can show different building variants at identical map coordinates.
-- Added regression coverage for canonical region mapping, neutral fallback, all 31 palette entries, tint bounds, stable location seeds, and per-location tile variation.
+- Added regression coverage for canonical region mapping, all 48 town/interior maps, neutral dungeon/future-map fallback, all 31 palette entries, tint bounds, stable location seeds, and per-location tile variation.
 
 ## Art direction and performance
 
@@ -34,6 +34,14 @@
 - No `locations.json` rows, map glyphs, collision, doors, NPC spots, quest hooks, movement rules, save schema, character data, story or game version were changed.
 - The architecture helper only changes rendering of existing architectural atlas tiles. Non-architecture ground, water, props, NPCs and player sprites retain their current rendering.
 - All future-region palettes are design tokens only until matching playable local maps are authored.
+
+## Commit trail
+
+- Helper: `578fa9d1359af6468d355e1e098f26897acd38f3`
+- Renderer integration: `0a641b1bf7bc1930ce6153e1bb23bc05cc699d26`
+- Initial regression suite: `168dfc2b33a0bc5d0f03da593f97573046534087`
+- Full 48-map coverage assertions: `54b824413ce943fd6cc39ffc4d6fc9db18d54609`
+- Initial handoff/PR head before the coverage follow-up: `b578edb300c04e1fa75dddd5944d6c6052b511e2`
 
 ## Validation status
 
