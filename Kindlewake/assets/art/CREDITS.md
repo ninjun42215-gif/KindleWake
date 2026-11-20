@@ -6,6 +6,7 @@
 | `world/house_a.svg`, `house_b.svg`, `house_c.svg`, `hut.svg`, `keep.svg`, `tower_a.svg`, `tower_b.svg`, `tower_c.svg` | Original KindleWake vector art | Original project content | Verified project-authored assets. Legacy voxel PNGs remain in the repository but are no longer loaded in-game. |
 | `units/soldier_*, orc_*, arrow.png` | Tiny RPG Character Asset Pack 01 v2.0 — Free Soldier & Orc subset by Zerie ([official pack page](https://zerie.itch.io/tiny-rpg-character-asset-pack)) | Author-published terms: personal and commercial game use and modification permitted; standalone redistribution/resale prohibited; credit appreciated but not required. | **Verified from the author’s official page** (checked 2026-11-10). Keep the original pack out of standalone redistribution. |
 | `units/character_atlas.svg` | Original KindleWake vector character atlas | Original project content | Original project-authored vector art; 16 character/enemy archetypes, no third-party source material. |
+| `tiles/local_architecture.svg` | Original KindleWake vector atlas | Original project content | Original 11-cell 48px local-map architecture atlas; no third-party source material. |
 | `props/field_props.svg` | Original KindleWake vector art, authored for this project | CC0 / project-created | Added: 16 environment props (ruins, rune stone, torch, reeds, crystals, grave, banner, mushrooms, stump, barrel, crate, campfire, frost pine, statue, flower, arch). |
 | not used: `Modern_Interiors_Free_v2_2.zip` | LimeZu | Free version is **non-commercial only and forbids editing the sprites**; modern setting | Left out on purpose. |
 | not used: `Package.zip` (MountainRocks) | unknown | **No licence file** | Rendered as terrain-slab chunks, they looked wrong; not used. |
@@ -40,3 +41,10 @@ Eight original vector settlement illustrations now replace the legacy unverified
 - Town NPCs use role-aware atlas assignments with deterministic fallback variety; named monsters and bosses use distinct atlas identities in tactical battles.
 - Existing Zerie animated Soldier/Orc strips remain in use for the protagonist, companions and generic units. Their animation and licensing terms are unchanged.
 - Town building facades and roofs are drawn with inset tile art while preserving collision cells, doors and map data. Overworld settlement illustrations are reduced in scale; terrain props are layered deterministically.
+
+
+## 2026-11-19 — Modular local architecture atlas
+
+- `tiles/local_architecture.svg` is an original 528×48 SVG atlas with eleven 48×48 cells: clay and slate roof variants, timber-and-lime-plaster facades, window facades, a recessed plank door and weathered stone walls.
+- `scripts/ui/location_scene.gd` uses deterministic per-cell variants for the existing `r`, `b`, `w`, `1`–`4` and `#` glyphs. The local map remains a 48×48 orthogonal renderer; map rows, collisions, door targets, NPC spots and quest hooks are unchanged.
+- Source: authored in this repository by the Kindlewake project. No Suikoden II art or third-party material was used.

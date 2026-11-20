@@ -1,5 +1,8 @@
 extends Node2D
 
+# Original 11-cell, 48px atlas for local roofs, timber facades, doors and masonry.
+const LOCAL_ARCHITECTURE_ATLAS: Texture2D = preload("res://assets/art/tiles/local_architecture.svg")
+
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 
 const RecruitmentSystem = preload("res://scripts/core/recruitment_system.gd")
@@ -1056,35 +1059,21 @@ func _draw_tile(c: Vector2i) -> void:
         draw_rect(full, _shade(Color(0.30, 0.50, 0.30), c, 0.12))
     match t:
         "#":
-            draw_rect(full, _shade(Color(0.46, 0.46, 0.49), c, 0.1))
-            for r in range(3):
-                var yy: float = o.y + TILE * (0.17 + 0.33 * float(r))
-                draw_line(Vector2(o.x, yy), Vector2(o.x + TILE, yy), Color(0, 0, 0, 0.28), 1.5)
-                var off: float = TILE * (0.25 if r % 2 == 0 else 0.7)
-                draw_line(Vector2(o.x + off, yy), Vector2(o.x + off, yy + TILE * 0.33), Color(0, 0, 0, 0.28), 1.5)
-        "r", "b":
-            var col: Color = Color(0.64, 0.27, 0.22) if t == "r" else Color(0.26, 0.42, 0.60)
-            var roof_rect := Rect2(o + Vector2(5, 5), Vector2(TILE - 10, TILE - 10))
-            draw_rect(roof_rect.grow(1.5), Color(0, 0, 0, 0.18))
-            draw_rect(roof_rect, _shade(col, c, 0.08))
-            for r in range(4):
-                var yy2: float = o.y + TILE * 0.25 * float(r + 1)
-                draw_line(Vector2(o.x + 5, yy2), Vector2(o.x + TILE - 5, yy2), Color(0, 0, 0, 0.25), 1.5)
-            draw_line(o + Vector2(7, 8), o + Vector2(TILE - 7, 8), Color(1, 0.88, 0.68, 0.18), 1.0)
+            var stone_variant: int = 9 if h <= 0.5 else 10
+            draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(stone_variant) * TILE, 0.0, TILE, TILE))
+        "r":
+            var clay_variant: int = 0 if h <= 0.5 else 1
+            draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(clay_variant) * TILE, 0.0, TILE, TILE))
+        "b":
+            var slate_variant: int = 2 if h <= 0.5 else 3
+            draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(slate_variant) * TILE, 0.0, TILE, TILE))
         "w":
-            var wall_rect := Rect2(o + Vector2(5, 4), Vector2(TILE - 10, TILE - 8))
-            draw_rect(wall_rect.grow(1.5), Color(0, 0, 0, 0.2))
-            draw_rect(wall_rect, _shade(Color(0.70, 0.58, 0.40), c, 0.06))
-            draw_line(o + Vector2(TILE * 0.5, 4), o + Vector2(TILE * 0.5, TILE - 4), Color(0, 0, 0, 0.18), 1.5)
-            if h > 0.35:
-                var window_rect := Rect2(o + Vector2(TILE * 0.31, TILE * 0.24), Vector2(TILE * 0.38, TILE * 0.34))
-                draw_rect(window_rect, Color(0.28, 0.40, 0.55))
-                draw_rect(window_rect, Color(0.15, 0.1, 0.06), false, 2.0)
-                draw_line(window_rect.position + Vector2(window_rect.size.x * 0.5, 0), window_rect.position + Vector2(window_rect.size.x * 0.5, window_rect.size.y), Color(0.72, 0.61, 0.42), 1.0)
+            var facade_variant: int = 4 if h <= 0.5 else 5
+            if h > 0.82:
+                facade_variant = 6 if h <= 0.91 else 7
+            draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(float(facade_variant) * TILE, 0.0, TILE, TILE))
         "1", "2", "3", "4":
-            draw_rect(Rect2(o + Vector2(TILE * 0.12, TILE * 0.05), Vector2(TILE * 0.76, TILE * 0.95)), Color(0.34, 0.20, 0.10))
-            draw_arc(o + Vector2(TILE * 0.5, TILE * 0.3), TILE * 0.38, PI, TAU, 10, Color(0.34, 0.20, 0.10), 5.0)
-            draw_circle(o + Vector2(TILE * 0.72, TILE * 0.58), 2.5, Color(0.9, 0.8, 0.4))
+            draw_texture_rect_region(LOCAL_ARCHITECTURE_ATLAS, full, Rect2(8.0 * TILE, 0.0, TILE, TILE))
         "E":
             draw_colored_polygon(PackedVector2Array([o + Vector2(TILE * 0.3, TILE * 0.3), o + Vector2(TILE * 0.7, TILE * 0.3), o + Vector2(TILE * 0.5, TILE * 0.72)]), Color(1, 1, 1, 0.35))
         "~":

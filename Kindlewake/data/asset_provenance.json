@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-11-18",
+  "updated": "2026-11-19",
   "policy": "Do not mark an asset pack verified without an authoritative licence file or source-page evidence. Used assets with unverified rights block public/commercial release.",
   "assets": [
     {
@@ -132,6 +132,19 @@
       "used_in_game": true,
       "release_blocker": false,
       "notes": "Runtime export: assets/art/portraits/kestrel.webp (256x256 WebP, quality 74). Derived from a 328x328 crop; 512x512 PNG working master is attached to the 18 November design run. Persistent Library upload was rejected by file-service indexing permissions. Repaint a 1024px+ layered master before final art lock."
+    },
+    {
+      "id": "kindlewake-local-architecture-atlas",
+      "name": "Original modular 48px local-map architecture atlas",
+      "author": "Kindlewake project",
+      "source_reference": "Original SVG atlas authored in this repository",
+      "source_url": null,
+      "license": "Original project content",
+      "license_evidence": "Repository source history; no third-party image, font or asset material used",
+      "license_status": "verified",
+      "used_in_game": true,
+      "release_blocker": false,
+      "notes": "528x48 SVG atlas with eleven 48x48 cells: two clay roof variants, two slate roof variants, two timber-and-plaster facade variants, two window facade variants, one recessed plank door and two irregular stone-wall variants. Runtime-rendered by scripts/ui/location_scene.gd for existing glyphs r, b, w, 1-4 and #. The existing 48px orthogonal grid, locations.json rows, collision, door targets and NPC/quest spots are unchanged."
     }
   ]
 }
