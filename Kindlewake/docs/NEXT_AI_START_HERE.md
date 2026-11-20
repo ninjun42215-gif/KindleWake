@@ -1,19 +1,3 @@
-## Latest core engineering checkpoint — 2026-11-20
-
-- Main base: `13f66ec19476c9af5ed2b5c81af95e4d8a026876`.
-- Current draft PR: [#168 — Guard optional character appearance during save restoration](https://github.com/ninjun42215-gif/KindleWake/pull/168).
-- Branch: `fix/character-sheet-appearance-save-guard-2026-11-20`.
-- Code/test/build-runner commits: `1c9a027cbcb240f0760b8530e771c53c38a2d9e1`, `f1fc259c1593a84e2c6598ae792514ebf830a432`, `4ea41f84b56dbf7104959fa4f3aae3ca34c3ce61`.
-- Finding: `CharacterSheet.from_dict()` previously cast optional saved `appearance` data directly to Dictionary, but the campaign validator did not validate this cosmetic field. A malformed Array/String could abort party restoration.
-- Fix: preserve valid appearance dictionaries; default missing or malformed cosmetic appearance to `{}`, matching legacy behavior. No save schema/version bump, migration, story or player-data rewrite.
-- Added seven focused persistence assertions in `tests/test_character_sheet_persistence.gd` and registered them in `tools/build_apk.py` for strict Android CI.
-- Exact-head Actions are pending; do not report tests passed until the final PR head completes. Physical Android testing is not claimed.
-- Main's latest Android build at this checkpoint (#44446304169) passed import, 20/20 scene loads, 1,009 strict checks and APK export, but failed the AOSP ATD emulator process-survival stage. QA owns emulator/release workflow work in PRs #159/#164.
-- Keep PR #168 draft and unmerged. Do not change main, force-push, delete branches or modify repository settings.
-- Full details: [CORE_ENGINEERING_HANDOFF_2026-11-20.md](CORE_ENGINEERING_HANDOFF_2026-11-20.md).
-
----
-
 # KindleWake — Next AI Start Here
 
 **Canonical repository:** https://github.com/ninjun42215-gif/KindleWake  
