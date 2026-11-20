@@ -165,3 +165,10 @@ Do not make every optional audit a required check until its baseline warnings ar
 Main contains `.github/workflows/version-sync.yml` and `Kindlewake/tools/sync_version.py`. The authoritative version is `config/version` in `Kindlewake/project.godot`; the workflow synchronizes the README first heading and Android export `version/name`/ `version/code` after pushes to main. Pull requests targeting main are checked and fail if these values drift. The tool is sourced from main during PR validation so older feature branches are covered.
 
 Android version code mapping: `MAJOR*10000 + MINOR*100 + PATCH`, with minor/patch components limited to 0–99. See `Kindlewake/docs/VERSIONING.md` on main. This workflow changes metadata only; it never merges feature branches or promotes feature code.
+
+
+## Credential isolation for manual maintenance workflows
+
+The Repository Organizer and Safe Branch Integration workflows execute project scripts from a selected branch or merged feature candidate. Their checkout steps must set `persist-credentials: false`, so the workflow token is not left in `.git/config` while those scripts and tests run. The workflow defaults to `contents: read`; write permissions are scoped to the single publishing job, and `GH_TOKEN` is supplied only to the final step that pushes the isolated branch and opens a draft PR. That step runs `gh auth setup-git` immediately before `git push`. Keep the YAML-lint policy in `.github/workflows/workflow-lint.yml` aligned with these requirements.
+
+The manual workflows still do not merge into their target branch. The organizer creates a documentation-only draft PR; safe integration prepares a conflict-free candidate on an isolated branch and creates a draft PR for human review.

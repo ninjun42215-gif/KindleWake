@@ -22,8 +22,7 @@ on:
         type: string
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: kindlewake-organizer-${{ github.workflow }}-${{ inputs.base_branch }}
@@ -32,14 +31,18 @@ concurrency:
 jobs:
   organize:
     name: Audit and safely organize repository
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Check out selected branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ inputs.base_branch }}
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Validate requested operation
         env:
@@ -91,6 +94,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "chore: organize standalone project documentation"
+          # Checkout credentials are deliberately not persisted; expose the
+          # write token only in this final publication step.
+          gh auth setup-git
           git push origin "$MAINTENANCE_BRANCH"
           gh pr create \
             --repo "$GITHUB_REPOSITORY" \
@@ -111,7 +117,7 @@ jobs:
 
       - name: Upload organization report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: Kindlewake-Organization-Report
           path: ${{ runner.temp }}/kindlewake-organization/
