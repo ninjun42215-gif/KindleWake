@@ -23,7 +23,7 @@ The audit documentation is corrected on this branch: the legacy voxel files rema
 ## Current repository inventory
 
 - Main SHA remains `13f66ec19476c9af5ed2b5c81af95e4d8a026876`; the latest main commit is dated 2026-11-19.
-- GitHub listing: 175 branches and 28 open PRs.
+- GitHub listing after opening this QA branch and PR #172: 176 branches and 33 open PRs (32 open PRs were present before #172 was opened).
 - Main reports `protected=false`; required status-check enforcement is not configured. This run did not change repository settings.
 - No published GitHub Releases were found.
 - Recent PR divergence from current main:
@@ -35,7 +35,8 @@ The audit documentation is corrected on this branch: the legacy voxel files rema
   - #169 regional settlement style: 11 / 0; stacked on #167, so review it with its parent.
   - #170 lethal rune-status turn advance: 3 / 0.
   - #171 rune-element battle VFX: 9 / 0.
-- Older trading, portrait, empire and story branches remain heavily diverged or stacked; reconcile selectively rather than bulk-merging.
+- Older trading, portrait, empire and story branches remain heavily diverged or stacked; reconcile selectively rather than bulk-merging. Examples: #81 trading 3 ahead / 146 behind; #130 auth docs 2 / 117; #78 headless CI 70 / 160; #46 empire management 261 / 161; #22 and #23 art-direction docs 1 / 198 and 6 / 198.
+- Asset-provenance coordination: PR #167 adds the runtime-loaded `assets/art/tiles/local_architecture_detail.svg` and a per-asset provenance note, but does not add the asset to the central `data/asset_provenance.json` or `assets/art/CREDITS.md`. PR #157 currently changes both shared inventories and is 34 ahead / 9 behind main. QA left a review comment on #167 requesting a coordinated ledger/credits entry after reconciliation; do not overwrite the shared files or bulk-merge the stale portrait branch. PR #169 is stacked on #167 and modifies the same location renderer/test file.
 
 ## Android renderer failure — reproduced on current-main-based PRs
 
