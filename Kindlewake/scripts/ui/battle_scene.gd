@@ -957,7 +957,8 @@ func _draw_vfx_shard(center: Vector2, angle: float, length: float, width: float,
         base + side * width
     ])
     draw_colored_polygon(points, color)
-    draw_line(base, tip, color.lightened(0.3), 1.2
+    draw_line(base, tip, color.lightened(0.3), 1.2)
+
 
 # ------------------------------------------------------------------ drawing
 
