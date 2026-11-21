@@ -6,6 +6,8 @@ const ActFour = preload("res://scripts/core/act_four_quest_system.gd")
 const ActFive = preload("res://scripts/core/act_five_quest_system.gd")
 const Chronicle = preload("res://scripts/core/chronicle_system.gd")
 const Epilogue = preload("res://scripts/core/chronicle_epilogue_system.gd")
+const GameDataScript = preload("res://scripts/core/game_data.gd")
+const BattleControllerScript = preload("res://scripts/battle/battle_controller.gd")
 var failures := 0
 var checks := 0
 func _initialize() -> void:
@@ -130,8 +132,40 @@ func _initialize() -> void:
  if bool(natural_end.ok):
   _check(Chronicle.record_milestone(founder_gate,"natural_old_age_death",natural_end.founder_details),"Chronicle accepts the verified founder death record")
  _check(Chronicle.is_unlocked(founder_gate),"Chronicle unlocks after the complete late-life sequence")
+ _test_burn_status_death_advances_turn()
  print("Campaign continuity checks: %d   Failures: %d" % [checks,failures])
  quit(1 if failures > 0 else 0)
+func _test_burn_status_death_advances_turn() -> void:
+ var data: Node = GameDataScript.new()
+ data.reload()
+ var controller = BattleControllerScript.new()
+ controller.setup(data.battle_def("battle_01"),data.as_db(),90211)
+ var victim = null
+ for candidate in controller.units:
+  if candidate.team == "enemy" and not candidate.is_commander:
+   victim = candidate
+   break
+ if victim == null:
+  for candidate in controller.units:
+   if candidate.team == "player" and not candidate.is_protagonist:
+    victim = candidate
+    break
+ if victim == null:
+  _check(false,"battle fixture contains a non-terminal combatant for status-death regression")
+  data.free()
+  return
+ for unit in controller.units:
+  unit.ctb = 1000.0
+ victim.ctb = 0.0
+ victim.statuses["burn"] = {"turns":1,"damage":victim.hp}
+ controller.begin()
+ _check(not victim.is_alive(),"burn can defeat a combatant at the start of its turn")
+ _check(controller.result == "","non-terminal status death does not end the battle")
+ var active = controller.active_unit()
+ _check(active != null and active.is_alive() and active.id != victim.id,"turn queue advances to a living unit after status death")
+ _check(controller.turn_count >= 2,"status-death skip advances the battle turn counter")
+ data.free()
+
 func _check(ok: bool, label: String) -> void:
  checks += 1
  if ok:
