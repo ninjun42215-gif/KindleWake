@@ -37,10 +37,13 @@
 - Style resolver: `284d5ef03c7caea8708677ecf273088e51163f13`
 - Battle renderer integration: `b5e7bdbbe114c60f00702b0aa14846867f9fd1d6`
 - Regression mappings: `9c54ba18795cb417ec86a313a72091e02c6de420`
+- Explicit draw-scope cleanup: `4cc105d9878365ca3d03612018dca7e77f48f783`
+- Final crystal-shard call correction: `905dd8cd1e17261a5629fd34ae613ea930f9c33a`
 
 ## Verification status
 - Added 17 headless regression assertions covering all existing element skill families, signature physical/arcane skills, status fallbacks, generic fallback and representative color identities.
-- Exact-head Godot import, strict test suite, scene smoke, Android export and emulator launch are pending CI for the final PR head.
+- A preliminary Android run was started on earlier head `83296736e4078b61fad0ff1f9c94fe47cebc885d`; it is stale after the subsequent draw-scope cleanup. It must not be used as verification for the final PR head.
+- Exact-head Godot import, strict test suite, scene smoke, Android export and emulator launch are pending a fresh run for final head `905dd8cd1e17261a5629fd34ae613ea930f9c33a`.
 - Godot editor visual inspection is required to judge the shape/contrast at battle zoom levels.
 - Physical Android rendering, touch, frame pacing, memory and vendor GPU QA have not been performed.
 
