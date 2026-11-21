@@ -518,26 +518,30 @@ func _update_boss_phase(target: BattleUnitScript) -> void:
 
 
 func _start_next_turn() -> void:
-    if result != "":
+    # Process skipped/dead turns iteratively. A damage-over-time status can defeat a unit
+    # before it acts; the queue must continue to the next living unit instead of leaving
+    # active_id pointing at the defeated combatant.
+    while result == "":
+        var nxt: BattleUnitScript = TurnQueue.peek_next(units)
+        if nxt == null:
+            return
+        TurnQueue.advance_to(units, nxt)
+        active_id = nxt.id
+        nxt.has_moved = false
+        nxt.has_acted = false
+        turn_count += 1
+        if _tick_rune_statuses(nxt):
+            if result != "":
+                return
+            continue
+        if nxt.morale <= 0 and _skip_guard < 64:
+            _skip_guard += 1
+            log_message.emit("%s is routed and cannot act." % nxt.display_name)
+            nxt.ctb = TurnQueue.ACTION_BASE / nxt.effective_spd()
+            continue
+        _skip_guard = 0
+        state_changed.emit()
         return
-    var nxt: BattleUnitScript = TurnQueue.peek_next(units)
-    if nxt == null:
-        return
-    TurnQueue.advance_to(units, nxt)
-    active_id = nxt.id
-    nxt.has_moved = false
-    nxt.has_acted = false
-    turn_count += 1
-    if _tick_rune_statuses(nxt):
-        return
-    if nxt.morale <= 0 and _skip_guard < 64:
-        _skip_guard += 1
-        log_message.emit("%s is routed and cannot act." % nxt.display_name)
-        nxt.ctb = TurnQueue.ACTION_BASE / nxt.effective_spd()
-        _start_next_turn()
-        return
-    _skip_guard = 0
-    state_changed.emit()
 
 
 func _tick_rune_statuses(unit: BattleUnitScript) -> bool:
@@ -570,7 +574,6 @@ func _tick_rune_statuses(unit: BattleUnitScript) -> bool:
     if skip_turn:
         log_message.emit("%s is stunned by the Storm Rune and loses the turn." % unit.display_name)
         unit.ctb = TurnQueue.ACTION_BASE / unit.effective_spd()
-        _start_next_turn()
         return true
     return false
 
