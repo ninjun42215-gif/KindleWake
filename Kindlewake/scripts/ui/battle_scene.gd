@@ -5,6 +5,7 @@ const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
 
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
+const BattleVfxStyleScript = preload("res://scripts/ui/battle_vfx_style.gd")
 const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
 const PartyStateScript = preload("res://scripts/core/party_state.gd")
 const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
@@ -546,19 +547,13 @@ func _on_unit_acted(unit_id: int, kind: String, data: Dictionary) -> void:
     elif kind == "skill_damage":
         var hit_target: BattleUnitScript = controller.unit_by_id(int(data["target_id"]))
         if hit_target != null:
-            var skill_color := Color(1.0, 0.48, 0.24)
             var rune_status: String = str(data.get("status", ""))
-            if rune_status == "chill": skill_color = Color(0.42, 0.78, 1.0)
-            elif rune_status == "shock": skill_color = Color(1.0, 0.92, 0.32)
-            elif rune_status == "exposed": skill_color = Color(0.82, 0.52, 1.0)
             var skill_id: String = str(data.get("skill_id", ""))
-            var effect_kind := "burst"
+            var effect_kind: String = BattleVfxStyleScript.kind_for_skill(skill_id, rune_status)
+            var skill_color: Color = BattleVfxStyleScript.color_for_skill(skill_id, rune_status)
             if skill_id == "fordbreaker_cleave":
-                skill_color = Color(1.0, 0.30, 0.12)
-                effect_kind = "slash"
                 _add_popup(hit_target, "CLEAVED", skill_color)
             elif skill_id == "final_edict":
-                skill_color = Color(1.0, 0.86, 0.30)
                 _add_popup(hit_target, "JUDGED", skill_color)
             _add_battle_vfx(hit_target, effect_kind, skill_color)
             _add_popup(hit_target, str(data["damage"]) + "*", Color(1.0, 0.55, 0.25))
@@ -867,26 +862,102 @@ func _draw_battle_vfx() -> void:
     for effect in battle_vfx:
         var age: float = float(effect["age"])
         var t: float = clampf(age / 0.62, 0.0, 1.0)
-        var center: Vector2 = effect["pos"]
+        var center: Vector2 = effect["pos"] + Vector2(0, -25)
         var col: Color = effect["color"]
         col.a = 1.0 - t
         var kind: String = str(effect["kind"])
+        var effect_seed: float = float(effect["seed"])
         if kind == "slash":
             var spread: float = 12.0 + t * 24.0
-            draw_arc(center + Vector2(0, -25), spread, -PI * 0.82, PI * 0.18, 18, col, 4.0 * (1.0 - t) + 1.0)
-            draw_line(center + Vector2(-spread, -42), center + Vector2(spread, -8), col.lightened(0.25), 2.5 * (1.0 - t))
+            draw_arc(center, spread, -PI * 0.82, PI * 0.18, 18, col, 4.0 * (1.0 - t) + 1.0)
+            draw_line(center + Vector2(-spread, -17), center + Vector2(spread, 17), col.lightened(0.25), 2.5 * (1.0 - t))
         elif kind == "heal":
-            for k in range(3):
-                var rise: float = age * 42.0 + float(k) * 13.0
-                draw_circle(center + Vector2(sin(age * 8.0 + float(k)) * 12.0, -20.0 - rise), 3.5 * (1.0 - t * 0.45), col)
-            draw_arc(center + Vector2(0, -24), 12.0 + t * 18.0, 0.0, TAU, 20, col, 2.5)
+            for heal_index in range(3):
+                var rise: float = age * 42.0 + float(heal_index) * 13.0
+                draw_circle(center + Vector2(sin(age * 8.0 + float(heal_index)) * 12.0, 5.0 - rise), 3.5 * (1.0 - t * 0.45), col)
+            draw_arc(center, 12.0 + t * 18.0, 0.0, TAU, 20, col, 2.5)
+        elif kind == "fire":
+            for fire_index in range(5):
+                var fire_angle: float = TAU * float(fire_index) / 5.0 + age * 2.2 + effect_seed * 0.03
+                var fire_direction := Vector2(cos(fire_angle), sin(fire_angle))
+                var fire_side := Vector2(-fire_direction.y, fire_direction.x)
+                var fire_base := center + fire_direction * (5.0 + t * 11.0)
+                var fire_tip := fire_base + fire_direction * (15.0 * (1.0 - t) + 3.0) + Vector2(0, -age * 12.0)
+                var fire_middle := fire_base + fire_direction * 6.0
+                var flame := PackedVector2Array([fire_base - fire_side * 3.2, fire_middle - fire_side * 2.2, fire_tip, fire_middle + fire_side * 2.2, fire_base + fire_side * 3.2])
+                draw_colored_polygon(flame, col)
+                draw_circle(fire_base, 2.0 * (1.0 - t * 0.4), col.lightened(0.25))
+            draw_arc(center, 8.0 + t * 22.0, -PI * 0.15, PI * 1.15, 20, col, 2.0 * (1.0 - t) + 0.5)
+        elif kind == "frost":
+            var frost_radius: float = 13.0 + t * 23.0
+            for frost_index in range(6):
+                var frost_angle: float = TAU * float(frost_index) / 6.0 + effect_seed * 0.025
+                _draw_vfx_shard(center, frost_angle, frost_radius, 3.4 * (1.0 - t * 0.35), col)
+            draw_arc(center, frost_radius * 0.55, 0.0, TAU, 20, col.lightened(0.2), 1.8 * (1.0 - t) + 0.5)
+        elif kind == "shock":
+            var shock_radius: float = 13.0 + t * 25.0
+            for shock_index in range(3):
+                var shock_angle: float = TAU * float(shock_index) / 3.0 + effect_seed * 0.02
+                var shock_direction := Vector2(cos(shock_angle), sin(shock_angle))
+                var shock_side := Vector2(-shock_direction.y, shock_direction.x)
+                var shock_start := center + shock_direction * 3.0
+                var shock_arc := PackedVector2Array([
+                    shock_start,
+                    shock_start + shock_direction * 7.0 + shock_side * 5.0,
+                    shock_start + shock_direction * 14.0 - shock_side * 4.0,
+                    shock_start + shock_direction * 21.0 + shock_side * 5.5,
+                    center + shock_direction * shock_radius
+                ])
+                draw_polyline(shock_arc, col, 2.8 * (1.0 - t) + 0.6)
+            draw_arc(center, 7.0 + t * 19.0, 0.0, TAU, 18, col, 1.6 * (1.0 - t) + 0.5)
+        elif kind == "arcane":
+            var arcane_radius: float = 10.0 + t * 24.0
+            var arcane_rotation: float = age * 2.4 + effect_seed * 0.02
+            draw_arc(center, arcane_radius, arcane_rotation, arcane_rotation + TAU, 28, col, 2.4 * (1.0 - t) + 0.6)
+            draw_arc(center, arcane_radius * 0.62, -arcane_rotation, -arcane_rotation + TAU, 22, col.lightened(0.2), 1.3 * (1.0 - t) + 0.5)
+            for arcane_index in range(6):
+                var arcane_angle: float = arcane_rotation + TAU * float(arcane_index) / 6.0
+                var arcane_direction := Vector2(cos(arcane_angle), sin(arcane_angle))
+                var arcane_point := center + arcane_direction * arcane_radius
+                draw_circle(arcane_point, 2.3 * (1.0 - t * 0.35), col)
+                draw_line(arcane_point - arcane_direction * 3.5, arcane_point + arcane_direction * 3.5, col.lightened(0.3), 1.3)
+        elif kind == "shadow":
+            var shadow_radius: float = 8.0 + t * 23.0
+            var shadow_rotation: float = age * 2.8 + effect_seed * 0.02
+            draw_arc(center, shadow_radius, shadow_rotation, shadow_rotation + PI * 1.55, 22, col, 3.0 * (1.0 - t) + 0.5)
+            for shadow_index in range(4):
+                var shadow_angle: float = shadow_rotation + TAU * float(shadow_index) / 4.0
+                var shadow_direction := Vector2(cos(shadow_angle), sin(shadow_angle))
+                var shadow_side := Vector2(-shadow_direction.y, shadow_direction.x)
+                var shadow_start := center + shadow_direction * (shadow_radius * 0.35)
+                var shadow_bend := center + shadow_side * sin(age * 9.0 + float(shadow_index)) * 8.0
+                var shadow_finish := center - shadow_direction * (shadow_radius * 0.55)
+                draw_line(shadow_start, shadow_bend, col, 2.2 * (1.0 - t) + 0.4)
+                draw_line(shadow_bend, shadow_finish, col.lightened(0.15), 1.5 * (1.0 - t) + 0.4)
         else:
-            var radius: float = 8.0 + t * 30.0
-            draw_arc(center + Vector2(0, -25), radius, 0.0, TAU, 24, col, 3.5 * (1.0 - t) + 0.5)
-            for k in range(6):
-                var angle: float = TAU * float(k) / 6.0 + float(effect["seed"])
-                var dot := center + Vector2(cos(angle), sin(angle)) * radius
-                draw_circle(dot + Vector2(0, -25), 2.5 * (1.0 - t * 0.5), col)
+            var burst_radius: float = 8.0 + t * 30.0
+            draw_arc(center, burst_radius, 0.0, TAU, 24, col, 3.5 * (1.0 - t) + 0.5)
+            for burst_index in range(6):
+                var burst_angle: float = TAU * float(burst_index) / 6.0 + effect_seed
+                var burst_dot := center + Vector2(cos(burst_angle), sin(burst_angle)) * burst_radius
+                draw_circle(burst_dot, 2.5 * (1.0 - t * 0.5), col)
+
+
+func _draw_vfx_shard(center: Vector2, angle: float, length: float, width: float, color: Color) -> void:
+    var direction := Vector2(cos(angle), sin(angle))
+    var side := Vector2(-direction.y, direction.x)
+    var base := center + direction * (length * 0.24)
+    var shoulder := base + direction * (length * 0.22)
+    var tip := center + direction * length
+    var points := PackedVector2Array([
+        base - side * width,
+        shoulder - side * width * 0.45,
+        tip,
+        shoulder + side * width * 0.45,
+        base + side * width
+    ])
+    draw_colored_polygon(points, color)
+    draw_line(base, tip, color.lightened(0.3), 1.2)
 
 
 # ------------------------------------------------------------------ drawing

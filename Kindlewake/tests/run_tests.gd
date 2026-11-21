@@ -4,6 +4,7 @@ const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
 const BattleControllerScript = preload("res://scripts/battle/battle_controller.gd")
+const BattleVfxStyleScript = preload("res://scripts/ui/battle_vfx_style.gd")
 const BattlefieldGeneratorScript = preload("res://scripts/battle/battlefield_generator.gd")
 
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
@@ -60,6 +61,7 @@ func _initialize() -> void:
     _test_character_creation()
     _test_map()
     _test_combat()
+    _test_battle_vfx_style()
     _test_turn_queue()
     _test_controller()
     _test_auto_battle()
@@ -1226,6 +1228,27 @@ func _test_combat() -> void:
     var res1: Dictionary = CombatCalc.resolve(a, d1, w, m, [a, d1], rng1)
     var res2: Dictionary = CombatCalc.resolve(a, d2, w, m, [a, d2], rng2)
     check(res1["hit"] == res2["hit"] and res1["damage"] == res2["damage"], "same RNG seed gives the same result")
+
+
+func _test_battle_vfx_style() -> void:
+    print("[battle VFX style]")
+    check(BattleVfxStyleScript.kind_for_skill("ember_bolt", "burn") == "fire", "Flame Rune skills use a fire impact")
+    check(BattleVfxStyleScript.kind_for_skill("frost_shard", "chill") == "frost", "Frost Rune skills use a crystal impact")
+    check(BattleVfxStyleScript.kind_for_skill("storm_bolt", "shock") == "shock", "Storm Rune skills use a lightning impact")
+    check(BattleVfxStyleScript.kind_for_skill("holy_smite", "exposed") == "arcane", "Holy Rune skills use a sigil impact")
+    check(BattleVfxStyleScript.kind_for_skill("shadow_drain", "") == "shadow", "Shadow Rune skills use a shadow impact")
+    check(BattleVfxStyleScript.kind_for_skill("fordbreaker_cleave", "exposed") == "slash", "Fordbreaker Cleave retains its physical slash impact")
+    check(BattleVfxStyleScript.kind_for_skill("final_edict", "exposed") == "arcane", "Final Edict retains its signature arcane impact")
+    check(BattleVfxStyleScript.kind_for_skill("unknown_skill", "burn") == "fire", "status fallback selects fire for burn")
+    check(BattleVfxStyleScript.kind_for_skill("unknown_skill", "chill") == "frost", "status fallback selects frost for chill")
+    check(BattleVfxStyleScript.kind_for_skill("unknown_skill", "shock") == "shock", "status fallback selects lightning for shock")
+    check(BattleVfxStyleScript.kind_for_skill("unknown_skill", "exposed") == "arcane", "status fallback selects arcane for exposed")
+    check(BattleVfxStyleScript.kind_for_skill("unknown_skill", "regen") == "heal", "status fallback selects healing for regeneration")
+    check(BattleVfxStyleScript.kind_for_skill("unknown_skill", "") == "burst", "unknown skills retain the generic burst fallback")
+    check(BattleVfxStyleScript.color_for_skill("ember_bolt", "burn") == Color("#ff793d"), "fire effects use the ember palette")
+    check(BattleVfxStyleScript.color_for_skill("frost_shard", "chill") == Color("#82d5ee"), "frost effects use the glacial palette")
+    check(BattleVfxStyleScript.color_for_skill("storm_bolt", "shock") == Color("#f6df70"), "lightning effects use the storm-gold palette")
+    check(BattleVfxStyleScript.color_for_skill("shadow_drain", "") == Color("#b28be8"), "shadow effects use the umbral palette")
 
 
 func _test_turn_queue() -> void:
