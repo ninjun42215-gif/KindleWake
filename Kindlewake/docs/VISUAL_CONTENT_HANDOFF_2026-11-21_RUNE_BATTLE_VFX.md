@@ -52,3 +52,48 @@
 - PR #170 changes `battle_controller.gd` and `test_campaign_continuity.gd`; this work does not touch those files or alter battle rules.
 - The art PRs #167/#169 modify settlement rendering and test assertions in separate regions of `tests/run_tests.gd`. This branch adds its own test call/function near the combat tests; reconcile the test file when the stacked settlement PRs are integrated.
 - No merge, force-push, branch deletion or repository-setting change was performed.
+
+
+## Exact code-head verification — 21 November 2026
+
+The following results are for code head `0c6b68cdb36ad80895fc7de356c1130bebea79b0` (before this verification-report-only documentation update):
+
+- [Project Health Audit #44875804918](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44875804918): passed.
+- [Workflow YAML Lint #44875804978](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44875804978): passed.
+- [Version Sync #44875804901](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44875804901): passed.
+- [Android Build #44875804908](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44875804908): import, scene smoke, strict tests, campaign lifecycle, merchant UI, title/creator UI, campaign tests, balance report and APK export passed. The final Android emulator launch assertion failed; see root cause below.
+
+### Exact-head test results
+- Godot 4.2.2 import: exit 0, no script errors.
+- Scene smoke: 20 scenes loaded, 0 failures.
+- Core regression suite: **1,026 checks, 0 failures**; all 17 new battle VFX style assertions passed.
+- Campaign save/restore lifecycle: passed.
+- Merchant UI: passed.
+- Title / creator UI: passed.
+- Act V: passed.
+- Campaign continuity: 70 checks, 0 failures.
+- Chronicle dynasty: 39 checks, 0 failures.
+- Chronicle family development: 19 checks, 0 failures.
+- Balance report: exit 0.
+- APK export: successful; CI/test signature valid (certificate fingerprint prefix `c04a7792715ad8f5`), ABIs `arm64-v8a`, `armeabi-v7a`, `x86_64`, no Android permissions requested.
+
+### Exact-head APK artifacts
+- [APK artifact #14696076513](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44875804908/artifacts/14696076513), 65,299,660 bytes, GitHub archive digest `sha256:9103402689bc6d2993948ed22e5c76818f47a87fd0039c4933f01c641319a1f8`.
+- [Test-log artifact #14696380005](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44875804908/artifacts/14696380005), 84,953 bytes, GitHub archive digest `sha256:e3aae7a5ba0b5003a6758eee85dec3173a0a7d00018935aa3e3340a9a5f70e91`. Contains the build summary, strict test logs, emulator screenshot, activity/window state and logcat.
+- This is a CI/test-signed candidate, not a production-signed release. Do not reuse it for any other commit.
+
+### Android emulator failure — confirmed root cause
+The main-based workflow uses the AOSP ATD / SwiftShader GLES3 emulator. Exact-head logcat reports:
+
+`SceneShaderGLES3: Program linking failed`  
+`Fragment shader active uniforms exceed GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)`
+
+The Godot activity is then destroyed and the app process exits; the captured emulator screenshot is black. The failure occurs before battle VFX are shown and is consistent with the already documented mainline AOSP/SwiftShader compatibility issue. This PR adds only CanvasItem vector drawing and does not introduce shaders. Do not attribute this emulator failure to the new rune effects.
+
+PR #164 proposes a Google APIs emulator path and previously passed its own exact-head CI, but it remains a separate draft workflow PR and has not changed main. That CI configuration workaround does not prove compatibility with every Android GPU or resolve the shader limit on affected devices.
+
+### Remaining verification
+- Godot editor screenshot inspection of the actual battle effects is still required.
+- Physical Android handset install, touch/gameplay, save/load, GPU compatibility, memory and frame pacing remain untested.
+- The emulator launch check is **failed**, not passed. Release readiness remains blocked by the renderer compatibility issue.
+- This section records the tested code SHA above; the handoff-only commit that adds this report requires its own fresh checks.
