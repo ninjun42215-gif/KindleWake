@@ -43,7 +43,7 @@
 ## Verification status
 - Added 17 headless regression assertions covering all existing element skill families, signature physical/arcane skills, status fallbacks, generic fallback and representative color identities.
 - A preliminary Android run was started on earlier head `83296736e4078b61fad0ff1f9c94fe47cebc885d`; it is stale after the subsequent draw-scope cleanup. It must not be used as verification for the final PR head.
-- Exact-head Godot import, strict test suite, scene smoke, Android export and emulator launch are pending a fresh run for final head `905dd8cd1e17261a5629fd34ae613ea930f9c33a`.
+- Exact-head Godot import, strict test suite, scene smoke, Android export and emulator launch are pending a fresh run after the final renderer and handoff commits. Use the current PR head SHA when evaluating the fresh run; all earlier build results are stale.
 - Godot editor visual inspection is required to judge the shape/contrast at battle zoom levels.
 - Physical Android rendering, touch, frame pacing, memory and vendor GPU QA have not been performed.
 
