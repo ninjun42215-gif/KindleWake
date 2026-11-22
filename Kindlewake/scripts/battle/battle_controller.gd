@@ -185,7 +185,22 @@ func restore(battle_def: Dictionary, database: Dictionary, saved: Dictionary) ->
     rng.state = str(saved.get("rng_state", "1")).to_int()
     _skip_guard = 0
     log_message.emit("Battle restored.")
-    state_changed.emit()
+
+    # Older battle snapshots could preserve active_id after a start-of-turn rune
+    # effect defeated that unit. Recover those saves instead of restoring a dead,
+    # unusable active turn. Keep already-terminal snapshots unchanged.
+    var recovered_stale_active_turn := false
+    if result == "" and restored_active_id != -1:
+        var restored_active: BattleUnitScript = active_unit()
+        if restored_active != null and not restored_active.is_alive():
+            _check_end()
+            if result == "":
+                active_id = -1
+                _start_next_turn()
+                recovered_stale_active_turn = true
+
+    if not recovered_stale_active_turn:
+        state_changed.emit()
     return true
 
 
