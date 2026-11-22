@@ -118,3 +118,93 @@ Current `main` still has these issues, while PR #164 proposes fixes:
 - PRs #170 and #171 remain draft; their automated gameplay/visual mapping tests pass, but their Android emulator checks fail on the same pre-existing AOSP/SwiftShader renderer issue.
 - PR #164 is a green workflow/security candidate and remains draft for human review.
 - No merge to main, branch deletion, force-push, repository-setting change, secret access, physical-device test or production release was performed.
+
+
+---
+
+## QA run 7 — 2026-11-22
+
+### Live repository state
+
+- Main remains exactly 13f66ec19476c9af5ed2b5c81af95e4d8a026876; no new main commit was observed.
+- Live search returned 33 open PRs and 177 branches (100 + 77; final page empty). No published GitHub Releases were found.
+- The public rulesets endpoint returned an empty list. The branch-protection endpoint returned HTTP 403 (Resource not accessible by integration), so branch protection could not be independently re-read in this run. Do not treat the 403 as proof that protection is disabled.
+- Current main workflow runs on the exact main SHA: Build Android APK [#44446304169](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44446304169) failed at emulator liveness; Project Health Audit [#44446304110](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44446304110), Workflow YAML Lint [#44446304180](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44446304180), Version Sync [#44446304299](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44446304299) and Manual Source Handoff [#44446304164](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44446304164) passed.
+- The latest main source-handoff artifact remains [#14493885543](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44446304164/artifacts/14493885543). Prior independent reassembly verified the 370 tracked-file snapshot, ZIP CRC and every included file hash with zero excluded paths. No newer main handoff run was observed.
+
+### Current PR divergence
+
+All counts below compare the PR head against current main, except #169 which is stacked on #167 and must be reviewed with its parent:
+
+| PR | Head SHA (short) | Ahead / behind | State |
+|---|---|---:|---|
+| #164 Android/release QA | 03efa339 | 20 / 0 | Draft; new exact-head Android run in progress |
+| #165 Safe Auto Merge freshness | 69acf496 | 2 / 0 | Draft |
+| #166 Chronicle save normalization | fbbfbaf2 | 7 / 0 | Draft |
+| #167 settlement architecture | d55e2eca | 5 / 0 | Draft |
+| #168 character appearance save guard | e33a591b | 7 / 0 | Draft |
+| #169 regional settlement style | 38f7ebee | 11 / 0 | Draft; stacked on #167 |
+| #170 battle turn recovery | cc6e819c | 6 / 0 | Draft |
+| #171 rune battle VFX | e5e9f3ca | 9 / 0 | Draft |
+| #172 QA documentation | 85d08817 before this handoff append | 3 / 0 | Draft |
+| #173 rune icon atlas | 09c9080a | 6 / 0 | Draft |
+| #81 regional trading | 69794034 | 3 / 146 | Draft; not mergeable |
+| #78 headless CI | 5873e380 | 70 / 160 | Draft; stacked |
+| #46 empire management | 84fdfc8e | 261 / 161 | Draft; not mergeable |
+| #157 portrait identity | b9545c5e | 34 / 9 | Draft; not mergeable |
+| #159 Android script guard | df58cfde | 18 / 9 | Draft; not mergeable |
+| #152 release publishing | 740dc7d6 | 4 / 98 | Draft; stale |
+
+Do not bulk-merge the stale branches. Extract reviewed changes into fresh branches from current main when their owners are ready.
+
+### PR #173 — premium rune icon atlas
+
+- Exact head: 09c9080a5690dabdcb25642ebc65615cf1236735; base main 13f66ec19476c9af5ed2b5c81af95e4d8a026876.
+- The PR changes the runtime assets/art/runes/rune_atlas.svg, its README and visual handoff. It preserves the 400 × 240 canvas, 10 × 6 grid, 40 × 40 cells and column/row order used by PartyScreen._rune_icon(). No rune IDs, grades, fusion rules, equipment sockets, combat data, save schema or gameplay code changed.
+- Project Health Audit [#44995604823](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44995604823), Workflow YAML Lint [#44995604873](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44995604873) and Version Sync [#44995604817](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44995604817) passed on this exact head.
+- Build Android APK [#44995604827](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44995604827): Godot import, 20-scene smoke, strict core suite (1,009 checks / 0 failures), campaign lifecycle, merchant UI, title/creator UI, Act V, campaign continuity (70 / 0), Chronicle dynasty (39 / 0), family development (19 / 0), balance report and APK export/upload passed. Overall build failed at Android process liveness.
+- Downloaded APK artifact [#14743538883](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44995604827/artifacts/14743538883). GitHub artifact metadata digest and independently downloaded ZIP SHA-256 both equal de29158472b611df003b8d2680b29519e88b639b4cad16a26219c6711e16cc2f; ZIP CRC passed. Extracted APK size 65,897,818 bytes; extracted APK SHA-256 cb4ad8dcf01f6a1840c36c44907b34418be93229faeb0aea094dc0b0ac6eeace. Build summary reports valid CI/test signature (fingerprint prefix c04a7792715ad8f5), ABIs arm64-v8a / armeabi-v7a / x86_64 and no requested Android permissions. It is not a release-verified build because the emulator step failed.
+- Downloaded test-log artifact [#14743163360](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44995604827/artifacts/14743163360), ZIP SHA-256 ba8d9d1d36818cc5405c3a92e1ec59e3eef8125fbad58993a68826ef7ddfdf90; ZIP CRC passed.
+- Logcat confirms the AOSP ATD / forced SwiftShader renderer failure: global shader-variable buffer size warning above 16,384 bytes; SceneShaderGLES3 link failure because fragment uniforms exceed GL_MAX_FRAGMENT_UNIFORM_VECTORS (261); Godot destroys the app activity and Android records the process death. No Java fatal exception or native fatal-signal stack trace was captured. This is pre-existing renderer/backend behavior in the old CI path, not introduced by the SVG atlas.
+- The central kindlewake-original-art provenance entry already includes the rune atlas as project-authored art. The remaining visual gate is editor inspection at actual 40 px display size and physical-device texture/frame-pacing review. PR #173 remains draft.
+
+### PR #170 — battle turn soft-lock and legacy restore recovery
+
+- Exact head: cc6e819ca2f24cf84715f63d0b67c815f331996b; 6 ahead / 0 behind main.
+- Project Health Audit [#44980590059](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44980590059), Workflow YAML Lint [#44980590079](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44980590079) and Version Sync [#44980590140](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44980590140) passed.
+- Build Android APK [#44980590086](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44980590086): import, 20 scenes, 1,009 core checks / 0 failures, campaign continuity 79 / 0 (including new status-death and stale-active snapshot recovery assertions), Chronicle dynasty 39 / 0, family development 19 / 0, balance report and APK export/upload passed. Emulator process-survival failed.
+- Downloaded test logs [#14737866383](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44980590086/artifacts/14737866383), SHA-256 21600f394c63a445376100a9ef22dceb5431d9f1bb5833c2a974f71eb8125e74; ZIP CRC passed. Its logcat independently confirms the same 16,384-byte uniform-buffer warning and GL_MAX_FRAGMENT_UNIFORM_VECTORS (261) SceneShaderGLES3 link failure, followed by Godot activity destruction and process death.
+- APK artifact [#14738045539](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44980590086/artifacts/14738045539) is present in Actions metadata with archive digest f29dac59cb2881042e50d18eb2b514ec9b5f18bc38c0b245cb5b727c0196e299; its bytes were not independently downloaded in this run.
+- QA posted the exact-head result and renderer diagnosis to [PR #170](https://github.com/ninjun42215-gif/KindleWake/pull/170#issuecomment-7078111406). Keep the PR draft for core engineering review; no merge performed.
+
+### PR #164 — Android emulator and release workflow hardening
+
+- The previously verified head d82a92485f3ea7651cab2abf616df3733d369420 passed Build Android APK [#44727952505](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44727952505), Project Health Audit [#44727952388](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44727952388), YAML Lint [#44727952421](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44727952421) and Version Sync [#44727952533](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44727952533). Its API 35 Google APIs / default-graphics Pixel 5 emulator kept the Godot activity foreground and OCR detected KINDLEWAKE, NEW GAME and SETTINGS.
+- This run added a focused logcat guard to the same QA branch, failing the emulator smoke if USER ERROR, SceneShaderGLES3 link failure, GL_MAX_FRAGMENT_UNIFORM_VECTORS, shader compilation failure or shader binding failure appears. The change is workflow-only and does not change game code.
+- New branch head: 03efa339e85df62763bada23c2f7f97d5158d514, 20 ahead / 0 behind main. Project Health Audit #45014535347, YAML Lint #45014535345 and Version Sync #45014535355 passed. Exact-head Android build [#45014535413](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45014535413) was still running at the time of this handoff append; its import/test/APK export stages passed and the emulator stage was in progress. Do not claim final Android success until that run completes.
+- PR #164 also removes the routine tag-triggered GitHub Release attachment job from build-apk.yml, keeps routine builds as candidate artifacts, scopes production contents: write to the production publish job, gives the rejected-confirmation job no write permission, and records git rev-parse HEAD after checking out the immutable release tag. These are safer than current main's workflow.
+- Current main still has a tag-triggered publish-tag-release job in build-apk.yml and publish-android-release.yml still grants contents: write at workflow scope and records github.sha instead of the exact checked-out tag SHA. Production environment reviewer rules and signing-secret presence remain unverified; no secret values were read.
+- PR #164 remains draft; its new exact-head build must finish before the candidate can be considered fully verified.
+
+### Save-integrity candidates
+
+- PR #166 head fbbfbaf271136798bd3d9113c8145305188862c3 retains its Chronicle normalization regression: 42 checks / 0 failures on its last exact-head test. Its Android workflow failed at the old AOSP/SwiftShader emulator step; it has not yet been retested on PR #164's alternate emulator path.
+- PR #168 head e33a591ba5e08a9802499e9e5979d81ea990c0cc retains its character appearance persistence suite: 7 checks / 0 failures on its last exact-head test. Its Android workflow also failed at the old emulator step; it has not yet been retested on the alternate path.
+- Neither save candidate was merged or changed in this run.
+
+### Workflow, provenance and security notes
+
+- Current main build-apk.yml gives the APK job contents: read, but still includes a separate tag-triggered job with contents: write and softprops/action-gh-release@v2; that can publish a routine CI/test-signed APK to a GitHub Release. This conflicts with ANDROID_RELEASE_WORKFLOW.md's claim that tag builds are candidate-only.
+- Current main publish-android-release.yml has workflow-level contents: write and writes github.sha into the release manifest even though the job checks out inputs.tag. PR #164 narrows permissions and records the actual checked-out tag commit.
+- Current safe-auto-merge.yml uses contents: write and pull-requests: write because it invokes the merge API, but it does not check out or execute PR code and validates unique open PR ownership, exact head SHA, current base and successful discovered workflows. Recent main Safe Auto Merge runs were skipped; no merge occurred in this run.
+- The rulesets collection was empty; direct branch-protection inspection was denied with 403, so branch protection remains unverified in this run.
+- Node.js 20 deprecation warnings remain for pinned GitHub Actions; update action versions separately after compatibility testing.
+- The main asset ledger's generic original-art entry includes the rune atlas, so PR #173 does not need a duplicate entry solely for that replacement. PR #167's additional local architecture detail atlas still needs reconciliation with the central asset inventory/credits; PR #157 owns shared portrait inventory files and is 34 ahead / 9 behind, so coordinate rather than overwrite them.
+- No secrets were accessed. No repository settings, main, tags, releases or user-owned feature branches were changed.
+
+### Release disposition
+
+- Main remains at 13f66ec19476c9af5ed2b5c81af95e4d8a026876.
+- No physical Android device was tested. Touch, save/load, orientation, pause/resume, memory, thermal behavior, frame pacing and vendor GPU compatibility remain unverified.
+- All APKs above are CI/test-signed candidates. The PR #173 archive and extracted APK hashes were independently verified, but its Android launch failed. Do not reuse any APK for a different SHA or label any candidate as production-ready.
+- No merge, force-push, branch deletion, repository-setting change, production tag or release publication was performed.
