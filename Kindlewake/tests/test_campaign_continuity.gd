@@ -133,6 +133,7 @@ func _initialize() -> void:
   _check(Chronicle.record_milestone(founder_gate,"natural_old_age_death",natural_end.founder_details),"Chronicle accepts the verified founder death record")
  _check(Chronicle.is_unlocked(founder_gate),"Chronicle unlocks after the complete late-life sequence")
  _test_burn_status_death_advances_turn()
+ _test_restore_recovers_dead_active_unit()
  print("Campaign continuity checks: %d   Failures: %d" % [checks,failures])
  quit(1 if failures > 0 else 0)
 func _test_burn_status_death_advances_turn() -> void:
@@ -164,6 +165,44 @@ func _test_burn_status_death_advances_turn() -> void:
  var active = controller.active_unit()
  _check(active != null and active.is_alive() and active.id != victim.id,"turn queue advances to a living unit after status death")
  _check(controller.turn_count >= 2,"status-death skip advances the battle turn counter")
+ data.free()
+
+func _test_restore_recovers_dead_active_unit() -> void:
+ var data: Node = GameDataScript.new()
+ data.reload()
+ var source = BattleControllerScript.new()
+ source.setup(data.battle_def("battle_01"),data.as_db(),90212)
+ var victim = null
+ for candidate in source.units:
+  if candidate.team == "enemy" and not candidate.is_commander:
+   victim = candidate
+   break
+ if victim == null:
+  for candidate in source.units:
+   if candidate.team == "player" and not candidate.is_protagonist:
+    victim = candidate
+    break
+ if victim == null:
+  _check(false,"battle fixture contains a non-terminal combatant for stale-save recovery")
+  data.free()
+  return
+ source.active_id = victim.id
+ victim.ctb = 0.0
+ var live_snapshot: Dictionary = source.to_dict()
+ var live_restored = BattleControllerScript.new()
+ var live_ok: bool = live_restored.restore(data.battle_def("battle_01"),data.as_db(),live_snapshot)
+ _check(live_ok,"battle restore accepts a valid living active unit")
+ if live_ok:
+  _check(live_restored.active_unit() != null and live_restored.active_unit().id == victim.id,"battle restore preserves the valid active turn")
+ victim.hp = 0
+ var stale_snapshot: Dictionary = source.to_dict()
+ var stale_restored = BattleControllerScript.new()
+ var stale_ok: bool = stale_restored.restore(data.battle_def("battle_01"),data.as_db(),stale_snapshot)
+ _check(stale_ok,"battle restore accepts a legacy snapshot with a defeated active unit")
+ if stale_ok:
+  var recovered_active = stale_restored.active_unit()
+  _check(stale_restored.result == "","non-terminal defeated active unit does not end the restored battle")
+  _check(recovered_active != null and recovered_active.is_alive() and recovered_active.id != victim.id,"battle restore advances from a defeated active unit to a living combatant")
  data.free()
 
 func _check(ok: bool, label: String) -> void:
