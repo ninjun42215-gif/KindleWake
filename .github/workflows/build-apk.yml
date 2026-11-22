@@ -122,7 +122,7 @@ jobs:
             # android-emulator-runner executes each script line with /usr/bin/sh; keep assertions single-line.
             python3 -c 'import pathlib,re,sys; lines=pathlib.Path("Kindlewake/dist/android-logcat.txt").read_text(errors="replace").splitlines(); hits=[f"{i+1}: {line}" for i,line in enumerate(lines) if re.search(r"FATAL EXCEPTION|Fatal signal|SCRIPT ERROR|Parse Error", line)]; print("\n".join(hits[-80:])); sys.exit(1 if hits else 0)'
             # Treat renderer shader link/resource errors as explicit Android smoke failures.
-            python3 -c 'import pathlib,re,sys; lines=pathlib.Path("Kindlewake/dist/android-logcat.txt").read_text(errors="replace").splitlines(); pattern=re.compile(r"USER ERROR|SceneShaderGLES3:\\s*Program linking failed|GL_MAX_FRAGMENT_UNIFORM_VECTORS|shader failed to compile|unable to bind shader", re.I); hits=[f"{i+1}: {line}" for i,line in enumerate(lines) if pattern.search(line)]; print("\\n".join(hits[-80:])); sys.exit(1 if hits else 0)'
+            python3 -c 'import pathlib,re,sys; lines=pathlib.Path("Kindlewake/dist/android-logcat.txt").read_text(errors="replace").splitlines(); pattern=re.compile(r"USER ERROR|SceneShaderGLES3:\s*Program linking failed|GL_MAX_FRAGMENT_UNIFORM_VECTORS|shader failed to compile|unable to bind shader", re.I); hits=[f"{i+1}: {line}" for i,line in enumerate(lines) if pattern.search(line)]; print("\n".join(hits[-80:])); sys.exit(1 if hits else 0)'
             adb shell pidof com.kindlewake.game | grep -q . || python3 -c 'raise SystemExit("Kindlewake did not remain running after explicit launcher activity start")'
 
       - name: Upload test and build logs
