@@ -208,3 +208,21 @@ Do not bulk-merge the stale branches. Extract reviewed changes into fresh branch
 - No physical Android device was tested. Touch, save/load, orientation, pause/resume, memory, thermal behavior, frame pacing and vendor GPU compatibility remain unverified.
 - All APKs above are CI/test-signed candidates. The PR #173 archive and extracted APK hashes were independently verified, but its Android launch failed. Do not reuse any APK for a different SHA or label any candidate as production-ready.
 - No merge, force-push, branch deletion, repository-setting change, production tag or release publication was performed.
+
+
+---
+
+## PR #164 exact-head completion — 2026-11-22
+
+The exact-head run that was in progress during the preceding handoff section has now completed successfully.
+
+- Exact PR #164 head: 03efa339e85df62763bada23c2f7f97d5158d514 (20 ahead / 0 behind main).
+- Build Android APK [#45014535413](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45014535413): passed end-to-end, including import, 20 scenes / 0 failures, strict core suite 1,009 / 0, campaign lifecycle, merchant UI, title/creator UI, Act V, continuity, Chronicle dynasty/family, balance report, APK export, API 35 emulator install/launch, foreground/resume checks, screenshot and OCR.
+- Project Health Audit [#45014535347](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45014535347), Workflow YAML Lint [#45014535345](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45014535345) and Version Sync [#45014535355](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45014535355): all passed on the same exact head.
+- Downloaded test-log artifact [#14751421618](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45014535413/artifacts/14751421618): archive SHA-256 7819e695b286321c2f25491c14db94fc6ad28794b31bc6ccf7b20087baffb0e4; ZIP CRC passed. The exact-head logcat contains no USER ERROR, SceneShaderGLES3 link failure, GL_MAX_FRAGMENT_UNIFORM_VECTORS, shader compile/bind failure, fatal exception, native fatal signal, or GDScript parse/script error. The new renderer-error guard passed.
+- OCR detected KINDLEWAKE, NEW GAME and SETTINGS. The captured title screen was visually inspected: the title and all menu controls are visible and legible; Continue is disabled on a clean install with no valid save, as expected.
+- Downloaded APK artifact [#14751425527](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45014535413/artifacts/14751425527): archive SHA-256 22f79bdcf3a25c879b95c8c78130a6db4ef0e10dbd050b4dda375248ad49f646; ZIP CRC passed. Extracted APK size 65,852,762 bytes; SHA-256 b54706a5786c34e12a9212eed208531224c4027bb568449505732c4dd5ae5641. Build summary reports a valid CI/test signature (fingerprint prefix c04a7792715ad8f5), ABIs arm64-v8a / armeabi-v7a / x86_64 and no requested Android permissions.
+- The earlier successful head d82a924... and this new exact head both pass the Google APIs/default-graphics emulator route. This is a verified CI path, not a shader fix in the game and not proof of all vendor GPUs or physical devices.
+- QA posted the exact-head result and artifact hashes to [PR #164](https://github.com/ninjun42215-gif/KindleWake/pull/164#issuecomment-7078147611). PR remains draft for human workflow/security review.
+
+This does not change the current main release disposition: main still uses the AOSP ATD / forced SwiftShader path and its latest observed main Android run failed. No merge or physical-device test was performed.
