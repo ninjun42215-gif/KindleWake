@@ -47,3 +47,20 @@ CI has not yet run for the final PR head. Do not claim the regression passes unt
 3. Confirm a terminal status death still emits the existing battle-ending outcome.
 4. Run all required workflows on the exact final PR head and inspect any failed logs.
 5. Keep this PR unmerged; integration and merge are outside this work's authority.
+
+
+## Follow-up: recover older battle snapshots with a defeated active unit
+
+A compatibility edge case was found while reviewing the lethal-status turn fix: older battle snapshots may already contain a dead `active_id` because the pre-fix turn queue returned immediately after a non-terminal status death. The new turn loop prevents creating those snapshots going forward, but `restore()` previously accepted the old payload and restored a dead active unit, preserving the soft-lock for players who had saved during that state.
+
+Implemented on the same feature branch:
+
+- `BattleController.restore()` detects a non-terminal snapshot whose saved active unit is defeated.
+- It runs the normal battle-end check first, so commander/protagonist/side-elimination outcomes remain terminal.
+- If the battle is still active, it clears the stale active ID and advances through the existing turn-selection path to the next living combatant, including normal status processing.
+- Valid living active turns and already-terminal snapshots retain their existing restoration behavior.
+- Added campaign-continuity regressions for valid active-turn preservation and recovery from a legacy defeated-active snapshot.
+
+No save schema/version change, migration, combat formula change, story change or player-data rewrite. This is an in-memory recovery when loading an existing battle snapshot.
+
+The new exact-head CI run must confirm the additional tests. The prior PR #170 head passed the strict gameplay suite (1,009 core checks; campaign continuity 74 checks) and the three non-Android workflows, but its Android job failed only at the AOSP ATD/forced SwiftShader emulator launch stage. See [Build #44861498921](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44861498921). QA has separately verified the Google APIs emulator path on PR #164; physical-device testing remains outstanding.
