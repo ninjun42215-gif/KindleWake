@@ -69,3 +69,28 @@ The following checks ran on implementation/documentation head `220b278b262910fad
 - [Test-log artifact #14743621544](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44994946052/artifacts/14743621544), 101,271 bytes; GitHub archive digest `sha256:565f5cd4e0f2521c79f23bb9b259c946a12238957fd5fcf0f894fa882bc3069a`.
 
 The APK is a CI/test-signed candidate, not a production-signed release. The successful emulator check is not physical-device QA and does not establish performance or compatibility across vendor GPUs. Editor inspection of the 40 px rune glyphs and physical Android touch, texture residency and frame-pacing checks remain outstanding.
+
+
+## Follow-up exact-head verification — 22 November 2026
+
+A documentation-only handoff update produced head `262573c92d589a9bea4927a3a9aa1a9f4f5d49df` (the rune SVG and runtime code were unchanged from `220b278b262910fadcb87279953ac4fa93342108`).
+
+- [Project Health Audit #44995275306](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44995275306): passed; 0 errors, 0 warnings.
+- [Workflow YAML Lint #44995275282](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44995275282): passed.
+- [Synchronize Project Version #44995275270](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44995275270): passed.
+- [Android Build #44995275279](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44995275279): Godot import, 20-scene smoke, 1,009 strict checks, campaign lifecycle, merchant UI, title/creator UI, Act V, campaign continuity, dynasty, family-development, balance report and APK export all passed. The Android emulator process-survival step failed.
+
+### Emulator failure evidence
+- Captured screenshot: black.
+- Logcat: `rendering/limits/global_shader_variables/buffer_size` exceeds the emulator's 16,384-byte uniform buffer limit.
+- Repeated `SceneShaderGLES3: Program linking failed` messages report `Fragment shader active uniforms exceed GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)`.
+- Godot then logs `GodotActivity: Destroying Godot app` and `Force quitting Godot instance`; the process is no longer present at the 30-second check.
+- No GDScript `SCRIPT ERROR`, parse error, Java `FATAL EXCEPTION` or native `Fatal signal` was found in the captured log.
+- This matches the already reproduced AOSP/SwiftShader GLES3 compatibility issue on main; the atlas is SVG-only and does not add a shader or global uniform buffer.
+
+### Exact-head artifacts for the failed emulator attempt
+- [APK artifact #14742984758](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44995275279/artifacts/14742984758), 65,340,780 bytes; archive digest `sha256:009a2a7babcea92c87338130b4906a3b4fa15260858497e3f3eb20460a0acec7`.
+- [Test-log artifact #14743696775](https://github.com/ninjun42215-gif/KindleWake/actions/runs/44995275279/artifacts/14743696775), 108,619 bytes; archive digest `sha256:c89dd57820378c6cb88a1762b79924253e5d8f9b3d458bbdc495ce614d5ef85d`.
+- The APK signature was valid with the CI/test certificate and no Android permissions were requested. This APK is **not emulator-verified or production-signed**.
+
+The earlier exact code head `220b278b262910fadcb87279953ac4fa93342108` did pass the emulator smoke on run #44994946052, but the repeat run on the documentation-only head reproduced the known renderer failure. Treat emulator compatibility as nondeterministic and still release-blocking. No physical Android handset test has been performed.
