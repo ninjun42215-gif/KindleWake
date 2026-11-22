@@ -25,8 +25,8 @@
 
 ## Validation
 - This handoff records the implementation, not a passed Godot or Android check.
-- XML parsing, 400 × 240 dimensions, 60 cell groups and the 10 × 6 cell contract are checked locally before PR submission.
-- Exact-branch Project Health Audit, Godot import, headless tests and Android APK export must be checked against the final PR head.
+- Source-level structural checks confirmed the 400 × 240 canvas, 60 translated cell groups, 10 × 6 layout, no embedded raster images, no scripts and no external URL references.
+- XML parser validation and Godot import are not yet complete; the exact-branch Project Health Audit, headless tests and Android APK export must be checked against the final PR head.
 - Godot editor inspection at 40 px, portrait/landscape mobile layouts and physical Android texture/frame-time QA remain required.
 - No physical-device test is claimed.
 
