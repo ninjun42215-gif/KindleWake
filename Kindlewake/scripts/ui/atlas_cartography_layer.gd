@@ -41,8 +41,8 @@ func _draw_corner_marks(rect: Rect2) -> void:
     var inset := 7.0
     var arm: float = clampf(minf(rect.size.x, rect.size.y) * 0.045, 14.0, 24.0)
     var tint := Color(BRASS.r, BRASS.g, BRASS.b, 0.72)
+    # The north-west corner is deliberately reserved for the compass rose.
     var marks: Array[Dictionary] = [
-        {"point": rect.position + Vector2(inset, inset), "direction": Vector2(1, 1)},
         {"point": Vector2(rect.end.x - inset, rect.position.y + inset), "direction": Vector2(-1, 1)},
         {"point": Vector2(rect.position.x + inset, rect.end.y - inset), "direction": Vector2(1, -1)},
         {"point": rect.end - Vector2(inset, inset), "direction": Vector2(-1, -1)}
