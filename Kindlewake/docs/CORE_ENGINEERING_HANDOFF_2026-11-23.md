@@ -9,7 +9,7 @@
 - Branch: `fix/equipment-enhancement-stat-scaling-2026-11-23`
 - Implementation commit: `8a752b2faca66f2ff06ee22f2f488b2a795f6133`
 - Regression-test commit: `ba8f2a7c9d06a8c41584eedcd91247da60a85820`
-- CI and Android export status: pending PR creation and exact-head Actions.
+- Verification checkpoint: code/test head `0de73637d4bfb510e42d369dc1e8febc5973e0ec` passed 1,012 strict checks and APK export; its SwiftShader emulator liveness check failed. Documentation-updated head `db7b26b8bd8e4422aa359e4e6771f0dbd231208c` passed health, YAML and version checks; its Android emulator step was still running at the last inspection.
 
 ## Finding
 
