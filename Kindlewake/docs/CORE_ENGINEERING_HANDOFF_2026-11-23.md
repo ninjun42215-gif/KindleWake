@@ -27,7 +27,7 @@ No equipment definitions, prices, enhancement cost curve, +15 cap, save schema, 
 
 ## Regression coverage
 
-Added three checks to the existing strict `tests/run_tests.gd` progression suite:
+Added three checks to the existing strict `tests/run_tests.gd` shop/equipment section:
 
 1. A +15 item-keyed accessory enhancement increases the unique Starfall Charm's MP bonus from +8 to +14 and INT bonus from +3 to +5.
 2. A legacy slot-only enhancement key still applies the same bonus.
