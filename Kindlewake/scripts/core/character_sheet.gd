@@ -34,8 +34,8 @@ var equipment: Dictionary = {}           # slot -> item id ("" = empty)
 var natural_def: int = 0                 # only for characters without an equipment block (generic enemies)
 var natural_res: int = 0
 var fallback_weapon_id: String = ""      # same: weapon of characters without an equipment block
-var sigils: Dictionary = {"weapon": [], "armor": []}
-var enhancements: Dictionary = {}  # "slot|item_id" -> +0..+15; legacy slot-only values remain readable   # group -> Array of sigil instances ({"id","ap"}; {} = empty socket)
+var sigils: Dictionary = {"weapon": [], "armor": []}  # group -> Array of sigil instances ({"id","ap"}; {} = empty socket)
+var enhancements: Dictionary = {}  # "slot|item_id" -> +0..+15; legacy slot-only values remain readable
 var reward: Dictionary = {}              # enemies only: {"exp","ap","gold"} paid when defeated
 var traits: Array[String] = []             # enduring trait IDs; temporary conditions stay in battle status effects
 var trait_history: Array = []               # bounded acquisition/removal history
