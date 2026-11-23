@@ -35,7 +35,7 @@ var natural_def: int = 0                 # only for characters without an equipm
 var natural_res: int = 0
 var fallback_weapon_id: String = ""      # same: weapon of characters without an equipment block
 var sigils: Dictionary = {"weapon": [], "armor": []}
-var enhancements: Dictionary = {}  # equipment slot -> +0..+15   # group -> Array of sigil instances ({"id","ap"}; {} = empty socket)
+var enhancements: Dictionary = {}  # "slot|item_id" -> +0..+15; legacy slot-only values remain readable   # group -> Array of sigil instances ({"id","ap"}; {} = empty socket)
 var reward: Dictionary = {}              # enemies only: {"exp","ap","gold"} paid when defeated
 var traits: Array[String] = []             # enduring trait IDs; temporary conditions stay in battle status effects
 var trait_history: Array = []               # bounded acquisition/removal history
@@ -131,11 +131,15 @@ func total_stats(items: Dictionary, sdefs: Dictionary = {}, trait_defs: Dictiona
     for slot in SLOTS:
         var it: Dictionary = items.get(item_in(slot), {})
         var bonus: Dictionary = it.get("bonus", {})
-        var enhance_mult := 1.0 + float(int(enhancements.get(slot, 0))) * 0.05
+        var enhancement_key: String = slot + "|" + item_in(slot)
+        # Enhancements belong to the equipped item, not merely the slot. Keep the
+        # legacy slot-only fallback so older character sheets retain their bonuses.
+        var enhancement_level: int = clampi(int(enhancements.get(enhancement_key, enhancements.get(slot, 0))), 0, 15)
+        var enhance_mult := 1.0 + float(enhancement_level) * 0.05
         for k in bonus.keys():
             t[str(k)] = int(t.get(str(k), 0)) + int(round(float(bonus[k]) * enhance_mult))
         if slot == "weapon":
-            t["weapon_power_pct"] = int(t.get("weapon_power_pct", 0)) + int(enhancements.get(slot + "|" + item_in(slot), 0)) * 5
+            t["weapon_power_pct"] = int(t.get("weapon_power_pct", 0)) + enhancement_level * 5
     var mods: Dictionary = sigil_mods(items, sdefs)
     for k in mods.keys():
         var key: String = str(k)
