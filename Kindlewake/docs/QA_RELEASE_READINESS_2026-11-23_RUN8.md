@@ -99,3 +99,11 @@ Do not bulk-merge stale branches. Selectively port reviewed changes to fresh bra
 - Required physical-device checks: install/upgrade, touch and one-tap navigation, portrait/landscape behavior, save/load and migration, pause/resume, long-session memory/thermal behavior, frame pacing, and vendor-GPU compatibility.
 - Do not reuse an APK for a different commit. The PR #174 APK above is verified against its exact tested head but failed its emulator launch stage; it is not a release candidate.
 - Immediate priorities: review #164 workflow/security changes; rerun #166/#168/#170/#174/#175/#176 on the alternate emulator path; close PR #174's malformed-enhancement restore edge; reconcile visual asset provenance/credits; verify production signing configuration and protected environment reviewers.
+
+
+## Handoff commit and exact-head check status
+
+- This Run 8 handoff was added in commit `c7ac16d00adb6a89b9e20312eb1436037e4dde0e` on `qa/project-health-audit-doc-consistency-2026-11-21`.
+- PR #172 now has exact head `c7ac16d00adb6a89b9e20312eb1436037e4dde0e`, 6 ahead / 0 behind current main, draft and mergeable.
+- Push-triggered Workflow YAML Lint [#45159614713](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45159614713) completed successfully, including YAML syntax validation, source-handoff/organizer safety tests, and read-only branch-hygiene smoke test.
+- No Project Health Audit, Version Sync or Android Build run was registered for this exact commit at the time of this update. The new commit changes documentation only; do not treat earlier PR #172 checks on `c51fb042...` as checks for this new head. No runtime/gameplay source changed.
