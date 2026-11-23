@@ -52,3 +52,56 @@ The tests use a throwaway CharacterSheet and do not modify the live test party o
 ## Safety
 
 This is a focused gameplay calculation correction. No main-branch changes, merges, force-pushes, branch deletions, repository-setting changes, secret access or release publication were performed.
+
+
+## Exact-head verification — code/test head `0de73637d4bfb510e42d369dc1e8febc5973e0ec`
+
+- [Project Health Audit #45107833510](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45107833510): passed.
+- [Workflow YAML Lint #45107833502](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45107833502): passed.
+- [Version Sync #45107833429](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45107833429): passed.
+- [Build Android APK #45107833431](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45107833431): **failed only at the emulator process-liveness stage**. Import, strict tests, APK export and artifact upload completed successfully.
+
+### Automated test results
+
+- Godot 4.2.2 import: exit 0, no script errors.
+- Scene smoke: 20 loaded, 0 failures.
+- Core strict suite: **1,012 checks, 0 failures**; the three new enhancement assertions were included.
+- Campaign lifecycle: 0 failures.
+- Merchant UI: 0 failures.
+- Title/creator UI: 0 failures.
+- Act V: 0 failures.
+- Campaign continuity: 70 checks, 0 failures.
+- Chronicle dynasty: 39 checks, 0 failures.
+- Chronicle family development: 19 checks, 0 failures.
+- Balance report: completed.
+
+### APK provenance
+
+- [APK artifact #14787723023](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45107833431/artifacts/14787723023) is tied by GitHub artifact metadata to exact code/test head `0de73637d4bfb510e42d369dc1e8febc5973e0ec`.
+- Artifact archive size: 65,297,953 bytes.
+- Artifact archive SHA-256: `4a05b3ac65b581fc4ecaa1b1feac5924ef75645e90595c5d6d30e348359ffa7a`; downloaded archive ZIP integrity passed and the digest matched GitHub metadata.
+- Extracted APK: 65,852,762 bytes.
+- Extracted APK SHA-256: `66c82dbded913f816d1886f842931c475a640ab88a28a2be4d56e38225388a31`.
+- Build summary reports a valid signature (key fingerprint prefix `c04a7792715ad8f5`), ABIs `arm64-v8a`, `armeabi-v7a`, `x86_64`, and no Android permissions requested.
+- [Test/build log artifact #14788636477](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45107833431/artifacts/14788636477), archive SHA-256 `2721ef25288dae70b62b96ad270056e54cd8249b2e4cbacbfe1ef86ea2c92da8`; downloaded archive ZIP integrity passed.
+
+### Emulator failure root cause
+
+The AOSP ATD / forced SwiftShader GLES3 emulator installed and launched the APK, and Godot reported that its main loop started. Logcat then recorded:
+
+- `rendering/limits/global_shader_variables/buffer_size` exceeds the emulator's maximum uniform-buffer size of 16,384 bytes.
+- `SceneShaderGLES3: Program linking failed` because 261 active fragment uniforms exceed `GL_MAX_FRAGMENT_UNIFORM_VECTORS`.
+- Godot emitted shader compilation/binding errors, destroyed its app instance and the Android process died. The captured 1368×632 emulator screenshot is black; the process-liveness assertion failed.
+- No Android `FATAL EXCEPTION`, native fatal signal, GDScript `SCRIPT ERROR` or parse error was present in the captured logcat.
+
+This is a confirmed failure on the configured SwiftShader emulator path. It is not evidence that the same shader limit occurs on every physical Android GPU.
+
+### QA emulator comparison
+
+QA PR #164's current head is `03efa339e85df62763bada23c2f7f97d5158d514`. Its [Build Android APK #45014535413](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45014535413) passed using its API 35 Google APIs / Pixel 5 emulator path: the Godot activity resumed, title/menu OCR found KINDLEWAKE / NEW GAME / SETTINGS, the app process remained alive, and log checks found no shader-link, fatal or script errors. This is separate QA-branch evidence, not a test of this PR's APK on that emulator and not physical-device QA.
+
+## Repository safety notes
+
+- GitHub's branch endpoint currently reports `main` as unprotected with required status-check enforcement disabled. No repository settings were changed.
+- Main's `.github/workflows/publish-android-release.yml` still grants `contents: write` at workflow scope. QA PR #164 owns the least-privilege release-workflow change; this core PR does not modify release workflows.
+- No physical Android handset was tested. Touch behavior, long-session performance, thermal/memory behavior, save/load on handset and vendor-GPU compatibility remain outstanding.
