@@ -4,6 +4,7 @@ extends Control
 ## original, scalable sigils and never intercepts touch or controller input.
 
 const SIGIL_ATLAS: Texture2D = preload("res://assets/art/atlas/continent_sigils.svg")
+const AtlasLayoutScript = preload("res://scripts/ui/atlas_layout.gd")
 const SIGIL_CELL_SIZE := 128.0
 const SIGIL_CELLS := {
     "eldrimar": 0,
@@ -38,12 +39,7 @@ func _draw() -> void:
         return
 
     var portrait_layout: bool = size.y > size.x
-    var map_rect := Rect2(
-        size.x * (0.04 if portrait_layout else 0.025),
-        size.y * (0.16 if portrait_layout else 0.19),
-        size.x * (0.92 if portrait_layout else 0.625),
-        size.y * (0.40 if portrait_layout else 0.75)
-    )
+    var map_rect: Rect2 = AtlasLayoutScript.map_rect_for_size(size)
     var icon_size: float = 38.0 if portrait_layout else 46.0
     var medallion_radius: float = icon_size * 0.52
 
