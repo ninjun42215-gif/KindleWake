@@ -103,7 +103,8 @@ Do not bulk-merge stale branches. Selectively port reviewed changes to fresh bra
 
 ## Handoff commit and exact-head check status
 
-- This Run 8 handoff was added in commit `c7ac16d00adb6a89b9e20312eb1436037e4dde0e` on `qa/project-health-audit-doc-consistency-2026-11-21`.
-- PR #172 now has exact head `c7ac16d00adb6a89b9e20312eb1436037e4dde0e`, 6 ahead / 0 behind current main, draft and mergeable.
-- Push-triggered Workflow YAML Lint [#45159614713](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45159614713) completed successfully, including YAML syntax validation, source-handoff/organizer safety tests, and read-only branch-hygiene smoke test.
-- No Project Health Audit, Version Sync or Android Build run was registered for this exact commit at the time of this update. The new commit changes documentation only; do not treat earlier PR #172 checks on `c51fb042...` as checks for this new head. No runtime/gameplay source changed.
+- The Run 8 handoff was initially added in commit `c7ac16d00adb6a89b9e20312eb1436037e4dde0e`.
+- A follow-up documentation-only commit `f12b0f241b88d2cb7162579239941d51cdb0964d` recorded the first exact-head lint result.
+- Workflow YAML Lint [#45159773622](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45159773622) completed successfully on exact commit `f12b0f241b88d2cb7162579239941d51cdb0964d`, including YAML syntax validation, source-handoff/organizer safety tests, and read-only branch-hygiene smoke test.
+- No Project Health Audit, Version Sync or Android Build run was registered for exact commit `f12b0f241b88d2cb7162579239941d51cdb0964d`. That commit changed documentation only; earlier PR #172 checks on `c51fb042...` do not certify it. No runtime/gameplay source changed.
+- Subsequent edits to this status section are documentation-only. The authoritative latest branch head and ahead/behind count are the live values on [PR #172](https://github.com/ninjun42215-gif/KindleWake/pull/172). Keep the PR draft and unmerged pending human review.
