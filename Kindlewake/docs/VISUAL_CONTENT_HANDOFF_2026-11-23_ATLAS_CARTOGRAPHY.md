@@ -74,3 +74,18 @@ The APK is CI/test-signed, not a production release. It is tied to implementatio
 - Re-run exact-head CI after any further code changes.
 - No physical-device verification is claimed.
 - No merge, main write, force-push, branch deletion, repository-setting change or release publication was performed.
+
+
+## Asset-pack and provenance audit on current main
+
+The current main ledger (updated 2026-11-19) records:
+- Quaternius Stylized Nature MegaKit: CC0 1.0, verified and runtime-used.
+- Zerie Tiny RPG Character Asset Pack 01 Free Soldier/Orc subset: author terms permit personal/commercial game use and modification; standalone source-pack redistribution is prohibited.
+- Legacy voxel-building PNGs: retained historically, not runtime-used; original KindleWake SVG settlement art replaces them.
+- LimeZu Modern Interiors Free: restricted non-commercial and non-editable; excluded.
+- MountainRocks archive: unknown licence; excluded.
+- Existing original KindleWake vector art and seven-continent heraldry: project-authored and verified.
+
+This cartography change adds no imported pack, third-party artwork, font, texture or binary. Its drawing instructions are original project code.
+
+The main asset manifest still labels its baseline as 8a1f9e4227c3541c34e17593bb317a88c1c2d7a6, older than current main 13f66ec19476c9af5ed2b5c81af95e4d8a026876. PR #157 currently owns asset_manifest.md, asset_provenance.json and CREDITS.md, and its branch is 34 commits ahead / 9 behind main (diverged, not mergeable). These shared provenance files were deliberately left untouched here; reconcile their baseline and any later approved asset entries when PR #157 is rebased/reviewed.
