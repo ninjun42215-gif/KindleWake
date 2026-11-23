@@ -9,7 +9,7 @@
 - Branch: `fix/equipment-enhancement-stat-scaling-2026-11-23`
 - Implementation commit: `8a752b2faca66f2ff06ee22f2f488b2a795f6133`
 - Regression-test commit: `ba8f2a7c9d06a8c41584eedcd91247da60a85820`
-- Verification checkpoint: code/test head `0de73637d4bfb510e42d369dc1e8febc5973e0ec` passed 1,012 strict checks and APK export; its SwiftShader emulator liveness check failed. Documentation-updated head `db7b26b8bd8e4422aa359e4e6771f0dbd231208c` passed health, YAML and version checks; its Android emulator step was still running at the last inspection.
+- Verification checkpoint: code/test head `0de73637d4bfb510e42d369dc1e8febc5973e0ec` passed 1,012 strict checks and APK export; its first SwiftShader emulator attempt failed process liveness. Documentation-updated head `db7b26b8bd8e4422aa359e4e6771f0dbd231208c` later completed the Android workflow successfully with process liveness, but its screenshot still lacked visible title/menu text and logcat retained shader uniform-limit errors. A subsequent handoff-only head `8a066a2f37e24d87368affbb5d4543eedb2d90a5` triggered a fresh Android build, which was in progress at the last inspection.
 
 ## Finding
 
@@ -105,3 +105,18 @@ QA PR #164's current head is `03efa339e85df62763bada23c2f7f97d5158d514`. Its [Bu
 - GitHub's branch endpoint currently reports `main` as unprotected with required status-check enforcement disabled. No repository settings were changed.
 - Main's `.github/workflows/publish-android-release.yml` still grants `contents: write` at workflow scope. QA PR #164 owns the least-privilege release-workflow change; this core PR does not modify release workflows.
 - No physical Android handset was tested. Touch behavior, long-session performance, thermal/memory behavior, save/load on handset and vendor-GPU compatibility remain outstanding.
+
+
+## Later final-head emulator result — documentation-only head `db7b26b8bd8e4422aa359e4e6771f0dbd231208c`
+
+The initially pending [Build Android APK #45108224429](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45108224429) eventually completed with overall success. All build/import/test/export steps and the emulator process-liveness check passed. The strict core suite again reported 1,012 checks, 0 failures; 20 scenes loaded with 0 failures; the APK signature was valid.
+
+- Exact-head APK: [artifact #14788731656](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45108224429/artifacts/14788731656).
+- APK size: 65,852,762 bytes.
+- Extracted APK SHA-256: `c9cda9de26bafd4cac2639c5b9ea37732989b98057f04c82f4db0d2c9088b842`.
+- Artifact ZIP SHA-256: `4cd67369ebd3cf1a221e73aaa1d1b6a7043aa20d898f3ec4141acc254f89ecf0`; downloaded ZIP integrity passed.
+- [Exact-head emulator/build logs #14788102856](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45108224429/artifacts/14788102856), ZIP SHA-256 `19d65acebc7c787de0734b2324e24eab26f646da7f38887cf3fc20b2c804ce05`; downloaded ZIP integrity passed.
+
+**Do not interpret the workflow's green conclusion as clean visual rendering.** The app process survived and no fatal exception or GDScript error was present, but logcat still reported four `SceneShaderGLES3` program-link failures because 261 fragment uniforms exceeded `GL_MAX_FRAGMENT_UNIFORM_VECTORS`. The captured 1368×632 screenshot showed the title layout's panel/control shapes but no visible title or menu labels. The emulator job checks process liveness and fatal/script errors, not screenshot content or shader USER ERRORs, so it passed despite this renderer degradation.
+
+The separate QA-owned PR #164 / API 35 Google APIs Pixel 5 path passed title/menu OCR on its own head, so emulator configuration matters. That is not proof of physical-device compatibility. The current branch's subsequent handoff-only head `8a066a2f37e24d87368affbb5d4543eedb2d90a5` has a fresh Android build in progress at the time of this handoff update.
