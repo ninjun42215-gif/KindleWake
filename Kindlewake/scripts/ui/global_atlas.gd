@@ -2,6 +2,7 @@ extends Control
 ## Campaign-scale atlas. Original vector continent silhouettes; regional exploration remains in World.tscn.
 const WORLD_SCENE := "res://World.tscn"
 const FactionSystem = preload("res://scripts/core/faction_system.gd")
+const AtlasLayoutScript = preload("res://scripts/ui/atlas_layout.gd")
 const SELECTED_GOLD := Color("#f0cf88")
 var selected_index: int = 0
 var continent_buttons: Array[Button] = []
@@ -379,7 +380,7 @@ func _refresh_selection() -> void:
 func _draw() -> void:
     var atlas: Array = GameData.continents.get("continents", [])
     var portrait := size.y > size.x
-    var rect := Rect2(size.x * (0.04 if portrait else 0.025), size.y * (0.16 if portrait else 0.19), size.x * (0.92 if portrait else 0.625), size.y * (0.40 if portrait else 0.75))
+    var rect: Rect2 = AtlasLayoutScript.map_rect_for_size(size)
     draw_rect(rect, Color("#132630"), true)
     for i in range(1, 9):
         var x := rect.position.x + rect.size.x * float(i) / 9.0
