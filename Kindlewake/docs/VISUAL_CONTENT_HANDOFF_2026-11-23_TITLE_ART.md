@@ -7,8 +7,8 @@ Replaced the previous geometric title backdrop with a more layered original illu
 - Existing `TitleScreen.tscn` continues to instantiate `scripts/ui/title_screen.gd`.
 - The script continues to load `res://assets/art/ui/title_illustration.svg`; no scene path or menu flow changed.
 - Updated the TextureRect to use linear filtering and raised the illustration's visible contribution while reducing the solid wash from 0.48 to 0.36. The opaque menu panel, labels, button callbacks, creator overlay, save browser, settings and exit flow are unchanged.
-- The new SVG is 1200×700, 16,383 bytes and uses only vector paths, circles, rectangles, groups and linear gradients. It has no embedded raster images, fonts, external references, filters or masks.
-- The source passed XML parsing and rendered locally to a 1200×700 preview with CairoSVG. This is source-level preview evidence, not a Godot editor screenshot.
+- The committed SVG is 1200×700, 15,191 bytes and uses only vector paths, circles, rectangles, groups and linear gradients. It has no embedded raster images, fonts, external references, filters or masks.
+- The authored SVG source was XML-parsed and rendered locally to a 1200×700 preview with CairoSVG. The exact committed SVG subsequently passed the Godot import and scene-smoke workflow. The CairoSVG image is source-level preview evidence, not a Godot editor screenshot.
 
 ## Provenance
 - The SVG is original KindleWake vector geometry authored for this project.
