@@ -34,7 +34,9 @@ func _build() -> void:
     illustration.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     illustration.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
     illustration.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-    illustration.modulate = Color(0.72, 0.82, 0.78, 0.72)
+    illustration.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+    # Keep the painted landscape legible around the opaque menu panel on mobile displays.
+    illustration.modulate = Color(0.90, 0.93, 0.92, 0.88)
     illustration.mouse_filter = Control.MOUSE_FILTER_IGNORE
     add_child(illustration)
 
@@ -44,7 +46,7 @@ func _build() -> void:
     wash.anchor_top = 0.0
     wash.anchor_right = 1.0
     wash.anchor_bottom = 1.0
-    wash.modulate.a = 0.48
+    wash.modulate.a = 0.36
     wash.mouse_filter = Control.MOUSE_FILTER_IGNORE
     add_child(wash)
 
