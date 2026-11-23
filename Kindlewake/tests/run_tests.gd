@@ -2583,6 +2583,26 @@ func _test_shop_and_screen() -> void:
     for n in range(15):
         check(ps.enhance_equipment("torren", "weapon", db, true) == "", "blacksmith enhances equipment through +%d" % (n + 1))
     check(int(ps.sheet("torren").enhancements.get("weapon|" + ps.sheet("torren").item_in("weapon"), 0)) == 15 and ps.enhance_equipment("torren", "weapon", db) != "", "equipment enhancement caps at +15")
+
+    # Enhancement levels are stored by slot and equipped item. Their multiplier
+    # must reach the item's stat-bonus block as well as armor and weapon power.
+    var enhancement_probe: CharacterSheetScript = CharacterSheetScript.from_def("torren", gd.characters["torren"])
+    enhancement_probe.equipment["accessory1"] = "unique_starfall_charm"
+    var unenhanced_bonus_stats: Dictionary = enhancement_probe.total_stats(items)
+    enhancement_probe.enhancements["accessory1|unique_starfall_charm"] = 15
+    var composite_enhanced_stats: Dictionary = enhancement_probe.total_stats(items)
+    check(int(composite_enhanced_stats.get("mp", 0)) == int(unenhanced_bonus_stats.get("mp", 0)) + 6 and int(composite_enhanced_stats.get("int", 0)) == int(unenhanced_bonus_stats.get("int", 0)) + 2, "item-keyed +15 enhancement scales equipped accessory bonus stats")
+    enhancement_probe.enhancements.clear()
+    enhancement_probe.enhancements["accessory1"] = 15
+    var legacy_enhanced_stats: Dictionary = enhancement_probe.total_stats(items)
+    check(int(legacy_enhanced_stats.get("mp", 0)) == int(unenhanced_bonus_stats.get("mp", 0)) + 6 and int(legacy_enhanced_stats.get("int", 0)) == int(unenhanced_bonus_stats.get("int", 0)) + 2, "legacy slot-only enhancement keys remain compatible")
+    enhancement_probe.equipment["weapon"] = "arming_sword"
+    enhancement_probe.enhancements.clear()
+    var weapon_unenhanced_stats: Dictionary = enhancement_probe.total_stats(items)
+    enhancement_probe.enhancements["weapon|arming_sword"] = 3
+    var weapon_enhanced_stats: Dictionary = enhancement_probe.total_stats(items)
+    check(int(weapon_enhanced_stats.get("weapon_power_pct", 0)) == int(weapon_unenhanced_stats.get("weapon_power_pct", 0)) + 15, "weapon enhancement still grants five percent power per level")
+
     check(ShopSystem.sell_item(ps, "arming_sword", db, shop) != "", "gear that is only equipped (not in the bag) cannot be sold")
     check(ShopSystem.sell_item(ps, "dunmarrow_signet", db, shop) == "That cannot be sold.", "heirlooms cannot be sold")
     # Use a sigil that is actually stocked by the starter merchant.
