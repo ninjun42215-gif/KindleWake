@@ -144,3 +144,12 @@ The branch changes the CI emulator to Google APIs/default graphics, captures and
 ## 7. Safety and disposition
 
 No merge to main, force-push, branch deletion, repository-setting change, secret access, production tag or release publication occurred. Main remains at `13f66ec19476c9af5ed2b5c81af95e4d8a026876`. No physical handset was tested. All APKs listed above are CI/test candidates, not production releases.
+
+
+### Exact-head APK verification
+
+- [APK artifact #14887991502](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45321542738/artifacts/14887991502), produced by the exact PR #177 head `e63f8c02caf4ea338c58d14841bfdb0848be179a`.
+- ZIP size: 65,297,907 bytes; SHA-256: `9dbc4e901c3937c68c6e070ed1866d56757db9d8be0defc7ee8272796f855b5d`; CRC passed.
+- Extracted APK: 65,852,762 bytes; SHA-256: `dd82e67b1fb1dd404fddc8f15c92fce417282626d380838caba1612c2030ac81`.
+- [Test-log artifact #14888441233](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45321542738/artifacts/14888441233): ZIP SHA-256 `dab647bbd5b2eaa494c5a87abcb35e2d94bbf05985e7023a85e9665ebafd87fe`; CRC passed.
+- Build summary reports a valid CI/test signature, `arm64-v8a`, `armeabi-v7a`, `x86_64`, and no requested Android permissions. The artifact is tied to the tested commit but is not release-verified because the workflow failed at emulator runtime.
