@@ -57,3 +57,35 @@ This is a focused current-main change to `EmpireEconomySystem`. It does not modi
 - Exact-head APK artifact [#14887685873](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45321043786/artifacts/14887685873): 65,297,895-byte ZIP archive; GitHub artifact metadata digest `sha256:45b469eeb8314ec071966e3a898fac761d0db0531a73539571739911112565f3`. This proves an artifact was uploaded for the exact code/test head; APK signature and extracted APK hash have not yet been independently inspected in this run.
 
 The handoff update itself is documentation-only. Fresh CI on the resulting final PR head is required; the results above certify the code/test head, not any later documentation commit.
+
+
+## Completed Android build and emulator diagnostics — code/test head `825aa2c94b20372400aa70bbe8024243f58a2490`
+
+[Build Android APK #45321043786](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45321043786) completed with an overall **failure at the emulator process-liveness step**. The preceding build/test/export and APK upload steps passed.
+
+### Verified test output
+
+- Godot 4.2.2 import: exit 0, no script errors.
+- Scene smoke: 20 scenes loaded, 0 failures.
+- Strict core suite: **1,010 checks, 0 failures**.
+- Campaign Continue lifecycle, merchant UI, title/creator UI, Act V, campaign continuity, Chronicle dynasty, Chronicle family development and balance report: all exited successfully with their pass markers/zero-failure summaries.
+- The new Merchant Council assertion passed in `run_tests.txt`: base 20 + workshop 2 + trade post 5 produces income 33 and upkeep 3.
+
+### Exact-head APK provenance
+
+- [APK artifact #14887685873](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45321043786/artifacts/14887685873) was downloaded and inspected.
+- Artifact ZIP SHA-256: `45b469eeb8314ec071966e3a898fac761d0db0531a73539571739911112565f3`; ZIP CRC/integrity check passed.
+- Extracted `Kindlewake.apk`: 65,852,762 bytes; SHA-256 `70464bd07c5654cda9286523e02a2cbf3b47376181533f6f770062d62b464b24`.
+- The build summary reports a valid APK signature (fingerprint prefix `c04a7792715ad8f5`), ABIs arm64-v8a / armeabi-v7a / x86_64, and no requested Android permissions.
+- [Test/log artifact #14887218496](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45321043786/artifacts/14887218496) contains the strict test output, emulator screenshot and logcat. The screenshot was inspected and is entirely black.
+
+### Emulator failure
+
+The Android emulator installed the APK and `am start -W` returned `Status: ok`, but the app process disappeared before the 30-second liveness check; `pidof com.kindlewake.game` failed. The screenshot is black. Logcat records:
+- `rendering/limits/global_shader_variables/buffer_size` exceeds the emulator's 16,384-byte uniform-buffer limit.
+- `SceneShaderGLES3` linking fails because 261 active fragment uniforms exceed `GL_MAX_FRAGMENT_UNIFORM_VECTORS`.
+- Godot reports that the shader could not compile/bind.
+
+No `FATAL EXCEPTION`, `Fatal signal`, `SCRIPT ERROR` or `Parse Error` appears in the captured app log. The rendering failure is confirmed; the precise reason the app process exits is not conclusively captured. Do not label this a physical-device crash or a successful emulator run.
+
+The test/build artifact proves the gameplay correction passed the strict suite; Android rendering/runtime verification remains blocked. The handoff update is documentation-only. Fresh exact-head checks are required for the resulting PR head.
