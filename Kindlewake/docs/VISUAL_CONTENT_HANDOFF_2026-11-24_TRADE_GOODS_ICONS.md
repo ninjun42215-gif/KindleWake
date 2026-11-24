@@ -62,3 +62,42 @@ Exact-head APK artifact:
 - The artifact metadata identifies source head `6cdbb3640f5eacd3950ec33596a99b17df198a35`. It is a CI candidate, not a production release. No extracted-APK checksum is claimed in this handoff.
 
 The emulator outcome must be refreshed from the final workflow run before describing Android runtime verification. Physical-device QA and Godot editor screenshot review remain outstanding.
+
+
+## Final exact-head CI outcome — 24 November 2026
+
+The documentation-updated PR head `ce7c500afe6089dad7f18e32db5b78d0db4fa6e0` was also built and tested:
+
+- [Project Health Audit #45339445165](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45339445165) — passed.
+- [Workflow YAML Lint #45339445158](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45339445158) — passed.
+- [Version Sync #45339445255](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45339445255) — passed.
+- [Android Build #45339445216](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45339445216) — import, scene smoke, strict tests, APK export and artifact upload passed; the emulator process-survival step failed.
+
+Exact test evidence from the uploaded logs:
+
+- Godot 4.2.2 import: exit 0, no script errors.
+- Scene smoke: 20 scenes loaded, 0 failures.
+- Core regression suite: 1,009 checks, 0 failures.
+- Regional merchant UI test: 40 assertions, 0 failures. This includes atlas import and dimensions, all twelve ID-to-cell mappings, a visible grain-row icon, and successful buy/sell/close actions.
+- Campaign lifecycle, title/creator UI, Act V, campaign continuity, dynasty, family-development and balance report all completed successfully.
+
+Exact documentation-head Android artifact:
+- [Kindlewake-APK #14894887710](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45339445216/artifacts/14894887710)
+- Archive: 65,324,024 bytes; digest `sha256:2d68a73e0e023bb41cfd797fab6f8e6e1f7a6d884d0085a76612a6aec0a7ef07`.
+- Extracted APK: 65,877,655 bytes; SHA-256 `344bd834819235ef41834134b63ec4308398c877e64638414d28286156e695c4`.
+- Build summary reports a valid CI/test signature, native libraries for `arm64-v8a`, `armeabi-v7a`, and `x86_64`, and no requested Android permissions.
+- Test/emulator log archive [#14894838226](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45339445216/artifacts/14894838226): 91,915 bytes; digest `sha256:0c28d5c5152162419cfc73ebf8984a993c51043b8e8539f4ea1f8399be7fca17`.
+
+### Emulator failure details
+
+The API 35 AOSP ATD / Google SwiftShader run installed the APK and started `com.godot.game.GodotApp` successfully, but the app process was gone before the 30-second liveness check. The captured screenshot is black.
+
+Logcat records:
+- `rendering/limits/global_shader_variables/buffer_size` exceeds the emulator's 16,384-byte uniform-buffer limit.
+- `SceneShaderGLES3` repeatedly fails program linking because fragment shader active uniforms exceed `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)`.
+- Godot then destroys the activity and force-quits the instance.
+- No Java `FATAL EXCEPTION`, native `Fatal signal`, GDScript `SCRIPT ERROR` or parse error was captured.
+
+This reproduces the previously recorded main-branch SwiftShader/GLES3 compatibility blocker. The logs establish the shader-link failure and subsequent process exit, but do not prove that this is the only underlying cause. It is not caused by the new market atlas, which adds no shader or global uniform.
+
+**Release disposition:** APK export and signing validation passed, but Android runtime verification failed. The artifact is not a production release and must not be presented as device-tested. Physical Android QA and Godot editor portrait/landscape screenshot review remain outstanding.
