@@ -65,7 +65,9 @@ static func advance_turn(definitions: Array, world_flags: Dictionary, treasury: 
         var local_upkeep := base_upkeep + garrison
         var governance := str(world_flags.get("holding_governance_" + id, definition.get("governance", "appointed_warden")))
         if governance == "merchant_council":
-            local_income += ceili(float(base_income) * 0.2)
+            # The council's 20% charter applies to the complete holding yield,
+            # including workshop and trade-post improvements.
+            local_income += ceili(float(local_income) * 0.2)
             local_upkeep += 1
         elif governance == "local_compact":
             local_upkeep = maxi(0, local_upkeep - 1)
