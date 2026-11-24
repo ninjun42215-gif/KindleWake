@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="384" height="128" viewBox="0 0 384 128">
+  <defs>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f0d9a7"/>
+      <stop offset="1" stop-color="#a77c45"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a7c8bd"/>
+      <stop offset="1" stop-color="#527e78"/>
+    </linearGradient>
+    <linearGradient id="rust" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d99a6b"/>
+      <stop offset="1" stop-color="#89513d"/>
+    </linearGradient>
+  </defs>
+  <g id="trade_grain" transform="translate(0 0)">
+    <rect x="4" y="4" width="56" height="56" rx="10" fill="#172630" stroke="#b9955e" stroke-width="1.5"/>
+    <path d="M31 49 C31 39 30 29 28 17 M31 48 C36 38 41 29 45 22 M30 48 C25 39 20 31 16 25" fill="none" stroke="url(#brass)" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M28 19 C22 14 19 17 22 23 C26 25 29 23 28 19 M29 27 C22 22 19 26 23 31 C27 33 30 30 29 27 M35 35 C39 28 44 30 43 35 C40 39 36 39 35 35 M40 27 C45 20 50 23 47 28 C44 32 40 31 40 27 M20 29 C13 24 10 28 14 33 C18 36 21 33 20 29" fill="#c99d59" stroke="#f0d9a7" stroke-width="1.2" stroke-linejoin="round"/>
+    <path d="M24 50 H40" stroke="#6d8d7c" stroke-width="2.2" stroke-linecap="round"/>
+  </g>
+  <g id="trade_salt" transform="translate(64 0)">
+    <rect x="4" y="4" width="56" height="56" rx="10" fill="#172630" stroke="#b9955e" stroke-width="1.5"/>
+    <path d="M13 47 Q19 37 27 35 Q34 27 42 35 Q49 38 52 47Z" fill="#c9d8d6" stroke="#e9e5d5" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M22 34 L25 25 L30 33 M34 31 L38 21 L42 34 M43 37 L47 30 L50 40" fill="#edf0e7" stroke="#91aaa9" stroke-width="1.4" stroke-linejoin="round"/>
+    <path d="M14 49 H52" stroke="#b9955e" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="18" cy="41" r="1.4" fill="#fff8e9"/><circle cx="45" cy="44" r="1.2" fill="#fff8e9"/>
+  </g>
+  <g id="trade_dried_fish" transform="translate(128 0)">
+    <rect x="4" y="4" width="56" height="56" rx="10" fill="#172630" stroke="#b9955e" stroke-width="1.5"/>
+    <path d="M12 32 C20 20 36 20 45 30 L53 23 L51 32 L53 41 L45 34 C35 44 20 44 12 32Z" fill="url(#teal)" stroke="#d6e0d4" stroke-width="1.7" stroke-linejoin="round"/>
+    <path d="M24 25 L28 32 L24 39 M35 25 L39 32 L35 39" fill="none" stroke="#315b5b" stroke-width="1.4"/>
+    <circle cx="19" cy="30" r="2" fill="#172630"/><circle cx="19.5" cy="29.5" r=".7" fill="#f1e1bd"/>
+    <path d="M14 48 Q30 52 48 47" fill="none" stroke="#b9955e" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+  <g id="trade_timber" transform="translate(192 0)">
+    <rect x="4" y="4" width="56" height="56" rx="10" fill="#172630" stroke="#b9955e" stroke-width="1.5"/>
+    <path d="M14 25 L39 16 L49 22 L24 32Z" fill="#a56e46" stroke="#e0b27b" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M14 25 L14 34 L24 40 L24 32Z" fill="#694936" stroke="#c28a58" stroke-width="1.4"/>
+    <path d="M24 32 L49 22 L49 31 L24 40Z" fill="#805538" stroke="#d2a16a" stroke-width="1.4"/>
+    <path d="M18 42 L41 34 L50 40 L27 49Z" fill="#98613f" stroke="#dfb47d" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M18 42 L18 49 L27 55 L27 49Z" fill="#5d4334" stroke="#bd895b" stroke-width="1.3"/>
+    <path d="M27 49 L50 40 L50 47 L27 55Z" fill="#795139" stroke="#d0a16b" stroke-width="1.3"/>
+  </g>
+  <g id="trade_iron_ore" transform="translate(256 0)">
+    <rect x="4" y="4" width="56" height="56" rx="10" fill="#172630" stroke="#b9955e" stroke-width="1.5"/>
+    <path d="M13 42 L18 26 L30 18 L44 22 L52 37 L43 49 L24 51Z" fill="#697983" stroke="#c5c9bd" stroke-width="1.7" stroke-linejoin="round"/>
+    <path d="M18 27 L30 31 L30 18 M30 31 L44 22 M30 31 L24 51 M30 31 L43 49 M30 31 L52 37" fill="none" stroke="#aeb8b4" stroke-width="1.3"/>
+    <path d="M18 27 L30 31 L24 42 L14 42Z" fill="#9ca8a4" opacity=".72"/>
+    <path d="M33 35 L43 29 L48 38 L41 45Z" fill="#bd8e57" opacity=".85"/>
+  </g>
+  <g id="trade_herbs" transform="translate(320 0)">
+    <rect x="4" y="4" width="56" height="56" rx="10" fill="#172630" stroke="#b9955e" stroke-width="1.5"/>
+    <path d="M30 51 C30 39 31 27 37 14" fill="none" stroke="#91b08a" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M33 39 C20 38 16 29 19 25 C28 25 34 30 33 39Z M35 31 C36 20 44 17 49 20 C49 28 43 33 35 31Z M30 46 C19 49 14 43 15 38 C23 35 29 39 30 46Z" fill="#6f9a72" stroke="#c2d0a4" stroke-width="1.4" stroke-linejoin="round"/>
+    <path d="M22 28 L31 37 M46 22 L36 30 M18 40 L29 45" stroke="#d2d6b4" stroke-width="1.1"/>
+    <path d="M24 52 H42" stroke="#b9955e" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="trade_wool" transform="translate(0 64)">
+    <rect x="4" y="4" width="56" height="56" rx="10" fill="#172630" stroke="#b9955e" stroke-width="1.5"/>
+    <path d="M15 39 C10 34 14 27 21 28 C20 20 30 17 34 23 C41 17 50 23 47 30 C54 34 50 43 43 43 H22 C18 43 16 42 15 39Z" fill="#d7d0b8" stroke="#f0e7d0" stroke-width="1.7" stroke-linejoin="round"/>
+    <path d="M22 29 C25 25 29 27 29 31 M34 26 C38 23 42 27 40 31 M20 36 C24 33 28 35 28 39 M35 36 C39 33 44 35 43 39" fill="none" stroke="#9c947e" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M31 44 V51 M27 51 H35" stroke="#b9955e" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="trade_leather" transform="translate(64 64)">
+    <rect x="4" y="4" width="56" height="56" rx="10" fill="#172630" stroke="#b9955e" stroke-width="1.5"/>
+    <path d="M21 17 Q27 20 32 17 Q38 20 43 17 L48 29 Q45 42 37 49 Q32 54 27 49 Q19 42 16 29Z" fill="url(#rust)" stroke="#e1b17a" stroke-width="1.7" stroke-linejoin="round"/>
+    <path d="M22 24 Q32 28 42 24 M20 32 Q31 37 44 32 M24 42 Q32 46 40 42" fill="none" stroke="#694737" stroke-width="1.4" stroke-linecap="round"/>
+    <circle cx="24" cy="22" r="1.4" fill="#f1d4a0"/><circle cx="40" cy="22" r="1.4" fill="#f1d4a0"/>
+    <path d="M28 51 L32 55 L36 51" fill="none" stroke="#b9955e" stroke-width="1.5"/>
+  </g>
+  <g id="trade_honey" transform="translate(128 64)">
+    <rect x="4" y="4" width="56" height="56" rx="10" fill="#172630" stroke="#b9955e" stroke-width="1.5"/>
+    <path d="M24 17 H40 L42 23 L46 27 V47 Q32 54 18 47 V27 L22 23Z" fill="#8b6541" stroke="#e2c28b" stroke-width="1.7" stroke-linejoin="round"/>
+    <path d="M19 33 Q27 30 33 34 T45 33 V46 Q32 51 19 46Z" fill="#d69a3f" stroke="#f1c66d" stroke-width="1.2"/>
+    <path d="M22 17 H42 M25 21 H39" stroke="#f0d9a7" stroke-width="2" stroke-linecap="round"/>
+    <path d="M29 34 C27 39 32 40 31 44 M38 35 C36 39 40 40 39 43" fill="none" stroke="#ffe0a0" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M17 48 Q32 55 47 48" fill="none" stroke="#b9955e" stroke-width="1.5"/>
+  </g>
+  <g id="trade_pearls" transform="translate(192 64)">
+    <rect x="4" y="4" width="56" height="56" rx="10" fill="#172630" stroke="#b9955e" stroke-width="1.5"/>
+    <path d="M13 34 Q17 19 31 19 Q45 19 51 34 Q44 48 32 49 Q20 48 13 34Z" fill="#668c8b" stroke="#c6d6c6" stroke-width="1.7" stroke-linejoin="round"/>
+    <path d="M17 34 Q24 27 31 34 Q39 27 47 34 M22 43 Q31 36 41 43 M31 20 V47" fill="none" stroke="#d4e0cf" stroke-width="1.4" stroke-linecap="round"/>
+    <circle cx="32" cy="33" r="7" fill="#eee7d4" stroke="#fff6e2" stroke-width="1.5"/>
+    <circle cx="29.5" cy="30.5" r="2" fill="#ffffff" opacity=".8"/>
+  </g>
+  <g id="trade_glassware" transform="translate(256 64)">
+    <rect x="4" y="4" width="56" height="56" rx="10" fill="#172630" stroke="#b9955e" stroke-width="1.5"/>
+    <path d="M24 16 H40 V23 L37 28 V47 Q32 52 27 47 V28 L24 23Z" fill="#4d8588" fill-opacity=".72" stroke="#c1ded1" stroke-width="1.7" stroke-linejoin="round"/>
+    <path d="M25 17 H39 M28 32 Q32 35 36 32 M28 40 Q32 43 36 40" fill="none" stroke="#e5d7ad" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M17 42 H23 L25 49 H15Z M18 45 H22" fill="#8aaea3" stroke="#d3e0c8" stroke-width="1.3" stroke-linejoin="round"/>
+    <path d="M31 50 H40" stroke="#b9955e" stroke-width="1.7" stroke-linecap="round"/>
+  </g>
+  <g id="trade_spices" transform="translate(320 64)">
+    <rect x="4" y="4" width="56" height="56" rx="10" fill="#172630" stroke="#b9955e" stroke-width="1.5"/>
+    <path d="M18 33 Q32 41 46 33 L42 47 Q32 54 22 47Z" fill="#9b6449" stroke="#e0b27b" stroke-width="1.7" stroke-linejoin="round"/>
+    <path d="M16 31 Q32 38 48 31" fill="none" stroke="#f0d9a7" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M38 14 L29 31" stroke="#c9c4a9" stroke-width="3" stroke-linecap="round"/>
+    <path d="M34 12 L43 16" stroke="#c9c4a9" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="24" cy="29" r="2" fill="#d6a34e"/><circle cx="31" cy="27" r="1.7" fill="#a6a56d"/><circle cx="39" cy="29" r="1.8" fill="#c47c4c"/>
+    <path d="M23 50 H41" stroke="#b9955e" stroke-width="1.6" stroke-linecap="round"/>
+  </g>
+</svg>

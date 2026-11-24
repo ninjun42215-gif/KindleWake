@@ -4,6 +4,7 @@ extends Node
 const LocationSceneScript = preload("res://scripts/ui/location_scene.gd")
 const MerchantScreenScript = preload("res://scripts/ui/merchant_screen.gd")
 const TradeSystemScript = preload("res://scripts/core/trade_system.gd")
+const TradeGoodsIconAtlasScript = preload("res://scripts/ui/trade_goods_icon_atlas.gd")
 
 var failures: int = 0
 
@@ -28,9 +29,13 @@ func _find_good_row(screen: MerchantScreenScript, title_prefix: String) -> Contr
         var body := row.get_child(0) as VBoxContainer
         if body == null or body.get_child_count() == 0:
             continue
-        var heading := body.get_child(0) as Label
-        if heading != null and heading.text.begins_with(title_prefix):
-            return row
+        var heading_row := body.get_child(0) as HBoxContainer
+        if heading_row == null:
+            continue
+        for heading_value in heading_row.get_children():
+            var heading := heading_value as Label
+            if heading != null and heading.text.begins_with(title_prefix):
+                return row
     return null
 
 
@@ -77,10 +82,28 @@ func _run_market_ui_test() -> void:
     _check(screen.visible, "market action opens the exchange overlay")
     _check(screen.goods_list.get_child_count() == 12, "exchange renders all twelve authored commodities")
 
+    var atlas_texture := TradeGoodsIconAtlasScript.atlas_texture()
+    _check(atlas_texture != null, "original trade-goods SVG atlas imports")
+    if atlas_texture != null:
+        _check(atlas_texture.get_size() == Vector2(384.0, 128.0), "trade-goods atlas is a 6x2 grid of 64px cells")
+    var expected_good_ids: Array[String] = [
+        "trade_grain", "trade_salt", "trade_dried_fish", "trade_timber",
+        "trade_iron_ore", "trade_herbs", "trade_wool", "trade_leather",
+        "trade_honey", "trade_pearls", "trade_glassware", "trade_spices"
+    ]
+    for good_id in expected_good_ids:
+        var icon_texture := TradeGoodsIconAtlasScript.texture_for(good_id)
+        _check(icon_texture != null, "trade-good icon resolves: " + good_id)
+        if icon_texture != null:
+            _check(icon_texture.region.size == Vector2(64.0, 64.0), "trade-good icon uses a complete 64px cell: " + good_id)
+
     var grain_row := _find_good_row(screen, "Frontier Grain")
     _check(grain_row != null, "commodity row renders the correct good")
     if grain_row != null:
         var body := grain_row.get_child(0) as VBoxContainer
+        var heading_row := body.get_child(0) as HBoxContainer
+        var visible_icon := heading_row.get_child(0) as TextureRect
+        _check(visible_icon != null and visible_icon.texture != null, "Frontier Grain row displays its dedicated icon")
         var actions := body.get_child(2) as HBoxContainer
         var quantity := actions.get_child(0) as SpinBox
         var buy_button := actions.get_child(1) as Button

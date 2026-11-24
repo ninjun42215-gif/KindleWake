@@ -1,6 +1,7 @@
 extends Control
 
 const PremiumUITheme = preload("res://scripts/ui/premium_ui_theme.gd")
+const TradeGoodsIconAtlas = preload("res://scripts/ui/trade_goods_icon_atlas.gd")
 ## Scrollable mobile-first regional commodity exchange. All transactions are validated by GameState.
 
 signal closed
@@ -124,15 +125,31 @@ func _build_good_row(quote: Dictionary) -> Control:
     outer.add_theme_constant_override("separation", 5)
     card.add_child(outer)
 
+    var heading_row := HBoxContainer.new()
+    heading_row.add_theme_constant_override("separation", 10)
+    outer.add_child(heading_row)
+
+    var icon_texture := TradeGoodsIconAtlas.texture_for(good_id)
+    if icon_texture != null:
+        var icon := TextureRect.new()
+        icon.texture = icon_texture
+        icon.custom_minimum_size = Vector2(44, 44)
+        icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+        icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+        icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        heading_row.add_child(icon)
+
     var heading := Label.new()
     heading.text = "%s  •  Buy %d  •  Sell %d  •  Stock %d" % [
         str(quote.get("name", good_id)), int(quote.get("price", 0)),
         int(quote.get("sell_price", 0)), int(quote.get("stock", 0))
     ]
+    heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    heading.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     heading.add_theme_font_size_override("font_size", 16)
     heading.add_theme_color_override("font_color", PremiumUITheme.PARCHMENT)
-    outer.add_child(heading)
+    heading_row.add_child(heading)
 
     var detail := Label.new()
     detail.text = "%s  •  Weight %d each  •  Owned %d\n%s" % [
