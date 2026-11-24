@@ -44,3 +44,21 @@
 
 - Main is not modified.
 - No merge, force-push, branch deletion, repository-setting change, release publication or secret access is performed.
+
+
+## Exact implementation-head CI — 24 November 2026
+
+The following workflows ran against implementation commit `6cdbb3640f5eacd3950ec33596a99b17df198a35`:
+
+- [Project Health Audit #45339085478](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45339085478) — passed.
+- [Workflow YAML Lint #45339085418](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45339085418) — passed.
+- [Version Sync #45339085537](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45339085537) — passed.
+- [Android Build #45339085425](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45339085425) — Godot import, scene smoke, strict test execution, APK export and artifact upload completed successfully. At this handoff update, the Android emulator install/launch/process-survival step was still running; no emulator pass is claimed.
+
+Exact-head APK artifact:
+- [Kindlewake-APK #14894802273](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45339085425/artifacts/14894802273)
+- GitHub artifact archive size: 65,323,979 bytes.
+- GitHub archive digest: `sha256:86a6a37b8188782149eb1ad9424aa924397adfea0cfff8dc54469093a652607d`.
+- The artifact metadata identifies source head `6cdbb3640f5eacd3950ec33596a99b17df198a35`. It is a CI candidate, not a production release. No extracted-APK checksum is claimed in this handoff.
+
+The emulator outcome must be refreshed from the final workflow run before describing Android runtime verification. Physical-device QA and Godot editor screenshot review remain outstanding.
