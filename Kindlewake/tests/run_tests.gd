@@ -564,6 +564,19 @@ func _test_empire_economy() -> void:
     var governance: Dictionary = EmpireEconomySystem.set_governance("keep", "local_compact", flags)
     check(bool(governance.get("ok", false)), "valid local governance can be appointed")
     check(not bool(EmpireEconomySystem.set_governance("keep", "tyranny", flags).get("ok", true)), "unknown governance models are rejected")
+
+    # Merchant Council's charter applies to the whole local yield, not only its base income.
+    var merchant_flags := {
+        "holding_claimed_keep":true,
+        "holding_owner_keep":"house_dunmarrow",
+        "holding_governance_keep":"merchant_council",
+        "holding_building_keep_workshop":1,
+        "holding_building_keep_trade_post":1
+    }
+    var merchant_definitions: Array = [{"id":"keep","turn_income":20,"garrison_upkeep":2,"recommended_garrison":2,"economy":{"gold":20,"provisions":3,"materials":2}}]
+    var merchant_turn: Dictionary = EmpireEconomySystem.advance_turn(merchant_definitions, merchant_flags, 100)
+    check(int(merchant_turn.get("income", 0)) == 33 and int(merchant_turn.get("upkeep", 0)) == 3,
+        "Merchant Council grants rounded-up 20% on base plus workshop/trade-post yield and retains its upkeep cost")
     var foreign_admin := {"holding_claimed_keep":true,"holding_owner_keep":"foreign_house"}
     check(not bool(EmpireEconomySystem.assign_garrison("keep", 2, foreign_admin).get("ok", true)), "foreign-held locations reject player garrison changes")
     check(not bool(EmpireEconomySystem.set_governance("keep", "local_compact", foreign_admin).get("ok", true)), "foreign-held locations reject player governance changes")
