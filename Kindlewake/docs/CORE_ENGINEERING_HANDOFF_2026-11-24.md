@@ -46,3 +46,14 @@ The fixture is self-contained and does not modify GameState, player saves or sha
 ## Coordination
 
 This is a focused current-main change to `EmpireEconomySystem`. It does not modify the older regional-trading branch, the visual branches, the battle-resume branch, or the existing campaign/Chronicle save-validation candidates. Keep the PR draft and unmerged pending exact-head verification and review.
+
+
+## Initial exact-head CI evidence — `825aa2c94b20372400aa70bbe8024243f58a2490`
+
+- [Project Health Audit #45321043773](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45321043773) — passed.
+- [Workflow YAML Lint #45321043705](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45321043705) — passed.
+- [Version Sync #45321043721](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45321043721) — passed; the workflow's main-branch mutation job was skipped for this PR event.
+- [Build Android APK #45321043786](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45321043786) — import, scene/test/APK-export step passed and APK upload completed. At the time of this handoff update, the emulator install/launch step was still running; the overall workflow is not yet passed.
+- Exact-head APK artifact [#14887685873](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45321043786/artifacts/14887685873): 65,297,895-byte ZIP archive; GitHub artifact metadata digest `sha256:45b469eeb8314ec071966e3a898fac761d0db0531a73539571739911112565f3`. This proves an artifact was uploaded for the exact code/test head; APK signature and extracted APK hash have not yet been independently inspected in this run.
+
+The handoff update itself is documentation-only. Fresh CI on the resulting final PR head is required; the results above certify the code/test head, not any later documentation commit.
