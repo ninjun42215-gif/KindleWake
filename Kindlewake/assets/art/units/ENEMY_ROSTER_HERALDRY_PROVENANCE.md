@@ -10,7 +10,7 @@
 - The existing **8 × 6** grid remains unchanged.
 - Each cell remains **128 × 160**.
 - `scripts/ui/art.gd` continues to resolve all 48 stable IDs through `ROSTER_CHARACTER_IDS` and `draw_roster_character()`.
-- Twelve existing cells now carry small, integrated heraldic identity marks. No new texture, shader, node, draw call, or resource load is introduced.
+- Twelve existing cells now carry small, integrated heraldic identity marks on the sprite's left shoulder. This keeps the marks clear of the right-side class/weapon identity strokes drawn after the sprite by the existing battle renderer. No new texture, shader, node, draw call, or resource load is introduced.
 - The marks are embedded in the already-used atlas; they are not a detached or unused asset drop.
 
 ## Stable ID → visual mark
