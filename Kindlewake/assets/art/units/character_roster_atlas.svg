@@ -58,7 +58,7 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#c39a4d"/>
 <path d="M15 8H113M15 154H113" stroke="#c39a4d" opacity=".2"/>
-<g id="badge_hask_gravelteeth">
+<g id="badge_hask_gravelteeth" transform="translate(-58 0)">
 <path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#c27a58" stroke-width="2" stroke-linejoin="round"/>
 <path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#c27a58" stroke-width="0.9" opacity="0.65"/>
 <circle cx="88" cy="101" r="1.2" fill="#c27a58"/>
@@ -75,7 +75,7 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#b78a56"/>
 <path d="M15 8H113M15 154H113" stroke="#b78a56" opacity=".2"/>
-<g id="badge_roadreaver">
+<g id="badge_roadreaver" transform="translate(-58 0)">
 <path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#c27a58" stroke-width="2" stroke-linejoin="round"/>
 <path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#c27a58" stroke-width="0.9" opacity="0.65"/>
 <circle cx="88" cy="101" r="1.2" fill="#c27a58"/>
@@ -92,7 +92,7 @@
 <path d="M188 80Q218 128 188 178M188 80L188 178" fill="none" stroke="#d1a15e" stroke-width="5"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#d1a15e"/>
 <path d="M15 8H113M15 154H113" stroke="#d1a15e" opacity=".2"/>
-<g id="badge_roadbowman">
+<g id="badge_roadbowman" transform="translate(-58 0)">
 <path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#c27a58" stroke-width="2" stroke-linejoin="round"/>
 <path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#c27a58" stroke-width="0.9" opacity="0.65"/>
 <circle cx="88" cy="101" r="1.2" fill="#c27a58"/>
@@ -397,7 +397,7 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#b5a06c"/>
 <path d="M15 8H113M15 154H113" stroke="#b5a06c" opacity=".2"/>
-<g id="badge_reefwarden">
+<g id="badge_reefwarden" transform="translate(-58 0)">
 <path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#8eb9b0" stroke-width="2" stroke-linejoin="round"/>
 <path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#8eb9b0" stroke-width="0.9" opacity="0.65"/>
 <circle cx="88" cy="101" r="1.2" fill="#8eb9b0"/>
@@ -414,7 +414,7 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#bd8d4d"/>
 <path d="M15 8H113M15 154H113" stroke="#bd8d4d" opacity=".2"/>
-<g id="badge_saltcutthroat">
+<g id="badge_saltcutthroat" transform="translate(-58 0)">
 <path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#7ea9a5" stroke-width="2" stroke-linejoin="round"/>
 <path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#7ea9a5" stroke-width="0.9" opacity="0.65"/>
 <circle cx="88" cy="101" r="1.2" fill="#7ea9a5"/>
@@ -431,7 +431,7 @@
 <path d="M188 80Q218 128 188 178M188 80L188 178" fill="none" stroke="#c0a06a" stroke-width="5"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#c0a06a"/>
 <path d="M15 8H113M15 154H113" stroke="#c0a06a" opacity=".2"/>
-<g id="badge_saltbow">
+<g id="badge_saltbow" transform="translate(-58 0)">
 <path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#91c4c4" stroke-width="2" stroke-linejoin="round"/>
 <path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#91c4c4" stroke-width="0.9" opacity="0.65"/>
 <circle cx="88" cy="101" r="1.2" fill="#91c4c4"/>
@@ -448,7 +448,7 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#c39b5c"/>
 <path d="M15 8H113M15 154H113" stroke="#c39b5c" opacity=".2"/>
-<g id="badge_blackwake_captain">
+<g id="badge_blackwake_captain" transform="translate(-58 0)">
 <path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#c3a36a" stroke-width="2" stroke-linejoin="round"/>
 <path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#c3a36a" stroke-width="0.9" opacity="0.65"/>
 <circle cx="88" cy="101" r="1.2" fill="#c3a36a"/>
@@ -561,7 +561,7 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#bda1c6"/>
 <path d="M15 8H113M15 154H113" stroke="#bda1c6" opacity=".2"/>
-<g id="badge_hask_convoy_champion">
+<g id="badge_hask_convoy_champion" transform="translate(-58 0)">
 <path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#c27a58" stroke-width="2" stroke-linejoin="round"/>
 <path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#c27a58" stroke-width="0.9" opacity="0.65"/>
 <circle cx="88" cy="101" r="1.2" fill="#c27a58"/>
@@ -578,7 +578,7 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#c39a4d"/>
 <path d="M15 8H113M15 154H113" stroke="#c39a4d" opacity=".2"/>
-<g id="badge_ash_bailiff">
+<g id="badge_ash_bailiff" transform="translate(-58 0)">
 <path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#c98a55" stroke-width="2" stroke-linejoin="round"/>
 <path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#c98a55" stroke-width="0.9" opacity="0.65"/>
 <circle cx="88" cy="101" r="1.2" fill="#c98a55"/>
@@ -595,7 +595,7 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#b78a56"/>
 <path d="M15 8H113M15 154H113" stroke="#b78a56" opacity=".2"/>
-<g id="badge_checkpoint_sergeant">
+<g id="badge_checkpoint_sergeant" transform="translate(-58 0)">
 <path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#d1b477" stroke-width="2" stroke-linejoin="round"/>
 <path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#d1b477" stroke-width="0.9" opacity="0.65"/>
 <circle cx="88" cy="101" r="1.2" fill="#d1b477"/>
@@ -612,7 +612,7 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#d1a15e"/>
 <path d="M15 8H113M15 154H113" stroke="#d1a15e" opacity=".2"/>
-<g id="badge_river_marshal">
+<g id="badge_river_marshal" transform="translate(-58 0)">
 <path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#9cbfcb" stroke-width="2" stroke-linejoin="round"/>
 <path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#9cbfcb" stroke-width="0.9" opacity="0.65"/>
 <circle cx="88" cy="101" r="1.2" fill="#9cbfcb"/>
@@ -629,7 +629,7 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#b5a06c"/>
 <path d="M15 8H113M15 154H113" stroke="#b5a06c" opacity=".2"/>
-<g id="badge_quillon_warden">
+<g id="badge_quillon_warden" transform="translate(-58 0)">
 <path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#b6a8c5" stroke-width="2" stroke-linejoin="round"/>
 <path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#b6a8c5" stroke-width="0.9" opacity="0.65"/>
 <circle cx="88" cy="101" r="1.2" fill="#b6a8c5"/>
