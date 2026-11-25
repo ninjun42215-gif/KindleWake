@@ -17,7 +17,7 @@
   - Roadwolf claw marks for Hask Gravelteeth, Roadwolf Reaver, Roadwolf Bowman and Hask's Convoy Champion identity.
   - Reef spiral, crossed cutlasses, Salt-Reef arrow and Blackwake sail for the named coastal enemy identities.
   - Ash Bailiff flame seal, Writ-Captain crown seal, River Marshal crossing mark and Quillon open-record seal.
-- The marks are drawn inside their existing 128×160 cells. They are integrated into the already-loaded atlas, not separate unused textures.
+- The marks are drawn inside their existing 128×160 cells on the left shoulder. This avoids the right-side weapon/class identity strokes drawn after the sprite in the existing battle renderer. They are integrated into the already-loaded atlas, not separate unused textures.
 
 ## Runtime and preservation contracts
 
