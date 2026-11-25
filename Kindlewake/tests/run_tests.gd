@@ -172,6 +172,16 @@ func _test_data() -> void:
 
 func _test_art_assets() -> void:
     print("[art asset integrity]")
+    var title_crest_texture: Texture2D = load("res://assets/art/ui/title_crest_divider.svg") as Texture2D
+    check(title_crest_texture != null, "title codex crest divider imports")
+    if title_crest_texture != null:
+        check(title_crest_texture.get_size() == Vector2(320.0, 54.0), "title crest divider keeps its compact 320x54 canvas")
+    var title_screen_source := FileAccess.get_file_as_string("res://scripts/ui/title_screen.gd")
+    check(title_screen_source.contains("title_crest_divider.svg"), "title screen uses the integrated codex crest divider")
+    check(title_screen_source.contains("ornament.mouse_filter = Control.MOUSE_FILTER_IGNORE"), "title decoration ignores pointer input")
+    check(title_screen_source.contains("clampf(get_viewport_rect().size.x - 64.0, 224.0, 320.0)"), "title divider width adapts to narrow mobile viewports")
+    var title_crest_source := FileAccess.get_file_as_string("res://assets/art/ui/title_crest_divider.svg")
+    check(not title_crest_source.contains("href=") and not title_crest_source.contains("<image"), "title crest is self-contained vector artwork")
     var world_names: Array = ["house_a", "house_b", "house_c", "hut", "keep", "tower_a", "tower_b", "tower_c"]
     for asset_name in world_names:
         var world_texture: Texture2D = ArtScript.world(str(asset_name))

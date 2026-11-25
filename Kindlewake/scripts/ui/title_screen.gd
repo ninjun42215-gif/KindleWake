@@ -88,10 +88,11 @@ func _build() -> void:
     root_box.add_child(subtitle)
 
     var ornament := TextureRect.new()
-    ornament.texture = load("res://assets/art/ui/ornament_divider.svg")
-    ornament.custom_minimum_size = Vector2(320, 54)
+    ornament.texture = load("res://assets/art/ui/title_crest_divider.svg")
+    ornament.custom_minimum_size = Vector2(clampf(get_viewport_rect().size.x - 64.0, 224.0, 320.0), 54.0)
     ornament.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
     ornament.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    ornament.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
     ornament.mouse_filter = Control.MOUSE_FILTER_IGNORE
     root_box.add_child(ornament)
 
