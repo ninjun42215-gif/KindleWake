@@ -42,4 +42,5 @@
 - Main base: 13f66ec19476c9af5ed2b5c81af95e4d8a026876.
 - Parent PR head at child branch creation: 76c59c5318d7c056623b59ed2ef5322adfa58915.
 - Child implementation commit: 10498257705316a636aecc2e5eeffeaddaf1d3bf.
-- Final child PR head is the subsequent handoff commit and is reported in the PR metadata; it must be the SHA used for exact-head CI review.
+- Initial handoff commit: bb0af4c77046678659479a4def118b24f551f63d.
+- The latest handoff-only update is the current PR head; use PR metadata for its exact SHA and do not treat the earlier YAML-lint run as validation of a later head.
