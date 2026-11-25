@@ -1,3 +1,5 @@
+> **LATEST CORE ENGINEERING HANDOFF — 2026-11-25:** Current main base: `13f66ec19476c9af5ed2b5c81af95e4d8a026876`. Draft PR [#179](https://github.com/ninjun42215-gif/KindleWake/pull/179) adds the 999-soldier holding-garrison cap and validates troop reserve transfers on branch `fix/holding-garrison-reserve-integrity-2026-11-25`. Implementation commit: `f0e3dbfd5f3e9224a8df31165c96db44a2ffef07`. The standalone regression script is registered in `tools/build_apk.py`. No Godot import, strict test, Android export or exact-head CI result is claimed yet. Read `docs/CORE_ENGINEERING_HANDOFF_2026-11-25.md` and verify the live PR head/checks before continuing. Live GitHub state supersedes older checkpoints below.
+
 # KindleWake — Next AI Start Here
 
 **Canonical repository:** https://github.com/ninjun42215-gif/KindleWake  
