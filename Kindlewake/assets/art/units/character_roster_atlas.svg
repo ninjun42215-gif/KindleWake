@@ -46,7 +46,7 @@
 <path d="M188 52L177 231" stroke="#76502d" stroke-width="7"/><circle cx="190" cy="47" r="11" fill="#bda1c6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#bda1c6"/>
 <path d="M15 8H113M15 154H113" stroke="#bda1c6" opacity=".2"/>
-</g><g transform="translate(512,0)">
+</g><g id="roster_hask_gravelteeth" transform="translate(512,0)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#55432f" stroke="#c39a4d" stroke-width="3"/>
@@ -58,7 +58,12 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#c39a4d"/>
 <path d="M15 8H113M15 154H113" stroke="#c39a4d" opacity=".2"/>
-</g><g transform="translate(640,0)">
+<g id="badge_hask_gravelteeth" transform="translate(-58 0)">
+<path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#c27a58" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#c27a58" stroke-width="0.9" opacity="0.65"/>
+<circle cx="88" cy="101" r="1.2" fill="#c27a58"/>
+<path d="M81 106L86 112L83 120M88 103L92 111L90 121M95 105L98 112L96 119" fill="none" stroke="#f0d5bd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</g></g><g id="roster_roadreaver" transform="translate(640,0)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#284d62" stroke="#b78a56" stroke-width="3"/>
@@ -70,7 +75,12 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#b78a56"/>
 <path d="M15 8H113M15 154H113" stroke="#b78a56" opacity=".2"/>
-</g><g transform="translate(768,0)">
+<g id="badge_roadreaver" transform="translate(-58 0)">
+<path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#c27a58" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#c27a58" stroke-width="0.9" opacity="0.65"/>
+<circle cx="88" cy="101" r="1.2" fill="#c27a58"/>
+<path d="M81 106L86 112L83 120M88 103L92 111L90 121M95 105L98 112L96 119" fill="none" stroke="#f0d5bd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</g></g><g id="roster_roadbowman" transform="translate(768,0)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#60423a" stroke="#d1a15e" stroke-width="3"/>
@@ -82,7 +92,12 @@
 <path d="M188 80Q218 128 188 178M188 80L188 178" fill="none" stroke="#d1a15e" stroke-width="5"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#d1a15e"/>
 <path d="M15 8H113M15 154H113" stroke="#d1a15e" opacity=".2"/>
-</g><g transform="translate(896,0)">
+<g id="badge_roadbowman" transform="translate(-58 0)">
+<path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#c27a58" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#c27a58" stroke-width="0.9" opacity="0.65"/>
+<circle cx="88" cy="101" r="1.2" fill="#c27a58"/>
+<path d="M81 106L86 112L83 120M88 103L92 111L90 121M95 105L98 112L96 119" fill="none" stroke="#f0d5bd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</g></g><g transform="translate(896,0)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#465344" stroke="#b5a06c" stroke-width="3"/>
@@ -370,7 +385,7 @@
 <path d="M188 80Q218 128 188 178M188 80L188 178" fill="none" stroke="#d1a15e" stroke-width="5"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#d1a15e"/>
 <path d="M15 8H113M15 154H113" stroke="#d1a15e" opacity=".2"/>
-</g><g transform="translate(896,480)">
+</g><g id="roster_reefwarden" transform="translate(896,480)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#465344" stroke="#b5a06c" stroke-width="3"/>
@@ -382,7 +397,12 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#b5a06c"/>
 <path d="M15 8H113M15 154H113" stroke="#b5a06c" opacity=".2"/>
-</g><g transform="translate(0,640)">
+<g id="badge_reefwarden" transform="translate(-58 0)">
+<path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#8eb9b0" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#8eb9b0" stroke-width="0.9" opacity="0.65"/>
+<circle cx="88" cy="101" r="1.2" fill="#8eb9b0"/>
+<path d="M82 115C82 108 88 104 93 107C98 110 96 118 90 120C86 121 83 118 85 114C87 111 91 112 92 115" fill="none" stroke="#e0eee5" stroke-width="1.6" stroke-linecap="round"/><path d="M88 104L88 100M84 106L81 103M94 106L97 103" stroke="#e0eee5" stroke-width="1.3" stroke-linecap="round"/>
+</g></g><g id="roster_saltcutthroat" transform="translate(0,640)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#173e50" stroke="#bd8d4d" stroke-width="3"/>
@@ -394,7 +414,12 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#bd8d4d"/>
 <path d="M15 8H113M15 154H113" stroke="#bd8d4d" opacity=".2"/>
-</g><g transform="translate(128,640)">
+<g id="badge_saltcutthroat" transform="translate(-58 0)">
+<path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#7ea9a5" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#7ea9a5" stroke-width="0.9" opacity="0.65"/>
+<circle cx="88" cy="101" r="1.2" fill="#7ea9a5"/>
+<path d="M82 105L96 120M96 105L82 120" stroke="#e8dfc9" stroke-width="1.7" stroke-linecap="round"/><path d="M80 104L84 102M94 122L98 120M94 102L98 104M80 120L84 122" stroke="#e8dfc9" stroke-width="1.3" stroke-linecap="round"/>
+</g></g><g id="roster_saltbow" transform="translate(128,640)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#3b4552" stroke="#c0a06a" stroke-width="3"/>
@@ -406,7 +431,12 @@
 <path d="M188 80Q218 128 188 178M188 80L188 178" fill="none" stroke="#c0a06a" stroke-width="5"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#c0a06a"/>
 <path d="M15 8H113M15 154H113" stroke="#c0a06a" opacity=".2"/>
-</g><g transform="translate(256,640)">
+<g id="badge_saltbow" transform="translate(-58 0)">
+<path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#91c4c4" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#91c4c4" stroke-width="0.9" opacity="0.65"/>
+<circle cx="88" cy="101" r="1.2" fill="#91c4c4"/>
+<path d="M89 102V121M84 108L89 102L94 108M82 115Q89 110 96 115" fill="none" stroke="#e3eee6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+</g></g><g id="roster_blackwake_captain" transform="translate(256,640)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#31513f" stroke="#c39b5c" stroke-width="3"/>
@@ -418,7 +448,12 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#c39b5c"/>
 <path d="M15 8H113M15 154H113" stroke="#c39b5c" opacity=".2"/>
-</g><g transform="translate(384,640)">
+<g id="badge_blackwake_captain" transform="translate(-58 0)">
+<path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#c3a36a" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#c3a36a" stroke-width="0.9" opacity="0.65"/>
+<circle cx="88" cy="101" r="1.2" fill="#c3a36a"/>
+<path d="M87 101V120M87 103L97 109L87 113Z" fill="#e9d9b6" stroke="#e9d9b6" stroke-width="1.1" stroke-linejoin="round"/><path d="M82 121H98M89 99L89 96" stroke="#e9d9b6" stroke-width="1.4" stroke-linecap="round"/>
+</g></g><g transform="translate(384,640)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#493d5c" stroke="#bda1c6" stroke-width="3"/>
@@ -514,7 +549,7 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#c39b5c"/>
 <path d="M15 8H113M15 154H113" stroke="#c39b5c" opacity=".2"/>
-</g><g transform="translate(384,800)">
+</g><g id="roster_hask_convoy_champion" transform="translate(384,800)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#493d5c" stroke="#bda1c6" stroke-width="3"/>
@@ -526,7 +561,12 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#bda1c6"/>
 <path d="M15 8H113M15 154H113" stroke="#bda1c6" opacity=".2"/>
-</g><g transform="translate(512,800)">
+<g id="badge_hask_convoy_champion" transform="translate(-58 0)">
+<path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#c27a58" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#c27a58" stroke-width="0.9" opacity="0.65"/>
+<circle cx="88" cy="101" r="1.2" fill="#c27a58"/>
+<path d="M81 106L86 112L83 120M88 103L92 111L90 121M95 105L98 112L96 119" fill="none" stroke="#f0d5bd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</g></g><g id="roster_ash_bailiff" transform="translate(512,800)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#55432f" stroke="#c39a4d" stroke-width="3"/>
@@ -538,7 +578,12 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#c39a4d"/>
 <path d="M15 8H113M15 154H113" stroke="#c39a4d" opacity=".2"/>
-</g><g transform="translate(640,800)">
+<g id="badge_ash_bailiff" transform="translate(-58 0)">
+<path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#c98a55" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#c98a55" stroke-width="0.9" opacity="0.65"/>
+<circle cx="88" cy="101" r="1.2" fill="#c98a55"/>
+<path d="M89 121C82 116 83 111 87 106C88 110 94 110 94 115C94 119 91 121 89 121Z" fill="#f0c58c" stroke="#f0c58c" stroke-width="1.1"/><path d="M89 117C87 114 89 112 90 110" fill="none" stroke="#8b4d35" stroke-width="1.2" stroke-linecap="round"/>
+</g></g><g id="roster_checkpoint_sergeant" transform="translate(640,800)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#284d62" stroke="#b78a56" stroke-width="3"/>
@@ -550,7 +595,12 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#b78a56"/>
 <path d="M15 8H113M15 154H113" stroke="#b78a56" opacity=".2"/>
-</g><g transform="translate(768,800)">
+<g id="badge_checkpoint_sergeant" transform="translate(-58 0)">
+<path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#d1b477" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#d1b477" stroke-width="0.9" opacity="0.65"/>
+<circle cx="88" cy="101" r="1.2" fill="#d1b477"/>
+<path d="M80 110L83 103L89 108L95 103L98 110Z" fill="#f0e3bd" stroke="#f0e3bd" stroke-width="1.1" stroke-linejoin="round"/><path d="M82 114H96M85 117H93" stroke="#f0e3bd" stroke-width="1.4" stroke-linecap="round"/>
+</g></g><g id="roster_river_marshal" transform="translate(768,800)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#60423a" stroke="#d1a15e" stroke-width="3"/>
@@ -562,7 +612,12 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#d1a15e"/>
 <path d="M15 8H113M15 154H113" stroke="#d1a15e" opacity=".2"/>
-</g><g transform="translate(896,800)">
+<g id="badge_river_marshal" transform="translate(-58 0)">
+<path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#9cbfcb" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#9cbfcb" stroke-width="0.9" opacity="0.65"/>
+<circle cx="88" cy="101" r="1.2" fill="#9cbfcb"/>
+<path d="M81 108Q85 103 89 108T97 108M81 115Q85 110 89 115T97 115M81 121Q85 116 89 121T97 121" fill="none" stroke="#e2edf0" stroke-width="1.5" stroke-linecap="round"/><path d="M84 102V105M94 102V105" stroke="#e2edf0" stroke-width="1.2"/>
+</g></g><g id="roster_quillon_warden" transform="translate(896,800)">
 <ellipse cx="64" cy="151" rx="28" ry="5" fill="#080b0d" opacity=".4"/>
 <path d="M40 99L25 117L22 145L37 147L49 119L51 158H70L64 120L78 158H96L89 117L105 146L118 141L103 111L88 96Z" fill="#292b32" stroke="#171a20" stroke-width="3"/>
 <path d="M38 87Q64 70 90 87L105 127L88 151H40L23 127Z" fill="#465344" stroke="#b5a06c" stroke-width="3"/>
@@ -574,4 +629,9 @@
 <path d="M183 82L207 184" stroke="#76502d" stroke-width="8"/><path d="M204 178L218 215" stroke="#d3d8d9" stroke-width="6"/>
 <path d="M58 110L64 118L70 110L68 128L64 134L60 128Z" fill="#b5a06c"/>
 <path d="M15 8H113M15 154H113" stroke="#b5a06c" opacity=".2"/>
-</g></svg>
+<g id="badge_quillon_warden" transform="translate(-58 0)">
+<path d="M76 100Q88 93 100 100L98 116Q94 126 88 131Q82 126 78 116Z" fill="#18242b" stroke="#b6a8c5" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80 102Q88 97 96 102L94 115Q92 121 88 124Q84 121 82 115Z" fill="none" stroke="#b6a8c5" stroke-width="0.9" opacity="0.65"/>
+<circle cx="88" cy="101" r="1.2" fill="#b6a8c5"/>
+<path d="M80 104Q85 101 89 105Q93 101 98 104V119Q93 116 89 120Q85 116 80 119Z" fill="none" stroke="#eee5f0" stroke-width="1.5" stroke-linejoin="round"/><path d="M89 105V120M82 108Q85 107 87 109M91 109Q94 107 96 108" stroke="#eee5f0" stroke-width="1.1" stroke-linecap="round"/>
+</g></g></svg>
