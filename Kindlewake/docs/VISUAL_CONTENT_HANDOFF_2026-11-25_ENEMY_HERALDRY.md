@@ -94,3 +94,21 @@ The AOSP ATD / SwiftShader GLES3 emulator again reports `SceneShaderGLES3: Progr
 - Central provenance/credits reconciliation remains deferred to portrait PR #157, which owns those shared files.
 
 The APK belongs to the exact tested code head above. This handoff update is documentation-only; it does not change the tested atlas or runtime code.
+
+
+## Latest PR-head verification — documentation-only head
+
+After the code-tested head above, the handoff was updated with the exact APK and emulator evidence. The resulting PR head `6cd7fab07fa3f6d60ef5d02c2aea474074bbf317` contains the same atlas/runtime code and only adds verification documentation.
+
+- [Project Health Audit #45560419032](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45560419032): passed; 0 errors, 0 warnings, 0 unverified asset entries and 0 unverified used assets.
+- [Workflow YAML Lint #45560418965](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45560418965): passed.
+- [Version Synchronization #45560419005](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45560419005): passed.
+- [Android Build #45560419013](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45560419013): Godot import, 20-scene smoke, 1,009 strict checks and all campaign/merchant/title/creator/Act V/continuity/dynasty/family/balance checks passed; APK export and signature verification passed. The emulator liveness step failed with the same GLES3 SwiftShader uniform-limit diagnostic described above.
+
+Latest PR-head artifact:
+- [APK artifact #14997761491](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45560419013/artifacts/14997761491): 65,312,042-byte archive; archive SHA-256 `0e8882ed41dbc7aed0297525254eee4615a019d1c009c68e3296ac454d60a56f`.
+- Extracted APK SHA-256: `32a7977dcf88c88bcacc842793beb25a776a899d65067d9300c7ffee476aa12a`; 65,865,050 bytes.
+- CI/test signature valid; ABIs `arm64-v8a`, `armeabi-v7a`, `x86_64`; no Android permissions requested.
+- [Test logs artifact #14997493085](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45560419013/artifacts/14997493085), archive SHA-256 `6d29e9793e88792a8b64e48208ea74bad4f1852965b0f37422c4da569106295d`.
+
+The artifact above is from exact PR head `6cd7fab07fa3f6d60ef5d02c2aea474074bbf317`. The next commit that records this section is documentation-only and does not change the tested atlas or runtime code.
