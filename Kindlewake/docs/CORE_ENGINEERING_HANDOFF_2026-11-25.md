@@ -52,11 +52,52 @@ The existing heavily shared `tests/run_tests.gd` was intentionally left untouche
 - Over-cap garrisons already present in an old save are not rewritten by a failed transfer. Use the existing direct garrison assignment path to set an intentional valid count.
 - No workflow definitions, permissions, secrets, release settings or repository settings were changed.
 
-## Verification status at implementation commit
+## Verification — tested PR head 95600bb70a95cf43207ae76bdef73ae6d52ab0a2
 
-**Not yet verified.** The implementation commit was pushed and PR #179 opened, but no Godot import, strict test, scene smoke, APK export, or exact-head CI result is claimed in this handoff. Check the latest PR head and require Project Health Audit, Workflow YAML Lint, Version Sync and Android Build on that exact SHA. The new standalone regression script must report zero failures.
+The exact PR head above completed the following checks:
 
-Physical Android device testing remains separate; CI does not establish handset compatibility.
+- [Project Health Audit #45541003728](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45541003728) — passed.
+- [Workflow YAML Lint #45541003683](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45541003683) — passed.
+- [Version Sync #45541003652](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45541003652) — passed.
+- [Android Build #45541003661](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45541003661) — **failed only at emulator process-survival verification**; import, strict tests, APK export and artifact upload passed.
+
+Godot 4.2.2 results from the uploaded build logs:
+
+- Import: exit 0, no script/parse errors.
+- Scene smoke: 20 scenes loaded, 0 failures.
+- Main strict suite: 1,009 checks, 0 failures; 0 script errors and 0 parse errors.
+- Campaign lifecycle: 0 failures.
+- Merchant UI and title/creator UI: passed.
+- Act V, campaign continuity, Chronicle dynasty and Chronicle family suites: passed.
+- New empire development integrity suite: **12 checks, 0 failures**.
+- Balance report: exit 0.
+
+### Android artifact
+
+[Exact-head APK artifact #14989670703](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45541003661/artifacts/14989670703)
+
+- APK size: 65,852,762 bytes.
+- APK SHA-256: `d310e9684e7000cadeef238771e5bcc370f347d85558e481b582aff4106bbca6`.
+- Artifact ZIP SHA-256: `a1b1ad6572baad0137b409987c8d4ea56f815cf54952214ea2fc99ad73f1ace5`.
+- ZIP integrity: passed.
+- Build summary: signature valid; ABIs arm64-v8a, armeabi-v7a and x86_64; no Android permissions requested.
+
+### Emulator failure and diagnostics
+
+The APK installed successfully and Android reported `am start -W` as `Status: ok`. The process then died before the 30-second liveness check; the captured screenshot is black.
+
+Logcat recorded:
+
+- Project setting `rendering/limits/global_shader_variables/buffer_size` exceeding the emulator's 16,384-byte uniform-buffer limit.
+- Repeated `SceneShaderGLES3` program-link failures because fragment shader active uniforms exceeded `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)`.
+- Godot reported the shader failed to compile/bind.
+- ActivityManager recorded `Process com.kindlewake.game ... has died`.
+
+No `FATAL EXCEPTION`, fatal native signal, or GDScript/parse error was found in the captured log. The shader-link failures are a strong correlated rendering fault, but the exact process-death cause is not proven by a native crash trace. This is an emulator result, not physical-device evidence.
+
+The uploaded diagnostic logs and black screenshot are in [test-logs artifact #14989052755](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45541003661/artifacts/14989052755).
+
+**Important:** the next commit only updates handoff documentation. It will change the PR head; re-run exact-head checks before treating the updated PR as fully verified. Physical Android testing remains separate; CI does not establish handset compatibility.
 
 ## Coordination and remaining risks
 
