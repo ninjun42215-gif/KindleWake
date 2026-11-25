@@ -31,8 +31,9 @@
 - The shared central asset provenance ledger and credits table are left untouched; the per-asset provenance sidecar records source and runtime path.
 
 ## Verification and open gates
-- The six new assertions are committed but have not yet been executed by GitHub Actions on this child head.
-- SVG/XML parsing is pending local source validation; Godot 4.2.2 import and strict regression must run on the child PR head.
+- SVG/XML parsing passed with Python ElementTree; dimensions and viewBox are 320 × 54. A 960 × 162 CairoSVG source preview rendered successfully.
+- Workflow YAML Lint passed on the initial child PR head: https://github.com/ninjun42215-gif/KindleWake/actions/runs/45562440297.
+- Project Health Audit, Version Sync and Build Android did not trigger because their pull_request filters target main, while this child is correctly stacked on the parent title-art branch. The six new regression assertions and Godot 4.2.2 import therefore remain unexecuted in CI.
 - Godot editor screenshots at narrow portrait and landscape sizes remain required.
 - Physical Android rendering, touch and frame-pacing QA remain outstanding.
 - Parent PR #175 current head at branch creation had Project Health, YAML Lint and Version Sync passing; its Android Build workflow failed only at emulator process-liveness after import, scene smoke, strict tests and APK export passed. The parent log records GLES3/SwiftShader shader-uniform diagnostics. This child adds no shaders or global uniforms and must receive its own exact-head build and emulator result.
