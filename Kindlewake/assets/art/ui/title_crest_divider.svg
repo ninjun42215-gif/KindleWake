@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="54" viewBox="0 0 320 54">
+  <defs>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e8d2a0"/>
+      <stop offset=".52" stop-color="#bd965e"/>
+      <stop offset="1" stop-color="#81613c"/>
+    </linearGradient>
+    <linearGradient id="page" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0e3c5"/>
+      <stop offset="1" stop-color="#bca77e"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#brass)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 27H126L133 21L139 27L133 33H126M194 27H311" stroke-width="1.5"/>
+    <path d="M18 22H91M229 22H302M18 32H91M229 32H302" stroke-width=".7" opacity=".46"/>
+    <path d="M28 27L34 22L40 27L34 32Z M75 27L80 23L85 27L80 31Z M111 27L116 23L121 27L116 31Z" stroke-width="1.1"/>
+    <path d="M199 27L204 23L209 27L204 31Z M235 27L240 23L245 27L240 31Z M280 27L286 22L292 27L286 32Z" stroke-width="1.1"/>
+    <path d="M95 27C102 18 112 18 120 27C112 36 102 36 95 27Z M225 27C218 18 208 18 200 27C208 36 218 36 225 27Z" stroke-width="1.1" opacity=".82"/>
+    <path d="M11 20V34M309 20V34" stroke-width="1.1"/>
+  </g>
+  <g fill="#91aa9b">
+    <circle cx="17" cy="27" r="1.7"/><circle cx="303" cy="27" r="1.7"/>
+    <circle cx="56" cy="27" r="1.1"/><circle cx="264" cy="27" r="1.1"/>
+  </g>
+  <path d="M160 2C169 2 177 5 182 9L179 29C177 39 170 47 160 52C150 47 143 39 141 29L138 9C143 5 151 2 160 2Z" fill="#14232b" stroke="url(#brass)" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M160 6C167 6 173 8 177 11L174.5 28C173 36 167 42 160 46C153 42 147 36 145.5 28L143 11C147 8 153 6 160 6Z" fill="none" stroke="#8d744d" stroke-width=".8" opacity=".9"/>
+  <g fill="#e4c58a">
+    <path d="M160 8C155 14 156 18 160 21C164 18 165 14 160 8Z"/>
+    <path d="M160 13C158 16 159 18 160 19C162 17 162 15 160 13Z" fill="#fff0c9"/>
+    <circle cx="150" cy="10" r="1.1"/><circle cx="155" cy="6.5" r="1.05"/><circle cx="160" cy="5.2" r="1.05"/>
+    <circle cx="165" cy="6.5" r="1.05"/><circle cx="170" cy="10" r="1.1"/><circle cx="154" cy="12.5" r=".8"/><circle cx="166" cy="12.5" r=".8"/>
+  </g>
+  <path d="M147 27C152 24 156 25 160 29C164 25 168 24 173 27L172 37C167 35 163 36 160 40C157 36 153 35 148 37Z" fill="url(#page)" stroke="#d8c49a" stroke-width="1.1" stroke-linejoin="round"/>
+  <path d="M160 29V39M151 29C154 28 156 29 158 31M151 33C154 32 156 33 158 35M169 29C166 28 164 29 162 31M169 33C166 32 164 33 162 35" fill="none" stroke="#8a7757" stroke-width=".75" stroke-linecap="round"/>
+  <path d="M147 42L153 44M173 42L167 44" stroke="#91aa9b" stroke-width="1.1" stroke-linecap="round"/>
+</svg>
