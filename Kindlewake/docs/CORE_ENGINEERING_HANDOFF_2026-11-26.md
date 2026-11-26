@@ -74,9 +74,42 @@ Expected deterministic fixture: a single governor with INT 14 / LDR 14 grants +2
 - No story, quest, battle, class, rune, equipment, visual asset, Android workflow, permission, secret or repository-setting changes.
 - Main was not modified. No merge, force-push, branch deletion or release publication occurred.
 
-## Verification status at handoff creation
+## Exact-head verification — `cc174ae1f9fa3ba33debc9cd8c99715930eb5286`
 
-GitHub Actions triggered by PR #182 must be inspected on the final documentation-updated head. No Godot import, strict-test, scene-smoke, health-audit, YAML-lint, version-sync or Android-build result is claimed in this file until the exact-head workflows complete.
+- [Project Health Audit #45752624278](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45752624278): passed.
+- [Workflow YAML Lint #45752624255](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45752624255): passed.
+- [Version Sync #45752624248](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45752624248): passed. The main-only version-application step was skipped, as expected for a PR.
+- [Android Build #45752624368](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45752624368): import, scene smoke, strict tests, APK export and upload passed; the overall job failed only at Android emulator process-survival.
+
+Automated results:
+- Godot 4.2.2 import: exit 0, no script errors.
+- Scene smoke: 20 scenes loaded, 0 failures.
+- Strict suite: **1,019 checks, 0 failures, 0 script errors, 0 parse errors**.
+- Campaign Continue lifecycle: 0 failures.
+- Merchant UI: 0 failures.
+- Title/creator UI: 0 failures.
+- Act V: 0 failures.
+- Campaign continuity: 70 checks, 0 failures.
+- Chronicle dynasty: 39 checks, 0 failures.
+- Chronicle family development: 19 checks, 0 failures.
+- Battle balance report: completed.
+- All ten new governor assertions passed, including threshold behavior, held-region filtering, duplicate-assignment de-duplication, stacking caps, treasury settlement and summary parity.
+
+Exact-head APK candidate:
+- [APK artifact #15086211823](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45752624368/artifacts/15086211823), 65,299,046-byte ZIP archive.
+- Artifact archive SHA-256: `224ba492d2e637c0e9b2021069a780b0e79c587418e626f86b4a5553f3c55c36`.
+- Extracted APK SHA-256, independently calculated after download: `63d7f5c955fcd15a0b29944e9ed5fe418558d617a374740cfb3ca9a791803984`.
+- Build summary reports a valid APK signature, ARM64 / ARMv7 / x86_64 libraries, and no requested Android permissions.
+- [Diagnostic logs and screenshot artifact #15086487501](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45752624368/artifacts/15086487501), archive SHA-256: `de11be27e3f9be7666a30714594f60089ce6b5d6796ffd4f1c58d3c4e3931c80`.
+
+Android emulator finding:
+- The APK installed and the Godot main loop started.
+- SwiftShader GLES3 reported the global shader-variable buffer exceeded 16,384 bytes and fragment shader uniforms exceeded `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)`.
+- The captured emulator screenshot was black. GodotActivity then destroyed its instance and the process was killed with SIGKILL; the workflow's 30-second `pidof` check failed.
+- No Java `FATAL EXCEPTION`, native fatal signal, GDScript error or parse error was captured.
+- Treat this as an emulator rendering/process-survival failure, not proof of a physical-device failure. QA PR #164 owns the emulator/release workflow investigation. Do not merge this PR as a release-readiness approval.
+
+The current main branch remains unprotected and has no required status checks. No repository settings were changed. Physical Android testing remains outstanding.
 
 ## Known balance and QA risks
 
