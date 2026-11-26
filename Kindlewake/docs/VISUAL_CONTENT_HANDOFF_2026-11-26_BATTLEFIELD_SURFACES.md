@@ -55,13 +55,26 @@
 - Legacy shallow-water mapping: `e3b324174b977672b1be7e7b51e4741e553eef2d`
 - Battle-scene integration: `a74d0684f1984b1a27bdd985ccf0cf9927ee3b00`
 - Regression coverage: `1f1abd36d333c267d7aef86f3ce38cf62435312b`
+- Godot validation workflow: `a45108721bf892eda4b924873c0d5704179deb1b`
+- Godot executable PATH fix: `9517f101917568ad643d89e06201481ea14adb70`
+- Complete editor scan before tests: `53b2428311ddea10a02d481426ebcb85440ad7ea`
 - Provenance and CI/handoff updates follow on this branch.
 
 ## Validation
 
 The parent PR #171 exact head `e5e9f3ca1b7c66f7d46069b2b6a2c285dfe29a70` previously passed Godot 4.2.2 import, 20/20 scene smoke, 1,026 strict checks, campaign/UI/continuity/dynasty/family/balance tests, APK export, Project Health Audit, YAML lint and Version Sync. Its AOSP ATD / forced SwiftShader emulator process-liveness check failed; the screenshot was black. This is parent evidence only, not verification of this child branch.
 
-A read-only visual-content validation workflow was added for future pushes to `art/**` branches. GitHub does not execute a newly introduced workflow until the workflow file is present on the default branch, so it did not run on this first push. To obtain exact-head Godot/Android evidence without leaving a stacked child untested, the draft PR will temporarily target `main` for the repository's existing exact-head checks, then be retargeted to parent PR #171 after those checks complete. Once this workflow is integrated into the default branch, subsequent art-branch pushes will run Godot import, scene smoke and strict tests automatically. No child Godot result is claimed before the existing checks complete.
+The new read-only visual-content workflow ran successfully on child code head `53b2428311ddea10a02d481426ebcb85440ad7ea`:
+- [Visual Content Validation #45768730864](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768730864): Godot 4.2.2 import passed, 20/20 scenes loaded, strict suite **1,060 checks / 0 failures**, and the SVG atlas geometry/provenance check passed.
+- [Project Health Audit #45768736764](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736764): passed.
+- [Workflow YAML Lint #45768736672](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736672): passed.
+- [Version Sync #45768736705](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736705): passed.
+- [Android Build #45768736707](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736707): its import, scene smoke, strict tests, APK export and artifact upload steps passed. The emulator launch/process-liveness step remained in progress at the last observation; no emulator success or failure is claimed.
+- APK artifact [#15093451389](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736707/artifacts/15093451389): 65,321,994-byte archive, CI/test-signed candidate only.
+
+The first visual-workflow attempt failed because the downloaded executable was not exposed as `godot`; a symlink fixed that. The next attempt exposed an early editor quit that aborted Godot's global-class scan; changing the import command to the repository's proven `--quit-after 120` sequence fixed it. The final child code-head validation above passed.
+
+PR #183 was temporarily targeted at main to run the existing main-target workflows, then retargeted to the exact parent branch `art/rune-combat-vfx-language-2026-11-21`. It is now correctly stacked on PR #171 and must not merge before its parent.
 
 Still required:
 - Godot editor screenshots at battle zoom levels, including river, forest, ash, ruins and snow maps.
