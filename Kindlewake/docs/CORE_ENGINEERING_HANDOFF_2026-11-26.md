@@ -93,7 +93,7 @@ Automated results:
 - Chronicle dynasty: 39 checks, 0 failures.
 - Chronicle family development: 19 checks, 0 failures.
 - Battle balance report: completed.
-- All ten new governor assertions passed, including threshold behavior, held-region filtering, duplicate-assignment de-duplication, stacking caps, treasury settlement and summary parity.
+- The ten initial governor assertions passed, covering threshold behavior, held-region filtering, duplicate-assignment de-duplication, stacking caps, treasury settlement and summary parity. A further active-roster regression was added afterward and awaits the final-head CI rerun.
 
 Exact-head APK candidate:
 - [APK artifact #15086211823](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45752624368/artifacts/15086211823), 65,299,046-byte ZIP archive.
@@ -110,6 +110,16 @@ Android emulator finding:
 - Treat this as an emulator rendering/process-survival failure, not proof of a physical-device failure. QA PR #164 owns the emulator/release workflow investigation. Do not merge this PR as a release-readiness approval.
 
 The current main branch remains unprotected and has no required status checks. No repository settings were changed. Physical Android testing remains outstanding.
+
+## Follow-up hardening after the initial verified head
+
+A final code review found that `party.sheet(character_id)` can return a saved sheet even when that character is no longer in the active party roster. The GameState adapter now explicitly requires `party.roster.has(character_id)` before passing a governor's base attributes into realm settlement.
+
+Additional commits:
+- `3f6a98af542703ec0b7f9e135552042e2ddae001` — require appointed governors to remain in the active roster.
+- `76a86eaa4a993c4de2ae32fd242a5a7ac5616cc7` — add a regression using a saved-but-unrostered character sheet.
+
+The earlier 1,019-check result and emulator failure above apply to head `cc174ae1f9fa3ba33debc9cd8c99715930eb5286`, before these two follow-up commits. Do not attribute that test result to the updated code. The final documentation-updated head after this section is committed must complete its own Project Health, YAML, version and Android workflows before the PR is considered fully verified.
 
 ## Known balance and QA risks
 
