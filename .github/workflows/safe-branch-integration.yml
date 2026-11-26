@@ -18,8 +18,7 @@ on:
         type: string
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: kindlewake-safe-merge-${{ inputs.target_branch }}
@@ -28,14 +27,18 @@ concurrency:
 jobs:
   prepare:
     name: Merge on an isolated branch, validate, and open draft PR
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
       - name: Check out destination branch with full history
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ inputs.target_branch }}
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Validate branch names and main confirmation
         env:
@@ -132,6 +135,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          # Checkout credentials are deliberately not persisted; expose the
+          # write token only in this final publication step.
+          gh auth setup-git
           git push origin "$INTEGRATION_BRANCH"
           gh pr create \
             --repo "$GITHUB_REPOSITORY" \
@@ -154,7 +160,7 @@ jobs:
 
       - name: Upload safe merge report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: Kindlewake-Safe-Merge-Report
           path: ${{ runner.temp }}/kindlewake-safe-merge/

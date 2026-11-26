@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing version tag to build and publish (for example v0.10.0)
+        description: Existing version tag to build and publish (for example v0.12.0)
         required: true
         type: string
       confirmation:
@@ -16,7 +16,7 @@ on:
         type: string
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: kindlewake-production-release-${{ inputs.tag }}
@@ -29,6 +29,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     environment: android-production
+    permissions:
+      contents: write
     steps:
       - name: Check out the requested immutable tag
         uses: actions/checkout@v4
@@ -36,6 +38,13 @@ jobs:
           ref: ${{ inputs.tag }}
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Record exact checked-out release commit
+        id: release-source
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Refuse to overwrite an existing published release
         env:
@@ -148,7 +157,7 @@ jobs:
         working-directory: Kindlewake
         env:
           RELEASE_TAG: ${{ inputs.tag }}
-          SOURCE_SHA: ${{ github.sha }}
+          SOURCE_SHA: ${{ steps.release-source.outputs.sha }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -208,6 +217,8 @@ jobs:
 
   rejected:
     name: Explain missing release confirmation
+    permissions:
+      contents: none
     if: ${{ inputs.confirmation != 'PUBLISH' }}
     runs-on: ubuntu-latest
     steps:
