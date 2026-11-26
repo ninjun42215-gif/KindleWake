@@ -235,13 +235,15 @@ func _refresh_realm_admin() -> void:
 
     var summary: Dictionary = GameState.empire_summary()
     realm_box.add_child(_label("THE ROYAL ADMINISTRATION", 22, GOLD))
-    realm_box.add_child(_label("Shared treasury  •  %d gold\nOwned regions  •  %d\nStability  •  %d / 100 (%s)\nLegitimacy  •  %d / 100\nMonthly projection  •  %+d gold" % [
+    realm_box.add_child(_label("Shared treasury  •  %d gold\nOwned regions  •  %d\nStability  •  %d / 100 (%s)\nLegitimacy  •  %d / 100\nMonthly projection  •  %+d gold\nGovernor influence  •  +%d%% income / +%d stability each turn" % [
         int(summary.get("treasury", GameState.party.gold)),
         (summary.get("owned_regions", []) as Array).size(),
         int(summary.get("stability", 0)),
         str(summary.get("stability_label", "Unknown")),
         int(summary.get("legitimacy", 0)),
-        int(summary.get("monthly_net", 0))
+        int(summary.get("monthly_net", 0)),
+        int(summary.get("governor_income_bonus_percent", 0)),
+        int(summary.get("governor_stability_bonus", 0))
     ], 15))
     realm_box.add_child(_label("TAX POLICY", 18, GOLD))
     realm_box.add_child(_label("Higher taxes increase income but can weaken stability. The treasury is your existing party gold; there is no separate realm currency.", 14, DIM))
@@ -263,8 +265,10 @@ func _refresh_realm_admin() -> void:
     realm_box.add_child(tax_picker)
 
     realm_box.add_child(_label("REGIONAL GOVERNORS", 18, GOLD))
+    realm_box.add_child(_label("Every 4 INT or LDR above 6 grants +1% income or +1 stability (max +2 per governor; realm caps +8% and +3).", 14, DIM))
     var owned_regions: Array = summary.get("owned_regions", [])
     var governors: Dictionary = summary.get("governors", {})
+    var governor_effects_by_region: Dictionary = summary.get("governor_effects_by_region", {})
     if owned_regions.is_empty():
         realm_box.add_child(_label("No fully held region is available for a governor. Resolve a regional objective and establish recognised control first.", 14, DIM))
     else:
@@ -306,6 +310,19 @@ func _refresh_realm_admin() -> void:
                 picker.select(selected_governor)
             picker.item_selected.connect(_on_governor_selected.bind(region_id, picker))
             region_column.add_child(picker)
+            var governor_effect: Dictionary = governor_effects_by_region.get(region_id, {})
+            if current_governor == "":
+                region_column.add_child(_label("No governor appointed. This region contributes no governor bonus.", 13, DIM))
+            elif governor_effect.is_empty():
+                region_column.add_child(_label("Governor attributes are unavailable; reassign an active companion.", 13, DIM))
+            else:
+                region_column.add_child(_label("%s  •  INT %d: +%d%% income  •  LDR %d: +%d stability / turn" % [
+                    str(GameData.characters.get(current_governor, {}).get("name", current_governor)),
+                    int(governor_effect.get("intelligence", 0)),
+                    int(governor_effect.get("income_bonus_percent", 0)),
+                    int(governor_effect.get("leadership", 0)),
+                    int(governor_effect.get("stability_bonus", 0))
+                ], 13, DIM))
             realm_box.add_child(region_card)
 
     realm_box.add_child(_label("ROYAL POLICIES", 18, GOLD))
