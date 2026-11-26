@@ -13,7 +13,7 @@ const TERRAIN_BASE_CELL := {
 	"hill": 6,
 	"ford": 8,
 	"deep_water": 10,
-	"water": 10,
+	"water": 8,
 	"marsh": 12,
 	"snow": 14,
 	"ash": 16,
