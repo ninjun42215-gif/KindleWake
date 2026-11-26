@@ -92,7 +92,7 @@ func advance_empire_turn(holding_definitions: Array) -> Dictionary:
         var month_token := "empire-turn-" + str(next_turn)
         var realm_result: Dictionary = EmpireSystemScript.advance_month(
             empire_state, faction_state, month_token,
-            int(result.get("income", 0)), int(result.get("upkeep", 0)), party.gold
+            int(result.get("income", 0)), int(result.get("upkeep", 0)), party.gold, _empire_governor_stats()
         )
         if bool(realm_result.get("ok", false)):
             party.gold = int(realm_result.get("treasury_after", party.gold))
@@ -123,13 +123,31 @@ func unlock_empire_management() -> bool:
     return true
 
 
+func _empire_governor_stats() -> Dictionary:
+    var stats_by_character: Dictionary = {}
+    var governors_value: Variant = empire_state.get("governors", {})
+    if not governors_value is Dictionary:
+        return stats_by_character
+    for character_value in (governors_value as Dictionary).values():
+        var character_id := str(character_value)
+        if character_id == "" or stats_by_character.has(character_id):
+            continue
+        var member = party.sheet(character_id)
+        if member == null:
+            continue
+        # Use trained base attributes; gear and temporary battle effects do not
+        # change a governor's administrative contribution.
+        stats_by_character[character_id] = member.base_stats.duplicate(true)
+    return stats_by_character
+
+
 func empire_summary() -> Dictionary:
     if not empire_management_unlocked():
         return {"unlocked":false}
     var last: Dictionary = world_flags.get("empire_realm_last_report", {})
     var summary := EmpireSystemScript.realm_summary(
         empire_state, faction_state, party.gold,
-        int(last.get("income", 0)), int(last.get("upkeep", 0))
+        int(last.get("income", 0)), int(last.get("upkeep", 0)), _empire_governor_stats()
     )
     summary["unlocked"] = true
     return summary
