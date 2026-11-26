@@ -116,10 +116,15 @@ The current main branch remains unprotected and has no required status checks. N
 A final code review found that `party.sheet(character_id)` can return a saved sheet even when that character is no longer in the active party roster. The GameState adapter now explicitly requires `party.roster.has(character_id)` before passing a governor's base attributes into realm settlement.
 
 Additional commits:
-- `3f6a98af542703ec0b7f9e135552042e2ddae001` — require appointed governors to remain in the active roster.
-- `76a86eaa4a993c4de2ae32fd242a5a7ac5616cc7` — add a regression using a saved-but-unrostered character sheet.
+- `3f6a98af542703ec0b7f9e135552042e2ddae001` — initial active-roster guard in GameState.
+- `76a86eaa4a993c4de2ae32fd242a5a7ac5616cc7` — first roster regression attempt.
+- `56c14f362b1e7b8e8c830ba292770962d50a6c04` — extract a pure, testable roster filter.
+- `8393840e0c7586d2468fc85ff8946b38bee59be9` — route GameState governor stats through the roster filter.
+- `3404f73a9d17dad31e00eb53d026b52d62f16606` — replace the autoload-dependent probe with a pure helper regression.
 
-The earlier 1,019-check result and emulator failure above apply to head `cc174ae1f9fa3ba33debc9cd8c99715930eb5286`, before these two follow-up commits. Do not attribute that test result to the updated code. The final documentation-updated head after this section is committed must complete its own Project Health, YAML, version and Android workflows before the PR is considered fully verified.
+The first final-head rerun, [Android Build #45753323613](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45753323613), exposed a test-harness mistake: preloading GameState directly in `--script` mode failed because the GameData autoload identifier is unavailable in that mode. The runtime import and 20-scene smoke stage passed, but the strict runner then reported a compile error and failed. The test was refactored to exercise the pure `filter_governor_stats_for_roster` helper without preloading GameState. This was a test integration failure, not a passing result; the corrected code/test head must be rerun.
+
+The earlier 1,019-check result and emulator failure above apply to head `cc174ae1f9fa3ba33debc9cd8c99715930eb5286`, before the roster-filter follow-ups. Do not attribute that test result to the updated code. The final documentation-updated head after this section is committed must complete its own Project Health, YAML, version and Android workflows before the PR is considered fully verified.
 
 ## Known balance and QA risks
 
