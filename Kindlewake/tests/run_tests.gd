@@ -26,7 +26,6 @@ const FactionSystem = preload("res://scripts/core/faction_system.gd")
 const EmpireEconomySystem = preload("res://scripts/core/empire_economy_system.gd")
 const EmpireDevelopmentSystem = preload("res://scripts/core/empire_development_system.gd")
 const EmpireSystemScript = preload("res://scripts/core/empire_system.gd")
-const GameStateScript = preload("res://scripts/core/game_state.gd")
 const HoldingSystem = preload("res://scripts/core/holding_system.gd")
 const CompanionQuestSystem = preload("res://scripts/core/companion_quest_system.gd")
 const ArtScript = preload("res://scripts/ui/art.gd")
@@ -613,13 +612,16 @@ func _test_empire_realm_administration() -> void:
     }
     var governor_bonuses: Dictionary = EmpireSystemScript.governor_bonus_summary(state, factions, governor_stats)
     check(int(governor_bonuses.get("income_bonus_percent", 0)) == 2 and int(governor_bonuses.get("stability_bonus", 0)) == 2 and (governor_bonuses.get("by_region", {}) as Dictionary).has("sethmarch"), "an appointed governor's INT and LDR produce transparent regional bonuses")
-    var game_state_probe = GameStateScript.new()
-    game_state_probe.party.add_member("torren", gd.characters["torren"])
-    game_state_probe.party.sheets["bram"] = CharacterSheetScript.from_def("bram", gd.characters["bram"])
-    game_state_probe.empire_state = {"governors":{"sethmarch":"torren","orrowen_weald":"bram"}}
-    var rostered_governor_stats: Dictionary = game_state_probe._empire_governor_stats()
+    var unfiltered_governor_stats: Dictionary = {
+        "torren":{"int":14,"ldr":14},
+        "bram":{"int":14,"ldr":14}
+    }
+    var rostered_governor_stats: Dictionary = EmpireSystemScript.filter_governor_stats_for_roster(
+        {"sethmarch":"torren","orrowen_weald":"bram"},
+        ["torren"],
+        unfiltered_governor_stats
+    )
     check(rostered_governor_stats.has("torren") and not rostered_governor_stats.has("bram"), "only currently rostered governors contribute administrative attributes")
-    game_state_probe.free()
     var threshold_effects: Dictionary = EmpireSystemScript.governor_effects_for_stats({"int":9,"ldr":9})
     var first_step_effects: Dictionary = EmpireSystemScript.governor_effects_for_stats({"int":10,"ldr":10})
     check(int(threshold_effects.get("income_bonus_percent", -1)) == 0 and int(first_step_effects.get("income_bonus_percent", 0)) == 1 and int(first_step_effects.get("stability_bonus", 0)) == 1, "governor attribute bonuses follow the documented four-point threshold")
