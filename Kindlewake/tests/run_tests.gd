@@ -606,6 +606,42 @@ func _test_empire_realm_administration() -> void:
     check(not bool(EmpireSystemScript.advance_month(state, factions, "empire-turn-1", 20, 4, 119).get("ok", true)), "realm month settlement is idempotent")
     var summary: Dictionary = EmpireSystemScript.realm_summary(state, factions, 119, 20, 4)
     check(int(summary.get("treasury", 0)) == 119 and int(summary.get("owned_regions", []).size()) == 2 and int(summary.get("governor_count", 0)) == 1, "realm summary reads the shared treasury and canonical faction ownership")
+    var governor_stats := {
+        "torren":{"int":14,"ldr":14},
+        "bram":{"int":14,"ldr":14}
+    }
+    var governor_bonuses: Dictionary = EmpireSystemScript.governor_bonus_summary(state, factions, governor_stats)
+    check(int(governor_bonuses.get("income_bonus_percent", 0)) == 2 and int(governor_bonuses.get("stability_bonus", 0)) == 2 and (governor_bonuses.get("by_region", {}) as Dictionary).has("sethmarch"), "an appointed governor's INT and LDR produce transparent regional bonuses")
+    var threshold_effects: Dictionary = EmpireSystemScript.governor_effects_for_stats({"int":9,"ldr":9})
+    var first_step_effects: Dictionary = EmpireSystemScript.governor_effects_for_stats({"int":10,"ldr":10})
+    check(int(threshold_effects.get("income_bonus_percent", -1)) == 0 and int(first_step_effects.get("income_bonus_percent", 0)) == 1 and int(first_step_effects.get("stability_bonus", 0)) == 1, "governor attribute bonuses follow the documented four-point threshold")
+    var governor_finance: Dictionary = EmpireSystemScript.estimate_monthly_finances(state, factions, 100, 4, governor_stats)
+    check(int(governor_finance.get("income", 0)) == 118 and int(governor_finance.get("governor_income_bonus_percent", 0)) == 2, "governor INT increases post-tax, post-policy realm income by its bounded percentage")
+    check(int(governor_finance.get("governor_stability_bonus", 0)) == 2, "governor LDR contributes bounded monthly realm stability")
+    var finance_without_stats: Dictionary = EmpireSystemScript.estimate_monthly_finances(state, factions, 100, 4)
+    check(int(finance_without_stats.get("income", 0)) == 116 and int(finance_without_stats.get("governor_income_bonus_percent", 0)) == 0, "older callers and unprovided governor stats retain the original finance calculation")
+    var foreign_governor_state: Dictionary = state.duplicate(true)
+    var foreign_governors: Dictionary = foreign_governor_state["governors"].duplicate(true)
+    foreign_governors["elyria"] = "bram"
+    foreign_governor_state["governors"] = foreign_governors
+    var held_governor_bonuses: Dictionary = EmpireSystemScript.governor_bonus_summary(foreign_governor_state, factions, governor_stats)
+    check(int(held_governor_bonuses.get("income_bonus_percent", 0)) == 2 and (held_governor_bonuses.get("by_region", {}) as Dictionary).size() == 1, "governors outside player-held regions do not grant realm bonuses")
+    var duplicate_governor_state: Dictionary = state.duplicate(true)
+    var duplicate_governors: Dictionary = duplicate_governor_state["governors"].duplicate(true)
+    duplicate_governors["orrowen_weald"] = "torren"
+    duplicate_governor_state["governors"] = duplicate_governors
+    var duplicate_governor_bonuses: Dictionary = EmpireSystemScript.governor_bonus_summary(duplicate_governor_state, factions, governor_stats)
+    check(int(duplicate_governor_bonuses.get("income_bonus_percent", 0)) == 2 and (duplicate_governor_bonuses.get("by_region", {}) as Dictionary).size() == 1, "a duplicated legacy governor assignment cannot stack the same companion twice")
+    var multi_governor_state: Dictionary = state.duplicate(true)
+    var multi_governors: Dictionary = multi_governor_state["governors"].duplicate(true)
+    multi_governors["orrowen_weald"] = "bram"
+    multi_governor_state["governors"] = multi_governors
+    var multi_governor_bonuses: Dictionary = EmpireSystemScript.governor_bonus_summary(multi_governor_state, factions, governor_stats)
+    check(int(multi_governor_bonuses.get("income_bonus_percent", 0)) == 4 and int(multi_governor_bonuses.get("stability_bonus", 0)) == 3, "multiple governors stack only within the realm-wide stability cap")
+    var governed_month: Dictionary = EmpireSystemScript.advance_month(state, factions, "empire-turn-governor", 100, 4, 100, governor_stats)
+    check(bool(governed_month.get("ok", false)) and int(governed_month.get("treasury_after", 0)) == 214 and int(governed_month.get("stability", 0)) == 67, "governor bonuses settle once into the shared treasury and realm stability")
+    var governed_summary: Dictionary = EmpireSystemScript.realm_summary(state, factions, 214, 100, 4, governor_stats)
+    check(int(governed_summary.get("governor_income_bonus_percent", 0)) == 2 and int(governed_summary.get("governor_stability_bonus", 0)) == 2 and (governed_summary.get("governor_effects_by_region", {}) as Dictionary).has("sethmarch"), "realm summary exposes the same governor effects used by settlement")
     var normalized: Dictionary = EmpireSystemScript.normalize_state({
         "ruler_faction":"house_dunmarrow","tax_rate":0.9,"stability":140,"legitimacy":-5,
         "policies":{"granaries":true,"unknown_policy":true},"governors":{"sethmarch":"torren","elyria":"torren","unknown_region":"bram"},"processed_months":["m1","m1",""],
