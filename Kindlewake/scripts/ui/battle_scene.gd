@@ -6,6 +6,7 @@ const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
 const CharacterSheetScript = preload("res://scripts/core/character_sheet.gd")
 const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const BattleVfxStyleScript = preload("res://scripts/ui/battle_vfx_style.gd")
+const BattlefieldSurfaceStyleScript = preload("res://scripts/ui/battlefield_surface_style.gd")
 const CombatCalcScript = preload("res://scripts/battle/combat_calc.gd")
 const PartyStateScript = preload("res://scripts/core/party_state.gd")
 const PartyScreenScript = preload("res://scripts/ui/party_screen.gd")
@@ -28,6 +29,7 @@ const HAND_DRAWN_CLASSES: Array = ["swordsman", "knight", "archer", "cleric", "r
 enum Mode { IDLE, MOVE, ATTACK, SKILL }
 
 var controller: BattleControllerScript = BattleControllerScript.new()
+var battlefield_surface_style = BattlefieldSurfaceStyleScript.new()
 var camera: Camera2D
 var map_center: Vector2 = Vector2.ZERO
 var mode: Mode = Mode.IDLE
@@ -994,7 +996,11 @@ func _draw_tile(cell: Vector2i) -> void:
     var top: Vector2 = cell_to_world(cell)
     var h: int = m.height_at(cell)
     var tid: String = m.terrain_id(cell)
-    var col := Color.html(str(m.terrain_def(cell).get("color", "#41714f")))
+    var terrain_data: Dictionary = m.terrain_def(cell)
+    # Act III's legacy "water" cells are traversable shallows; use the ford palette without changing rules.
+    if terrain_data.is_empty() and tid == "water":
+        terrain_data = m.terrain_defs.get("ford", {})
+    var col := Color.html(str(terrain_data.get("color", "#41714f")))
     var hw: float = TILE_W * 0.5
     var hh: float = TILE_H * 0.5
     if h > 0:
@@ -1010,6 +1016,7 @@ func _draw_tile(cell: Vector2i) -> void:
         _outline(top, Color(0.05, 0.08, 0.07, 0.6), 1.0)
         return
     draw_colored_polygon(_diamond(top), col.lightened(0.04 * float(h)))
+    var has_surface_detail: bool = battlefield_surface_style.draw_tile(self, tid, top, cell)
     _outline(top, Color(0.05, 0.08, 0.07, 0.55), 1.0)
     match tid:
         "forest":
@@ -1018,11 +1025,12 @@ func _draw_tile(cell: Vector2i) -> void:
                 _draw_tree(top + Vector2(9, 1))
         "hill":
             draw_colored_polygon(_diamond(top, 0.55), col.lightened(0.12))
-        "deep_water", "ford":
-            var wave := Color(1, 1, 1, 0.2)
-            draw_line(top + Vector2(-14, -3), top + Vector2(-6, -1), wave, 1.5)
-            draw_line(top + Vector2(2, 3), top + Vector2(12, 5), wave, 1.5)
-            draw_line(top + Vector2(-4, 6), top + Vector2(4, 8), wave, 1.5)
+        "deep_water", "ford", "water":
+            if not has_surface_detail:
+                var wave := Color(1, 1, 1, 0.2)
+                draw_line(top + Vector2(-14, -3), top + Vector2(-6, -1), wave, 1.5)
+                draw_line(top + Vector2(2, 3), top + Vector2(12, 5), wave, 1.5)
+                draw_line(top + Vector2(-4, 6), top + Vector2(4, 8), wave, 1.5)
         "bridge":
             var ex := Vector2(hw, hh) * 0.5
             var ey := Vector2(-hw, hh) * 0.5
@@ -1032,28 +1040,34 @@ func _draw_tile(cell: Vector2i) -> void:
             draw_line(top + ex * 0.9 - ey, top + ex * 0.9 + ey, plank.darkened(0.3), 3.0)
             draw_line(top - ex * 0.9 - ey, top - ex * 0.9 + ey, plank.darkened(0.3), 3.0)
         "road":
-            draw_circle(top + Vector2(-6, 2), 1.5, col.lightened(0.2))
-            draw_circle(top + Vector2(7, -2), 1.5, col.lightened(0.2))
+            if not has_surface_detail:
+                draw_circle(top + Vector2(-6, 2), 1.5, col.lightened(0.2))
+                draw_circle(top + Vector2(7, -2), 1.5, col.lightened(0.2))
         "marsh":
-            draw_circle(top + Vector2(-8, 2), 5.0, col.darkened(0.25))
-            draw_circle(top + Vector2(8, -3), 3.0, col.lightened(0.15))
-            draw_line(top + Vector2(-13, -5), top + Vector2(-4, -7), Color(0.75, 0.85, 0.68, 0.55), 1.5)
+            if not has_surface_detail:
+                draw_circle(top + Vector2(-8, 2), 5.0, col.darkened(0.25))
+                draw_circle(top + Vector2(8, -3), 3.0, col.lightened(0.15))
+                draw_line(top + Vector2(-13, -5), top + Vector2(-4, -7), Color(0.75, 0.85, 0.68, 0.55), 1.5)
             Art.draw_prop(self, "reeds", top + Vector2(0, -7), 0.48)
         "snow":
-            draw_line(top + Vector2(-12, -4), top + Vector2(-3, -7), Color(1, 1, 1, 0.65), 2.0)
-            draw_line(top + Vector2(2, 4), top + Vector2(12, 1), Color(1, 1, 1, 0.55), 2.0)
+            if not has_surface_detail:
+                draw_line(top + Vector2(-12, -4), top + Vector2(-3, -7), Color(1, 1, 1, 0.65), 2.0)
+                draw_line(top + Vector2(2, 4), top + Vector2(12, 1), Color(1, 1, 1, 0.55), 2.0)
             Art.draw_prop(self, "frost_pine", top + Vector2(0, -10), 0.44)
         "ash":
-            draw_circle(top + Vector2(-7, 2), 2.0, col.darkened(0.3))
-            draw_circle(top + Vector2(8, -3), 1.5, col.lightened(0.2))
+            if not has_surface_detail:
+                draw_circle(top + Vector2(-7, 2), 2.0, col.darkened(0.3))
+                draw_circle(top + Vector2(8, -3), 1.5, col.lightened(0.2))
             Art.draw_prop(self, "campfire", top + Vector2(0, -7), 0.42)
         "ruins":
-            draw_rect(Rect2(top + Vector2(-10, -5), Vector2(7, 5)), col.darkened(0.35))
-            draw_rect(Rect2(top + Vector2(3, 1), Vector2(8, 4)), col.darkened(0.25))
+            if not has_surface_detail:
+                draw_rect(Rect2(top + Vector2(-10, -5), Vector2(7, 5)), col.darkened(0.35))
+                draw_rect(Rect2(top + Vector2(3, 1), Vector2(8, 4)), col.darkened(0.25))
             Art.draw_prop(self, "column", top + Vector2(0, -8), 0.42)
         "cliff":
-            draw_colored_polygon(_diamond(top, 0.65), col.darkened(0.35))
-            draw_line(top + Vector2(-10, -2), top + Vector2(5, -7), col.lightened(0.2), 2.0)
+            if not has_surface_detail:
+                draw_colored_polygon(_diamond(top, 0.65), col.darkened(0.35))
+                draw_line(top + Vector2(-10, -2), top + Vector2(5, -7), col.lightened(0.2), 2.0)
             Art.draw_prop(self, "crystals", top + Vector2(0, -8), 0.42)
 
 
