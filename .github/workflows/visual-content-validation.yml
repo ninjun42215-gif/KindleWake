@@ -37,7 +37,7 @@ jobs:
           echo "${RUNNER_TEMP}/godot" >> "${GITHUB_PATH}"
 
       - name: Import project and SVG assets
-        run: godot --headless --editor --path Kindlewake --quit
+        run: godot --headless --editor --path Kindlewake --quit-after 120
 
       - name: Smoke-load all scenes
         run: godot --headless --path Kindlewake --script res://tests/scene_smoke_test.gd
