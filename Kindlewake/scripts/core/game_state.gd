@@ -130,7 +130,7 @@ func _empire_governor_stats() -> Dictionary:
         return stats_by_character
     for character_value in (governors_value as Dictionary).values():
         var character_id := str(character_value)
-        if character_id == "" or stats_by_character.has(character_id):
+        if character_id == "" or stats_by_character.has(character_id) or not party.roster.has(character_id):
             continue
         var member = party.sheet(character_id)
         if member == null:
