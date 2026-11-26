@@ -5,6 +5,7 @@ const BattleUnitScript = preload("res://scripts/battle/battle_unit.gd")
 const BattleMapScript = preload("res://scripts/battle/battle_map.gd")
 const BattleControllerScript = preload("res://scripts/battle/battle_controller.gd")
 const BattleVfxStyleScript = preload("res://scripts/ui/battle_vfx_style.gd")
+const BattlefieldSurfaceStyleScript = preload("res://scripts/ui/battlefield_surface_style.gd")
 const BattlefieldGeneratorScript = preload("res://scripts/battle/battlefield_generator.gd")
 
 const RuneSystem = preload("res://scripts/core/rune_system.gd")
@@ -62,6 +63,7 @@ func _initialize() -> void:
     _test_map()
     _test_combat()
     _test_battle_vfx_style()
+    _test_battlefield_surface_style()
     _test_turn_queue()
     _test_controller()
     _test_auto_battle()
@@ -1249,6 +1251,36 @@ func _test_battle_vfx_style() -> void:
     check(BattleVfxStyleScript.color_for_skill("frost_shard", "chill") == Color("#82d5ee"), "frost effects use the glacial palette")
     check(BattleVfxStyleScript.color_for_skill("storm_bolt", "shock") == Color("#f6df70"), "lightning effects use the storm-gold palette")
     check(BattleVfxStyleScript.color_for_skill("shadow_drain", "") == Color("#b28be8"), "shadow effects use the umbral palette")
+
+
+func _test_battlefield_surface_style() -> void:
+    print("[battlefield surface style]")
+    var terrain_ids: Array[String] = ["grass", "forest", "road", "hill", "ford", "deep_water", "marsh", "snow", "ash", "ruins", "cliff"]
+    var used_cells: Dictionary = {}
+    for i in range(terrain_ids.size()):
+        var terrain_id: String = terrain_ids[i]
+        var first: int = BattlefieldSurfaceStyleScript.cell_index_for(terrain_id, Vector2i(0, 0))
+        var second: int = BattlefieldSurfaceStyleScript.cell_index_for(terrain_id, Vector2i(1, 0))
+        check(first == i * 2 and second == i * 2 + 1, "%s selects its two dedicated atlas variants" % terrain_id)
+        check(not used_cells.has(first) and not used_cells.has(second), "%s variants do not overlap another terrain family" % terrain_id)
+        used_cells[first] = true
+        used_cells[second] = true
+    check(used_cells.size() == BattlefieldSurfaceStyleScript.ATLAS_CELL_COUNT, "all 22 surface atlas cells are mapped exactly once")
+    check(BattlefieldSurfaceStyleScript.cell_index_for("water", Vector2i.ZERO) == BattlefieldSurfaceStyleScript.cell_index_for("ford", Vector2i.ZERO), "legacy Act III water uses the traversable ford surface family")
+    check(BattlefieldSurfaceStyleScript.cell_index_for("bridge", Vector2i.ZERO) == -1, "bridge planks retain their bespoke renderer")
+    check(BattlefieldSurfaceStyleScript.cell_index_for("rock", Vector2i.ZERO) == -1, "raised rock walls retain their bespoke renderer")
+    check(BattlefieldSurfaceStyleScript.cell_index_for("unknown_terrain", Vector2i.ZERO) == -1, "unknown terrain safely skips the optional detail atlas")
+    var surface_style = BattlefieldSurfaceStyleScript.new()
+    check(surface_style.has_atlas(), "battlefield surface atlas loads as one cached Godot texture")
+    var atlas: Texture2D = load(BattlefieldSurfaceStyleScript.ATLAS_PATH) as Texture2D
+    check(atlas != null and atlas.get_width() == 1408 and atlas.get_height() == 32, "surface atlas imports at its exact 1408x32 source dimensions")
+    var atlas_source: String = FileAccess.get_file_as_string(BattlefieldSurfaceStyleScript.ATLAS_PATH)
+    check(atlas_source.contains("id=\"grass_v1\"") and atlas_source.contains("id=\"cliff_v2\""), "surface atlas includes the first and final terrain variants")
+    check(not atlas_source.contains("href=") and not atlas_source.contains("<image"), "surface atlas has no external or embedded raster resources")
+    var battle_source: String = FileAccess.get_file_as_string("res://scripts/ui/battle_scene.gd")
+    check(battle_source.contains("battlefield_surface_style.draw_tile(self, tid, top, cell)"), "battle scene draws the cached surface atlas for each supported tile")
+    check(battle_source.contains("if not has_surface_detail:"), "battle scene keeps primitive fallback details when the atlas is unavailable")
+    check(battle_source.contains('tid == "water"') and battle_source.contains('m.terrain_defs.get("ford", {})'), "legacy traversable water receives ford coloring without changing movement rules")
 
 
 func _test_turn_queue() -> void:
