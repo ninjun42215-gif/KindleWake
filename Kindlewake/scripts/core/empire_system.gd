@@ -121,6 +121,20 @@ static func governor_effects_for_stats(stats: Dictionary) -> Dictionary:
     }
 
 
+static func filter_governor_stats_for_roster(governors: Dictionary, roster: Array, character_stats_by_id: Dictionary) -> Dictionary:
+    var filtered: Dictionary = {}
+    for character_value in governors.values():
+        var character_id := str(character_value)
+        if character_id == "" or filtered.has(character_id) or not roster.has(character_id):
+            continue
+        var stats_value: Variant = character_stats_by_id.get(character_id, {})
+        if not stats_value is Dictionary:
+            continue
+        var stats: Dictionary = stats_value
+        filtered[character_id] = stats.duplicate(true)
+    return filtered
+
+
 static func governor_bonus_summary(state: Dictionary, faction_state: Dictionary, character_stats_by_id: Dictionary = {}) -> Dictionary:
     var governors_value: Variant = state.get("governors", {})
     var governors: Dictionary = governors_value if governors_value is Dictionary else {}
