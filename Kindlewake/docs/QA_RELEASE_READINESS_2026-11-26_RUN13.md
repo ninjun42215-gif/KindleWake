@@ -105,7 +105,7 @@ Stacked: 13 commits ahead of parent; parent #171 is 9 ahead / 0 behind main. PR 
 
 The final head is two documentation-only commits beyond code head `53b2428311ddea10a02d481426ebcb85440ad7ea`; the comparison shows only the battlefield visual handoff document changed.
 
-Code-head [Visual Content Validation #45768730864](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768730864) passed Godot 4.2.2 import, 20-scene smoke, 1,060 strict checks and SVG atlas geometry/provenance assertions. Final-head YAML lint [#45768779177](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768779177) passed. No Android build ran on the final documentation head.
+Code-head [Visual Content Validation #45768730864](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768730864) passed Godot 4.2.2 import, 20-scene smoke, 1,060 strict checks and SVG atlas geometry/provenance assertions. Final-head YAML lint [#45768779177](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45769379177) passed. No Android build ran on the final documentation head.
 
 Code-head Android run [#45768736707](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736707) reported overall success and APK export, but screenshot inspection disproved usable rendering:
 - Screenshot in test-log artifact [#15093207065](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736707/artifacts/15093207065) shows only a dark menu shell and blank button rectangles; title and button labels are absent.
