@@ -5,7 +5,8 @@
 **Base main:** `13f66ec19476c9af5ed2b5c81af95e4d8a026876`  
 **Branch:** `feat/governor-stat-bonuses-2026-11-26`  
 **Pull request:** [#182 — Implement stat-based regional governor bonuses](https://github.com/ninjun42215-gif/KindleWake/pull/182)  
-**Code/test head before this handoff:** `1e9ec9a8f56fd6f40eebd2007a7505c4621dcdf3`
+**Initial code/test head:** `1e9ec9a8f56fd6f40eebd2007a7505c4621dcdf3`  
+**Corrected code/test head:** `4c464cd1102e24aa10a03d68597d7ac57aa5015c`
 
 ## Repository inspection and coordination
 
@@ -122,9 +123,44 @@ Additional commits:
 - `8393840e0c7586d2468fc85ff8946b38bee59be9` — route GameState governor stats through the roster filter.
 - `3404f73a9d17dad31e00eb53d026b52d62f16606` — replace the autoload-dependent probe with a pure helper regression.
 
-The first final-head rerun, [Android Build #45753323613](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45753323613), exposed a test-harness mistake: preloading GameState directly in `--script` mode failed because the GameData autoload identifier is unavailable in that mode. The runtime import and 20-scene smoke stage passed, but the strict runner then reported a compile error and failed. The test was refactored to exercise the pure `filter_governor_stats_for_roster` helper without preloading GameState. This was a test integration failure, not a passing result; the corrected code/test head must be rerun.
+The first roster-test attempt, [Android Build #45753323613](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45753323613), exposed a test-harness mistake: preloading GameState directly in `--script` mode failed because the GameData autoload identifier is unavailable in that mode. The runtime import and 20-scene smoke stage passed, but the strict runner then reported a compile error. The test was refactored to exercise the pure `filter_governor_stats_for_roster` helper without preloading GameState. This failed attempt is superseded by the corrected run below.
 
-The earlier 1,019-check result and emulator failure above apply to head `cc174ae1f9fa3ba33debc9cd8c99715930eb5286`, before the roster-filter follow-ups. Do not attribute that test result to the updated code. The final documentation-updated head after this section is committed must complete its own Project Health, YAML, version and Android workflows before the PR is considered fully verified.
+## Corrected code-head verification — `4c464cd1102e24aa10a03d68597d7ac57aa5015c`
+
+- [Project Health Audit #45753529961](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45753529961): passed.
+- [Workflow YAML Lint #45753529968](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45753529968): passed.
+- [Version Sync #45753529950](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45753529950): passed.
+- [Android Build #45753529962](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45753529962): Godot import, scene smoke, strict tests, APK export and upload passed; overall job failed at Android emulator process-survival.
+
+Automated results on the corrected code head:
+- Godot 4.2.2 import: exit 0, no script errors.
+- Scene smoke: 20 scenes loaded, 0 failures.
+- Strict suite: **1,020 checks, 0 failures, 0 script errors, 0 parse errors**.
+- Campaign Continue lifecycle: 0 failures.
+- Merchant UI: 0 failures.
+- Title/creator UI: 0 failures.
+- Act V: 0 failures.
+- Campaign continuity: 70 checks, 0 failures.
+- Chronicle dynasty: 39 checks, 0 failures.
+- Chronicle family development: 19 checks, 0 failures.
+- Battle balance report: completed.
+- All eleven governor assertions passed, including the new active-roster-only filter.
+
+Exact-head APK candidate:
+- [APK artifact #15086567298](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45753529962/artifacts/15086567298), 65,299,208-byte ZIP archive.
+- Artifact archive SHA-256: `c6b0676bbcbc03e8701926c447b04a250c9f42f955b5af8e9adfdd11d1070781`.
+- Extracted APK SHA-256, independently calculated after download: `1f28608e158e5dc15ec509d8dcf2a11f1e89dc530281d32286148e6a22b6a8e6`.
+- Build summary reports a valid signature, ARM64 / ARMv7 / x86_64 libraries and no requested Android permissions.
+- [Diagnostic logs and screenshot artifact #15087125915](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45753529962/artifacts/15087125915), archive SHA-256: `db824f329f659a31e904ca726a73d976614a604a10235b7bc6c3ad6f6b34750a`.
+
+Android emulator finding on the corrected head:
+- The APK installed and the Godot main loop started.
+- SwiftShader GLES3 reported the global shader-variable buffer exceeded 16,384 bytes and fragment shader uniforms exceeded `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)`.
+- The captured emulator screenshot was black. GodotActivity then destroyed its instance and the process was killed with SIGKILL; the workflow's 30-second `pidof` check failed.
+- No Java `FATAL EXCEPTION`, native fatal signal, GDScript error or parse error was captured.
+- Treat this as an emulator rendering/process-survival failure, not proof of a physical-device failure. QA PR #164 owns the emulator/release workflow investigation.
+
+The prior 1,019-check run on `cc174ae` is historical and superseded for the corrected code. The corrected code/test head above passed all 1,020 checks. This final handoff update is documentation-only; its exact final SHA is recorded in PR #182 metadata.
 
 ## Known balance and QA risks
 
