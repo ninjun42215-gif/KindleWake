@@ -128,9 +128,10 @@ func _empire_governor_stats() -> Dictionary:
     var governors_value: Variant = empire_state.get("governors", {})
     if not governors_value is Dictionary:
         return stats_by_character
-    for character_value in (governors_value as Dictionary).values():
+    var governors: Dictionary = governors_value
+    for character_value in governors.values():
         var character_id := str(character_value)
-        if character_id == "" or stats_by_character.has(character_id) or not party.roster.has(character_id):
+        if character_id == "" or stats_by_character.has(character_id):
             continue
         var member = party.sheet(character_id)
         if member == null:
@@ -138,7 +139,7 @@ func _empire_governor_stats() -> Dictionary:
         # Use trained base attributes; gear and temporary battle effects do not
         # change a governor's administrative contribution.
         stats_by_character[character_id] = member.base_stats.duplicate(true)
-    return stats_by_character
+    return EmpireSystemScript.filter_governor_stats_for_roster(governors, party.roster, stats_by_character)
 
 
 func empire_summary() -> Dictionary:
