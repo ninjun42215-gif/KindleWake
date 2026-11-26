@@ -31,6 +31,7 @@ jobs:
           python -m pip install --disable-pip-version-check pyyaml
           python - <<'PY'
           from pathlib import Path
+          import re
           import yaml
           paths = sorted(Path(".github/workflows").glob("*.yml"))
           if not paths:
@@ -53,6 +54,34 @@ jobs:
               if effective.get("contents") != "read":
                   raise SystemExit(f"Build job {job_name} must use contents: read.")
 
+          # The Android emulator smoke must prove readable rendering, not only process liveness.
+          apk_job = build_jobs.get("apk", {})
+          steps = apk_job.get("steps", [])
+          emulator_step = next(
+              (step for step in steps if str(step.get("uses", "")).startswith("reactivecircus/android-emulator-runner@")),
+              None
+          )
+          if not emulator_step:
+              raise SystemExit("Android build must run the emulator smoke test.")
+          emulator = emulator_step.get("with", {})
+          if emulator.get("target") != "google_apis":
+              raise SystemExit("Android smoke must use the verified Google APIs emulator image.")
+          if "swiftshader_indirect" in str(emulator.get("emulator-options", "")):
+              raise SystemExit("Android smoke must not force the failing SwiftShader renderer.")
+          script = str(emulator.get("script", ""))
+          for required in (
+              "tesseract", "KINDLEWAKE", "NEW GAME", "SETTINGS",
+              "SceneShaderGLES3", "GL_MAX_FRAGMENT_UNIFORM_VECTORS",
+              "USER ERROR", "sys.exit(1 if hits else 0)"
+          ):
+              if required not in script:
+                  raise SystemExit(f"Android smoke is missing its rendering/error assertion: {required}")
+          if re.search(r"grep[^\\n]*&&\\s*\\{[^\\n]*exit 1;[^\\n]*\\}\\s*\\|\\|\\s*true", script):
+              raise SystemExit("A failing Android grep assertion must not be swallowed by a trailing '|| true'.")
+          if not any("Install screenshot OCR tool" in str(step.get("name", "")) for step in steps):
+              raise SystemExit("Android smoke must install its OCR dependency before screenshot validation.")
+          print("PASS: Android smoke validates visible title/menu text and rejects GLES shader errors.")
+          
           # Only the protected production workflow may write releases, and its
           # manifest must identify the exact tag checkout rather than dispatch context.
           release = yaml.safe_load(Path(".github/workflows/publish-android-release.yml").read_text(encoding="utf-8"))
