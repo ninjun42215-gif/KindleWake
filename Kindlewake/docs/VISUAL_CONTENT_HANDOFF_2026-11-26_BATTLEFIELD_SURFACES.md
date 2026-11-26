@@ -61,7 +61,7 @@
 
 The parent PR #171 exact head `e5e9f3ca1b7c66f7d46069b2b6a2c285dfe29a70` previously passed Godot 4.2.2 import, 20/20 scene smoke, 1,026 strict checks, campaign/UI/continuity/dynasty/family/balance tests, APK export, Project Health Audit, YAML lint and Version Sync. Its AOSP ATD / forced SwiftShader emulator process-liveness check failed; the screenshot was black. This is parent evidence only, not verification of this child branch.
 
-This child adds a read-only visual-content validation workflow that runs Godot import, scene smoke and strict tests on pushes to `art/**` branches. The child-specific workflow results must be checked against the final child head after this handoff commit. No child Godot result is claimed before that run completes.
+A read-only visual-content validation workflow was added for future pushes to `art/**` branches. GitHub does not execute a newly introduced workflow until the workflow file is present on the default branch, so it did not run on this first push. To obtain exact-head Godot/Android evidence without leaving a stacked child untested, the draft PR will temporarily target `main` for the repository's existing exact-head checks, then be retargeted to parent PR #171 after those checks complete. Once this workflow is integrated into the default branch, subsequent art-branch pushes will run Godot import, scene smoke and strict tests automatically. No child Godot result is claimed before the existing checks complete.
 
 Still required:
 - Godot editor screenshots at battle zoom levels, including river, forest, ash, ruins and snow maps.
