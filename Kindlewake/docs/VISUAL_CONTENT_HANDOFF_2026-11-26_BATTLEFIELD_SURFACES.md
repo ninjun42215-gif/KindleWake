@@ -69,8 +69,21 @@ The new read-only visual-content workflow ran successfully on child code head `5
 - [Project Health Audit #45768736764](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736764): passed.
 - [Workflow YAML Lint #45768736672](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736672): passed.
 - [Version Sync #45768736705](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736705): passed.
-- [Android Build #45768736707](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736707): its import, scene smoke, strict tests, APK export and artifact upload steps passed. The emulator launch/process-liveness step remained in progress at the last observation; no emulator success or failure is claimed.
-- APK artifact [#15093451389](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736707/artifacts/15093451389): 65,321,994-byte archive, CI/test-signed candidate only.
+- [Android Build #45768736707](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736707): overall workflow passed, including Godot import, 20-scene smoke, strict tests, APK export/upload and emulator process-liveness. The build summary reports 1,060 core checks / 0 failures, Act V 0 failures, continuity 70/0, dynasty 39/0 and family development 19/0.
+- APK artifact [#15093451389](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736707): 65,321,994-byte ZIP. Extracted APK: 65,877,755 bytes, SHA-256 `6fa7fd80033e8426ec09bc601f7fe0e3796cf06837cb347c0fae1528339ceef7`. It has a valid CI/test signature, ABIs `arm64-v8a`, `armeabi-v7a`, `x86_64`, and requests no Android permissions. This is not a production-signed release.
+
+### Android screenshot review — important visual blocker
+
+The process-liveness check passed, but I downloaded and inspected the exact-head test-log artifact [#15093207065](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45768736707/artifacts/15093207065). Its `honor400-emulator.png` (1368×632) shows only a dark central menu shell with blank button rectangles: the title and menu labels are not visible. The app process stayed alive, so the existing main workflow's process check is a false-positive for usable rendering.
+
+The same artifact's `android-logcat.txt` records:
+- `rendering/limits/global_shader_variables/buffer_size` exceeding the emulator's 16,384-byte uniform-buffer limit;
+- `SceneShaderGLES3` link failures because fragment uniforms exceed `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)`;
+- SwiftShader GLES3 error messages. No fatal Java exception or native fatal signal was captured.
+
+This is a pre-existing AOSP ATD / forced SwiftShader presentation problem; the new battlefield atlas adds no shader or global uniform. Do not count the emulator process-liveness pass as visual verification.
+
+The separate QA branch [PR #164](https://github.com/ninjun42215-gif/KindleWake/pull/164) already has a stronger API 35 Google APIs/default-GPU route, avoids display-size/density mutation and OCR-checks visible title/menu labels. Its exact-head [Build #45014535413](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45014535413) passed; I inspected [test-log artifact #14751421618](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45014535413/artifacts/14751421618): the screenshot visibly renders KINDLEWAKE, THE SUNDERED VOW, NEW GAME, LOAD GAME, SETTINGS and the other menu labels, and the OCR artifact contains those strings. A coordination comment with the false-positive evidence was added to PR #164. Keep that QA work separate and reconcile it before treating emulator screenshots as a release gate.
 
 The first visual-workflow attempt failed because the downloaded executable was not exposed as `godot`; a symlink fixed that. The next attempt exposed an early editor quit that aborted Godot's global-class scan; changing the import command to the repository's proven `--quit-after 120` sequence fixed it. The final child code-head validation above passed.
 
