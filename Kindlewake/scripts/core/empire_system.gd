@@ -6,6 +6,12 @@ const DEFAULT_TAX_RATE := 0.10
 const MIN_TAX_RATE := 0.0
 const MAX_TAX_RATE := 0.25
 const HISTORY_LIMIT := 24
+const GOVERNOR_STAT_BASELINE := 6
+const GOVERNOR_STAT_STEP := 4
+const GOVERNOR_MAX_INCOME_PER_GOVERNOR := 2
+const GOVERNOR_MAX_STABILITY_PER_GOVERNOR := 2
+const GOVERNOR_MAX_INCOME_BONUS := 8
+const GOVERNOR_MAX_STABILITY_BONUS := 3
 const POLICY_DEFINITIONS := {
     "granaries": {"name":"Royal Granaries","cost":300,"stability":2,"income_multiplier":1.0,"upkeep_per_region":0},
     "tax_relief": {"name":"Tax Relief","cost":250,"stability":3,"income_multiplier":1.0,"upkeep_per_region":0},
@@ -100,6 +106,63 @@ static func appoint_governor(state: Dictionary, faction_state: Dictionary, regio
     return true
 
 
+static func governor_effects_for_stats(stats: Dictionary) -> Dictionary:
+    # Governors use trained base attributes. INT improves administration; LDR
+    # improves public order. Bonuses are deliberately small and deterministic.
+    var intelligence := maxi(0, int(stats.get("int", 0)))
+    var leadership := maxi(0, int(stats.get("ldr", 0)))
+    var income_bonus := clampi(floori(float(intelligence - GOVERNOR_STAT_BASELINE) / float(GOVERNOR_STAT_STEP)), 0, GOVERNOR_MAX_INCOME_PER_GOVERNOR)
+    var stability_bonus := clampi(floori(float(leadership - GOVERNOR_STAT_BASELINE) / float(GOVERNOR_STAT_STEP)), 0, GOVERNOR_MAX_STABILITY_PER_GOVERNOR)
+    return {
+        "intelligence": intelligence,
+        "leadership": leadership,
+        "income_bonus_percent": income_bonus,
+        "stability_bonus": stability_bonus
+    }
+
+
+static func filter_governor_stats_for_roster(governors: Dictionary, roster: Array, character_stats_by_id: Dictionary) -> Dictionary:
+    var filtered: Dictionary = {}
+    for character_value in governors.values():
+        var character_id := str(character_value)
+        if character_id == "" or filtered.has(character_id) or not roster.has(character_id):
+            continue
+        var stats_value: Variant = character_stats_by_id.get(character_id, {})
+        if not stats_value is Dictionary:
+            continue
+        var stats: Dictionary = stats_value
+        filtered[character_id] = stats.duplicate(true)
+    return filtered
+
+
+static func governor_bonus_summary(state: Dictionary, faction_state: Dictionary, character_stats_by_id: Dictionary = {}) -> Dictionary:
+    var governors_value: Variant = state.get("governors", {})
+    var governors: Dictionary = governors_value if governors_value is Dictionary else {}
+    var by_region: Dictionary = {}
+    var assigned_characters: Dictionary = {}
+    var income_bonus := 0
+    var stability_bonus := 0
+    for region_id in _owned_regions(state, faction_state):
+        var character_id := str(governors.get(region_id, ""))
+        if character_id == "" or assigned_characters.has(character_id):
+            continue
+        var stats_value: Variant = character_stats_by_id.get(character_id, {})
+        if not stats_value is Dictionary:
+            continue
+        var stats: Dictionary = stats_value
+        var effects := governor_effects_for_stats(stats)
+        effects["character_id"] = character_id
+        by_region[region_id] = effects
+        assigned_characters[character_id] = true
+        income_bonus += int(effects.get("income_bonus_percent", 0))
+        stability_bonus += int(effects.get("stability_bonus", 0))
+    return {
+        "income_bonus_percent": mini(GOVERNOR_MAX_INCOME_BONUS, income_bonus),
+        "stability_bonus": mini(GOVERNOR_MAX_STABILITY_BONUS, stability_bonus),
+        "by_region": by_region
+    }
+
+
 static func enact_policy(state: Dictionary, policy_id: String, available_gold: int) -> Dictionary:
     if not POLICY_DEFINITIONS.has(policy_id):
         return {"ok":false,"reason":"Unknown realm policy."}
@@ -116,7 +179,7 @@ static func enact_policy(state: Dictionary, policy_id: String, available_gold: i
     return {"ok":true,"policy":policy_id,"name":str(definition.get("name", policy_id)),"cost":cost,"treasury_after":available_gold-cost}
 
 
-static func estimate_monthly_finances(state: Dictionary, faction_state: Dictionary, base_income: int, base_upkeep: int) -> Dictionary:
+static func estimate_monthly_finances(state: Dictionary, faction_state: Dictionary, base_income: int, base_upkeep: int, character_stats_by_id: Dictionary = {}) -> Dictionary:
     var owned := _owned_regions(state, faction_state)
     var tax_rate := clampf(float(state.get("tax_rate", DEFAULT_TAX_RATE)), MIN_TAX_RATE, MAX_TAX_RATE)
     var stability := clampi(int(state.get("stability", 65)), 0, 100)
@@ -131,23 +194,28 @@ static func estimate_monthly_finances(state: Dictionary, faction_state: Dictiona
         var policy: Dictionary = POLICY_DEFINITIONS[policy_id]
         income = roundi(float(income) * float(policy.get("income_multiplier", 1.0)))
         upkeep += owned.size() * int(policy.get("upkeep_per_region", 0))
+    var governor_bonuses := governor_bonus_summary(state, faction_state, character_stats_by_id)
+    income = roundi(float(income) * (1.0 + float(governor_bonuses.get("income_bonus_percent", 0)) / 100.0))
     return {
         "owned_regions":owned.size(),
         "base_income":maxi(0, base_income),
         "base_upkeep":maxi(0, base_upkeep),
         "income":maxi(0, income),
         "upkeep":upkeep,
-        "net":income-upkeep
+        "net":income-upkeep,
+        "governor_income_bonus_percent":int(governor_bonuses.get("income_bonus_percent", 0)),
+        "governor_stability_bonus":int(governor_bonuses.get("stability_bonus", 0)),
+        "governor_effects_by_region":(governor_bonuses.get("by_region", {}) as Dictionary).duplicate(true)
     }
 
 
-static func advance_month(state: Dictionary, faction_state: Dictionary, month_token: String, base_income: int, base_upkeep: int, shared_treasury: int) -> Dictionary:
+static func advance_month(state: Dictionary, faction_state: Dictionary, month_token: String, base_income: int, base_upkeep: int, shared_treasury: int, character_stats_by_id: Dictionary = {}) -> Dictionary:
     if month_token == "":
         return {"ok":false,"reason":"A unique month token is required."}
     var processed: Array = state.get("processed_months", [])
     if processed.has(month_token):
         return {"ok":false,"reason":"This realm month has already been settled."}
-    var finances := estimate_monthly_finances(state, faction_state, base_income, base_upkeep)
+    var finances := estimate_monthly_finances(state, faction_state, base_income, base_upkeep, character_stats_by_id)
     var treasury_before := maxi(0, shared_treasury)
     var treasury_after := maxi(0, treasury_before + int(finances.net))
     var stability_delta := 0
@@ -163,6 +231,7 @@ static func advance_month(state: Dictionary, faction_state: Dictionary, month_to
         stability_delta += 3
     if int(finances.net) < 0:
         stability_delta -= 3
+    stability_delta += int(finances.get("governor_stability_bonus", 0))
     state["stability"] = clampi(int(state.get("stability", 65)) + stability_delta, 0, 100)
     state["month_index"] = maxi(0, int(state.get("month_index", 0))) + 1
     processed.append(month_token)
@@ -178,15 +247,17 @@ static func advance_month(state: Dictionary, faction_state: Dictionary, month_to
         "treasury_after":treasury_after,
         "owned_regions":int(finances.owned_regions),
         "stability":int(state.stability),
-        "stability_delta":stability_delta
+        "stability_delta":stability_delta,
+        "governor_income_bonus_percent":int(finances.get("governor_income_bonus_percent", 0)),
+        "governor_stability_bonus":int(finances.get("governor_stability_bonus", 0))
     }
     _record(state, result)
     return result
 
 
-static func realm_summary(state: Dictionary, faction_state: Dictionary, shared_treasury: int, base_income: int = 0, base_upkeep: int = 0) -> Dictionary:
+static func realm_summary(state: Dictionary, faction_state: Dictionary, shared_treasury: int, base_income: int = 0, base_upkeep: int = 0, character_stats_by_id: Dictionary = {}) -> Dictionary:
     var owned := _owned_regions(state, faction_state)
-    var finances := estimate_monthly_finances(state, faction_state, base_income, base_upkeep)
+    var finances := estimate_monthly_finances(state, faction_state, base_income, base_upkeep, character_stats_by_id)
     var policies: Dictionary = state.get("policies", {})
     var active: Array = []
     for policy_id in policies:
@@ -207,6 +278,9 @@ static func realm_summary(state: Dictionary, faction_state: Dictionary, shared_t
         "monthly_income":int(finances.income),
         "monthly_upkeep":int(finances.upkeep),
         "monthly_net":int(finances.net),
+        "governor_income_bonus_percent":int(finances.get("governor_income_bonus_percent", 0)),
+        "governor_stability_bonus":int(finances.get("governor_stability_bonus", 0)),
+        "governor_effects_by_region":(finances.get("governor_effects_by_region", {}) as Dictionary).duplicate(true),
         "month_index":int(state.get("month_index", 0))
     }
 

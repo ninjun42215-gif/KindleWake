@@ -91,6 +91,7 @@ func _initialize() -> void:
     _test_holding_system()
     _test_empire_economy()
     _test_empire_realm_administration()
+    _test_governor_long_run_economy()
     _test_empire_development()
     _test_dungeon_mechanisms()
     _test_secret_passages()
@@ -606,6 +607,52 @@ func _test_empire_realm_administration() -> void:
     check(not bool(EmpireSystemScript.advance_month(state, factions, "empire-turn-1", 20, 4, 119).get("ok", true)), "realm month settlement is idempotent")
     var summary: Dictionary = EmpireSystemScript.realm_summary(state, factions, 119, 20, 4)
     check(int(summary.get("treasury", 0)) == 119 and int(summary.get("owned_regions", []).size()) == 2 and int(summary.get("governor_count", 0)) == 1, "realm summary reads the shared treasury and canonical faction ownership")
+    var governor_stats := {
+        "torren":{"int":14,"ldr":14},
+        "bram":{"int":14,"ldr":14}
+    }
+    var governor_bonuses: Dictionary = EmpireSystemScript.governor_bonus_summary(state, factions, governor_stats)
+    check(int(governor_bonuses.get("income_bonus_percent", 0)) == 2 and int(governor_bonuses.get("stability_bonus", 0)) == 2 and (governor_bonuses.get("by_region", {}) as Dictionary).has("sethmarch"), "an appointed governor's INT and LDR produce transparent regional bonuses")
+    var unfiltered_governor_stats: Dictionary = {
+        "torren":{"int":14,"ldr":14},
+        "bram":{"int":14,"ldr":14}
+    }
+    var rostered_governor_stats: Dictionary = EmpireSystemScript.filter_governor_stats_for_roster(
+        {"sethmarch":"torren","orrowen_weald":"bram"},
+        ["torren"],
+        unfiltered_governor_stats
+    )
+    check(rostered_governor_stats.has("torren") and not rostered_governor_stats.has("bram"), "only currently rostered governors contribute administrative attributes")
+    var threshold_effects: Dictionary = EmpireSystemScript.governor_effects_for_stats({"int":9,"ldr":9})
+    var first_step_effects: Dictionary = EmpireSystemScript.governor_effects_for_stats({"int":10,"ldr":10})
+    check(int(threshold_effects.get("income_bonus_percent", -1)) == 0 and int(first_step_effects.get("income_bonus_percent", 0)) == 1 and int(first_step_effects.get("stability_bonus", 0)) == 1, "governor attribute bonuses follow the documented four-point threshold")
+    var governor_finance: Dictionary = EmpireSystemScript.estimate_monthly_finances(state, factions, 100, 4, governor_stats)
+    check(int(governor_finance.get("income", 0)) == 118 and int(governor_finance.get("governor_income_bonus_percent", 0)) == 2, "governor INT increases post-tax, post-policy realm income by its bounded percentage")
+    check(int(governor_finance.get("governor_stability_bonus", 0)) == 2, "governor LDR contributes bounded monthly realm stability")
+    var finance_without_stats: Dictionary = EmpireSystemScript.estimate_monthly_finances(state, factions, 100, 4)
+    check(int(finance_without_stats.get("income", 0)) == 116 and int(finance_without_stats.get("governor_income_bonus_percent", 0)) == 0, "older callers and unprovided governor stats retain the original finance calculation")
+    var foreign_governor_state: Dictionary = state.duplicate(true)
+    var foreign_governors: Dictionary = foreign_governor_state["governors"].duplicate(true)
+    foreign_governors["elyria"] = "bram"
+    foreign_governor_state["governors"] = foreign_governors
+    var held_governor_bonuses: Dictionary = EmpireSystemScript.governor_bonus_summary(foreign_governor_state, factions, governor_stats)
+    check(int(held_governor_bonuses.get("income_bonus_percent", 0)) == 2 and (held_governor_bonuses.get("by_region", {}) as Dictionary).size() == 1, "governors outside player-held regions do not grant realm bonuses")
+    var duplicate_governor_state: Dictionary = state.duplicate(true)
+    var duplicate_governors: Dictionary = duplicate_governor_state["governors"].duplicate(true)
+    duplicate_governors["orrowen_weald"] = "torren"
+    duplicate_governor_state["governors"] = duplicate_governors
+    var duplicate_governor_bonuses: Dictionary = EmpireSystemScript.governor_bonus_summary(duplicate_governor_state, factions, governor_stats)
+    check(int(duplicate_governor_bonuses.get("income_bonus_percent", 0)) == 2 and (duplicate_governor_bonuses.get("by_region", {}) as Dictionary).size() == 1, "a duplicated legacy governor assignment cannot stack the same companion twice")
+    var multi_governor_state: Dictionary = state.duplicate(true)
+    var multi_governors: Dictionary = multi_governor_state["governors"].duplicate(true)
+    multi_governors["orrowen_weald"] = "bram"
+    multi_governor_state["governors"] = multi_governors
+    var multi_governor_bonuses: Dictionary = EmpireSystemScript.governor_bonus_summary(multi_governor_state, factions, governor_stats)
+    check(int(multi_governor_bonuses.get("income_bonus_percent", 0)) == 4 and int(multi_governor_bonuses.get("stability_bonus", 0)) == 3, "multiple governors stack only within the realm-wide stability cap")
+    var governed_month: Dictionary = EmpireSystemScript.advance_month(state, factions, "empire-turn-governor", 100, 4, 100, governor_stats)
+    check(bool(governed_month.get("ok", false)) and int(governed_month.get("treasury_after", 0)) == 214 and int(governed_month.get("stability", 0)) == 67, "governor bonuses settle once into the shared treasury and realm stability")
+    var governed_summary: Dictionary = EmpireSystemScript.realm_summary(state, factions, 214, 100, 4, governor_stats)
+    check(int(governed_summary.get("governor_income_bonus_percent", 0)) == 2 and int(governed_summary.get("governor_stability_bonus", 0)) == 2 and (governed_summary.get("governor_effects_by_region", {}) as Dictionary).has("sethmarch"), "realm summary exposes the same governor effects used by settlement")
     var normalized: Dictionary = EmpireSystemScript.normalize_state({
         "ruler_faction":"house_dunmarrow","tax_rate":0.9,"stability":140,"legitimacy":-5,
         "policies":{"granaries":true,"unknown_policy":true},"governors":{"sethmarch":"torren","elyria":"torren","unknown_region":"bram"},"processed_months":["m1","m1",""],
@@ -3151,3 +3198,100 @@ func _test_opening_chapter() -> void:
     check(bool(ledger.get("kaer_ledger_organized", false)) and bool(ledger.get("prologue_people_saved", false)), "ledger priority preserves earlier prologue consequences")
     check(OpeningChapterSystem.apply_arrival_choice(prior, "unknown").is_empty(), "unknown keep priorities are rejected")
     check(OpeningChapterSystem.priority_acknowledgement("repair_well").contains("Clean water"), "keep priority has an authored narrative acknowledgement")
+
+
+func _test_governor_long_run_economy() -> void:
+    print("[governor economy simulation]")
+    var no_governors: Dictionary = _simulate_governor_economy(24, 0, false, 0.10, 400, 100, 1000)
+    var one_governor: Dictionary = _simulate_governor_economy(24, 1, false, 0.10, 400, 100, 1000)
+    var two_governors: Dictionary = _simulate_governor_economy(24, 2, false, 0.10, 400, 100, 1000)
+    var maximum_governors: Dictionary = _simulate_governor_economy(24, 4, false, 0.10, 400, 100, 1000)
+    var roads_without_governors: Dictionary = _simulate_governor_economy(24, 0, true, 0.10, 400, 100, 1000)
+    var roads_one_governor: Dictionary = _simulate_governor_economy(24, 1, true, 0.10, 400, 100, 1000)
+    var roads_two_governors: Dictionary = _simulate_governor_economy(24, 2, true, 0.10, 400, 100, 1000)
+    var roads_with_maximum_governors: Dictionary = _simulate_governor_economy(24, 4, true, 0.10, 400, 100, 1000)
+
+    check(bool(no_governors.get("ok", false)) and bool(one_governor.get("ok", false)) and bool(two_governors.get("ok", false)) and bool(maximum_governors.get("ok", false)) and bool(roads_without_governors.get("ok", false)) and bool(roads_one_governor.get("ok", false)) and bool(roads_two_governors.get("ok", false)) and bool(roads_with_maximum_governors.get("ok", false)), "24-month governor and Royal Roads scenarios settle without errors")
+    check(int(one_governor.get("treasury", 0)) > int(no_governors.get("treasury", 0)) and int(two_governors.get("treasury", 0)) > int(one_governor.get("treasury", 0)) and int(maximum_governors.get("treasury", 0)) > int(two_governors.get("treasury", 0)) and int(roads_one_governor.get("treasury", 0)) > int(roads_without_governors.get("treasury", 0)) and int(roads_two_governors.get("treasury", 0)) > int(roads_one_governor.get("treasury", 0)) and int(roads_with_maximum_governors.get("treasury", 0)) > int(roads_two_governors.get("treasury", 0)), "one, two and maximum governors produce progressive treasury gains with and without Royal Roads")
+    check(int(no_governors.get("stability", -1)) == 65 and int(one_governor.get("stability", 0)) == 100 and int(two_governors.get("stability", 0)) == 100 and int(maximum_governors.get("stability", 0)) == 100 and int(roads_one_governor.get("stability", 0)) == 100 and int(roads_two_governors.get("stability", 0)) == 100 and int(roads_with_maximum_governors.get("stability", 0)) == 100, "governor LDR stability contribution reaches but never exceeds the 100-point ceiling with and without roads")
+    check(int(maximum_governors.get("income_bonus_percent", 0)) == 8 and int(maximum_governors.get("stability_bonus", 0)) == 3, "four governors respect the realm-wide +8% income and +3 stability caps")
+    check(int(roads_without_governors.get("treasury", 0)) > int(no_governors.get("treasury", 0)) and int(roads_with_maximum_governors.get("treasury", 0)) > int(maximum_governors.get("treasury", 0)), "Royal Roads improve 24-month treasury outcomes with and without governors")
+    check(int(roads_without_governors.get("policy_cost_paid", 0)) == 400 and int(roads_one_governor.get("policy_cost_paid", 0)) == 400 and int(roads_two_governors.get("policy_cost_paid", 0)) == 400 and int(roads_with_maximum_governors.get("policy_cost_paid", 0)) == 400, "all Royal Roads scenarios include the one-time 400-gold policy cost")
+
+    var deficit_without_roads: Dictionary = _simulate_governor_economy(24, 4, false, 0.25, 100, 180, 100)
+    var deficit_with_roads: Dictionary = _simulate_governor_economy(24, 4, true, 0.25, 100, 180, 500)
+    check(bool(deficit_without_roads.get("ok", false)) and bool(deficit_with_roads.get("ok", false)) and bool(deficit_without_roads.get("all_months_negative", false)) and bool(deficit_with_roads.get("all_months_negative", false)) and int(deficit_without_roads.get("monthly_net", 0)) < 0 and int(deficit_with_roads.get("monthly_net", 0)) < 0, "high-tax maximum-governor scenarios retain negative net upkeep in every month")
+    check(int(deficit_without_roads.get("treasury", -1)) == 0 and int(deficit_with_roads.get("treasury", -1)) == 0 and int(deficit_without_roads.get("minimum_treasury", -1)) >= 0 and int(deficit_with_roads.get("minimum_treasury", -1)) >= 0, "24-month deficits never drive the shared treasury below zero")
+    check(int(deficit_without_roads.get("stability", -1)) == 0 and int(deficit_with_roads.get("stability", -1)) == 0 and int(deficit_without_roads.get("minimum_stability", -1)) >= 0 and int(deficit_with_roads.get("minimum_stability", -1)) >= 0, "high-tax deficit stability remains within the zero-to-100 bound")
+    check(int(deficit_with_roads.get("total_income", 0)) > int(deficit_without_roads.get("total_income", 0)), "Royal Roads improve income during a deficit without concealing negative net upkeep")
+    check(int(maximum_governors.get("month_index", 0)) == 24 and int(maximum_governors.get("history_count", 0)) == 24 and int(maximum_governors.get("processed_count", 0)) == 24, "24-month simulation records bounded settlement history and unique month tokens")
+
+
+func _simulate_governor_economy(months: int, governor_count: int, road_works: bool, tax_rate: float, base_income: int, base_upkeep: int, starting_treasury: int) -> Dictionary:
+    var state: Dictionary = EmpireSystemScript.new_campaign_state("house_dunmarrow")
+    if not EmpireSystemScript.set_tax_rate(state, tax_rate):
+        return {"ok":false,"reason":"Invalid tax rate."}
+    var territories: Dictionary = {}
+    var governors: Dictionary = {}
+    var character_stats: Dictionary = {}
+    for index in range(4):
+        var region_id := "simulation_region_%d" % (index + 1)
+        territories[region_id] = {"owner":"house_dunmarrow","status":"held"}
+        if index < clampi(governor_count, 0, 4):
+            var character_id := "simulation_governor_%d" % (index + 1)
+            governors[region_id] = character_id
+            character_stats[character_id] = {"int":14,"ldr":14}
+    state["governors"] = governors
+    state["policies"] = {}
+    var faction_state := {"territories":territories}
+    var treasury := maxi(0, starting_treasury)
+    var policy_cost_paid := 0
+    if road_works:
+        var policy_purchase: Dictionary = EmpireSystemScript.enact_policy(state, "road_works", treasury)
+        if not bool(policy_purchase.get("ok", false)):
+            return {"ok":false,"reason":str(policy_purchase.get("reason", "Royal Roads purchase failed."))}
+        treasury = int(policy_purchase.get("treasury_after", treasury))
+        policy_cost_paid = int(policy_purchase.get("cost", 0))
+    var minimum_treasury := treasury
+    var minimum_stability := int(state.get("stability", 65))
+    var total_income := 0
+    var last_net := 0
+    var all_months_negative := true
+    for month in range(months):
+        var settlement: Dictionary = EmpireSystemScript.advance_month(
+            state,
+            faction_state,
+            "governor-simulation-%d" % month,
+            base_income,
+            base_upkeep,
+            treasury,
+            character_stats
+        )
+        if not bool(settlement.get("ok", false)):
+            return {"ok":false,"reason":str(settlement.get("reason", "Settlement failed."))}
+        treasury = int(settlement.get("treasury_after", treasury))
+        minimum_treasury = mini(minimum_treasury, treasury)
+        minimum_stability = mini(minimum_stability, int(settlement.get("stability", 0)))
+        total_income += int(settlement.get("income", 0))
+        last_net = int(settlement.get("net", 0))
+        if last_net >= 0:
+            all_months_negative = false
+    var summary: Dictionary = EmpireSystemScript.realm_summary(state, faction_state, treasury, base_income, base_upkeep, character_stats)
+    var history: Array = state.get("history", [])
+    var processed_months: Array = state.get("processed_months", [])
+    return {
+        "ok":true,
+        "treasury":treasury,
+        "minimum_treasury":minimum_treasury,
+        "stability":int(state.get("stability", 0)),
+        "minimum_stability":minimum_stability,
+        "total_income":total_income,
+        "policy_cost_paid":policy_cost_paid,
+        "monthly_net":last_net,
+        "all_months_negative":all_months_negative,
+        "income_bonus_percent":int(summary.get("governor_income_bonus_percent", 0)),
+        "stability_bonus":int(summary.get("governor_stability_bonus", 0)),
+        "month_index":int(state.get("month_index", 0)),
+        "history_count":history.size(),
+        "processed_count":processed_months.size()
+    }
