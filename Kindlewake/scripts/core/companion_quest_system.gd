@@ -24,6 +24,7 @@ static func normalize_state(raw_state: Dictionary, catalog: Dictionary) -> Dicti
 		var progress_value: Variant = saved.get("progress", 0)
 		if typeof(progress_value) not in [TYPE_INT, TYPE_FLOAT]:
 			progress_value = 0
+		var progress_is_integral := typeof(progress_value) != TYPE_FLOAT or float(progress_value) == float(int(progress_value))
 		var progress := clampi(int(progress_value), 0, milestones.size())
 		var choices: Dictionary = saved.get("choices", {}) if typeof(saved.get("choices", {})) == TYPE_DICTIONARY else {}
 		var outcome := str(saved.get("outcome", ""))
@@ -38,7 +39,7 @@ static func normalize_state(raw_state: Dictionary, catalog: Dictionary) -> Dicti
 			if progress < milestones.size():
 				status = ACTIVE
 				outcome = ""
-			elif not outcomes.has(outcome):
+			elif not progress_is_integral or not outcomes.has(outcome):
 				status = READY
 				outcome = ""
 		else:
