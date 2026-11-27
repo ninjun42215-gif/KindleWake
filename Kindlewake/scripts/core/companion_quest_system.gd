@@ -102,7 +102,7 @@ static func resolve(state: Dictionary, quest_id: String, outcome: String, catalo
 	var quest_state: Dictionary = state[quest_id]
 	var milestones: Array = definitions[quest_id].get("milestones", [])
 	var progress_value: Variant = quest_state.get("progress", -1)
-	if str(quest_state.get("status", "")) != READY or typeof(progress_value) not in [TYPE_INT, TYPE_FLOAT] or int(progress_value) != milestones.size():
+	if str(quest_state.get("status", "")) != READY or typeof(progress_value) not in [TYPE_INT, TYPE_FLOAT] or float(progress_value) != float(milestones.size()):
 		return {"ok": false, "reason": "Complete the quest milestones before choosing its resolution."}
 	var outcomes: Array = definitions[quest_id].get("outcomes", [])
 	if not outcomes.has(outcome):
