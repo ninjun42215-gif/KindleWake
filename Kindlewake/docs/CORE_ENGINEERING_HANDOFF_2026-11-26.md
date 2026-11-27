@@ -207,3 +207,34 @@ The documentation-updated head before this handoff append was `c904d8ad98dee4d6a
 - Governor bonuses remain based on trained base attributes; equipment and temporary battle effects do not alter them.
 - The AOSP ATD / forced SwiftShader rendering issue is owned by QA PR #164. This gameplay PR does not change emulator or release workflows.
 - Keep PR #182 draft and unmerged pending exact final-head CI and review of the balance assumptions.
+
+
+## Final exact-head verification — 27 November 2026
+
+Final documentation head at this checkpoint: `5d9bf4a7f6936ec11f4a0c8ed0727c42cd2e7ae8`.
+
+- [Project Health Audit #45935927770](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45935927770): passed.
+- [Workflow YAML Lint #45935927753](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45935927753): passed.
+- [Version Sync #45935927734](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45935927734): passed.
+- [Android Build #45935927744](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45935927744): overall failed at the AOSP ATD / forced SwiftShader emulator process-liveness step. Its import, 20/20 scene smoke, strict tests, APK export and upload stages passed.
+
+The exact-head build summary reports:
+- Godot 4.2.2 import: exit 0, no script errors.
+- Scene smoke: 20 loaded, 0 failures.
+- Strict suite: **1,031 checks, 0 failures**.
+- Campaign lifecycle, merchant UI, title/creator UI, Act V, campaign continuity (70), Chronicle dynasty (39), Chronicle family development (19) and balance report: exit 0.
+- APK export: 65.9 MB; valid CI/test signature; ARM64, ARMv7 and x86_64 native libraries; no Android permissions requested.
+
+Exact-head artifacts:
+- APK [#15171255043](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45935927744/artifacts/15171255043), 65,299,159-byte ZIP; GitHub artifact digest `sha256:8c5804fe7354d5944a86c5cbd0c1b4dc6d9323e25315bcf593a796b816b574d5`.
+- Test logs [#15171040886](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45935927744/artifacts/15171040886), 88,724-byte ZIP; GitHub artifact digest `sha256:8c20c28f643aebbcbe39323cd964f081d4d53221bccef8dfe86e0bd4e0f4d21a`.
+
+I downloaded and inspected the exact-head test-log artifact:
+- `honor400-emulator.png` is entirely black.
+- Logcat contains four `SceneShaderGLES3: Program linking failed` entries and `Fragment shader active uniforms exceed GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)`, followed by shader compile/bind failure.
+- The Godot launcher activity returned `Status: ok`, but after the 30-second wait `pidof com.kindlewake.game` found no running process; the emulator step failed.
+- The captured logcat has no `FATAL EXCEPTION`, native `Fatal signal`, `SCRIPT ERROR` or `Parse Error` matches.
+
+This confirms that the current mainline AOSP ATD / forced SwiftShader route still does not provide a usable rendering/process-survival result. It does not establish that all physical Android devices fail. QA PR #164 owns the alternate API 35 Google APIs/default-graphics + screenshot OCR gate; no physical handset has been tested.
+
+The final handoff update itself is documentation-only and must be treated as a new PR head with its own exact-head CI. Keep PR #182 draft and unmerged.
