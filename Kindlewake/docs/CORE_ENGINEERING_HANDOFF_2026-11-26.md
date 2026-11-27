@@ -238,3 +238,16 @@ I downloaded and inspected the exact-head test-log artifact:
 This confirms that the current mainline AOSP ATD / forced SwiftShader route still does not provide a usable rendering/process-survival result. It does not establish that all physical Android devices fail. QA PR #164 owns the alternate API 35 Google APIs/default-graphics + screenshot OCR gate; no physical handset has been tested.
 
 The final handoff update itself is documentation-only and must be treated as a new PR head with its own exact-head CI. Keep PR #182 draft and unmerged.
+
+
+## Follow-up refinement — full governor/Royal Roads matrix (27 November)
+
+A final review tightened the QA simulation so the governor-count comparison is performed with Royal Roads both disabled and enabled, not only for the no-governor and maximum-governor endpoints.
+
+The 24-month fixture now covers all eight combinations:
+- 0, 1, 2 and 4 governors without Royal Roads.
+- 0, 1, 2 and 4 governors with Royal Roads, charging the one-time 400-gold policy cost in every roads-enabled case.
+
+The high-tax / negative-upkeep cases also track every settlement month and assert that net remains negative for all 24 months, rather than checking only the final month's net. The same two cases continue to assert non-negative treasury/stability bounds.
+
+Latest code/test head for this refinement: `ca6eff89f01994d4b38c4578235309d45b54cc37`. The 11 existing simulation assertions were strengthened to cover the full matrix and all-month negative-net condition; no runtime formula or save data changed. Exact-head CI is required before treating this refinement as verified.
