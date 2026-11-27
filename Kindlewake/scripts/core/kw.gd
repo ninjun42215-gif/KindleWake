@@ -135,6 +135,18 @@ func _on_node_added(node: Node) -> void:
             button.button_up.connect(_on_button_up.bind(button))
 
 
+func _button_sfx_id(button: BaseButton) -> String:
+    if button is CheckButton:
+        return "ui_toggle"
+    if button is Button:
+        var caption := (button as Button).text.strip_edges().to_upper()
+        if caption in ["BACK", "CANCEL", "CLOSE", "RETURN", "NO"]:
+            return "ui_back"
+        if caption in ["CONTINUE", "NEW GAME", "LOAD GAME", "CONFIRM", "CREATE", "SAVE", "BUY", "SELL", "ACCEPT", "YES", "EXIT GAME", "QUIT TO DESKTOP"]:
+            return "ui_confirm"
+    return "ui_tap"
+
+
 func _on_button_down(button: BaseButton) -> void:
     if not is_instance_valid(button) or button.disabled:
         return
@@ -148,7 +160,7 @@ func _on_button_down(button: BaseButton) -> void:
         button.set_meta("kw_press_tween", tween)
         tween.tween_property(button, "scale", Vector2(0.96, 0.96), 0.06)
     buzz(12)
-    sfx("ui_tap")
+    sfx(_button_sfx_id(button))
 
 
 func _on_button_up(button: BaseButton) -> void:
@@ -171,16 +183,37 @@ func buzz(milliseconds: int = 15) -> void:
         Input.vibrate_handheld(milliseconds)
 
 
+func _resolve_sfx_path(sound_id: String) -> String:
+    # Prefer compact, lossless PCM WAV for the original short UI cues; retain
+    # OGG support for future longer or compressed effects.
+    for extension in [".wav", ".ogg"]:
+        var candidate: String = SFX_DIR + sound_id + str(extension)
+        if ResourceLoader.exists(candidate):
+            return candidate
+    return ""
+
+
+func _load_sfx_stream(sound_id: String) -> AudioStream:
+    if _sfx_cache.has(sound_id):
+        return _sfx_cache[sound_id] as AudioStream
+    var path := _resolve_sfx_path(sound_id)
+    if path.is_empty():
+        return null
+    var stream := load(path) as AudioStream
+    if stream == null:
+        return null
+    _sfx_cache[sound_id] = stream
+    return stream
+
+
 func sfx(sound_id: String, volume_db: float = -4.0) -> void:
     if not sfx_enabled:
         return
-    if not _sfx_cache.has(sound_id):
-        var path := SFX_DIR + sound_id + ".ogg"
-        if not ResourceLoader.exists(path):
-            return
-        _sfx_cache[sound_id] = load(path)
+    var stream := _load_sfx_stream(sound_id)
+    if stream == null:
+        return
     var player := AudioStreamPlayer.new()
-    player.stream = _sfx_cache[sound_id] as AudioStream
+    player.stream = stream
     player.volume_db = volume_db
     add_child(player)
     player.finished.connect(player.queue_free)
