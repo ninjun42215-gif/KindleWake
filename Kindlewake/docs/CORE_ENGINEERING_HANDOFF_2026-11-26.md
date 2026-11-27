@@ -251,3 +251,39 @@ The 24-month fixture now covers all eight combinations:
 The high-tax / negative-upkeep cases also track every settlement month and assert that net remains negative for all 24 months, rather than checking only the final month's net. The same two cases continue to assert non-negative treasury/stability bounds.
 
 Latest code/test head for this refinement: `ca6eff89f01994d4b38c4578235309d45b54cc37`. The 11 existing simulation assertions were strengthened to cover the full matrix and all-month negative-net condition; no runtime formula or save data changed. Exact-head CI is required before treating this refinement as verified.
+
+
+## Verification of the full governor/Royal Roads matrix — 27 November
+
+### Code/test head
+
+Exact code/test head: `ca6eff89f01994d4b38c4578235309d45b54cc37`.
+
+- [Project Health Audit #45936534381](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936534381): passed.
+- [Workflow YAML Lint #45936534375](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936534375): passed.
+- [Version Sync #45936534391](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936534391): passed.
+- [Android Build #45936534384](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936534384): import, 20-scene smoke, strict tests, APK export and upload passed; AOSP ATD / forced SwiftShader emulator process-liveness failed.
+- Strict suite: **1,031 checks / 0 failures**. All eight governor/Royal Roads combinations settled; both 24-month high-tax deficit cases remained net-negative in every month.
+
+### Documentation head before this verification append
+
+Exact documentation head: `3b3ac9ad0a299cc810bf0855b18c6e1c72d4788e`.
+
+- [Project Health Audit #45936565900](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936565900): passed.
+- [Workflow YAML Lint #45936565901](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936565901): passed.
+- [Version Sync #45936565851](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936565851): passed.
+- [Android Build #45936565825](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936565825): import, 20/20 scene smoke, strict tests, APK export/upload passed; emulator process-liveness failed.
+
+Exact documentation-head artifacts:
+- APK [#15170787447](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936565825/artifacts/15170787447), 65,299,152-byte ZIP; GitHub digest `sha256:a1af639b57927ef4453cf1ae68820c4551672003b7f81dc406da5fa5b29761ba`.
+- Test logs [#15171485252](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936565825/artifacts/15171485252), 83,942-byte ZIP; GitHub digest `sha256:ea6a86ca4135efcf797d5d4a6a985063e2f708d18d02de3edf7ff65de8b06c14`.
+
+I downloaded and inspected the final documentation-head test-log archive:
+- Scene smoke: 20 loaded, 0 failures.
+- Strict suite: 1,031 checks, 0 failures.
+- Screenshot `honor400-emulator.png`: entirely black.
+- Logcat: four `SceneShaderGLES3: Program linking failed` entries, `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)` exceeded, and shader compile/bind failure.
+- After the 30-second wait, `pidof com.kindlewake.game` found no running process; the emulator job failed.
+- No `FATAL EXCEPTION`, native `Fatal signal`, `SCRIPT ERROR` or `Parse Error` matches were present.
+
+These are CI/test artifacts only, not production releases. No physical Android handset was tested. The current AOSP ATD/forced SwiftShader path remains an unresolved QA/release gate owned by PR #164. The handoff-only commit created by this verification update requires its own exact-head checks.
