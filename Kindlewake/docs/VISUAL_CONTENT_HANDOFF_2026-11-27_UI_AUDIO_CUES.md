@@ -37,6 +37,7 @@
 
 - Source and WAVs are committed together.
 - The scene smoke test now checks AudioStreamWAV, 24 kHz, mono, non-empty PCM, 50–300 ms duration, and button-classification mapping.
+- First exact-head Android CI exposed a GDScript inference error for the WAV/OGG extension loop variable. The candidate path is now explicitly typed as String; the failed run stopped during import before scene smoke or gameplay tests. Re-run exact-head CI and report only its new result.
 - Exact-head CI must run after the PR is opened: Godot 4.2.2 import, scene smoke, strict core suite, Project Health, YAML Lint, Version Sync and Android export.
 - Headless resource validation does not prove audible playback, perceived mix, speaker quality, audio latency or no clipping on a real phone.
 - Required manual QA: listen on at least one Android phone and headphones; test Master volume at 0/low/full, SFX toggle off/on, rapid taps, repeated transitions, haptic toggle and reduced-motion mode.
