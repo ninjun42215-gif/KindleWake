@@ -72,3 +72,38 @@ Diagnostic log artifact: [#15171612417](https://github.com/ninjun42215-gif/Kindl
 ## Follow-up head
 
 The code now also rejects fractional saved progress from retaining a completed quest state. Final child-head CI and artifact details will be appended after the current branch checks finish.
+
+## Final exact-head verification
+
+**Code/test and pre-final-handoff head:** `2d322a381019c839979e2c38fcff04ca6f07f630`.
+
+- [Project Health Audit #45938680807](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45938680807) — passed.
+- [Workflow YAML Lint #45938680799](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45938680799) — passed.
+- [Version Sync #45938680889](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45938680889) — passed.
+- [Android Build #45938680852](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45938680852) — **failed at Android emulator process-survival**, after import, strict tests, APK export and upload succeeded.
+
+Exact build summary:
+
+- Godot 4.2.2 import: exit 0, no script errors.
+- Scene smoke: 20 loaded, 0 failures.
+- Main strict suite: 1,009 checks, 0 failures, 0 script errors, 0 parse errors.
+- Campaign lifecycle: passed; Merchant UI: passed; title/creator UI: passed.
+- Act V: 0 failures; campaign continuity: 70 checks, 0 failures.
+- Chronicle dynasty: 39 checks, 0 failures; Chronicle family: 19 checks, 0 failures.
+- Parent PR #179 garrison integrity: 12 checks, 0 failures.
+- Companion quest normalization: **21 checks, 0 failures**.
+- Balance report completed.
+
+APK artifact: [#15171128800](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45938680852/artifacts/15171128800), 65,298,421-byte archive, SHA-256 `cf90b1842c6387f5ff064d2c85d638dd4a24d7588f194a64eee981be4eb0d964`. Build summary reports a 65.9 MB signed APK with ARM64, ARMv7 and x86_64 libraries and no Android permissions.
+
+Diagnostic artifact: [#15172056577](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45938680852/artifacts/15172056577), SHA-256 `c42a2a0e8a1b8afef52be9aaae18f19966da3bedf5c0c6f73e49535c159582da`.
+
+### Android failure evidence
+
+The final-head screenshot is black. The emulator logcat records repeated `SceneShaderGLES3` program-link failures because fragment uniforms exceed `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)`, followed by shader bind warnings. The Godot process then exits with signal 9; the workflow fails its process-liveness check. No Java `FATAL EXCEPTION`, native fatal signal or GDScript/parse error was captured.
+
+The earlier run at `f9c3d9e` did keep the process alive, but its screenshot showed button panels with no visible text and the same shader-limit error. Therefore the Android emulator is **not visually or runtime verified**, despite successful import/tests/export. The current CI liveness gate does not establish correct text rendering. QA must resolve the shader/uniform issue and add a visual/text-presence assertion before release approval.
+
+## Current PR state
+
+PR #184 has been returned to its intended stacked base, `fix/holding-garrison-reserve-integrity-2026-11-25`. Parent PR #179 remains a separate draft. The child PR must not be merged directly to main before its parent dependency is integrated. No main, player-save, visual or QA-owned files were changed.
