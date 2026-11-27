@@ -3219,7 +3219,7 @@ func _test_governor_long_run_economy() -> void:
     var deficit_with_roads: Dictionary = _simulate_governor_economy(24, 4, true, 0.25, 100, 180, 100)
     check(bool(deficit_without_roads.get("ok", false)) and bool(deficit_with_roads.get("ok", false)) and int(deficit_without_roads.get("monthly_net", 0)) < 0 and int(deficit_with_roads.get("monthly_net", 0)) < 0, "high-tax maximum-governor scenarios retain their deliberately negative net upkeep")
     check(int(deficit_without_roads.get("treasury", -1)) == 0 and int(deficit_with_roads.get("treasury", -1)) == 0 and int(deficit_without_roads.get("minimum_treasury", -1)) >= 0 and int(deficit_with_roads.get("minimum_treasury", -1)) >= 0, "24-month deficits never drive the shared treasury below zero")
-    check(int(deficit_without_roads.get("stability", -1)) == 0 and int(deficit_with_roads.get("stability", -1)) >= 0 and int(deficit_with_roads.get("minimum_stability", -1)) >= 0, "high-tax deficit stability remains within the zero-to-100 bound")
+    check(int(deficit_without_roads.get("stability", -1)) == 0 and int(deficit_with_roads.get("stability", -1)) == 0 and int(deficit_without_roads.get("minimum_stability", -1)) >= 0 and int(deficit_with_roads.get("minimum_stability", -1)) >= 0, "high-tax deficit stability remains within the zero-to-100 bound")
     check(int(deficit_with_roads.get("total_income", 0)) > int(deficit_without_roads.get("total_income", 0)), "Royal Roads improve income during a deficit without concealing negative net upkeep")
     check(int(maximum_governors.get("month_index", 0)) == 24 and int(maximum_governors.get("history_count", 0)) == 24 and int(maximum_governors.get("processed_count", 0)) == 24, "24-month simulation records bounded settlement history and unique month tokens")
 
