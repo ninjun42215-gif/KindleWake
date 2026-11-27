@@ -122,6 +122,13 @@ func _test_runtime_guards(catalog: Dictionary) -> void:
     check(not bool(rejected.get("ok", false)) and forged_ready.sample.status == "ready",
         "runtime resolution rejects a ready flag that has not completed every milestone")
 
+    var fractional_ready := {
+        "sample": {"status": "ready", "progress": 3.5, "outcome": ""}
+    }
+    var fractional_result := CompanionQuestSystem.resolve(fractional_ready, "sample", "publish_record", catalog)
+    check(not bool(fractional_result.get("ok", false)),
+        "runtime resolution rejects fractional milestone progress")
+
     var valid_ready := {
         "sample": {"status": "ready", "progress": 3, "outcome": ""}
     }
