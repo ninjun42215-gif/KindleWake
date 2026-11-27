@@ -45,3 +45,7 @@ Parent PR #179 currently remains a separate draft. Its latest known exact-head P
 - This changes only recovery behavior for inconsistent saved quest records; no valid current quest progression should change.
 - If a historical save contains a completed quest with incomplete progress, it will no longer appear completed. That state could not be produced by the current progression API and is treated as corrupt/stale.
 - The child PR depends on the parent branch until PR #179 is integrated. Keep this PR draft and do not merge it independently into main.
+
+## CI routing note
+
+The repository's Android Build and Version Sync workflows are configured for pull requests targeting `main`. Because this feature is intentionally stacked on PR #179, PR #184 is temporarily targeted at `main` to trigger exact-head verification against the complete child tree (including its parent commits). After those runs complete, the PR base will be returned to the parent branch. The branch itself is not rebased or force-pushed.
