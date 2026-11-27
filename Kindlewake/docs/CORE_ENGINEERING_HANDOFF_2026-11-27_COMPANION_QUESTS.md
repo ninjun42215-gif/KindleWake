@@ -15,7 +15,7 @@ Hardened `CompanionQuestSystem` against inconsistent persisted and in-memory que
 - A saved `complete` state is retained only when every authored milestone is complete and the outcome belongs to that quest's outcome list.
 - A forged or stale completed snapshot with incomplete progress is reopened as `active`, preserving its valid progress and clearing its outcome.
 - A fully progressed completed snapshot with an unknown outcome is reopened as `ready`, so the player can make a valid concluding choice.
-- A non-numeric saved progress value resets safely to zero before clamping.
+- Non-numeric saved progress resets safely to zero before clamping; fractional saved progress cannot preserve a completed state.
 - Non-complete states no longer retain stale outcome values.
 - Runtime resolution independently checks that a `ready` record has completed every milestone.
 - `advance` and `status` safely handle malformed quest records without invalid Dictionary casts.
@@ -32,7 +32,7 @@ Hardened `CompanionQuestSystem` against inconsistent persisted and in-memory que
 
 New standalone test: `Kindlewake/tests/test_companion_quest_normalization.gd`.
 
-The canonical Android build runner invokes this script in its campaign test list. It covers valid state preservation, incomplete-completion recovery, invalid outcomes, ready/active reconciliation, negative/excessive/non-numeric progress, malformed choices, unknown quests, unsupported statuses, runtime resolve guards and malformed-record handling.
+The canonical Android build runner invokes this script in its campaign test list. It covers valid state preservation, incomplete-completion recovery, invalid outcomes, ready/active reconciliation, negative/excessive/non-numeric/fractional progress, malformed choices, unknown quests, unsupported statuses, runtime resolve guards and malformed-record handling.
 
 ## Exact refs and validation
 
@@ -49,3 +49,26 @@ Parent PR #179 currently remains a separate draft. Its latest known exact-head P
 ## CI routing note
 
 The repository's Android Build and Version Sync workflows are configured for pull requests targeting `main`. Because this feature is intentionally stacked on PR #179, PR #184 is temporarily targeted at `main` to trigger exact-head verification against the complete child tree (including its parent commits). After those runs complete, the PR base will be returned to the parent branch. The branch itself is not rebased or force-pushed.
+
+## Exact-head verification — first CI pass
+
+On the first implementation/test head `f9c3d9e8e408ee1553e0a6348f659b5a2997a70d`:
+
+- [Project Health Audit #45938157557](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45938157557) — passed.
+- [Workflow YAML Lint #45938157479](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45938157479) — passed.
+- [Version Sync #45938157503](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45938157503) — passed.
+- [Android Build #45938157483](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45938157483) — workflow passed, including import, strict tests, APK export, install and process-survival check.
+
+Observed test output: 1,009 main strict checks, 20/20 scene loads, 70 campaign continuity checks, 39 Chronicle dynasty checks, 19 Chronicle family checks, 12 parent-PR garrison integrity checks and 20 companion-quest normalization checks; all reported zero failures. The current branch adds one additional fractional-saved-progress assertion, so this first run is not the final-head test result.
+
+APK artifact: [#15171576766](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45938157483/artifacts/15171576766), 65,298,331-byte archive, SHA-256 `9393806401a33e3622f3c26319333bfccb684005eb397ac8d347a3671865f924`.
+
+### Visual qualification — do not treat the green emulator job as visual approval
+
+The uploaded screenshot `honor400-emulator.png` shows the dark title panel and button shapes but no readable title or button labels. The same run's logcat still reports `SceneShaderGLES3` fragment uniform overflow at `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)` and shader bind failures. The process remained alive, so the workflow's liveness/error gate passed, but visible text rendering did not. This remains a QA/release blocker; no renderer, shader, font or visual files were changed by this PR.
+
+Diagnostic log artifact: [#15171612417](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45938157483/artifacts/15171612417).
+
+## Follow-up head
+
+The code now also rejects fractional saved progress from retaining a completed quest state. Final child-head CI and artifact details will be appended after the current branch checks finish.
