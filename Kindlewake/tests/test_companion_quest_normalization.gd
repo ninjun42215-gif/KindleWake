@@ -68,6 +68,12 @@ func _test_incomplete_completion_recovery(catalog: Dictionary) -> void:
     check(int(incomplete.sample.progress) == 1 and incomplete.sample.outcome == "",
         "incomplete completion recovery preserves earned progress and clears the forged outcome")
 
+    var fractional_complete := CompanionQuestSystem.normalize_state({
+        "sample": {"status": "complete", "progress": 3.5, "outcome": "publish_record"}
+    }, catalog)
+    check(fractional_complete.sample.status == "ready" and int(fractional_complete.sample.progress) == 3 and fractional_complete.sample.outcome == "",
+        "fractional saved progress cannot retain a completed quest state")
+
     var invalid_outcome := CompanionQuestSystem.normalize_state({
         "sample": {"status": "complete", "progress": 3, "outcome": "invented_outcome"}
     }, catalog)
