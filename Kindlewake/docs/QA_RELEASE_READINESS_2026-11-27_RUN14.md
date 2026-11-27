@@ -199,3 +199,15 @@ Production signing-secret presence and required environment reviewers remain unv
 9. Verify production signing and protected release approvals before publishing.
 
 **No merge, force-push, branch deletion, repository-setting change, secret access or release publication occurred. No physical Android handset was tested.**
+
+
+## Run 14 follow-up — PR #185 emulator retry completed
+
+The failed Android job for PR #185 was rerun once (attempt 2) on the unchanged exact head `88603d2a2ea6e936035b61474e1659ad79e6d34c`. It failed again at emulator process survival:
+- [Android Build #45952128835, attempt 2](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45952128835) — failed.
+- Exact-head test-log artifact [#15188987014](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45952128835/artifacts/15188987014): ZIP SHA-256 `ff133afabdfd4e6c6a48325c772ace2e46b3b040e112a463b913775fb3164783`, matching GitHub artifact metadata; ZIP integrity passed.
+- Screenshot is fully black. Logcat contains four SceneShaderGLES3 link failures because fragment uniforms exceed `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)`, followed by the app process exiting with signal 9. No Java FATAL EXCEPTION, native fatal signal, GDScript error or parse error was captured.
+- The headless scene smoke still reports 3 CanvasItem RIDs leaked, 9 DummyTexture RIDs, 6 shaped-text RIDs, 1 font RID and ObjectDB instances leaked. The three CanvasItem RIDs are consistent with the three unfreed Button/CheckButton test controls.
+- Exact-head attempt-2 APK [#15189765403](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45952128835/artifacts/15189765403): ZIP SHA-256 `0e1bd65eb7d31ab40273e982075b270d81a51c56d0562ff3d2a913798f1ccda2`, matching metadata; ZIP integrity passed. Extracted APK: 65,886,370 bytes; SHA-256 `aac8bcf5b215dcd5cb5452dcfa63278cd0b0cb4210b638dded44e30208b2b819`. It remains a non-release candidate.
+
+Two failed attempts on the same exact head now reproduce the renderer/process failure. The earlier successful attempt remains a visual false positive because its screenshot had only empty button panels and its logcat contained the same shader errors. PR #185 must use PR #164's OCR/renderer-error gate before any Android visual/runtime approval. QA follow-up comment [#7215736461](https://github.com/ninjun42215-gif/KindleWake/pull/185#issuecomment-7215736461) records the rerun evidence.
