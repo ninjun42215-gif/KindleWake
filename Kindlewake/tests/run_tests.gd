@@ -3214,9 +3214,10 @@ func _test_governor_long_run_economy() -> void:
     check(int(no_governors.get("stability", -1)) == 65 and int(one_governor.get("stability", 0)) == 100 and int(two_governors.get("stability", 0)) == 100 and int(maximum_governors.get("stability", 0)) == 100, "governor LDR stability contribution reaches but never exceeds the 100-point ceiling")
     check(int(maximum_governors.get("income_bonus_percent", 0)) == 8 and int(maximum_governors.get("stability_bonus", 0)) == 3, "four governors respect the realm-wide +8% income and +3 stability caps")
     check(int(roads_without_governors.get("treasury", 0)) > int(no_governors.get("treasury", 0)) and int(roads_with_maximum_governors.get("treasury", 0)) > int(maximum_governors.get("treasury", 0)), "Royal Roads improve 24-month treasury outcomes with and without governors")
+    check(int(roads_without_governors.get("policy_cost_paid", 0)) == 400 and int(roads_with_maximum_governors.get("policy_cost_paid", 0)) == 400, "Royal Roads simulations include the one-time 400-gold policy cost")
 
     var deficit_without_roads: Dictionary = _simulate_governor_economy(24, 4, false, 0.25, 100, 180, 100)
-    var deficit_with_roads: Dictionary = _simulate_governor_economy(24, 4, true, 0.25, 100, 180, 100)
+    var deficit_with_roads: Dictionary = _simulate_governor_economy(24, 4, true, 0.25, 100, 180, 500)
     check(bool(deficit_without_roads.get("ok", false)) and bool(deficit_with_roads.get("ok", false)) and int(deficit_without_roads.get("monthly_net", 0)) < 0 and int(deficit_with_roads.get("monthly_net", 0)) < 0, "high-tax maximum-governor scenarios retain their deliberately negative net upkeep")
     check(int(deficit_without_roads.get("treasury", -1)) == 0 and int(deficit_with_roads.get("treasury", -1)) == 0 and int(deficit_without_roads.get("minimum_treasury", -1)) >= 0 and int(deficit_with_roads.get("minimum_treasury", -1)) >= 0, "24-month deficits never drive the shared treasury below zero")
     check(int(deficit_without_roads.get("stability", -1)) == 0 and int(deficit_with_roads.get("stability", -1)) == 0 and int(deficit_without_roads.get("minimum_stability", -1)) >= 0 and int(deficit_with_roads.get("minimum_stability", -1)) >= 0, "high-tax deficit stability remains within the zero-to-100 bound")
@@ -3239,9 +3240,16 @@ func _simulate_governor_economy(months: int, governor_count: int, road_works: bo
             governors[region_id] = character_id
             character_stats[character_id] = {"int":14,"ldr":14}
     state["governors"] = governors
-    state["policies"] = {"road_works":true} if road_works else {}
+    state["policies"] = {}
     var faction_state := {"territories":territories}
     var treasury := maxi(0, starting_treasury)
+    var policy_cost_paid := 0
+    if road_works:
+        var policy_purchase: Dictionary = EmpireSystemScript.enact_policy(state, "road_works", treasury)
+        if not bool(policy_purchase.get("ok", false)):
+            return {"ok":false,"reason":str(policy_purchase.get("reason", "Royal Roads purchase failed."))}
+        treasury = int(policy_purchase.get("treasury_after", treasury))
+        policy_cost_paid = int(policy_purchase.get("cost", 0))
     var minimum_treasury := treasury
     var minimum_stability := int(state.get("stability", 65))
     var total_income := 0
@@ -3273,6 +3281,7 @@ func _simulate_governor_economy(months: int, governor_count: int, road_works: bo
         "stability":int(state.get("stability", 0)),
         "minimum_stability":minimum_stability,
         "total_income":total_income,
+        "policy_cost_paid":policy_cost_paid,
         "monthly_net":last_net,
         "income_bonus_percent":int(summary.get("governor_income_bonus_percent", 0)),
         "stability_bonus":int(summary.get("governor_stability_bonus", 0)),
