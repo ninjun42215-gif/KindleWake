@@ -21,15 +21,27 @@ static func normalize_state(raw_state: Dictionary, catalog: Dictionary) -> Dicti
 		var status := str(saved.get("status", ""))
 		if status not in [ACTIVE, READY, COMPLETE]:
 			continue
-		var progress := clampi(int(saved.get("progress", 0)), 0, milestones.size())
+		var progress_value: Variant = saved.get("progress", 0)
+		if typeof(progress_value) not in [TYPE_INT, TYPE_FLOAT]:
+			progress_value = 0
+		var progress := clampi(int(progress_value), 0, milestones.size())
+		var choices: Dictionary = saved.get("choices", {}) if typeof(saved.get("choices", {})) == TYPE_DICTIONARY else {}
+		var outcome := str(saved.get("outcome", ""))
+		var outcomes: Array = definition.get("outcomes", [])
 		if status == READY and progress < milestones.size():
 			status = ACTIVE
 		elif status == ACTIVE and progress >= milestones.size():
 			status = READY
-		var choices: Dictionary = saved.get("choices", {}) if typeof(saved.get("choices", {})) == TYPE_DICTIONARY else {}
-		var outcome := str(saved.get("outcome", ""))
-		if status == COMPLETE and not (definition.get("outcomes", []) as Array).has(outcome):
-			status = READY
+		elif status == COMPLETE:
+			# A completed record is valid only after every authored milestone and a known outcome.
+			# Older/corrupt snapshots are reopened at their last valid progress, never auto-rewarded.
+			if progress < milestones.size():
+				status = ACTIVE
+				outcome = ""
+			elif not outcomes.has(outcome):
+				status = READY
+				outcome = ""
+		else:
 			outcome = ""
 		normalized[quest_id] = {
 			"status": status,
@@ -65,6 +77,8 @@ static func advance(state: Dictionary, quest_id: String, milestone_id: String, c
 	var definitions: Dictionary = catalog.get("quests", {})
 	if not definitions.has(quest_id) or not state.has(quest_id):
 		return {"ok": false, "reason": "This companion quest is not active."}
+	if typeof(state[quest_id]) != TYPE_DICTIONARY:
+		return {"ok": false, "reason": "This companion quest state is invalid."}
 	var quest_state: Dictionary = state[quest_id]
 	if str(quest_state.get("status", "")) != ACTIVE:
 		return {"ok": false, "reason": "This companion quest is not awaiting another milestone."}
@@ -83,8 +97,12 @@ static func resolve(state: Dictionary, quest_id: String, outcome: String, catalo
 	var definitions: Dictionary = catalog.get("quests", {})
 	if not definitions.has(quest_id) or not state.has(quest_id):
 		return {"ok": false, "reason": "This companion quest is not active."}
+	if typeof(state[quest_id]) != TYPE_DICTIONARY:
+		return {"ok": false, "reason": "This companion quest state is invalid."}
 	var quest_state: Dictionary = state[quest_id]
-	if str(quest_state.get("status", "")) != READY:
+	var milestones: Array = definitions[quest_id].get("milestones", [])
+	var progress_value: Variant = quest_state.get("progress", -1)
+	if str(quest_state.get("status", "")) != READY or typeof(progress_value) not in [TYPE_INT, TYPE_FLOAT] or int(progress_value) != milestones.size():
 		return {"ok": false, "reason": "Complete the quest milestones before choosing its resolution."}
 	var outcomes: Array = definitions[quest_id].get("outcomes", [])
 	if not outcomes.has(outcome):
@@ -96,6 +114,6 @@ static func resolve(state: Dictionary, quest_id: String, outcome: String, catalo
 
 
 static func status(state: Dictionary, quest_id: String) -> String:
-	if not state.has(quest_id):
+	if not state.has(quest_id) or typeof(state[quest_id]) != TYPE_DICTIONARY:
 		return "not_started"
 	return str((state[quest_id] as Dictionary).get("status", "not_started"))
