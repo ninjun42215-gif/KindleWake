@@ -167,3 +167,43 @@ The prior 1,019-check run on `cc174ae` is historical and superseded for the corr
 - The INT/LDR mapping and +8% / +3 realm caps are an initial balance pass; review campaign simulations before merging.
 - Governor bonuses use base attributes, not gear/rune bonuses. This is intentional for predictable administration but should remain clearly described in the UI.
 - Physical Android viewport, touch, pause/resume, low-memory and long-session QA remain separate release gates.
+
+
+## Follow-up — 27 November 2026: 24-month governor economy simulation
+
+QA review comments [#7190430035](https://github.com/ninjun42215-gif/KindleWake/pull/182#issuecomment-7190430035) and [#7191616982](https://github.com/ninjun42215-gif/KindleWake/pull/182#issuecomment-7191616982) correctly noted that the original battle balance report did not test recurring governor effects over a long realm timeline. This follow-up adds a deterministic 24-month simulation to the existing strict test runner.
+
+### Simulation coverage
+
+The new `_test_governor_long_run_economy()` exercises:
+- No governor, one governor, two governors and four governors over 24 monthly settlements.
+- Treasury progression and stability under the same four-region held-territory fixture.
+- Royal Roads disabled/enabled, including the one-time 400-gold policy purchase cost.
+- The maximum +8% realm income and +3 stability-per-turn caps.
+- A high-tax (25%) negative-net-upkeep case with four governors, both without roads and with roads.
+- Treasury and stability lower bounds, negative-net persistence, road-income improvement, month index, and the 24-entry settlement/processed-token history window.
+
+The deficit fixture starts with 100 gold without roads. The roads case starts with 500 gold, pays the 400-gold policy cost, and enters the same 100-gold operating balance. Both scenarios deliberately retain negative monthly net income; the test verifies that the shared treasury and stability clamp at zero rather than becoming negative.
+
+### Code/test-head verification
+
+- Code/test head: `466d4792d3f9cd4a711e5b02a2c891d69634a2c6`.
+- Added 11 deterministic long-run assertions to `tests/run_tests.gd`; no runtime economy formula, save format, story, or player data changed.
+- [Project Health Audit #45935581580](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45935581580): passed.
+- [Workflow YAML Lint #45935581497](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45935581497): passed.
+- [Version Sync #45935581508](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45935581508): passed.
+- [Android Build #45935581529](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45935581529): Godot import, scene smoke, strict tests, APK export and APK upload completed successfully; emulator launch was still running when this handoff section was authored.
+- APK candidate [artifact #15169409703](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45935581529/artifacts/15169409703), archive size 65,299,175 bytes. This is a CI candidate, not a production release or physical-device verification.
+
+### Documentation alignment
+
+The branch README and continuation prompt now describe the governor INT/LDR bonuses rather than claiming they are unimplemented. Historical dated GDD revision notes were intentionally left intact.
+
+The documentation-updated head before this handoff append was `c904d8ad98dee4d6a6b01b30b552308c0222c2a3`. Its Project Health #45935804636, Workflow YAML Lint #45935804608 and Version Sync #45935804597 passed; Android Build #45935804605 was still running its import/test/export stage at last inspection. The final handoff commit requires its own exact-head checks.
+
+### Remaining review risks
+
+- The simulation is deterministic and covers 24 months, but it is a bounded synthetic four-region fixture, not a full authored campaign economy playthrough.
+- Governor bonuses remain based on trained base attributes; equipment and temporary battle effects do not alter them.
+- The AOSP ATD / forced SwiftShader rendering issue is owned by QA PR #164. This gameplay PR does not change emulator or release workflows.
+- Keep PR #182 draft and unmerged pending exact final-head CI and review of the balance assumptions.
