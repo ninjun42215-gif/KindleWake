@@ -187,7 +187,7 @@ func _resolve_sfx_path(sound_id: String) -> String:
     # Prefer compact, lossless PCM WAV for the original short UI cues; retain
     # OGG support for future longer or compressed effects.
     for extension in [".wav", ".ogg"]:
-        var candidate := SFX_DIR + sound_id + extension
+        var candidate: String = SFX_DIR + sound_id + str(extension)
         if ResourceLoader.exists(candidate):
             return candidate
     return ""
