@@ -125,7 +125,29 @@ Exact-head APK artifact [#15246319768](https://github.com/ninjun42215-gif/Kindle
 
 Keep #184 stacked on #179; do not integrate it independently.
 
-## 5. PR #185 — UI audio cues and test-resource leak
+## 5. PR #182 — governor economy and combat-balance review
+
+[PR #182](https://github.com/ninjun42215-gif/KindleWake/pull/182)  
+Exact head: `ed28b188a189eb1ca2c4c2219bd09898633d8386`; base main; **25 ahead / 0 behind**, seven changed files, draft, mergeable.
+
+Exact-head checks:
+- [Project Health #45936940377](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936940377) — passed.
+- [Workflow YAML Lint #45936940373](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936940373) — passed.
+- [Version Sync #45936940386](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936940386) — passed.
+- [Android Build #45936940378](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936940378) — import, 20-scene smoke, strict tests and APK export passed; emulator failed.
+
+The core suite reports **1,031 checks / 0 failures**. The deterministic 24-month governor/Royal Roads simulation adds 10 passing assertions covering 0/1/2/4 governors, roads enabled/disabled, progressive treasury gains, +8% income and +3 stability caps, high-tax negative upkeep, nonnegative treasury, bounded stability and unique settlement-month tokens.
+
+The separate AI-vs-AI combat report is not human playtesting: Hask Gravelteeth's opening scenario records 57% wins (18.5 turns, labelled hard), while other encounters record 80% (fair), 97% and 100% (easy). The 60-skirmish grind sample ends at 59/60 wins, with the party rising from levels 2–3 to 10–11 and 4,714 gold. Keep the economy simulation; request a short human playtest of the hard opener and easy repeat encounters before changing rewards or enemy stats. QA comment [#7238313603](https://github.com/ninjun42215-gif/KindleWake/pull/182#issuecomment-7238313603) records this recommendation.
+
+The Android screenshot is fully black. Logcat repeats the 16,384-byte global shader-buffer warning and four `SceneShaderGLES3` link failures from `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)`; no Java fatal exception, native fatal signal, GDScript error or parse error was captured.
+
+Exact-head APK artifact [#15171102295](https://github.com/ninjun42215-gif/KindleWake/actions/runs/45936940378/artifacts/15171102295):
+- ZIP: 65,299,094 bytes; SHA-256 `63660de0ac24f68c3151632b003b541de9302b2707582baab347dd858bf153f1` (matches GitHub artifact metadata).
+- Extracted APK: 65,852,762 bytes; SHA-256 `66070706ba83cc32171c1799541a21998db36bc4aa9e042c99fcef0abb31cea8`.
+- APK ZIP integrity passed; build summary reports valid CI/test signature, three ABIs and no requested permissions.
+
+## 6. PR #185 — UI audio cues and test-resource leak
 
 [PR #185](https://github.com/ninjun42215-gif/KindleWake)  
 Exact head: `88603d2a2ea6e936035b61474e1659ad79e6d34c`; base main; **3 ahead / 0 behind**, draft.
@@ -146,7 +168,7 @@ Source inspection confirms `scene_smoke_test.gd` creates three temporary control
 
 QA comment [#7238223276](https://github.com/ninjun42215-gif/KindleWake/pull/185#issuecomment-7238223276) links the follow-up. The audio assets are still absent from the central `asset_provenance.json` / `CREDITS.md`; the current ledger is dated 2026-11-19 and has no UI-audio entry. Add the project-authored audio entry before release. Audio playback, mute preference and rapid-tap behavior remain untested on a physical phone.
 
-## 6. PR #164 — alternate Android and release workflow
+## 7. PR #164 — alternate Android and release workflow
 
 [PR #164](https://github.com/ninjun42215-gif/KindleWake/pull/164)  
 Exact head: `f6a4fb0b9ce3b653f96d146aef9022bcca558fb2`; base main; **22 ahead / 0 behind**, draft, mergeable.
@@ -169,7 +191,7 @@ Source inspection confirms the PR:
 
 QA comment [#7238222976](https://github.com/ninjun42215-gif/KindleWake/pull/164#issuecomment-7238222976) records the new #186 false-positive reproduction. Keep #164 for human workflow/security review; no merge is authorized by this QA run.
 
-## 7. Mainline workflow/security audit
+## 8. Mainline workflow/security audit
 
 Current main `.github/workflows/build-apk.yml` still:
 - uses `aosp_atd` and forced `-gpu swiftshader_indirect`;
@@ -183,7 +205,7 @@ PR #164 corrects these source-level risks. Production signing-secret presence an
 
 The current provenance ledger `Kindlewake/data/asset_provenance.json` is dated 2026-11-19. It documents the existing local architecture atlas used by PR #186, but it does not include the four new UI audio files from PR #185.
 
-## 8. Branch divergence and integration order
+## 9. Branch divergence and integration order
 
 Selected live comparisons:
 - #164: 22 ahead / 0 behind main.
