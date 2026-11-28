@@ -56,8 +56,16 @@ A data-level validator equivalent to the current `LocalMap.validate()` contract 
 
 Result: **58 maps checked, 0 errors; all protected fields preserved.**
 
-## Required CI / remaining QA
-The pull request's Android build should run the existing Godot 4.2.2 first import, scene smoke, strict test suite (which invokes `LocalMap.validate()`), balance report and APK export. Do not claim those checks passed until exact-head Actions results are available.
+## Exact-head CI results — implementation/test head `e29d66aa2a732f6ed81f593bdb9c94716e486a27`
+
+- [Project Health Audit #2334](https://github.com/ninjun42215-gif/KindleWake/actions/runs/46116443808) — passed.
+- [Workflow YAML Lint #3396](https://github.com/ninjun42215-gif/KindleWake/actions/runs/46116443801) — passed.
+- [Synchronize Project Version #823](https://github.com/ninjun42215-gif/KindleWake/actions/runs/46116443812) — passed.
+- [Build Android APK #1383](https://github.com/ninjun42215-gif/KindleWake/actions/runs/46116443809) — Godot 4.2.2 import exit 0; scene smoke 20/20; strict suite 1,009 checks / 0 failures; campaign lifecycle, merchant UI, title/creator UI, Act V, campaign continuity (70), Chronicle dynasty (39), Chronicle family (19) and balance report passed; APK export and upload passed.
+- APK candidate artifact [#15251488575](https://github.com/ninjun42215-gif/KindleWake/actions/runs/46116443809/artifacts/15251488575), 65,297,999 bytes. Test logs and screenshot [artifact #15252086285](https://github.com/ninjun42215-gif/KindleWake/actions/runs/46116443809/artifacts/15252086285).
+
+### Android emulator result
+The build job failed only at the Android emulator process-liveness check. Installation succeeded and `am start -W` returned `Status: ok`, but after 30 seconds `pidof com.kindlewake.game` found no process. The captured screenshot is fully black. Logcat records four `SceneShaderGLES3` fragment shader link failures because active uniforms exceed `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)`, followed by shader bind failure, window death and process exit due to signal 9. No Java fatal exception, native fatal signal or GDScript/parse error was captured. This reproduces the existing emulator renderer issue and is unrelated to this data-only change; the QA remediation remains owned by PR #164. Do not call the APK visually verified or release-ready.
 
 Still required:
 1. Godot editor screenshots of all nine interiors at the intended phone zoom.
