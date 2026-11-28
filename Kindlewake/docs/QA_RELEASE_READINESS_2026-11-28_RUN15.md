@@ -187,7 +187,7 @@ The current provenance ledger `Kindlewake/data/asset_provenance.json` is dated 2
 
 Selected live comparisons:
 - #164: 22 ahead / 0 behind main.
-- #172: 19 ahead / 0 behind main after this handoff update.
+- #172: QA handoff branch based on current main; exact live head is tracked by the PR.
 - #179: 4 ahead / 0 behind main.
 - #184: 11 ahead / 0 behind parent #179.
 - #185: 3 ahead / 0 behind main.
