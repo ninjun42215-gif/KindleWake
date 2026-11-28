@@ -69,6 +69,9 @@ func _test_audio_feedback(kw_script: Script) -> void:
     else:
         failures += 1
         push_error("Toggle sound mapping failed")
+    back_button.free()
+    primary_button.free()
+    toggle_button.free()
     kw_instance.free()
 
 
