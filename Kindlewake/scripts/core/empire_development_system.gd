@@ -37,6 +37,25 @@ static func upgrade_building(holding_id: String, building_id: String, flags: Dic
     flags["empire_stockpile_materials"] = materials - material_cost
     return {"ok":true,"holding":holding_id,"building":building_id,"tier":tier + 1,"gold_cost":gold_cost,"materials_cost":material_cost,"treasury_after":treasury-gold_cost}
 
+static func _read_nonnegative_count(value: Variant) -> int:
+    match typeof(value):
+        TYPE_INT:
+            # Preserve the exact 64-bit value; converting it to float can lose precision.
+            var integer_value: int = value
+            return integer_value if integer_value >= 0 else -1
+        TYPE_FLOAT:
+            var numeric: float = value
+            if not is_finite(numeric) or numeric < 0.0 or numeric != floor(numeric):
+                return -1
+            # 2^63 is the first float outside the signed 64-bit integer range.
+            # Reject it before int() so malformed saves cannot overflow the conversion.
+            if numeric >= 9.223372036854776e18:
+                return -1
+            return int(numeric)
+        _:
+            return -1
+
+
 static func recruit(holding_id: String, troop_id: String, amount: int, flags: Dictionary, treasury: int) -> Dictionary:
     if not _player_holds(holding_id, flags):
         return {"ok":false,"reason":"Recruitment requires a player-administered holding."}
@@ -44,6 +63,14 @@ static func recruit(holding_id: String, troop_id: String, amount: int, flags: Di
         return {"ok":false,"reason":"Unknown troop type."}
     if amount <= 0:
         return {"ok":false,"reason":"Recruitment amount must be at least one."}
+    var army_key := "holding_recruits_" + holding_id
+    var raw_army: Variant = flags.get(army_key, {})
+    if typeof(raw_army) != TYPE_DICTIONARY:
+        return {"ok":false,"reason":"Recruitment reserve data is invalid; no resources were spent."}
+    var army: Dictionary = (raw_army as Dictionary).duplicate(true)
+    var existing_count := _read_nonnegative_count(army.get(troop_id, 0))
+    if existing_count < 0:
+        return {"ok":false,"reason":"The selected troop reserve is invalid; no resources were spent."}
     var count := mini(amount, 20)
     var troop: Dictionary = TROOPS[troop_id]
     var gold_cost := int(troop.gold) * count
@@ -51,27 +78,41 @@ static func recruit(holding_id: String, troop_id: String, amount: int, flags: Di
     var provisions := int(flags.get("empire_stockpile_provisions", 0))
     if treasury < gold_cost or provisions < provisions_cost:
         return {"ok":false,"reason":"Insufficient gold or provisions. Need %d gold and %d provisions." % [gold_cost, provisions_cost]}
-    var army_key := "holding_recruits_" + holding_id
-    var army: Dictionary = flags.get(army_key, {})
-    army = army.duplicate(true)
-    army[troop_id] = int(army.get(troop_id, 0)) + count
+    army[troop_id] = existing_count + count
     flags[army_key] = army
     flags["empire_stockpile_provisions"] = provisions - provisions_cost
     return {"ok":true,"holding":holding_id,"troop":troop_id,"recruited":count,"gold_cost":gold_cost,"provisions_cost":provisions_cost,"treasury_after":treasury-gold_cost,"army":army}
 
+
 static func assign_recruits_to_garrison(holding_id: String, troop_id: String, amount: int, flags: Dictionary) -> Dictionary:
     if not _player_holds(holding_id, flags):
         return {"ok":false,"reason":"Only a player holding can receive troops."}
+    if not TROOPS.has(troop_id):
+        return {"ok":false,"reason":"Unknown troop type."}
+    if amount <= 0:
+        return {"ok":false,"reason":"Assignment amount must be at least one."}
     var key := "holding_recruits_" + holding_id
-    var army: Dictionary = flags.get(key, {}).duplicate(true)
-    var available := int(army.get(troop_id, 0))
-    var count := clampi(amount, 0, available)
+    var raw_army: Variant = flags.get(key, {})
+    if typeof(raw_army) != TYPE_DICTIONARY:
+        return {"ok":false,"reason":"Recruitment reserve data is invalid; no troops were assigned."}
+    var army: Dictionary = (raw_army as Dictionary).duplicate(true)
+    var available := _read_nonnegative_count(army.get(troop_id, 0))
+    if available < 0:
+        return {"ok":false,"reason":"The selected troop reserve is invalid; no troops were assigned."}
+    var garrison_key := "holding_garrison_" + holding_id
+    var current_garrison := _read_nonnegative_count(flags.get(garrison_key, 0))
+    if current_garrison < 0:
+        return {"ok":false,"reason":"The holding garrison count is invalid; no troops were assigned."}
+    if current_garrison >= 999:
+        return {"ok":false,"reason":"This holding has reached the 999-soldier garrison limit."}
+    var capacity := 999 - current_garrison
+    var count := mini(amount, mini(available, capacity))
     if count <= 0:
         return {"ok":false,"reason":"No recruited troops are available to assign."}
     army[troop_id] = available - count
     flags[key] = army
-    flags["holding_garrison_" + holding_id] = int(flags.get("holding_garrison_" + holding_id, 0)) + count
-    return {"ok":true,"assigned":count,"garrison":int(flags["holding_garrison_" + holding_id])}
+    flags[garrison_key] = current_garrison + count
+    return {"ok":true,"assigned":count,"garrison":int(flags[garrison_key]),"reserve_remaining":int(army[troop_id])}
 
 static func start_siege(holding_id: String, objective_id: String, required_progress: int, flags: Dictionary) -> Dictionary:
     if not _player_holds(holding_id, flags):

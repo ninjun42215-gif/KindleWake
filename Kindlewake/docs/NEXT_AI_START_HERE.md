@@ -1,3 +1,5 @@
+> **LATEST CORE ENGINEERING FOLLOW-UP — 2026-11-28:** PR [#179](https://github.com/ninjun42215-gif/KindleWake/pull/179) has a QA-requested numeric-boundary hardening update on branch `fix/holding-garrison-reserve-integrity-2026-11-25`. Reserve counts now preserve integer variants without float conversion and reject NaN, infinities, fractional values and floats outside signed 64-bit range before casting. Ten new regression assertions are registered in the existing standalone garrison test (22 total). Exact-head CI is pending; do not reuse the historical 1,009-check result as evidence for this follow-up. Main remains `13f66ec19476c9af5ed2b5c81af95e4d8a026876`. Android visual verification remains owned by QA PR #164; use its API 35/OCR evidence rather than the mainline SwiftShader liveness-only result. Read `docs/CORE_ENGINEERING_HANDOFF_2026-11-25.md` for details.
+
 # KindleWake — Next AI Start Here
 
 **Canonical repository:** https://github.com/ninjun42215-gif/KindleWake  
