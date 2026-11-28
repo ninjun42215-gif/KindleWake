@@ -123,3 +123,15 @@ Addressed QA comment [#7215634205](https://github.com/ninjun42215-gif/KindleWake
 **Stack synchronization:** the child branch includes parent PR #179's numeric reserve-count hardening commit `b7e1cb61bd7cc5c0e19f67d76e318b3c5d74973f` as a merge parent. PR #184 remains based on the parent branch and draft.
 
 **Verification status:** this follow-up changes runtime code and tests. Run Godot import, the 24-check companion suite, the parent 22-check garrison suite, all campaign tests and exact-head Android/OCR verification before approval. Historical results above do not verify this follow-up. Do not claim physical-device validation.
+
+
+## Parent verification checkpoint — 2026-11-28
+
+Parent PR #179 exact head `b7e1cb61bd7cc5c0e19f67d76e318b3c5d74973f` completed its current-main PR checks:
+
+- [Project Health Audit #46103663027](https://github.com/ninjun42215-gif/KindleWake/actions/runs/46103663027) — passed.
+- [Workflow YAML Lint #46103663011](https://github.com/ninjun42215-gif/KindleWake/actions/runs/46103663011) — passed.
+- [Version Sync #46103663003](https://github.com/ninjun42215-gif/KindleWake/actions/runs/46103663003) — passed.
+- [Android Build #46103663059](https://github.com/ninjun42215-gif/KindleWake/actions/runs/46103663059) — import, 20/20 scene smoke, 1,009 main strict checks, campaign/UI/Chronicle suites and the **22-check garrison integrity suite** passed; the AOSP ATD / forced SwiftShader emulator install/launch stage failed. The APK export/upload step completed, but this is not Android visual approval.
+
+This parent result verifies the garrison changes only. The companion-quest numeric follow-up on the child branch still requires its own exact-head Godot/import/test checks. The child PR is temporarily based on `main` to trigger the full PR workflows; restore its base to `fix/holding-garrison-reserve-integrity-2026-11-25` after its exact-head checks complete.
