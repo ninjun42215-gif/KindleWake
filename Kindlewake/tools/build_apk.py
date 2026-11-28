@@ -768,6 +768,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 "test_chronicle_dynasty.gd",
                 "test_chronicle_family_development.gd",
                 "test_empire_development_integrity.gd",
+                "test_companion_quest_normalization.gd",
             ]
             for test_name in campaign_test_scripts:
                 say("\n[5b] Running " + test_name)
