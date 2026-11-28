@@ -106,3 +106,16 @@ The uploaded diagnostic logs and black screenshot are in [test-logs artifact #14
 - PR #164 owns Android release/emulator workflow hardening. Its workflow changes were not modified.
 - Keep PR #179 draft and unmerged until exact-head checks and review complete.
 - Main remains unchanged at `13f66ec19476c9af5ed2b5c81af95e4d8a026876`.
+
+
+## QA follow-up — numeric reserve bounds (2026-11-28)
+
+Addressed QA comment [#7159984750](https://github.com/ninjun42215-gif/KindleWake/pull/179#issuecomment-7159984750) in the reserve-count parser:
+
+- Integer variants are validated and returned as integers without a float round-trip, preserving large signed 64-bit values exactly.
+- Float variants are rejected when non-finite, negative, fractional or at/above the exclusive signed-64-bit upper bound.
+- Finite values are range-checked before conversion to int, preventing overflow/platform-dependent conversion behavior.
+- Added 10 regression assertions (9 direct boundary checks plus an API-level atomicity check covering NaN, positive/negative infinity and oversized finite floats).
+- The existing 12 integrity assertions remain unchanged. The new expected standalone total is 22 checks.
+
+**Verification status:** this follow-up changes runtime code and tests. Run the exact resulting PR head through Godot import, the strict garrison suite, the full build/test pipeline and the alternate API 35/OCR Android workflow. Historical results above do not verify this follow-up. Do not claim Android visual success from the mainline AOSP/SwiftShader liveness-only workflow.

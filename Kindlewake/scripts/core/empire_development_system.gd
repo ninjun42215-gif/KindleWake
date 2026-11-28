@@ -38,12 +38,22 @@ static func upgrade_building(holding_id: String, building_id: String, flags: Dic
     return {"ok":true,"holding":holding_id,"building":building_id,"tier":tier + 1,"gold_cost":gold_cost,"materials_cost":material_cost,"treasury_after":treasury-gold_cost}
 
 static func _read_nonnegative_count(value: Variant) -> int:
-    if typeof(value) not in [TYPE_INT, TYPE_FLOAT]:
-        return -1
-    var numeric := float(value)
-    if numeric < 0.0 or numeric != floor(numeric):
-        return -1
-    return int(numeric)
+    match typeof(value):
+        TYPE_INT:
+            # Preserve the exact 64-bit value; converting it to float can lose precision.
+            var integer_value: int = value
+            return integer_value if integer_value >= 0 else -1
+        TYPE_FLOAT:
+            var numeric: float = value
+            if not is_finite(numeric) or numeric < 0.0 or numeric != floor(numeric):
+                return -1
+            # 2^63 is the first float outside the signed 64-bit integer range.
+            # Reject it before int() so malformed saves cannot overflow the conversion.
+            if numeric >= 9.223372036854776e18:
+                return -1
+            return int(numeric)
+        _:
+            return -1
 
 
 static func recruit(holding_id: String, troop_id: String, amount: int, flags: Dictionary, treasury: int) -> Dictionary:

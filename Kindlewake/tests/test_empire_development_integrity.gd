@@ -11,6 +11,7 @@ func _initialize() -> void:
     _test_garrison_limit()
     _test_invalid_requests()
     _test_malformed_reserves()
+    _test_numeric_count_boundaries()
     print("Empire development integrity checks: %d   Failures: %d" % [checks, failures])
     quit(1 if failures > 0 else 0)
 
@@ -90,3 +91,35 @@ func _test_malformed_reserves() -> void:
     var recruit_count_result := Development.recruit("keep", "archer", 1, flags, 1000)
     check(not bool(assign_count_result.get("ok", true)) and not bool(recruit_count_result.get("ok", true)) and flags == malformed_count,
         "malformed troop counts fail safely and preserve the existing reserve")
+
+
+func _test_numeric_count_boundaries() -> void:
+    check(Development._read_nonnegative_count(9223372036854775807) == 9223372036854775807,
+        "maximum signed 64-bit integer is preserved without a float round-trip")
+    check(Development._read_nonnegative_count(-9223372036854775807 - 1) == -1,
+        "minimum signed 64-bit negative count is rejected")
+    check(Development._read_nonnegative_count(12.0) == 12,
+        "finite integer-valued float counts remain compatible")
+    check(Development._read_nonnegative_count(12.5) == -1,
+        "fractional float counts are rejected")
+    check(Development._read_nonnegative_count(NAN) == -1,
+        "NaN troop counts are rejected before integer conversion")
+    check(Development._read_nonnegative_count(INF) == -1,
+        "positive infinity troop counts are rejected before integer conversion")
+    check(Development._read_nonnegative_count(-INF) == -1,
+        "negative infinity troop counts are rejected before integer conversion")
+    check(Development._read_nonnegative_count(1.0e30) == -1,
+        "very large finite float counts are rejected before integer conversion")
+    check(Development._read_nonnegative_count(9.223372036854776e18) == -1,
+        "float at the signed 64-bit exclusive upper bound is rejected")
+
+    var all_rejected := true
+    for malformed_value in [NAN, INF, -INF, 1.0e30, 9.223372036854776e18]:
+        var flags := _base_flags()
+        flags["holding_recruits_keep"] = {"archer": malformed_value}
+        var assigned := Development.assign_recruits_to_garrison("keep", "archer", 1, flags)
+        var recruited := Development.recruit("keep", "archer", 1, flags, 1000)
+        all_rejected = all_rejected and not bool(assigned.get("ok", true)) and not bool(recruited.get("ok", true))
+        all_rejected = all_rejected and int(flags.get("empire_stockpile_provisions", -1)) == 100
+        all_rejected = all_rejected and not flags.has("holding_garrison_keep")
+    check(all_rejected, "non-finite and out-of-range saved counts reject recruitment and assignment without spending or mutation")
