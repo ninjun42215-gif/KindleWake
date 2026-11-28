@@ -187,17 +187,21 @@ The current provenance ledger `Kindlewake/data/asset_provenance.json` is dated 2
 
 Selected live comparisons:
 - #164: 22 ahead / 0 behind main.
-- #172: 18 ahead / 0 behind main.
+- #172: 19 ahead / 0 behind main after this handoff update.
 - #179: 4 ahead / 0 behind main.
 - #184: 11 ahead / 0 behind parent #179.
 - #185: 3 ahead / 0 behind main.
 - #186: 3 ahead / 0 behind main.
 - #187: 1 ahead / 0 behind parent #185.
+- #157 portrait identity: 34 ahead / 9 behind main; coordinate shared provenance/credits files.
+- #161 companion portrait journal: 6 ahead / 5 behind main; stacked/shared portrait work.
+- #22 premium direction: 1 ahead / 198 behind main; #23 narrative/UX direction: 6 ahead / 198 behind main. These are the two non-draft PRs but both are stale-base branches.
+- #43 Base44 bible: 30 ahead / 160 behind main; #44 Chronicle founder gate: 4 ahead / 160 behind main.
 - #81 regional trading: **39 ahead / 160 behind main** (diverged).
 - #78 headless CI: 70 ahead / 160 behind main (diverged).
 - #46 empire management: 261 ahead / 161 behind main (diverged).
 
-Do not bulk-merge old divergent branches. Preserve the #179 → #184 and #185 → #187 dependencies. PR #183 remains stacked on #171.
+Do not bulk-merge old divergent branches. Ask for selective rebase/reconciliation and current-main tests before integrating stale-base work. Preserve the #179 → #184 and #185 → #187 dependencies. PR #183 remains stacked on #171.
 
 ## Remaining release gates
 
