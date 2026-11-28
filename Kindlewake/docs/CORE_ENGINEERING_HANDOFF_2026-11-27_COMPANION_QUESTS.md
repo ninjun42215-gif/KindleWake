@@ -135,3 +135,8 @@ Parent PR #179 exact head `b7e1cb61bd7cc5c0e19f67d76e318b3c5d74973f` completed i
 - [Android Build #46103663059](https://github.com/ninjun42215-gif/KindleWake/actions/runs/46103663059) — import, 20/20 scene smoke, 1,009 main strict checks, campaign/UI/Chronicle suites and the **22-check garrison integrity suite** passed; the AOSP ATD / forced SwiftShader emulator install/launch stage failed. The APK export/upload step completed, but this is not Android visual approval.
 
 This parent result verifies the garrison changes only. The companion-quest numeric follow-up on the child branch still requires its own exact-head Godot/import/test checks. The child PR is temporarily based on `main` to trigger the full PR workflows; restore its base to `fix/holding-garrison-reserve-integrity-2026-11-25` after its exact-head checks complete.
+
+
+## Exact-head correction — GDScript test indentation (2026-11-28)
+
+The first full PR verification on child head `e8048303d25d6bd133dfe52d86c1710f3a0128af` caught a GDScript parse error in the newly appended test function: the file uses four-space indentation, while the added function initially used tabs. The runtime implementation was not reached by the import/test stage. The test file has now been normalized to the existing four-space convention. Re-run the complete exact-head import and test suite; the failed attempt is not a gameplay test result.

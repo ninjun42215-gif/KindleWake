@@ -152,25 +152,25 @@ func _test_runtime_guards(catalog: Dictionary) -> void:
 
 
 func _test_non_finite_progress(catalog: Dictionary) -> void:
-	var non_finite_recovered := true
-	for malformed_value in [NAN, INF, -INF]:
-		var normalized := CompanionQuestSystem.normalize_state({
-			"sample": {"status": "complete", "progress": malformed_value, "outcome": "publish_record"}
-		}, catalog)
-		non_finite_recovered = non_finite_recovered and normalized.sample.status == "active"
-		non_finite_recovered = non_finite_recovered and int(normalized.sample.progress) == 0
-		non_finite_recovered = non_finite_recovered and normalized.sample.outcome == ""
-	check(non_finite_recovered, "NaN and positive/negative infinity reopen completion safely without integer conversion")
+    var non_finite_recovered := true
+    for malformed_value in [NAN, INF, -INF]:
+        var normalized := CompanionQuestSystem.normalize_state({
+            "sample": {"status": "complete", "progress": malformed_value, "outcome": "publish_record"}
+        }, catalog)
+        non_finite_recovered = non_finite_recovered and normalized.sample.status == "active"
+        non_finite_recovered = non_finite_recovered and int(normalized.sample.progress) == 0
+        non_finite_recovered = non_finite_recovered and normalized.sample.outcome == ""
+    check(non_finite_recovered, "NaN and positive/negative infinity reopen completion safely without integer conversion")
 
-	var huge_finite := CompanionQuestSystem.normalize_state({
-		"sample": {"status": "active", "progress": 1.0e300}
-	}, catalog)
-	check(huge_finite.sample.status == "ready" and int(huge_finite.sample.progress) == 3,
-		"very large finite progress is clamped to milestone count before integer conversion")
+    var huge_finite := CompanionQuestSystem.normalize_state({
+        "sample": {"status": "active", "progress": 1.0e300}
+    }, catalog)
+    check(huge_finite.sample.status == "ready" and int(huge_finite.sample.progress) == 3,
+        "very large finite progress is clamped to milestone count before integer conversion")
 
-	var runtime_rejected := true
-	for malformed_value in [NAN, INF, -INF, 1.0e300]:
-		var state := {"sample": {"status": "ready", "progress": malformed_value, "outcome": ""}}
-		var result := CompanionQuestSystem.resolve(state, "sample", "publish_record", catalog)
-		runtime_rejected = runtime_rejected and not bool(result.get("ok", true)) and state.sample.status == "ready"
-	check(runtime_rejected, "runtime resolution rejects non-finite and out-of-range progress without mutating quest state")
+    var runtime_rejected := true
+    for malformed_value in [NAN, INF, -INF, 1.0e300]:
+        var state := {"sample": {"status": "ready", "progress": malformed_value, "outcome": ""}}
+        var result := CompanionQuestSystem.resolve(state, "sample", "publish_record", catalog)
+        runtime_rejected = runtime_rejected and not bool(result.get("ok", true)) and state.sample.status == "ready"
+    check(runtime_rejected, "runtime resolution rejects non-finite and out-of-range progress without mutating quest state")
