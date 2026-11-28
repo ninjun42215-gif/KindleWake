@@ -15,8 +15,8 @@ No merge, force-push, branch deletion, repository-setting change, secret access,
 ## 1. Live repository snapshot
 
 - Default branch: `main`, exact SHA `13f66ec19476c9af5ed2b5c81af95e4d8a026876`; latest commit dated 2026-11-19 02:42:49Z.
-- Branch API pagination: 100 entries on page 1 and 90 on page 2 — **190 branches**.
-- Open PR search: **47 open PRs**, **45 drafts**. The two non-draft PRs are #22 and #23.
+- Branch API pagination: 100 entries on page 1 and 91 on page 2 — **191 branches**.
+- Open PR search: **48 open PRs**, **46 drafts** (including QA follow-up PR #187 created in this run). The two non-draft PRs are #22 and #23.
 - Published GitHub Releases: **0**.
 - Main branch metadata reports `protected=false`; the repository rulesets endpoint returns `[]`. The branch-protection detail endpoint is not accessible to this integration (HTTP 403); no repository settings were changed.
 - Latest Safe Auto Merge run [#46117110829](https://github.com/ninjun42215-gif/KindleWake/actions/runs/46117110829) completed successfully, but its exact-PR workflow verification and merge steps were skipped. Main remains at the same SHA; **no merge occurred**.
