@@ -7,6 +7,29 @@ const ACTIVE := "active"
 const READY := "ready"
 const COMPLETE := "complete"
 
+static func _normalize_progress(value: Variant, milestone_count: int) -> Dictionary:
+	if typeof(value) == TYPE_INT:
+		var integer_progress: int = value
+		return {"progress": clampi(integer_progress, 0, milestone_count), "integral": true}
+	if typeof(value) == TYPE_FLOAT:
+		var numeric: float = value
+		if not is_finite(numeric):
+			return {"progress": 0, "integral": false}
+		# Clamp while still a finite float; only the small bounded value reaches int().
+		var bounded := clampf(numeric, 0.0, float(milestone_count))
+		return {"progress": int(bounded), "integral": numeric == floor(numeric)}
+	return {"progress": 0, "integral": true}
+
+
+static func _has_exact_progress(value: Variant, expected: int) -> bool:
+	if typeof(value) == TYPE_INT:
+		return int(value) == expected
+	if typeof(value) == TYPE_FLOAT:
+		var numeric: float = value
+		return is_finite(numeric) and numeric == float(expected)
+	return false
+
+
 
 static func normalize_state(raw_state: Dictionary, catalog: Dictionary) -> Dictionary:
 	var normalized: Dictionary = {}
@@ -21,11 +44,9 @@ static func normalize_state(raw_state: Dictionary, catalog: Dictionary) -> Dicti
 		var status := str(saved.get("status", ""))
 		if status not in [ACTIVE, READY, COMPLETE]:
 			continue
-		var progress_value: Variant = saved.get("progress", 0)
-		if typeof(progress_value) not in [TYPE_INT, TYPE_FLOAT]:
-			progress_value = 0
-		var progress_is_integral := typeof(progress_value) != TYPE_FLOAT or float(progress_value) == float(int(progress_value))
-		var progress := clampi(int(progress_value), 0, milestones.size())
+		var progress_info := _normalize_progress(saved.get("progress", 0), milestones.size())
+		var progress := int(progress_info.get("progress", 0))
+		var progress_is_integral := bool(progress_info.get("integral", false))
 		var choices: Dictionary = saved.get("choices", {}) if typeof(saved.get("choices", {})) == TYPE_DICTIONARY else {}
 		var outcome := str(saved.get("outcome", ""))
 		var outcomes: Array = definition.get("outcomes", [])
@@ -103,7 +124,7 @@ static func resolve(state: Dictionary, quest_id: String, outcome: String, catalo
 	var quest_state: Dictionary = state[quest_id]
 	var milestones: Array = definitions[quest_id].get("milestones", [])
 	var progress_value: Variant = quest_state.get("progress", -1)
-	if str(quest_state.get("status", "")) != READY or typeof(progress_value) not in [TYPE_INT, TYPE_FLOAT] or float(progress_value) != float(milestones.size()):
+	if str(quest_state.get("status", "")) != READY or not _has_exact_progress(progress_value, milestones.size()):
 		return {"ok": false, "reason": "Complete the quest milestones before choosing its resolution."}
 	var outcomes: Array = definitions[quest_id].get("outcomes", [])
 	if not outcomes.has(outcome):

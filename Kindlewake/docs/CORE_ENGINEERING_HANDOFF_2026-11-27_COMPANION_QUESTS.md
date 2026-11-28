@@ -5,7 +5,7 @@
 **Parent PR:** [#179 — holding garrison integrity](https://github.com/ninjun42215-gif/KindleWake/pull/179)  
 **Working branch:** `fix/companion-quest-save-normalization-2026-11-27`  
 **Base branch:** `fix/holding-garrison-reserve-integrity-2026-11-25`  
-**Base SHA:** `c7630c816ed090f7a16b2d4dc77c429cdb82c5d2`  
+**Base SHA:** `b7e1cb61bd7cc5c0e19f67d76e318b3c5d74973f`  
 **Project version:** `0.12.0 / Android 1200` · **Save schema:** `4`
 
 ## Implemented
@@ -107,3 +107,19 @@ The earlier run at `f9c3d9e` did keep the process alive, but its screenshot show
 ## Current PR state
 
 PR #184 has been returned to its intended stacked base, `fix/holding-garrison-reserve-integrity-2026-11-25`. Parent PR #179 remains a separate draft. The child PR must not be merged directly to main before its parent dependency is integrated. No main, player-save, visual or QA-owned files were changed.
+
+
+## QA follow-up — finite companion-quest progress normalization (2026-11-28)
+
+Addressed QA comment [#7215634205](https://github.com/ninjun42215-gif/KindleWake/pull/184#issuecomment-7215634205):
+
+- Added a normalization helper that handles integer progress directly and checks float finiteness before any integer conversion.
+- Finite float progress is clamped to the authored milestone range while still a float; only the bounded value is converted to int.
+- NaN and positive/negative infinity reset to zero and cannot preserve a completed status.
+- Runtime resolution now compares integer progress exactly and accepts float progress only when finite and exactly equal to the milestone count.
+- Added three focused regression assertions covering NaN/±INF recovery, very large finite-float clamping, and runtime rejection of non-finite/out-of-range progress.
+- The previous 21 quest assertions remain; expected standalone total is 24 checks.
+
+**Stack synchronization:** the child branch includes parent PR #179's numeric reserve-count hardening commit `b7e1cb61bd7cc5c0e19f67d76e318b3c5d74973f` as a merge parent. PR #184 remains based on the parent branch and draft.
+
+**Verification status:** this follow-up changes runtime code and tests. Run Godot import, the 24-check companion suite, the parent 22-check garrison suite, all campaign tests and exact-head Android/OCR verification before approval. Historical results above do not verify this follow-up. Do not claim physical-device validation.
